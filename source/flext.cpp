@@ -548,9 +548,7 @@ typedef void (*methfun_5)(flext_base *c,t_any &,t_any &,t_any &,t_any &,t_any &)
 
 bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 {
-#ifdef MAXMSP
 	static bool trap = false;
-#endif
 	bool ret = false;
 	
 	LOG3("methodmain inlet:%i args:%i symbol:%s",inlet,argc,s?s->s_name:"");
@@ -661,7 +659,7 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 #endif
 	
 	// If float or int message is not explicitly handled: try list handler instead
-	if(!ret && argc == 1 && (s == sym_float 
+	if(!ret && !trap && argc == 1 && (s == sym_float 
 #ifdef MAXMSP
 		|| s == sym_int
 #endif
@@ -673,12 +671,14 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 		else 
 			SetInt(list,GetInt(argv[0]));
 #endif
+		trap = true;
 		ret = m_methodmain(inlet,sym_list,1,&list);
+		trap = false;
 	}
 
 
 	// if distmsgs is switched on then distribute list elements over inlets (Max/MSP behavior)
-	if(!ret && distmsgs && inlet == 0 && s == sym_list && insigs <= 1) {
+	if(!ret && distmsgs && !trap && inlet == 0 && s == sym_list && insigs <= 1) {
 		int i = incnt;
 		if(i > argc) i = argc;
 		for(--i; i >= 0; --i) { // right to left distribution
@@ -689,13 +689,17 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 #ifdef PD
 			else if(IsPointer(argv[i])) s = sym_pointer;  // can pointer atoms occur here?
 #endif
-			if(s) m_methodmain(i,s,1,argv+i);			
+			if(s) {
+				trap = true;
+				m_methodmain(i,s,1,argv+i);			
+				trap = false;
+			}
 		}
 		
 		ret = true;
 	}
 	
-	if(!ret) ret = m_method_(inlet,s,argc,argv);
+	if(!ret && !trap) ret = m_method_(inlet,s,argc,argv);
 	
 	return ret; // true if appropriate handler was found and called
 }

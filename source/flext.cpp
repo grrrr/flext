@@ -15,6 +15,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 BL flext_base::compatibility = true;
 
+
 flext_base::flext_base():
 	inlist(NULL),outlist(NULL),
 	incnt(0),outcnt(0),

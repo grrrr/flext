@@ -17,6 +17,15 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <flstdc.h>
 
 
+// --- global overloading of new/delete memory allocation methods ----
+
+void *operator new(size_t bytes);
+void operator delete(void *blk);
+inline void *operator new[](size_t bytes) { return operator new(bytes); }
+inline void operator delete[](void *blk) { operator delete(blk); }
+
+
+
 class flext_obj;
 
 /*-----------------------------------------------------------------
@@ -124,7 +133,7 @@ class FLEXT_EXT flext_obj
 };
 
 // This has a dummy arg so that NT won't complain
-FLEXT_EXT void *operator new(size_t, void *location, void *dummy);
+inline void *operator new(size_t, void *location, void *dummy) { return location; }
 
 ////////////////////////////////////////
 // This should be used in the header

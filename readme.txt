@@ -57,8 +57,9 @@ see flext.h for the documented base classes
 Version history:
 
 0.1.2:
-- defines for callback-to-method functions and method setup
+- defines for callback-to-method functions and method setup (FLEXT_CALLBACK*, FLEXT_ADD*)
 - deprecated support for default arguments (A_DEFFLOAT and A_DEFSYMBOL)
+- flext now use PD's or Max's memory allocation functions
 
 0.1.1:
 - documentation for flext.h
@@ -110,7 +111,6 @@ bugs:
 none known
 
 features:
-- static class methods for definition of object methods
 - abstraction for parsing argument lists
 - abstraction for creating lists and anythings
 - simulate loadbang on object creation for PD

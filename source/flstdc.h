@@ -56,11 +56,11 @@ typedef t_float t_flint;
 #define add_method4(clss,meth,text,a1,a2,a3,a4) class_addmethod(clss, (t_method)meth, gensym(text), a1,a2,a3,a4,A_NULL)
 #define add_method5(clss,meth,text,a1,a2,a3,a5) class_addmethod(clss, (t_method)meth, gensym(text), a1,a2,a3,a4,a5,A_NULL)
 
-#define outlet_signal(clss) outlet_new(clss,&s_signal)
-#define outlet_float(clss) outlet_new(clss,&s_float)
-#define outlet_flint(clss) outlet_float(clss)
-#define outlet_list(clss) outlet_new(clss,&s_list)
-#define outlet_symbol(clss) outlet_new(clss,&s_symbol)
+#define newout_signal(clss) outlet_new(clss,&s_signal)
+#define newout_float(clss) outlet_new(clss,&s_float)
+#define newout_flint(clss) outlet_float(clss)
+#define newout_list(clss) outlet_new(clss,&s_list)
+#define newout_symbol(clss) outlet_new(clss,&s_symbol)
 
 
 #elif defined(MAX)
@@ -113,11 +113,11 @@ typedef _outlet t_outlet;
 #define add_assist(clss,meth) addmess((method)meth, "assist", A_CANT, A_NULL)
 #define add_loadbang(clss,meth) addmess((method)meth, "loadbang", A_CANT, A_NULL)
 
-#define outlet_signal(clss) outlet_new(clss,"signal")
-#define outlet_float(clss) outlet_new(clss,"float")
-#define outlet_flint(clss) outlet_new(clss,"int")
-#define outlet_list(clss) outlet_new(clss,"list")
-#define outlet_symbol(clss) outlet_new(clss,"symbol")
+#define newout_signal(clss) outlet_new(clss,"signal")
+#define newout_float(clss) outlet_new(clss,"float")
+#define newout_flint(clss) outlet_new(clss,"int")
+#define newout_list(clss) outlet_new(clss,"list")
+#define newout_symbol(clss) outlet_new(clss,"symbol")
 
 #endif
 

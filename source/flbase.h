@@ -25,7 +25,6 @@ extern "C" {	    	    	    	    	    	    	\
 #endif
 
 
-
 class CPPExtern;
 
 /*-----------------------------------------------------------------
@@ -47,11 +46,9 @@ struct EXT_EXTERN Obj_header
 {
     	//////////
     	// The obligatory object header
+    	t_sigobj    	    pd_obj;  // default signal
 #ifdef PD
-    	t_object    	    pd_obj;  // default signal
 		F defsig;
-#elif defined(MAX)
-    	t_pxobject    	    pd_obj;  // proxy object for signal handling
 #endif
 
     	//////////
@@ -99,7 +96,7 @@ class EXT_EXTERN CPPExtern
 
         //////////
         // The object header
-        t_object          *x_obj;
+        t_sigobj          *x_obj;        	
 
     	//////////
     	// Destructor
@@ -113,7 +110,7 @@ class EXT_EXTERN CPPExtern
 
         //////////
         // This is a holder - don't touch it
-        static t_object     *m_holder;
+        static t_sigobj     *m_holder;
 
     protected:
     	
@@ -206,11 +203,11 @@ static void cb_setup(t_class *classPtr);
 ////////////////////////////////////////
 
 #ifdef PD
-#define CPPEXTERN_NEWFN class_new
-#define CPPEXTERN_CLREF(NEW_CLASS) gensym(#NEW_CLASS)
+#define CPPEXTERN_NEWFN ::class_new
+#define CPPEXTERN_CLREF(NEW_CLASS,CLASS_EXT) gensym(#NEW_CLASS)
 #elif defined(MAX)
-#define CPPEXTERN_NEWFN setup
-#define CPP_EXTERN_CLREF(NEW_CLASS) (t_messlist **)&NEW_CLASS
+#define CPPEXTERN_NEWFN NULL; ::setup
+#define CPPEXTERN_CLREF(NEW_CLASS,CLASS_EXT) (t_messlist **)&(NEW_CLASS ## CLASS_EXT)
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -237,12 +234,12 @@ extern "C" {	    	    	    	    	    	    	\
 void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
     NEW_CLASS ## EXTERN_NAME = CPPEXTERN_NEWFN(                       \
-    	     	CPPEXTERN_CLREF(NEW_CLASS), 	    	    	     	\
+    	     	CPPEXTERN_CLREF(NEW_CLASS,EXTERN_NAME), 	    	    	     	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
-    	    	(t_method)&NEW_CLASS::cb_free,         \
+    	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(Obj_header), 0,                          \
     	     	A_NULL);                                        \
-    NEW_CLASS::cb_setup(NEW_CLASS ## EXTERN_NAME); \
+    NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
 }   	    	    	    	    	    	    	    	\
 }
 
@@ -263,13 +260,13 @@ extern "C" {	    	    	    	    	    	    	\
 void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
     NEW_CLASS ## EXTERN_NAME = CPPEXTERN_NEWFN(                       \
-    	     	CPPEXTERN_CLREF(NEW_CLASS), 	    	    	    	\
+    	     	CPPEXTERN_CLREF(NEW_CLASS,EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
-    	    	(t_method)&NEW_CLASS::cb_free,         \
+    	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(Obj_header), 0,                          \
     	     	PD_TYPE,                                        \
     	     	A_NULL);      	    	    	    	    	\
-    NEW_CLASS::cb_setup(NEW_CLASS ## EXTERN_NAME); \
+    NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
 }   	    	    	    	    	    	    	    	\
 }
 
@@ -290,13 +287,13 @@ extern "C" {	    	    	    	    	    	    	\
 void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
     NEW_CLASS ## EXTERN_NAME = CPPEXTERN_NEWFN(                       \
-    	     	CPPEXTERN_CLREF(NEW_CLASS), 	    	    	    	\
+    	     	CPPEXTERN_CLREF(NEW_CLASS,EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
-    	    	(t_method)&NEW_CLASS::cb_free,         \
+    	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(Obj_header), 0,                          \
     	     	A_GIMME,                                        \
     	     	A_NULL);      	    	    	    	    	\
-    NEW_CLASS::cb_setup(NEW_CLASS ## EXTERN_NAME); \
+    NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
 }   	    	    	    	    	    	    	    	\
 }
 
@@ -317,13 +314,13 @@ extern "C" {	    	    	    	    	    	    	\
 void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
     NEW_CLASS ## EXTERN_NAME = CPPEXTERN_NEWFN(                       \
-    	     	CPPEXTERN_CLREF(NEW_CLASS), 	    	    	    	\
+    	     	CPPEXTERN_CLREF(NEW_CLASS,EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
-    	    	(t_method)&NEW_CLASS::cb_free,         \
+    	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(Obj_header), 0,                          \
     	     	ONE_PD_TYPE, TWO_PD_TYPE,                       \
     	     	A_NULL);      	    	    	    	    	\
-    NEW_CLASS::cb_setup(NEW_CLASS ## EXTERN_NAME); \
+    NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
 }   	    	    	    	    	    	    	    	\
 }
 
@@ -344,13 +341,13 @@ extern "C" {	    	    	    	    	    	    	\
 void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
     NEW_CLASS ## EXTERN_NAME = CPPEXTERN_NEWFN(                       \
-    	     	CPPEXTERN_CLREF(NEW_CLASS), 	    	    	    	\
+    	     	CPPEXTERN_CLREF(NEW_CLASS,EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
-    	    	(t_method)&NEW_CLASS::cb_free,         \
+    	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(Obj_header), 0,                          \
     	     	ONE_PD_TYPE, TWO_PD_TYPE, THREE_PD_TYPE,        \
     	     	A_NULL);      	    	    	    	    	\
-    NEW_CLASS::cb_setup(NEW_CLASS ## EXTERN_NAME); \
+    NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
 }   	    	    	    	    	    	    	    	\
 }
 
@@ -371,14 +368,16 @@ extern "C" {	    	    	    	    	    	    	\
 void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
     NEW_CLASS ## EXTERN_NAME = CPPEXTERN_NEWFN(                       \
-    	     	CPPEXTERN_CLREF(NEW_CLASS), 	    	    	    	\
+    	     	CPPEXTERN_CLREF(NEW_CLASS,EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
-    	    	(t_method)&NEW_CLASS::cb_free,         \
+    	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(Obj_header), 0,                          \
     	     	ONE_PD_TYPE, TWO_PD_TYPE, THREE_PD_TYPE, FOUR_PD_TYPE, \
     	     	A_NULL);      	    	    	    	    	\
-    NEW_CLASS::cb_setup(NEW_CLASS ## EXTERN_NAME); \
+    NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
 }   	    	    	    	    	    	    	    	\
 }
 
 #endif
+
+

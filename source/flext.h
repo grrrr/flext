@@ -25,7 +25,7 @@ public:
 //	ext_obj();
 //	virtual ~ext_obj();
 	
-	virtual V m_help() = 0;
+	virtual V m_help();
 	
 #ifdef MAX
 	virtual V m_loadbang() {}
@@ -55,11 +55,12 @@ public:
 	buf_obj();
 	
 protected:
-	virtual V setbuf(t_symbol *s);
+	virtual V setbuf(t_symbol *s = NULL);
 
 	t_symbol *bufname;
 	F *buf;
-	I bufchns,buflen;
+	I bufchns;
+	L buflen;
 };
 
 
@@ -74,7 +75,7 @@ public:
 	dsp_obj();
 	
 	virtual V m_dsp(t_signal **s) = 0;
-	virtual V m_enable(BL on) {}
+	virtual V m_enable(BL on);
 	
 protected:
 	BL enable;
@@ -82,7 +83,7 @@ protected:
 private:
 
 	static V cb_dsp(V *c,t_signal **s);
-	static V cb_enable(V *c,I on);
+	static V cb_enable(V *c,FI on);
 };
 
 
@@ -97,7 +98,7 @@ public:
 	bufdsp_obj();
 	
 	virtual V m_dsp(t_signal **s) = 0;
-	virtual V m_enable(BL on) {}
+	virtual V m_enable(BL on);
 	
 protected:
 	BL enable;
@@ -105,7 +106,7 @@ protected:
 private:
 
 	static V cb_dsp(V *c,t_signal **s);
-	static V cb_enable(V *c,I on);
+	static V cb_enable(V *c,FI on);
 };
 
 

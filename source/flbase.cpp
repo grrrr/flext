@@ -4,7 +4,11 @@
 
 EXT_EXTERN void *operator new(size_t, void *location, void *) {return(location);}
 
+#ifdef PD
 t_object *CPPExtern::m_holder;
+#elif defined(MAX)
+t_pxobject *CPPExtern::m_holder;
+#endif
 
 /////////////////////////////////////////////////////////
 //

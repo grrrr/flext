@@ -17,6 +17,11 @@ V ext_obj::cb_loadbang(V *c) { thisClass(c)->m_loadbang(); }
 V ext_obj::cb_assist(V *c,V *b,L msg,L arg,C *s) { thisClass(c)->m_assist(msg,arg,s); }
 #endif
 
+V ext_obj::m_help()
+{
+	post("Loaded object '%s' - compiled on %s %s",thisName(),__DATE__,__TIME__);
+}
+
 // -----------------------------
 
 V buf_obj::cb_setup(t_class *c)
@@ -97,9 +102,9 @@ V dsp_obj::cb_setup(t_class *c)
 dsp_obj::dsp_obj(): enable(true) {}
 
 V dsp_obj::cb_dsp(V *c,t_signal **s) { thisClass(c)->m_dsp(s); }
-V dsp_obj::cb_enable(V *c,I on) { thisClass(c)->m_enable(on != 0); }
+V dsp_obj::cb_enable(V *c,FI on) { thisClass(c)->m_enable(on != 0); }
 
-
+V dsp_obj::m_enable(BL en) { enable = en; }
 
 // ----------------------------
 
@@ -114,7 +119,10 @@ V bufdsp_obj::cb_setup(t_class *c)
 bufdsp_obj::bufdsp_obj(): enable(true) {}
 
 V bufdsp_obj::cb_dsp(V *c,t_signal **s) { thisClass(c)->m_dsp(s); }
-V bufdsp_obj::cb_enable(V *c,I on) { thisClass(c)->m_enable(on != 0); }
+V bufdsp_obj::cb_enable(V *c,FI on) { thisClass(c)->m_enable(on != 0); }
+
+V bufdsp_obj::m_enable(BL en) { enable = en; }
+
 
 
 

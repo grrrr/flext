@@ -24,6 +24,8 @@ extern "C" {
 }
 #pragma warning (pop)
 
+typedef t_object t_sigobj;
+
 typedef t_float t_flint;
 
 #define A_NOTHING A_NULL
@@ -54,6 +56,12 @@ typedef t_float t_flint;
 #define add_method4(clss,meth,text,a1,a2,a3,a4) class_addmethod(clss, (t_method)meth, gensym(text), a1,a2,a3,a4,A_NULL)
 #define add_method5(clss,meth,text,a1,a2,a3,a5) class_addmethod(clss, (t_method)meth, gensym(text), a1,a2,a3,a4,a5,A_NULL)
 
+#define outlet_signal(clss) outlet_new(clss,&s_signal)
+#define outlet_float(clss) outlet_new(clss,&s_float)
+#define outlet_flint(clss) outlet_float(clss)
+#define outlet_list(clss) outlet_new(clss,&s_list)
+#define outlet_symbol(clss) outlet_new(clss,&s_symbol)
+
 
 #elif defined(MAX)
 
@@ -66,10 +74,15 @@ extern "C"
 #include "buffer.h"
 }
 
+typedef t_pxobject t_sigobj;
+
 typedef t_int t_flint;
 
 typedef void _outlet;
 typedef _outlet t_outlet;
+
+#define t_method method
+#define t_newmethod method
 
 #define A_NULL A_NOTHING
 #define A_FLINT A_LONG
@@ -100,7 +113,15 @@ typedef _outlet t_outlet;
 #define add_assist(clss,meth) addmess((method)meth, "assist", A_CANT, A_NULL)
 #define add_loadbang(clss,meth) addmess((method)meth, "loadbang", A_CANT, A_NULL)
 
+#define outlet_signal(clss) outlet_new(clss,"signal")
+#define outlet_float(clss) outlet_new(clss,"float")
+#define outlet_flint(clss) outlet_new(clss,"int")
+#define outlet_list(clss) outlet_new(clss,"list")
+#define outlet_symbol(clss) outlet_new(clss,"symbol")
+
 #endif
+
+#define FI t_flint
 
 
 #ifdef _LOG

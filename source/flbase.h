@@ -159,10 +159,11 @@ static void callb_free(void *data)    	    	    	\
 static void callb_setup(t_class *classPtr)  	    	\
 { PARENT_CLASS::callb_setup(classPtr);    	    	\
   NEW_CLASS::cb_setup(classPtr); }  	    	    	\
-private:    \
+protected:    \
 inline t_class *thisClass() { return FLEXT_GETCLASS(x_obj); } \
 inline const char *thisName() const { return m_name; } \
 static NEW_CLASS *thisObject(V *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; }	  \
+private:    \
 static void cb_setup(t_class *classPtr);
 
 
@@ -310,7 +311,7 @@ extern "C" {	    	    	    	    	    	    	\
 FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
     NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
-    	     	FLEXT_CLREF(NEW_CLASS::m_name,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
+    	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(flext_hdr), CLNEW_OPTIONS,                          \

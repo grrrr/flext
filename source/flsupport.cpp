@@ -32,7 +32,7 @@ const t_symbol *flext::sym_signal = NULL;
 int flext::Version() { return FLEXT_VERSION; }
 const char *flext::VersionStr() { return FLEXT_VERSTR; }
 
-void flext::Setup()
+void flext::FLEXT_SETUPFUNC()
 {
 	static bool issetup = false;
 	if(issetup) 

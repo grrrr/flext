@@ -207,7 +207,8 @@ typedef t_symbol *t_symptr;
 
 #ifdef _MSC_VER
 	#ifdef FLEXT_SHARED
-        #ifdef FLEXT_DLL
+        // for compiling a shared flext library FLEXT_EXPORTS must be defined
+        #ifdef FLEXT_EXPORTS
 		    #define FLEXT_SHARE __declspec(dllexport)
         #else
 		    #define FLEXT_SHARE __declspec(dllimport)

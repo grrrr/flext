@@ -974,7 +974,20 @@ protected:
 #ifdef __MRC__
 	friend class flext_obj;
 #endif
-	static void Setup();
+
+/*
+        With linux and more than one flext-based external loaded all calls to static 
+        exported functions refer to the first instance loaded!
+        As single- and multi-threaded to different initializations the function names have
+        to be different as well.
+*/
+#ifdef FLEXT_THREADS
+#define FLEXT_SETUPFUNC SetupMulti
+#else
+#define FLEXT_SETUPFUNC SetupSingle
+#endif
+
+	static void FLEXT_SETUPFUNC();
 
 	static bool chktilde(const char *objname);
 

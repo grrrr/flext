@@ -16,6 +16,7 @@ Version history:
 0.5.0:
 - added some more SIMD functions
 - fixed wrong returned result of flext::buffer::set function
+- fix for linux static exported function name-clash (flext::Setup() single- vs. multi-threading)
 
 0.4.4:
 - fixed deadly bug for Max/MSP method-to-symbol-binding proxies

@@ -121,6 +121,7 @@ Version history:
 - made a portable threading interface with support for threading libraries other than pthreads (FLEXT_THREADS defined as FLEXT_THR_*)
 - implemented threading support with the MacOS MP thread library
 - stripped the ThrMutex and ThrCond classes of non-portable (and irrelevant) functionality
+- simplified "ToQueue*" and threaded "ToOut*" message queue mechanism for Max/MSP 
 
 0.4.0:
 - the use of the const keyword is enforced (e.g. the preferred type for symbols is now "const t_symbol *")

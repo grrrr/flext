@@ -8,12 +8,12 @@
 # ---------------------------------------------
 
 MAKEFILE        = flext.mpw
-ÄMondoBuildÄ    = {MAKEFILE}  # Make blank to avoid rebuilds when makefile is modified
+•MondoBuild•    = {MAKEFILE}  # Make blank to avoid rebuilds when makefile is modified
 
 Name			= flext
 
 ObjDir          = :MPW:
-MaxSDK			= HD Daten:Prog Stuff:Max/MSP SDK:SDK Examples
+MaxSDK			= Daten:Prog Stuff:Max/MSP SDK:SDK Examples
 Includes        = -i :,"{MaxSDK}:Max Includes","{MaxSDK}:MSP Includes"
 Defines			= -d MAXMSP 
 
@@ -33,16 +33,16 @@ SrcDir	= :source:
 
 ### Object Files ###
 
-ObjFiles-PPC    =  è
-				  "{ObjDir}flbase.cpp.x" è
-				  "{ObjDir}flbuf.cpp.x" è
-				  "{ObjDir}flext.cpp.x" è
-				  "{ObjDir}fllib.cpp.x" è
-				  "{ObjDir}fldsp.cpp.x" è
-				  "{ObjDir}flatom.cpp.x" è
-				  "{ObjDir}flsetup.cpp.x" è
-				  "{ObjDir}flthr.cpp.x" è
-				  "{ObjDir}flutil.cpp.x" è
+ObjFiles-PPC    =  ∂
+				  "{ObjDir}flbase.cpp.x" ∂
+				  "{ObjDir}flbuf.cpp.x" ∂
+				  "{ObjDir}flext.cpp.x" ∂
+				  "{ObjDir}fllib.cpp.x" ∂
+				  "{ObjDir}fldsp.cpp.x" ∂
+				  "{ObjDir}flatom.cpp.x" ∂
+				  "{ObjDir}flsetup.cpp.x" ∂
+				  "{ObjDir}flthr.cpp.x" ∂
+				  "{ObjDir}flutil.cpp.x" ∂
 				  "{ObjDir}flxlet.cpp.x"
 
 ### Libraries ###
@@ -52,27 +52,27 @@ LibFiles-PPC    =
 
 ### Default Rules ###
 
-{ObjDir} ü {SrcDir}
+{ObjDir} ƒ {SrcDir}
 
-.cpp.x  ü  .cpp  {ÄMondoBuildÄ} {Headers}
+.cpp.x  ƒ  .cpp  {•MondoBuild•} {Headers}
 	{PPCCPlus} {depDir}{default}.cpp -o {targDir}{default}.cpp.x {PPCCPlusOptions}
 
 
 ### Build Rules ###
 
-all  ü Folder {ObjDir}{Name}.o
+all  ƒ Folder {ObjDir}{Name}.o
 
-Folder ü
+Folder ƒ
 	if !`Exists {ObjDir}` ; NewFolder {ObjDir} ; end
 
-{ObjDir}{Name}.o  üü  {ObjFiles-PPC} {LibFiles-PPC} 
-	PPCLink è
-		-o {Targ} è
-		{Deps} è
-		{Sym-PPC} è
-		-mf -d è
-		-t 'XCOF' è
-		-c 'MPS ' è
+{ObjDir}{Name}.o  ƒƒ  {ObjFiles-PPC} {LibFiles-PPC} 
+	PPCLink ∂
+		-o {Targ} ∂
+		{Deps} ∂
+		{Sym-PPC} ∂
+		-mf -d ∂
+		-t 'XCOF' ∂
+		-c 'MPS ' ∂
 		-xm l
 
 

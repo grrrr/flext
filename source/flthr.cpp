@@ -25,24 +25,18 @@ flext::thrid_t flext::thrid;
 //! Thread id of helper thread
 flext::thrid_t flext::thrhelpid;
 
+/*
 flext::thr_entry *flext::thrhead = NULL,*flext::thrtail = NULL;
 flext::ThrMutex flext::tlmutex;
+*/
+static flext::thr_entry *thrhead = NULL,*thrtail = NULL;
+static flext::ThrMutex tlmutex;
 
 //! Helper thread should terminate
-bool thrhelpexit = false;
+static bool thrhelpexit = false;
 
 //! Helper thread conditional
-flext::ThrCond *thrhelpcond = NULL;
-
-
-flext_base::thr_entry::thr_entry(void (*m)(thr_params *),thr_params *p,thrid_t id): 
-	th(p->cl),meth(m),params(p),thrid(id),
-	active(false),shouldexit(false),
-#if FLEXT_THREADS == FLEXT_THR_MP
-	weight(100), // MP default weight
-#endif
-	nxt(NULL) 
-{}
+static flext::ThrCond *thrhelpcond = NULL;
 
 
 //! Start helper thread
@@ -160,7 +154,7 @@ void flext::ThrHelper(void *)
 bool flext::LaunchThread(void (*meth)(thr_params *p),thr_params *p)
 {
 #ifdef FLEXT_DEBUG
-	if(!p || !thrhelpcond) {
+	if(!thrhelpcond) {
 		ERRINTERNAL(); 
 		return false;
 	}
@@ -228,7 +222,7 @@ void flext::PopThread()
 	}
 	else {
 #ifdef FLEXT_DEBUG
-		post("%s - INTERNAL ERROR: Thread not found!",thisName());
+		post("flext - INTERNAL ERROR: Thread not found!");
 #endif
 	}
 	
@@ -421,10 +415,22 @@ bool flext::SetPriority(int p,thrid_t id)
 #endif
 }
 
+
 flext_base::thr_params::thr_params(int n): cl(NULL),var(new _data[n]) {}
 flext_base::thr_params::~thr_params() { if(var) delete[] var; }
 
 void flext_base::thr_params::set_any(const t_symbol *s,int argc,const t_atom *argv) { var[0]._any.args = new AtomAnything(s,argc,argv); }
 void flext_base::thr_params::set_list(int argc,const t_atom *argv) { var[0]._list.args = new AtomList(argc,argv); }
+
+
+flext_base::thr_entry::thr_entry(void (*m)(thr_params *),thr_params *p,thrid_t id): 
+	th(p?p->cl:NULL),meth(m),params(p),thrid(id),
+	active(false),shouldexit(false),
+#if FLEXT_THREADS == FLEXT_THR_MP
+	weight(100), // MP default weight
+#endif
+	nxt(NULL) 
+{}
+
 
 #endif // FLEXT_THREADS

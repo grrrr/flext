@@ -430,7 +430,6 @@ public:
 	//! Check if current thread is the realtime system's thread
 	static bool IsSystemThread() { return IsThread(GetSysThreadId()); }
 
-protected:
 
 	/*! \brief Thread parameters
 		\internal
@@ -480,6 +479,8 @@ protected:
 #endif
 		thr_entry *nxt;
 	};
+
+protected:
 
 	static thrid_t thrhelpid;
 	static bool StartHelper();
@@ -532,7 +533,7 @@ public:
 	/*! \brief Thread mutex
 		\sa pthreads documentation
 	*/
-	class ThrMutex 
+	class FLEXT_EXT ThrMutex 
 #if FLEXT_THREADS == FLEXT_THR_POSIX
 	{
 	public:
@@ -586,7 +587,7 @@ public:
 	/*! \brief Thread conditional
 		\sa pthreads documentation
 	*/
-	class ThrCond
+	class FLEXT_EXT ThrCond
 #if FLEXT_THREADS == FLEXT_THR_POSIX
 		:public ThrMutex
 	{
@@ -671,16 +672,6 @@ public:
 		\remark thr_params *p may be NULL if not needed
 	*/
 	static bool LaunchThread(void (*meth)(thr_params *p),thr_params *p);
-
-protected:
-
-	//! thread list
-	static thr_entry *thrhead,*thrtail;
-	
-	//! mutex for thread list
-	static ThrMutex tlmutex;
-
-public:
 
 //!		@} FLEXT_S_THREAD
 

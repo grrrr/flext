@@ -20,7 +20,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flstdc.h"
 #include "flsupport.h"
 
-class flext_obj;
+class FLEXT_EXT flext_obj;
 
 // ----------------------------------------------------------------------------
 /*! \brief The obligatory PD or Max/MSP object header
@@ -85,7 +85,7 @@ struct FLEXT_EXT flext_hdr
 */
 // ----------------------------------------------------------------------------
 
-class flext_obj:
+class FLEXT_EXT flext_obj:
 	public flext
 {
     public:

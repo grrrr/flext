@@ -1,7 +1,6 @@
-#N canvas 105 266 700 343 12;
-#X obj 39 91 bng 25 250 50 0 empty empty start 0 -6 32 8 -261681 -1
+#N canvas 105 266 702 345 12;
+#X obj 39 91 bng 25 250 50 0 empty empty start 0 -6 0 8 -261681 -1
 -1;
-#X obj 39 244 thread1;
 #X obj 130 246 thread1;
 #X obj 220 247 thread1;
 #X obj 312 247 thread1;
@@ -13,31 +12,32 @@
 #X text 78 85 click to start;
 #X text 126 103 (if you click twice \, the same thread is started a
 second time);
-#X obj 16 8 cnv 15 550 40 empty empty thread1 10 22 32 24 -260818 -1
+#X obj 16 8 cnv 15 550 40 empty empty thread1 10 22 0 24 -260818 -1
 0;
 #X text 175 8 flext tutorial \, (C)2002 Thomas Grill;
 #X text 175 28 http://www.parasitaere-kapazitaeten.net;
-#X obj 39 277 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 32 12
--228992 -1 -1 0 256;
-#X obj 131 277 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 32
+#X obj 131 277 nbx 5 16 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
 12 -228992 -1 -1 0 256;
-#X obj 221 277 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 32
+#X obj 221 277 nbx 5 16 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
 12 -228992 -1 -1 0 256;
-#X obj 311 277 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 32
+#X obj 311 277 nbx 5 16 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
 12 -228992 -1 -1 0 256;
-#X obj 406 276 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 32
+#X obj 406 276 nbx 5 16 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
 12 -228992 -1 -1 0 256;
-#X connect 0 0 1 0;
-#X connect 0 0 6 0;
-#X connect 1 0 15 0;
-#X connect 2 0 16 0;
-#X connect 3 0 17 0;
-#X connect 4 0 18 0;
-#X connect 5 0 19 0;
+#X obj 39 244 thread1;
+#X obj 39 277 nbx 5 16 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
+12 -228992 -1 -1 0 256;
+#X connect 0 0 5 0;
+#X connect 0 0 18 0;
+#X connect 1 0 14 0;
+#X connect 2 0 15 0;
+#X connect 3 0 16 0;
+#X connect 4 0 17 0;
+#X connect 5 0 1 0;
+#X connect 5 0 6 0;
 #X connect 6 0 2 0;
 #X connect 6 0 7 0;
 #X connect 7 0 3 0;
 #X connect 7 0 8 0;
 #X connect 8 0 4 0;
-#X connect 8 0 9 0;
-#X connect 9 0 5 0;
+#X connect 18 0 19 0;

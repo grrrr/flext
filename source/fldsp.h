@@ -24,7 +24,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 /*! \brief Flext dsp enabled base object
 */
-class flext_dsp:
+class FLEXT_EXT flext_dsp:
 	public flext_base
 {
 	FLEXT_HEADER_S(flext_dsp,flext_base,Setup)

@@ -12,7 +12,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     \brief Attribute editor (property dialog) for PD
 */
 
-#include "flprefix.h"
+#include "flext.h"
 
 #if FLEXT_SYS == FLEXT_SYS_PD && !defined(FLEXT_NOATTREDIT)
 
@@ -20,63 +20,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #pragma warning( disable : 4091 ) 
 #endif
 
+// This is problematic... non-public headers!
 #include <m_imp.h>
-#include "flext.h"
+#include <g_canvas.h>
 
 #include <string.h>
 #include <stdio.h>
-
-#ifdef __MWERKS__
-#define STD std
-#else
-#define STD
-#endif
-
-
-#if !defined(PD_VERSION_MAJOR)
-	/* PD version 0.36 or below */
-
-	/* Call this to get a gobj's bounding rectangle in pixels */
-	typedef void (*t_getrectfn)(t_gobj *x, struct _glist *glist,
-		int *x1, int *y1, int *x2, int *y2);
-    		/* and this to displace a gobj: */
-	typedef void (*t_displacefn)(t_gobj *x, struct _glist *glist, int dx, int dy);
-    		/* change color to show selection: */
-	typedef void (*t_selectfn)(t_gobj *x, struct _glist *glist, int state);
-    		/* change appearance to show activation/deactivation: */
-	typedef void (*t_activatefn)(t_gobj *x, struct _glist *glist, int state);
-    		/* warn a gobj it's about to be deleted */
-	typedef void (*t_deletefn)(t_gobj *x, struct _glist *glist);
-    		/*  making visible or invisible */
-	typedef void (*t_visfn)(t_gobj *x, struct _glist *glist, int flag);
-    		/* field a mouse click (when not in "edit" mode) */
-	typedef int (*t_clickfn)(t_gobj *x, struct _glist *glist,
-		int xpix, int ypix, int shift, int alt, int dbl, int doit);
-    		/*  save to a binbuf */
-	typedef void (*t_savefn)(t_gobj *x, t_binbuf *b);
-    		/*  open properties dialog */
-	typedef void (*t_propertiesfn)(t_gobj *x, struct _glist *glist);
-    		/* ... and later, resizing; getting/setting font or color... */
-
-	struct _widgetbehavior
-	{
-		t_getrectfn w_getrectfn;
-		t_displacefn w_displacefn;
-		t_selectfn w_selectfn;
-		t_activatefn w_activatefn;
-		t_deletefn w_deletefn;
-		t_visfn w_visfn;
-		t_clickfn w_clickfn;
-		t_savefn w_savefn;
-		t_propertiesfn w_propertiesfn;
-	};
-	
-#elif !defined(PD_VERSION_MINOR)
-	#error Flext cannot be compiled with this version!
-#else
-	#include <g_canvas.h>
-#endif
-
 
 static t_widgetbehavior widgetbehavior; 
 static void (*ori_vis)(t_gobj *c, t_glist *, int vis) = NULL;

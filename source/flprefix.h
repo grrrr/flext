@@ -371,6 +371,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	#define FLEXT_CLASSDEF(CL) CL##_single
 #endif
 
+// ----- disable attribute editor for PD version < devel_0_36 or 0.37
+#ifndef PD_VERSION_MAJOR
+#undef FLEXT_NOATTREDIT
+#define FLEXT_NOATTREDIT
+#endif
+
 
 // std namespace
 #ifdef __MWERKS__

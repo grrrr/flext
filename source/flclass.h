@@ -53,13 +53,11 @@ class flext_base:
 	friend class flext_obj;
 
 	/*!	\defgroup FLEXT_CLASS Flext base class
-
 		@{ 
 	*/
 public:
 
 	/*!	\defgroup FLEXT_C_BASE Basic class functionality
-
 		@{ 
 	*/
 
@@ -120,11 +118,11 @@ public:
 	/*! \brief Add inlet(s) for anythings
 		\remark That's the one to choose for the left-most (first) inlet unless it's a signal inlet.
 	*/
-	void AddInAnything(int m = 1) { AddInlet(xlet::tp_any,m); } // leftmost or via proxy
+	void AddInAnything(int m = 1) { AddInlet(xlet::tp_any,m); } 
 	/*! \brief Add inlet(s) for anythings (with description)
 		\remark That's the one to choose for the left-most (first) inlet unless it's a signal inlet.
 	*/
-	void AddInAnything(const char *desc,int m = 1) { AddInlet(xlet::tp_any,m,desc); } // leftmost or via proxy
+	void AddInAnything(const char *desc,int m = 1) { AddInlet(xlet::tp_any,m,desc); } 
 	//! Add inlet(s) for floats
 	void AddInFloat(int m = 1) { AddInlet(xlet::tp_float,m); }
 	//! Add inlet(s) for floats (with description)
@@ -142,9 +140,9 @@ public:
 	//! Add inlet(s) for bangs (with description)
 	void AddInBang(const char *desc,int m = 1) { AddInlet(xlet::tp_sym,m,desc); }
 	//! Add inlet(s) for lists
-	void AddInList(int m = 1) { AddInlet(xlet::tp_list,m); }  // via proxy
+	void AddInList(int m = 1) { AddInlet(xlet::tp_list,m); }  
 	//! Add inlet(s) for lists (with description)
-	void AddInList(const char *desc,int m = 1) { AddInlet(xlet::tp_list,m,desc); }  // via proxy
+	void AddInList(const char *desc,int m = 1) { AddInlet(xlet::tp_list,m,desc); }  
 	
 	//! Add outlet(s) for anythings
 	void AddOutAnything(int m = 1) { AddOutlet(xlet::tp_any,m); }
@@ -171,7 +169,7 @@ public:
 	//! Add outlet(s) for lists (with description)
 	void AddOutList(const char *desc,int m = 1) { AddOutlet(xlet::tp_list,m,desc); }
 
-	// this is deprecated... inlets and outlets are now set up automatically
+	//! \deprecated inlets and outlets are now set up automatically
 	bool SetupInOut() { return true; }
 
 	//!	@} FLEXT_C_IO_ADD 

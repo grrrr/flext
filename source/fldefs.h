@@ -50,7 +50,7 @@ FLEXT_REALHDR(NEW_CLASS, PARENT_CLASS)
 
 	The setup function is called after class creation. It corresponds to the
 	original PD "[object]_setup" function, apart from the
-	fact that all necessary class initializations have already been taken care by flext. 
+	fact that all necessary class initializations have already been taken care of by flext. 
 	The setup function can e.g. be used for a message to the console upon first creation of an object.
 */
 #define FLEXT_HEADER_S(NEW_CLASS, PARENT_CLASS, SETUPFUN)\
@@ -64,8 +64,12 @@ FLEXT_REALHDR_S(NEW_CLASS, PARENT_CLASS, SETUPFUN)
 
 // ====================================================================================
 
-/*!	\defgroup FLEXT_D_NEW Class instantiation
-	Makes an actual instance of a class.
+/*!	\defgroup FLEXT_D_INSTANCE Class instantiation
+*/
+
+
+/*!	\defgroup FLEXT_D_NEW Stand-alone class instantiation
+	Makes an actual instance of a stand-alone class.
 */
 
 /*!	\defgroup FLEXT_D_NEW_DSP Dsp class instantiation
@@ -263,8 +267,38 @@ REAL_NEW_3(NAME,NEW_CLASS, 1,1, TYPE1, TYPE2, TYPE3)
 
 
 
+/*!	\defgroup FLEXT_D_LIBRARY Definitions for library objects
+	@{ 
+*/
+
+/*! \brief Specify that to declare the library itself
+	\note If you have a library this is compulsory (to register all the objects of the library)
+*/
+#define FLEXT_LIB_SETUP(NAME,SETUPFUN) REAL_LIB_SETUP(NAME,SETUPFUN)
+
+/*! \brief Register an object in the library
+	\note This is used in the library setup function
+*/
+#define FLEXT_SETUP(cl) REAL_SETUP(cl,0)
+
+/*! \brief Register a DSP object in the library
+	\note This is used in the library setup function
+*/
+#define FLEXT_DSP_SETUP(cl) REAL_SETUP(cl,1)
+
+//! \deprecated
+#define FLEXT_TILDE_SETUP FLEXT_DSP_SETUP
+
+//! @} FLEXT_D_LIBRARY 
+
+
+//! @} FLEXT_D_INSTANCE
 
 // ====================================================================================
+
+/*!	\defgroup FLEXT_D_METHOD Declarations for flext methods
+	@{ 
+*/
 
 
 /*!	\defgroup FLEXT_D_CALLBACK Declare callbacks for class methods
@@ -360,7 +394,7 @@ FLEXT_CALLBACK_3(M_FUN,int,int,int)
 FLEXT_CALLBACK_1(M_FUN,t_symptr)
 
 
-// deprecated
+//! \deprecated
 #define FLEXT_CALLBACK_G FLEXT_CALLBACK_V
 
 //! @} FLEXT_D_CALLBACK
@@ -796,6 +830,8 @@ FLEXT_CALL_PRE(M_FUN)(this,ARG1,ARG2,ARG3,ARG4,ARG5)
 //! @} FLEXT_D_CALLMETHOD
 
 
+//! @} FLEXT_D_METHOD
+
 
 /*!	\defgroup FLEXT_D_ATTRIB Attribute definition
 	\note These have to reside inside the class declaration
@@ -903,6 +939,7 @@ static bool FLEXT_GET_PRE(FUN)(flext_base *c,AtomList *&arg) \
 
 //! @} FLEXT_DA_CALLGET
 
+
 /*!	\defgroup FLEXT_DA_CALLXFER Definition of attribute transfer handlers (both get and set)
 	@{ 
 */
@@ -938,6 +975,7 @@ FLEXT_CALLGET_E(GFUN,TP) FLEXT_CALLSET_E(SFUN,TP)
 FLEXT_CALLGET_V(GFUN) FLEXT_CALLSET_V(SFUN) 
 
 //! @} FLEXT_DA_CALLXFER
+
 
 /*!	\defgroup FLEXT_DA_ATTRSET Definition of implicite attribute set handlers
 	@{ 
@@ -1011,6 +1049,7 @@ static bool FLEXT_GET_PRE(VAR)(flext_base *c,AtomList *&arg) \
 
 //! @} FLEXT_DA_ATTRGET
 
+
 /*!	\defgroup FLEXT_DA_ATTRXFER Definition of implicite attribute transfer handlers (both get and set)
 	@{ 
 */
@@ -1045,12 +1084,11 @@ FLEXT_ATTRGET_(VAR,TP) FLEXT_ATTRSET_(VAR,TP)
 \
 FLEXT_ATTRGET_V(VAR) FLEXT_ATTRSET_V(VAR) 
 
+
 //! @} FLEXT_DA_ATTRXFER
 
-//! @} FLEXT_D_ATTRIB
 
-
-/*!	\defgroup FLEXT_D_ADDATTR	Announce object attributes 
+/*!	\defgroup FLEXT_D_ADDATTR Announce object attributes 
 	\note These can only be used at class construction time
 	@{ 
 */
@@ -1097,6 +1135,9 @@ AddAttrib(NAME,(bool (*)(flext_base *,int &))(FLEXT_GET_PRE(GFUN)),(bool (*)(fle
 AddAttrib(NAME,(bool (*)(flext_base *,int &))(FLEXT_GET_PRE(FUN)),(bool (*)(flext_base *,int &))(FLEXT_SET_PRE(FUN)))
 
 //! @} FLEXT_D_ADDATTR
+
+
+//! @} FLEXT_D_ATTRIB
 
 
 //!	@}  FLEXT_DEFS

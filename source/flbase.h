@@ -24,11 +24,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <pthread.h>
 #endif
 
-class flext_obj;
+class FLEXT_EXT flext_obj;
 
 // ----------------------------------------------------------------------------
-/*! \struct flext_hdr
-	\brief The obligatory PD or Max/MSP object header
+/*! \brief The obligatory PD or Max/MSP object header
 	\internal
 
     This is in a separate struct to assure that obj is the very first thing.  
@@ -39,8 +38,13 @@ class flext_obj;
 
 struct FLEXT_EXT flext_hdr
 {
+	/*!	\defgroup FLEXT_OBJHEADER Actual PD or Max/MSP object
+		\internal
+		@{ 
+	*/
+
     	/*! \brief The obligatory object header
-			MUST reside at memory offset 0 (no virtual table possible)
+			\note MUST reside at memory offset 0 (no virtual table possible)
 		*/
     	t_sigobj    	    obj;  
 
@@ -54,17 +58,16 @@ struct FLEXT_EXT flext_hdr
 		long curinlet;      
 #endif
 
-    	/*! \brief This points to flext object class 
-			This points to the actual polymorphic C++ class
+    	/*! \brief This points to the actual polymorphic C++ class
 		*/
         flext_obj           *data;
+
+	//!	@}  FLEXT_OBJHEADER
 };
 
 
 // ----------------------------------------------------------------------------
-/*! \class flext_obj
-	\brief The mother of base classes for all flext externs
-	\internal
+/*! \brief The mother of base classes for all flext external objects
 
     Each extern which is written in C++ needs to use the #defines at the
     end of this header file.  
@@ -77,6 +80,7 @@ struct FLEXT_EXT flext_hdr
     One of the defines like
     
     FLEXT_NEW(NEW_CLASS)
+	or
     FLEXT_NEW_2(NEW_CLASS, float, float)
     
     should be the first thing in your implementation file.
@@ -90,10 +94,79 @@ class FLEXT_EXT flext_obj:
 {
     public:
 
-		// --- overloading of new/delete memory allocation methods ----
-		// MaxMSP allows only 16K in overdrive mode!
+	/*!	\defgroup FLEXT_OBJCLASS Object base class
+		@{ 
+	*/
+// --- creation -------------------------------------------------------	
 
+	/*!	\defgroup FLEXT_O_CREATION Creation/Destruction functionality
+		@{ 
+	*/
+
+        //! Constructor
+    	flext_obj();
+
+    	//! Destructor
+    	virtual ~flext_obj() = 0;
+
+        /*! \brief Signal a construction problem
+			\note This should only be used in the constructor. Object creation will be aborted.
+		*/
+		void InitProblem() { init_ok = false; }
+
+		/*! \brief Enable/disable attribute procession (default = false)
+			\note Use that in the static class setup function (also library setup function)
+		*/
+		static void ProcessAttributes(bool attr) { process_attributes = attr; }
+
+		//! Virtual function called at creation time (but after the constructor)
+		// this also guarantees that there are no instances of flext_obj
+		virtual bool Init() = 0; 
+	
+		//! Virtual function called at destruction (before the destructor)
+		virtual void Exit() {}
+
+	//!	@}  FLEXT_O_CREATION
+
+// --- info -------------------------------------------------------	
+
+	/*!	\defgroup FLEXT_O_INFO Get various information
+		@{ 
+	*/
+
+        //! Get the object's canvas
+        t_canvas *thisCanvas() { return(m_canvas); }
+
+        //! Get the PD or Max/MSP object
+		t_sigobj *thisHdr() { return &x_obj->obj; }
+        //! Get the PD or Max/MSP object
+		const t_sigobj *thisHdr() const { return &x_obj->obj; }
+        //! Get the class name (as a string)
+		const char *thisName() const { return GetString(m_name); } 
+        //! Get the class name (as a symbol)
+		const t_symbol *thisNameSym() const { return m_name; } 
+
+#ifdef PD
+        //! Get the class pointer
+		t_class *thisClass() { return (t_class *)((t_object *)(x_obj))->te_g.g_pd; }
+#elif defined(MAXMSP)
+        //! Get the class pointer
+		t_class *thisClass() { return (t_class *)(((t_tinyobject *)x_obj)->t_messlist-1); } 
+#endif
+
+	//!	@}  FLEXT_O_INFO
+
+// --- memory -------------------------------------------------------	
+
+	/*!	\defgroup FLEXT_O_MEMORY Memory allocation functions
+		@{ 
+	*/
+
+		/*! Overloaded new memory allocation method
+			\warning MaxMSP (or MacOS) allows only 16K in overdrive mode!
+		*/
 		void *operator new(size_t bytes);
+		//! Overloaded delete method
 		void operator delete(void *blk);
 
 		#ifndef __MRC__ // doesn't allow new[] overloading?!
@@ -101,52 +174,37 @@ class FLEXT_EXT flext_obj:
 		void operator delete[](void *blk) { operator delete(blk); }
 		#endif
 
-		// these are aligned 
+		//! Get an aligned memory block
 		static void *NewAligned(size_t bytes,int bitalign = 128);
+		//! Free an aligned memory block
 		static void FreeAligned(void *blk);
 		
-		// ---------------------
-
-        //! Constructor
-    	flext_obj();
-
-    	//! Destructor
-    	virtual ~flext_obj() = 0;
+	//!	@}  FLEXT_O_MEMORY
     	
-        //! Get the object's canvas
-        t_canvas            *thisCanvas()        { return(m_canvas); }
-
-		t_sigobj *thisHdr() { return &x_obj->obj; }
-		const t_sigobj *thisHdr() const { return &x_obj->obj; }
-		const char *thisName() const { return GetString(m_name); } 
-		const t_symbol *thisNameSym() const { return m_name; } 
-
-#ifdef PD
-		t_class *thisClass() { return (t_class *)((t_object *)(x_obj))->te_g.g_pd; }
-#elif defined(MAXMSP)
-		t_class *thisClass() { return (t_class *)(((t_tinyobject *)x_obj)->t_messlist-1); } 
-#endif
-
-		void InitProblem() { init_ok = false; }
-
-		static void ProcessAttributes(bool attr) { process_attributes = attr; }
-
-		// this also guarantees that there are no instances of flext_obj
-		virtual bool Init() = 0; 
-		virtual void Exit() {}
-
 // --- help -------------------------------------------------------	
 
-		/*!	\defgroup FLEXT_C_HELP Flext help/assistance functionality
+	/*!	\defgroup FLEXT_O_HELP Help/assistance functionality
+		\remark This is still PD only
+		@{ 
+	*/
 
-			@{ 
+		/*! Define the help reference symbol for a class
+			\internal
 		*/
-
 		static void DefineHelp(t_class *c,const char *ref,const char *dir = NULL,bool addtilde = false);
+
+		//! Define the help reference symbol for a class
 		void DefineHelp(const char *ref,const char *dir = NULL,bool addtilde = false) { DefineHelp(thisClass(),ref,dir,addtilde); }
 
-		//!	@} 
+	//!	@} 
 
+
+// --- internal stuff -------------------------------------------------------	
+
+	/*!	\defgroup FLEXT_O_INTERNAL Internal stuff
+		\internal
+		@{ 
+	*/
 
     protected:    	
 		
@@ -178,6 +236,7 @@ class FLEXT_EXT flext_obj:
 		//! Hold object's name during construction
         static const t_symbol *m_holdname;  
 
+		//! Holder for attribute procession flag
 		static bool m_holdattr;
 
         //! The object's name in the patcher
@@ -186,14 +245,15 @@ class FLEXT_EXT flext_obj:
 		//! Check whether construction was successful
 		bool InitOk() const { return init_ok; }
 
-		//@{
-		//! Definitions for library objects
-
+		// Definitions for library objects
 		static void lib_init(const char *name,void setupfun(),bool attr);
 		static void obj_add(bool lib,bool dsp,bool attr,const char *idname,const char *names,void setupfun(t_class *),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...);
 		static flext_hdr *obj_new(const t_symbol *s,int argc,t_atom *argv);
 		static void obj_free(flext_hdr *o);
-		//@}
+
+	//!	@} FLEXT_O_INTERNAL
+
+	//!	@} FLEXT_OBJCLASS   	
 };
 
 
@@ -261,24 +321,22 @@ static inline NEW_CLASS *thisObject(void *c) { return FLEXT_CAST<NEW_CLASS *>(((
 // these can be used in library setup functions 
 // to register the individual objects in the library
 
-#define FLEXT_SETUP(cl) \
+#define REAL_SETUP_0(cl) \
 extern void cl##_setup(); \
 cl##_setup()  
 
-#define FLEXT_DSP_SETUP(cl) \
+#define REAL_SETUP_1(cl) \
 extern void cl##_tilde_setup(); \
 cl##_tilde_setup()  
 
-// deprecated
-#define FLEXT_TILDE_SETUP FLEXT_DSP_SETUP
-
+#define REAL_SETUP(cl,DSP) REAL_SETUP_##DSP(cl)
 
 // specify that to define the library itself
 
 #ifdef PD
-#define FLEXT_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT void NAME##_setup() { flext_obj::lib_init(#NAME,SETUPFUN,FLEXT_ATTRIBUTES); }
+#define REAL_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT void NAME##_setup() { flext_obj::lib_init(#NAME,SETUPFUN,FLEXT_ATTRIBUTES); }
 #else // MAXMSP
-#define FLEXT_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT int main() { flext_obj::lib_init(#NAME,SETUPFUN,FLEXT_ATTRIBUTES); return 0; }
+#define REAL_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT int main() { flext_obj::lib_init(#NAME,SETUPFUN,FLEXT_ATTRIBUTES); return 0; }
 #endif
 
 
@@ -311,8 +369,6 @@ cl##_tilde_setup()
 #define CALLBTYPE_float float
 #define FLEXTTYPE_t_float A_FLOAT
 #define CALLBTYPE_t_float t_float
-
-//* #define FLEXTTYPE_t_flint A_FLINT
 
 #ifdef PD
 #define FLEXTTYPE_int A_FLOAT

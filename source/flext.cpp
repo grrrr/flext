@@ -464,7 +464,6 @@ bool flext_base::SetupInOut()
 	return ok;
 }
 
-
 void flext_base::Setup(t_class *c)
 {
 #ifdef PD

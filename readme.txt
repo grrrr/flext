@@ -189,7 +189,8 @@ Restrictions in compatibility mode:
 
 Porting to new compilers/platforms:
 - enums must be int-sized
-- compiler must support RTTI and bool type
+- compiler must support bool type
+- no need of C++ exceptions or RTTI
 
 ----------------------------------------------------------------------------
 

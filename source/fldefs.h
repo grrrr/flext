@@ -35,12 +35,13 @@ FLEXT_REALHDR(NEW_CLASS, PARENT_CLASS)
 /*! \brief Flext class header with setup function
 	\param NEW_CLASS name of the current C++ class
 	\param PARENT_CLASS name of the base C++ class (e.g. flext_base or flext_dsp)
-	\param SETUPFUN setup function 
+	\param SETUPFUN setup function, of type "void (*setupfn)()"
 
 	The setup function is called after class creation. It corresponds to the
-	original PD "class_new" or Max/MSP "setup" functions respectively, apart from the
+	original "object_setup" function, apart from the
 	fact that all necessary class initializations have already been taken care by flext. 
 	The setup function can e.g. be used for a message to the console upon first creation of an object.
+	The object's t_class* data can be accessed by the static function thisClass()
 */
 #define FLEXT_HEADER_S(NEW_CLASS, PARENT_CLASS, SETUPFUN)\
 \

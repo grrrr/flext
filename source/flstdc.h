@@ -42,6 +42,7 @@ typedef t_float t_flint;
 
 #define A_NOTHING A_NULL
 #define A_FLINT A_FLOAT
+#define A_DEFFLINT A_DEFFLOAT
  
 #define atom_getflintarg atom_getfloatarg
 #define atom_getsymarg atom_getsymbolarg
@@ -97,6 +98,7 @@ typedef _outlet t_outlet;
 
 #define A_NULL A_NOTHING
 #define A_FLINT A_LONG
+#define A_DEFFLINT A_DEFLONG
 
 #define atom_getflintarg atom_getintarg
 #define atom_getsymbolarg atom_getsymarg
@@ -128,6 +130,10 @@ typedef _outlet t_outlet;
 #define outlet_symbol(o,s) outlet_anything(o,s,0,NULL)
 
 #endif
+
+
+typedef t_symbol *t_symtype;
+typedef t_gpointer *t_ptrtype;
 
 
 #ifdef _LOG

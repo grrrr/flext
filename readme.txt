@@ -57,7 +57,8 @@ see flext.h for the documented base classes
 Version history:
 
 0.1.2:
-- defines for callback-to-method functions
+- defines for callback-to-method functions and method setup
+- deprecated support for default arguments (A_DEFFLOAT and A_DEFSYMBOL)
 
 0.1.1:
 - documentation for flext.h
@@ -78,6 +79,9 @@ Version history:
 
 
 ----------------------------------------------------------------------------
+
+Notes:
+- no support for default object arguments (A_DEFFLOAT, A_DEFSYMBOL) -> use GIMME instead
 
 Platform restrictions:
 - Max does not allow external libraries -> only one FLEXT_NEW* or FLEXT_TILDE_NEW* in a project 

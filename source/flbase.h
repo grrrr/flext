@@ -156,14 +156,16 @@ static void cb_setup(t_class *classPtr);
 ////////////////////////////////////////
 
 // Shortcuts for PD/Max type arguments
-#define FLEXTTYPE_F A_FLOAT
 #define FLEXTTYPE_float A_FLOAT
-#define FLEXTTYPE_FI A_FLINT
+#define FLEXTTYPE_t_float A_FLOAT
 #define FLEXTTYPE_t_flint A_FLINT
-#define FLEXTTYPE_t_symbol A_SYMBOL
-#define FLEXTTYPE_t_pointer A_POINTER
+#define FLEXTTYPE_t_symtype A_SYMBOL
+#define FLEXTTYPE_t_ptrtype A_POINTER
 
 #define FLEXTTP(TP) FLEXTTYPE_ ## TP
+
+
+// No support for default arguments (A_DEFFLOAT,A_DEFSYMBOL), use GIMME instead
 
 //
 // NO ARGUMENTS
@@ -438,12 +440,23 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 }
 
 
+///////////////////////////////////////////////////////////
+// These should be the used in the class definition
+/////////////////////////////////////////////////////////
 
 #define FLEXT_CALLBACK(M_FUN) \
 static void cb_ ## M_FUN(t_class *c) { thisObject(c)->M_FUN(); }
 
 #define FLEXT_CALLBACK_G(M_FUN) \
-static void cb_ ## M_FUN(t_class *c,int argc,t_atom *argv) { thisObject(c)->M_FUN(argc,argv); }
+static void cb_ ## M_FUN(t_class *c,t_symbol *,int argc,t_atom *argv) { thisObject(c)->M_FUN(argc,argv); }
+
+// converting t_flint to bool
+#define FLEXT_CALLBACK_B(M_FUN) \
+static void cb_ ## M_FUN(t_class *c,t_flint arg1) { thisObject(c)->M_FUN(arg1 != 0); }
+
+// converting t_flint to enum
+#define FLEXT_CALLBACK_E(M_FUN,TPE) \
+static void cb_ ## M_FUN(t_class *c,t_flint arg1) { thisObject(c)->M_FUN((TPE)(int)arg1); }
 
 #define FLEXT_CALLBACK_1(M_FUN,TP1) \
 static void cb_ ## M_FUN(t_class *c,TP1 arg1) { thisObject(c)->M_FUN(arg1); }
@@ -461,39 +474,63 @@ static void cb_ ## M_FUN(t_class *c,TP1 arg1,TP2 arg2,TP3 arg3.TP4 arg4) { thisO
 static void cb_ ## M_FUN(t_class *c,TP1 arg1,TP2 arg2,TP3 arg3.TP4 arg4,TP5 arg5) { thisObject(c)->M_FUN(arg1,arg2,arg3,arg4,arg5); }
 
 
+///////////////////////////////////////////////////////////
+// These should be the used in the class' cb_setup function
+///////////////////////////////////////////////////////////
+
+// add handler for bang into leftmost inlet
 #define FLEXT_ADDBANG(CLASS,M_FUN) \
 add_bang(CLASS,cb_ ## M_FUN)	
 
+// add handler for loadbang 
 #define FLEXT_ADDLOADBANG(CLASS,M_FUN) \
 add_loadbang(CLASS,cb_ ## M_FUN)	
 
+// add handler for float into leftmost inlet
 #define FLEXT_ADDFLOAT(CLASS,M_FUN) \
 add_float(CLASS,cb_ ## M_FUN)	
 
-#define FLEXT_ADDFLOAT_N(CLASS,M_FUN,N) \
+// add handler for float inlet
+#define FLEXT_ADDFLOAT_N(CLASS,N,M_FUN) \
 add_floatn(CLASS,cb_ ## M_FUN,N)	
 
-#define FLEXT_ADDFLINT_N(CLASS,M_FUN,N) \
+// add handler for float/int inlet
+#define FLEXT_ADDFLINT_N(CLASS,N,M_FUN) \
 add_flintn(CLASS,cb_ ## M_FUN,N)	
 
+// add handler for method with no args
 #define FLEXT_ADDMETHOD(CLASS,M_NAME,M_FUN) \
 add_method(CLASS,cb_ ## M_FUN,M_NAME)	
 
+// add handler for method with gimme
 #define FLEXT_ADDMETHOD_G(CLASS,M_NAME,M_FUN) \
 add_methodG(CLASS,cb_ ## M_FUN,M_NAME)
 
+// add handler for method with 1 boolean arg
+#define FLEXT_ADDMETHOD_B(CLASS,M_NAME,M_FUN) \
+add_method1(CLASS,cb_ ## M_FUN,M_NAME,FLEXTTP(t_flint))
+
+// add handler for method with 1 enum type arg
+#define FLEXT_ADDMETHOD_E(CLASS,M_NAME,M_FUN) \
+add_method1(CLASS,cb_ ## M_FUN,M_NAME,FLEXTTP(t_flint))
+
+// add handler for method with 1 arg
 #define FLEXT_ADDMETHOD_1(CLASS,M_NAME,M_FUN,TP1) \
 add_method1(CLASS,cb_ ## M_FUN,M_NAME,FLEXTTP(TP1))	
 
+// add handler for method with 2 args
 #define FLEXT_ADDMETHOD_2(CLASS,M_NAME,M_FUN,TP1,TP2) \
 add_method2(CLASS,cb_ ## M_FUN,M_NAME,FLEXTTP(TP1),FLEXTTP(TP2))
 
+// add handler for method with 3 args
 #define FLEXT_ADDMETHOD_3(CLASS,M_NAME,M_FUN,TP1,TP2,TP3) \
 add_method3(CLASS,cb_ ## M_FUN,M_NAME,FLEXTTP(TP1),FLEXTTP(TP2),FLEXTTP(TP3))
 
+// add handler for method with 4 args
 #define FLEXT_ADDMETHOD_4(CLASS,M_NAME,M_FUN,TP1,TP2,TP3,TP4) \
 add_method4(CLASS,cb_ ## M_FUN,M_NAME,FLEXTTP(TP1),FLEXTTP(TP2),FLEXTTP(TP3),FLEXTTP(TP4))
 
+// add handler for method with 5 args
 #define FLEXT_ADDMETHOD_5(CLASS,M_NAME,M_FUN,TP1,TP2,TP3,TP4,TP5) \
 add_method5(CLASS,cb_ ## M_FUN,M_NAME,FLEXTTP(TP1),FLEXTTP(TP2),FLEXTTP(TP3),FLEXTTP(TP4),FLEXTTP(TP5))
 

@@ -20,7 +20,7 @@ Version history:
 - support exceptions for setup functions, object creation and destruction, method handling
 - small fixes for MSVC6 incompatibilites
 - fixes for Max 4.5 headers
-- removed Mach-O/CFM glue stuff again....Max has gone Mach-O in the meantime...
+- removed Mach-O/CFM glue stuff again and added makefiles for Max/MachO
 - in flext::StopThread don't wait for thread to have stopped!
 
 0.4.6:

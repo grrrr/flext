@@ -139,9 +139,9 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
         t_canvas *thisCanvas() const { return m_canvas; }
 
         //! Get the PD or Max/MSP object
-		t_sigobj *thisHdr() { return &x_obj->obj; }
+		t_sigobj *thisHdr() { FLEXT_ASSERT(x_obj); return &x_obj->obj; }
         //! Get the PD or Max/MSP object
-		const t_sigobj *thisHdr() const { return &x_obj->obj; }
+		const t_sigobj *thisHdr() const { FLEXT_ASSERT(x_obj); return &x_obj->obj; }
         //! Get the class name (as a string)
 		const char *thisName() const { return GetString(m_name); } 
         //! Get the class name (as a symbol)
@@ -150,9 +150,9 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 
         //! Get the class pointer
 #if FLEXT_SYS == FLEXT_SYS_PD
-		t_class *thisClass() const { return (t_class *)((t_object *)(x_obj))->te_g.g_pd; }
+		t_class *thisClass() const { FLEXT_ASSERT(x_obj); return (t_class *)((t_object *)(x_obj))->te_g.g_pd; }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-		t_class *thisClass() const { return (t_class *)(((t_tinyobject *)x_obj)->t_messlist-1); } 
+		t_class *thisClass() const { FLEXT_ASSERT(x_obj); return (t_class *)(((t_tinyobject *)x_obj)->t_messlist-1); } 
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
 		t_class *thisClass() const { return fts_object_get_class((fts_object_t *)thisHdr()); }
 #else

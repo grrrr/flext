@@ -170,7 +170,19 @@ void flext_obj::lib_init(const char *name,void setupfun(),bool attr)
 		sizeof(flext_hdr),NULL,A_GIMME,A_NULL);
 #endif
 	process_attributes = attr;
-	setupfun();
+
+    try {
+	    setupfun();
+    }
+    catch(std::exception &x) {
+        error("%s - Exception at library setup: %s",name,x.what());
+    }
+    catch(const char *txt) {
+    	error("%s - Exception at library setup: %s",name,txt);
+    }
+    catch(...) {
+    	error("%s - Unknown exception at library setup",name);
+    }
 }
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
@@ -287,8 +299,19 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 #endif	
 	}
 
-	// call class setup function
-    setupfun(clid);
+    try {
+	    // call class setup function
+        setupfun(clid);
+    }
+    catch(std::exception &x) {
+        error("%s - Exception while initializing class: %s",idname,x.what());
+    }
+    catch(const char *txt) {
+    	error("%s - Exception while initializing class: %s",idname,txt);
+    }
+    catch(...) {
+    	error("%s - Unknown exception while initializing class",idname);
+    }
 }
 	
 
@@ -370,65 +393,81 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 					error("%s: Creation arguments do not match",GetString(s));
 		}
 
+
 		if(ok) {
-			t_classid clid;
+            try {
+			    t_classid clid;
 
 #if FLEXT_SYS == FLEXT_SYS_PD
-			clid = lo->clss;
-			obj = (flext_hdr *)::pd_new(lo->clss);
+			    clid = lo->clss;
+			    obj = (flext_hdr *)::pd_new(lo->clss);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-			clid = lo;
-			obj = (flext_hdr *)::newobject(lo->clss);
+			    clid = lo;
+			    obj = (flext_hdr *)::newobject(lo->clss);
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
-			clid = lo->clss;
+			    clid = lo->clss;
 #else
 #error
 #endif
 
-			flext_obj::m_holder = obj;
-			flext_obj::m_holdname = s;
-			flext_obj::m_holdattr = lo->attr;
+                flext_obj::m_holder = obj;
+			    flext_obj::m_holdname = s;
+			    flext_obj::m_holdattr = lo->attr;
 
-			// get actual flext object (newfun calls "new flext_obj()")
-			if(lo->argc >= 0)
-				obj->data = lo->newfun(lo->argc,args); 
-			else
-				obj->data = lo->newfun(argc,argv); 
-	
-			flext_obj::m_holder = NULL;
-			flext_obj::m_holdname = NULL;
-			flext_obj::m_holdattr = false;
+			    // get actual flext object (newfun calls "new flext_obj()")
+			    if(lo->argc >= 0)
+				    obj->data = lo->newfun(lo->argc,args); 
+			    else
+				    obj->data = lo->newfun(argc,argv); 
+    	
+			    flext_obj::m_holder = NULL;
+			    flext_obj::m_holdname = NULL;
+			    flext_obj::m_holdattr = false;
 
-			ok = obj->data &&
-				// check constructor exit flag
-				obj->data->InitOk();
+			    ok = obj->data &&
+				    // check constructor exit flag
+				    obj->data->InitOk();
 
-			if(ok) {
-				if(lo->attr) {
-					// DON'T convert eventual patcher args here... this is done by the actual attribute stuff
-					// so that the initial $- or #- be preserved!
+			    if(ok) {
+				    if(lo->attr) {
+					    // DON'T convert eventual patcher args here... this is done by the actual attribute stuff
+					    // so that the initial $- or #- be preserved!
 
-					// store creation args for attribute initialization (inside flext_base::Init())
-					flext_obj::m_holdaargc = _argc_-argc;
-					flext_obj::m_holdaargv = argv+argc;
-				}
-				else {
-					flext_obj::m_holdaargc = 0;
-					flext_obj::m_holdaargv = NULL;
-				}
+					    // store creation args for attribute initialization (inside flext_base::Init())
+					    flext_obj::m_holdaargc = _argc_-argc;
+					    flext_obj::m_holdaargv = argv+argc;
+				    }
+				    else {
+					    flext_obj::m_holdaargc = 0;
+					    flext_obj::m_holdaargv = NULL;
+				    }
 
-				// call virtual init function 
-				// here, inlets, outlets, methods and attributes can be set up
-				ok = obj->data->Init();
+				    // call virtual init function 
+				    // here, inlets, outlets, methods and attributes can be set up
+				    ok = obj->data->Init();
 
-				// call another virtual init function 
-				if(ok) ok = obj->data->Finalize();
+				    // call another virtual init function 
+				    if(ok) ok = obj->data->Finalize();
 
-				flext_obj::m_holdaargc = 0;
-				flext_obj::m_holdaargv = NULL;
-			}
+				    flext_obj::m_holdaargc = 0;
+				    flext_obj::m_holdaargv = NULL;
+			    }
 
-			if(!ok) { 
+            } //try
+            catch(std::exception &x) {
+                error("%s - Exception while creating object: %s",GetString(s),x.what());
+                ok = false;
+            }
+            catch(const char *txt) {
+    		    error("%s - Exception while creating object: %s",GetString(s),txt);
+                ok = false;
+            }
+            catch(...) {
+    		    error("%s - Unknown exception while creating object",GetString(s));
+                ok = false;
+            }
+
+            if(!ok) { 
 				// there was some init error, free object
 				lo->freefun(obj); 
 				obj = NULL; 
@@ -460,11 +499,22 @@ void flext_obj::obj_free(flext_hdr *h)
 	libclass *lcl = FindName(name);
 
 	if(lcl) {
-		// call virtual exit function
-		hdr->data->Exit();
+        try {
+		    // call virtual exit function
+		    hdr->data->Exit();
 
-		// now call object destructor and deallocate
-		lcl->freefun(hdr);
+		    // now call object destructor and deallocate
+		    lcl->freefun(hdr);
+        } //try
+        catch(std::exception &x) {
+            error("%s - Exception while destroying object: %s",GetString(name),x.what());
+        }
+        catch(const char *txt) {
+    		error("%s - Exception while destroying object: %s",GetString(name),txt);
+        }
+        catch(...) {
+    		error("%s - Unknown exception while destroying object",GetString(name));
+        }
 	}
 #ifdef FLEXT_DEBUG
 	else 

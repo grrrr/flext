@@ -167,86 +167,98 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,const t_atom 
     curtag = s;
 
 //  post("methodmain inlet:%i args:%i symbol:%s",inlet,argc,s?GetString(s):"");
-    
+
     bool ret = FindMeth(inlet,s,argc,argv);
     if(ret) goto end;
 
+    try {
+
 #if FLEXT_SYS == FLEXT_SYS_MAX
-    // If float message is not explicitly handled: try int handler instead
-    if(argc == 1 && s == sym_float && !trap) {
-        t_atom fl;
-        SetInt(fl,GetAInt(argv[0]));
-        trap = true;
-        ret = m_methodmain(inlet,sym_int,1,&fl);
-        trap = false;
-    }
-    if(ret) goto end;
-    
-    // If int message is not explicitly handled: try float handler instead
-    if(argc == 1 && s == sym_int && !trap) {
-        t_atom fl;
-        SetFloat(fl,GetAFloat(argv[0]));
-        trap = true;
-        ret = m_methodmain(inlet,sym_float,1,&fl);
-        trap = false;
-    }
-    if(ret) goto end;
+        // If float message is not explicitly handled: try int handler instead
+        if(argc == 1 && s == sym_float && !trap) {
+            t_atom fl;
+            SetInt(fl,GetAInt(argv[0]));
+            trap = true;
+            ret = m_methodmain(inlet,sym_int,1,&fl);
+            trap = false;
+        }
+        if(ret) goto end;
+        
+        // If int message is not explicitly handled: try float handler instead
+        if(argc == 1 && s == sym_int && !trap) {
+            t_atom fl;
+            SetFloat(fl,GetAFloat(argv[0]));
+            trap = true;
+            ret = m_methodmain(inlet,sym_float,1,&fl);
+            trap = false;
+        }
+        if(ret) goto end;
 #endif
-    
-    // If float or int message is not explicitly handled: try list handler instead
-    if(!trap && argc == 1 && (s == sym_float
+        
+        // If float or int message is not explicitly handled: try list handler instead
+        if(!trap && argc == 1 && (s == sym_float
 #if FLEXT_SYS == FLEXT_SYS_MAX
-        || s == sym_int
+            || s == sym_int
 #endif
-    )) {
-        t_atom list;
-        if(s == sym_float) 
-            SetFloat(list,GetFloat(argv[0]));
+        )) {
+            t_atom list;
+            if(s == sym_float) 
+                SetFloat(list,GetFloat(argv[0]));
 #if FLEXT_SYS == FLEXT_SYS_MAX
-        else if(s == sym_int)
-            SetInt(list,GetInt(argv[0]));
+            else if(s == sym_int)
+                SetInt(list,GetInt(argv[0]));
 #endif
 
-        trap = true;
-        ret = m_methodmain(inlet,sym_list,1,&list);
-        trap = false;
-    }
-    if(ret) goto end;
+            trap = true;
+            ret = m_methodmain(inlet,sym_list,1,&list);
+            trap = false;
+        }
+        if(ret) goto end;
 
-    // If symbol message (pure anything without args) is not explicitly handled: try list handler instead
-    if(!trap && argc == 0) {
-        t_atom list;
-        SetSymbol(list,s);
-        trap = true;
-        ret = m_methodmain(inlet,sym_list,1,&list);
-        trap = false;
-    }
-    if(ret) goto end;
+        // If symbol message (pure anything without args) is not explicitly handled: try list handler instead
+        if(!trap && argc == 0) {
+            t_atom list;
+            SetSymbol(list,s);
+            trap = true;
+            ret = m_methodmain(inlet,sym_list,1,&list);
+            trap = false;
+        }
+        if(ret) goto end;
 
-    // if distmsgs is switched on then distribute list elements over inlets (Max/MSP behavior)
-    if(distmsgs && !trap && inlet == 0 && s == sym_list && insigs <= 1) {
-        int i = incnt;
-        if(i > argc) i = argc;
-        for(--i; i >= 0; --i) { // right to left distribution
-            const t_symbol *sym = NULL;
-            if(IsFloat(argv[i])) sym = sym_float;
-            else if(IsInt(argv[i])) sym = sym_int;
-            else if(IsSymbol(argv[i])) sym = sym_symbol;
+        // if distmsgs is switched on then distribute list elements over inlets (Max/MSP behavior)
+        if(distmsgs && !trap && inlet == 0 && s == sym_list && insigs <= 1) {
+            int i = incnt;
+            if(i > argc) i = argc;
+            for(--i; i >= 0; --i) { // right to left distribution
+                const t_symbol *sym = NULL;
+                if(IsFloat(argv[i])) sym = sym_float;
+                else if(IsInt(argv[i])) sym = sym_int;
+                else if(IsSymbol(argv[i])) sym = sym_symbol;
 #if FLEXT_SYS == FLEXT_SYS_PD
-            else if(IsPointer(argv[i])) sym = sym_pointer;  // can pointer atoms occur here?
+                else if(IsPointer(argv[i])) sym = sym_pointer;  // can pointer atoms occur here?
 #endif
-            if(sym) {
-                trap = true;
-                m_methodmain(i,sym,1,argv+i);           
-                trap = false;
+                if(sym) {
+                    trap = true;
+                    m_methodmain(i,sym,1,argv+i);           
+                    trap = false;
+                }
             }
+            
+            ret = true;
         }
         
-        ret = true;
+        if(!ret && !trap) ret = m_method_(inlet,s,argc,argv);
     }
-    
-    if(!ret && !trap) ret = m_method_(inlet,s,argc,argv);
-    
+    catch(std::exception &x) {
+        error("%s - Exception while processing method: %s",thisName(),x.what());
+    }
+    catch(const char *txt) {
+    	error("%s - Exception while processing method: %s",thisName(),txt);
+    }
+    catch(...) {
+    	error("%s - Unknown exception while processing method",thisName());
+    }
+
 end:
     curtag = NULL;
 

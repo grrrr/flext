@@ -191,6 +191,7 @@ public:
 	V add_meth_one(I inlet,const C *tag,methfun fun,metharg tp,...); 
 //	V add_meth_ixd(I inlet,const C *tag,methfun fun,metharg tp,...); 
 
+/*
 	V add_meth(I inlet,V (*m)(flext_base *,I argc,t_atom *argv)) { add_meth_one(inlet,"list",(methfun)m,a_gimme,a_null); }
 	V add_meth(I inlet,const C *tag,V (*m)(flext_base *)) { add_meth_one(inlet,tag,(methfun)m,a_null); }  // pure method
 	V add_meth(I inlet,V (*m)(flext_base *,t_symbol *s,I argc,t_atom *argv)) { add_meth_one(inlet,"anything",(methfun)m,a_gimme,a_null); } // anything
@@ -206,7 +207,23 @@ public:
 	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,t_symbol *s)) { add_meth_one(inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
 	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,F)) { add_meth_one(inlet,tag,(methfun)m,a_float,a_null); }  // method+float
 	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,I)) { add_meth_one(inlet,tag,(methfun)m,a_int,a_null); } // method+int
+*/
 
+	V add_meth(I inlet,V (*m)(flext_base *,I argc,t_atom *argv)) { add_meth_one(inlet,"list",(methfun)m,a_gimme,a_null); }
+	V add_meth(I inlet,const C *tag,V (*m)(flext_base *)) { add_meth_one(inlet,tag,(methfun)m,a_null); }  // pure method
+	V add_meth(I inlet,V (*m)(flext_base *,t_symbol *s,I argc,t_atom *argv)) { add_meth_one(inlet,"anything",(methfun)m,a_gimme,a_null); } // anything
+	V add_meth(I inlet,V (*m)(flext_base *,t_symbol *s)) { add_meth_one(inlet,"symbol",(methfun)m,a_symbol,a_null); } // anything
+	V add_meth(I inlet,V (*m)(flext_base *,F &)) { add_meth_one(inlet,"float",(methfun)m,a_float,a_null); }  // single float
+	V add_meth(I inlet,V (*m)(flext_base *,F &,F &)) { add_meth_one(inlet,"list",(methfun)m,a_float,a_float,a_null); } // list of 2 floats
+	V add_meth(I inlet,V (*m)(flext_base *,F &,F &,F &)) { add_meth_one(inlet,"list",(methfun)m,a_float,a_float,a_float,a_null); } // list of 3 floats
+	V add_meth(I inlet,V (*m)(flext_base *,I &)) { add_meth_one(inlet,"int",(methfun)m,a_int,a_null); }  // single float
+	V add_meth(I inlet,V (*m)(flext_base *,I &,I &)) { add_meth_one(inlet,"list",(methfun)m,a_int,a_int,a_null); } // list of 2 floats
+	V add_meth(I inlet,V (*m)(flext_base *,I &,I &,I &)) { add_meth_one(inlet,"list",(methfun)m,a_int,a_int,a_int,a_null); } // list of 3 floats
+	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,I argc,t_atom *argv)) { add_meth_one(inlet,tag,(methfun)m,a_gimme,a_null); } // method+gimme
+//	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,BL b)) { add_meth_one(inlet,tag,(methfun)m,a_bool,a_gimme,a_null); } // method+boolean
+	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,t_symbol *s)) { add_meth_one(inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
+	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,F &)) { add_meth_one(inlet,tag,(methfun)m,a_float,a_null); }  // method+float
+	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,I &)) { add_meth_one(inlet,tag,(methfun)m,a_int,a_null); } // method+int
 
 // --- various symbols --------------------------------------------
 
@@ -460,26 +477,26 @@ static void cb_ ## M_FUN(flext_base *c,int argc,t_atom *argv) { dynamic_cast<thi
 
 // converting t_flint to bool
 #define FLEXT_CALLBACK_B(M_FUN) \
-static void cb_ ## M_FUN(flext_base *c,int arg1) { dynamic_cast<thisType *>(c)->M_FUN(arg1 != 0); }
+static void cb_ ## M_FUN(flext_base *c,int &arg1) { dynamic_cast<thisType *>(c)->M_FUN(arg1 != 0); }
 
 // converting t_flint to enum
 #define FLEXT_CALLBACK_E(M_FUN,TPE) \
-static void cb_ ## M_FUN(flext_base *c,int arg1) { dynamic_cast<thisType *>(c)->M_FUN((TPE)(int)arg1); }
+static void cb_ ## M_FUN(flext_base *c,int &arg1) { dynamic_cast<thisType *>(c)->M_FUN((TPE)(int)arg1); }
 
 #define FLEXT_CALLBACK_1(M_FUN,TP1) \
-static void cb_ ## M_FUN(flext_base *c,TP1 arg1) { dynamic_cast<thisType *>(c)->M_FUN(arg1); }
+static void cb_ ## M_FUN(flext_base *c,TP1 &arg1) { dynamic_cast<thisType *>(c)->M_FUN(arg1); }
 
 #define FLEXT_CALLBACK_2(M_FUN,TP1,TP2) \
-static void cb_ ## M_FUN(flext_base *c,TP1 arg1,TP2 arg2) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2); }
+static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2); }
 
 #define FLEXT_CALLBACK_3(M_FUN,TP1,TP2,TP3) \
-static void cb_ ## M_FUN(flext_base *c,TP1 arg1,TP2 arg2,TP3 arg3) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3); }
+static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3); }
 
 #define FLEXT_CALLBACK_4(M_FUN,TP1,TP2,TP3,TP4) \
-static void cb_ ## M_FUN(flext_base *c,TP1 arg1,TP2 arg2,TP3 arg3.TP4 arg4) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4); }
+static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4); }
 
 #define FLEXT_CALLBACK_5(M_FUN,TP1,TP2,TP3,TP4,TP5) \
-static void cb_ ## M_FUN(flext_base *c,TP1 arg1,TP2 arg2,TP3 arg3.TP4 arg4,TP5 arg5) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4,arg5); }
+static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,TP5 &arg5) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4,arg5); }
 
 
 // Shortcuts for method arguments

@@ -465,11 +465,12 @@ typedef V (*methfun_0)(flext_base *c);
 #define MAXARGS 5
 
 // the args MUST all have 32 bits (float, t_symbol *)
-typedef V (*methfun_1)(flext_base *c,I);
-typedef V (*methfun_2)(flext_base *c,I,I);
-typedef V (*methfun_3)(flext_base *c,I,I,I);
-typedef V (*methfun_4)(flext_base *c,I,I,I,I);
-typedef V (*methfun_5)(flext_base *c,I,I,I,I,I);
+// the reference is needed for PPC processors
+typedef V (*methfun_1)(flext_base *c,I &);
+typedef V (*methfun_2)(flext_base *c,I &,I &);
+typedef V (*methfun_3)(flext_base *c,I &,I &,I &);
+typedef V (*methfun_4)(flext_base *c,I &,I &,I &,I &);
+typedef V (*methfun_5)(flext_base *c,I &,I &,I &,I &,I &);
 
 
 BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
@@ -505,7 +506,6 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 					switch(m->args[ix]) {
 					case a_float: {
 						ASSERT(sizeof(F) == sizeof(I));
-
 						F a;
 						if(is_float(argv[ix])) iargs[ix] = *(I *)&(a = get_float(argv[ix]));
 						else if(is_int(argv[ix])) iargs[ix] = *(I *)&(a = get_int(argv[ix]));
@@ -670,7 +670,13 @@ V flext_base::add_meth_ixd(I inlet,const C *tag,methfun fun,metharg tp,...)
 
 V flext_base::geta_string(const t_atom &a,C *buf,I szbuf)
 { 
+#ifdef PD
 	atom_string(const_cast<t_atom *>(&a),buf,szbuf);
+#else
+	if(is_symbol(a)) strcpy(buf,get_string(a));
+	else if(is_float(a)) sprintf(buf,"%f",get_float(a));
+	else if(is_int(a)) sprintf(buf,"%i",get_int(a));
+#endif
 }  
 
 

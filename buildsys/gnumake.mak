@@ -18,15 +18,15 @@ include $(PKGINFO)
 # check variables
 
 ifndef BUILDCLASS
-	error BUILDCLASS must be specified in $(PKGINFO)
+BUILDCLASS=ext
 endif
 
 ifndef BUILDMODE
-	error BUILDMODE must be specified in $(PKGINFO)
+BUILDMODE=release
 endif
 
 ifndef BUILDTYPE
-	error BUILDTYPE must be specified in $(PKGINFO)
+BUILDTYPE=single
 endif
 
 ##############################
@@ -55,7 +55,7 @@ SYSDEFAULT=$(UBUILDPATH)$(PLATFORM)/$(RTSYS)/config-$(COMPILER).def
 
 OPTIONS=-f $(UBUILDPATH)gnumake-sub.mak \
 	PLATFORM=$(PLATFORM) RTSYS=$(RTSYS) COMPILER=$(COMPILER) \
-	BUILDPATH=$(UBUILDPATH) PKGINFO=$(PKGINFO)
+	BUILDPATH=$(UBUILDPATH) PKGINFO=$(PKGINFO) BUILDCLASS=$(BUILDCLASS)
 
 ###############################################
 

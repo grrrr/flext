@@ -18,15 +18,15 @@ PKGINFO=package.txt
 # check variables
 
 !ifndef BUILDCLASS
-!error BUILDCLASS must be specified in $(PKGINFO)
+BUILDCLASS=ext
 !endif
 
 !ifndef BUILDMODE
-!error BUILDMODE must be specified in $(PKGINFO)
+BUILDMODE=release
 !endif
 
 !ifndef BUILDTYPE
-!error BUILDTYPE must be specified in $(PKGINFO)
+BUILDTYPE=single
 !endif
 
 ##############################
@@ -46,7 +46,7 @@ SYSDEFAULT=$(BUILDPATH)$(PLATFORM)\$(RTSYS)\config-$(COMPILER).def
 
 OPTIONS=-f $(BUILDPATH)bmake-sub.mak -N \
 	PLATFORM=$(PLATFORM) RTSYS=$(RTSYS) COMPILER=$(COMPILER) \
-	BUILDPATH=$(BUILDPATH) PKGINFO=$(PKGINFO)
+	BUILDPATH=$(BUILDPATH) PKGINFO=$(PKGINFO) BUILDCLASS=$(BUILDCLASS)
 
 ###############################################
 

@@ -39,8 +39,8 @@ $(OBJPATH):
 $(TARGETPATH):
 	-mkdir -p $(TARGETPATH)
 
-$(PRECOMDST) : $(PRECOMSRC)
-	$(CXX) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
+$(PRECOMDST) : $(PRECOMSRC) $(patsubst %,$(SRCDIR)/%,$(HDRS))
+	$(CXX) -c $(CFLAGS) $(DEFS) $(INCPATH) $(PRECOMSRC) -o $@
 
 $(OBJPATH)/%.opp : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS) $(DEFS) $(PRECOMINC) $(INCPATH) $< -o $@

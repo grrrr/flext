@@ -29,8 +29,8 @@ PRECOMDST=$(OBJPATH)/$(notdir $(PRECOMSRC)).gch
 PRECOMINC = -include $(OBJPATH)/$(notdir $(PRECOMSRC))
 endif
 
-$(PRECOMDST): $(PRECOMSRC)
-	$(CXX) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
+$(PRECOMDST): $(PRECOMSRC) $(patsubst %,$(SRCDIR)/%,$(HDRS))
+	$(CXX) -c $(CFLAGS) $(DEFS) $(INCPATH) $(PRECOMSRC) -o $@
 
 $(OBJPATH)/%.opp : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS) $(DEFS) $(PRECOMINC) $(INCPATH) $< -o $@

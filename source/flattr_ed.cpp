@@ -145,6 +145,42 @@ void flext_base::SetAttrEditor(t_classid c)
 			"set $dst [expr $$src]\n"
 		"}\n"
 
+		"proc flext_textcopy {id idtxt var} {\n"
+			"global $var\n"
+            "set $var [eval $idtxt get 0.0 end]\n"
+            "destroy $id\n"
+		"}\n"
+
+		"proc flext_textzoom {id var title attr edit} {\n"
+			"global $var\n"
+        	"toplevel $id.w\n"
+            "wm title $id.w [concat $title \" @\" $attr]\n"
+//            "wm iconname $w \"text\"\n"
+//            "positionWindow $id.w\n"
+
+            "frame $id.w.buttons\n"
+            "pack $id.w.buttons -side bottom -fill x -pady 2m\n"
+
+//            "if { $edit != 0 } {set st normal} {set st disabled}\n"
+            "text $id.w.text -relief sunken -bd 2 -yscrollcommand \"$id.w.scroll set\" -setgrid 1 -width 80 -height 20\n"  //  -state $st
+            "scrollbar $id.w.scroll -command \"$id.w.text yview\"\n"
+            "pack $id.w.scroll -side right -fill y\n"
+            "pack $id.w.text -expand yes -fill both\n"
+
+			"if { $edit != 0 } {\n"
+                "button $id.w.buttons.ok -text OK -command \"flext_textcopy $id.w $id.w.text $var\"\n"
+                "pack $id.w.buttons.ok -side left -expand 1\n"
+//    			"bind $id.w {<Shift-KeyPress-Return>} \"flext_textcopy $id.w $id.w.text $var\"\n"
+    		"}\n"
+
+            "button $id.w.buttons.cancel -text Cancel -command \"destroy $id.w\"\n"
+            "pack $id.w.buttons.cancel -side left -expand 1\n"
+			"bind $id.w {<KeyPress-Escape>} \"destroy $id.w\"\n"
+
+            "$id.w.text insert 0.0 [expr $$var]\n"
+            "$id.w.text mark set insert 0.0\n"
+        "}\n"
+
 		"proc pdtk_flext_dialog {id title attrlist} {\n"
 				"set vid [string trimleft $id .]\n"
 				"set alen [expr [llength $attrlist] / 6 ]\n"
@@ -154,6 +190,14 @@ void flext_base::SetAttrEditor(t_classid c)
 				"wm protocol $id WM_DELETE_WINDOW [concat flext_cancel $id]\n"
 
 				"set row 0\n"
+
+                // set grow parameters
+                "grid columnconfigure $id 0 -weight 1\n"  // label
+                "grid columnconfigure $id {1 4} -weight 3\n" // value entry
+                "grid columnconfigure $id {2 3} -weight 0\n"  // copy buttons
+                "grid columnconfigure $id {5 6 7} -weight 0\n" // radio buttons
+
+//                "grid rowconfigure $id {0 1 2} -weight 0\n"
 
 				// set column labels
 				"label $id.label -text {attribute} -height 2 -font {Helvetica 9 bold}\n"
@@ -180,7 +224,9 @@ void flext_base::SetAttrEditor(t_classid c)
 
 				"set ix 1\n"
 				"foreach {an av ai atp asv afl} $attrlist {\n"
-					// get attribute name
+                    "grid rowconfigure $id $row -weight 0\n"
+
+                    // get attribute name
 					"set var_attr_name [concat [concat var_name_$ix]_$vid ]\n"
 					"global $var_attr_name\n"
 					"set $var_attr_name $an\n"
@@ -233,7 +279,9 @@ void flext_base::SetAttrEditor(t_classid c)
 							"}\n"
 							"4 - 5 {\n"  // list or unknown
 								"entry $id.init-$ix -textvariable $var_attr_init\n"
+                                "bind $id.init-$ix {<Control-Button-1>} \" flext_textzoom $id.init-$ix $var_attr_init { $title } $an 1\"\n"
 								"entry $id.val-$ix -textvariable $var_attr_val\n"
+                                "bind $id.val-$ix {<Control-Button-1>} \" flext_textzoom $id.val-$ix $var_attr_val { $title } $an 1\"\n"
 							"}\n"
 						"}\n"
 
@@ -271,6 +319,7 @@ void flext_base::SetAttrEditor(t_classid c)
 							"}\n"
 							"4 - 5 {\n"  // list or unknown
 								"entry $id.val-$ix -textvariable $var_attr_val -state disabled\n"
+                                "bind $id.val-$ix {<Control-Button-1>} \" flext_textzoom $id.val-$ix $var_attr_val { $title } $an 0\"\n"
 							"}\n"
 						"}\n"
 
@@ -288,6 +337,7 @@ void flext_base::SetAttrEditor(t_classid c)
 
 				// Separator
 				"frame $id.sep2 -relief ridge -bd 1 -height 2\n"
+//                "grid rowconfigure $id $row -weight 0\n"
 				"grid config $id.sep2 -column 0 -columnspan 8 -row $row -pady 5 -sticky {snew}\n"
 				"incr row\n"
 
@@ -303,6 +353,7 @@ void flext_base::SetAttrEditor(t_classid c)
 				"pack $id.buttonframe.apply -side left -expand 1\n"
 				"pack $id.buttonframe.ok -side left -expand 1\n"
 
+//                "grid rowconfigure $id $row -weight 0\n"
 				"grid config $id.buttonframe -column 0 -columnspan 8 -row $row -pady 5 -sticky {ew}\n"
 
 				// Key bindings

@@ -13,6 +13,9 @@ Donations for further development of the package are highly appreciated.
 
 Version history:
 
+0.4.6:
+- added a text edit window for list attributes
+
 0.4.5:
 - added some more SIMD functions
 - PD attributes: added a TCL/TK editor dialog ("properties") and save attributes to patcher

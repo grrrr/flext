@@ -45,7 +45,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "pd-msvc\s"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /GB /W3 /O2 /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D FLEXT_SYS=2 /YX"flext.h" /FD /c
+# ADD CPP /nologo /W3 /GR /GX /O2 /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D FLEXT_SYS=2 /YX"flext.h" /FD /c
 # ADD BASE RSC /l 0xc07 /d "NDEBUG"
 # ADD RSC /l 0xc07 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -68,7 +68,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "pd-msvc\sd"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /ZI /Od /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D FLEXT_SYS=2 /FR /YX"flext.h" /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GR /GX /ZI /Od /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D FLEXT_SYS=2 /FR /YX"flext.h" /FD /GZ /c
 # ADD BASE RSC /l 0xc07 /d "_DEBUG"
 # ADD RSC /l 0xc07 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -91,7 +91,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "pd-msvc\td"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GR /ZI /Od /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /D "FLEXT_THREADS" /FR /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /ZI /Od /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "FLEXT_SYS_PD" /D "FLEXT_THREADS" /FR /YX"flext.h" /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "FLEXT_SYS_PD" /D "FLEXT_THREADS" /FR /YX"flext.h" /FD /GZ /c
 # ADD BASE RSC /l 0xc07 /d "_DEBUG"
 # ADD RSC /l 0xc07 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -114,7 +114,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "pd-msvc\t"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GR /O2 /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /D "FLEXT_THREADS" /YX /FD /c
-# ADD CPP /nologo /GB /MT /W3 /O2 /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D FLEXT_SYS=2 /D "FLEXT_THREADS" /YX"flext.h" /FD /c
+# ADD CPP /nologo /MT /W3 /GR /GX /O2 /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D FLEXT_SYS=2 /D "FLEXT_THREADS" /YX"flext.h" /FD /c
 # ADD BASE RSC /l 0xc07 /d "NDEBUG"
 # ADD RSC /l 0xc07 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -137,7 +137,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "pd-msvc\tdl"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /ZI /Od /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "FLEXT_SYS_PD" /D "FLEXT_THREADS" /FR /YX"flext.h" /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /ZI /Od /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "FLEXT_SYS_PD" /D "FLEXT_THREADS" /FR /YX"flext.h" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "FLEXT_SYS_PD" /D "FLEXT_THREADS" /FR /YX"flext.h" /FD /GZ /c
 # ADD BASE RSC /l 0xc07 /d "_DEBUG"
 # ADD RSC /l 0xc07 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -159,8 +159,8 @@ LIB32=link.exe -lib
 # PROP Output_Dir "pd-msvc\trl"
 # PROP Intermediate_Dir "pd-msvc\trl"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /GB /MT /W3 /O2 /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D FLEXT_SYS=2 /D "FLEXT_THREADS" /YX"flext.h" /FD /c
-# ADD CPP /nologo /GB /MD /W3 /O2 /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D FLEXT_SYS=2 /D "FLEXT_THREADS" /YX"flext.h" /FD /c
+# ADD BASE CPP /nologo /MT /W3 /O2 /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D FLEXT_SYS=2 /D "FLEXT_THREADS" /YX"flext.h" /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D FLEXT_SYS=2 /D "FLEXT_THREADS" /YX"flext.h" /FD /c
 # ADD BASE RSC /l 0xc07 /d "NDEBUG"
 # ADD RSC /l 0xc07 /d "NDEBUG"
 BSC32=bscmake.exe

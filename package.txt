@@ -2,7 +2,7 @@ NAME=flext
 
 FLEXTBUILD=1
 
-BUILDDIR=flbuild
+BUILDDIR=build
 SRCDIR=source
 
 SRCS= \

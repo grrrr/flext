@@ -1,0 +1,7 @@
+# where is the STK installation?
+# (uncomment the line with # to disable STK support)
+#STK=/usr/local/lib/stk
+
+# where is the Sndobjs installation?
+# (uncomment the line with # to disable SNDOBJ support)
+#SNDOBJ=/usr/local/lib/sndobj

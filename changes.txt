@@ -289,6 +289,9 @@ bugs:
 - Max rounding bug ... buffer resize could be one sample less!
 - flext_dsp: Max/MSP doesn't correctly report in/out channel counts
 
+- new called in a flext-based class member function doesn _NOT_ call flext::operator new.
+	how can we achieve that????
+
 tests:
 - PD: figure out what "pointer" messages do and where they occur
 - buffer resize: flext_base::buffer::Frames(): should we use buffer or system sample rate?

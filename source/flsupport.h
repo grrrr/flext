@@ -646,21 +646,24 @@ public:
 		\return true on success
 		\internal
 	*/
-	bool PushThread();
+	static bool PushThread();
 
 	/*! \brief Remove current thread from list of active threads
 		\internal
 	*/
-	void PopThread();
+	static void PopThread();
 
-	/*! \brief Start a method thread
-		\internal
+	/*! \brief Launch a thread
+		\remark thr_params *p may be NULL if not needed
 	*/
-	bool LaunchThread(void (*meth)(thr_params *p),thr_params *p);
+	static bool LaunchThread(void (*meth)(thr_params *p),thr_params *p);
 
 protected:
 
+	//! thread list
 	static thr_entry *thrhead,*thrtail;
+	
+	//! mutex for thread list
 	static ThrMutex tlmutex;
 
 public:

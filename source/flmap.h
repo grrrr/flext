@@ -82,7 +82,7 @@ class TableAnyMap
 {
 protected:
     virtual TableAnyMap *New(TableAnyMap *parent) = 0;
-    virtual Free(void *ptr) = 0;
+    virtual void Free(void *ptr) = 0;
 
     struct Data {
         void operator()(size_t k,void *v) { key = k,value = v; }
@@ -218,7 +218,7 @@ protected:
     inline TableMap(TableAnyMap *p): TableAnyMap(p,N,slots,O) {}
 
     virtual TableAnyMap *New(TableAnyMap *parent) { return new TableMap(parent); }
-    virtual Free(void *ptr) { delete (T *)ptr; }
+    virtual void Free(void *ptr) { delete (T *)ptr; }
 
     Data slots[N];
 };

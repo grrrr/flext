@@ -18,6 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flinternal.h"
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 #ifdef _MSC_VER

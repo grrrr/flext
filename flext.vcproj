@@ -377,7 +377,9 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				Description="copy flext to maestra"
+				CommandLine="copy F:\prog\max\flext\pd-msvc\flext_ld.dll F:\prog\maestra\dev\debug"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -440,7 +442,12 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				Description="copy flext to maestra"
+				CommandLine="copy F:\prog\max\flext\source\*.h F:\prog\maestra\dev\api\include
+copy F:\prog\max\flext\pd-msvc\flext_l.lib F:\prog\maestra\dev\api\lib
+copy F:\prog\max\flext\pd-msvc\flext_l.dll F:\prog\maestra\dev\Release
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

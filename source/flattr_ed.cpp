@@ -39,7 +39,7 @@ void flext_base::SetAttrEditor(t_classid c)
     widgetbehavior.w_selectfn =     c->c_wb->w_selectfn; 
     widgetbehavior.w_activatefn =   c->c_wb->w_activatefn; 
     widgetbehavior.w_deletefn =     c->c_wb->w_deletefn; 
-	ori_vis = c->c_wb->w_visfn;
+	ori_vis = c->c_wb->w_visfn; 
     widgetbehavior.w_visfn =        cb_GfxVis;
     widgetbehavior.w_clickfn =      c->c_wb->w_clickfn;
     widgetbehavior.w_propertiesfn = cb_GfxProperties;
@@ -93,7 +93,7 @@ void flext_base::SetAttrEditor(t_classid c)
 
 		"proc pdtk_flext_dialog {id attrlist} {\n"
 				"set vid [string trimleft $id .]\n"
-				"set alen [expr [llength $attrlist] / 3 ]\n"
+				"set alen [expr [llength $attrlist] / 4 ]\n"
 
 				"toplevel $id\n"
 				"wm title $id {object attributes}\n"
@@ -104,29 +104,48 @@ void flext_base::SetAttrEditor(t_classid c)
 */
 				"set ix 0\n"
 
-				"foreach {an av asv} $attrlist {\n"
+				"foreach {an av asv afl} $attrlist {\n"
+					// generate variable name
 					"set nm [concat $id.nm-$ix]\n"
 
+					// get attribute name
 					"set var_attr_name [concat [concat var_name_$ix]_$vid ]\n"
 					"global $var_attr_name\n"
 					"set $var_attr_name $an\n"
 
+					// get attribute value (list)
 					"set var_attr_val [concat [concat var_val_$ix]_$vid ]\n"
 					"global $var_attr_val\n"
-					"set $var_attr_val $av\n"
 
+					// format value list
+					"set $var_attr_val {}\n"
+					"foreach i $av {\n"
+						"if { [string is double $i] } {\n"
+							// it's a number.. take as many digits as necessary
+							"lappend $var_attr_val [format %g $i]\n"
+						"} else {\n"
+							// it's a string, append unchanged
+							"lappend $var_attr_val $i\n"
+						"}\n"
+					"}\n"
+
+					// get save flag
 					"set var_attr_save [concat [concat var_save_$ix]_$vid ]\n"
 					"global $var_attr_save\n"
 					"set $var_attr_save $asv\n"
 
+					// add dialog elements to window
 					"frame $nm\n"
 					"pack $nm -side top\n"
 					"label $nm.lwidth -text \"$an :\"\n"
 					"entry $nm.width -textvariable $var_attr_val -width 20\n"
-					"checkbutton $nm.save -text {save} -variable $var_attr_save -anchor w\n"
-					"pack $nm.lwidth $nm.width $nm.save -side left\n"
 					"bind $nm.width <KeyPress-Return> [concat flext_ok $id $alen]\n"
 
+					"foreach i {0 1 2} { radiobutton $nm.b$i -value $i -variable $var_attr_save }\n"
+
+					"pack $nm.lwidth $nm.width $nm.b0 $nm.b1 $nm.b2 -side left\n"
+
+					// increase counter
 					"incr ix\n"
 				"}\n"
 
@@ -199,7 +218,7 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 			// \TODO set flag for tcl/tk dialog
 		}
 
-		STD::sprintf(b, "} %i ", sv?1:0); b += strlen(b);
+		STD::sprintf(b, "} %i %i ", sv?1:0,attr?(attr->BothExist()?2:1):0); b += strlen(b);
 	}
 
 	strcpy(b, " }\n");
@@ -308,13 +327,13 @@ bool flext_base::cb_AttrDialog(flext_base *th,int argc,const t_atom *argv)
 		i += cnt;
 
 		FLEXT_ASSERT(i < argc);
-		bool sv = CanbeBool(argv[i]) && GetABool(argv[i]);
+		int sv = GetAInt(argv[i]);
 		++i;
 
 		// find settable attribute
 		attritem *attr = th->FindAttrib(aname,false);
 		if(attr) {
-			th->SetAttribSave(attr,sv);
+			th->SetAttribSave(attr,sv != 0);
 			bool ret = th->SetAttrib(attr,cnt,argv+offs);
 			FLEXT_ASSERT(ret);
 		}

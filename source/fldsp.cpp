@@ -14,7 +14,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // === flext_dsp ==============================================
 
-void flext_dsp::cb_setup(t_class *c)
+void flext_dsp::Setup(t_class *c)
 {
 #ifdef PD
 	CLASS_MAINSIGNALIN(c,flext_hdr,defsig);
@@ -32,7 +32,7 @@ flext_dsp::flext_dsp():
 #ifndef MAXMSP
 	dspon(true),
 #endif
-	srate(sys_getsr()),
+	srate(sys_getsr()),  // should we set it?
 	invecs(NULL),outvecs(NULL)
 {}
 

@@ -70,29 +70,26 @@ void flext_obj::operator delete(void *blk)
 }
 
 
-#ifndef __MRC__
-
-#define ALIGN 128 // bit alignment
-
-void *flext_obj::operator new[](size_t bytes)
+void *flext_obj::NewAligned(size_t bytes,int bitalign)
 {
 	const size_t ovh = sizeof(size_t)+sizeof(char *);
-	bytes += ovh+(ALIGN/8-1);
+	const unsigned long alignovh = bitalign/8-1;
+	bytes += ovh+alignovh;
 	char *blk = (char *)getbytes(bytes);
-	char *ablk = reinterpret_cast<char *>((reinterpret_cast<unsigned long>(blk)+ovh+(ALIGN/8-1)) & ~(unsigned long)(ALIGN/8-1));
+	char *ablk = reinterpret_cast<char *>((reinterpret_cast<unsigned long>(blk)+ovh+alignovh) & ~alignovh);
 	*(char **)(ablk-sizeof(size_t)-sizeof(char *)) = blk;
 	*(size_t *)(ablk-sizeof(size_t)) = bytes;
 	return ablk;
 }
 
-void flext_obj::operator delete[](void *blk)
+void flext_obj::FreeAligned(void *blk)
 {
 	char *ori = *(char **)((char *)blk-sizeof(size_t)-sizeof(char *));
 	size_t bytes = *(size_t *)((char *)blk-sizeof(size_t));
 	freebytes(ori,bytes);
 }
 
-#endif
+
 
 
 

@@ -27,9 +27,8 @@ CLASS
 
 DESCRIPTION
     
-    This is in a separate struct to assure that when PD uses the
-    class, the t_object is the very first thing.  If it were the 
-    first thing in flext_obj, then there could be problems with
+    This is in a separate struct to assure that obj is the very first thing.  
+    If it were the first thing in flext_obj, then there could be problems with
     the vtable.
      
 -----------------------------------------------------------------*/
@@ -62,10 +61,7 @@ CLASS
 DESCRIPTION
     
     Each extern which is written in C++ needs to use the #defines at the
-    end of this header file.  Currently, the operator new(size_t) and
-    operator delete(void *) are not overridden.  This will be a problem
-    when PD expects everything to fit in its memory space and control
-    all memory allocation.
+    end of this header file.  
     
     The define
     
@@ -75,7 +71,7 @@ DESCRIPTION
     One of the defines like
     
     FLEXT_NEW(NEW_CLASS)
-    FLEXT_NEW_WITH_TWO_ARGS(NEW_CLASS, t_floatarg, A_FLOAT, t_floatarg, A_FLOAT)
+    FLEXT_NEW_2(NEW_CLASS, float, float)
     
     should be the first thing in your implementation file.
     NEW_CLASS is the name of your class and PARENT_CLASS is the 
@@ -92,11 +88,14 @@ class FLEXT_EXT flext_obj
 		void operator delete(void *blk);
 
 		#ifndef __MRC__ // doesn't allow new[] overloading?!
-		// this are aligned (with some overhead)
-		void *operator new[](size_t bytes); 
-		void operator delete[](void *blk);
+		void *operator new[](size_t bytes) { return operator new(bytes); }
+		void operator delete[](void *blk) { operator delete(blk); }
 		#endif
 
+		// these are aligned 
+		void *NewAligned(size_t bytes,int bitalign = 128);
+		void FreeAligned(void *blk);
+		
 		// ---------------------
 
         //////////
@@ -172,7 +171,7 @@ inline const char *thisName() const { return m_name; } \
 static NEW_CLASS *thisObject(void *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; }	  
 
 
-#define FLEXT_HEADER_S(NEW_CLASS, PARENT_CLASS)    	    	\
+#define FLEXT_HEADER_S(NEW_CLASS, PARENT_CLASS,SETUPFUN)    	    	\
 public:     	    	    \
 typedef NEW_CLASS thisType;  \
 static void callb_free(void *data)    	    	    	\
@@ -180,18 +179,81 @@ static void callb_free(void *data)    	    	    	\
   ((flext_hdr *)data)->flext_hdr::~flext_hdr(); }   	    	\
 static void callb_setup(t_class *classPtr)  	    	\
 { PARENT_CLASS::callb_setup(classPtr);    	    	\
-	NEW_CLASS::cb_setup(classPtr); }  	    	    	\
+	NEW_CLASS::SETUPFUN(classPtr); }  	    	    	\
 protected:    \
 inline t_sigobj *thisHdr() { return &x_obj->obj; } \
 inline t_class *thisClass() { return FLEXT_GETCLASS(x_obj); } \
 inline const char *thisName() const { return m_name; } \
-static NEW_CLASS *thisObject(void *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; }	  \
-private:    \
-static void cb_setup(t_class *classPtr);
+static NEW_CLASS *thisObject(void *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; }	  
 
 
 ////////////////////////////////////////
 // This should be the first thing in the implementation file
+////////////////////////////////////////
+
+//
+// NO ARGUMENTS
+/////////////////////////////////////////////////
+#define FLEXT_NEW(NAME,NEW_CLASS)    	\
+    REAL_NEW(NAME,NEW_CLASS, _setup, _class)
+
+#define FLEXT_NEW_TILDE(NAME,NEW_CLASS)    \
+    REAL_NEW(NAME,NEW_CLASS, _tilde_setup, _class)
+
+//
+// ONE ARGUMENT
+/////////////////////////////////////////////////
+#define FLEXT_NEW_1(NAME,NEW_CLASS, TYPE)    \
+    REAL_NEW_1(NAME,NEW_CLASS, _setup, _class, TYPE)
+
+#define FLEXT_NEW_TILDE_1(NAME,NEW_CLASS, TYPE)    \
+    REAL_NEW_1(NAME,NEW_CLASS, _tilde_setup, _class, TYPE)
+
+//
+// GIMME ARGUMENT
+/////////////////////////////////////////////////
+#define FLEXT_NEW_G(NAME,NEW_CLASS)  	 \
+    REAL_NEW_G(NAME,NEW_CLASS, _setup, _class)
+
+#define FLEXT_NEW_TILDE_G(NAME,NEW_CLASS)  	 \
+    REAL_NEW_G(NAME,NEW_CLASS, _tilde_setup, _class)
+
+//
+// TWO ARGUMENTS
+/////////////////////////////////////////////////
+#define FLEXT_NEW_2(NAME,NEW_CLASS, TYPE, TTWO)	\
+    REAL_NEW_2(NAME,NEW_CLASS, _setup, _class, TYPE, TTWO)
+
+#define FLEXT_NEW_TILDE_2(NAME,NEW_CLASS, TYPE, TTWO)	\
+    REAL_NEW_2(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, TTWO)
+
+//
+// THREE ARGUMENTS
+/////////////////////////////////////////////////
+#define FLEXT_NEW_3(NAME,NEW_CLASS, TYPE, TTWO, TTHREE)	\
+    REAL_NEW_3(NAME,NEW_CLASS, _setup, _class, TYPE, TTWO, TTHREE)
+
+#define FLEXT_NEW_TILDE_3(NAME,NEW_CLASS, TYPE, TTWO, TTHREE)	\
+    REAL_NEW_3(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, TTWO, TTHREE)
+
+
+/*
+// MaxMSP doesn't seem to be able more than 3 creation arguments!
+
+//
+// FOUR ARGUMENTS
+/////////////////////////////////////////////////
+#define FLEXT_NEW_4(NAME,NEW_CLASS, TYPE, TTWO, TTHREE, TFOUR) \
+    REAL_NEW_4(NAME,NEW_CLASS, _setup, _class, TYPE, TTWO, TTHREE, TFOUR)
+
+#define FLEXT_NEW_TILDE_4(NAME,NEW_CLASS, TYPE, TTWO, TTHREE, TFOUR) \
+    REAL_NEW_4(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, TTWO, TTHREE, TFOUR)
+*/
+
+
+
+////////////////////////////////////////
+// These definitions are used below
 ////////////////////////////////////////
 
 // Shortcuts for PD/Max type arguments
@@ -203,71 +265,6 @@ static void cb_setup(t_class *classPtr);
 
 #define FLEXTTP(TP) FLEXTTYPE_ ## TP
 
-
-// No support for PD default arguments (A_DEFFLOAT,A_DEFSYMBOL), use GIMME instead
-
-//
-// NO ARGUMENTS
-/////////////////////////////////////////////////
-#define FLEXT_NEW(NAME,NEW_CLASS)    	    	    	    	\
-    REAL_NEW(NAME,NEW_CLASS, _setup, _class)
-
-#define FLEXT_TILDE_NEW(NAME,NEW_CLASS)    	    	    	    	\
-    REAL_NEW(NAME,NEW_CLASS, _tilde_setup, _class)
-
-//
-// ONE ARGUMENT
-/////////////////////////////////////////////////
-#define FLEXT_1ARG(NAME,NEW_CLASS, TYPE)    \
-    REAL_NEW_WITH_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, FLEXTTP(TYPE))
-
-#define FLEXT_TILDE_1ARG(NAME,NEW_CLASS, TYPE)    	    	    	    	\
-    REAL_NEW_WITH_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, FLEXTTP(TYPE))
-
-//
-// GIMME ARGUMENT
-/////////////////////////////////////////////////
-#define FLEXT_GIMME(NAME,NEW_CLASS)  	    	    	\
-    REAL_NEW_WITH_GIMME(NAME,NEW_CLASS, _setup, _class)
-
-#define FLEXT_TILDE_GIMME(NAME,NEW_CLASS)  	    	    	\
-    REAL_NEW_WITH_GIMME(NAME,NEW_CLASS, _tilde_setup, _class)
-
-//
-// TWO ARGUMENTS
-/////////////////////////////////////////////////
-#define FLEXT_2ARGS(NAME,NEW_CLASS, TYPE, TTWO)	\
-    REAL_NEW_WITH_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, FLEXTTP(TYPE), TTWO, FLEXTTP(TTWO))
-
-#define FLEXT_TILDE_2ARGS(NAME,NEW_CLASS, TYPE, TTWO)	\
-    REAL_NEW_WITH_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, FLEXTTP(TYPE), TTWO, FLEXTTP(TTWO))
-
-//
-// THREE ARGUMENTS
-/////////////////////////////////////////////////
-#define FLEXT_3ARGS(NAME,NEW_CLASS, TYPE, TTWO, TTHREE)	\
-    REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, FLEXTTP(TYPE), TTWO, FLEXTTP(TTWO), TTHREE, FLEXTTP(TTHREE))
-
-#define FLEXT_TILDE_3ARGS(NAME,NEW_CLASS, TYPE, TTWO, TTHREE)	\
-    REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, FLEXTTP(TYPE), TTWO, FLEXTTP(TTWO), TTHREE, FLEXTTP(TTHREE))
-
-
-#ifndef COMPAT
-
-//
-// FOUR ARGUMENTS
-/////////////////////////////////////////////////
-#define FLEXT_4ARGS(NAME,NEW_CLASS, TYPE, TTWO, TTHREE, TFOUR) \
-    REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, FLEXTTP(TYPE), TTWO, FLEXTTP(TTWO), TTHREE, FLEXTTP(TTHREE), TFOUR, FLEXTTP(TFOUR))
-
-#define FLEXT_TILDE_4ARGS(NAME,NEW_CLASS, TYPE, TTWO, TTHREE, TFOUR) \
-    REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, FLEXTTP(TYPE), TTWO, FLEXTTP(TTWO), TTHREE, FLEXTTP(TTHREE), TFOUR, FLEXTTP(TFOUR))
-
-#endif
-
-////////////////////////////////////////
-// These definitions are used below
-////////////////////////////////////////
 
 #ifdef PD
 #define FLEXT_NEWFN ::class_new
@@ -329,9 +326,9 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 ///////////////////////////////////////////////////////////////////////////////
 // one arg
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW_WITH_ARG(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, VAR_TYPE, PD_TYPE) \
+#define REAL_NEW_1(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, TYPE) \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
-void * EXTERN_NAME ## NEW_CLASS (VAR_TYPE arg)                  \
+void * EXTERN_NAME ## NEW_CLASS (TYPE arg)                  \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
@@ -349,7 +346,7 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
-    	     	PD_TYPE,                                        \
+    	     	FLEXTTP(TYPE),                                        \
     	     	A_NULL);      	    	    	    	    	\
     NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
 }   	    	    	    	    	    	    	    	\
@@ -358,7 +355,7 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 ///////////////////////////////////////////////////////////////////////////////
 // gimme arg
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW_WITH_GIMME(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME) \
+#define REAL_NEW_G(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME) \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (t_symbol *, int argc, t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
@@ -387,9 +384,9 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 ///////////////////////////////////////////////////////////////////////////////
 // two args
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW_WITH_ARG_ARG(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, ONE_VAR_TYPE, ONE_PD_TYPE, TWO_VAR_TYPE, TWO_PD_TYPE) \
+#define REAL_NEW_2(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, ONE_TYPE, TWO_TYPE) \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
-void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo) \
+void * EXTERN_NAME ## NEW_CLASS (ONE_TYPE arg, TWO_TYPE argtwo) \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
@@ -407,7 +404,7 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
-    	     	ONE_PD_TYPE, TWO_PD_TYPE,                       \
+    	     	FLEXTTP(ONE_TYPE), FLEXTTP(TWO_TYPE),                       \
     	     	A_NULL);      	    	    	    	    	\
     NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
 }   	    	    	    	    	    	    	    	\
@@ -416,9 +413,9 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 ///////////////////////////////////////////////////////////////////////////////
 // three args
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, ONE_VAR_TYPE, ONE_PD_TYPE, TWO_VAR_TYPE, TWO_PD_TYPE, THREE_VAR_TYPE, THREE_PD_TYPE) \
+#define REAL_NEW_3(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, ONE_TYPE, TWO_TYPE, THREE_TYPE) \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
-void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo, THREE_VAR_TYPE argthree) \
+void * EXTERN_NAME ## NEW_CLASS (ONE_TYPE arg, TWO_TYPE argtwo, THREE_TYPE argthree) \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
@@ -436,7 +433,7 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(flext_hdr), CLNEW_OPTIONS,                     \
-    	     	ONE_PD_TYPE, TWO_PD_TYPE, THREE_PD_TYPE,        \
+    	     	FLEXTTP(ONE_TYPE),FLEXTTP(TWO_TYPE),FLEXTTP(THREE_TYPE),        \
     	     	A_NULL);      	    	    	    	    	\
     NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
 }   	    	    	    	    	    	    	    	\
@@ -445,9 +442,9 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 ///////////////////////////////////////////////////////////////////////////////
 // four args
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, ONE_VAR_TYPE, ONE_PD_TYPE, TWO_VAR_TYPE, TWO_PD_TYPE, THREE_VAR_TYPE, THREE_PD_TYPE, FOUR_VAR_TYPE, FOUR_PD_TYPE) \
+#define REAL_NEW_4(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, ONE_TYPE, TWO_TYPE, THREE_TYPE, FOUR_TYPE) \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
-void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo, THREE_VAR_TYPE argthree, FOUR_VAR_TYPE argfour) \
+void * EXTERN_NAME ## NEW_CLASS (ONE_TYPE arg, TWO_TYPE argtwo, THREE_TYPE argthree, FOUR_TYPE argfour) \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
@@ -465,7 +462,7 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
-    	     	ONE_PD_TYPE, TWO_PD_TYPE, THREE_PD_TYPE, FOUR_PD_TYPE, \
+    	     	FLEXTTP(ONE_TYPE),FLEXTTP(TWO_TYPE),FLEXTTP(THREE_TYPE),FLEXTTP(FOUR_TYPE), \
     	     	A_NULL);      	    	    	    	    	\
     NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
 }   	    	    	    	    	    	    	    	\

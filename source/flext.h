@@ -35,7 +35,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 class flext_base:
 	public flext_obj
 {
-	FLEXT_HEADER_S(flext_base,flext_obj)
+	FLEXT_HEADER_S(flext_base,flext_obj,Setup)
 	
 public:
 
@@ -43,7 +43,7 @@ public:
 
 	// if set flext allows only operations valid for all platforms
 	// true by default!
-//	static bool compatibility;  
+	static bool compatibility;  
 
 
 // --- inheritable virtual methods --------------------------------
@@ -311,6 +311,8 @@ protected:
 	
 private:
 
+	static void Setup(t_class *c);
+
 	xlet *inlist,*outlist;
 	int incnt,outcnt,insigs,outsigs;
 	outlet **outlets;
@@ -374,12 +376,12 @@ private:
 class flext_dsp:
 	public flext_base
 {
-	FLEXT_HEADER_S(flext_dsp,flext_base)
+	FLEXT_HEADER_S(flext_dsp,flext_base,Setup)
 	
 public:
 
 	// returns current sample rate
-	float samplerate() const { return srate; }
+	float Samplerate() const { return srate; }
 	
 
 // --- inheritable virtual methods --------------------------------
@@ -417,8 +419,11 @@ protected:
 	
 private:
 
-	float srate;
+	// not static, could be different in different patchers..
+	float srate; 
 
+	// setup function
+	static void Setup(t_class *c);
 
 	// callback functions
 

@@ -75,12 +75,12 @@ Version history:
 - no support for default arguments (A_DEFFLOAT and A_DEFSYMBOL).. use GIMME instead!
 - better graphics update behavior for PD
 - improved behavior for invalid/undefined buffers/arrays
-- 128-bit aligned memory allocation with new[] 
 - use MaxMSP internal z_disabled flag with flext_dsp for pausing/resuming dsp processing 
 - included CHECK_TILDE, a test whether a tilde object (defined as FLEXT_TILDE_*) has a trailing ~. (debug mode only)
 - changed notation of flext functions from to_out_float like to ToOutFloat like
-- eliminated trivial shortcuts for built-in types
-- compatibility mode is now set by the preprocessor define COMPAT
+- eliminated trivial shortcuts (F,I,V,...) for built-in types
+- MaxMSP is only capable of 3 creation arguments... that should be sufficient - otherwise use GIMME
+- Methods for aligned memory
 
 0.1.1:
 - documentation for flext.h
@@ -134,7 +134,6 @@ bugs:
 
 tests:
 - PD: figure out what "pointer" messages do and where they occur
-- MaxMSP: is it true that float creation arguments are doubles? (see Max-dev-list)
 
 features:
 - abstraction for parsing argument lists

@@ -106,7 +106,7 @@ DEF_IN_FT(9)
 
 // === flext_base ============================================
 
-//bool flext_base::compatibility = true;
+bool flext_base::compatibility = true;
 
 
 const t_symbol *flext_base::sym_float = NULL;
@@ -391,7 +391,7 @@ bool flext_base::SetupInOut()
 }
 
 
-void flext_base::cb_setup(t_class *c)
+void flext_base::Setup(t_class *c)
 {
 #ifdef PD
 	sym_anything = &s_anything;

@@ -281,7 +281,7 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 
 		// add to name list
         const t_symbol *lsym = MakeSymbol(c);
-		libclass *lcl = FindName(lsym,lo);
+		/*libclass *lcl =*/ FindName(lsym,lo);
 	
 #if FLEXT_SYS == FLEXT_SYS_PD
 		if(ix > 0) 

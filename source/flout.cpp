@@ -230,8 +230,8 @@ bool flext_base::InitInlets()
 //          incnt = cnt;
 
         if(insigs) 
-//              dsp_setup(thisHdr(),insigs); // signal inlets   
-            dsp_setupbox(thisHdr(),insigs); // signal inlets    
+              dsp_setup(thisHdr(),insigs); // signal inlets   
+//            dsp_setupbox(thisHdr(),insigs); // signal inlets    
     }
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
     {

@@ -30,7 +30,7 @@ flext_base::ItemSet::~ItemSet()
 }
 
 flext_base::ItemCont::ItemCont(): 
-    memsize(0),size(0),members(0),cont(NULL)
+    members(0),memsize(0),size(0),cont(NULL)
 {}
 
 flext_base::ItemCont::~ItemCont()

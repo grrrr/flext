@@ -125,7 +125,7 @@ extern "C" {
 #undef WIN_VERSION
 
 
-typedef t_pxbox t_sigobj;  // that's the all-in-one object type of Max/MSP (not very memory-efficent, i guess)
+typedef t_pxobject t_sigobj;  // that's the all-in-one object type of Max/MSP (not very memory-efficent, i guess)
 typedef t_patcher t_canvas;
 
 typedef t_int t_flint;

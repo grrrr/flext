@@ -61,8 +61,8 @@ flext_base::~FLEXT_CLASSDEF(flext_base)()
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
     // according to David Z. one should do that first...
-//  if(insigs) dsp_free(thisHdr());
-    if(insigs) dsp_freebox(thisHdr());
+  if(insigs) dsp_free(thisHdr());
+//    if(insigs) dsp_freebox(thisHdr());
 #endif
 
 #ifdef FLEXT_THREADS

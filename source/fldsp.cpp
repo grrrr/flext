@@ -27,8 +27,8 @@ void flext_dsp::Setup(t_classid id)
     t_class *c = getClass(id);
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
-//  dsp_initclass();
-    dsp_initboxclass();
+    dsp_initclass();
+//    dsp_initboxclass();
     add_dsp(c,cb_dsp);
 #elif FLEXT_SYS == FLEXT_SYS_PD
     CLASS_MAINSIGNALIN(c,flext_hdr,defsig); // float messages going into the left inlet are converted to signal
@@ -46,15 +46,13 @@ flext_dsp::FLEXT_CLASSDEF(flext_dsp)():
     srate(fts_dsp_get_sample_rate()),  // should we set it?
     blksz(fts_dsp_get_tick_size()),
 #else
-    srate(sys_getsr()),  // should we set it?
-    blksz(sys_getblksize()),
+    srate(sys_getsr()),blksz(sys_getblksize()),
 #endif
 #if FLEXT_SYS == FLEXT_SYS_PD
     chnsin(sys_get_inchannels()),
     chnsout(sys_get_outchannels()),
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-    chnsin(sys_getch()),
-    chnsout(sys_getch()),
+    chnsin(0),chnsout(0),
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
     #pragma message("not implemented")
     chnsin(0),chnsout(0),

@@ -20,6 +20,7 @@ Version history:
 - fixed the attribute editor for 0.38, stopped redundant transfer of script code
 - show saveable attributes on object select
 - fix for long attribute dialogs
+- dropped support for Max UI objects
 
 0.4.7:
 - added flext::GetBool (just because flext::GetInt has been there for a while)

@@ -28,8 +28,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 flext_base::AttrItem::AttrItem(const t_symbol *t,metharg tp,methfun f,int fl):
 	Item(NULL),index(0),
 	flags(fl|afl_shown),
-	argtp(tp),fun(f),tag(t),
-	counter(NULL)
+	argtp(tp),fun(f),
+	counter(NULL),tag(t)
 {}
 
 

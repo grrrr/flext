@@ -185,6 +185,10 @@ LIB32=link.exe -lib
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\changes.txt
+# End Source File
+# Begin Source File
+
 SOURCE=.\source\fldoxygen.h
 # End Source File
 # Begin Source File
@@ -230,10 +234,6 @@ SOURCE=.\source\flbase.h
 # Begin Source File
 
 SOURCE=.\source\flclass.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\source\fldefs.h
 # End Source File
 # Begin Source File
 
@@ -370,6 +370,54 @@ SOURCE=.\source\flstk.cpp
 # Begin Source File
 
 SOURCE=.\source\flstk.h
+# End Source File
+# End Group
+# Begin Group "Defs"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\source\fldefs.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\source\fldefs_attradd.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\source\fldefs_attrcb.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\source\fldefs_attrvar.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\source\fldefs_hdr.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\source\fldefs_methadd.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\source\fldefs_methbind.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\source\fldefs_methcall.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\source\fldefs_methcb.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\source\fldefs_meththr.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\source\fldefs_setup.h
 # End Source File
 # End Group
 # End Target

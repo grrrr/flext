@@ -140,7 +140,6 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 
         //! Get the PD or Max/MSP object
 		t_sigobj *thisHdr() { FLEXT_ASSERT(x_obj); return &x_obj->obj; }
-        //! Get the PD or Max/MSP object
 		const t_sigobj *thisHdr() const { FLEXT_ASSERT(x_obj); return &x_obj->obj; }
         //! Get the class name (as a string)
 		const char *thisName() const { return GetString(m_name); } 

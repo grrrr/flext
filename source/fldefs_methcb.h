@@ -18,6 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 
 /*!	\defgroup FLEXT_D_CALLBACK Declare callbacks for class methods
+    \ingroup FLEXT_D_METHOD
 	@{ 
 */
 

@@ -150,7 +150,7 @@ private:
 
 For each method that shall be exposed to the realtime-system (for receiving messages) and 
 every attribute (for setting and getting values) callbacks have to be set up.
-The functions in the groups "\ref FLEXT_D_CALLBACK" and "\ref FLEXT_D_ATTRIB" allow for their 
+The functions in the groups \ref FLEXT_D_CALLBACK and \ref FLEXT_D_ATTRIB allow for their 
 convenient definition.
 
 \verbatim

@@ -8,7 +8,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-/*! \file fldef_setup.h
+/*! \file fldefs_setup.h
     \brief This file contains all #defines for actual usage
     
 */
@@ -27,6 +27,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     - There may be additional names (aliases) appened, separated by spaces
     - There may be a help path prepended, separated by a colon
     - This help path doesn't work for Max/MSP. There you'll have to use a object mapping file (Max/MSP version >= 4.2)
+
+    @{
 */
 
 

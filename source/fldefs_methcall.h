@@ -18,6 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 
 /*!	\defgroup FLEXT_D_CALLMETHOD Call flext methods manually
+    \ingroup FLEXT_D_METHOD
 	@{ 
 */
 

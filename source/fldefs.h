@@ -29,6 +29,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define FLEXT_CAST static_cast
 #endif
 
+//!	@}  FLEXT_DEFS
+
 #include "fldefs_hdr.h"
 
 #include "fldefs_setup.h"
@@ -64,9 +66,5 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 //! @} FLEXT_D_ATTRIB
 
 #endif // FLEXT_ATTRIBUTES
-
-
-
-//!	@}  FLEXT_DEFS
 
 #endif // __FLEXT_DEFS_H

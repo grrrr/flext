@@ -18,6 +18,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flstdc.h"
 #include <new>
 
+/*!	\defgroup FLEXT_SUPPORT Flext support classes
+	@{
+*/
+
 class FLEXT_SHARE FLEXT_CLASSDEF(flext_root);
 typedef class FLEXT_CLASSDEF(flext_root) flext_root;
 
@@ -64,6 +68,7 @@ public:
         }
 	//!	@}  FLEXT_S_MEMORY  	
 };
+
 
 #if !defined(_MSC_VER) && !defined(__BORLANDC__)
 #define NEWTHROW throw(std::bad_alloc)
@@ -1106,6 +1111,6 @@ inline bool operator <=(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF
 inline bool operator >(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(flext)::CmpAtom(a,b) > 0; }
 inline bool operator >=(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(flext)::CmpAtom(a,b) >= 0; }
 
-
+//! @} // FLEXT_SUPPORT
 
 #endif

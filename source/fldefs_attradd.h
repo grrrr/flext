@@ -18,6 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 
 /*!	\defgroup FLEXT_D_CADDATTR Announce object attributes at class scope
+    \ingroup FLEXT_D_ATTRIB
 	\note These can only be used at class construction time
 	@{ 
 */
@@ -67,6 +68,7 @@ AddAttrib(CL,NAME,(bool (*)(flext_base *,int &))(FLEXT_GET_PRE(FUN)),(bool (*)(f
 
 
 /*!	\defgroup FLEXT_D_ADDATTR Announce object attributes 
+    \ingroup FLEXT_D_ATTRIB
 	\note These can only be used at object construction time
 	\note (in constructor or in Init() function before call to parent's Init())
 	@{ 

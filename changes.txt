@@ -23,7 +23,6 @@ Version history:
 - added "getmethods" message (for attribute-enabled externals) to list methods for a specified inlet (default = 0)
 - "getattributes" or "getmethods" output lists are now alphabethically sorted
 - flext::StopThread function to terminate running threads (started with LaunchThread)
-- added flext::post() and flext::error() console printing (thread-safe)
 - added flext::CmpAtom and AtomList::operator < methods ... useful for using lists as keys for STL
 - make use of new PD thread locking (PD functions sys_lock() and sys_unlock()), queue messages only if necessary
 - better FLEXT_OSAPI resolution
@@ -35,6 +34,7 @@ Version history:
 - moved memory functions and console output from flext to super-base-class flext_root and derived all helper classes from that
 - changed FLEXT_THREAD_X: wrappers doesn't delete the passed data pointer anymore -> the called method is responsible for that (and it knows the type....)
 - enabled binding of more than one function to a symbol and added flext_base::GetBoundMethod
+- native support for Windows threading model
 
 0.4.4:
 - fixed deadly bug for Max/MSP method-to-symbol-binding proxies
@@ -277,10 +277,11 @@ general:
 - add log messages for debugging version
 - use PD's t_float and t_int types (or comparable for 32-Bit safety)
 
-- make links flext.a -> libflext.a for compatibility
-
 - add double handlers
 - add signal in/out connection query function
+
+- support for Max qelem style
+
 
 bugs:
 - attributes and attribute editor saving with patcher arguments (like $0-gugu )
@@ -290,8 +291,9 @@ bugs:
 - Max rounding bug ... buffer resize could be one sample less!
 - flext_dsp: Max/MSP doesn't correctly report in/out channel counts
 
-- new called in a flext-based class member function doesn _NOT_ call flext::operator new.
-	how can we achieve that????
+- linker problems between MFC libraries and global new and delete overloadings
+- flext::post and flext::error should print via a worker thread
+
 
 tests:
 - PD: figure out what "pointer" messages do and where they occur

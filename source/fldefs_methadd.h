@@ -18,6 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 
 /*!	\defgroup FLEXT_D_CADDMETHOD Add flext methods within class scope
+    \ingroup FLEXT_D_METHOD
 	\note These can only be used at class construction time
 	@{ 
 */
@@ -108,6 +109,7 @@ FLEXT_CADDMETHOD_3(CL,IX,M_TAG,M_FUN,int,int,int)
 
 
 /*!	\defgroup FLEXT_D_ADDMETHOD Add flext methods
+    \ingroup FLEXT_D_METHOD
 	\note These can only be used at object construction time 
 	\note (in constructor or in Init() function before call to parent's Init())
 	@{ 

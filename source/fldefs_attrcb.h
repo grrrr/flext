@@ -35,6 +35,7 @@ static bool FLEXT_GET_PRE(FUN)(flext_base *c,TP &arg) \
 
 
 /*!	\defgroup FLEXT_DA_CALLSET Definition of attribute set handlers
+    \ingroup FLEXT_D_ATTRIB
 	@{ 
 */
 
@@ -75,6 +76,7 @@ static bool FLEXT_SET_PRE(FUN)(flext_base *c,AtomList *&arg) \
 //! @} FLEXT_DA_CALLSET
 
 /*!	\defgroup FLEXT_DA_CALLGET Definition of attribute get handlers
+    \ingroup FLEXT_D_ATTRIB
 	@{ 
 */
 
@@ -116,6 +118,7 @@ static bool FLEXT_GET_PRE(FUN)(flext_base *c,AtomList *&arg) \
 
 
 /*!	\defgroup FLEXT_DA_CALLVAR Definition of attribute transfer handlers (both get and set)
+    \ingroup FLEXT_D_ATTRIB
 	@{ 
 */
 

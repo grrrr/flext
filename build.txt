@@ -9,7 +9,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 This document consists of the following parts:
 
 1) Using the flext build system
-1.1) Building flext
+1.1) Building and installing flext
 1.2) Building externals
 1.3) Tested configurations
 
@@ -77,8 +77,8 @@ See buildsys/readme.txt for developer-centered information.
 
 
 
-1.1) Building flext
-===================
+1.1) Building and installing flext
+==================================
 
 Flext can build itself using the build system.
 From the flext main directory, run the build script
@@ -92,10 +92,23 @@ When you run it for the first time, one or more configuration files will be crea
 from templates - you will get a message on the console. 
 You should edit the files to adapt it to your system.
 
-Then install flext with (under Windows)
+Depending on your platform these will have name like
+buildsys/config-win-pd-msvc.txt
+or
+buildsys/config-lnx-pd-gcc.txt
+or
+buildsys/config-mac-max-gcc.txt
+
+
+
+After successfully building everything, you can install flext with (under Windows)
 	build pd msvc install
 or (under unix)
 	bash build.sh pd gcc install
+
+You will probably have to have superuser rights in order to install things 
+into the default location.
+(try "sudo" or "su -c" prefixes, or log in as root)
 
 
 1.2) Building externals
@@ -122,8 +135,8 @@ You can clean up the intermediate build folders with
 	bash ../flext/build.sh pd gcc clean
 
 
-1.3) Building externals
-=======================
+1.3) Tested configurations
+==========================
 
 Both flext and flext-based externals have been successfully built with the 
 following combination of platform-system-compiler, build type.

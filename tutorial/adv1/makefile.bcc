@@ -1,0 +1,13 @@
+# adv1 - flext tutorial example
+# Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
+#
+# Makefile for BorlandC++ 
+#
+# usage: make -f makefile.bcc
+#
+# ---------------------------------------------
+
+NAME=adv1
+SETUPFUNCTION=adv1_setup
+
+!include ..\makefile-inc.bcc

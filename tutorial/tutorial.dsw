@@ -47,22 +47,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "prepend"=..\..\prepend\prepend.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-    begin source code control
-    prepend
-    ..\..\prepend
-    end source code control
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
 Project: "signal1"=.\signal1\signal1.dsp - Package Owner=<4>
 
 Package=<5>
@@ -83,6 +67,10 @@ Project: "signal2"=.\signal2\signal2.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
+    begin source code control
+    max/flext/tutorial/signal2
+    .\signal2
+    end source code control
 }}}
 
 Package=<4>

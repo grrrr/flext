@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib pd.lib flext-pdwin.lib /nologo /dll /machine:I386 /out:"../simple1.dll" /libpath:"..\msvc" /libpath:"..\..\msvc-debug"
+# ADD LINK32 kernel32.lib user32.lib pd.lib flext-pdwin.lib /nologo /dll /machine:I386 /out:"../msvc/simple1.dll" /libpath:"..\msvc" /libpath:"..\..\msvc-debug"
 
 !ELSEIF  "$(CFG)" == "simple1 - Win32 Debug"
 

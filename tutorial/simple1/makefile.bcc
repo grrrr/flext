@@ -1,0 +1,13 @@
+# simple1 - flext tutorial example
+# Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
+#
+# Makefile for BorlandC++ 
+#
+# usage: make -f makefile.bcc
+#
+# ---------------------------------------------
+
+NAME=simple1
+SETUPFUNCTION=simple1_setup
+
+!include ..\makefile-inc.bcc

@@ -23,8 +23,8 @@ CFG=signal2 - Win32 Debug
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
-# PROP Scc_ProjName ""
-# PROP Scc_LocalPath ""
+# PROP Scc_ProjName "max/flext/tutorial/signal2"
+# PROP Scc_LocalPath "."
 CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib pd.lib flext-pdwin.lib /nologo /dll /machine:I386 /out:"../signal2~.dll" /libpath:"..\msvc" /libpath:"..\..\msvc-debug"
+# ADD LINK32 kernel32.lib user32.lib pd.lib flext-pdwin.lib /nologo /dll /machine:I386 /out:"../msvc/signal2~.dll" /libpath:"..\msvc" /libpath:"..\..\msvc-debug"
 
 !ELSEIF  "$(CFG)" == "signal2 - Win32 Debug"
 

@@ -8,17 +8,24 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 -------------------------------------------------------------------------
 
 This is an example of an external using the STK ("synthesis toolkit") library.
-See http://ccrma-www.stanford.edu/software/stk
+For STK see http://ccrma-www.stanford.edu/software/stk
+
+STK needs C++ exceptions switched on.
+
+The STK tutorial examples assume that a stk.lib static library exists which contains all the
+source files of the stk/src directory (except the rt*.cpp files).
+The library should be compiled multithreaded and with the appropriate compiler flags for 
+the respective platform (e.g. __OS_WINDOWS__ and __LITTLE_ENDIAN__ for Windows)
 
 */
 
-#define FLEXT_ATTRIBUTES 1
-
 #include <flstk.h>
- 
+
 #if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 401)
 #error You need at least flext version 0.4.1
 #endif
+
+#include "Noise.h"
 
 
 class stk1:
@@ -30,66 +37,54 @@ public:
 	stk1();
 
 protected:
-
 	// these are obligatory!
-	virtual void NewObjs();
-	virtual void FreeObjs();
-	virtual void ProcessObjs();
+	virtual bool NewObjs(); // create STK instruments
+	virtual void FreeObjs(); // destroy STK instruments
+	virtual void ProcessObjs(int n);  // do DSP processing
 
-	// space for a few sndobjs
-//	Pitch *obj1,*obj2;
-
-	float sh1,sh2;
-
-	FLEXT_ATTRVAR_F(sh1)
-	FLEXT_ATTRVAR_F(sh2)
+private:
+	Noise *inst;
+	static void Setup(t_class *c); 
 };
 
 FLEXT_NEW_DSP("stk1~",stk1)
-
+ 
 
 stk1::stk1():
-	sh1(1),sh2(1)
+	inst(NULL)
 { 
-	AddInSignal(2);  // audio ins
-	AddOutSignal(2);  // audio outs
-
-//	obj1 = obj2 = NULL;
-
-	FLEXT_ADDATTR_VAR1("shL",sh1);
-	FLEXT_ADDATTR_VAR1("shR",sh2);
+	AddInAnything();
+	AddOutSignal();  
 }
 
-// construct needed SndObjs
-void stk1::NewObjs()
+
+// create STK instruments
+bool stk1::NewObjs()
 {
+	bool ok = true;
+
 	// set up objects
-//	obj1 = new Pitch(.1f,&InObj(0),sh1,Blocksize(),Samplerate());
-//	obj2 = new Pitch(.1f,&InObj(1),sh2,Blocksize(),Samplerate());
+	try {
+		inst = new Noise;
+	}
+	catch (StkError &) {
+		post("%s - Noise() setup failed!",thisName());
+		ok = false;
+	}
+	return ok;
 }
 
-// destroy the SndObjs
+
+// destroy the STK instruments
 void stk1::FreeObjs()
 {
-//	if(obj1) delete obj1;
-//	if(obj2) delete obj2;
+	if(inst) delete inst;
 }
 
 // this is called on every DSP block
-void stk1::ProcessObjs()
+void stk1::ProcessObjs(int n)
 {
-/*
-	// set current pitch shift
-	obj1->SetPitch(sh1);
-	obj2->SetPitch(sh2);
-
-	// do processing here!!
-	obj1->DoProcess();
-	obj2->DoProcess();
-
-	// output
-	*obj1 >> OutObj(0);
-	*obj2 >> OutObj(1);
-*/
+	while(n--) Outlet(0).tick(inst->tick());
 }
+
 

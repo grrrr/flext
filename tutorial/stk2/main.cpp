@@ -31,20 +31,26 @@ the respective platform (e.g. __OS_WINDOWS__ and __LITTLE_ENDIAN__ for Windows)
 class stk2:
 	public flext_stk
 {
-	FLEXT_HEADER(stk2,flext_stk)
+	FLEXT_HEADER_S(stk2,flext_stk,Setup)
 
 public:
 	stk2();
 
-protected:
+	void m_sh1(float f) { if(inst[0]) inst[0]->setShift(f); }
+	void m_sh2(float f) { if(inst[1]) inst[1]->setShift(f); }
+
 	// these are obligatory!
 	virtual bool NewObjs(); // create STK instruments
 	virtual void FreeObjs(); // destroy STK instruments
 	virtual void ProcessObjs(int n);  // do DSP processing
 
-private:
 	PitShift *inst[2];
-	static void Setup(t_class *c); 
+
+private:
+	static void Setup(t_class *c);
+
+	FLEXT_CALLBACK_F(m_sh1)
+	FLEXT_CALLBACK_F(m_sh2)
 };
 
 FLEXT_NEW_DSP("stk2~",stk2)
@@ -58,6 +64,12 @@ stk2::stk2()
 	inst[0] = inst[1] = NULL;
 }
 
+void stk2::Setup(t_class *c)
+{
+	FLEXT_CADDMETHOD_F(c,0,"shL",m_sh1);
+	FLEXT_CADDMETHOD_F(c,0,"shR",m_sh2);
+}
+
 
 // create STK instruments
 bool stk2::NewObjs()
@@ -66,8 +78,8 @@ bool stk2::NewObjs()
 
 	// set up objects
 	try {
-		inst[0] = new PitShift;
-		inst[1] = new PitShift;
+		for(int i = 0; i < 2; ++i)
+			inst[i] = new PitShift;
 	}
 	catch (StkError &) {
 		post("%s - Noise() setup failed!",thisName());
@@ -80,8 +92,8 @@ bool stk2::NewObjs()
 // destroy the STK instruments
 void stk2::FreeObjs()
 {
-	if(inst[0]) delete inst[0];
-	if(inst[1]) delete inst[1];
+	for(int i = 0; i < 2; ++i)
+		if(inst[i]) delete inst[i];
 }
 
 // this is called on every DSP block

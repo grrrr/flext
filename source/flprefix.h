@@ -36,6 +36,15 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	#define FLEXT_SYS FLEXT_SYS_PD
 #endif
 
+#ifndef FLEXT_SYS_JMAX
+	#define FLEXT_SYS_JMAX	3
+#else
+	// already defined
+	#undef FLEXT_SYS_JMAX
+	#define FLEXT_SYS_JMAX	3
+	#define FLEXT_SYS FLEXT_SYS_JMAX
+#endif
+
 // --- definitions for FLEXT_OS ----------------------
 #define FLEXT_OS_UNKNOWN	0
 #define FLEXT_OS_WIN	1
@@ -78,8 +87,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // Definition of supported real-time systems
 #if FLEXT_SYS == FLEXT_SYS_MAX
 #elif FLEXT_SYS == FLEXT_SYS_PD
+#elif FLEXT_SYS == FLEXT_SYS_JMAX
 #else
-	#error "System must be defined by either FLEXT_SYS_MAX or FLEXT_SYS_PD"
+	#error "System must be defined by either FLEXT_SYS_MAX, FLEXT_SYS_PD or FLEXT_SYS_JMAX"
 #endif
 
 // Definition of OS/CPU

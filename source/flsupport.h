@@ -33,6 +33,18 @@ class FLEXT_SHARE flext {
 	*/
 public:
 
+// --- types -------------------------------------------------------	
+
+#if FLEXT_SYS == FLEXT_SYS_JMAX
+	typedef fts_symbol_t t_symbol;
+	typedef fts_atom_t t_atom;
+	typedef fts_class_t t_class;
+#else
+//	typedef t_symbol t_symbol;
+//	typedef t_atom t_atom;
+//	typedef t_class t_class;
+#endif
+
 // --- memory -------------------------------------------------------	
 
 	/*!	\defgroup FLEXT_S_MEMORY Memory allocation functions
@@ -202,21 +214,39 @@ public:
 	static const t_symbol *sym_signal;
 #endif
 
+#if FLEXT_SYS == FLEXT_SYS_JMAX
 	//! Make a symbol from a string
-	static const t_symbol *MakeSymbol(const char *s) { return gensym(const_cast<char *>(s)); }
-
+	static const t_symbol *MakeSymbol(const char *s) { return ::fts_new_symbol(s); }
+	//! Get symbol string
+	static const char *GetString(const t_symbol *s); // ** TODO **
+#else
+	//! Make a symbol from a string
+	static const t_symbol *MakeSymbol(const char *s) { return ::gensym(const_cast<char *>(s)); }
 	//! Get symbol string
 	static const char *GetString(const t_symbol *s) { return s->s_name; }  
+#endif
 	//! Check for symbol and get string
 	static const char *GetAString(const t_symbol *s,const char *def = "") { return s?GetString(s):def; }
 
 // --- atom stuff ----------------------------------------
 		
 	//! Set atom from another atom
-	static int GetType(const t_atom &a) { return a.a_type; }
-
-	//! Set atom from another atom
 	static void SetAtom(t_atom &a,const t_atom &b) { CopyAtom(&a,&b); }
+
+#if FLEXT_SYS == FLEXT_SYS_JMAX
+	//! Set atom from another atom
+	static int GetType(const t_atom &a) // ** TODO **
+
+	//! Check whether the atom is nothing
+	static bool IsNothing(const t_atom &a) // ** TODO **
+	//! Set the atom to represent nothing
+	static void SetNothing(t_atom &a) // ** TODO **
+
+	//! Check whether the atom is a float
+	static bool IsFloat(const t_atom &a) // ** TODO **
+#else
+	//! Set atom from another atom
+	static int GetType(const t_atom &a) { return a.a_type; }
 
 	//! Check whether the atom is nothing
 	static bool IsNothing(const t_atom &a) { return a.a_type == A_NULL; }
@@ -225,8 +255,20 @@ public:
 
 	//! Check whether the atom is a float
 	static bool IsFloat(const t_atom &a) { return a.a_type == A_FLOAT; }
+#endif
+
 	//! Check whether the atom can be represented as a float
 	static bool CanbeFloat(const t_atom &a) { return IsFloat(a) || IsInt(a); }
+
+#if FLEXT_SYS == FLEXT_SYS_JMAX
+	//! Access the float value (without type check)
+	static float GetFloat(const t_atom &a); // ** TODO **
+	//! Set the atom to represent a float 
+	static void SetFloat(t_atom &a,float v) // ** TODO **
+
+	//! Check whether the atom is a symbol
+	static bool IsSymbol(const t_atom &a) // ** TODO **
+#else
 	//! Access the float value (without type check)
 	static float GetFloat(const t_atom &a) { return a.a_w.w_float; }
 	//! Set the atom to represent a float 
@@ -234,16 +276,25 @@ public:
 
 	//! Check whether the atom is a symbol
 	static bool IsSymbol(const t_atom &a) { return a.a_type == A_SYMBOL; }
+#endif
+
 #if FLEXT_SYS == FLEXT_SYS_PD
 	//! Access the symbol value (without type check)
 	static t_symbol *GetSymbol(const t_atom &a) { return a.a_w.w_symbol; }
 	//! Set the atom to represent a symbol
 	static void SetSymbol(t_atom &a,const t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_symbol = const_cast<t_symbol *>(s); }
-#else
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 	//! Access the symbol value (without type check)
 	static t_symbol *GetSymbol(const t_atom &a) { return a.a_w.w_sym; }
 	//! Set the atom to represent a symbol
 	static void SetSymbol(t_atom &a,const t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_sym = const_cast<t_symbol *>(s); }
+#elif FLEXT_SYS == FLEXT_SYS_JMAX
+	//! Access the symbol value (without type check)
+	static t_symbol *GetSymbol(const t_atom &a); // ** TODO **
+	//! Set the atom to represent a symbol
+	static void SetSymbol(t_atom &a,const t_symbol *s) { ::fts_set_symbol(&a,s); }
+#else
+#error
 #endif
 	//! Check for a symbol and get its value 
 	static t_symbol *GetASymbol(const t_atom &a,t_symbol *def = NULL) { return IsSymbol(a)?GetSymbol(a):def; }  // NULL or empty symbol?
@@ -285,7 +336,7 @@ public:
 	//! Check whether the atom can be a pointer
 	static bool CanbePointer(const t_atom &a) { return IsPointer(a); }
 	//! Access the pointer value (without type check)
-	static t_gpointer *GetPointer(const t_atom &a) { return a.a_w.w_gpointer; }
+	static void *GetPointer(const t_atom &a) { return a.a_w.w_gpointer; }
 	//! Check for a pointer and get its value 
 	static void *GetAPointer(const t_atom &a,void *def = NULL) { return IsPointer(a)?GetPointer(a):def; }
 	//! Set the atom to represent a pointer
@@ -308,12 +359,37 @@ public:
 	static bool IsPointer(const t_atom &) { return false; }
 	//! Check whether the atom can be a pointer
 	static bool CanbePointer(const t_atom &a) { return IsInt(a); }
+	//! Access the pointer value (without type check)
+	static void *GetPointer(const t_atom &a) { return NULL; }
 	//! Check for a pointer and get its value 
 	static void *GetAPointer(const t_atom &a,void *def = NULL) { return IsInt(a)?(void *)GetInt(a):def; }
 	//! Set the atom to represent a pointer
 	static void SetPointer(t_atom &a,void *p) { SetInt(a,(int)p); }
+#elif FLEXT_SYS == FLEXT_SYS_JMAX
+	//! Check for a float and get its value 
+	static float GetAFloat(const t_atom &a,float def = 0) { return IsFloat(a)?GetFloat(a):(IsInt(a)?GetInt(a):def); }
+
+	//! Check whether the atom is an int
+	static bool IsInt(const t_atom &a); // ** TODO **
+	//! Access the integer value (without type check)
+	static int GetInt(const t_atom &a); // ** TODO **
+	//! Check for an integer and get its value 
+	static int GetAInt(const t_atom &a,int def = 0) { return IsInt(a)?GetInt(a):(IsFloat(a)?(int)GetFloat(a):def); }
+	//! Set the atom to represent an integer
+	static void SetInt(t_atom &a,int v) { ::fts_set_long(&a,v); }
+
+	//! Check whether the atom strictly is a pointer
+	static bool IsPointer(const t_atom &); // ** TODO **
+	//! Check whether the atom can be a pointer
+	static bool CanbePointer(const t_atom &a) { return IsPointer(a); }
+	//! Access the pointer value (without type check)
+	static void *GetPointer(const t_atom &a) { return ::fts_get_ptr(&a,NULL); }
+	//! Check for a pointer and get its value 
+	static void *GetAPointer(const t_atom &a,void *def = NULL) { return ::fts_get_ptr(&a,def); }
+	//! Set the atom to represent a pointer
+	static void SetPointer(t_atom &a,void *p) { ::fts_set_ptr(&a,p); }
 #else
-#error
+#error "Platform not supported"
 #endif
 
 // --- atom list stuff -------------------------------------------

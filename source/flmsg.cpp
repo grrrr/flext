@@ -47,7 +47,7 @@ bool flext_base::CallMeth(const methitem &m,int argc,const t_atom *argv)
 		}
 #if FLEXT_SYS == FLEXT_SYS_PD
 		case a_pointer: {
-			if(IsPointer(argv[ix])) aargs[ix].pt = GetPointer(argv[ix]);
+			if(IsPointer(argv[ix])) aargs[ix].pt = (t_gpointer *)GetPointer(argv[ix]);
 			else ok = false;
 			break;
 		}

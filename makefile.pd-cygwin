@@ -17,7 +17,7 @@ include $(CONFIG)
 
 
 # compiler+linker stuff
-INCLUDES=$(PDPATH)/src 
+INCLUDES=/usr/include $(PDPATH)/src 
 
 FLAGS=-DFLEXT_SYS=2 -fno-exceptions $(UFLAGS)
 CFLAGS=-O6 
@@ -55,7 +55,7 @@ TARGET_D=$(TARGDIR)/$(NAME)_d-pdwin.lib
 TARGET_T=$(TARGDIR)/$(NAME)_t-pdwin.lib
 TARGET_TD=$(TARGDIR)/$(NAME)_td-pdwin.lib
 
-all: $(TARGDIR) $(TARGET) $(TARGET_D) # $(TARGET_T) $(TARGET_TD)
+all: $(TARGDIR) $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
 
 $(TARGDIR):
 	-mkdir $(TARGDIR)
@@ -102,7 +102,7 @@ $(INSTDIR):
 install:: $(INSTDIR)
 endif
 
-install:: $(TARGET) $(TARGET_D) $(patsubst %,$(SRCDIR)/%,$(HDRS)) # $(TARGET_T) $(TARGET_TD)  
+install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD) $(patsubst %,$(SRCDIR)/%,$(HDRS)) 
 	cp $^ $(INSTDIR)
 
 

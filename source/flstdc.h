@@ -290,25 +290,6 @@ typedef t_symbol *t_symptr;
 #define ERRINTERNAL() error("flext: Internal error in file " __FILE__ ", line %i - please report",(int)__LINE__)
 
 
-/* Set the right calling convention (and exporting) for the OS */
-
-#ifdef _MSC_VER
-	#ifdef FLEXT_SHARED
-        // for compiling a shared flext library FLEXT_EXPORTS must be defined
-        #ifdef FLEXT_EXPORTS
-		    #define FLEXT_SHARE __declspec(dllexport)
-        #else
-		    #define FLEXT_SHARE __declspec(dllimport)
-        #endif
-	#else
-		#define FLEXT_SHARE
-	#endif
-	#define FLEXT_EXT __declspec(dllexport)
-#else                   // other OS's
-	#define FLEXT_SHARE
-	#define FLEXT_EXT
-#endif
-
 // ----- disable attribute editor for PD version < devel_0_36 or 0.37
 #ifndef PD_MAJOR_VERSION
 #undef FLEXT_NOATTREDIT

@@ -106,7 +106,7 @@ protected:
 
     void insert(size_t k,void *t)
     {
-        FLEXT_ASSERT(t);
+//        FLEXT_ASSERT(t);
         if(n) 
             _set(k,t);
         else {
@@ -115,7 +115,7 @@ protected:
         }
     }
 
-    void *find(size_t k) { return n?_find(k):NULL; }
+    void *find(size_t k) const { return n?_find(k):NULL; }
 
     void erase(size_t k) { if(n) { void *s = _remove(k); if(s) Free(s); } }
 
@@ -123,11 +123,11 @@ protected:
 
     void clear();
 
-    class iterator
+    class FLEXT_SHARE iterator
     {
     public:
         iterator(): map(NULL) {}
-        iterator(TableAnyMap &m): map(&m),ix(0) { leftmost(); }
+        iterator(const TableAnyMap &m): map(&m),ix(0) { leftmost(); }
         iterator(iterator &it): map(it.map),ix(it.ix) {}
     
         iterator &operator =(const iterator &it) { map = it.map,ix = it.ix; return *this; }
@@ -144,13 +144,13 @@ protected:
         void leftmost()
         {
             // search smallest branch (go left as far as possible)
-            TableAnyMap *nmap;
+            const TableAnyMap *nmap;
             while((nmap = map->left) != NULL) map = nmap;
         }
 
         void forward();
 
-        TableAnyMap *map;
+        const TableAnyMap *map;
         int ix;
     };
 
@@ -189,7 +189,7 @@ private:
     bool _toright(Data &v) { return _toright(v.key,v.value); }
 
     bool _set(size_t k,void *t);
-    void *_find(size_t k);
+    void *_find(size_t k) const;
     void *_remove(size_t k);
 
     const int tsize;
@@ -197,11 +197,11 @@ private:
     int count,n;
     TableAnyMap *parent,*left,*right;
 
-    int _tryix(size_t k)
+    int _tryix(size_t k) const
     {
         //! return index of data item with key <= k
 
-        FLEXT_ASSERT(n);
+//        FLEXT_ASSERT(n);
         int ix = 0;
         {
             int b = n;
@@ -225,7 +225,7 @@ private:
 
     static void _eraseempty(TableAnyMap *&b)
     {
-        FLEXT_ASSERT(b);
+//        FLEXT_ASSERT(b);
         if(!b->n) { 
             // remove empty branch
             delete b; b = NULL; 
@@ -236,7 +236,7 @@ private:
     void _getbig(Data &dt);
 };
 
-template <typename K,typename T,int N = 8,bool O = false>
+template <typename K,typename T,int N = 8>
 class TablePtrMap
     : TableAnyMap
 {
@@ -250,7 +250,7 @@ public:
 
     inline void insert(K k,T *t) { TableAnyMap::insert(*(size_t *)&k,t); }
 
-    inline T *find(K k) { return (T *)TableAnyMap::find(*(size_t *)&k); }
+    inline T *find(K k) const { return (T *)TableAnyMap::find(*(size_t *)&k); }
 
     inline void erase(K k) { TableAnyMap::erase(*(size_t *)&k); }
     inline T *remove(K k) { return (T *)TableAnyMap::remove(*(size_t *)&k); }
@@ -260,7 +260,7 @@ public:
     {
     public:
         iterator() {}
-        iterator(TablePtrMap &m): TableAnyMap::iterator(m) {}
+        iterator(const TablePtrMap &m): TableAnyMap::iterator(m) {}
         iterator(iterator &it): TableAnyMap::iterator(it) {}
 
         inline iterator &operator =(const iterator &it) { TableAnyMap::operator =(it); return *this; }
@@ -278,17 +278,26 @@ protected:
 
     virtual TableAnyMap *New(TableAnyMap *parent) { return new TablePtrMap(parent); }
 
-    virtual void Free(void *ptr) 
-    { 
-        if(O) {
-            FLEXT_ASSERT(ptr);
-            delete (T *)ptr;
-        }
-    }
+    virtual void Free(void *ptr) {}
 
     Data slots[N];
 };
 
+template <typename K,typename T,int N = 8>
+class TablePtrMapOwned
+    : public TablePtrMap<K,T,N>
+{
+public:
+    virtual ~TablePtrMapOwned() { clear(); }
+
+protected:
+    virtual void Free(void *ptr) 
+    { 
+//            FLEXT_ASSERT(ptr);
+        delete (T *)ptr;
+    }
+
+};
 
 //! @} // FLEXT_SUPPORT
 

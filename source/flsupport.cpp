@@ -373,7 +373,7 @@ bool TableAnyMap::_set(size_t k,void *t)
     }
 }
 
-void *TableAnyMap::_find(size_t k)
+void *TableAnyMap::_find(size_t k) const
 {
     FLEXT_ASSERT(n);
     if(n < tsize) {

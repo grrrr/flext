@@ -49,10 +49,10 @@ public:
 #if defined(_MSC_VER) && (_MSC_VER < 0x1300)
         // with the MSVC6 STL implementation iterators can't be initialized...
         iterator(AnyMap::iterator &it) { static_cast<AnyMap::iterator &>(*this) = it; }
-        iterator(AnyMap::Parent::iterator &it) { static_cast<AnyMap::Parent::iterator &>(*this) = it; }
+//        iterator(AnyMap::Parent::iterator &it) { static_cast<AnyMap::Parent::iterator &>(*this) = it; }
 #else
         iterator(AnyMap::iterator &it): AnyMap::iterator(it) {}
-        iterator(AnyMap::Parent::iterator &it): AnyMap::Parent::iterator(it) {}
+//        iterator(AnyMap::Parent::iterator &it): AnyMap::Parent::iterator(it) {}
 #endif
 
         inline K &key() const { return *(K *)&((*this)->first); }
@@ -67,7 +67,7 @@ public:
         inline T &data() const { return *(T *)&second; }
 	};
 
-    inline iterator find(K k) { return AnyMap::find(*(unsigned int *)&k); }
+    inline iterator find(K k) { return iterator(AnyMap::find(*(unsigned int *)&k)); }
     inline T &operator [](K k) { return *(T *)&(AnyMap::operator [](*(unsigned int *)&k)); }
     inline void erase(K k) { AnyMap::erase(*(unsigned int *)&k); }
 };

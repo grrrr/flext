@@ -22,6 +22,7 @@ Version history:
 - fixes for Max 4.5 headers
 - removed Mach-O/CFM glue stuff again and added makefiles for Max/MachO
 - in flext::StopThread don't wait for thread to have stopped!
+- support PD tooltips (only in devel branch at the moment)
 
 0.4.6:
 - added a text edit window for list attributes

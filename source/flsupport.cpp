@@ -74,6 +74,15 @@ void flext::Setup()
 }
 
 
+#if defined(FLEXT_THREADED) && defined(FLEXT_PDLOCK)
+#define SYSLOCK() sys_lock()
+#define SYSUNLOCK() sys_unlock()
+#else
+#define SYSLOCK(on) (void)0
+#define SYSUNLOCK(on) (void)0
+#endif
+
+
 /////////////////////////////////////////////////////////
 // overloaded new/delete memory allocation methods
 //
@@ -101,6 +110,7 @@ void *flext_root::operator new(size_t bytes)
 void flext_root::operator delete(void *blk)
 {
 	char *ori = (char *)blk-sizeof(size_t);
+
 #if FLEXT_SYS == FLEXT_SYS_JMAX
 	fts_free(ori);
 #else
@@ -114,11 +124,13 @@ void *flext_root::NewAligned(size_t bytes,int bitalign)
 	const size_t ovh = sizeof(size_t)+sizeof(char *);
 	const unsigned long alignovh = bitalign/8-1;
 	bytes += ovh+alignovh;
+
 #if FLEXT_SYS == FLEXT_SYS_JMAX
 	char *blk = (char *)::fts_malloc(bytes);
 #else
 	char *blk = (char *)::getbytes(bytes);
 #endif
+
 	char *ablk = reinterpret_cast<char *>((reinterpret_cast<unsigned long>(blk)+ovh+alignovh) & ~alignovh);
 	*(char **)(ablk-sizeof(size_t)-sizeof(char *)) = blk;
 	*(size_t *)(ablk-sizeof(size_t)) = bytes;
@@ -184,46 +196,25 @@ int flext::Int2Bits(unsigned long n)
 
 void flext_root::post(const char *fmt, ...)
 {
-#ifdef FLEXT_THREADS
-    static flext::ThrMutex mutex;
-	mutex.Lock();
-#endif
 	va_list ap;
     va_start(ap, fmt);
-#if FLEXT_SYS == FLEXT_SYS_MAX
+
 	char buf[1024]; // \TODO this is quite unsafe.....
     vsprintf(buf, fmt, ap);
 	::post(buf);
-#else
-    vfprintf(stderr, fmt, ap);
-	::post("");
-#endif
+
     va_end(ap);
-#ifdef FLEXT_THREADS
-	mutex.Unlock();
-#endif
 }
 
 void flext_root::error(const char *fmt,...)
 {
-#ifdef FLEXT_THREADS
-    static flext::ThrMutex mutex;
-	mutex.Lock();
-#endif
 	va_list ap;
     va_start(ap, fmt);
-#if FLEXT_SYS == FLEXT_SYS_MAX
+
 	char buf[1024]; // \TODO this is quite unsafe.....
     STD::sprintf(buf,"error: ");
     vsprintf(buf+7, fmt, ap);
 	::post(buf);
-#else
-    fprintf(stderr, "error: ");
-    vfprintf(stderr, fmt, ap);
-	::post("");
-#endif
+
     va_end(ap);
-#ifdef FLEXT_THREADS
-	mutex.Unlock();
-#endif
 }

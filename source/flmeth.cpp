@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -20,8 +20,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <set>
 
 
-flext_base::MethItem::MethItem(int in,const t_symbol *tg,AttrItem *conn): 
-	Item(tg,in,conn),index(0),
+flext_base::MethItem::MethItem(AttrItem *conn): 
+	Item(conn),index(0),
 	argc(0),args(NULL)
 	,fun(NULL)
 {}
@@ -41,7 +41,8 @@ void flext_base::MethItem::SetArgs(methfun _fun,int _argc,metharg *_args)
 
 void flext_base::AddMethodDef(int inlet,const char *tag)
 {
-	methhead->Add(new MethItem(inlet,tag?MakeSymbol(tag):NULL));
+    const t_symbol *t = tag?MakeSymbol(tag):NULL;
+	methhead->Add(new MethItem,t,inlet);
 }
 
 /*! \brief Add a method to the queue
@@ -84,42 +85,32 @@ void flext_base::AddMethod(ItemCont *ma,int inlet,const char *tag,methfun fun,me
 		va_end(marker);
 	}
 	
-	MethItem *mi = new MethItem(inlet,MakeSymbol(tag));
-
+	MethItem *mi = new MethItem;
+    mi->index = ma->Members();
 	mi->SetArgs(fun,argc,args);
-
-	ma->Add(mi);
-
-	// set index
-	MethItem *last = (MethItem *)ma->Last();
-	if(last) mi->index = last->index+1;
+	ma->Add(mi,MakeSymbol(tag),inlet);
 }
-
-
-struct methless : public std::binary_function <flext_base::MethItem *,flext_base::MethItem *, bool> 
-{
-	bool operator()(const flext_base::MethItem *l,const flext_base::MethItem *r) const { 
-		return l->index != r->index?l->index < r->index:strcmp(flext::GetString(l->tag),flext::GetString(r->tag)) < 0; 
-	}
-};
 
 void flext_base::ListMethods(AtomList &la,int inlet) const
 {
-	typedef std::set<MethItem *,methless> MethList;
+	typedef std::map<int,const t_symbol *> MethList;
 	MethList list[2];
 
 	int i;
 	for(i = 0; i <= 1; ++i) {
 		ItemCont *a = i?methhead:clmethhead;
-		if(a) {
-			for(int ai = 0; ai < a->Size(); ++ai) {
-				for(Item *l = a->GetItem(ai); l; l = l->nxt) {
-					MethItem *aa = (MethItem *)l;
+		if(a && a->Contained(inlet)) {
+            ItemSet &ai = a->GetInlet(inlet);
+            for(ItemSet::iterator as = ai.begin(); as != ai.end(); ++as) {
+                for(ItemList::iterator al = as->second.begin(); al != as->second.end(); ++al) {
+					MethItem *aa = (MethItem *)*al;
 
-					// match inlet and see check it's not related to an attribute
-					if(aa->inlet == inlet && !aa->IsAttr())
-						list[i].insert(aa);
-				}
+					// check it's not related to an attribute
+                    if(!aa->IsAttr()) {
+                        list[i][aa->index] = as->first;
+                        break;
+                    }
+                }
 			}
 		}
 	}
@@ -129,7 +120,7 @@ void flext_base::ListMethods(AtomList &la,int inlet) const
 	MethList::iterator it;
 	for(i = 0; i <= 1; ++i)
 		for(it = list[i].begin(); it != list[i].end(); ++it) 
-			SetSymbol(la[ix++],(*it)->tag);
+			SetSymbol(la[ix++],it->second);
 }
 
 bool flext_base::ListMethods(int inlet) const

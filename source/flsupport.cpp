@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -271,23 +271,6 @@ unsigned long flext::AtomHash(const t_atom &a)
 #else
 #error Not implemented
 #endif
-}
-
-unsigned int flext::FoldBits(unsigned long h,int bits)
-{
-	if(!bits) return 0;
-	const int hmax = (1<<bits)-1;
-	unsigned int ret = 0;
-	for(unsigned int i = 0; i < sizeof(h)*8; i += bits)
-		ret ^= (h>>i)&hmax;
-	return ret;
-}
-
-int flext::Int2Bits(unsigned long n)
-{
-	int b;
-	for(b = 0; n; ++b) n >>= 1;
-	return b;
 }
 
 

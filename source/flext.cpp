@@ -122,18 +122,9 @@ bool flext_base::Init()
 	if(ok) ok = InitInlets() && InitOutlets();
 
 	if(ok) {
-		// initialize method lists
-		if(methhead) methhead->Finalize();
-		if(clmethhead) clmethhead->Finalize();
-		
-		if(procattr) {
-			// initialize attribute lists
-			if(attrhead) attrhead->Finalize();
-			if(clattrhead) clattrhead->Finalize();
-
+		if(procattr && m_holdaargc && m_holdaargv) {
 			// initialize creation attributes
-			if(m_holdaargc && m_holdaargv)
-				ok = InitAttrib(m_holdaargc,m_holdaargv);
+			ok = InitAttrib(m_holdaargc,m_holdaargv);
 		}
 	}
 

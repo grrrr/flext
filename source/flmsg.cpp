@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -72,60 +72,64 @@ bool flext_base::CallMeth(const MethItem &m,int argc,const t_atom *argv)
 	return ret;
 }
 
-bool flext_base::TryMethTag(const MethItem *m,int inlet,const t_symbol *t,int argc,const t_atom *argv)
+bool flext_base::TryMethTag(ItemList &lst,const t_symbol *tag,int argc,const t_atom *argv)
 {
-	do {
-		if(m->inlet == inlet && m->tag == t) {
-			FLEXT_LOG3("found method tag %s: inlet=%i, argc=%i",GetString(m->tag),m->inlet,argc);
-		
-			if(m->attr) {
-				// attributes are treated differently
+    for(ItemList::iterator it = lst.begin(); it != lst.end(); ++it) {
+        MethItem *m = (MethItem *)*it;
 
-				if(m->attr->IsGet())
-					return DumpAttrib(m->attr);
-				else
-					return SetAttrib(m->attr,argc,argv);
-			}
-			else {
-				if(m->argc == 1) {
-					// try list
-					if(m->args[0] == a_list && ((methfun_V)m->fun)(this,argc,const_cast<t_atom *>(argv))) return true;
+//        FLEXT_LOG3("found method tag %s: inlet=%i, argc=%i",GetString(tag),m->inlet,argc);
+	
+		if(m->attr) {
+			// attributes are treated differently
 
-					// try anything
-					if(m->args[0] == a_any && ((methfun_A)m->fun)(this,m->tag,argc,const_cast<t_atom *>(argv))) return true;
-				}
-
-				// try matching number of args
-				if(argc == m->argc && CallMeth(*m,argc,argv)) return true;
-			}
+			if(m->attr->IsGet())
+				return DumpAttrib(tag,m->attr);
+			else
+				return SetAttrib(tag,m->attr,argc,argv);
 		}
-	} while((m = (const MethItem *)m->nxt) != NULL);
+		else {
+			if(m->argc == 1) {
+				// try list
+				if(m->args[0] == a_list && ((methfun_V)m->fun)(this,argc,const_cast<t_atom *>(argv))) return true;
+
+				// try anything
+				if(m->args[0] == a_any && ((methfun_A)m->fun)(this,tag,argc,const_cast<t_atom *>(argv))) return true;
+			}
+
+			// try matching number of args
+			if(argc == m->argc && CallMeth(*m,argc,argv)) return true;
+		}
+	}
 	return false;
 }
 
-bool flext_base::TryMethSym(const MethItem *m,int inlet,const t_symbol *t,const t_symbol *s)
+bool flext_base::TryMethSym(ItemList &lst,const t_symbol *s)
 {
-	do {
-		if(!m->IsAttr() && m->inlet == inlet && m->tag == t) {
-			FLEXT_LOG3("found symbol method for %s: inlet=%i, symbol=%s",GetString(m->tag),m->inlet,GetString(s));
+    for(ItemList::iterator it = lst.begin(); it != lst.end(); ++it) {
+        MethItem *m = (MethItem *)*it;
+
+		if(!m->IsAttr()) {
+//			FLEXT_LOG3("found symbol method for %s: inlet=%i, symbol=%s",GetString(m->tag),m->inlet,GetString(s));
 
 			t_any sym; sym.st = const_cast<t_symbol *>(s);
 			if(((methfun_1)m->fun)(this,sym)) return true;
 		}
-	} while((m = (const MethItem *)m->nxt) != NULL);
+	}
 	return false;
 }
 
-bool flext_base::TryMethAny(const MethItem *m,int inlet,const t_symbol *t,const t_symbol *s,int argc,const t_atom *argv)
+bool flext_base::TryMethAny(ItemList &lst,const t_symbol *s,int argc,const t_atom *argv)
 {
-	do {
-		if(!m->IsAttr() && m->inlet == inlet && m->tag == t) {
-			FLEXT_LOG4("found any method for %s: inlet=%i, symbol=%s, argc=%i",GetString(m->tag),m->inlet,GetString(s),argc);
+    for(ItemList::iterator it = lst.begin(); it != lst.end(); ++it) {
+        MethItem *m = (MethItem *)*it;
+
+		if(!m->IsAttr() && m->argc == 1 && m->args[0] == a_any) {
+//			FLEXT_LOG4("found any method for %s: inlet=%i, symbol=%s, argc=%i",GetString(m->tag),m->inlet,GetString(s),argc);
 
 			if(((methfun_A)m->fun)(this,s,argc,const_cast<t_atom *>(argv))) return true;
 		}
-	} while((m = (const MethItem *)m->nxt) != NULL);
-	return false;
+    }
+    return false;
 }
 
 /*! \brief Find a method item for a specific tag and arguments
@@ -133,21 +137,21 @@ bool flext_base::TryMethAny(const MethItem *m,int inlet,const t_symbol *t,const 
 */
 bool flext_base::FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *argv)
 {
-	MethItem *m;
-	
+    ItemList *lst;
+
 	// search for exactly matching tag
-	if((m = (MethItem *)methhead->Find(s,inlet)) != NULL && TryMethTag(m,inlet,s,argc,argv)) return true;
-	if((m = (MethItem *)clmethhead->Find(s,inlet)) != NULL && TryMethTag(m,inlet,s,argc,argv)) return true;
+	if((lst = methhead->FindList(s,inlet)) != NULL && TryMethTag(*lst,s,argc,argv)) return true;
+	if((lst = clmethhead->FindList(s,inlet)) != NULL && TryMethTag(*lst,s,argc,argv)) return true;
 	
 	// if no list args, then search for pure symbol 
 	if(!argc) {
-		if((m = (MethItem *)methhead->Find(sym_symbol,inlet)) != NULL && TryMethSym(m,inlet,sym_symbol,s)) return true;
-		if((m = (MethItem *)clmethhead->Find(sym_symbol,inlet)) != NULL && TryMethSym(m,inlet,sym_symbol,s)) return true;
+		if((lst = methhead->FindList(sym_symbol,inlet)) != NULL && TryMethSym(*lst,s)) return true;
+		if((lst = clmethhead->FindList(sym_symbol,inlet)) != NULL && TryMethSym(*lst,s)) return true;
 	}
 	
 	// otherwise search for anything
-	if((m = (MethItem *)methhead->Find(sym_anything,inlet)) != NULL && m->argc == 1 && m->args[0] == a_any && TryMethAny(m,inlet,sym_anything,s,argc,argv)) return true;
-	if((m = (MethItem *)clmethhead->Find(sym_anything,inlet)) != NULL && m->argc == 1 && m->args[0] == a_any && TryMethAny(m,inlet,sym_anything,s,argc,argv)) return true;
+	if((lst = methhead->FindList(sym_anything,inlet)) != NULL && TryMethAny(*lst,s,argc,argv)) return true;
+	if((lst = clmethhead->FindList(sym_anything,inlet)) != NULL && TryMethAny(*lst,s,argc,argv)) return true;
 
 	// if nothing found try any inlet
 	return inlet >= 0 && FindMeth(-1,s,argc,argv);

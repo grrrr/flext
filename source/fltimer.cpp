@@ -193,7 +193,7 @@ bool flext::Timer::Delay(double tm,void *data)
 	\return true on success
 	\note the first event will be delayed by tm
 */
-bool flext::Timer::Periodic(double tm,void *data)
+bool flext::Timer::Periodic(double tm,void *data) 
 {
 	userdata = data;
 	period = tm;

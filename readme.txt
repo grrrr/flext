@@ -18,6 +18,11 @@ Package files:
 - flstdc.h: Basic definitions in classic C - some common vocabulary for the different platforms
 - flbase.h,flbase.cpp: GEM-like C++ interface
 - flclass.h,flext.cpp: actual base classes for message (flext_base) and dsp (flext_dsp) processing
+- fldsp.h,fldsp.cpp: code for signal externals
+- flthr.h,flthr.cpp: code for threaded methods
+- flatom.cpp: code fpr functions dealing with lists of atoms
+- flutil.cpp: additional utility functions
+- flxlet.cpp: code for variable inlet/outlet stuff
 - flinternals.h: internal definitions for flext library
 - flbuf.cpp: buffer object handling for base classes
 - fllib.cpp: code for handling external libraries in MaxMSP
@@ -39,6 +44,8 @@ o Borland C++ 5.5 (free): edit & run "make -f makefile.bcc"
 o Microsoft Visual C++ 6: use the "flext.dsp" project file  
 > you have to edit the pd path in the project properties/C-C++/preprocessor tab!
 
+o Cygwin: edit & run "make -f makefile.cygwin" and "make -f makefile.cygwin install"
+
 pd - linux:
 -----------
 o GCC: edit & run "make -f makefile.pd-linux" and as root "make -f makefile.pd-linux install"
@@ -58,6 +65,7 @@ pros:
 - faster development, more robust coding
 - sharing of common methods and data by using base classes
 - any input to any inlet (with the exception of signal streams)
+- transparent use of threads for methods
 - libraries of externals in MaxMSP
 
 cons:
@@ -72,6 +80,8 @@ see flext.h for the documented base classes
 Version history:
 
 0.3.0:
+- added CYGWIN support
+
 - added threaded methods along with a message queue for ToOut* functions (very unstable for MaxMSP!)
   to use threads compile flext with FLEXT_THREADS definition
 - check/update function for buffer change (resize etc.)

@@ -1,0 +1,68 @@
+# pan~ - tutorial example (by Frank Barknecht)
+#
+# Makefile for gcc 
+#
+# usage: make -f makefile.pd-cygwin
+#
+# ---------------------------------------------
+
+NAME=pan~
+
+# where to build
+TARGDIR=./pd-cygwin
+
+# where to install	### EDIT! ###
+INSTDIR=c:/programme/audio/pd/extra
+
+# flext stuff  ### EDIT! ###
+FLEXTPATH=../..
+FLEXTLIB=$(FLEXTPATH)/pd-cygwin/flext.lib
+
+# compiler+linker stuff	### EDIT! ###
+INCLUDES=c:/programme/audio/pd/src
+LIBPATH=c:/programme/audio/pd/bin
+FLAGS=-DPD
+CFLAGS=-O6 -mpentium
+LIBS=m pd
+
+
+# the rest can stay untouched
+# ----------------------------------------------
+
+# all the source files from the package
+SRCS=main.cpp
+HDRS=
+
+TARGET=$(TARGDIR)/$(NAME).dll
+
+# default target
+all: $(TARGDIR) $(TARGET)
+
+$(SRCS): $(HDRS)
+	touch $@
+
+$(TARGDIR):
+	mkdir $(TARGDIR)
+
+$(TARGDIR)/%.o : %.cpp
+	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(FLEXTPATH)) $< -o $@
+
+$(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS)) $(FLEXTLIB)
+	$(CXX) $(LDFLAGS) -shared $(patsubst %,-L%,$(LIBPATH)) $^ $(patsubst %,-l%,$(LIBS)) -o $@
+	chmod 755 $@
+
+$(INSTDIR):
+	mkdir $(INSTDIR)
+
+install:: $(INSTDIR)
+
+install:: $(TARGET)  
+	cp $^ $(INSTDIR)
+	chown root.root $(patsubst %,$(INSTDIR)/%,$(notdir $^))
+
+.PHONY: clean
+clean:
+	rm -f $(TARGDIR)/*.o $(TARGET)
+	
+
+

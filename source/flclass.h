@@ -405,6 +405,10 @@ public:
 
 	typedef pthread_t thrid_t;
 
+	/*! \brief Get current thread id
+	*/
+	static thrid_t GetThreadId();
+
 	/*! \brief Increase/Decrease priority of a thread
 	*/
 	static bool ChangePriority(int dp,thrid_t thr = GetThreadId());
@@ -416,10 +420,6 @@ public:
 	/*! \brief Set priority of a thread
 	*/
 	static bool SetPriority(int p,thrid_t thr = GetThreadId());
-
-	/*! \brief Get current thread id
-	*/
-	static thrid_t GetThreadId();
 
 
 #endif // FLEXT_THREADS
@@ -437,7 +437,8 @@ protected:
 	/*! \brief Thread parameters
 		\internal
 	*/
-	class thr_params 
+	class thr_params:
+		public flext 
 	{
 	public:
 		thr_params(flext_base *c,int n = 1);

@@ -149,7 +149,7 @@ flext_base::~flext_base()
 	shouldexit = true;
 	for(int wi = 0; thrhead && wi < 100; ++wi) Sleep(0.01f);
 	
-#ifdef PD	
+#ifdef _POSIX_THREADS	
 	qmutex.Lock(); // Lock message queue
 	tlmutex.Lock();
 	// timeout -> hard termination

@@ -5,6 +5,9 @@
 # where are the PD header files?
 PDPATH=/usr/local/pd/src
 
+# where is the SndObj include directory? (leave blank to disable SndObj support)
+SNDOBJ=/usr/src/sndobj/include
+
 # where should flext libraries be built?
 TARGDIR=./pd-darwin
 

@@ -64,7 +64,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "msvc-debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GR /GX /ZI /Od /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GR /GX /ZI /Od /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0xc07 /d "_DEBUG"
 # ADD RSC /l 0xc07 /d "_DEBUG"
 BSC32=bscmake.exe

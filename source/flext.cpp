@@ -30,7 +30,12 @@ struct flext_base::px_object  // no virtual table!
 
 V flext_base::px_object::px_method(px_object *obj,t_symbol *s,I argc,t_atom *argv)
 {
-	obj->base->m_anything_n(obj->index,s,argc,argv);
+	obj->base->m_methodmain(obj->index,s,argc,argv);
+}
+
+V flext_base::cb_px_anything(V *c,t_symbol *s,I argc,t_atom *argv)
+{
+	thisObject(c)->m_methodmain(0,s,argc,argv);
 }
 
 #elif defined(MAXMSP)
@@ -40,29 +45,35 @@ V flext_base::cb_px_anything(V *c,t_symbol *s,I argc,t_atom *argv)
 	// check if inlet allows anything (or list)
 	flext_base *o = thisObject(c);
 	I ci = ((flext_hdr *)o->x_obj)->curinlet;
-	o->m_anything_n(ci,s,argc,argv);
+	o->m_methodmain(ci,s,argc,argv);
 }
 
 V flext_base::cb_px_int(V *c,I v)
 {
+	static const t_symbol = *sym_int = gensym("int");
+
 	// check if inlet allows int type
 	t_atom atom;
 	SETINT(&atom,v);  
-	cb_px_anything(c,gensym("int"),1,&atom);
+	cb_px_anything(c,sym_int,1,&atom);
 }
 
 V flext_base::cb_px_float(V *c,F v)
 {
+	static const t_symbol = *sym_float = gensym("float");
+
 	// check if inlet allows float type
 	t_atom atom;
 	SETFLOAT(&atom,v);  
-	cb_px_anything(c,gensym("float"),1,&atom);
+	cb_px_anything(c,sym_float,1,&atom);
 }
 
 V flext_base::cb_px_bang(V *c)
 {
+	static const t_symbol = *sym_bang = gensym("bang");
+
 	// check if inlet allows bang
-	cb_px_anything(c,gensym("bang"),0,NULL);
+	cb_px_anything(c,sym_bang,0,NULL);
 }
 
 #endif
@@ -172,38 +183,22 @@ BL flext_base::setup_inout()
 			for(ix = 1; ix < incnt; ++ix) {
 				switch(list[ix]) {
 					case xlet::tp_float:
-					case xlet::tp_flint: {
-						C sym[] = "ft??";
-						if(ix >= 10) { 
-							if(compatibility) {
-								// Max allows max. 9 inlets
-								post("%s: Only 9 float inlets allowed in compatibility mode",thisName());
-								ok = false;
-							}
-							else 
-								sym[2] = '0'+ix/10,sym[3] = '0'+ix%10;
-						}
-						else 
-							sym[2] = '0'+ix,sym[3] = 0;  
-					    if(ok) inlet_new(x_obj, &x_obj->ob_pd, &s_float, gensym(sym)); 
+					case xlet::tp_flint: 
+					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
+						inlet_new(x_obj,&inlets[ix]->x_obj.ob_pd, &s_float, &s_float);  
 						break;
-					}
 					case xlet::tp_sym: 
-						if(compatibility) {
-							post("%s: No symbol inlets (apart from leftmost) in compatibility mode",thisName());
-							ok = false;
-						}
-					    else
-					    	inlet_new(x_obj, &x_obj->ob_pd, &s_symbol, &s_symbol); 
-						break;
-					case xlet::tp_sig:
-	    				inlet_new(x_obj, &x_obj->ob_pd, &s_signal, &s_signal);  
-						++insigs;
+					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
+						inlet_new(x_obj,&inlets[ix]->x_obj.ob_pd, &s_symbol, &s_symbol);  
 						break;
 					case xlet::tp_any:
 					case xlet::tp_list:
 					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
 						inlet_new(x_obj,&inlets[ix]->x_obj.ob_pd, 0, 0);  // create proxy inlet 
+						break;
+					case xlet::tp_sig:
+	    				inlet_new(x_obj, &x_obj->ob_pd, &s_signal, &s_signal);  
+						++insigs;
 						break;
 					default:
 						error("%s: Wrong type for inlet #%i",thisName(),ix);
@@ -225,6 +220,7 @@ BL flext_base::setup_inout()
 					case xlet::tp_flint:
 						inlets[ix] = (px_object *)proxy_new(x_obj,ix,&((flext_hdr *)x_obj)->curinlet);  // proxy for 2nd inlet messages 
 						break;
+					case xlet::tp_sym:
 					case xlet::tp_any:
 					case xlet::tp_list:
 						inlets[ix] = (px_object *)proxy_new(x_obj,ix,&((flext_hdr *)x_obj)->curinlet);  // proxy for 2nd inlet messages 
@@ -426,8 +422,9 @@ V flext_base::cb_setup(t_class *c)
 #ifdef PROXYIN
 	// proxy for extra inlets
 #ifdef PD
+	add_anything(c,cb_px_anything); // for leftmost inlet
     px_class = class_new(gensym("flext_base proxy"),NULL,NULL,sizeof(px_object),CLASS_PD|CLASS_NOINLET, A_NULL);
-	add_anything(px_class,px_object::px_method);
+	add_anything(px_class,px_object::px_method); // for other inlets
 #elif defined(MAXMSP) 
 	add_anything(c,cb_px_anything);
 	add_bang(c,cb_px_bang);
@@ -452,7 +449,7 @@ V flext_base::m_help()
 
 
 #ifdef PROXYIN
-V flext_base::m_anything_n(I inlet,t_symbol *s,I argc,t_atom *argv)
+V flext_base::m_methodmain(I inlet,t_symbol *s,I argc,t_atom *argv)
 {
 }
 #endif

@@ -59,17 +59,17 @@ endif
 
 MAKEFILE=makefile.pd-linux
 
-ifdef V4_NAMING
-TARGET=${TARGDIR}/${NAME}.a 
-TARGET_D=${TARGDIR}/${NAME}_d.a
-TARGET_T=${TARGDIR}/${NAME}_t.a
-TARGET_TD=${TARGDIR}/${NAME}_td.a
-else
+#ifdef V4_NAMING
+#TARGET=${TARGDIR}/${NAME}.a 
+#TARGET_D=${TARGDIR}/${NAME}_d.a
+#TARGET_T=${TARGDIR}/${NAME}_t.a
+#TARGET_TD=${TARGDIR}/${NAME}_td.a
+#else
 TARGET=${TARGDIR}/lib${NAME}.a 
 TARGET_D=${TARGDIR}/lib${NAME}_d.a
 TARGET_T=${TARGDIR}/lib${NAME}_t.a
 TARGET_TD=${TARGDIR}/lib${NAME}_td.a
-endif
+#endif
 TARGET_S=${TARGDIR}/lib${NAME}.so
 TARGET_SD=${TARGDIR}/lib${NAME}_d.so
 
@@ -143,4 +143,6 @@ install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD) $(TARGET_S) $(TARGET_SD
 	cp $^ $(INSTDIR)
 	chmod a+r $(patsubst %,$(INSTDIR)/%,$(notdir $^))
 	chown root.users $(patsubst %,$(INSTDIR)/%,$(notdir $^))
-
+ifdef V4_NAMING
+	ln -s $(INSTDIR)/*.a $(patsubst %.a,lib%.a,$(INSTDIR)/*.a)
+endif

@@ -34,14 +34,10 @@ public:
 	simple1();
 
 protected:
-	void m_float(float f);  // method 
+	void m_float(float f);  // method for float values
 
 private:
 	FLEXT_CALLBACK_1(m_float,float);  // callback for method "m_float" (with one float argument)
-
-	// FLEXT_CALLBACK_F(...) ... callback with float argument 
-	// is a shortcut for:
-	// FLEXT_CALLBACK_1(...,float) ... just the same
 };
 
 // instantiate the class

@@ -113,7 +113,9 @@ public:
 };
 
 libobject::libobject(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(flext_hdr *)): 
-	clss(cl),newfun(newf),freefun(freef),argc(0),argv(NULL) 
+	newfun(newf),freefun(freef),
+	clss(cl),
+	argc(0),argv(NULL) 
 {}
 	
 // this class stands for one registered object name

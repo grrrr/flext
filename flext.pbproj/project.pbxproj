@@ -381,7 +381,7 @@
 				INSTALL_PATH = /usr/local/pd/flext;
 				LIBRARY_STYLE = STATIC;
 				OPTIMIZATION_CFLAGS = "-O3";
-				OTHER_CFLAGS = "-D FLEXT_SYS=2 -Wno-reorder -Wno-switch";
+				OTHER_CFLAGS = "-D FLEXT_SYS=2 -Wno-switch";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -558,7 +558,7 @@
 				INSTALL_PATH = /usr/local/pd/flext;
 				LIBRARY_STYLE = STATIC;
 				OPTIMIZATION_CFLAGS = "-O3";
-				OTHER_CFLAGS = "-D FLEXT_SYS=2 -D FLEXT_THREADS -Wno-reorder -Wno-switch";
+				OTHER_CFLAGS = "-D FLEXT_SYS_PD -D FLEXT_THREADS -Wno-switch";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -785,7 +785,7 @@
 				INSTALL_PATH = /usr/local/pd/flext;
 				LIBRARY_STYLE = STATIC;
 				OPTIMIZATION_CFLAGS = "-O0";
-				OTHER_CFLAGS = "-D FLEXT_SYS=2 -D FLEXT_DEBUG -Wno-reorder -Wno-switch";
+				OTHER_CFLAGS = "-D FLEXT_SYS=2 -D FLEXT_DEBUG -Wno-switch";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -1012,7 +1012,7 @@
 				INSTALL_PATH = /usr/local/pd/flext;
 				LIBRARY_STYLE = STATIC;
 				OPTIMIZATION_CFLAGS = "-O0";
-				OTHER_CFLAGS = "-D FLEXT_SYS=2 -D FLEXT_THREADS -D FLEXT_DEBUG -Wno-reorder -Wno-switch";
+				OTHER_CFLAGS = "-D FLEXT_SYS=2 -D FLEXT_THREADS -D FLEXT_DEBUG  -Wno-switch";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -1277,7 +1277,7 @@
 				HEADER_SEARCH_PATHS = "\"$(SYSTEM_DEVELOPER_DIR)/Headers/FlatCarbon\" /Volumes/Daten/Prog/sdk-beta-osx/c74support/msp-includes /Volumes/Daten/Prog/sdk-beta-osx/c74support/max-includes";
 				LIBRARY_STYLE = STATIC;
 				OPTIMIZATION_CFLAGS = "-O3";
-				OTHER_CFLAGS = "-D FLEXT_SYS=1 -D FLEXT_THREADS -Wno-reorder -Wno-switch";
+				OTHER_CFLAGS = "-D FLEXT_SYS=1 -D FLEXT_THREADS -Wno-switch";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -1503,7 +1503,7 @@
 				HEADER_SEARCH_PATHS = "\"$(SYSTEM_DEVELOPER_DIR)/Headers/FlatCarbon\" /Volumes/Daten/Prog/sdk-beta-osx/c74support/msp-includes /Volumes/Daten/Prog/sdk-beta-osx/c74support/max-includes";
 				LIBRARY_STYLE = STATIC;
 				OPTIMIZATION_CFLAGS = "-O3";
-				OTHER_CFLAGS = "-D FLEXT_SYS=1 -Wno-reorder -Wno-switch";
+				OTHER_CFLAGS = "-D FLEXT_SYS=1 -Wno-switch";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";

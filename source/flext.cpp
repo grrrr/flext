@@ -120,12 +120,13 @@ bool flext_base::compatibility = true;
 
 flext_base::flext_base():
 	inlist(NULL),outlist(NULL),
+	curtag(NULL),
 	incnt(0),outcnt(0),
 	insigs(0),outsigs(0),
-	curtag(NULL),
-	outlets(NULL),inlets(NULL),outattr(NULL),
+	outlets(NULL),outattr(NULL),
+	distmsgs(false),
 	methhead(NULL),attrhead(NULL),attrcnt(0),
-	distmsgs(false)
+	inlets(NULL)
 {
 	LOG1("%s - flext logging is on",thisName());
 
@@ -661,9 +662,9 @@ bool flext_base::m_method_(int inlet,const t_symbol *s,int argc,const t_atom *ar
 
 
 flext_base::methitem::methitem(int in,const t_symbol *t): 
-	inlet(in),tag(t),
-	fun(NULL), 
+	tag(t),inlet(in),
 	argc(0),args(NULL),
+	fun(NULL), 
 	nxt(NULL)
 {}
 

@@ -34,9 +34,6 @@ void flext_dsp::Setup(t_class *c)
 }
 
 flext_dsp::flext_dsp(): 
-#if FLEXT_SYS != FLEXT_SYS_MAX
-	dspon(true),
-#endif
 	srate(sys_getsr()),  // should we set it?
 	blksz(sys_getblksize()),
 #if FLEXT_SYS == FLEXT_SYS_PD
@@ -47,6 +44,9 @@ flext_dsp::flext_dsp():
 	chnsout(sys_getch()),
 #else
 #error
+#endif
+#if FLEXT_SYS != FLEXT_SYS_MAX
+	dspon(true),
 #endif
 	invecs(NULL),outvecs(NULL)
 {}

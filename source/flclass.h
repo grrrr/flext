@@ -443,11 +443,11 @@ protected:
 		//! \brief Check if this class represents the current thread
 		bool Is(pthread_t id = pthread_self()) const { return pthread_equal(thrid,id) != 0; }
 
-		bool active,shouldexit;
-		pthread_t thrid;
+		flext_base *th;
 		void *(*meth)(thr_params *);
 		thr_params *params;
-		flext_base *th;
+		pthread_t thrid;
+		bool active,shouldexit;
 		thr_entry *nxt;
 	};
 

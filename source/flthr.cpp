@@ -174,8 +174,6 @@ void flext_base::PopThread()
 
 //	post("Pop thread");
 
-	pthread_t id = pthread_self();
-
 	thr_entry *prv = NULL,*ti;
 	for(ti = thrhead; ti; prv = ti,ti = ti->nxt)
 		if(ti->Is()) break;

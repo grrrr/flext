@@ -37,9 +37,9 @@ bool flext_obj::process_attributes = false;
 /////////////////////////////////////////////////////////
 flext_obj :: flext_obj()
            : x_obj(m_holder)
-		   , m_name(m_holdname)
 		   , procattr(m_holdattr)
 		   , init_ok(true)
+		   , m_name(m_holdname)
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
     m_canvas = canvas_getcurrent();

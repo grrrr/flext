@@ -57,7 +57,7 @@ unsigned long flext_base::XletCode(xlet::type tp,...)
 	va_list marker;
 	va_start(marker,tp);
 	int cnt = 0;
-	xlet::type *args = NULL,arg = tp;
+	xlet::type arg = tp;
 	for(; arg; ++cnt) {
 #ifdef FLEXT_DEBUG
 		if(cnt > 9) {

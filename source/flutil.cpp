@@ -28,8 +28,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <unistd.h>
 #endif
 
-//namespace flext {
-
 t_atom *flext::CopyList(int argc,const t_atom *argv)
 {
 	int i;
@@ -51,7 +49,7 @@ void flext::Sleep(float s)
 {
 #ifdef NT
 	::Sleep((long)(s*1000));
-#elif defined MAXMSP
+#elif defined(MAXMSP)
 	UnsignedWide tick;
 	Microseconds(&tick);
 	double target = tick.hi*((double)(1L<<((sizeof tick.lo)*4))*(double)(1L<<((sizeof tick.lo)*4)))+tick.lo+s*1.e6; 
@@ -64,5 +62,3 @@ void flext::Sleep(float s)
 	usleep((long)(s*1000000));
 #endif
 }
-
-//} // namespace flext

@@ -16,13 +16,13 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 
 flext::AtomList::AtomList(int argc,const t_atom *argv):
-	lst(NULL),cnt(0)
+	cnt(0),lst(NULL)
 {
 	operator()(argc,argv);
 }
 
 flext::AtomList::AtomList(const AtomList &a):
-	lst(NULL),cnt(0)
+	cnt(0),lst(NULL)
 {
 	operator =(a);
 }

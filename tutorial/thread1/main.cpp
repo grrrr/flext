@@ -22,11 +22,6 @@ This shows an example of a method running as a thread
 #endif
 
 
-#if FLEXT_VERSION >= 400
-namespace flext {
-#endif
-
-
 class thread1:
 	public flext_base
 {
@@ -80,8 +75,5 @@ void thread1::m_start()
 	ToOutInt(0,0);
 }
 
-#if FLEXT_VERSION >= 400
-}
-#endif
 
 

@@ -16,10 +16,6 @@ This is an example of a simplified prepend object
 #error You need at least flext version 0.4.0
 #endif
 
-#if FLEXT_VERSION >= 400
-namespace flext {
-#endif
-
 
 class adv1:
 	public flext_base
@@ -105,7 +101,4 @@ void adv1::m_any(const t_symbol *s,int argc,t_atom *argv)
 	ToOutAnything(0,GetSymbol(result[0]),ix-1,result.Atoms()+1);
 }
 
-#if FLEXT_VERSION >= 400
-}
-#endif
 

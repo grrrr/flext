@@ -69,6 +69,10 @@ public:
 	//!	@}  FLEXT_S_MEMORY  	
 };
 
+// at the moment it's a real problem that global overloading of allocators
+// clashes with MFC (e.g. in vst~)
+// therefore... try to think over it
+#if 0 
 
 #if !defined(_MSC_VER) && !defined(__BORLANDC__)
 #define NEWTHROW throw(std::bad_alloc)
@@ -84,6 +88,8 @@ inline void operator delete(void *blk) DELTHROW { flext_root::operator delete(bl
 #ifndef __MRC__ // doesn't allow new[] overloading?!
 inline void *operator new[](size_t bytes) NEWTHROW { return flext_root::operator new[](bytes); }
 inline void operator delete[](void *blk) DELTHROW { flext_root::operator delete[](blk); }
+#endif
+
 #endif
 
 

@@ -510,7 +510,9 @@ public:
 	{
 	public:
 		//! Construct list
-		AtomList(int argc = 0,const t_atom *argv = NULL);
+        AtomList(): cnt(0),lst(NULL) {}
+		//! Construct list
+		AtomList(int argc,const t_atom *argv = NULL);
 		//! Construct list
 		AtomList(const AtomList &a);
 		//! Destroy list
@@ -583,9 +585,10 @@ public:
 		public AtomList
 	{
 	public:
+        AtomAnything(): hdr(NULL) {}
 #if FLEXT_SYS != FLEXT_SYS_JMAX
 		//! Construct anything
-		AtomAnything(const t_symbol *h = NULL,int argc = 0,const t_atom *argv = NULL);
+		AtomAnything(const t_symbol *h,int argc = 0,const t_atom *argv = NULL);
 #endif
 		//! Construct anything
 		AtomAnything(const char *h,int argc = 0,const t_atom *argv = NULL);

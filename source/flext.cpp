@@ -548,6 +548,9 @@ typedef void (*methfun_5)(flext_base *c,t_any &,t_any &,t_any &,t_any &,t_any &)
 
 bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 {
+#ifdef MAXMSP
+	static bool trap = false;
+#endif
 	bool ret = false;
 	
 	LOG3("methodmain inlet:%i args:%i symbol:%s",inlet,argc,s?s->s_name:"");
@@ -639,18 +642,21 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 	
 #ifdef MAXMSP
 	// If float message is not explicitly handled: try int handler instead
-	if(!ret && argc == 1 && s == sym_float) {
+	if(!ret && argc == 1 && s == sym_float && !trap) {
 		t_atom fl;
 		SetInt(fl,GetAInt(argv[0]));
-		post("int: %i",GetInt(fl));
+		trap = true;
 		ret = m_methodmain(inlet,sym_int,1,&fl);
+		trap = false;
 	}
 	
 	// If int message is not explicitly handled: try float handler instead
-	if(!ret && argc == 1 && s == sym_int) {
+	if(!ret && argc == 1 && s == sym_int && !trap) {
 		t_atom fl;
 		SetFloat(fl,GetAFloat(argv[0]));
+		trap = true;
 		ret = m_methodmain(inlet,sym_float,1,&fl);
+		trap = false;
 	}
 #endif
 	

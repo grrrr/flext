@@ -942,41 +942,41 @@ static bool FLEXT_GET_PRE(FUN)(flext_base *c,AtomList *&arg) \
 //! @} FLEXT_DA_CALLGET
 
 
-/*!	\defgroup FLEXT_DA_CALLXFER Definition of attribute transfer handlers (both get and set)
+/*!	\defgroup FLEXT_DA_CALLVAR Definition of attribute transfer handlers (both get and set)
 	@{ 
 */
 
 //! Declare both get and set functions for a float attribute
-#define FLEXT_CALLXFER_F(GFUN,SFUN) \
+#define FLEXT_CALLVAR_F(GFUN,SFUN) \
 \
 FLEXT_CALLGET_F(GFUN) FLEXT_CALLSET_F(SFUN) 
 
 //! Declare both get and set functions for an integer attribute
-#define FLEXT_CALLXFER_I(GFUN,SFUN) \
+#define FLEXT_CALLVAR_I(GFUN,SFUN) \
 \
 FLEXT_CALLGET_I(GFUN) FLEXT_CALLSET_I(SFUN) 
 
 //! Declare both get and set functions for a symbol attribute
-#define FLEXT_CALLXFER_S(GFUN,SFUN) \
+#define FLEXT_CALLVAR_S(GFUN,SFUN) \
 \
 FLEXT_CALLGET_S(GFUN) FLEXT_CALLSET_S(SFUN) 
 
 //! Declare both get and set functions for a boolean attribute
-#define FLEXT_CALLXFER_B(GFUN,SFUN) \
+#define FLEXT_CALLVAR_B(GFUN,SFUN) \
 \
 FLEXT_CALLGET_B(GFUN) FLEXT_CALLSET_B(SFUN) 
 
 //! Declare both get and set functions for an enum attribute
-#define FLEXT_CALLXFER_E(GFUN,SFUN,TP) \
+#define FLEXT_CALLVAR_E(GFUN,SFUN,TP) \
 \
 FLEXT_CALLGET_E(GFUN,TP) FLEXT_CALLSET_E(SFUN,TP) 
 
 //! Declare both get and set functions for a variable list attribute
-#define FLEXT_CALLXFER_V(GFUN,SFUN) \
+#define FLEXT_CALLVAR_V(GFUN,SFUN) \
 \
 FLEXT_CALLGET_V(GFUN) FLEXT_CALLSET_V(SFUN) 
 
-//! @} FLEXT_DA_CALLXFER
+//! @} FLEXT_DA_CALLVAR
 
 
 /*!	\defgroup FLEXT_DA_ATTRSET Definition of implicite attribute set handlers
@@ -1052,42 +1052,42 @@ static bool FLEXT_GET_PRE(VAR)(flext_base *c,AtomList *&arg) \
 //! @} FLEXT_DA_ATTRGET
 
 
-/*!	\defgroup FLEXT_DA_ATTRXFER Definition of implicite attribute transfer handlers (both get and set)
+/*!	\defgroup FLEXT_DA_ATTRVAR Definition of implicite attribute transfer handlers (both get and set)
 	@{ 
 */
 
 //! Declare both implicite get and set functions for a float attribute
-#define FLEXT_ATTRXFER_F(VAR) \
+#define FLEXT_ATTRVAR_F(VAR) \
 \
 FLEXT_ATTRGET_F(VAR) FLEXT_ATTRSET_F(VAR) 
 
 //! Declare both implicite get and set functions for an integer attribute
-#define FLEXT_ATTRXFER_I(VAR) \
+#define FLEXT_ATTRVAR_I(VAR) \
 \
 FLEXT_ATTRGET_I(VAR) FLEXT_ATTRSET_I(VAR) 
 
 //! Declare both implicite get and set functions for a symbol attribute
-#define FLEXT_ATTRXFER_S(VAR) \
+#define FLEXT_ATTRVAR_S(VAR) \
 \
 FLEXT_ATTRGET_S(VAR) FLEXT_ATTRSET_S(VAR) 
 
 //! Declare both implicite get and set functions for a boolean attribute
-#define FLEXT_ATTRXFER_B(VAR) \
+#define FLEXT_ATTRVAR_B(VAR) \
 \
 FLEXT_ATTRGET_B(VAR) FLEXT_ATTRSET_B(VAR) 
 
 //! Declare both implicite get and set functions for an enum attribute
-#define FLEXT_ATTRXFER_E(VAR,TP) \
+#define FLEXT_ATTRVAR_E(VAR,TP) \
 \
 FLEXT_ATTRGET_(VAR,TP) FLEXT_ATTRSET_(VAR,TP) 
 
 //! Declare both implicite get and set functions for a variable list attribute
-#define FLEXT_ATTRXFER_V(VAR) \
+#define FLEXT_ATTRVAR_V(VAR) \
 \
 FLEXT_ATTRGET_V(VAR) FLEXT_ATTRSET_V(VAR) 
 
 
-//! @} FLEXT_DA_ATTRXFER
+//! @} FLEXT_DA_ATTRVAR
 
 
 /*!	\defgroup FLEXT_D_ADDATTR Announce object attributes 
@@ -1106,12 +1106,12 @@ AddAttrib(NAME,(FLEXT_GET_PRE(GFUN)),NULL)
 AddAttrib(NAME,NULL,(FLEXT_SET_PRE(SFUN)))
 
 //! Add handlers for a both get- and settable attribute
-#define	FLEXT_ADDATTR_XFER(NAME,GFUN,SFUN) \
+#define	FLEXT_ADDATTR_VAR(NAME,GFUN,SFUN) \
 \
 AddAttrib(NAME,(FLEXT_GET_PRE(GFUN)),(FLEXT_SET_PRE(SFUN)))
 
-//! Add implicate handlers for a get- and settable attribute
-#define	FLEXT_ADDATTRIB(NAME,FUN) \
+//! Add handlers for a both get- and settable attribute
+#define	FLEXT_ADDATTR_VAR1(NAME,FUN) \
 \
 AddAttrib(NAME,(FLEXT_GET_PRE(FUN)),(FLEXT_SET_PRE(FUN)))
 
@@ -1126,13 +1126,13 @@ AddAttrib(NAME,(bool (*)(flext_base *,int &))(FLEXT_GET_PRE(GFUN)),NULL)
 \
 AddAttrib(NAME,NULL,(bool (*)(flext_base *,int &))(FLEXT_SET_PRE(SFUN)))
 
-//! Add handlers for a both set- and gettable enum attribute
-#define	FLEXT_ADDATTR_XFER_E(NAME,GFUN,SFUN) \
+//! Add handlers for a both get- and settable enum attribute
+#define	FLEXT_ADDATTR_VAR_E(NAME,GFUN,SFUN) \
 \
 AddAttrib(NAME,(bool (*)(flext_base *,int &))(FLEXT_GET_PRE(GFUN)),(bool (*)(flext_base *,int &))(FLEXT_SET_PRE(SFUN)))
 
-//! Add implicite handlers for a set- and gettable enum attribute
-#define	FLEXT_ADDATTRIB_E(NAME,FUN) \
+//! Add handlers for a both get- and settable enum attribute
+#define	FLEXT_ADDATTR_VAR1_E(NAME,FUN) \
 \
 AddAttrib(NAME,(bool (*)(flext_base *,int &))(FLEXT_GET_PRE(FUN)),(bool (*)(flext_base *,int &))(FLEXT_SET_PRE(FUN)))
 

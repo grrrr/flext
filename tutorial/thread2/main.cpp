@@ -10,7 +10,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 This shows an example of multiple threads and syncing with a thread conditional
 */
 
-// define FLEXT_THREADS for thread usage. Flext must also have been compiled with that defined!
+/* define FLEXT_THREADS for thread usage. Flext must also have been compiled with that defined!
+	it's even better to define that as a compiler flag (-D FLEXT_THREADS) for all files of the
+	flext external
+*/
 #ifndef FLEXT_THREADS
 #define FLEXT_THREADS
 #endif

@@ -342,6 +342,9 @@ public:
 
 		//! Get header symbol of anything
 		const t_symbol *Header() const { return hdr; }
+
+		//! Set header symbol of anything
+		void Header(const t_symbol *h) { hdr = h; }
 		
 		//! Set anything
 		AtomAnything &operator()(const t_symbol *h = NULL,int argc = 0,const t_atom *argv = NULL)

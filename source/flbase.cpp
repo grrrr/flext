@@ -60,7 +60,7 @@ void operator delete[](void *blk)
 //
 /////////////////////////////////////////////////////////
 
-t_sigobj *flext_obj::m_holder;
+flext_hdr *flext_obj::m_holder;
 const char *flext_obj::m_holdname;
 
 
@@ -76,6 +76,7 @@ flext_obj :: flext_obj()
     m_canvas = canvas_getcurrent();
 #elif defined(MAXMSP)
     m_canvas = (t_patcher *)gensym("#P")->s_thing;
+    x_obj->curinlet = 0;
 #endif
 }
 

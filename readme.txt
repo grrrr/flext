@@ -97,7 +97,6 @@ Notes:
 
 Platform specific:
 - Max does not allow external libraries -> only one FLEXT_NEW* or FLEXT_TILDE_NEW* in a project 
-- In PD loadbang is not triggered upon object creation
 
 Restrictions in compatibility mode:
 - Max allows only 9 float/int inlets

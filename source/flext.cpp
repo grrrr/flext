@@ -300,7 +300,7 @@ BL flext_base::setup_inout()
 			}
 			
 			if(insigs) {
-				dsp_setup(x_obj,insigs); // signal inlets	
+				dsp_setup(thisHdr(),insigs); // signal inlets	
 			}
 			else {
 				if(incnt && list[0] != xlet::tp_def) {

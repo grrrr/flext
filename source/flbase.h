@@ -49,7 +49,7 @@ struct FLEXT_EXT flext_hdr
 {
     	//////////
     	// The obligatory object header
-    	t_sigobj    	    pd_obj;  
+    	t_sigobj    	    obj;  
 
 #ifdef PD
 		float defsig;			// float signal holder for pd
@@ -114,7 +114,7 @@ class FLEXT_EXT flext_obj
     	
         //////////
         // The object header
-        t_sigobj          *x_obj;        	
+        flext_hdr          *x_obj;        	
 
     	//////////
     	// Creation callback
@@ -129,7 +129,7 @@ class FLEXT_EXT flext_obj
 	public:
         //////////
         // This is a holder - don't touch it
-        static t_sigobj     *m_holder;
+        static flext_hdr     *m_holder;
         static const char *m_holdname;  // hold object's name during construction
 
         //////////
@@ -151,23 +151,6 @@ inline void *operator new(size_t, void *location, void *) { return location; }
 #define FLEXT_GETCLASS(obj) ((t_class *)(((t_tinyobject *)obj)->t_messlist-1))
 #endif
 
-/*
-#define FLEXT_HEADER(NEW_CLASS, PARENT_CLASS)    	    	\
-public:     	    	    \
-typedef NEW_CLASS thisType;  \
-static void callb_free(void *data)    	    	    	\
-{ flext_obj *mydata = ((flext_hdr *)data)->data; delete mydata; \
-  ((flext_hdr *)data)->flext_hdr::~flext_hdr(); }   	    	\
-static void callb_setup(t_class *classPtr)  	    	\
-{ PARENT_CLASS::callb_setup(classPtr);    	    	\
-  NEW_CLASS::cb_setup(classPtr); }  	    	    	\
-protected:    \
-inline t_class *thisClass() { return FLEXT_GETCLASS(x_obj); } \
-inline const char *thisName() const { return m_name; } \
-static NEW_CLASS *thisObject(V *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; }	  \
-private:    \
-static void cb_setup(t_class *classPtr);
-*/
 
 #define FLEXT_HEADER(NEW_CLASS, PARENT_CLASS)    	    	\
 public:     	    	    \
@@ -178,6 +161,7 @@ static void callb_free(void *data)    	    	    	\
 static void callb_setup(t_class *classPtr)  	    	\
 { PARENT_CLASS::callb_setup(classPtr); }  	    	    	\
 protected:    \
+inline t_sigobj *thisHdr() { return &x_obj->obj; } \
 inline t_class *thisClass() { return FLEXT_GETCLASS(x_obj); } \
 inline const char *thisName() const { return m_name; } \
 static NEW_CLASS *thisObject(V *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; }	  
@@ -193,6 +177,7 @@ static void callb_setup(t_class *classPtr)  	    	\
 { PARENT_CLASS::callb_setup(classPtr);    	    	\
 	NEW_CLASS::cb_setup(classPtr); }  	    	    	\
 protected:    \
+inline t_sigobj *thisHdr() { return &x_obj->obj; } \
 inline t_class *thisClass() { return FLEXT_GETCLASS(x_obj); } \
 inline const char *thisName() const { return m_name; } \
 static NEW_CLASS *thisObject(V *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; }	  \
@@ -333,7 +318,7 @@ static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS ()                              \
 {     	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
-    flext_obj::m_holder = &obj->pd_obj;                         \
+    flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS;                                  \
     flext_obj::m_holder = NULL;                                 \
@@ -360,7 +345,7 @@ static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (VAR_TYPE arg)                  \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
-    flext_obj::m_holder = &obj->pd_obj;                         \
+    flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS(arg);                             \
     flext_obj::m_holder = NULL;                                 \
@@ -388,7 +373,7 @@ static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (t_symbol *, int argc, t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
-    flext_obj::m_holder = &obj->pd_obj;                         \
+    flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS(argc, argv);                      \
     flext_obj::m_holder = NULL;                                 \
@@ -416,7 +401,7 @@ static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo) \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
-    flext_obj::m_holder = &obj->pd_obj;                         \
+    flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS(arg, argtwo);                     \
     flext_obj::m_holder = NULL;                                 \
@@ -444,7 +429,7 @@ static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo, THREE_VAR_TYPE argthree) \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
-    flext_obj::m_holder = &obj->pd_obj;                         \
+    flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS(arg, argtwo, argthree);           \
     flext_obj::m_holder = NULL;                                 \
@@ -472,7 +457,7 @@ static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo, THREE_VAR_TYPE argthree, FOUR_VAR_TYPE argfour) \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
-    flext_obj::m_holder = &obj->pd_obj;                         \
+    flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS(arg, argtwo, argthree, argfour);  \
     flext_obj::m_holder = NULL;                                 \

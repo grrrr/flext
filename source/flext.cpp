@@ -123,6 +123,7 @@ flext_base::flext_base():
 	incnt(0),outcnt(0),
 	insigs(0),outsigs(0),
 	outlets(NULL),inlets(NULL),
+	procattr(true),
 	mlst(NULL),
 	distmsgs(false)
 {

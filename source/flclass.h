@@ -143,9 +143,13 @@ public:
 	//! Add outlet(s) for lists
 	void AddOutList(int m = 1) { AddOutlet(xlet::tp_list,m); }
 	void AddOutList(const char *desc,int m = 1) { AddOutlet(xlet::tp_list,m,desc); }
+
+	//! Add outlet(s) for attribute dump
+	void AddOutAttr();
 	
 	/*! \brief Set up inlets and outlets
 		\remark Must be called ONCE to actually set up the defined inlets/outlets.
+		\param attr Set to false to inhibit procession of attributes (default = true)
 		\return True on successful creation of all inlets and outlets
 	*/
 	bool SetupInOut(); 
@@ -342,12 +346,19 @@ protected:
 	flext_base();
 	virtual ~flext_base();
 
+// attributes
+
+    //! Flag for attribute procession
+    bool procattr;
+
 // inlets and outlets
 		
 	struct xlet {	
 		enum type {
 			tp_none = 0,
-			tp_float,tp_int,tp_sym,tp_list,tp_sig,tp_any
+			tp_float,tp_int,tp_sym,tp_list,tp_any,
+			tp_sig,
+			tp_attr
 		};
 
 		xlet(type t,const char *desc = NULL);
@@ -357,6 +368,19 @@ protected:
 		type tp;
 		xlet *nxt;
 	};
+
+	/*!	\addtogroup FLEXT_C_ATTR
+
+		@{ 
+	*/
+
+	void AddAttrib(const char *attr,xlet::type tp,void (*set)(flext_obj &,float),void (*dump)(flext_obj &));
+	void AddAttrib(const char *attr,xlet::type tp,void (*set)(flext_obj &,int),void (*dump)(flext_obj &));
+	void AddAttrib(const char *attr,xlet::type tp,void (*set)(flext_obj &,const t_symbol *),void (*dump)(flext_obj &));
+	void AddAttrib(const char *attr,xlet::type tp,void (*set)(flext_obj &,const AtomList &),void (*dump)(flext_obj &));
+	void AddAttrib(const char *attr,xlet::type tp,void (*set)(flext_obj &,const AtomAnything &),void (*dump)(flext_obj &));
+
+//!		@} 
 
 	/*!	\addtogroup FLEXT_C_INOUT 
 

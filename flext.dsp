@@ -196,10 +196,6 @@ SOURCE=.\source\flmspbuffer.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\source\flsetup.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\source\flsndobj.cpp
 # End Source File
 # Begin Source File

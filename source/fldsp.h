@@ -76,7 +76,7 @@ public:
 		\param insigs: array of input vectors  (get number with function CntInSig())
 		\param outsigs: array of output vectors  (get number with function CntOutSig())
 	*/
-	virtual void m_signal(int n,t_sample *const *insigs,t_sample *const *outsigs) = 0;
+	virtual void m_signal(int n,t_sample *const *insigs,t_sample *const *outsigs);
 
 #ifndef MAXMSP
 	/*! \brief called with "enable" message: pauses/resumes dsp

@@ -14,6 +14,82 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flsupport.h"
 
 #include <stdarg.h>
+#include <string.h>
+#include <ctype.h>
+
+#define ALIASDEL ','
+
+#define ALIASSLASHES ":/\\"
+#ifdef MAXMSP
+	#define ALIASSLASH ':'
+#elif defined(NT)
+	#define ALIASSLASH '/'
+#else
+	#define ALIASSLASH '/'
+#endif
+
+//! Extract space-delimited words from a string
+static const char *extract(const char *name,int ix = 0)
+{
+	static char tmp[1024];
+	const char *n = name;
+	
+	const char *del = strchr(name,ALIASDEL);
+
+	if(del) {
+		if(ix < 0) {
+			char *t = tmp;
+			while(n < del && (isspace(*n) || strchr(ALIASSLASHES,*n))) ++n;
+			while(n < del && !isspace(*n)) {
+				char c = *(n++);
+				*(t++) = strchr(ALIASSLASHES,c)?ALIASSLASH:c;
+			}
+			while(*t == ALIASSLASH && t > tmp) --t;
+			*t = 0;
+
+			return tmp;
+		}
+
+		n = del+1;
+	}
+
+	while(*n && isspace(*n)) ++n;
+	
+	for(int i = 0; n && *n; ++i) {
+		if(i == ix) {
+			char *t = tmp;
+
+			for(; *n && !isspace(*n); ++t,++n) *t = *n;
+			*t = 0;
+			return *tmp?tmp:NULL;
+		}
+		else {
+			while(*n && !isspace(*n)) ++n;
+			while(*n && isspace(*n)) ++n;		
+		}
+	}
+
+	return NULL;
+}
+
+
+//! Check if object's name ends with a tilde
+static bool chktilde(const char *objname)
+{
+//	int stplen = strlen(setupfun);
+	bool tilde = true; //!strncmp(setupfun,"_tilde",6);
+
+	if((objname[strlen(objname)-1] == '~'?1:0)^(tilde?1:0)) {
+		if(tilde) 
+			error("flext: %s (no trailing ~) is defined as a tilde object",objname);
+		else
+			error("flext::check_tilde: %s is no tilde object",objname);
+		return true;
+	} 
+	else
+		return false;
+}
+
 
 
 // this class stands for one registered object
@@ -90,16 +166,18 @@ void flext_obj::lib_init(const char *name,void setupfun())
 	setupfun();
 }
 
-void flext_obj::obj_add(bool lib,bool dsp,const char *name,void setupfun(t_class *),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...)
+void flext_obj::obj_add(bool lib,bool dsp,const char *idname,const char *names,void setupfun(t_class *),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...)
 {
-	if(dsp) flext_util::chktilde(name);
+#ifdef _DEBUG
+	if(dsp) chktilde(idname);
+#endif
 
 	t_class **cl = 
 #ifdef MAXMSP
 		lib?&lib_class:
 #endif
 		new t_class *;
-	const t_symbol *nsym = MakeSymbol(flext_util::extract(name));
+	const t_symbol *nsym = MakeSymbol(extract(names));
 	
 	// register object class
 #ifdef PD
@@ -145,12 +223,12 @@ void flext_obj::obj_add(bool lib,bool dsp,const char *name,void setupfun(t_class
 	}
 
 	// make help reference
-	flext_obj::DefineHelp(lo->clss,GetString(nsym),flext_util::extract(name,-1),dsp);
+	flext_obj::DefineHelp(lo->clss,idname,extract(names,-1),dsp);
 
 	for(int ix = 0; ; ++ix) {
 		// in this loop register all the possible aliases of the object
 	
-		const char *c = ix?flext_util::extract(name,ix):GetString(nsym);
+		const char *c = ix?extract(names,ix):GetString(nsym);
 		if(!c || !*c) break;
 
 		// add to name list
@@ -270,12 +348,13 @@ void flext_obj::obj_free(flext_hdr *hdr)
 	const t_symbol *name = hdr->data->thisNameSym();
 	libname *l = libname::find(name);
 
-	if(l) 
+	if(l) {
 		// call virtual exit function
 		hdr->data->Exit();
 
 		// now call object destructor and deallocate
 		l->obj->freefun(hdr);
+	}
 #ifdef _DEBUG
 	else 
 #ifdef MAXMSP

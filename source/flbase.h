@@ -467,7 +467,7 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 
 #if defined(MAXMSP) 
 // determine if it is the default inlet
-#define ISDEFIN(o) (((flext_hdr *)o->x_obj)->curinlet) != 0)
+#define ISDEFIN(o) ((((flext_hdr *)o->x_obj)->curinlet) != 0)
 #else
 #define ISDEFIN(o) true
 #endif

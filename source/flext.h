@@ -199,7 +199,7 @@ protected:
 
 #endif
 
-	virtual V m_methodmain(I inlet,t_symbol *s,I argc,t_atom *argv);
+	virtual V m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv);
 
 private:
 
@@ -213,10 +213,10 @@ private:
 	// proxy object (for additional inlets) stuff
 	struct px_object;
 	friend struct px_object;
-	static V cb_px_anything(V *c,t_symbol *s,I argc,t_atom *argv);
+	static V cb_px_anything(V *c,const t_symbol *s,I argc,t_atom *argv);
 #elif defined(MAXMSP)
 	typedef object px_object;
-	static V cb_px_anything(V *c,t_symbol *s,I argc,t_atom *argv);
+	static V cb_px_anything(V *c,const t_symbol *s,I argc,t_atom *argv);
 	static V cb_px_int(V *c,I v);
 	static V cb_px_float(V *c,F f);
 	static V cb_px_bang(V *c);

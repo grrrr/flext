@@ -66,8 +66,9 @@ Version history:
 - uses PD's or Max's memory allocation functions (for safety in Max's overdrive)
 - added outlets for anythings
 - better graphics update behavior for PD
-- changed "enable" message for DSP objects to "dspon" (enable is reserved in Max/MSP)
+- changed "enable" message for DSP objects to "dspon" ("enable" is reserved in Max/MSP)
 - proxy objects for any non-leftmost inlets
+- improved behavior for invalid/undefined buffers/arrays
 
 0.1.1:
 - documentation for flext.h
@@ -118,7 +119,7 @@ general:
 - where to put flext source/lib in linux: /usr/local/lib,/usr/local/include ?
 
 bugs:
-none known
+no unfixed known
 
 tests:
 - test loadbang upon object creation in Max/MSP

@@ -23,23 +23,23 @@ struct flext_base::px_object  // no virtual table!
 	I index;
 
 	V init(flext_base *b,I ix) { base = b; index = ix; }
-	static V px_method(px_object *c,t_symbol *s,I argc,t_atom *argv);
+	static V px_method(px_object *c,const t_symbol *s,I argc,t_atom *argv);
 };
 
 
-V flext_base::px_object::px_method(px_object *obj,t_symbol *s,I argc,t_atom *argv)
+V flext_base::px_object::px_method(px_object *obj,const t_symbol *s,I argc,t_atom *argv)
 {
 	obj->base->m_methodmain(obj->index,s,argc,argv);
 }
 
-V flext_base::cb_px_anything(V *c,t_symbol *s,I argc,t_atom *argv)
+V flext_base::cb_px_anything(V *c,const t_symbol *s,I argc,t_atom *argv)
 {
 	thisObject(c)->m_methodmain(0,s,argc,argv);
 }
 
 #elif defined(MAXMSP)
 
-V flext_base::cb_px_anything(V *c,t_symbol *s,I argc,t_atom *argv)
+V flext_base::cb_px_anything(V *c,const t_symbol *s,I argc,t_atom *argv)
 {
 	// check if inlet allows anything (or list)
 	flext_base *o = thisObject(c);
@@ -49,7 +49,7 @@ V flext_base::cb_px_anything(V *c,t_symbol *s,I argc,t_atom *argv)
 
 V flext_base::cb_px_int(V *c,I v)
 {
-	static const t_symbol = *sym_int = gensym("int");
+	static const t_symbol *sym_int = gensym("int");
 
 	// check if inlet allows int type
 	t_atom atom;
@@ -59,7 +59,7 @@ V flext_base::cb_px_int(V *c,I v)
 
 V flext_base::cb_px_float(V *c,F v)
 {
-	static const t_symbol = *sym_float = gensym("float");
+	static const t_symbol *sym_float = gensym("float");
 
 	// check if inlet allows float type
 	t_atom atom;
@@ -69,7 +69,7 @@ V flext_base::cb_px_float(V *c,F v)
 
 V flext_base::cb_px_bang(V *c)
 {
-	static const t_symbol = *sym_bang = gensym("bang");
+	static const t_symbol *sym_bang = gensym("bang");
 
 	// check if inlet allows bang
 	cb_px_anything(c,sym_bang,0,NULL);
@@ -361,7 +361,7 @@ V flext_base::m_help()
 	post("%s (using flext) - compiled on %s %s",thisName(),__DATE__,__TIME__);
 }
 
-V flext_base::m_methodmain(I inlet,t_symbol *s,I argc,t_atom *argv)
+V flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 {
 
 

@@ -38,6 +38,7 @@ flext_base::buffer::~buffer()
 I flext_base::buffer::Set(t_symbol *s,BL nameonly)
 {
 	I ret = 0;
+	BL valid = data != NULL; // valid now? (before change)
 
 	if(s && sym != s) {
 		ret = -1;
@@ -48,7 +49,10 @@ I flext_base::buffer::Set(t_symbol *s,BL nameonly)
 
 	if(s && *s->s_name)	sym = s;
 
-	if(sym && !nameonly) {
+	if(!sym) {
+		if(valid) ret = -1;
+	}	
+	else if(!nameonly) {
 #ifdef PD
 		I frames1;
 		F *data1;
@@ -56,17 +60,16 @@ I flext_base::buffer::Set(t_symbol *s,BL nameonly)
 		t_garray *a = (t_garray *)pd_findbyclass(sym, garray_class);
 		if(!a)
 		{
-    		if (*sym->s_name)
-    			error("buffer: no such array '%s'",sym->s_name);
+    		if (*sym->s_name) error("buffer: no such array '%s'",sym->s_name);
     		sym = NULL;
-			ret = -1;
+			if(valid) ret = -1;
 		}
 		else if (!garray_getfloatarray(a, &frames1, &data1))
 		{
-    		error("buffer: bad template '%s'", sym->s_name);
+    		error("buffer: bad template '%s'", sym->s_name); 
     		data = NULL;
 			frames = 0;
-			ret = -1;
+			if(valid) ret = -1;
 		}
 		else {
 			garray_usedindsp(a);
@@ -79,8 +82,8 @@ I flext_base::buffer::Set(t_symbol *s,BL nameonly)
 			const _buffer *p = (const _buffer *)sym->s_thing;
 			
 			if(NOGOOD(p)) {
-				post("buffer: buffer object '%s' no good",sym->s_name);
-				ret = -1;
+				post("buffer: buffer object '%s' no good",sym->s_name); 
+				if(valid) ret = -1;
 			}
 			else {
 #ifdef DEBUG
@@ -92,12 +95,11 @@ I flext_base::buffer::Set(t_symbol *s,BL nameonly)
 			}
 		}
 		else {
-    		error("buffer: symbol '%s' not defined", sym->s_name);
-			ret = -1;
+    		error("buffer: symbol '%s' not defined", sym->s_name); 
+    		if(valid) ret = -1;
 		}
 #endif
 	}
-	else ret = -1;
 
 	return ret;
 }

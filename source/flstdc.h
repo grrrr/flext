@@ -110,7 +110,7 @@ typedef _outlet t_outlet;
 #define atom_getflintarg atom_getintarg
 #define atom_getsymbolarg atom_getsymarg
 #define SETFLINT(atom,value) SETINT(atom,(int)(value))
-#define ISINT(atom) ((atom)->a_type == A_INT)
+#define ISINT(atom) ((atom).a_type == A_INT)
 #define ISFLINT(atom) ISINT(atom)
 
 #define add_dsp(clss,meth) addmess((method)meth,"dsp",A_CANT,A_NOTHING)

@@ -95,6 +95,8 @@ typedef method t_method;
 typedef method t_newmethod;
 typedef int t_atomtype;
 
+typedef struct clock t_clock;
+
 #define A_NULL A_NOTHING
 #define A_FLINT A_INT
 #define A_DEFFLINT A_DEFLONG

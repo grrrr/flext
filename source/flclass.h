@@ -36,6 +36,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\brief message only base object
 */
 
+//class qmsg;
+//class thr_entry;
+
 class flext_base:
 	public flext_obj
 {
@@ -431,10 +434,12 @@ public:
 
 // --- thread stuff -----------------------------------------------
 
+#ifdef FLEXT_THREADS
 	class thr_params;
 	static bool StartThread(void *(*)(thr_params *p),thr_params *p,char *methname);
 	void PushThread();
 	void PopThread();
+#endif
 
 protected:
 

@@ -10,6 +10,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 This shows an example of multiple threads and syncing with a thread conditional
 */
 
+#define FLEXT_THREADS
 #include <flext.h>
 
 #if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 300)
@@ -52,7 +53,7 @@ thread2::thread2(int del,t_symptr txt):
 	running(false),blipping(false)
 { 
 	AddInAnything();  
-	AddOutAnything(); 
+	AddOutInt(); 
 	SetupInOut();  // set up inlets and outlets
 
 	FLEXT_ADDMETHOD(0,m_start);
@@ -61,10 +62,14 @@ thread2::thread2(int del,t_symptr txt):
 
 void thread2::m_start(int st)
 {
+	post("start 1");
+
 	if(running) { count = st; return; }
 	running = true;
 
 	FLEXT_CALLMETHOD(m_blip);
+
+	post("start 2");
 
 	for(count = st; !ShouldExit() && !stopit; ++count) 
 	{
@@ -72,19 +77,27 @@ void thread2::m_start(int st)
 		ToOutInt(0,count);
 	}
 
+	post("start 3");
+
 	cond.Lock();
 	running = false;
 	cond.Signal();
 	cond.Unlock();
+
+	post("start 4");
 }
 
 void thread2::m_stop()
 {
+	post("stop 1");
+
 	cond.Lock();
 	stopit = true;
 	while(running || blipping) cond.Wait();
 	stopit = false;
 	cond.Unlock();
+
+	post("stop 2");
 }
 
 void thread2::m_blip()

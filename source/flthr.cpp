@@ -44,8 +44,8 @@ void flext_base::PushThread()
 void flext_base::PopThread()
 {
 	tlmutex.Lock();
-	thr_entry *prv = NULL;
-	for(thr_entry *ti = thrhead; ti && !ti->Is(); prv = ti,ti = ti->nxt);
+	thr_entry *prv = NULL,*ti;
+	for(ti = thrhead; ti && !ti->Is(); prv = ti,ti = ti->nxt);
 
 	if(ti) {
 		if(prv) 

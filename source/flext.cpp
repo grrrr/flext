@@ -141,7 +141,7 @@ flext_base::flext_base():
 #ifdef FLEXT_THREAD
 	shouldexit = false;
 	qhead = qtail = NULL;
-	qclk = clock_new(this,(t_method)QTick);
+	qclk = (t_clock *)(clock_new(this,(t_method)QTick));
 	thrhead = thrtail = NULL;
 #endif
 }
@@ -152,6 +152,8 @@ flext_base::~flext_base()
 	// wait for thread termination
 	shouldexit = true;
 	for(int wi = 0; thrhead && wi < 100; ++wi) Sleep(0.01f);
+	
+#ifdef PD	
 	qmutex.Lock(); // Lock message queue
 	tlmutex.Lock();
 	// timeout -> hard termination
@@ -163,10 +165,13 @@ flext_base::~flext_base()
 	}
 	tlmutex.Unlock();
 	qmutex.Unlock();
+#else
+#pragma message ("No tread cancelling")
+#endif
 
 	// send remaining pending messages
 	while(qhead) QTick(this);
-	clock_free(qclk);
+	clock_free((object *)qclk);
 #endif
 
 	if(inlist) delete inlist;

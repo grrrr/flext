@@ -392,9 +392,7 @@ public:
 		@{ 
 	*/
 
-	/*! \brief Check if current thread should terminate
-		\todo Check for currently running thread
-	*/
+	//! Check if current thread should terminate
 	bool ShouldExit() const;
 
 #endif // FLEXT_THREADS
@@ -633,9 +631,6 @@ private:
 	static bool cb_SetAttrib(flext_base *c,const t_symbol *s,int argc,const t_atom *argv) { return c->SetAttrib(s,argc,argv); }
 
 #ifdef FLEXT_THREADS
-//	bool shouldexit;
-//	int thrcount;
-	
 	ThrMutex qmutex;
 
 	static thr_entry *thrhead,*thrtail;

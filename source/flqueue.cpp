@@ -22,7 +22,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 class flext_base::qmsg
 {
 public:
-	qmsg(): nxt(NULL),tp(tp_none) {}
+	qmsg(flext_base *b): th(b),nxt(NULL),tp(tp_none) {}
 	~qmsg();
 
 	qmsg *nxt;
@@ -36,6 +36,7 @@ public:
 	void SetList(int o,int argc,const t_atom *argv) { Clear(); out = o; tp = tp_list; _list.argc = argc,_list.argv = CopyList(argc,argv); }
 	void SetAny(int o,const t_symbol *s,int argc,const t_atom *argv) { Clear(); out = o; tp = tp_any; _any.s = s,_any.argc = argc,_any.argv = CopyList(argc,argv); }
 
+	flext_base *th;
 	int out;
 	enum { tp_none,tp_bang,tp_float,tp_int,tp_sym,tp_list,tp_any } tp;
 	union {
@@ -61,29 +62,28 @@ void flext_base::qmsg::Clear()
 }
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-void flext_base::QTick(fts_object_t *c, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at)
+void flext_base::QTick(int winlet, fts_symbol_t s, int ac, const fts_atom_t *at)
 {
-	flext_base *th = thisObject(c);
 #else
-void flext_base::QTick(flext_base *th)
+void flext_base::QTick()
 {
 #endif
 //	post("qtick");
-#if defined(FLEXT_THREADS) && defined(FLEXT_DEBUG) && !defined(FLEXT_PDLOCK)
-	if(!th->IsSystemThread()) {
+#if defined(FLEXT_THREADS) && defined(FLEXT_DEBUG) && !defined(FLEXT_QTHR)
+	if(!IsSystemThread()) {
 		error("flext - Queue tick called by wrong thread!");
 		return;
 	}
 #endif
 
 #ifdef FLEXT_THREADS
-	th->qmutex.Lock();
+	qmutex.Lock();
 #endif
-#ifdef FLEXT_PDLOCK
+#ifdef FLEXT_QTHR
     pd_lock();
 #endif
 	for(;;) {
-		qmsg *m = th->qhead;
+		qmsg *m = qhead;
 		if(!m) break;
 
         if(m->out < 0) {
@@ -94,30 +94,30 @@ void flext_base::QTick(flext_base *th)
 
 		    switch(m->tp) {
 		    case qmsg::tp_bang: 
-                th->m_methodmain(n,sym_bang,0,&tmp); 
+                m->th->m_methodmain(n,sym_bang,0,&tmp); 
                 break;
 		    case qmsg::tp_float: 
                 SetFloat(tmp,m->_float);
-                th->m_methodmain(n,sym_float,1,&tmp); 
+                m->th->m_methodmain(n,sym_float,1,&tmp); 
                 break;
             case qmsg::tp_int: 
                 SetInt(tmp,m->_int);
 #if FLEXT_SYS == FLEXT_SYS_PD
-                th->m_methodmain(n,sym_float,1,&tmp); 
+                m->th->m_methodmain(n,sym_float,1,&tmp); 
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-                th->m_methodmain(n,sym_int,1,&tmp); 
+                m->th->m_methodmain(n,sym_int,1,&tmp); 
 #else
 #error Not implemented!
 #endif
 		    case qmsg::tp_sym: 
                 SetSymbol(tmp,m->_sym);
-                th->m_methodmain(n,sym_symbol,1,&tmp); 
+                m->th->m_methodmain(n,sym_symbol,1,&tmp); 
                 break;
 		    case qmsg::tp_list: 
-                th->m_methodmain(n,sym_list,m->_list.argc,m->_list.argv); 
+                m->th->m_methodmain(n,sym_list,m->_list.argc,m->_list.argv); 
                 break;
 		    case qmsg::tp_any: 
-                th->m_methodmain(n,m->_any.s,m->_any.argc,m->_any.argv); 
+                m->th->m_methodmain(n,m->_any.s,m->_any.argc,m->_any.argv); 
                 break;
     #ifdef FLEXT_DEBUG
 		    default: ERRINTERNAL();
@@ -128,29 +128,38 @@ void flext_base::QTick(flext_base *th)
             // message to outlet
 
 		    switch(m->tp) {
-		    case qmsg::tp_bang: th->ToOutBang(m->out); break;
-		    case qmsg::tp_float: th->ToOutFloat(m->out,m->_float); break;
-		    case qmsg::tp_int: th->ToOutInt(m->out,m->_int); break;
-		    case qmsg::tp_sym: th->ToOutSymbol(m->out,m->_sym); break;
-		    case qmsg::tp_list: th->ToOutList(m->out,m->_list.argc,m->_list.argv); break;
-		    case qmsg::tp_any: th->ToOutAnything(m->out,m->_any.s,m->_any.argc,m->_any.argv); break;
+		    case qmsg::tp_bang: m->th->ToOutBang(m->out); break;
+		    case qmsg::tp_float: m->th->ToOutFloat(m->out,m->_float); break;
+		    case qmsg::tp_int: m->th->ToOutInt(m->out,m->_int); break;
+		    case qmsg::tp_sym: m->th->ToOutSymbol(m->out,m->_sym); break;
+		    case qmsg::tp_list: m->th->ToOutList(m->out,m->_list.argc,m->_list.argv); break;
+		    case qmsg::tp_any: m->th->ToOutAnything(m->out,m->_any.s,m->_any.argc,m->_any.argv); break;
     #ifdef FLEXT_DEBUG
 		    default: ERRINTERNAL();
     #endif
 		    }
         }
 
-		th->qhead = m->nxt;
-		if(!th->qhead) th->qtail = NULL;
+		qhead = m->nxt;
+		if(!qhead) qtail = NULL;
 		m->nxt = NULL;
 		delete m;
 	}
-#ifdef FLEXT_PDLOCK
+#ifdef FLEXT_QTHR
     pd_unlock();
 #endif
 #ifdef FLEXT_THREADS
-	th->qmutex.Unlock();
+	qmutex.Unlock();
 #endif
+}
+
+/*
+It would be sufficient to only send messages belonging to object th
+But then the order is not as intended
+*/
+void flext_base::QFlush(flext_base *th)
+{
+	while(qhead) QTick();
 }
 
 void flext_base::Queue(qmsg *m)
@@ -168,11 +177,11 @@ void flext_base::Queue(qmsg *m)
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_PD
-    #ifdef FLEXT_PDLOCK
+    #ifdef FLEXT_QTHR
         // wake up a worker thread 
         // (instead of triggering the clock)
-	    clock_delay(qclk,0);
-    #else
+		qthrcond.Signal();
+	#else
 	    clock_delay(qclk,0);
     #endif
 #elif FLEXT_SYS == FLEXT_SYS_MAX
@@ -185,46 +194,70 @@ void flext_base::Queue(qmsg *m)
 #endif
 }
 
+#ifdef FLEXT_QTHR
+ThrCond flext_base::qthrcond;
+#else
+#endif
+
+void flext_base::StartQueue()
+{
+	// message queue ticker
+	qhead = qtail = NULL;
+#ifdef FLEXT_QTHR
+	for(;;) {
+		qthrcond.Wait();
+		QTick();
+	}
+#else
+#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
+	qclk = (t_qelem *)(qelem_new(this,(t_method)QTick));
+#else
+#error Not implemented!
+#endif
+#endif
+}
+#endif
+
 void flext_base::ToQueueBang(int o) const 
 {
-	qmsg *m = new qmsg(); 
+	qmsg *m = new qmsg(this); 
 	m->SetBang(o);
-	const_cast<flext_base &>(*this).Queue(m);
+	Queue(m);
 }
 
 void flext_base::ToQueueFloat(int o,float f) const
 {
-	qmsg *m = new qmsg; 
+	qmsg *m = new qmsg(this); 
 	m->SetFloat(o,f);
-	const_cast<flext_base &>(*this).Queue(m);
+	Queue(m);
 }
 
 void flext_base::ToQueueInt(int o,int f) const
 {
-	qmsg *m = new qmsg; 
+	qmsg *m = new qmsg(this); 
 	m->SetInt(o,f);
-	const_cast<flext_base &>(*this).Queue(m);
+	Queue(m);
 }
 
 void flext_base::ToQueueSymbol(int o,const t_symbol *s) const
 {
-	qmsg *m = new qmsg; 
+	qmsg *m = new qmsg(this); 
 	m->SetSymbol(o,s);
-	const_cast<flext_base &>(*this).Queue(m);
+	Queue(m);
 }
 
 void flext_base::ToQueueList(int o,int argc,const t_atom *argv) const
 {
-	qmsg *m = new qmsg; 
+	qmsg *m = new qmsg(this); 
 	m->SetList(o,argc,argv);
-	const_cast<flext_base &>(*this).Queue(m);
+	Queue(m);
 }
 
 void flext_base::ToQueueAnything(int o,const t_symbol *s,int argc,const t_atom *argv) const
 {
-	qmsg *m = new qmsg; 
+	qmsg *m = new qmsg(this); 
 	m->SetAny(o,s,argc,argv);
-	const_cast<flext_base &>(*this).Queue(m);
+	Queue(m);
 }
 
 

@@ -47,12 +47,14 @@ ifdef SNDOBJ
 INCLUDES+=${SNDOBJ}
 SRCS+=${SRCS_SNDOBJ}
 HDRS+=${HDRS_SNDOBJ}
+LIBS+=sndobj
 endif
 
 ifdef STK
 INCLUDES+=${STK}
 SRCS+=${SRCS_STK}
 HDRS+=${HDRS_STK}
+LIBS+=stk
 endif
 
 MAKEFILE=makefile.pd-linux
@@ -117,11 +119,11 @@ $(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(SRCS))
 	chmod 644 $@
 
 $(TARGET_S) : $(patsubst %.cpp,$(TARGDIR)/%.sro,$(SRCS))
-	ld -shared -Bdynamic --strip-debug -o $@ $^
+	ld -shared -Bdynamic --strip-debug $(patsubst %,-L%,$(LIBPATH)) $(patsubst %,-l%,$(LIBS)) -o $@ $^
 	chmod 755 $@
 
 $(TARGET_SD) : $(patsubst %.cpp,$(TARGDIR)/%.sdo,$(SRCS))
-	ld -shared -Bdynamic -o $@ $^
+	ld -shared -Bdynamic $(patsubst %,-L%,$(LIBPATH)) $(patsubst %,-l%,$(LIBS)) -o $@ $^
 	chmod 755 $@
 
 

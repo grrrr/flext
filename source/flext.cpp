@@ -47,12 +47,6 @@ flext_base::flext_base():
 	}
 	else
 		attrhead = clattrhead = NULL;
-
-	// message queue ticker
-	qhead = qtail = NULL;
-#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
-	qclk = (t_qelem *)(qelem_new(this,(t_method)QTick));
-#endif
 }
 
 flext_base::~flext_base()
@@ -67,15 +61,8 @@ flext_base::~flext_base()
 	StopThreads();
 #endif
 
-	// send remaining pending messages and destroy queue ticker
-#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
-	while(qhead) QTick(this);
-	qelem_free((t_qelem *)qclk);
-#elif FLEXT_SYS == FLEXT_SYS_JMAX
-	while(qhead) QTick((fts_object_t *)thisHdr(),0,NULL,0,NULL);
-	// this is dangerous because there may be other timers on this object!
-    fts_timebase_remove_object(fts_get_timebase(), (fts_object_t *)thisHdr());
-#endif
+	// send remaining pending messages for this object
+	QFlush(this);
 
 	// delete message lists
 	if(methhead) delete methhead;
@@ -171,6 +158,10 @@ void flext_base::Setup(t_classid id)
 		AddMethod(id,0,"getattributes",(methfun)cb_ListAttrib);
 
 	SetProxies(c);
+
+#ifdef FLEXT_QTHR
+	StartQThr();
+#endif
 }
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX

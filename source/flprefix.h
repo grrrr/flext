@@ -297,7 +297,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 //	#pragma message("Compiling for PD")
 #endif
 
-// set threading model
+// ----- set threading model -----
 #ifdef FLEXT_THREADS
 	#undef FLEXT_THREADS
 	#if FLEXT_OS == FLEXT_OS_MAC && FLEXT_SYS == FLEXT_SYS_MAX
@@ -308,4 +308,19 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	#endif
 #endif
 
+// ----- set message queue mode -----
+#undef FLEXT_QTHR
+
+#ifdef FLEXT_PDLOCK
+	// new PD thread locking functionality shall be used
+	#if FLEXT_SYS == FLEXT_SYS_PD
+		#ifdef FLEXT_THREADS
+			// can only be used with PD and threaded build
+			#define FLEXT_QTHR
+		#endif
+	#else
+		#error FLEXT_PDLOCK can only be defined with PD
+	#endif
 #endif
+
+#endif // __FLEXT_PREFIX_H

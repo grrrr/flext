@@ -1,8 +1,9 @@
 NAME=flext
 
-FLEXTBUILD=1
+BUILDCLASS=flext
+BUILDMODE=all
+BUILDTYPE=all
 
-BUILDDIR=build
 SRCDIR=source
 
 SRCS= \

@@ -4,7 +4,7 @@
 @rem %1 - platform (win/lnx/mac)
 @rem %2 - system (pd/max)
 @rem %3 - compiler (msvc/gcc/mingw/cygwin/bcc/icc)
-@rem %4 - target (all/all-debug/all-shared/all-shared-debug/clean/install)
+@rem %4 - target (build/clean/install)
 
 @set platform=%1
 @set rtsys=%2

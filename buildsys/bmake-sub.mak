@@ -20,7 +20,7 @@
 ##############################
 
 # flext-specific make stuff
-!include $(BUILDPATH)bmake-flext.inc
+!include $(BUILDPATH)bmake.inc
 
 # platform-specific make stuff
 !include $(BUILDPATH)$(PLATFORM)\$(RTSYS)\make-$(COMPILER).inc

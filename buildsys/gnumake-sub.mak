@@ -21,7 +21,7 @@ endif
 ##############################
 
 # flext-specific make stuff
-include $(BUILDPATH)gnumake-flext.inc
+include $(BUILDPATH)gnumake.inc
 
 # platform-specific make stuff
 include $(BUILDPATH)$(PLATFORM)/$(RTSYS)/make-$(COMPILER).inc

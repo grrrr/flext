@@ -220,7 +220,8 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
         bool				init_ok;
 
         // flags for init and exit procedure;
-        static bool initing,exiting;
+        static bool initing;
+        static bool exiting;
 
 	public:
 

@@ -5,7 +5,7 @@ if [ "$flext" = "$0"/ ]; then flext=./ ; fi
 # $1 - platform (win/lnx/mac)
 # $2 - system (pd/max)
 # $3 - compiler (msvc/gcc/mingw/cygwin/bcc/icc)
-# $4 - target (all/all-debug/all-shared/all-shared-debug/clean/install)
+# $4 - target (build/clean/install)
 
 platform=$1
 rtsys=$2

@@ -1,18 +1,31 @@
 # where is PD?
-PDPATH=c:\programme\audio\pd		
-
-# where should the external be installed?
-INSTPATH=$(PDPATH)\extra
-
-# where do the flext headers and libraries reside?
-FLEXTPATH=$(PDPATH)\flext
+PDPATH=c:\programme\audio\pd	
 
 # where is MS VC++?
 # (not necessary if the build is run with the compiler environment)
 # MSVCPATH=C:\Programme\Microsoft Visual Studio .NET 2003\Vc7
 
+###############################################################
+
+# where do/should the flext headers reside/be built?
+FLEXTINC=$(PDPATH)\flext
+
+# where do/should the flext static libraries reside/be built?
+FLEXTLIB=$(FLEXTINC)
+
+# where do/should the flext shared libraries reside/be built?
+FLEXTSHLIB=$(FLEXTINC)
+
+###############################################################
+
 # where should the external be built?
+# (relative one-level subpath to project folder)
 OUTPATH=pd-msvc
+
+# where should externals be installed?
+INSTPATH=$(PDPATH)\extra
+
+###############################################################
 
 # user defined compiler flags
 # (check if they match your system!)

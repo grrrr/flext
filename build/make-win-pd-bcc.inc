@@ -4,7 +4,7 @@ INCPATH=$(INCPATH) -I$(PDPATH)\src
 LIBPATH=$(LIBPATH) -L$(PDPATH)\bin
 
 # these are both in PDPATH
-LIBS=$(LIBS) pd.lib # pthreadVC.lib
+LIBS=$(LIBS) pd.lib pthreadVC.lib
 
 EXT=dll
 

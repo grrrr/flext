@@ -52,9 +52,6 @@ print:
 $(OUTPATH):
 	@-if not exist $< mkdir $<
 
-$(OUTPATH)\pd.lib: $(PDPATH)\bin\pd.dll 
-	implib -a $< $**
-
 SETUPFUNCTION=$(NAME)_setup
 
 $(OUTPATH)\$(NAME).def:
@@ -68,7 +65,7 @@ $(OUTPATH)\$(NAME).def:
 {$(SRCDIR)}.c{}.obj:
 	bcc32 -c $(CFLAGS) $(DEFS) $(INCPATH) -n$(OUTPATH) $<
 
-$(TARGET) :: $(OUTPATH) $(OUTPATH)\$(NAME).def $(OUTPATH)\pd.lib 
+$(TARGET) :: $(OUTPATH) $(OUTPATH)\$(NAME).def
 
 $(TARGET) :: $(OBJS)
 	cd $(OUTPATH)

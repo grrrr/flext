@@ -50,7 +50,7 @@ HDRS=$(HDRS) $(HDRS_STK)
 TARGET=$(OUTPATH)\$(NAME)-$(TARGET).lib
 
 #default target
-all: $(OUTPATH) $(TARGET)
+all: $(OUTPATH) $(TARGET) $(OUTPATH)\pd.lib $(OUTPATH)\pthreadVC.lib
 
 # remove build
 clean:
@@ -66,6 +66,12 @@ OBJS= $(SRCS:.cpp=.obj)
 
 DIR="/"
 
+$(OUTPATH)\pd.lib: $(PDPATH)\bin\pd.dll 
+	implib -a $< $**
+
+$(OUTPATH)\pthreadVC.lib: $(PDPATH)\bin\pthreadVC.dll 
+	implib -a $< $**
+
 {$(SRCDIR)}.cpp.obj:
 	bcc32 -c $(CFLAGS) $(DEFS) $(INCPATH) -n$(OUTPATH) $<
 
@@ -79,6 +85,8 @@ $(TARGET): $(OBJS)
 	cd ..
 !if $d(INSTDIR) && "$(INSTDIR)" != ""
 	@-if not exist $(INSTDIR) mkdir $(INSTDIR)
-	copy $< $(INSTDIR) >nul
-	copy $(SRCDIR)\*.h $(INSTDIR) >nul
+	-copy $< $(INSTDIR) >nul
+	-copy $(OUTPATH)\pd.lib $(INSTDIR) >nul
+	-copy $(OUTPATH)\pthreadVC.lib $(INSTDIR) >nul
+	-copy $(SRCDIR)\*.h $(INSTDIR) >nul
 !endif

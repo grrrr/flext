@@ -8,6 +8,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
+/*
+this file contains a few definitions to unite a few of the notions that 
+once drifted apart in Max and PD. It is not elegant but helps.
+*/
+
 #ifndef __MAX_PD_H
 #define __MAX_PD_H
 

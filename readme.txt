@@ -7,7 +7,7 @@ the files:
 - _cpp.h,_cpp.cpp: GEM-like C++ interface
 - _cppext.h,_cppext.cpp: actual base classes for message (ext_obj) and dsp (dsp_obj) processing
 - buffer.cpp: buffer object handling for base classes
-- cw-max.h: trivial definition file for CodeWarrior projects
+- cw-max.h: trivial prefix header file for Max/MSP CodeWarrior projects
 
 Please excuse the bad (aka non-existent) documentation
 

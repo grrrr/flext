@@ -136,7 +136,7 @@ public:
 	// get pointer _after_wards	
 	t_outlet *get_out(I ix) { return (outlets && ix < outcnt)?outlets[ix]:NULL; }
 
-	// output messages
+	// output messages (n starts with 0)
 	V to_out_float(t_outlet *o,F f) { outlet_float(o,f); }
 	V to_out_float(I n,F f) { t_outlet *o = get_out(n); if(o) to_out_float(o,f); }
 	V to_out_flint(t_outlet *o,FI f) { outlet_flint(o,f); }

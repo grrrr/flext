@@ -11,7 +11,7 @@ CXX=g++
 PDPATH=
 
 # where is the SndObj include directory? (leave blank to disable SndObj support)
-SNDOBJ=/usr/src/sndobj/include
+SNDOBJ=/usr/local/include/SndObj
 
 # where should flext libraries be built?
 TARGDIR=./pd-linux

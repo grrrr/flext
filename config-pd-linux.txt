@@ -1,9 +1,9 @@
 # flext - C++ layer for Max/MSP and pd (pure data) externals
 # Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 #
-
+ 
 # your c++ compiler (normally g++)
-CXX=g++
+CXX=g++-3.2
 
 # where are the PD header files?
 # if it is a system include path (like /usr/local/include) 

@@ -11,7 +11,9 @@
 # compiling for threaded usage is not supported
 #
 
-include config-pd-cygwin.txt
+CONFIG=config-pd-cygwin.txt
+
+include $(CONFIG)
 
 
 # compiler+linker stuff
@@ -54,7 +56,7 @@ all: $(TARGDIR) $(TARGET) $(TARGET_D) # $(TARGET_T) $(TARGET_TD)
 $(TARGDIR):
 	-mkdir $(TARGDIR)
 
-$(SRCS): $(_HDRS) $(IHDRS) $(MAKEFILE)
+$(SRCS): $(_HDRS) $(IHDRS) $(MAKEFILE) $(CONFIG)
 	touch $@
 
 $(TARGDIR)/%.o : source/%.cpp

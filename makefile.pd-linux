@@ -8,7 +8,9 @@
 # to install (as root), do "make -f makefile.pd-linux install"
 #
 
-include config-pd-linux.txt
+CONFIG=config-pd-linux.txt
+
+include $(CONFIG)
 
 # compiler+linker stuff 
 INCLUDES=$(PDPATH) $(SNDOBJ)
@@ -49,7 +51,7 @@ all: $(TARGDIR) $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
 $(TARGDIR):
 	mkdir $(TARGDIR)
 
-$(patsubst %,source/%,$(_SRCS)): $(patsubst %,source/%,$(_HDRS)) $(patsubst %,source/%,$(IHDRS)) $(MAKEFILE)
+$(patsubst %,source/%,$(_SRCS)): $(patsubst %,source/%,$(_HDRS)) $(patsubst %,source/%,$(IHDRS)) $(MAKEFILE) $(CONFIG)
 	touch $@
 
 $(TARGDIR)/%.o : source/%.cpp

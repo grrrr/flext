@@ -54,4 +54,6 @@ else
 	echo Please make sure that your make program and compiler can be accessed with the
 	echo system path and that all relevant environment variables are properly set.
 	echo
+	echo For further information read flext/build.txt
+	echo
 fi

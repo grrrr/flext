@@ -22,6 +22,7 @@ rem %1 - system (pd/max)
 rem %2 - compiler (msvc/gcc/mingw/cygwin/bcc/icc)
 rem %3 - target (build/clean/install)
 
+set platform=win
 set rtsys=%1
 set compiler=%2
 set target=%3
@@ -29,12 +30,13 @@ set target=%3
 rem --- The subbatch knowns which make utility to use ---
 set subbatch=%flext%buildsys\build-%compiler%.bat
 
+if "%platform%"=="" goto syntax
 if "%rtsys%"=="" goto syntax
 if "%compiler%"=="" goto syntax
 
 if not exist %subbatch% goto syntax
 
-call %subpatch% %subbatch% win %rtsys% %target% %4 %5 %6 %7 %8 %9
+call %subpatch% %subbatch% %platform% %rtsys% %target% %4 %5 %6 %7 %8 %9
 
 goto end
 
@@ -49,6 +51,8 @@ echo target   ... all (default) / clean / install
 echo .
 echo Please make sure that your make program and compiler can be accessed with the
 echo system path and that all relevant environment variables are properly set.
+echo .
+echo For further information read flext/build.txt
 echo .
 
 :end

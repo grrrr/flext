@@ -6,14 +6,6 @@ install: install-default-default
 
 ###########################################################
 
-build-default-default: build-$(TARGETMODE)-$(TARGETTYPE)
-
-install-default-default: install-$(TARGETMODE)-$(TARGETTYPE)
-
-clean-default-default: clean-$(TARGETMODE)-$(TARGETTYPE)
-
-###################################################
-
 build-all-all: build-release-all build-debug-all
 
 build-release-all: build-release-single build-release-multi build-release-shared

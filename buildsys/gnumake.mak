@@ -31,13 +31,13 @@ endif
 
 ##############################
 
-ifndef TARGETMODE
-	TARGETMODE=$(BUILDMODE)
-endif
+#ifndef TARGETMODE
+#TARGETMODE=$(BUILDMODE)
+#endif
 
-ifndef TARGETTYPE
-	TARGETTYPE=$(BUILDTYPE)
-endif
+#ifndef TARGETTYPE
+#TARGETTYPE=$(BUILDTYPE)
+#endif
 
 ###############################################
 

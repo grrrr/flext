@@ -149,6 +149,7 @@ inline void *operator new(size_t, void *location, void *) { return location; }
 #define FLEXT_GETCLASS(obj) ((t_class *)(((t_tinyobject *)obj)->t_messlist-1))
 #endif
 
+
 #define FLEXT_HEADER(NEW_CLASS, PARENT_CLASS)    	    	\
 public:     	    	    \
 static void callb_free(void *data)    	    	    	\
@@ -160,8 +161,9 @@ static void callb_setup(t_class *classPtr)  	    	\
 private:    \
 inline t_class *thisClass() { return FLEXT_GETCLASS(x_obj); } \
 inline const char *thisName() const { return m_name; } \
-static NEW_CLASS *thisObject(V *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; }	    	  \
+static NEW_CLASS *thisObject(V *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; }	  \
 static void cb_setup(t_class *classPtr);
+
 
 
 ////////////////////////////////////////
@@ -272,11 +274,20 @@ static void cb_setup(t_class *classPtr);
 #define FLEXT_NEWFN ::class_new
 #define FLEXT_CLREF(NAME,CLASS) gensym(NAME)
 #define FLEXT_MAIN(MAINNAME) MAINNAME
+#define CLNEW_OPTIONS 0  // flags for class creation
 #elif defined(MAXMSP)
 #define FLEXT_NEWFN NULL; ::setup    // very bad!!! I hope Mark Danks doesn't see that......
 #define FLEXT_CLREF(NAME,CLASS) (t_messlist **)&(CLASS)
 #define FLEXT_MAIN(MAINNAME) main
+#define CLNEW_OPTIONS 0  // flags for class creation
 #endif
+
+#ifdef PROXYIN
+#define DEF_CALLB(CLASS) void CLASS::cb_setup(t_class *) {}
+#else
+#define DEF_CALLB(CLASS) 
+#endif
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // These should never be called or used directly!!!
@@ -289,6 +300,7 @@ static void cb_setup(t_class *classPtr);
 // no args
 ///////////////////////////////////////////////////////////////////////////////
 #define REAL_NEW(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME)        \
+DEF_CALLB(NEW_CLASS)     \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS ()                              \
 {     	    	    	    	    	    	    	\
@@ -306,7 +318,7 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
     	     	FLEXT_CLREF(NEW_CLASS::m_name,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
-    	     	sizeof(flext_hdr), 0,                          \
+    	     	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
     	     	A_NULL);                                        \
     NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
 }   	    	    	    	    	    	    	    	\
@@ -316,6 +328,7 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 // one arg
 ///////////////////////////////////////////////////////////////////////////////
 #define REAL_NEW_WITH_ARG(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, VAR_TYPE, PD_TYPE) \
+DEF_CALLB(NEW_CLASS)     \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (VAR_TYPE arg)                  \
 {     	    	    	    	    	    	    	    	\
@@ -333,7 +346,7 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
     	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
-    	     	sizeof(flext_hdr), 0,                          \
+    	     	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
     	     	PD_TYPE,                                        \
     	     	A_NULL);      	    	    	    	    	\
     NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
@@ -344,6 +357,7 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 // gimme arg
 ///////////////////////////////////////////////////////////////////////////////
 #define REAL_NEW_WITH_GIMME(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME) \
+DEF_CALLB(NEW_CLASS)     \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (t_symbol *, int argc, t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
@@ -361,7 +375,7 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
     	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
-    	     	sizeof(flext_hdr), 0,                          \
+    	     	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
     	     	A_GIMME,                                        \
     	     	A_NULL);      	    	    	    	    	\
     NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
@@ -372,6 +386,7 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 // two args
 ///////////////////////////////////////////////////////////////////////////////
 #define REAL_NEW_WITH_ARG_ARG(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, ONE_VAR_TYPE, ONE_PD_TYPE, TWO_VAR_TYPE, TWO_PD_TYPE) \
+DEF_CALLB(NEW_CLASS)     \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo) \
 {     	    	    	    	    	    	    	    	\
@@ -389,7 +404,7 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
     	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
-    	     	sizeof(flext_hdr), 0,                          \
+    	     	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
     	     	ONE_PD_TYPE, TWO_PD_TYPE,                       \
     	     	A_NULL);      	    	    	    	    	\
     NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
@@ -400,6 +415,7 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 // three args
 ///////////////////////////////////////////////////////////////////////////////
 #define REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, ONE_VAR_TYPE, ONE_PD_TYPE, TWO_VAR_TYPE, TWO_PD_TYPE, THREE_VAR_TYPE, THREE_PD_TYPE) \
+DEF_CALLB(NEW_CLASS)     \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo, THREE_VAR_TYPE argthree) \
 {     	    	    	    	    	    	    	    	\
@@ -417,7 +433,7 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
     	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
-    	     	sizeof(flext_hdr), 0,                          \
+    	     	sizeof(flext_hdr), CLNEW_OPTIONS,                     \
     	     	ONE_PD_TYPE, TWO_PD_TYPE, THREE_PD_TYPE,        \
     	     	A_NULL);      	    	    	    	    	\
     NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
@@ -428,6 +444,7 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 // four args
 ///////////////////////////////////////////////////////////////////////////////
 #define REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, ONE_VAR_TYPE, ONE_PD_TYPE, TWO_VAR_TYPE, TWO_PD_TYPE, THREE_VAR_TYPE, THREE_PD_TYPE, FOUR_VAR_TYPE, FOUR_PD_TYPE) \
+DEF_CALLB(NEW_CLASS)     \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo, THREE_VAR_TYPE argthree, FOUR_VAR_TYPE argfour) \
 {     	    	    	    	    	    	    	    	\
@@ -445,13 +462,15 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
     	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
-    	     	sizeof(flext_hdr), 0,                          \
+    	     	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
     	     	ONE_PD_TYPE, TWO_PD_TYPE, THREE_PD_TYPE, FOUR_PD_TYPE, \
     	     	A_NULL);      	    	    	    	    	\
     NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
 }   	    	    	    	    	    	    	    	\
 }
 
+
+#ifndef PROXYIN
 
 ///////////////////////////////////////////////////////////
 // These should be the used in the class definition
@@ -546,6 +565,8 @@ add_method4(CLASS,cb_ ## M_FUN,M_NAME,FLEXTTP(TP1),FLEXTTP(TP2),FLEXTTP(TP3),FLE
 // add handler for method with 5 args
 #define FLEXT_ADDMETHOD_5(CLASS,M_NAME,M_FUN,TP1,TP2,TP3,TP4,TP5) \
 add_method5(CLASS,cb_ ## M_FUN,M_NAME,FLEXTTP(TP1),FLEXTTP(TP2),FLEXTTP(TP3),FLEXTTP(TP4),FLEXTTP(TP5))
+
+#endif // PROXYIN
 
 
 #endif

@@ -56,6 +56,12 @@ flext_base::flext_base():
 
 flext_base::~flext_base()
 {
+#if FLEXT_SYS == FLEXT_SYS_MAX
+    // according to David Z. one should do that first...
+//	if(insigs) dsp_free(thisHdr());
+	if(insigs) dsp_freebox(thisHdr());
+#endif
+
 #ifdef FLEXT_THREADS
 	StopThreads();
 #endif
@@ -104,9 +110,6 @@ flext_base::~flext_base()
 		for(int i = 0; i < outcnt; ++i) if(outdesc[i]) delete[] outdesc[i];
 		delete[] outdesc;
 	}
-
-//	if(insigs) dsp_free(thisHdr());
-	if(insigs) dsp_freebox(thisHdr());
 #endif
 }
 

@@ -260,7 +260,7 @@ static NEW_CLASS *thisObject(void *c) { return (NEW_CLASS *)((flext_hdr *)c)->da
 #define FLEXTTYPE_float A_FLOAT
 #define FLEXTTYPE_t_float A_FLOAT
 #define FLEXTTYPE_t_flint A_FLINT
-#define FLEXTTYPE_t_symtype A_SYMBOL
+#define FLEXTTYPE_t_symptr A_SYMBOL
 #define FLEXTTYPE_t_ptrtype A_POINTER
 
 #define FLEXTTP(TP) FLEXTTYPE_ ## TP

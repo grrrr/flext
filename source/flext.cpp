@@ -168,7 +168,7 @@ void flext_base::AddXlet(xlet::type tp,int mult,xlet *&root)
 
 
 void flext_base::ToOutFloat(outlet *o,float f) { outlet_float((t_outlet *)o,f); }
-void flext_base::ToOutFlint(outlet *o,flint f) { outlet_flint((t_outlet *)o,f); }
+void flext_base::ToOutFlint(outlet *o,t_flint f) { outlet_flint((t_outlet *)o,f); }
 void flext_base::ToOutSymbol(outlet *o,const t_symbol *s) { outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); }
 void flext_base::ToOutList(outlet *o,int argc,t_atom *argv) { outlet_list((t_outlet *)o,gensym("list"),argc,argv); }
 void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,t_atom *argv) { outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,argv); }
@@ -305,7 +305,7 @@ bool flext_base::SetupInOut()
 							break;
 						case xlet::tp_flint:
 							if(ix >= 10) { 
-								post("%s: Only 9 flint inlets possible",thisName());
+								post("%s: Only 9 t_flint inlets possible",thisName());
 								ok = false;
 							}
 							else
@@ -484,14 +484,6 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 	LOG3("methodmain inlet:%i args:%i symbol:%s",inlet,argc,s?s->s_name:"");
 	
 	for(const methitem *m = mlst; m && !ret; m = m->nxt) {
-		if(m->tag == sym_anything && m->argc == 1 && m->args[0] == a_gimme) {
-			// any
-			LOG4("found any method for %s: inlet=%i, symbol=%s, argc=%i",m->tag->s_name,inlet,s->s_name,argc);
-
-			((methfun_A)m->fun)(this,s,argc,argv);
-			ret = true;
-		}
-		else
 		if(m->tag == s && (inlet == m->inlet || m->inlet < 0 )) {
 			// tag fits
 			LOG4("found method tag %s: inlet=%i, symbol=%s, argc=%i",m->tag->s_name,inlet,s->s_name,argc);
@@ -555,6 +547,13 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 				}
 			}
 		} 
+		else if(m->tag == sym_anything && (inlet == m->inlet || m->inlet < 0) && m->argc == 1 && m->args[0] == a_gimme) {
+			// any
+			LOG4("found any method for %s: inlet=%i, symbol=%s, argc=%i",m->tag->s_name,inlet,s->s_name,argc);
+
+			((methfun_A)m->fun)(this,s,argc,argv);
+			ret = true;
+		}
 	}
 	
 	if(!ret && distmsgs && inlet == 0 && s == sym_list && insigs <= 1) {

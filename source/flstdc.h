@@ -60,6 +60,8 @@ typedef t_object t_sigobj;
 typedef t_gpointer *t_ptrtype;
 
 typedef t_float t_flint;
+typedef t_symbol *t_symptr;
+
 
 #define A_NOTHING A_NULL
 #define A_FLINT A_FLOAT
@@ -82,6 +84,7 @@ typedef t_pxobject t_sigobj;
 typedef t_patcher t_canvas;
 
 typedef t_int t_flint;
+typedef t_symbol *t_symptr;
 
 typedef method t_method;
 typedef method t_newmethod;
@@ -93,9 +96,6 @@ typedef int t_atomtype;
 
 #endif
 
-typedef t_symbol *t_symtype;
-
-#define flint t_flint
 
 
 #ifdef _LOG

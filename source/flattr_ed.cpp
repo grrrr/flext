@@ -530,7 +530,7 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
             // Retrieve attribute value
             th->GetAttrib(sym,gattr,lv);
 
-            char *b = buf;
+            char *b = buf; *b = 0;
             for(int i = 0; i < lv.Count(); ++i) {
                 char tmp[100];
                 PrintAtom(lv[i],tmp,sizeof tmp);
@@ -548,7 +548,7 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
             // if there is initialization data take this, otherwise take the current data
             const AtomList &lp = initdata?*initdata:lv;
 
-            char *b = buf;
+            char *b = buf; *b = 0;
             for(int i = 0; i < lp.Count(); ++i) {
                 char tmp[256];
                 PrintAtom(lp[i],tmp,sizeof(tmp)); 

@@ -323,7 +323,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="f:\prog\pd\pd-cvs\src,f:\prog\packs\pthreads,f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
+				AdditionalIncludeDirectories="&quot;c:\data\prog\pd\pd-cvs\src&quot;;c:\data\prog\packs\pthreads;c:\data\prog\audio\sndobj\include;c:\data\prog\audio\stk\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_PD;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_SHARED;FLEXT_EXPORTS;FLEXT_PDLOCK"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -342,7 +342,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="pd.lib pthreadVC.lib stk_d.lib sndobj.lib"
 				OutputFile=".\pd-msvc\flext_d.dll"
-				AdditionalLibraryDirectories="f:\prog\pd\pd-cvs\bin;f:\prog\packs\pthreads;F:\prog\audio\stk\lib;F:\prog\audio\sndobj\lib"
+				AdditionalLibraryDirectories="&quot;c:\data\prog\pd\pd-cvs\bin&quot;;c:\data\prog\packs\pthreads;c:\data\prog\audio\stk\lib;c:\data\prog\audio\sndobj\lib"
 				GenerateDebugInformation="TRUE"
 				OptimizeReferences="1"
 				ImportLibrary="./pd-msvc/flext_ld.lib"
@@ -352,7 +352,8 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="copy flext to vibrez"
-				CommandLine="copy F:\pdmax\flext\pd-msvc\flext_d.dll f:\vibrez\debug"/>
+				CommandLine="copy c:\data\pdmax\flext\pd-msvc\flext_d.dll c:\data\vibrez\debug
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -387,7 +388,7 @@
 				InlineFunctionExpansion="2"
 				FavorSizeOrSpeed="0"
 				EnableFiberSafeOptimizations="FALSE"
-				AdditionalIncludeDirectories="f:\prog\pd\pd-cvs\src,f:\prog\packs\pthreads,f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
+				AdditionalIncludeDirectories="&quot;c:\data\prog\pd\pd-cvs\src&quot;;c:\data\prog\packs\pthreads;c:\data\prog\audio\sndobj\include;c:\data\prog\audio\stk\include"
 				PreprocessorDefinitions="WIN32;_LIB;FLEXT_SYS_PD;FLEXT_USE_SIMD;FLEXT_SHARED;FLEXT_EXPORTS;FLEXT_PDLOCK"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -416,10 +417,10 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="copy flext to vibrez"
-				CommandLine="copy F:\pdmax\flext\source\*.h f:\vibrez\api\include
-copy F:\pdmax\flext\pd-msvc\flext_l.lib f:\vibrez\api\lib
-copy F:\pdmax\flext\pd-msvc\flext.dll f:\vibrez\release
-copy F:\pdmax\flext\pd-msvc\flext.dll f:\prog\dll
+				CommandLine="copy c:\data\pdmax\flext\source\*.h c:\data\vibrez\api\include\flext
+copy c:\data\pdmax\flext\pd-msvc\flext_l.lib c:\data\vibrez\api\lib
+copy c:\data\pdmax\flext\pd-msvc\flext.dll c:\data\vibrez\release
+copy c:\data\pdmax\flext\pd-msvc\flext.dll c:\data\prog\dll
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>

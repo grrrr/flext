@@ -18,7 +18,7 @@ LIBPATH=/LIBPATH:"$(MSVCPATH)\lib" /LIBPATH:"$(PDPATH)\bin" /LIBPATH:"$(FLEXTPAT
 LIBS=pd.lib pthreadVC.lib flext_t-pdwin.lib
 
 # compiler definitions and flags
-DEFS=/DPD /DNT /DFLEXT_THREADS
+DEFS=/DFLEXT_SYS=2 /DFLEXT_THREADS
 
 CFLAGS=/GR /GD /G6 /Ox /MT
 

@@ -32,6 +32,10 @@
 @make -f ..\makefile.pd-bcc NAME=signal2~ SETUPFUNCTION=signal2_tilde_setup
 @cd ..
 
+@cd sndobj1
+@make -f ..\makefile.pd-bcc NAME=sndobj1~ SETUPFUNCTION=sndobj1_tilde_setup
+@cd ..
+
 @cd lib1
 @make -f ..\makefile.pd-bcc NAME=lib1 SETUPFUNCTION=lib1_setup
 @cd ..

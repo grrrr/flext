@@ -18,7 +18,7 @@ LIBPATH=-L$(BCCPATH)\lib -L$(PDPATH)\lib -L$(FLEXTPATH)
 LIBS=cw32.lib import32.lib C0D32.OBJ
 
 # compiler definitions and flags
-DEFS=-DPD -DNT 
+DEFS=-DFLEXT_SYS=2
 CFLAGS=-6 -O2 -OS -ff -tWD 
 
 # the rest can stay untouched

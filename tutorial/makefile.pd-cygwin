@@ -16,7 +16,7 @@ FLEXTLIB=$(FLEXTPATH)/flext-pdwin.lib
 
 INCLUDES=$(PDPATH)/src
 LIBPATH=$(PDPATH)/bin
-FLAGS=-DPD -DNT
+FLAGS=-DFLEXT_SYS=2
 CFLAGS=-O6 -mcpu=pentiumpro
 LIBS=m pd
 
@@ -26,7 +26,7 @@ LIBS=m pd
 
 # all the source files from the package
 
-EXAMPLES=simple1 simple2 simple3 adv1 attr1 attr2 signal1~ signal2~ lib1   # thread1 thread2
+EXAMPLES=simple1 simple2 simple3 adv1 attr1 attr2 signal1~ signal2~ sndobj1~ lib1   # thread1 thread2
 
 TARGETS=$(patsubst %,$(OUTPATH)/%.dll,$(EXAMPLES))
 

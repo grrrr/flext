@@ -8,6 +8,7 @@ nmake /f makefile.pd-msvc NAME=attr1 DIR=attr1
 nmake /f makefile.pd-msvc NAME=attr2 DIR=attr2
 nmake /f makefile.pd-msvc NAME=signal1~ DIR=signal1
 nmake /f makefile.pd-msvc NAME=signal2~ DIR=signal2
+nmake /f makefile.pd-msvc NAME=sndobj1~ DIR=sndobj1
 nmake /f makefile.pd-msvc NAME=thread1  DIR=thread1 
 nmake /f makefile.pd-msvc NAME=thread2  DIR=thread2 
 nmake /f makefile.pd-msvc NAME=lib1 DIR=lib1

@@ -14,7 +14,7 @@ FLEXTLIB=$(FLEXTPATH)/flext_t.a  # take threaded library for all
 # compiler+linker stuff	### EDIT! ###
 INCLUDES=$(PDPATH)/src
 LIBPATH=
-FLAGS=-DPD -DFLEXT_THREADS
+FLAGS=-DFLEXT_SYS=2 -DFLEXT_THREADS
 CFLAGS=-O6 -mcpu=pentiumpro
 LIBS=m
 
@@ -24,7 +24,7 @@ LIBS=m
 
 # all the source files from the package
 
-EXAMPLES=simple1 simple2 simple3 adv1 attr1 attr2 signal1~ signal2~ lib1 thread1 thread2
+EXAMPLES=simple1 simple2 simple3 adv1 attr1 attr2 sndobj1~ signal1~ signal2~ lib1 thread1 thread2
 
 
 TARGETS=$(patsubst %,$(OUTPATH)/%.pd_linux,$(EXAMPLES))

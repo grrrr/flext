@@ -741,7 +741,10 @@ public:
 	/*! \brief Get system thread id
 	*/
 	static thrid_t GetSysThreadId();
-	
+
+	//! Check if current thread should terminate
+	static bool ShouldExit();
+
 	//! Check if current thread is the realtime system's thread
 	static bool IsThread(thrid_t t,thrid_t ref = GetThreadId()) { 
 #if FLEXT_THREADS == FLEXT_THR_POSIX

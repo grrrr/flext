@@ -86,23 +86,22 @@ public:
 		@{ 
 	*/
 
-	//! called on "help" message: should post some text
-	virtual void m_help();
-	
 	//! called on patcher load (not on mere object creation!)
+	virtual void CbLoadbang();
 	virtual void m_loadbang();
 
 	//! called on (double-)click into object box
-	virtual void m_click();
+	virtual void CbClick();
 
 	/*!	\brief Called for every incoming message.
 		All method handling is done in there
 		\return True if a handler was found and called
 	*/
-	virtual bool m_methodmain(int inlet,const t_symbol *s,int argc,const t_atom *argv);
+	virtual bool CbMethodHandler(int inlet,const t_symbol *s,int argc,const t_atom *argv);
 
-	/*! \brief Called for every unhandled message (by m_methodmain)
+	/*! \brief Called for every unhandled message (by CbMethodHandler)
 	*/
+	virtual bool CbMethodResort(int inlet,const t_symbol *s,int argc,const t_atom *argv);
 	virtual bool m_method_(int inlet,const t_symbol *s,int argc,const t_atom *argv);
 
 //!		@} FLEXT_C_VIRTUAL
@@ -501,10 +500,6 @@ public:
 
 	//! Terminate all threads of this object
 	bool StopThreads();
-
-	//! Check if current thread should terminate
-	bool ShouldExit() const;
-
 #endif // FLEXT_THREADS
 
 //!		@}  FLEXT_C_THREAD

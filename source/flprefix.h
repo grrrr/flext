@@ -221,7 +221,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     // and Intel (as suggested by Tim Blechmann)
 
     #ifndef FLEXT_CPU
-        #if defined(_X86_64_) // not sure about this one
+        #if defined(__x86_64__) // not sure about this one
             #define FLEXT_CPU FLEXT_CPU_X86_64
         #elif defined(_X86_) || defined(__i386__) || defined(__i586__) || defined(__i686__)
             #define FLEXT_CPU FLEXT_CPU_IA32
@@ -339,15 +339,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 // ----- set threading model -----
-// shared builds are always threaded (although this not be so....)
+// shared builds are always threaded
 #ifdef FLEXT_SHARED
     #undef FLEXT_THREADS
     #define FLEXT_THREADS
-/*
-    // and also enabled for virtual daughter-classes??
-    #undef FLEXT_VIRT
-    #define FLEXT_VIRT
-*/
 #endif
 
 #ifdef FLEXT_THREADS

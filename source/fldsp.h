@@ -51,6 +51,12 @@ public:
 	//! returns current block (aka vector) size
 	int Blocksize() const { return blksz; }
     
+	//! returns array of input vectors (CntInSig() vectors)
+    t_sample *const *InSig() const { return invecs; }
+
+	//! returns array of output vectors (CntOutSig() vectors)
+    t_sample *const *OutSig() const { return outvecs; }
+
 	//! typedef describing a signal vector
 #if FLEXT_SYS == FLEXT_SYS_JMAX
 	typedef fts_symbol_t t_signalvec;
@@ -68,15 +74,28 @@ public:
 */
 	/*! \brief Called on every dsp init.
 		\note Don't expect any valid data in the signal vectors!
+        flext_dsp::CbDsp should not be called by the derived class
 
+        \return true (default)... use DSP, false, don't use DSP
+    */
+	virtual bool CbDsp();
+
+	/*! \brief Called with every signal vector - here you do the dsp calculation
+        flext_dsp::CbSignal fills all output vectors with silence
+    */
+	virtual void CbSignal();
+
+
+    /*! \brief Deprecated method for CbSignal
+        \deprecated
 		\param n: frames (aka samples) in one signal vector
 		\param insigs: array of input vectors  (get number with function CntInSig())
 		\param outsigs: array of output vectors  (get number with function CntOutSig())
 	*/
 	virtual void m_dsp(int n,t_signalvec const *insigs,t_signalvec const *outsigs);
 
-	/*! \brief Called with every signal vector - here you do the dsp calculation
-
+    /*! \brief Deprecated method for CbSignal
+        \deprecated
 		\param n: frames (aka samples) in one signal vector
 		\param insigs: array of input vectors  (get number with function CntInSig())
 		\param outsigs: array of output vectors  (get number with function CntOutSig())

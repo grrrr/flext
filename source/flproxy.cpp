@@ -24,18 +24,18 @@ t_class *flext_base::px_class = NULL;
 
 void flext_base::px_object::px_method(px_object *obj,const t_symbol *s,int argc,t_atom *argv)
 {
-    obj->base->m_methodmain(obj->index,s,argc,argv);
+    obj->base->CbMethodHandler(obj->index,s,argc,argv);
 }
 
 void flext_base::cb_px_anything(t_class *c,const t_symbol *s,int argc,t_atom *argv)
 {
-    thisObject(c)->m_methodmain(0,s,argc,argv);
+    thisObject(c)->CbMethodHandler(0,s,argc,argv);
 }
 
 #define DEF_IN_FT(IX) \
 void flext_base::cb_px_ft ## IX(t_class *c,float v) { \
     t_atom atom; SETFLOAT(&atom,v);  \
-    thisObject(c)->m_methodmain(IX,sym_float,1,&atom); \
+    thisObject(c)->CbMethodHandler(IX,sym_float,1,&atom); \
 }
 
 #define ADD_IN_FT(IX) \
@@ -49,7 +49,7 @@ void flext_base::cb_px_anything(t_class *c,const t_symbol *s,short argc,t_atom *
     
     flext_base *o = thisObject(c);
     int ci = ((flext_hdr *)o->x_obj)->curinlet;
-    o->m_methodmain(ci,s,argc,argv);
+    o->CbMethodHandler(ci,s,argc,argv);
 }
 
 #if 0 //FLEXT_OS == FLEXT_OS_WIN
@@ -62,7 +62,7 @@ void flext_base::cb_px_int(t_class *c,long v)
     // check if inlet allows int type
     t_atom atom;
     SetInt(atom,v);  
-    o->m_methodmain(ci,sym_int,1,&atom);
+    o->CbMethodHandler(ci,sym_int,1,&atom);
 }
 
 void flext_base::cb_px_float(t_class *c,double v)
@@ -72,7 +72,7 @@ void flext_base::cb_px_float(t_class *c,double v)
     // check if inlet allows float type
     t_atom atom;
     SetFloat(atom,v);  
-    o->m_methodmain(ci,sym_float,1,&atom);
+    o->CbMethodHandler(ci,sym_float,1,&atom);
 }
 #else
 void flext_base::cb_px_int(t_class *c,long v)
@@ -161,7 +161,7 @@ void flext_base::SetProxies(t_class *c)
 void flext_base::jmax_proxy(fts_object_t *c, int winlet, fts_symbol_t s, int argc, const fts_atom_t *argv)
 {
     flext_base *o = thisObject(c);
-    o->m_methodmain(winlet,s,argc,argv);
+    o->CbMethodHandler(winlet,s,argc,argv);
 }
 
 void flext_base::SetProxies(t_class *c) 

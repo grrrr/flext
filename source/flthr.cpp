@@ -320,10 +320,9 @@ bool flext::StopThread(void (*meth)(thr_params *p),thr_params *p,bool wait)
         return qufnd.Size() == 0;
 }
 
-bool flext_base::ShouldExit() const 
+bool flext::ShouldExit() 
 {
-    thr_entry *fnd = thrstopped.Find(GetThreadId());
-    return fnd != NULL;
+    return thrstopped.Find(GetThreadId()) != NULL;
 }
 
 bool flext::PushThread()

@@ -34,6 +34,8 @@ Version history:
 - fixes to flext::Timer::At method
 - eliminated misleading flext_dsp::ChannelsIn and ChannelsOut
 - added lock-free Lifo and Fifo structures and used it with message queueing and thread management
+- eliminated default "help" (m_help) method... should be implemented in the flext-based object
+- changed virtual callback names m_loadbang, m_method_, m_dsp, m_signal, m_click to CbLoadbang, CbMethodResort, CbDsp, CbSignal, CbClick
 
 0.4.7:
 - added flext::GetBool (just because flext::GetInt has been there for a while)

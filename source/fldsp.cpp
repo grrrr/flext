@@ -90,7 +90,7 @@ t_int *flext_dsp::dspmeth(t_int *w)
 #endif
     {
         obj->indsp = true;
-        obj->m_signal(obj->blksz,obj->invecs,obj->outvecs); 
+        obj->CbSignal(); 
         obj->indsp = false;
     }
     return w+2;
@@ -156,16 +156,16 @@ void flext_dsp::cb_dsp(t_class *c,t_signal **sp)
 #endif
 
     // with the following call derived classes can do their eventual DSP setup
-    obj->m_dsp(obj->blksz,obj->invecs,obj->outvecs);
-
-    // set the DSP function
+    if(obj->CbDsp()) {
+        // set the DSP function
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-    fts_atom_t args;
-    fts_set_pointer(args,obj);
-    fts_dsp_add_function(dspsym,1,args);
+        fts_atom_t args;
+        fts_set_pointer(args,obj);
+        fts_dsp_add_function(dspsym,1,args);
 #else
-    dsp_add((t_dspmethod)dspmeth,1,obj);  
+        dsp_add((t_dspmethod)dspmeth,1,obj);  
 #endif
+    }
 }
 
 /*
@@ -184,10 +184,15 @@ void flext_dsp::cb_dsp_delete(fts_object_t *c, int winlet, fts_symbol_t *s, int 
 
 void flext_dsp::m_dsp(int /*n*/,t_signalvec const * /*insigs*/,t_signalvec const * /*outsigs*/) {}
 
+bool flext_dsp::CbDsp() { m_dsp(Blocksize(),invecs,outvecs); return true; }
+
 void flext_dsp::m_signal(int n,t_sample *const * /*insigs*/,t_sample *const *outs) 
 {
     for(int i = 0; i < CntOutSig(); ++i) ZeroSamples(outs[i],n);
 }
+
+void flext_dsp::CbSignal() { m_signal(Blocksize(),invecs,outvecs); }
+
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 void flext_dsp::cb_enable(t_class *c,t_float on) { thisObject(c)->dspon = on != 0; }

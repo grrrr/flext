@@ -145,14 +145,12 @@ void flext_base::Setup(t_classid id)
     t_class *c = getClass(id);
 
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
-    add_method(c,cb_help,"help");
     add_loadbang(c,cb_loadbang);
 #if FLEXT_SYS == FLEXT_SYS_MAX
     add_assist(c,cb_assist);
     add_dblclick(c,cb_click);
 #endif
 #else
-    fts_class_message_varargs(c,MakeSymbol("help"),cb_help);
     #pragma message ("no implementation of loadbang or assist") 
 #endif
 
@@ -174,28 +172,20 @@ void flext_base::Setup(t_classid id)
     StartQueue();
 }
 
-#if FLEXT_SYS == FLEXT_SYS_JMAX
-void flext_base::cb_help(fts_object_t *c,int, fts_symbol_t, int, const fts_atom_t *) { thisObject(c)->m_help(); }   
-#else
-void flext_base::cb_help(t_class *c) { thisObject(c)->m_help(); }   
-void flext_base::cb_loadbang(t_class *c) { thisObject(c)->m_loadbang(); }   
+#if FLEXT_SYS != FLEXT_SYS_JMAX
+void flext_base::cb_loadbang(t_class *c) { thisObject(c)->CbLoadbang(); }   
 #endif
 
-void flext_base::m_help()
-{
-    // This should better be overloaded
-    post("%s (using flext " FLEXT_VERSTR ") - compiled on %s %s",thisName(),__DATE__,__TIME__);
-}
-
 void flext_base::m_loadbang() {}
+void flext_base::CbLoadbang() { return m_loadbang(); }
 
-void flext_base::m_click() {}
+void flext_base::CbClick() {}
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 int flext_base::cb_click(t_gobj *c, struct _glist *glist,int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
     if(doit && alt) {
-        thisObject(c)->m_click();
+        thisObject(c)->CbClick();
         return 1;
     }
     else
@@ -206,7 +196,7 @@ int flext_base::cb_click(t_gobj *c, struct _glist *glist,int xpix, int ypix, int
 #if FLEXT_SYS == FLEXT_SYS_MAX
 void flext_base::cb_click(t_class *c, Point pt, short mods)
 {
-    thisObject(c)->m_click();
+    thisObject(c)->CbClick();
 }
 
 void flext_base::cb_assist(t_class *c,void * /*b*/,long msg,long arg,char *s) 

@@ -160,7 +160,7 @@ bool flext_base::FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *arg
 /*! \brief All the message processing
     The messages of all the inlets go here and are promoted to the registered callback functions
 */
-bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,const t_atom *argv)
+bool flext_base::CbMethodHandler(int inlet,const t_symbol *s,int argc,const t_atom *argv)
 {
     static bool trap = false;
 
@@ -179,7 +179,7 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,const t_atom 
             t_atom fl;
             SetInt(fl,GetAInt(argv[0]));
             trap = true;
-            ret = m_methodmain(inlet,sym_int,1,&fl);
+            ret = CbMethodHandler(inlet,sym_int,1,&fl);
             trap = false;
         }
         if(ret) goto end;
@@ -189,7 +189,7 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,const t_atom 
             t_atom fl;
             SetFloat(fl,GetAFloat(argv[0]));
             trap = true;
-            ret = m_methodmain(inlet,sym_float,1,&fl);
+            ret = CbMethodHandler(inlet,sym_float,1,&fl);
             trap = false;
         }
         if(ret) goto end;
@@ -210,7 +210,7 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,const t_atom 
 #endif
 
             trap = true;
-            ret = m_methodmain(inlet,sym_list,1,&list);
+            ret = CbMethodHandler(inlet,sym_list,1,&list);
             trap = false;
         }
         if(ret) goto end;
@@ -220,7 +220,7 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,const t_atom 
             t_atom list;
             SetSymbol(list,s);
             trap = true;
-            ret = m_methodmain(inlet,sym_list,1,&list);
+            ret = CbMethodHandler(inlet,sym_list,1,&list);
             trap = false;
         }
         if(ret) goto end;
@@ -239,7 +239,7 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,const t_atom 
 #endif
                 if(sym) {
                     trap = true;
-                    m_methodmain(i,sym,1,argv+i);           
+                    CbMethodHandler(i,sym,1,argv+i);           
                     trap = false;
                 }
             }
@@ -247,7 +247,7 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,const t_atom 
             ret = true;
         }
         
-        if(!ret && !trap) ret = m_method_(inlet,s,argc,argv);
+        if(!ret && !trap) ret = CbMethodResort(inlet,s,argc,argv);
     }
     catch(std::exception &x) {
         error("%s - Exception while processing method: %s",thisName(),x.what());
@@ -273,3 +273,7 @@ bool flext_base::m_method_(int inlet,const t_symbol *s,int argc,const t_atom *ar
     return false;
 }
 
+bool flext_base::CbMethodResort(int inlet,const t_symbol *s,int argc,const t_atom *argv) 
+{
+    return m_method_(inlet,s,argc,argv);
+}

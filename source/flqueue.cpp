@@ -47,7 +47,7 @@ public:
     {
         if(out < 0)
             // message to self
-            th->m_methodmain(-1-out,msg.Header(),msg.Count(),msg.Atoms()); 
+            th->CbMethodHandler(-1-out,msg.Header(),msg.Count(),msg.Atoms()); 
         else
             // message to outlet
             th->ToSysAnything(out,msg.Header(),msg.Count(),msg.Atoms());

@@ -20,5 +20,5 @@ endif
 
 CSRCS=$(patsubst %.c,$(SRCDIR)/%.c,$(filter %.c,$(SRCS)))
 CPPSRCS=$(patsubst %.cpp,$(SRCDIR)/%.cpp,$(filter %.cpp,$(SRCS)))
-COBJS=$(patsubst %.c,$(OUTPATH)/%.o,$(filter %.c,$(SRCS))) 
-CPPOBJS=$(patsubst %.cpp,$(OUTPATH)/%.opp,$(filter %.cpp,$(SRCS))) 
+COBJS=$(patsubst %.c,$(TARGETPATH)/%.o,$(filter %.c,$(SRCS))) 
+CPPOBJS=$(patsubst %.cpp,$(TARGETPATH)/%.opp,$(filter %.cpp,$(SRCS))) 

@@ -1,0 +1,13 @@
+max v2;
+#N vpatcher 106 210 442 455;
+#P comment 24 37 56 196617 triggering;
+#P flonum 119 55 38 9 0 0 0 3 0 0 0 221 221 221 222 222 222 0 0 0;
+#P flonum 31 55 38 9 0 0 0 3 0 0 0 221 221 221 222 222 222 0 0 0;
+#P newex 41 110 52 196617 simple2 0;
+#P flonum 41 139 50 9 0 0 0 3 0 0 0 221 221 221 222 222 222 0 0 0;
+#P comment 114 37 70 196617 not triggering;
+#P comment 104 112 100 196617 0 is default argument;
+#P connect 4 0 3 0;
+#P connect 3 0 2 0;
+#P connect 5 0 3 1;
+#P pop;

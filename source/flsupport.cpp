@@ -136,11 +136,14 @@ void *flext_root::operator new(size_t bytes)
 	bytes += sizeof(size_t);
 
     char *blk;
+#ifdef FLEXT_NOGLOBALNEW
     if(bytes >= LARGEALLOC) {
         // use C library function for large memory blocks
         blk = (char *)::operator new(bytes);
     }
-    else {
+    else 
+#endif
+    {
 	//! \todo We need system locking here for secondary threads!
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
@@ -159,11 +162,14 @@ void flext_root::operator delete(void *blk)
 	char *ori = (char *)blk-sizeof(size_t);
 	size_t bytes = *(size_t *)ori;
 
+#ifdef FLEXT_NOGLOBALNEW
     if(bytes >= LARGEALLOC) {
         // use C library function for large memory blocks
         ::operator delete(ori);
     }
-    else {
+    else 
+#endif
+    {
 	//! \todo We need system locking here for secondary threads!
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
@@ -181,11 +187,14 @@ void *flext_root::NewAligned(size_t bytes,int bitalign)
 	bytes += ovh+alignovh;
 
     char *blk;
+#ifdef FLEXT_NOGLOBALNEW
     if(bytes >= LARGEALLOC) {
         // use C library function for large memory blocks
         blk = (char *)::operator new(bytes);
     }
-    else {
+    else 
+#endif
+    {
 	//! \todo We need system locking here for secondary threads!
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
@@ -206,11 +215,14 @@ void flext_root::FreeAligned(void *blk)
 	char *ori = *(char **)((char *)blk-sizeof(size_t)-sizeof(char *));
 	size_t bytes = *(size_t *)((char *)blk-sizeof(size_t));
 
+#ifdef FLEXT_NOGLOBALNEW
     if(bytes >= LARGEALLOC) {
         // use C library function for large memory blocks
         ::operator delete(ori);
     }
-    else {
+    else 
+#endif
+    {
 	//! \todo We need system locking here for secondary threads!
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX

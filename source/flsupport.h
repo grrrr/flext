@@ -69,7 +69,7 @@ public:
 	//!	@}  FLEXT_S_MEMORY  	
 };
 
-
+#ifndef FLEXT_NOGLOBALNEW
 /************************************************************************/
 // MFC doesn't like global overloading of allocators
 // anyway, who likes MFC
@@ -89,6 +89,8 @@ inline void operator delete(void *blk) DELTHROW { flext_root::operator delete(bl
 inline void *operator new[](size_t bytes) NEWTHROW { return flext_root::operator new[](bytes); }
 inline void operator delete[](void *blk) DELTHROW { flext_root::operator delete[](blk); }
 #endif
+
+#endif // FLEXT_NOGLOBALNEW
 
 /************************************************************************/
 

@@ -50,5 +50,7 @@ void flext_base::Sleep(float s)
 		if(target <= tick.hi*((double)(1L<<((sizeof tick.lo)*4))*(double)(1L<<((sizeof tick.lo)*4)))+tick.lo) break;
 		YieldToAnyThread(); // should we really yield?
 	}
+#else
+#message ("Sleep not defined")
 #endif
 }

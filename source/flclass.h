@@ -377,15 +377,22 @@ public:
 // --- bind/unbind ---------------------------------------
 
 #ifdef PD
-	void Bind(const t_symbol *s) { pd_bind(&thisHdr()->ob_pd,const_cast<t_symbol *>(s)); }
-	void Bind(const char *c) { Bind(MakeSymbol(c)); }  
-	void Unbind(const t_symbol *s) { pd_unbind(&thisHdr()->ob_pd,const_cast<t_symbol *>(s)); }
-	void Unbind(const char *c) { Unbind(MakeSymbol(c)); }  
+	//! Bind object to a symbol
+	bool Bind(const t_symbol *s) { pd_bind(&thisHdr()->ob_pd,const_cast<t_symbol *>(s)); return true; }
+	//! Unbind object from a symbol
+	bool Unbind(const t_symbol *s) { pd_unbind(&thisHdr()->ob_pd,const_cast<t_symbol *>(s)); return true; }
 #else
-//#pragma message("Bind/Unbind not implemented!");
+	//! Bind object to a symbol
+	bool Bind(const t_symbol *s) { if(s->s_thing) return false; else { const_cast<t_symbol *>(s)->s_thing = (t_object *)thisHdr(); return true; } }
+	//! Unbind object from a symbol
+	bool Unbind(const t_symbol *s) { if(s->s_thing != (t_object *)thisHdr()) return false; else { const_cast<t_symbol *>(s)->s_thing = NULL; return true; } }
 #endif
+	//! Bind object to a symbol (as string)
+	bool Bind(const char *c) { return Bind(MakeSymbol(c)); }  
+	//! Unbind object from a symbol (as string)
+	bool Unbind(const char *c) { return Unbind(MakeSymbol(c)); }  
 
-
+/*
 	// Low level
 
 	//! Bind object to a symbol
@@ -394,7 +401,7 @@ public:
 	static void DoBind(const t_symbol *s,flext_obj *o);
 	//! Get bound object of a symbol
 	static t_class **GetBound(const t_symbol *s) { return (t_class **)s->s_thing; }
-
+*/
 // --- atom stuff ----------------------------------------
 		
 	//! Set atom from another atom

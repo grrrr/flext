@@ -677,7 +677,7 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 #endif
 	
 	// If float or int message is not explicitly handled: try list handler instead
-	if(!ret && !trap && argc == 1 && (s == sym_float 
+	if(!ret && !trap && argc == 1 && (s == sym_float
 #ifdef MAXMSP
 		|| s == sym_int
 #endif
@@ -686,14 +686,23 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 		if(s == sym_float) 
 			SetFloat(list,GetFloat(argv[0]));
 #ifdef MAXMSP
-		else 
+		else if(s == sym_int)
 			SetInt(list,GetInt(argv[0]));
 #endif
+
 		trap = true;
 		ret = m_methodmain(inlet,sym_list,1,&list);
 		trap = false;
 	}
 
+	// If symbol message (pure anything without args) is not explicitly handled: try list handler instead
+	if(!ret && !trap && argc == 0) {
+		t_atom list;
+		SetSymbol(list,s);
+		trap = true;
+		ret = m_methodmain(inlet,sym_list,1,&list);
+		trap = false;
+	}
 
 	// if distmsgs is switched on then distribute list elements over inlets (Max/MSP behavior)
 	if(!ret && distmsgs && !trap && inlet == 0 && s == sym_list && insigs <= 1) {

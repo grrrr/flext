@@ -172,7 +172,7 @@ void flext_base::buffer::Frames(int fr,bool keep)
 	t_atom msg;
 	_buffer *buf = (_buffer *)sym->s_thing;
 	// b_msr reflects buffer sample rate... is this what we want?
-	// Max bug: adding 0.small value 0.001 to get right sample count
+	// Max bug: adding small value 0.001 to get right sample count
 	float ms = fr/buf->b_msr+0.001;
 	
 	SetFloat(msg,ms); 
@@ -236,9 +236,11 @@ void flext_base::buffer::Dirty(bool force)
 #ifdef PD
 void flext_base::buffer::cb_tick(buffer *b)
 {
-//	t_garray *a = (t_garray *)pd_findbyclass(b->sym, garray_class);
 	if(b->arr) garray_redraw(b->arr);
-//		else bug("tabwrite_tilde_tick");
+#ifdef _DEBUG
+	else error("buffer: array is NULL");
+#endif
+
 	if(b->isdirty && b->interval) {
 			b->isdirty = false;
 			b->ticking = true;

@@ -161,7 +161,7 @@ class FLEXT_EXT flext_obj:
 	public:
 
     	//! Creation callback
-    	static void __setup__(t_class *) {}	
+		static void __setup__(t_class *) { flext::Setup(); }	
 
 		/*! \brief This is a temporary holder
 			\warning don't touch it!
@@ -192,6 +192,13 @@ class FLEXT_EXT flext_obj:
 
 // max. 5 method args (see the following macros)
 #define FLEXT_MAXMETHARGS 5 
+
+// prefixes for the macro generated handler functions
+#define FLEXT_CALL_PRE(F) flext_c_##F
+#define FLEXT_THR_PRE(F) flext_t_##F
+#define FLEXT_GET_PRE(F) flext_g_##F
+#define FLEXT_SET_PRE(F) flext_s_##F
+
 
 // ----------------------------------------
 // These should be used in the header
@@ -252,6 +259,9 @@ cl##_setup()
 #define FLEXT_DSP_SETUP(cl) \
 extern void cl##_tilde_setup(); \
 cl##_tilde_setup()  
+
+// deprecated
+#define FLEXT_TILDE_SETUP FLEXT_DSP_SETUP
 
 #ifdef PD
 #define FLEXT_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT void NAME##_setup() { flext_obj::lib_init(#NAME,SETUPFUN); }

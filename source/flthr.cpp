@@ -246,8 +246,8 @@ public:
 	void SetFloat(outlet *o,float f) { Clear(); out = o; tp = tp_float; _float = f; }
 	void SetInt(outlet *o,int i) { Clear(); out = o; tp = tp_int; _int = i; }
 	void SetSymbol(outlet *o,const t_symbol *s) { Clear(); out = o; tp = tp_sym; _sym = s; }
-	void SetList(outlet *o,int argc,t_atom *argv) { Clear(); out = o; tp = tp_list; _list.argc = argc,_list.argv = CopyList(argc,argv); }
-	void SetAny(outlet *o,const t_symbol *s,int argc,t_atom *argv) { Clear(); out = o; tp = tp_any; _any.s = s,_any.argc = argc,_any.argv = CopyList(argc,argv); }
+	void SetList(outlet *o,int argc,const t_atom *argv) { Clear(); out = o; tp = tp_list; _list.argc = argc,_list.argv = CopyList(argc,argv); }
+	void SetAny(outlet *o,const t_symbol *s,int argc,const t_atom *argv) { Clear(); out = o; tp = tp_any; _any.s = s,_any.argc = argc,_any.argv = CopyList(argc,argv); }
 
 	outlet *out;
 	enum { tp_none,tp_bang,tp_float,tp_int,tp_sym,tp_list,tp_any } tp;
@@ -336,46 +336,46 @@ void flext_base::Queue(qmsg *m)
 #elif defined(MAXMSP)
 	clock_delay(yclk,0);
 #else
-#error "To implement!"
+	#error "To implement!"
 #endif
 }
 
-void flext_base::QueueBang(outlet *o) 
+void flext_base::ToQueueBang(outlet *o) 
 {
 	qmsg *m = new qmsg(); 
 	m->SetBang(o);
 	Queue(m);
 }
 
-void flext_base::QueueFloat(outlet *o,float f)
+void flext_base::ToQueueFloat(outlet *o,float f)
 {
 	qmsg *m = new qmsg; 
 	m->SetFloat(o,f);
 	Queue(m);
 }
 
-void flext_base::QueueInt(outlet *o,int f)
+void flext_base::ToQueueInt(outlet *o,int f)
 {
 	qmsg *m = new qmsg; 
 	m->SetInt(o,f);
 	Queue(m);
 }
 
-void flext_base::QueueSymbol(outlet *o,const t_symbol *s)
+void flext_base::ToQueueSymbol(outlet *o,const t_symbol *s)
 {
 	qmsg *m = new qmsg; 
 	m->SetSymbol(o,s);
 	Queue(m);
 }
 
-void flext_base::QueueList(outlet *o,int argc,t_atom *argv)
+void flext_base::ToQueueList(outlet *o,int argc,const t_atom *argv)
 {
 	qmsg *m = new qmsg; 
 	m->SetList(o,argc,argv);
 	Queue(m);
 }
 
-void flext_base::QueueAnything(outlet *o,const t_symbol *s,int argc,t_atom *argv)
+void flext_base::ToQueueAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv)
 {
 	qmsg *m = new qmsg; 
 	m->SetAny(o,s,argc,argv);
@@ -387,8 +387,8 @@ void flext_base::QueueAnything(outlet *o,const t_symbol *s,int argc,t_atom *argv
 flext_base::thr_params::thr_params(flext_base *c,int n): cl(c),var(new _data[n]) {}
 flext_base::thr_params::~thr_params() { if(var) delete[] var; }
 
-void flext_base::thr_params::set_any(const t_symbol *s,int argc,t_atom *argv) { var[0]._any.args = new AtomAnything(s,argc,argv); }
-void flext_base::thr_params::set_list(int argc,t_atom *argv) { var[0]._list.args = new AtomList(argc,argv); }
+void flext_base::thr_params::set_any(const t_symbol *s,int argc,const t_atom *argv) { var[0]._any.args = new AtomAnything(s,argc,argv); }
+void flext_base::thr_params::set_list(int argc,const t_atom *argv) { var[0]._list.args = new AtomList(argc,argv); }
 
 //} // namespace flext
 

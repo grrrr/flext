@@ -20,10 +20,11 @@ Package files:
 - flclass.h,flext.cpp: actual base classes for message (flext_base) and dsp (flext_dsp) processing
 - fldsp.h,fldsp.cpp: code for signal externals
 - flthr.h,flthr.cpp: code for threaded methods
-- flsupport.h: various flext support functions and classes
+- flsupport.h,flsupport.cpp: various flext support functions and classes
 - flatom.cpp: code for functions dealing with lists of atoms
 - flutil.cpp: additional utility functions
 - flxlet.cpp: code for variable inlet/outlet stuff
+- flattr.cpp: code for attribute stuff
 - flinternals.h: internal definitions for flext library
 - flbuf.cpp: buffer object handling for base classes
 - fllib.cpp: code for handling external libraries in MaxMSP
@@ -73,7 +74,6 @@ cons:
 - introduces a small overhead to speed of message handling 
 - overhead in object size (due to possibly unneeded code)
 
-
 see flext.h, fldefs.h and flclass.h for the documented base definitions and classes
 
 ----------------------------------------------------------------------------
@@ -81,8 +81,13 @@ see flext.h, fldefs.h and flclass.h for the documented base definitions and clas
 Version history:
 
 0.4.0:
-- introduced a flext namespace instead of using numerous static class functions (better isolation of functions, easier usage of flext functions outside inherited flext classes)
-- completely redesigned class and object setup -> all argument checking is now handled by flext
+- introduced Max/Jitter-like attribute functionality ("@value" command line, "getvalue" get and "value" set functions)
+- introduced a flext static class for general flext functions (to clean up the flext_base class)
+- creation argument handling is now done by flext
+	no more weird PD re-ordering of arguments 
+- calling SetupInOut() has become obsolete - flext creates all inlets/outlets by itself at the right time
+- completely redesigned FLEXT_NEW macros, usage of dynamic classes (in fllib.cpp)
+- added ToQueue* functions - like ToOut* but messages or not directly sent (well suited for deadlock situations)
 - added OSX/darwin support (originally done by Adam T. Lindsay)
 - SndObj interface now also available for cygwin and BCC 
 - added prepend and append functions to AtomList class
@@ -91,6 +96,7 @@ Version history:
 
 0.3.3:
 - PD: fixed bug for DSP objects having no signal inlets
+	this also enables floats into a non-signal leftmost inlet
 - revisited priority stuff for detached threads
 - Bind/unbind functions for flext classes (in MaxMSP only one object can be bound)
 - made "t_symtype" another synonym for "t_symbol *"
@@ -209,17 +215,14 @@ Notes:
 
 Platform specific:
 - PD does not allow signal and message to go into the same inlet
-- PD doesn't allow a signal object to receive float messages in the leftmost inlet... these are converted to a static signal
-- PD needs all t_symbol or pointer args before float args -> you have to use variable argument lists in that case
 
 Restrictions in compatibility mode:
 - Max allows only 9 float/int inlets
-- Max allows only 3 type-checked creation arguments -> use variable argument lists for more
 
 Porting to new compilers/platforms:
 - enums must be int-sized
 - compiler must support bool type
-- no need of C++ exceptions or RTTI
+- no need of C++ exceptions or RTTI (RTTI only for GUI objects)
 
 ----------------------------------------------------------------------------
 
@@ -228,8 +231,6 @@ TODO list:
 general:
 - documentation
 - add log messages for debugging version
-- exchange more preprocessor definitions for C++ base class code (esp. pd and max calls)
-- should we use a namespace?
 - where to put flext source/lib in linux: /usr/local/lib,/usr/local/include ?
 - clean up headers (eliminate flstdc.h?)
 - check that SetupInOut is only called once
@@ -246,8 +247,8 @@ tests:
 - PD: figure out what "pointer" messages do and where they occur
 - some more mutexes needed for thread safety?
 - buffer resize: flext_base::buffer::Frames(): should we use buffer or system sample rate?
-- PD: test argument order (t_symbol, pointers before floats)
 - what about FLEXT_ADDMETHOD_V (for var arg lists) and FLEXT_ADDMETHOD_A (anythings)... nonsense?
+- queued messages... triggering timer should not be necessary for MaxMSP qmsg
 
 features:
 - abstraction for clock functions

@@ -66,6 +66,7 @@ void flext_obj::DefineHelp(t_class *c,const char *ref,const char *dir,bool addti
 		strcpy(tmp,ref);
     ::class_sethelpsymbol(c,gensym(const_cast<char *>(tmp)));
 #else
+	// no solution for MaxMSP yet
 #endif
 }
 

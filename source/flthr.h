@@ -28,8 +28,8 @@ public:
 	thr_params(flext_base *c,int n = 1);
 	~thr_params();
 
-	void set_any(const t_symbol *s,int argc,t_atom *argv);
-	void set_list(int argc,t_atom *argv);
+	void set_any(const t_symbol *s,int argc,const t_atom *argv);
+	void set_list(int argc,const t_atom *argv);
 
 	flext_base *cl;
 	union _data {

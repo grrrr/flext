@@ -26,6 +26,25 @@ const t_symbol *flext::sym_int = NULL;
 const t_symbol *flext::sym_signal = NULL;
 #endif
 
+void flext::Setup()
+{
+#ifdef PD
+	sym_anything = &s_anything;
+	sym_pointer = &s_pointer;
+	sym_float = &s_float;
+	sym_symbol = &s_symbol;
+	sym_bang = &s_bang;
+	sym_list = &s_list;
+	sym_signal = &s_signal;
+#elif defined(MAXMSP)
+	sym_int = gensym("int");
+	sym_float = gensym("float");
+	sym_symbol = gensym("symbol");
+	sym_bang = gensym("bang");
+	sym_list = gensym("list");
+	sym_anything = gensym("anything");
+#endif
+}
 
 void flext::GetAString(const t_atom &a,char *buf,int szbuf)
 { 

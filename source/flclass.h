@@ -144,15 +144,10 @@ public:
 	void AddOutList(int m = 1) { AddOutlet(xlet::tp_list,m); }
 	void AddOutList(const char *desc,int m = 1) { AddOutlet(xlet::tp_list,m,desc); }
 
-	//! Add outlet(s) for attribute dump
-	void AddOutAttr();
-	
 	/*! \brief Set up inlets and outlets
-		\remark Must be called ONCE to actually set up the defined inlets/outlets.
-		\param attr Set to false to inhibit procession of attributes (default = true)
-		\return True on successful creation of all inlets and outlets
+		\note this is deprecated... inlets and outlets are now set up automatically
 	*/
-	bool SetupInOut(); 
+	bool SetupInOut() { return true; }
 
 	//! Get number of inlets
 	int CntIn() const { return incnt; }
@@ -168,12 +163,15 @@ public:
 //	class AtomList;
 //	class AtomAnything;
 
+	//! Retrieve currently processed message tag (NULL if no message processing)
+	const t_symbol *thisTag() const { return curtag; }
+
 	//! Get pointer to outlet (_after_ calling setup_inout()!)
 	outlet *GetOut(int ix) { return (outlets && ix < outcnt)?outlets[ix]:NULL; }
 
 	// output messages 
 
-	void ToOutBang(outlet *o); 
+	void ToOutBang(outlet *o);
 	//! Output bang (index n starts with 0)
 	void ToOutBang(int n) { outlet *o = GetOut(n); if(o) ToOutBang(o); }
 
@@ -189,7 +187,7 @@ public:
 	//! Output symbol (index n starts with 0)
 	void ToOutSymbol(int n,const t_symbol *s) { outlet *o = GetOut(n); if(o) ToOutSymbol(o,s); }
 
-	void ToOutString(outlet *o,const char *s) { ToOutSymbol(o,gensym(const_cast<char *>(s))); }
+	void ToOutString(outlet *o,const char *s) { ToOutSymbol(o,MakeSymbol(s)); }
 	//! Output string (index n starts with 0)
 	void ToOutString(int n,const char *s) { outlet *o = GetOut(n); if(o) ToOutString(o,s); }
 
@@ -205,6 +203,22 @@ public:
 	//! Output anything (index n starts with 0)
 	void ToOutAnything(int n,const AtomAnything &any)  { ToOutAnything(n,any.Header(),any.Count(),any.Atoms()); }
 	
+	void ToQueueBang(outlet *o); 
+	void ToQueueBang(int n) { outlet *o = GetOut(n); if(o) ToQueueBang(o); }
+	void ToQueueFloat(outlet *o,float f); 
+	void ToQueueFloat(int n,float f) { outlet *o = GetOut(n); if(o) ToQueueFloat(o,f); }
+	void ToQueueInt(outlet *o,int f); 
+	void ToQueueInt(int n,int f) { outlet *o = GetOut(n); if(o) ToQueueInt(o,f); }
+	void ToQueueSymbol(outlet *o,const t_symbol *s); 
+	void ToQueueSymbol(int n,const t_symbol *s) { outlet *o = GetOut(n); if(o) ToQueueSymbol(o,s); }
+	void ToQueueString(int n,const char *s) { ToQueueSymbol(n,MakeSymbol(s)); }
+	void ToQueueList(outlet *o,int argc,const t_atom *argv); 
+	void ToQueueList(int n,int argc,const t_atom *argv) { outlet *o = GetOut(n); if(o) ToQueueList(o,argc,argv); }
+	void ToQueueList(int n,const AtomList &list)  { ToQueueList(n,list.Count(),list.Atoms()); }
+	void ToQueueAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv); 
+	void ToQueueAnything(int n,const t_symbol *s,int argc,const t_atom *argv) { outlet *o = GetOut(n); if(o) ToQueueAnything(o,s,argc,argv); }
+	void ToQueueAnything(int n,const AtomAnything &any)  { ToQueueAnything(n,any.Header(),any.Count(),any.Atoms()); }
+
 //!		@} 
 
 
@@ -214,10 +228,11 @@ public:
 		a_null = 0,
 		a_float,a_int, 
 		a_symbol,a_pointer,
-		a_gimme,a_xgimme
+		a_list,a_any,
+		a_LIST,a_ANY
 	};
 
-	typedef bool (*methfun)(t_class *c);
+	typedef bool (*methfun)(flext_base *c);
 
 	/*!	\defgroup FLEXT_C_ADDMETHOD Flext method handling
 		\internal
@@ -225,13 +240,12 @@ public:
 		@{ 
 	*/
 
-	void AddMethodDef(int inlet); // call virtual function for inlet
-	void AddMethodDef(int inlet,const char *tag); // call virtual function for tag && inlet
+	void AddMethodDef(int inlet,const char *tag = NULL); // call virtual function for tag && inlet
 	void AddMethod(int inlet,const char *tag,methfun fun,metharg tp,...); 
 
-	void AddMethod(int inlet,bool (*m)(flext_base *,int,t_atom *)) { AddMethod(inlet,"list",(methfun)m,a_gimme,a_null); }
+	void AddMethod(int inlet,bool (*m)(flext_base *,int,t_atom *)) { AddMethod(inlet,"list",(methfun)m,a_list,a_null); }
 	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *)) { AddMethod(inlet,tag,(methfun)m,a_null); }  // pure method
-	void AddMethod(int inlet,bool (*m)(flext_base *,const t_symbol *,int,t_atom *)) { AddMethod(inlet,"anything",(methfun)m,a_xgimme,a_null); } // anything
+	void AddMethod(int inlet,bool (*m)(flext_base *,const t_symbol *,int,t_atom *)) { AddMethod(inlet,"anything",(methfun)m,a_any,a_null); } // anything
 	void AddMethod(int inlet,bool (*m)(flext_base *,t_symbol *&)) { AddMethod(inlet,"symbol",(methfun)m,a_symbol,a_null); } // single symbol
 	void AddMethod(int inlet,bool (*m)(flext_base *,float &)) { AddMethod(inlet,"float",(methfun)m,a_float,a_null); }  // single float
 	void AddMethod(int inlet,bool (*m)(flext_base *,float &,float &)) { AddMethod(inlet,"list",(methfun)m,a_float,a_float,a_null); } // list of 2 floats
@@ -243,8 +257,8 @@ public:
 #endif
 	void AddMethod(int inlet,bool (*m)(flext_base *,int &,int &)) { AddMethod(inlet,"list",(methfun)m,a_int,a_int,a_null); } // list of 2 floats
 	void AddMethod(int inlet,bool (*m)(flext_base *,int &,int &,int &)) { AddMethod(inlet,"list",(methfun)m,a_int,a_int,a_int,a_null); } // list of 3 floats
-	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,int,t_atom *)) { AddMethod(inlet,tag,(methfun)m,a_gimme,a_null); } // method+gimme
-	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,const t_symbol *,int,t_atom *)) { AddMethod(inlet,tag,(methfun)m,a_xgimme,a_null); } // method+gimme 
+	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,int,t_atom *)) { AddMethod(inlet,tag,(methfun)m,a_list,a_null); } // method+gimme
+	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,const t_symbol *,int,t_atom *)) { AddMethod(inlet,tag,(methfun)m,a_any,a_null); } // method+gimme 
 	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,t_symbol *&)) { AddMethod(inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
 	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,float &)) { AddMethod(inlet,tag,(methfun)m,a_float,a_null); }  // method+float
 	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,int &)) { AddMethod(inlet,tag,(methfun)m,a_int,a_null); } // method+int
@@ -327,9 +341,6 @@ public:
 
 //!		@} 
 
-
-
-
 // xxx internal stuff xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 // --- thread stuff -----------------------------------------------
@@ -343,13 +354,8 @@ public:
 
 protected:
 
-	flext_base();
+	flext_base(bool attr = false);
 	virtual ~flext_base();
-
-// attributes
-
-    //! Flag for attribute procession
-    bool procattr;
 
 // inlets and outlets
 		
@@ -357,8 +363,8 @@ protected:
 		enum type {
 			tp_none = 0,
 			tp_float,tp_int,tp_sym,tp_list,tp_any,
-			tp_sig,
-			tp_attr
+			tp_LIST,tp_ANY, // use AtomList and AtomAnything
+			tp_sig
 		};
 
 		xlet(type t,const char *desc = NULL);
@@ -374,11 +380,10 @@ protected:
 		@{ 
 	*/
 
-	void AddAttrib(const char *attr,xlet::type tp,void (*set)(flext_obj &,float),void (*dump)(flext_obj &));
-	void AddAttrib(const char *attr,xlet::type tp,void (*set)(flext_obj &,int),void (*dump)(flext_obj &));
-	void AddAttrib(const char *attr,xlet::type tp,void (*set)(flext_obj &,const t_symbol *),void (*dump)(flext_obj &));
-	void AddAttrib(const char *attr,xlet::type tp,void (*set)(flext_obj &,const AtomList &),void (*dump)(flext_obj &));
-	void AddAttrib(const char *attr,xlet::type tp,void (*set)(flext_obj &,const AtomAnything &),void (*dump)(flext_obj &));
+	void AddAttrib(const char *attr,bool (*get)(flext_base *,float &),bool (*set)(flext_base *,float &)) { AddAttrib(attr,a_float,(methfun)get,(methfun)set); }
+	void AddAttrib(const char *attr,bool (*get)(flext_base *,int &),bool (*set)(flext_base *,int &)) { AddAttrib(attr,a_int,(methfun)get,(methfun)set); }
+	void AddAttrib(const char *attr,bool (*get)(flext_base *,t_symbol *&),bool (*set)(flext_base *,t_symbol *&)) { AddAttrib(attr,a_symbol,(methfun)get,(methfun)set); }
+	void AddAttrib(const char *attr,bool (*get)(flext_base *,AtomList &),bool (*set)(flext_base *,AtomList &)) { AddAttrib(attr,a_LIST,(methfun)get,(methfun)set); }
 
 //!		@} 
 
@@ -399,26 +404,16 @@ protected:
 
 //!		@} 
 
-
-#ifdef FLEXT_THREADS
-	void QueueBang(outlet *o); 
-	void QueueFloat(outlet *o,float f); 
-	void QueueInt(outlet *o,int f); 
-	void QueueSymbol(outlet *o,const t_symbol *s); 
-	void QueueList(outlet *o,int argc,t_atom *argv); 
-	void QueueAnything(outlet *o,const t_symbol *s,int argc,t_atom *argv); 
-#endif
-
 // method handling
 
 	class methitem { 
 	public:
-		methitem(int inlet,t_symbol *t);
+		methitem(int inlet,const t_symbol *t);
 		~methitem();
 
 		void SetArgs(methfun fun,int argc,metharg *args);
 
-		t_symbol *tag;
+		const t_symbol *tag;
 		int inlet;
 		int argc;
 		metharg *args;
@@ -427,21 +422,77 @@ protected:
 		methitem *nxt;
 	};
 	
-	void AddMethItem(methitem *m);
+//	const methitem *FindMethItem(int inlet,const t_symbol *tag,const methitem *st);
 	
+	class attritem { 
+	public:
+		attritem(const t_symbol *tag,const t_symbol *gtag,metharg tp,methfun gfun,methfun sfun);
+		~attritem();
+
+		const t_symbol *tag,*gtag;
+		metharg argtp;
+		methfun	gfun,sfun;
+
+		attritem *nxt;
+	};
+
 private:
 
 	static void Setup(t_class *c);
 
 	xlet *inlist,*outlist;
+	const t_symbol *curtag;
 	int incnt,outcnt,insigs,outsigs;
 	outlet **outlets;
+	bool procattr;
+	outlet *outattr;
 	bool distmsgs;
 
 	void AddXlet(xlet::type tp,int mult,const char *desc,xlet *&root);	
 	void DescXlet(int ix,const char *desc,xlet *&root);	
 
-	methitem *mlst;
+	/*! \brief Set up inlets and outlets
+		\return True on successful creation of all inlets and outlets
+	*/
+	virtual bool Init();
+
+	union t_any {
+		float ft;
+		int it;
+		t_symbol *st;
+	#ifdef PD
+		t_gpointer *pt;
+	#endif
+		void *vt;
+	};
+
+	typedef bool (*methfun_V)(flext_base *c,int argc,t_atom *argv);
+	typedef bool (*methfun_A)(flext_base *c,const t_symbol *s,int argc,t_atom *argv);
+	typedef bool (*methfun_0)(flext_base *c);
+	typedef bool (*methfun_1)(flext_base *c,t_any &);
+	typedef bool (*methfun_2)(flext_base *c,t_any &,t_any &);
+	typedef bool (*methfun_3)(flext_base *c,t_any &,t_any &,t_any &);
+	typedef bool (*methfun_4)(flext_base *c,t_any &,t_any &,t_any &,t_any &);
+	typedef bool (*methfun_5)(flext_base *c,t_any &,t_any &,t_any &,t_any &,t_any &);
+	
+	methitem *methhead;
+	void AddMethItem(methitem *m);
+
+	attritem *attrhead;
+	int attrcnt;
+	void AddAttrItem(attritem *m);
+
+	void AddAttrib(const char *attr,metharg tp,methfun gfun,methfun sfun);
+
+	bool ListAttrib();
+	bool GetAttrib(const t_symbol *s,int argc,const t_atom *argv);
+	bool SetAttrib(const t_symbol *s,int argc,const t_atom *argv);
+
+	static bool cb_ListAttrib(flext_base *c) { return c->ListAttrib(); }
+	static bool cb_GetAttrib(flext_base *c,const t_symbol *s,int argc,const t_atom *argv) { return c->GetAttrib(s,argc,argv); }
+	static bool cb_SetAttrib(flext_base *c,const t_symbol *s,int argc,const t_atom *argv) { return c->SetAttrib(s,argc,argv); }
+	static bool cb_NoGetAttrib(flext_base *c,const t_symbol *s,int argc,const t_atom *argv);
+	static bool cb_NoSetAttrib(flext_base *c,const t_symbol *s,int argc,const t_atom *argv);
 
 #ifdef FLEXT_THREADS
 	bool shouldexit;

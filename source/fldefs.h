@@ -322,52 +322,52 @@ REAL_NEW_3(NAME,NEW_CLASS, 1,1, TYPE1, TYPE2, TYPE3)
 
 //! Set up a method callback with no arguments
 #define FLEXT_CALLBACK(M_FUN) \
-static bool cb_ ## M_FUN(flext_base *c) \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(); return true; }
 
 //! Set up a method callback for an anything argument
 #define FLEXT_CALLBACK_A(M_FUN) \
-static bool cb_ ## M_FUN(flext_base *c,const t_symbol *s,int argc,t_atom *argv) \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,const t_symbol *s,int argc,t_atom *argv) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(s,argc,argv); return true; }
 
 //! Set up a method callback for a variable argument list
 #define FLEXT_CALLBACK_V(M_FUN) \
-static bool cb_ ## M_FUN(flext_base *c,int argc,t_atom *argv) \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,int argc,t_atom *argv) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(argc,argv); return true; }
 
 //! Set up a method callback for a data package (void *) argument
 #define FLEXT_CALLBACK_X(M_FUN) \
-static bool cb_ ## M_FUN(flext_base *c,void *data) \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,void *data) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(data); return true; }
 
 //! Set up a method callback for a boolean argument
 #define FLEXT_CALLBACK_B(M_FUN) \
-static bool cb_ ## M_FUN(flext_base *c,int &arg1) \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,int &arg1) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(arg1 != 0); return true; }
 
 //! Set up a method callback for 1 argument
 #define FLEXT_CALLBACK_1(M_FUN,TP1) \
-static bool cb_ ## M_FUN(flext_base *c,TP1 &arg1) \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(arg1); return true; }
 
 //! Set up a method callback for 2 arguments
 #define FLEXT_CALLBACK_2(M_FUN,TP1,TP2) \
-static bool cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2) \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(arg1,arg2); return true; }
 
 //! Set up a method callback for 3 arguments
 #define FLEXT_CALLBACK_3(M_FUN,TP1,TP2,TP3) \
-static bool cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3) \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(arg1,arg2,arg3); return true; }
 
 //! Set up a method callback for 4 arguments
 #define FLEXT_CALLBACK_4(M_FUN,TP1,TP2,TP3,TP4) \
-static bool cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4) \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4); return true; }
 
 //! Set up a method callback for 5 arguments
 #define FLEXT_CALLBACK_5(M_FUN,TP1,TP2,TP3,TP4,TP5) \
-static bool cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,TP5 &arg5) \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,TP5 &arg5) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4,arg5); return true; }
 
 
@@ -425,11 +425,11 @@ FLEXT_CALLBACK_1(M_FUN,t_symptr)
 
 //! Set up a threaded method callback with no arguments
 #define FLEXT_THREAD(M_FUN) \
-static bool cb_ ## M_FUN(flext_base *c) {  \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c) {  \
 	thr_params *p = new thr_params(c); \
-	return StartThread(thr_ ## M_FUN,p,#M_FUN); \
+	return StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
-static void *thr_ ## M_FUN(thr_params *p) {  \
+static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
 	delete p; \
@@ -442,11 +442,11 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 
 //! Set up a threaded method callback for an anything argument
 #define FLEXT_THREAD_A(M_FUN) \
-static bool cb_ ## M_FUN(flext_base *c,const t_symbol *s,int argc,t_atom *argv) {  \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,const t_symbol *s,int argc,t_atom *argv) {  \
 	thr_params *p = new thr_params(c); p->set_any(s,argc,argv); \
-	return StartThread(thr_ ## M_FUN,p,#M_FUN); \
+	return StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
-static void *thr_ ## M_FUN(thr_params *p) {  \
+static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
 	AtomAnything *args = p->var[0]._any.args; \
@@ -461,11 +461,11 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 
 //! Set up a threaded method callback for a variable argument list
 #define FLEXT_THREAD_V(M_FUN) \
-static bool cb_ ## M_FUN(flext_base *c,int argc,t_atom *argv) {  \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,int argc,t_atom *argv) {  \
 	thr_params *p = new thr_params(c); p->set_list(argc,argv); \
-	return StartThread(thr_ ## M_FUN,p,#M_FUN); \
+	return StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
-static void *thr_ ## M_FUN(thr_params *p) {  \
+static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
 	AtomList *args = p->var[0]._list.args; \
@@ -482,11 +482,11 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 	\note Data is pure... no destructor is called upon delete
 */
 #define FLEXT_THREAD_X(M_FUN) \
-static bool cb_ ## M_FUN(flext_base *c,void *data) {  \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,void *data) {  \
 	thr_params *p = new thr_params(c); p->var[0]._ext.data = data; \
-	return StartThread(thr_ ## M_FUN,p,#M_FUN); \
+	return StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
-static void *thr_ ## M_FUN(thr_params *p) {  \
+static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
 	void *data = p->var[0]._ext.data; \
@@ -501,11 +501,11 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 
 //! Set up a threaded method callback for a boolean argument
 #define FLEXT_THREAD_B(M_FUN) \
-static bool cb_ ## M_FUN(flext_base *c,int &arg1) {  \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,int &arg1) {  \
 	thr_params *p = new thr_params(c); p->var[0]._bool = arg1 != 0; \
-	return StartThread(thr_ ## M_FUN,p,#M_FUN); \
+	return StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
-static void *thr_ ## M_FUN(thr_params *p) {  \
+static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
 	bool b = p->var[0]._bool; \
@@ -519,12 +519,12 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 
 //! Set up a threaded method callback for 1 argument
 #define FLEXT_THREAD_1(M_FUN,TP1) \
-static bool cb_ ## M_FUN(flext_base *c,TP1 &arg1) {  \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1) {  \
 	thr_params *p = new thr_params(c,1); \
 	p->var[0]._ ## TP1 = arg1; \
-	return StartThread(thr_ ## M_FUN,p,#M_FUN); \
+	return StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
-static void *thr_ ## M_FUN(thr_params *p) {  \
+static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
@@ -538,13 +538,13 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 
 //! Set up a threaded method callback for 2 arguments
 #define FLEXT_THREAD_2(M_FUN,TP1,TP2) \
-static bool cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2) {  \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2) {  \
 	thr_params *p = new thr_params(c,2); \
 	p->var[0]._ ## TP1 = arg1; \
 	p->var[1]._ ## TP2 = arg2; \
-	return StartThread(thr_ ## M_FUN,p,#M_FUN); \
+	return StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
-static void *thr_ ## M_FUN(thr_params *p) {  \
+static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
@@ -559,14 +559,14 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 
 //! Set up a threaded method callback for 3 arguments
 #define FLEXT_THREAD_3(M_FUN,TP1,TP2,TP3) \
-static bool cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3) {  \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3) {  \
 	thr_params *p = new thr_params(c,3); \
 	p->var[0]._ ## TP1 = arg1; \
 	p->var[1]._ ## TP2 = arg2; \
 	p->var[2]._ ## TP3 = arg3; \
-	return StartThread(thr_ ## M_FUN,p,#M_FUN); \
+	return StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
-static void *thr_ ## M_FUN(thr_params *p) {  \
+static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
@@ -582,15 +582,15 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 
 //! Set up a threaded method callback for 4 arguments
 #define FLEXT_THREAD_4(M_FUN,TP1,TP2,TP3,TP4) \
-static bool cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4) {  \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4) {  \
 	thr_params *p = new thr_params(c,4); \
 	p->var[0]._ ## TP1 = arg1; \
 	p->var[1]._ ## TP2 = arg2; \
 	p->var[2]._ ## TP3 = arg3; \
 	p->var[3]._ ## TP4 = arg4; \
-	return StartThread(thr_ ## M_FUN,p,#M_FUN); \
+	return StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
-static void *thr_ ## M_FUN(thr_params *p) {  \
+static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
@@ -607,16 +607,16 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 
 //! Set up a threaded method callback for 5 arguments
 #define FLEXT_THREAD_5(M_FUN,TP1,TP2,TP3,TP4,TP5) \
-static bool cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,TP5 &arg5) {  \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,TP5 &arg5) {  \
 	thr_params *p = new thr_params(c,5); \
 	p->var[0]._ ## TP1 = arg1; \
 	p->var[1]._ ## TP2 = arg2; \
 	p->var[2]._ ## TP3 = arg3; \
 	p->var[3]._ ## TP4 = arg4; \
 	p->var[4]._ ## TP5 = arg5; \
-	return StartThread(thr_ ## M_FUN,p,#M_FUN); \
+	return StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
-static void *thr_ ## M_FUN(thr_params *p) {  \
+static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
@@ -697,56 +697,56 @@ SetDist(true)
 //! Add a method handler for bang 
 #define FLEXT_ADDBANG(IX,M_FUN) \
 \
-AddMethod(IX,"bang",cb_ ## M_FUN)	
+AddMethod(IX,"bang",FLEXT_CALL_PRE(M_FUN))	
 
 //! Add a handler for a method with no arguments
 #define FLEXT_ADDMETHOD(IX,M_FUN) \
-AddMethod(IX,cb_ ## M_FUN)	
+AddMethod(IX,FLEXT_CALL_PRE(M_FUN))	
 
 //! Add a handler for a method with a (variable argument) list
 #define FLEXT_ADDMETHOD_V(IX,M_FUN) \
 \
-AddMethod(IX,cb_ ## M_FUN)	
+AddMethod(IX,FLEXT_CALL_PRE(M_FUN))	
 
 //! Add a handler for a method with an anything argument
 #define FLEXT_ADDMETHOD_A(IX,M_FUN) \
 \
-AddMethod(IX,cb_ ## M_FUN)	
+AddMethod(IX,FLEXT_CALL_PRE(M_FUN))	
 
 //! Add a a handler for a method with implicit arguments
 #define FLEXT_ADDMETHOD_(IX,M_TAG,M_FUN) \
 \
-AddMethod(IX,M_TAG,cb_ ## M_FUN)	
+AddMethod(IX,M_TAG,FLEXT_CALL_PRE(M_FUN))	
 
 //! Add a handler for a method with 1 enum type argument
 #define FLEXT_ADDMETHOD_E(IX,M_TAG,M_FUN) \
 \
-AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),a_int,a_null)
+AddMethod(IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),a_int,a_null)
 
 //! Add a handler for a method with 1 argument
 #define FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,TP1) \
 \
-AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),a_null)	
+AddMethod(IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),a_null)	
 
 //! Add a handler for a method with 2 arguments
 #define FLEXT_ADDMETHOD_2(IX,M_TAG,M_FUN,TP1,TP2) \
 \
-AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),a_null)
+AddMethod(IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),a_null)
 
 //! Add a handler for a method with 3 arguments
 #define FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,TP1,TP2,TP3) \
 \
-AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),a_null)
+AddMethod(IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),a_null)
 
 //! Add a handler for a method with 4 arguments
 #define FLEXT_ADDMETHOD_4(IX,M_TAG,M_FUN,TP1,TP2,TP3,TP4) \
 \
-AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),a_null)
+AddMethod(IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),a_null)
 
 //! Add a handler for a method with 5 arguments
 #define FLEXT_ADDMETHOD_5(IX,M_TAG,M_FUN,TP1,TP2,TP3,TP4,TP5) \
 \
-AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),FLEXTARG(TP5),a_null)
+AddMethod(IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),FLEXTARG(TP5),a_null)
 
 
 //	Shortcuts
@@ -799,54 +799,124 @@ FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,int,int,int)
 //! Call a (already defined) method with no arguments
 #define FLEXT_CALLMETHOD(M_FUN) \
 \
-cb_ ## M_FUN(this)
+FLEXT_CALL_PRE(M_FUN)(this)
 
 //! Call a (already defined) method with variable list arguments
 #define FLEXT_CALLMETHOD_V(M_FUN,ARGC,ARGV) \
 \
-cb_ ## M_FUN(this,ARGC,ARGV)
+FLEXT_CALL_PRE(M_FUN)(this,ARGC,ARGV)
 
 //! Call a (already defined) method with anything arguments
 #define FLEXT_CALLMETHOD_A(M_FUN,HDR,ARGC,ARGV) \
 \
-cb_ ## M_FUN(this,HDR,ARGC,ARGV)
+FLEXT_CALL_PRE(M_FUN)(this,HDR,ARGC,ARGV)
 
 //! Call a (already defined) method with a data package (void *)
 #define FLEXT_CALLMETHOD_X(M_FUN,DATA) \
 \
-cb_ ## M_FUN(this,DATA)
+FLEXT_CALL_PRE(M_FUN)(this,DATA)
 
 //! Call a (already defined) method with 1 enum type argument
 #define FLEXT_CALLMETHOD_E(M_FUN,ARG) \
 \
-cb_ ## M_FUN(this,ARG)
+FLEXT_CALL_PRE(M_FUN)(this,ARG)
 
 //! Call a (already defined) method with 1 argument
 #define FLEXT_CALLMETHOD_1(M_FUN,ARG) \
 \
-cb_ ## M_FUN(this,ARG)
+FLEXT_CALL_PRE(M_FUN)(this,ARG)
 
 //! Call a (already defined) method with 2 arguments
 #define FLEXT_CALLMETHOD_2(M_FUN,ARG1,ARG2) \
 \
-cb_ ## M_FUN(this,ARG1,ARG2)
+FLEXT_CALL_PRE(M_FUN)(this,ARG1,ARG2)
 
 //! Call a (already defined) method with 3 arguments
 #define FLEXT_CALLMETHOD_3(M_FUN,ARG1,ARG2,ARG3) \
 \
-cb_ ## M_FUN(this,ARG1,ARG2,ARG3)
+FLEXT_CALL_PRE(M_FUN)(this,ARG1,ARG2,ARG3)
 
 //! Call a (already defined) method with 4 arguments
 #define FLEXT_CALLMETHOD_4(M_FUN,ARG1,ARG2,ARG3,ARG4) \
 \
-cb_ ## M_FUN(this,ARG1,ARG2,ARG3,ARG4)
+FLEXT_CALL_PRE(M_FUN)(this,ARG1,ARG2,ARG3,ARG4)
 
 //! Call a (already defined) method with 5 arguments
 #define FLEXT_CALLMETHOD_5(M_FUN,ARG1,ARG2,ARG3,ARG4,ARG5) \
 \
-cb_ ## M_FUN(this,ARG1,ARG2,ARG3,ARG4,ARG5)
+FLEXT_CALL_PRE(M_FUN)(this,ARG1,ARG2,ARG3,ARG4,ARG5)
 
 //! @} 
+
+
+
+/*!	\defgroup FLEXT_DEFATTR flext functions for attribute definition
+
+	@{ 
+*/
+
+#define FLEXT_CALLSET_(FUN,TP) \
+static bool FLEXT_SET_PRE(FUN)(flext_base *c,TP &arg) \
+{ FLEXT_CAST<thisType *>(c)->FUN(arg); return true; }
+
+#define FLEXT_CALLGET_(FUN,TP) \
+static bool FLEXT_GET_PRE(FUN)(flext_base *c,TP &arg) \
+{ FLEXT_CAST<thisType *>(c)->FUN(arg); return true; }
+
+#define FLEXT_ATTRSET_(VAR,TP) \
+static bool FLEXT_SET_PRE(VAR)(flext_base *c,TP &arg) \
+{ FLEXT_CAST<thisType *>(c)->VAR = arg; return true; }
+
+#define FLEXT_ATTRGET_(VAR,TP) \
+static bool FLEXT_GET_PRE(VAR)(flext_base *c,TP &arg) \
+{ arg = FLEXT_CAST<thisType *>(c)->VAR; return true; }
+
+
+#define FLEXT_CALLSET_F(SFUN) FLEXT_CALLSET_(SFUN,float)
+#define FLEXT_CALLSET_I(SFUN) FLEXT_CALLSET_(SFUN,int)
+#define FLEXT_CALLSET_S(SFUN) FLEXT_CALLSET_(SFUN,t_symptr)
+#define FLEXT_CALLSET_V(SFUN) FLEXT_CALLSET_(SFUN,AtomList)
+
+#define FLEXT_CALLGET_F(GFUN) FLEXT_CALLGET_(GFUN,float)
+#define FLEXT_CALLGET_I(GFUN) FLEXT_CALLGET_(GFUN,int)
+#define FLEXT_CALLGET_S(GFUN) FLEXT_CALLGET_(GFUN,t_symptr)
+#define FLEXT_CALLGET_V(GFUN) FLEXT_CALLGET_(GFUN,AtomList)
+
+#define FLEXT_CALLXFER_F(GFUN,SFUN) FLEXT_CALLGET_F(GFUN) FLEXT_CALLSET_F(SFUN) 
+#define FLEXT_CALLXFER_I(GFUN,SFUN) FLEXT_CALLGET_I(GFUN) FLEXT_CALLSET_I(SFUN) 
+#define FLEXT_CALLXFER_S(GFUN,SFUN) FLEXT_CALLGET_S(GFUN) FLEXT_CALLSET_S(SFUN) 
+#define FLEXT_CALLXFER_V(GFUN,SFUN) FLEXT_CALLGET_V(GFUN) FLEXT_CALLSET_V(SFUN) 
+
+#define FLEXT_ATTRSET_F(VAR) FLEXT_ATTRSET_(VAR,float)
+#define FLEXT_ATTRSET_I(VAR) FLEXT_ATTRSET_(VAR,int)
+#define FLEXT_ATTRSET_S(VAR) FLEXT_ATTRSET_(VAR,t_symptr)
+#define FLEXT_ATTRSET_V(VAR) FLEXT_ATTRSET_(VAR,AtomList)
+
+#define FLEXT_ATTRGET_F(VAR) FLEXT_ATTRGET_(VAR,float)
+#define FLEXT_ATTRGET_I(VAR) FLEXT_ATTRGET_(VAR,int)
+#define FLEXT_ATTRGET_S(VAR) FLEXT_ATTRGET_(VAR,t_symptr)
+#define FLEXT_ATTRGET_V(VAR) FLEXT_ATTRGET_(VAR,AtomList)
+
+#define FLEXT_ATTRXFER_F(VAR) FLEXT_ATTRGET_F(VAR) FLEXT_ATTRSET_F(VAR) 
+#define FLEXT_ATTRXFER_I(VAR) FLEXT_ATTRGET_I(VAR) FLEXT_ATTRSET_I(VAR) 
+#define FLEXT_ATTRXFER_S(VAR) FLEXT_ATTRGET_S(VAR) FLEXT_ATTRSET_S(VAR) 
+#define FLEXT_ATTRXFER_V(VAR) FLEXT_ATTRGET_V(VAR) FLEXT_ATTRSET_V(VAR) 
+
+//! @} 
+
+/*!	\defgroup FLEXT_ADDATTR flext methods for defining attributes
+	These can only be used in class member functions!
+
+	@{ 
+*/
+
+#define	FLEXT_ADDATTR_GET(NAME,GFUN) AddAttrib(NAME,(FLEXT_GET_PRE(GFUN)),NULL)
+#define	FLEXT_ADDATTR_SET(NAME,SFUN) AddAttrib(NAME,NULL,(FLEXT_SET_PRE(SFUN)))
+#define	FLEXT_ADDATTRIB(NAME,FUN) AddAttrib(NAME,(FLEXT_GET_PRE(FUN)),(FLEXT_SET_PRE(FUN)))
+
+//! @} 
+
+
 
 
 #endif // __FLEXT_DEFS_H

@@ -322,7 +322,7 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int argc,t_atom *argv)
 			if(!obj->data || 
 				// check constructor exit flag
 				!obj->data->InitOk() || 
-				// call virtual init function
+				// call virtual init function 
 				!obj->data->Init()) 
 			{ 
 				// there was some init error, free object

@@ -33,5 +33,5 @@ INSTPATH=${FLEXTPATH}/tutorial
 
 # additional compiler flags
 # (check if they fit to your system!)
-UFLAGS=-mcpu=pentiumpro  # gcc 2.95
-#UFLAGS=-mcpu=pentium3 -msse  # gcc 3.2
+#UFLAGS=-mcpu=pentiumpro  # gcc 2.95
+UFLAGS=-mcpu=pentium3 -msse  # gcc 3.2

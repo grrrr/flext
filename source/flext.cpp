@@ -142,7 +142,6 @@ flext_base::flext_base():
 	thrcount = 0;
 	shouldexit = false;
 	qhead = qtail = NULL;
-	pthread_mutex_init(&qmutex,NULL);
 	qclk = clock_new(this,(t_method)QTick);
 #endif
 }
@@ -156,7 +155,6 @@ flext_base::~flext_base()
 
 	while(qhead) QTick(this);
 	clock_free(qclk);
-	pthread_mutex_destroy(&qmutex);
 #endif
 
 	if(inlist) delete inlist;
@@ -214,6 +212,13 @@ unsigned long flext_base::XletCode(xlet::type tp,...)
 	int cnt = 0;
 	xlet::type *args = NULL,arg = tp;
 	for(; arg; ++cnt) {
+#ifdef _DEBUG
+		if(cnt > 9) {
+			error("%s - Too many in/outlets defined - truncated to 9",thisName());
+			break;			
+		}
+#endif			
+
 		code = code*10+(int)arg;
 		arg = (xlet::type)va_arg(marker,int);
 	}

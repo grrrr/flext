@@ -1,14 +1,26 @@
-#include "atoms.h"
-//#include <math.h>
+/* 
 
+flext - C++ layer for Max/MSP and pd (pure data) externals
 
-AtomList::AtomList(I argc,t_atom *argv):
+Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
+For information on usage and redistribution, and for a DISCLAIMER OF ALL
+WARRANTIES, see the file, "license.txt," in this distribution.  
+
+*/
+
+/*! \file flatom.cpp
+    \brief Definitions for handling the t_atom type and lists thereof.
+*/
+
+#include <flext.h>
+
+flext_base::AtomList::AtomList(int argc,t_atom *argv):
 	cnt(argc)
 {
 	lst = new t_atom[cnt];
 
 	if(argv) {
-		for(I i = 0; i < argc; ++i) {
+		for(int i = 0; i < argc; ++i) {
 			switch(lst[i].a_type = argv[i].a_type) {
 			case A_FLOAT:
 				lst[i].a_w.w_float = argv[i].a_w.w_float;
@@ -35,7 +47,7 @@ AtomList::AtomList(I argc,t_atom *argv):
 	}
 }
 
-AtomList::~AtomList()
+flext_base::AtomList::~AtomList()
 {
 	if(lst) delete[] lst;
 }

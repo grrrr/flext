@@ -389,8 +389,38 @@ public:
 	};
 #endif // FLEXT_THREADS
 
-// --- list creation stuff ----------------------------------------
+// --- atom list stuff -------------------------------------------
 
+	class AtomList
+	{
+	public:
+		AtomList(int argc,t_atom *argv = NULL);
+		~AtomList();
+
+		int Count() const { return cnt; }
+		t_atom &operator [](int ix) { return lst[ix]; }
+		const t_atom &operator [](int ix) const { return lst[ix]; }
+
+		t_atom *Atoms() { return lst; }
+		const t_atom *Atoms() const { return lst; }
+		
+	protected:
+		int cnt;
+		t_atom *lst;
+	};
+
+
+	class AtomAnything: 
+		public AtomList
+	{
+	public:
+		AtomAnything(const t_symbol *h,int argc,t_atom *argv): AtomList(argc,argv),hdr(h) {}
+
+		const t_symbol *Header() const { return hdr; }
+		
+	protected:
+		const t_symbol *hdr;
+	};
 
 // --- clock stuff ------------------------------------------------
 
@@ -485,7 +515,7 @@ private:
 	class qmsg;
 	qmsg *qhead,*qtail;
 	t_clock *qclk;
-	pthread_mutex_t qmutex;
+	ThrMutex qmutex;
 
 	static void QTick(flext_base *th);
 	void Queue(qmsg *m);
@@ -533,94 +563,6 @@ private:
 #ifdef MAXMSP
 	static void cb_assist(t_class *c,void *b,long msg,long arg,char *s);
 #endif
-};
-
-
-
-// === flext_dsp ==================================================
-
-/*! \class flext_dsp
-	\brief dsp enabled base object
-*/
-
-class flext_dsp:
-	public flext_base
-{
-	FLEXT_HEADER_S(flext_dsp,flext_base,Setup)
-	
-public:
-
-	//! returns current sample rate
-	float Samplerate() const { return srate; }
-	
-	//! returns current block size
-	int Blocksize() const { return blksz; }
-	
-	//! returns number of audio system input channels
-	int ChannelsIn() const { return chnsin; }
-	//! returns number of audio system output channels
-	int ChannelsOut() const { return chnsout; }
-	
-
-// --- inheritable virtual methods --------------------------------
-
-	/*! \brief Called on every dsp init.
-		\remark Don't expect any valid data in the signal vectors!
-		@param n: frames (aka samples) in one signal vector
-		@param insigs: array of input vectors  (get number with function CntInSig())
-		@param outsigs: array of output vectors  (get number with function CntOutSig())
-	*/
-	virtual void m_dsp(int n,t_sample *const *insigs,t_sample *const *outsigs);
-
-	/*! \brief Called with every signal vector.
-		Here you do the dsp calculation
-		@param n: frames (aka samples) in one signal vector
-		@param insigs: array of input vectors  (get number with function CntInSig())
-		@param outsigs: array of output vectors  (get number with function CntOutSig())
-	*/
-	virtual void m_signal(int n,t_sample *const *insigs,t_sample *const *outsigs) = 0;
-
-#ifndef MAXMSP
-	//! called with "enable" message: pauses/resumes dsp - implicitely defined in MaxMSP
-	virtual void m_enable(bool on);
-#endif
-
-// --- inlet/outlet stuff -----------------------------------------	
-
-	//! add signal inlet
-	void AddInSignal(int m = 1) { AddInlet(xlet::tp_sig,m); }
-
-	//! add signal outlet
-	void AddOutSignal(int m = 1) { AddOutlet(xlet::tp_sig,m); }
-
-
-protected:
-	
-	flext_dsp();
-	~flext_dsp();
-	
-private:
-
-	// not static, could be different in different patchers..
-	float srate; 
-	int blksz;
-	int chnsin,chnsout;
-
-	// setup function
-	static void Setup(t_class *c);
-
-	// callback functions
-
-	static void cb_dsp(t_class *c,t_signal **s);
-#ifndef MAXMSP
-	static void cb_enable(t_class *c,t_flint on);
-	bool dspon;
-#endif
-
-	// dsp stuff
-
-	static t_int *dspmeth(t_int *w); 
-	t_sample **invecs,**outvecs;
 };
 
 #endif

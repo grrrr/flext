@@ -14,9 +14,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *methname)
 {
-#ifdef DEBUG
+#ifdef _DEBUG
 	if(!p) {
-		error("%s - No parameters given for method launch!",methname); 
+		ERRINTERNAL(); 
 		return false;
 	}
 #endif
@@ -86,12 +86,12 @@ void flext_base::QTick(flext_base *th)
 {
 #ifdef DEBUG
 	if(!th->IsSystemThread()) {
-		error("Queue tick called by wrong thread!");
+		error("flext - Queue tick called by wrong thread!");
 		return;
 	}
 #endif
 
-	pthread_mutex_lock(&th->qmutex);
+	th->qmutex.Lock();
 	while(th->qhead) {
 		qmsg *m = th->qhead;
 
@@ -112,15 +112,15 @@ void flext_base::QTick(flext_base *th)
 		m->nxt = NULL;
 		delete m;
 	}
-	pthread_mutex_unlock(&th->qmutex);
+	th->qmutex.Unlock();
 }
 
 void flext_base::Queue(qmsg *m)
 {
-	pthread_mutex_lock(&qmutex);
+	qmutex.Lock();
 	if(qhead) qtail->Add(m);
 	else qhead = qtail = m;
-	pthread_mutex_unlock(&qmutex);
+	qmutex.Unlock();
 	clock_delay(qclk,0);
 }
 

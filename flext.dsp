@@ -90,6 +90,10 @@ SOURCE=.\readme.txt
 # End Group
 # Begin Source File
 
+SOURCE=.\flatom.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\flbase.cpp
 # End Source File
 # Begin Source File
@@ -111,6 +115,10 @@ SOURCE=.\fldefs.h
 # Begin Source File
 
 SOURCE=.\fldsp.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\fldsp.h
 # End Source File
 # Begin Source File
 

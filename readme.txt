@@ -87,7 +87,7 @@ Version history:
 - added AddInBang/AddOutBang (same as Add*Symbol - unchecked)
 - buffer class: added "bool Ok()" check function
 - switched on error posting for unhandled messages
-- added XletCode and AddInlets/AddOutlets for multiple Inlet/Outlet addition
+- added XletCode and AddInlets/AddOutlets for multiple Inlet/Outlet addition (max. 9 inlets/outlets)
 - if float or int message is not handled explicitly then [list float/int( is tried
 
 0.2.2:
@@ -173,6 +173,7 @@ general:
 
 bugs:
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)
+- introduce timed thread termination upon object destruction
 
 tests:
 - PD: figure out what "pointer" messages do and where they occur

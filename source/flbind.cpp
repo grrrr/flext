@@ -144,13 +144,14 @@ bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbo
     return true;
 }
 
-
 bool flext_base::UnbindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbol *s,int argc,t_atom *argv,void *data),void **data)
 {
     bool ok = false;
     
     if(bindhead && bindhead->Contained(0)) {
         ItemSet &set = bindhead->GetInlet();
+
+/*
         ItemSet::iterator it1,it2;
         if(sym) { 
             // specific tag
@@ -173,13 +174,37 @@ bool flext_base::UnbindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_sym
                 }
             }
         }
+*/
+        BindItem *item = NULL;
+        if(sym) {
+            // symbol is given
+            Item *it = set.find(sym);
+            if(fun) {
+                // check if function matches
+                for(; it && static_cast<BindItem *>(it)->fun != fun; it = it->nxt);
+            }
+            item = static_cast<BindItem *>(it); 
+        }
+        else {
+            // take any entry that matches
+            for(ItemSet::iterator si(set); si && !item; ++si) {
+                for(Item *i = si.data(); i; i = i->nxt) {
+                    BindItem *bit = (BindItem *)i;
+                    if(!fun || bit->fun == fun) { 
+                        item = bit; 
+                        if(!sym) sym = si.key();
+                        break; 
+                    }
+                }
+            }
+        }
 
-        if(it) {
-            if(data) *data = it->px->data;
-            ok = bindhead->Remove(it,sym,0,false);
+        if(item) {
+            if(data) *data = item->px->data;
+            ok = bindhead->Remove(item,sym,0,false);
             if(ok) {
-                it->Unbind(sym);
-                delete it;
+                item->Unbind(sym);
+                delete item;
             }
         }
     }
@@ -207,7 +232,8 @@ bool flext_base::UnbindAll()
 {
     if(bindhead && bindhead->Contained(0)) {
         ItemSet &set = bindhead->GetInlet();
-        for(ItemSet::iterator si = set.begin(); si != set.end(); ++si) {
+//        for(ItemSet::iterator si = set.begin(); si != set.end(); ++si) {
+        for(ItemSet::iterator si(set); si; ++si) {
             Item *lst = si.data();
             while(lst) {
                 Item *nxt = lst->nxt;

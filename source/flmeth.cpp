@@ -92,7 +92,7 @@ void flext_base::AddMethod(ItemCont *ma,int inlet,const t_symbol *tag,methfun fu
 
 void flext_base::ListMethods(AtomList &la,int inlet) const
 {
-    typedef DataMap<int,const t_symbol *> MethList;
+	typedef TableMap<int,t_symbol,32> MethList;
     MethList list[2];
 
     int i;
@@ -100,13 +100,12 @@ void flext_base::ListMethods(AtomList &la,int inlet) const
         ItemCont *a = i?methhead:clmethhead;
         if(a && a->Contained(inlet)) {
             ItemSet &ai = a->GetInlet(inlet);
-            for(ItemSet::iterator as = ai.begin(); as != ai.end(); ++as) {
+            for(ItemSet::iterator as(ai); as; ++as) {
                 for(Item *al = as.data(); al; al = al->nxt) {
                     MethItem *aa = (MethItem *)al;
-
                     // check it's not related to an attribute
                     if(!aa->IsAttr()) {
-                        list[i][aa->index] = as.key();
+                        list[i].insert(aa->index,const_cast<t_symbol *>(as.key()));
                         break;
                     }
                 }
@@ -116,9 +115,8 @@ void flext_base::ListMethods(AtomList &la,int inlet) const
 
     la((int)list[0].size()+(int)list[1].size());
     int ix = 0;
-    MethList::iterator it;
     for(i = 0; i <= 1; ++i)
-        for(it = list[i].begin(); it != list[i].end(); ++it) 
+        for(MethList::iterator it(list[i]); it; ++it) 
             SetSymbol(la[ix++],it.data());
 }
 

@@ -509,18 +509,20 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
         // get flags
         int sv;
         const AtomList *initdata;
-        AttrDataCont::iterator it = th->attrdata->find(sym);
-        if(it == th->attrdata->end())
+        const AttrData *a = th->attrdata->find(sym);
+//        AttrDataCont::iterator it = th->attrdata->find(sym);
+//        if(it == th->attrdata->end())
+        if(!a)
             sv = 0,initdata = NULL;
         else {
-            const AttrData &a = *it.data();
-            if(a.IsSaved())
+//            const AttrData &a = *it.data();
+            if(a->IsSaved())
                 sv = 2;
-            else if(a.IsInit())
+            else if(a->IsInit())
                 sv = 1;
             else 
                 sv = 0;
-            initdata = a.IsInitValue()?&a.GetInitValue():NULL;
+            initdata = a->IsInitValue()?&a->GetInitValue():NULL;
         }
 
         // get attribute type
@@ -702,10 +704,13 @@ bool flext_base::cb_AttrDialog(flext_base *th,int argc,const t_atom *argv)
             bool ret = th->SetAttrib(aname,attr,ccnt,argv+coffs);
             FLEXT_ASSERT(ret);
 
-            AttrDataCont::iterator it = th->attrdata->find(aname);
+//            AttrDataCont::iterator it = th->attrdata->find(aname);
+            AttrData *a = th->attrdata->find(aname);
 
             if(sv >= 1) {
                 // if data not present create it
+
+/*
                 if(it == th->attrdata->end()) {
                     AttrDataCont::pair pair; 
                     pair.key() = aname;
@@ -717,13 +722,29 @@ bool flext_base::cb_AttrDialog(flext_base *th,int argc,const t_atom *argv)
                 a.SetSave(sv == 2);
                 a.SetInit(true);
                 a.SetInitValue(icnt,argv+ioffs);
+*/
+                if(!a)
+                    th->attrdata->insert(aname,a = new AttrData);
+
+                a->SetSave(sv == 2);
+                a->SetInit(true);
+                a->SetInitValue(icnt,argv+ioffs);
             }
             else {
+/*
                 if(it != th->attrdata->end()) {
                     AttrData &a = *it.data();
                     // if data is present reset flags
                     a.SetSave(false);
                     a.SetInit(false);
+
+                    // let init data as is
+                }
+*/
+                if(a) {
+                    // if data is present reset flags
+                    a->SetSave(false);
+                    a->SetInit(false);
 
                     // let init data as is
                 }
@@ -772,13 +793,19 @@ void flext_base::BinbufAttr(t_binbuf *b,bool transdoll)
     for(i = 0; i < cnt; ++i) {
         const t_symbol *sym = GetSymbol(la[i]);
         const AtomList *lref = NULL;
+/*
         AttrDataCont::iterator it = attrdata->find(sym);
-
         if(it != attrdata->end()) {
             const AttrData &a = *it.data();
             if(a.IsInit() && a.IsInitValue()) {
                 lref = &a.GetInitValue();
-/*
+*/
+        AttrData *a = attrdata->find(sym);
+        if(a) {
+            if(a->IsInit() && a->IsInitValue()) {
+                lref = &a->GetInitValue();
+
+#if 0 /////////////////////////////////////////////////////////////
                 // check for $-parameters
                 lv = lref->Count();
                 for(int j = 0; j < lref->Count(); ++j) {
@@ -794,9 +821,10 @@ void flext_base::BinbufAttr(t_binbuf *b,bool transdoll)
                 }
 
                 lref = &lv;
-*/
+#endif /////////////////////////////////////////////////////////////
             }
-            else if(a.IsSaved()) {
+//            else if(a.IsSaved()) {
+            else if(a->IsSaved()) {
                 AttrItem *attr = FindAttrib(sym,true);
 
                 // attribute must be gettable (so that the data can be retrieved) and puttable (so that the data can be inited)

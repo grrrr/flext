@@ -16,6 +16,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
 #include <new>
 
 #ifdef _MSC_VER
@@ -295,8 +297,166 @@ void flext_root::error(const char *fmt,...)
     va_end(ap);
 }
 
-
+#if 0
 AnyMap::AnyMap() {}
 AnyMap::~AnyMap() {}
 AnyMap::iterator AnyMap::find(AnyMapType k) { return Parent::find(k); }
 AnyMapType &AnyMap::operator [](AnyMapType k) { return Parent::operator [](k); }
+#endif
+
+void TableAnyMap::clear() 
+{
+    if(left) { delete left; left = NULL; }
+    if(right) { delete right; right = NULL; }
+    if(owned)
+        for(int i = 0; i < n; ++i) {
+            FLEXT_ASSERT(data[i].value);
+            Free(data[i].value);
+        }
+    n = 0;
+}
+
+int TableAnyMap::size() const 
+{
+    int sz = n;
+    if(sz >= max) {
+        if(left) sz += left->size();
+        if(right) sz += right->size();
+    }
+    return sz;
+}
+
+void TableAnyMap::_set(size_t k,void *t)
+{
+    FLEXT_ASSERT(n);
+
+    if(n < max) {
+        // fall through
+    }
+    else if(k < data[0].key) {
+        _toleft(k,t);
+        return;
+    }
+    else if(k > data[max-1].key) {
+        _toright(k,t);
+        return;
+    }
+
+    int ix = 0;
+    {
+        int b = n;
+        while(ix != b) {
+            const int c = (ix+b)/2;
+            const size_t dk = data[c].key;
+            if(k == dk) {
+                ix = c;
+                break;
+            }
+            else if(k < dk)
+                b = c;
+            else if(ix < c)
+                ix = c;
+            else {
+                ix = b;
+                break;
+            }
+        }
+    }
+
+    size_t dk = data[ix].key;
+    if(k == dk) {
+        // update data in existing slot (same key)
+        if(owned) Free(data[ix].value);
+        data[ix] = t;
+    }
+    else if(ix >= n) {
+        FLEXT_ASSERT(ix == n);
+        // after last entry
+        data[n++](k,t);
+    }
+    else {
+        // insert new slot by shifting the higher ones
+        FLEXT_ASSERT(k < dk);
+        if(n == max)
+            _toright(data[max-1]);
+        else
+            ++n;
+
+        Data *tg = data+ix;
+        for(Data *d = data+n-1; d > tg; d--) d[0] = d[-1];
+        (*tg)(k,t);
+    }
+}
+
+void *TableAnyMap::_find(size_t k) 
+{
+    FLEXT_ASSERT(n);
+    if(n < max) {
+        // fall through
+    }
+    else if(k < data[0].key)
+        return left?left->_find(k):NULL;
+    else if(k > data[n-1].key)
+        return right?right->_find(k):NULL;
+
+    //! return index of data item with key <= k
+
+    FLEXT_ASSERT(n);
+    int ix = 0;
+    {
+        int b = n;
+        while(ix != b) {
+            const int c = (ix+b)/2;
+            const size_t dk = data[c].key;
+            if(k == dk)
+                return data[c].value;
+            else if(k < dk)
+                b = c;
+            else if(ix < c)
+                ix = c;
+            else {
+                ix = b;
+                break;
+            }
+        }
+    }
+
+    if(data[ix].key == k)
+        return data[ix].value;
+    else
+        return NULL;
+}
+
+void TableAnyMap::iterator::forward() 
+{ 
+    if(map || ix >= map->n) {
+        if(++ix >= map->n) {
+            TableAnyMap *nmap;
+
+            // we reached the end of the slots
+            if(map->right) {
+                // climb up one
+                map = map->right;
+                leftmost();
+                ix = 0;
+            }
+            else {
+                // fall back
+                for(;;) {
+                    nmap = map->parent;
+                    if(!nmap) break; // no parent
+                    if(nmap->left == map) {
+                        // ok, we are in front of the slots now
+                        ix = 0;
+                        map = nmap;
+                        break;
+                    }
+                    else {
+                        FLEXT_ASSERT(nmap->right == map);
+                        ix = (map = nmap)->n;
+                    }
+                }
+            }
+        }
+    }
+}

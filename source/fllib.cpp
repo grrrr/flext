@@ -126,21 +126,16 @@ libclass::libclass(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(f
 {}
 
 
-typedef DataMap<const t_symbol *,libclass *> LibMap;
+typedef TableMap<const t_symbol *,libclass,8> LibMap;
 
 static LibMap libnames;
 
 //! Store or retrieve registered classes
 static libclass *FindName(const t_symbol *s,libclass *o = NULL) 
 {
-//    typedef std::map<const t_symbol *,libclass *> LibMap;
-    LibMap::iterator it = libnames.find(s);
-    if(it == libnames.end()) {
-        if(o) libnames[s] = o;
-        return o;
-    }
-    else
-        return it.data();
+    libclass *cl = libnames.find(s);
+    if(!cl) libnames.insert(s,cl = o);
+    return cl;
 }
 
 

@@ -650,6 +650,7 @@ protected:
 		Item *nxt;
 	};
 
+/*
 	class ItemSet:
 		public DataMap<const t_symbol *,Item *>
 	{
@@ -657,6 +658,8 @@ protected:
 		ItemSet();
 		~ItemSet();
 	};
+*/
+	typedef TableMap<const t_symbol *,Item,8,true> ItemSet;
 
     /*! This class holds hashed item entries
 		\note not thread-safe!
@@ -763,6 +766,7 @@ protected:
 		int flags;
 	};
 
+/*
 	class AttrDataCont:
 		public DataMap<const t_symbol *,AttrData *>
 	{
@@ -770,6 +774,8 @@ protected:
 		AttrDataCont();
 		~AttrDataCont();
 	};
+*/
+	typedef TableMap<const t_symbol *,AttrData,8,true> AttrDataCont;
 
 	// these outlet functions don't check for thread but send directly to the real-time system
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX

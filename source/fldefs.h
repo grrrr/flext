@@ -20,9 +20,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	@{ 
 */
 
-// compiling the flext_gui class involves virtual classes and 
-// needs dynamic type casts (and RTTI, naturally)
-#ifdef FLEXT_GUI
+/*! \brief Switch for compilation of derived virtual classes
+	\remark These need dynamic type casts (and RTTI, naturally)
+	\ingroup FLEXT_GLOBALS
+*/
+#ifdef FLEXT_VIRT
 #define FLEXT_CAST dynamic_cast
 #else
 #define FLEXT_CAST static_cast
@@ -785,12 +787,12 @@ FLEXT_CALL_PRE(M_FUN)(this)
 //! Call a (already defined) method with variable list arguments
 #define FLEXT_CALLMETHOD_V(M_FUN,ARGC,ARGV) \
 \
-FLEXT_CALL_PRE(M_FUN)(this,ARGC,ARGV)
+FLEXT_CALL_PRE(M_FUN)(this,ARGC,(t_atom *)(ARGV))
 
 //! Call a (already defined) method with anything arguments
 #define FLEXT_CALLMETHOD_A(M_FUN,HDR,ARGC,ARGV) \
 \
-FLEXT_CALL_PRE(M_FUN)(this,HDR,ARGC,ARGV)
+FLEXT_CALL_PRE(M_FUN)(this,(t_symbol *)(HDR),ARGC,(t_atom *)(ARGV))
 
 //! Call a (already defined) method with a data package (void *)
 #define FLEXT_CALLMETHOD_X(M_FUN,DATA) \

@@ -99,6 +99,11 @@ bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbo
             post("%s - Symbol already bound",thisName());
             return false;
         }
+    
+    	if(bindhead->Count() > 20) {
+  			// Hash it!
+  			bindhead->Finalize();
+    	}
     }
 
     SetupBindProxy(); 
@@ -152,7 +157,7 @@ bool flext_base::UnbindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_sym
             if(!sz) sz = 1;
 
             for(int i = 0; i < sz; ++i) {
-                for(it = (binditem *)bindhead->Item(0); it; it = (binditem *)it->nxt) {
+                for(it = (binditem *)bindhead->Item(i); it; it = (binditem *)it->nxt) {
                     if(it->tag == sym && (!fun || it->fun == fun)) break;
                 }
                 if(it) break;
@@ -165,6 +170,26 @@ bool flext_base::UnbindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_sym
         }
     }
     return ok;
+}
+
+bool flext_base::UnbindAll()
+{
+//	bool memleak = false;
+
+    int sz = bindhead->Size();
+    if(!sz) sz = 1;
+
+    for(int i = 0; i < sz; ++i) {
+        for(binditem *it = (binditem *)bindhead->Item(i); it; it = (binditem *)it->nxt) {
+//			if(it->px->data) memleak = true;
+            if(bindhead->Remove(it)) delete it;
+        }
+    }
+/*
+	if(memleak)
+		post("%s - Memory was not deallocated while unbinding methods",thisName());
+*/
+	return true;
 }
 
 void flext_base::pxbnd_object::px_method(pxbnd_object *c,const t_symbol *s,int argc,t_atom *argv)

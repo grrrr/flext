@@ -2858,7 +2858,7 @@
 				OTHER_LDFLAGS = "-bundle_loader /usr/local/pd/bin/pd";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = flext.dylib;
+				PRODUCT_NAME = libflext.dylib;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
@@ -3139,7 +3139,7 @@
 		};
 		F5CBC5B704757A5901A0C81C = {
 			isa = PBXLibraryReference;
-			path = flext.dylib;
+			path = libflext.dylib;
 			refType = 3;
 		};
 		F5CBC5B804757BC801A0C81C = {
@@ -3831,7 +3831,7 @@
 				OTHER_LDFLAGS = "-bundle_loader /usr/local/pd/bin/pd";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = flext_d.dylib;
+				PRODUCT_NAME = libflext_d.dylib;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
@@ -4190,7 +4190,7 @@
 		};
 		F5CBC69B047584CD01A0C81C = {
 			isa = PBXLibraryReference;
-			path = flext_d.dylib;
+			path = libflext_d.dylib;
 			refType = 3;
 		};
 	};

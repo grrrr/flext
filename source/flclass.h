@@ -437,6 +437,11 @@ public:
     //! \brief Unbind a method from a symbol (as string)
     bool UnbindMethod(const char *sym,bool (*meth)(flext_base *obj,t_symbol *sym,int argc,t_atom *argv,void *data) = NULL,void **data = NULL) { return UnbindMethod(MakeSymbol(sym),meth,data); }
 
+	/*! Unbind all symbol bindings
+		\note Memory associated to data pointers passed by BindMethod will not be freed!
+	*/
+	bool UnbindAll();
+
 //!		@} FLEXT_C_BIND
 
 // --- thread stuff -----------------------------------------------

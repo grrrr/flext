@@ -661,7 +661,7 @@ protected:
 	static bool StopHelper();
 	static void ThrHelper(void *);
 
-	//! system's thread id
+	//! the system's thread id
 	static thrid_t thrid;  // the system thread
 
 public:

@@ -79,7 +79,7 @@ flext_base::~flext_base()
 
 	// delete message lists
 	if(methhead) delete methhead;
-	if(bindhead) delete bindhead;
+	if(bindhead) delete bindhead;  // ATTENTION: the object must free all memory associated to bindings itself
 	if(attrhead) delete attrhead;
 	
 	// destroy inlets and outlets and their proxy objects

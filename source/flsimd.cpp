@@ -446,16 +446,10 @@ void flext::MulSamples(t_sample *dst,const t_sample *src,t_sample mul,int cnt)
 	    while(cnt--) *(dst++) = *(src++)*mul; 
     }
     else
-/*
 #elif FLEXT_OS == FLEXT_OS_MAC && defined(__VEC__) && defined(__VECTOROPS__)
 	{
-   	    int n = cnt>>2,n4 = n<<2;
-        cnt -= n4;
-		vScopy(n4,src,dst);
-		src += n4,dst += n4;
-       	while(cnt--) *(dst++) = *(src++); 
+		vsmul(src,1,&mul,dst,1,cnt);
 	}
-*/
 #endif // _MSC_VER
 #endif // FLEXT_USE_SIMD
     {

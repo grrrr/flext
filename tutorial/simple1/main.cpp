@@ -48,7 +48,7 @@ FLEXT_NEW("simple1",simple1)
 simple1::simple1()
 { 
 	// define inlets:
-	// first inlet must always by of type anything (or signal for dsp objects)
+	// first inlet must always be of type anything (or signal for dsp objects)
 	AddInAnything();  // add one inlet for any message
 	
 	// define outlets:

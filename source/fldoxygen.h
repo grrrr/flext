@@ -16,7 +16,7 @@ Currently there exist two widely used modular systems for real-time audio that c
 extended by self-written objects (so called "externals"):<br>
 Max/MSP (http://www.cycling74.com) and Pure Data (http://www.pure-data.org).
 
-Both come with APIs that are not very different (as they share their origins), but as well not quite the same.
+Both come with APIs that are not very different (as they share their origin), but as well not quite the same.
 Flext seeks to provide a unifying interface for the APIs of those real-time systems while also
 concentrating on making use of the advantages of the object orientation of the C++ language.
 
@@ -35,12 +35,13 @@ The advantages of flext are:
 <li>Libraries of externals in Max/MSP
 <li>More than 3 typed creation arguments possible for Max/MSP
 <li>Any input to any object's inlet (with the exception of signal streams)
+<li>Control of the object state by use of Max/Jitter-like "attributes"
 </ul>
 
 Naturally there are some cons, too:
 <ul>
 <li>Introduces a small overhead to speed of message handling 
-<li>Overhead in object size (due to possibly unneeded library code)
+<li>Overhead in object size (due to possibly unneeded library code) when statically linked
 </ul>
 
 Currently, flext supports 
@@ -71,7 +72,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 In the official flext distribution, the GNU General Public License is
-in the file gpl.txt<BR> Also see the file license.txt for notes on 
+in the file gpl.txt<BR> 
+Also see the file license.txt for notes on 
 referenced works and their license texts.
 
 \section DOWNLOAD Download 

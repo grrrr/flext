@@ -78,6 +78,10 @@ see flext.h for the documented base classes
 
 Version history:
 
+0.3.3:
+- Bind/unbind functions for flext classes
+- Made "t_symtype" another synonym for "t_symbol *"
+
 0.3.2:
 - doxygen generated inline documentation / functional reference
 - added some more functionality to the AtomAnything class

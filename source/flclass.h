@@ -373,6 +373,21 @@ public:
 	//! Check for symbol and get string
 	static const char *GetAString(const t_symbol *s) { return s?s->s_name:""; }  
 	
+
+// --- bind/unbind ---------------------------------------
+
+#ifdef PD
+	void Bind(const t_symbol *s) { pd_bind(&thisHdr()->ob_pd,const_cast<t_symbol *>(s)); }
+	void Bind(const char *c) { Bind(MakeSymbol(c)); }  
+	void Unbind(const t_symbol *s) { pd_unbind(&thisHdr()->ob_pd,const_cast<t_symbol *>(s)); }
+	void Unbind(const char *c) { Unbind(MakeSymbol(c)); }  
+#else
+#pragma message("Bind/Unbind not implemented!);
+#endif
+
+
+	// Low level
+
 	//! Bind object to a symbol
 	static void DoUnbind(t_symbol *s,flext_obj *o);
 	//! Unbind object from a symbol

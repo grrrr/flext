@@ -306,6 +306,8 @@ return 0; \
 
 #define FLEXTTYPE_t_symptr A_SYMBOL
 #define CALLBTYPE_t_symptr t_symptr
+#define FLEXTTYPE_t_symtype A_SYMBOL
+#define CALLBTYPE_t_symtype t_symptr
 #define FLEXTTYPE_t_ptrtype A_POINTER
 #define CALLBTYPE_t_ptrtype t_ptrtype
 
@@ -347,6 +349,7 @@ return 0; \
 #define ARGMEMBER_int i //*
 #define ARGMEMBER_float f
 #define ARGMEMBER_t_symptr s
+#define ARGMEMBER_t_symtype s
 #define ARGCAST(arg,tp) arg.ARGMEMBER_##tp
 
 //#define EXTPROTO_0  extern "C" FLEXT_EXT
@@ -721,6 +724,7 @@ void FLEXT_STPF(NEW_CLASS,DSP)()   	\
 #define FLEXTARG_bool a_int
 #define FLEXTARG_t_float a_float
 #define FLEXTARG_t_symtype a_symbol
+#define FLEXTARG_t_symptr a_symbol
 #define FLEXTARG_t_ptrtype a_pointer
 
 #define FLEXTARG(TP) FLEXTARG_ ## TP

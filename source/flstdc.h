@@ -64,6 +64,7 @@ typedef t_gpointer *t_ptrtype;
 
 typedef t_float t_flint;
 typedef t_symbol *t_symptr;
+typedef t_symbol *t_symtype;
 typedef t_class **t_thing;
 
 typedef t_clock t_qelem;
@@ -92,6 +93,7 @@ typedef t_patcher t_canvas;
 
 typedef t_int t_flint;
 typedef t_symbol *t_symptr;
+typedef t_symbol *t_symtype;
 typedef t_object *t_thing;
 
 typedef qelem t_qelem;

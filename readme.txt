@@ -64,6 +64,7 @@ Version history:
 - loadbang also in PD
 - introduced "compatibility mode" which denies platform-specific features 
 - fixed severe dsp bug (symptom: "float method overwritten" warning in pd)
+- fixed bug: wrong return code from buffer::Set
 
 0.1.0: 
 - max-pd 0.2 became flext 0.1.0
@@ -94,7 +95,7 @@ general:
 - should we use a namespace?
 
 bugs:
-none reported
+none known
 
 features:
 - static class methods for definition of object methods

@@ -238,7 +238,9 @@ bool flext_base::SetAttrib(const t_symbol *tag,AttrItem *a,int argc,const t_atom
 			break;
 		case a_symbol:
 			if(argc == 1 && IsSymbol(argv[0])) {
-				any.st = const_cast<t_symbol *>(GetParamSym(GetSymbol(argv[0]),thisCanvas()));
+				// \todo shall we analyze the patcher args????
+//				any.st = const_cast<t_symbol *>(GetParamSym(GetSymbol(argv[0]),thisCanvas()));
+				any.st = GetSymbol(argv[0]);
 				((methfun_1)a->fun)(this,any);				
 			}
 			else ok = false;
@@ -254,7 +256,7 @@ bool flext_base::SetAttrib(const t_symbol *tag,AttrItem *a,int argc,const t_atom
 			AtomList la(argc);
 			for(int i = 0; i < argc; ++i)
 				if(IsSymbol(argv[i])) 
-					SetSymbol(la[i],GetParamSym(GetSymbol(argv[i]),thisCanvas()));
+					GetParamSym(la[i],GetSymbol(argv[i]),thisCanvas());
 				else
 					la[i] = argv[i];
 

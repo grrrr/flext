@@ -96,28 +96,40 @@ void flext_obj::DefineHelp(t_classid c,const char *ref,const char *dir,bool addt
 #endif
 }
 
-const t_symbol *flext_obj::GetParamSym(const t_symbol *sym,t_canvas *c)
+bool flext_obj::GetParamSym(t_atom &dst,const t_symbol *sym,t_canvas *c)
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
 	if(!c) c = canvas_getcurrent();
 
 	const char *s = GetString(sym);
 	if((s[0] == '$' || s[0] == '#') && isdigit(s[1])) {
+		const t_symbol *res;
 		// patcher parameter detected... get value!
 		if(s[0] != '$') {
 			char tmp[MAXPDSTRING];
 			strcpy(tmp,s);
 			tmp[0] = '$';
-			return canvas_realizedollar(c,const_cast<t_symbol *>(MakeSymbol(tmp)));
+			res = canvas_realizedollar(c,const_cast<t_symbol *>(MakeSymbol(tmp)));
 		}
 		else
-			return canvas_realizedollar(c,const_cast<t_symbol *>(sym));
+			res = canvas_realizedollar(c,const_cast<t_symbol *>(sym));
+
+		// check for number
+		const char *c = GetString(res);
+		while(*c && (isdigit(*c) || *c == '.')) ++c;
+
+		if(!*c) 
+			SetFloat(dst,atof(GetString(res)));
+		else
+			SetSymbol(dst,res);
+		return true;
 	}
 	else
 #else
 	#pragma message("Not implemented")
 #endif
-	return sym;
+	SetSymbol(dst,sym);
+	return true;
 }
 
 

@@ -258,7 +258,7 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 #endif
 
 		//! Convert $0 or #0 symbol into appropriate value
-		static const t_symbol *GetParamSym(const t_symbol *s,t_canvas *c);
+		static bool GetParamSym(t_atom &dst,const t_symbol *s,t_canvas *c);
 
 		//! Get the canvas arguments
 		void CanvasArgs(AtomList &args) const;

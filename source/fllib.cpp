@@ -292,6 +292,8 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 }
 	
 
+#define NEWARGS 256 // must be larger than FLEXT_NEWARGS = 5
+
 typedef flext_obj *(*libfun)(int,t_atom *);
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
@@ -310,7 +312,7 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 	libclass *lo = FindName(s);
 	if(lo) {
 		bool ok = true;
-		t_atom args[FLEXT_MAXNEWARGS]; 
+		t_atom args[NEWARGS]; 
 
 		int argc = _argc_;
 		if(lo->attr) {
@@ -338,7 +340,10 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 						else ok = false;
 						break;
 					case FLEXTTPN_SYM:
-						if(IsSymbol(argv[i])) SetSymbol(args[i],GetParamSym(GetSymbol(argv[i]),NULL));
+						// \todo shall we analyze the patcher args????... should already be done!
+						if(IsSymbol(argv[i])) 
+//							SetSymbol(args[i],GetParamSym(GetSymbol(argv[i]),NULL));
+							args[i] = argv[i];
 						else ok = false;
 						break;
 					}
@@ -367,26 +372,16 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 #else
 #error
 #endif
-//			post("NEWINST CLID %p",clid);
 
-		    flext_obj::m_holder = obj;
+			flext_obj::m_holder = obj;
 			flext_obj::m_holdname = s;
 			flext_obj::m_holdattr = lo->attr;
 
 			// get actual flext object (newfun calls "new flext_obj()")
 			if(lo->argc >= 0)
-				// for interpreted arguments (patcher parameters have already been converted)
 				obj->data = lo->newfun(lo->argc,args); 
-			else {
-				// convert eventual patcher parameters
-				for(int i = 0; i < argc; ++i)
-					if(IsSymbol(argv[i])) 
-						SetSymbol(args[i],GetParamSym(GetSymbol(argv[i]),NULL));
-					else
-						args[i] = argv[i];
-
-				obj->data = lo->newfun(argc,args); 
-			}
+			else
+				obj->data = lo->newfun(argc,argv); 
 	
 			flext_obj::m_holder = NULL;
 			flext_obj::m_holdname = NULL;
@@ -397,9 +392,18 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 				obj->data->InitOk();
 
 			if(ok) {
-				// store creation args for attribute initialization (inside flext_base::Init())
-				flext_obj::m_holdaargc = _argc_-argc;
-				flext_obj::m_holdaargv = argv+argc;
+				if(lo->attr) {
+					// DON'T convert eventual patcher args here... this is done by the actual attribute stuff
+					// so that the initial $- or #- be preserved!
+
+					// store creation args for attribute initialization (inside flext_base::Init())
+					flext_obj::m_holdaargc = _argc_-argc;
+					flext_obj::m_holdaargv = argv+argc;
+				}
+				else {
+					flext_obj::m_holdaargc = 0;
+					flext_obj::m_holdaargv = NULL;
+				}
 
 				// call virtual init function 
 				// here, inlets, outlets, methods and attributes can be set up

@@ -3,7 +3,7 @@
 #
 
 # where is PD?
-PDPATH=c:\programme\audio\pd		
+PDPATH=c:\programme\audio\pd
 
 # where is the pthreads package?
 # (comment out if you use the standard pd package where pthreads are included)

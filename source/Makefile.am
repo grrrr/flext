@@ -3,8 +3,8 @@
 # added by tim blechmann
 #
 
-pkglib_LIBRARIES = libflext.a libflext_d.a libflext_t.a libflext_td.a
-pkglib_LTLIBRARIES = libflext.la libflext_d.la
+lib_LIBRARIES = libflext.a libflext_d.a libflext_t.a libflext_td.a
+lib_LTLIBRARIES = libflext.la libflext_d.la
 
 SRCS_FLEXT = \
 	flbase.cpp \
@@ -57,21 +57,21 @@ pkginclude_HEADERS = \
 
 #handling for stk / sndobj
 SRCS_STK = flstk.cpp
-HDRS_STK = flstk.cpp
+HDRS_STK = flstk.h
 
 SRCS_SNDOBJ = flsndobj.cpp
-HDRS_SNDOBJ = flsndobj.cpp
+HDRS_SNDOBJ = flsndobj.h
 
 if SNDOBJ
 SRCS_FLEXT         += $(SRCS_SNDOBJ)
 pkginclude_HEADERS += $(HDRS_SNDOBJ)
-LIB_SNDOBJ         = sndobj
+LIB_SNDOBJ         = -lsndobj
 endif
 
 if STK
 SRCS_FLEXT         += $(SRCS_STK)
 pkginclude_HEADERS += $(HDRS_STK)
-LIB_STK            =  stk
+LIB_STK            =  -lstk
 endif
 
 libflext_a_SOURCES    = $(SRCS_FLEXT)
@@ -90,6 +90,6 @@ libflext_la_CXXFLAGS   = @OPT_FLAGS@ @INCLUDEDIR@ -DFLEXT_SHARED \
 libflext_d_la_CXXFLAGS = @INCLUDEDIR@ -g -DFLEXT_DEBUG -DFLEXT_SHARED \
 	-DFLEXT_EXPORTS 
 
-libflext_la_LDFLAGS   = @DYNAMIC_LDFLAGS@ -l$(LIB_STK) -l$(LIB_SNDOBJ)
-libflext_d_la_LDFLAGS = @DYNAMIC_LDFLAGS@ -l$(LIB_STK) -l$(LIB_SNDOBJ)
+libflext_la_LDFLAGS   = @DYNAMIC_LDFLAGS@ $(LIB_STK) $(LIB_SNDOBJ)
+libflext_d_la_LDFLAGS = @DYNAMIC_LDFLAGS@ $(LIB_STK) $(LIB_SNDOBJ)
 

@@ -18,49 +18,54 @@ AC_ARG_ENABLE(system, [  --enable-system         flext system (default: pd)],
 	AC_DEFINE(FLEXT_SYS,2))
 
 AC_ARG_ENABLE(sysdir,
-	[  --enable-sysdir       path to pd or max headers],
-    [
+	[  --enable-sysdir         path to pd or max headers],
+    	[
+		sysdir=$enableval
 		INCLUDEDIR="-I$enableval $INCLUDEDIR"
-	]
-	)
+	],
+	[echo "path to system headers required "$enableval && exit 1])
+
+dnl check for g_canvas.h in pd folder
+AC_CHECK_FILE("$sysdir/g_canvas.h",,[echo "$sysdir/g_canvas.h not found" && exit 1])
 
 AC_ARG_ENABLE(stkdir,
-	[  --enable-stkdir       path to stk headers],
+	[  --enable-stkdir         path to stk headers],
 	[
+	        AC_CHECK_FILE("$enableval/Stk.h",,[echo "$enableval/Stk.h not found" && exit 1])	
 		stkdir=$enableval
 		INCLUDEDIR="-I$enableval $INCLUDEDIR"
 	])
 
+AM_CONDITIONAL([STK],[test "$stkdir"])
+
 AC_ARG_ENABLE(sndobjdir,
-	[  --enable-sndobjdir    path to SndObj headers],
+	[  --enable-sndobjdir      path to SndObj headers],
 	[
+		AC_CHECK_FILE("$enableval/SndObj.h",,[echo "$enableval/SndObj.h not found" && exit 1])
 		sndobjdir=$enableval
 		INCLUDEDIR="-I$enableval $INCLUDEDIR"
 	])
 
-
-AM_CONDITIONAL([STK],[test "$stkdir"])
 AM_CONDITIONAL([SNDOBJ],[test "$sndobjdir"])
 
 AC_ARG_ENABLE(optimize, [  --enable-optimize       enables optimized builds for: pentium4, pentium3, G4, G5],
     [
 	case $enableval in
-	pentium4)
-		OPT_FLAGS = "-mtune=pentium4 -march=pentium4 -mmmx -msse -msse2 -mfpmath=sse";;
-	pentium3)	
-		OPT_FLAGS = "-mtune=pentium3 -march=pentium3 -mmmx -msse -mfpmath=sse";;
-	pentium2)
-		OPT_FLAGS="-mtune=pentium2 -march=pentium2 -mmmx";;
-	pentium)
-	 	OPT_FLAGS="-mtune=pentium -march=pentium";;
-	G5)
-		OPT_FLAGS="-march=G5 -mcpu=G5 -maltivec -faltivec -malign-natural";
+	pentium3 | pentium3m)
+		OPT_FLAGS = "-mtune=$enableval -march=$enableval -mmmx -msse -mfpmath=sse";
 		AC_DEFINE(FLEXT_USE_SIMD);;
-	G4)
-		OPT_FLAGS="-march=G4 -mcpu=G4 -maltivec -faltivec -malign-natural";
+	pentium2 | athlon | pentium-mmx)
+		OPT_FLAGS="-mtune=$enableval -march=$enableval -mmmx";;
+	pentium)
+	 	OPT_FLAGS="-mtune=$enableval -march=$enableval";;
+	pentium4 | pentium4m | pentium-m | prescott | nocona | athlon-xp | athlon-mp | athlon64 | opteron) 
+		OPT_FLAGS="-mtune=$enableval -march=$enableval -mmmx -msse -msse2 -mfpmath=sse";
+		AC_DEFINE(FLEXT_USE_SIMD);;
+	G5 | G4)
+		OPT_FLAGS="-mtune=$enableval -march=$enableval -maltivec -faltivec -malign-natural";
 		AC_DEFINE(FLEXT_USE_SIMD);;
 	G3)
-		OPT_FLAGS="-mtune=G3 -mcpu=G3 -malign-natural";;
+		OPT_FLAGS="-mtune=$enableval -march=$enableval -malign-natural";;
 	*)
 		;;
 	esac

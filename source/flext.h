@@ -216,6 +216,10 @@ public:
 	static const t_symbol *sym_signal;
 #endif
 
+	// get symbol string
+	static const C *get_string(const t_symbol *s) { return s->s_name; }  
+	static const C *geta_string(const t_symbol *s) { return s?s->s_name:""; }  
+		
 // --- argument list stuff ----------------------------------------
 		
 	static BL is_float(const t_atom &a) { return a.a_type == A_FLOAT; }
@@ -229,8 +233,8 @@ public:
 	static V set_symbol(t_atom &a,const t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_symbol = const_cast<t_symbol *>(s); }
 
 	static BL is_string(const t_atom &a) { return is_symbol(a); }
-	static const C *get_string(const t_atom &a) { t_symbol *s = get_symbol(a); return s?s->s_name:NULL; }  
-	static const C *geta_string(const t_atom &a) { t_symbol *s = geta_symbol(a); return s?s->s_name:""; }  
+	static const C *get_string(const t_atom &a) { t_symbol *s = get_symbol(a); return s?get_string(s):NULL; }  
+	static V geta_string(const t_atom &a,C *buf,I szbuf);
 	static V set_string(t_atom &a,const C *c) { set_symbol(a,gensym(const_cast<C *>(c))); }
 
 #ifdef PD
@@ -262,7 +266,6 @@ public:
 	static V set_flint(t_atom &a,I v) { a.a_type = A_INT; a.a_w.w_long = v; }
 #endif
 
-		
 // --- list creation stuff ----------------------------------------
 
 

@@ -668,6 +668,12 @@ V flext_base::add_meth_ixd(I inlet,const C *tag,methfun fun,metharg tp,...)
 */
 
 
+V flext_base::geta_string(const t_atom &a,C *buf,I szbuf)
+{ 
+	atom_string(const_cast<t_atom *>(&a),buf,szbuf);
+}  
+
+
 // === flext_dsp ==============================================
 
 V flext_dsp::cb_setup(t_class *c)

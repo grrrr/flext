@@ -3,7 +3,7 @@
 #
 
 # where is the Max SDK?
-MAXSDKPATH=F:\prog\audio\MaxWinSDK\c74support		
+MAXSDKPATH="F:\prog\audio\maxmspsdk_win\4.5 headers\c74support"
 
 # where is MS VC++? 
 # (should be commented out when called from the Visual Studio Command prompt)

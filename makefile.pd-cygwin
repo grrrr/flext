@@ -22,7 +22,7 @@ PDPATH=c:/programme/audio/pd/src
 TARGDIR=./pd-cygwin
 
 # compiler+linker stuff
-INCLUDES=$(PDPATH)
+INCLUDES=$(PDPATH) 
 FLAGS=-DPD -DNT
 CFLAGS=-O6 -mcpu=pentiumpro
 CFLAGS_D=-mcpu=pentiumpro -g
@@ -55,17 +55,17 @@ $(TARGDIR):
 $(SRCS): $(HDRS) $(IHDRS) $(MAKEFILE)
 	touch $@
 
-$(TARGDIR)/%.o : %.cpp
-	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) .) $< -o $@
+$(TARGDIR)/%.o : source/%.cpp
+	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
 
-$(TARGDIR)/%.do : %.cpp
-	$(CXX) -c $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) .) $< -o $@
+$(TARGDIR)/%.do : source/%.cpp
+	$(CXX) -c $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
 
-$(TARGDIR)/%.to : %.cpp
-	$(CXX) -c $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) .) $< -o $@
+$(TARGDIR)/%.to : source/%.cpp
+	$(CXX) -c $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
 
-$(TARGDIR)/%.tdo : %.cpp
-	$(CXX) -c $(CFLAGS_T) $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) .) $< -o $@
+$(TARGDIR)/%.tdo : source/%.cpp
+	$(CXX) -c $(CFLAGS_T) $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
 
 $(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS))
 	ar rc $@ $^

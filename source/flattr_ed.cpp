@@ -84,6 +84,7 @@ void flext_base::SetAttrEditor(t_classid c)
                 "set a [regsub {\\$} $a \\\\$]\n"  // replace $ with \$
                 "set a [regsub {,} $a \\\\,]\n"  // replace , with \,
                 "set a [regsub {;} $a \\\\\\;]\n"  // replace ; with \;
+                "set a [regsub {%} $a %%]\n"  // replace % with \%
                 "lappend tmp $a\n"
             "}\n"
             "return $tmp\n"

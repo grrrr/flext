@@ -31,8 +31,6 @@ case $unamesys in
 	*) echo Platform $unamesys not supported; exit;;
 esac
 
-echo Building for $platform
-
 rtsys=$1
 compiler=$2
 target=$3

@@ -200,7 +200,7 @@ static void callb_free(flext_hdr *hdr)    	    	    	\
 static void callb_setup(t_class *classPtr)  	    	\
 { PARENT_CLASS::callb_setup(classPtr); }  	    	    	\
 protected:    \
-static inline NEW_CLASS *thisObject(void *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; } 
+static inline NEW_CLASS *thisObject(void *c) { return FLEXT_CAST<NEW_CLASS *>(((flext_hdr *)c)->data); } 
 
 
 
@@ -215,7 +215,7 @@ static void callb_setup(t_class *classPtr)  	    	\
 { PARENT_CLASS::callb_setup(classPtr);    	    	\
 	NEW_CLASS::SETUPFUN(classPtr); }  	    	    	\
 protected:    \
-static inline NEW_CLASS *thisObject(void *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; } 
+static inline NEW_CLASS *thisObject(void *c) { return FLEXT_CAST<NEW_CLASS *>(((flext_hdr *)c)->data); } 
 
 
 // generate name of dsp/non-dsp setup function
@@ -383,7 +383,7 @@ return 0; \
 #define FLEXT_HELPSTR_DSP(NAME) #NAME "~"
 
 #ifdef PD
-#define FLEXT_DEFHELP(THIS,NAME,NEW_CLASS,DSP) ((NEW_CLASS *)THIS)->DefineHelp(DSP?FLEXT_HELPSTR_DSP(NEW_CLASS):FLEXT_HELPSTR(NEW_CLASS),flext::extract(NAME,-1))
+#define FLEXT_DEFHELP(THIS,NAME,NEW_CLASS,DSP) FLEXT_CAST<NEW_CLASS *>(THIS)->DefineHelp(DSP?FLEXT_HELPSTR_DSP(NEW_CLASS):FLEXT_HELPSTR(NEW_CLASS),flext::extract(NAME,-1))
 #else
 #define FLEXT_DEFHELP(THIS,NAME,NEW_CLASS,DSP)
 #endif

@@ -16,6 +16,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __FLEXT_DEFS_H
 #define __FLEXT_DEFS_H
 
+#ifdef FLEXT_GUI
+#define FLEXT_CAST dynamic_cast
+#else
+#define FLEXT_CAST static_cast
+#endif
 
 /*!	\defgroup FLEXT_HEADER Flext class header
 	One (and only one!) of these definitions is compulsary for the class declaration. 
@@ -269,52 +274,52 @@ REAL_LIB_3(NAME,NEW_CLASS, 1, TYPE1, TYPE2, TYPE3)
 //! Set up a method callback with no arguments
 #define FLEXT_CALLBACK(M_FUN) \
 static bool cb_ ## M_FUN(flext_base *c) \
-{ static_cast<thisType *>(c)->M_FUN(); return true; }
+{ FLEXT_CAST<thisType *>(c)->M_FUN(); return true; }
 
 //! Set up a method callback for an anything argument
 #define FLEXT_CALLBACK_A(M_FUN) \
 static bool cb_ ## M_FUN(flext_base *c,const t_symbol *s,int argc,t_atom *argv) \
-{ static_cast<thisType *>(c)->M_FUN(s,argc,argv); return true; }
+{ FLEXT_CAST<thisType *>(c)->M_FUN(s,argc,argv); return true; }
 
 //! Set up a method callback for a variable argument list
 #define FLEXT_CALLBACK_V(M_FUN) \
 static bool cb_ ## M_FUN(flext_base *c,int argc,t_atom *argv) \
-{ static_cast<thisType *>(c)->M_FUN(argc,argv); return true; }
+{ FLEXT_CAST<thisType *>(c)->M_FUN(argc,argv); return true; }
 
 //! Set up a method callback for a data package (void *) argument
 #define FLEXT_CALLBACK_X(M_FUN) \
 static bool cb_ ## M_FUN(flext_base *c,void *data) \
-{ static_cast<thisType *>(c)->M_FUN(data); return true; }
+{ FLEXT_CAST<thisType *>(c)->M_FUN(data); return true; }
 
 //! Set up a method callback for a boolean argument
 #define FLEXT_CALLBACK_B(M_FUN) \
 static bool cb_ ## M_FUN(flext_base *c,int &arg1) \
-{ static_cast<thisType *>(c)->M_FUN(arg1 != 0); return true; }
+{ FLEXT_CAST<thisType *>(c)->M_FUN(arg1 != 0); return true; }
 
 //! Set up a method callback for 1 argument
 #define FLEXT_CALLBACK_1(M_FUN,TP1) \
 static bool cb_ ## M_FUN(flext_base *c,TP1 &arg1) \
-{ static_cast<thisType *>(c)->M_FUN(arg1); return true; }
+{ FLEXT_CAST<thisType *>(c)->M_FUN(arg1); return true; }
 
 //! Set up a method callback for 2 arguments
 #define FLEXT_CALLBACK_2(M_FUN,TP1,TP2) \
 static bool cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2) \
-{ static_cast<thisType *>(c)->M_FUN(arg1,arg2); return true; }
+{ FLEXT_CAST<thisType *>(c)->M_FUN(arg1,arg2); return true; }
 
 //! Set up a method callback for 3 arguments
 #define FLEXT_CALLBACK_3(M_FUN,TP1,TP2,TP3) \
 static bool cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3) \
-{ static_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3); return true; }
+{ FLEXT_CAST<thisType *>(c)->M_FUN(arg1,arg2,arg3); return true; }
 
 //! Set up a method callback for 4 arguments
 #define FLEXT_CALLBACK_4(M_FUN,TP1,TP2,TP3,TP4) \
 static bool cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4) \
-{ static_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4); return true; }
+{ FLEXT_CAST<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4); return true; }
 
 //! Set up a method callback for 5 arguments
 #define FLEXT_CALLBACK_5(M_FUN,TP1,TP2,TP3,TP4,TP5) \
 static bool cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,TP5 &arg5) \
-{ static_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4,arg5); return true; }
+{ FLEXT_CAST<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4,arg5); return true; }
 
 
 //	Shortcuts
@@ -376,7 +381,7 @@ static bool cb_ ## M_FUN(flext_base *c) {  \
 	return StartThread(thr_ ## M_FUN,p,#M_FUN); \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
-	thisType *th = static_cast<thisType *>(p->cl); \
+	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
 	delete p; \
 	if(ok) { \
@@ -393,7 +398,7 @@ static bool cb_ ## M_FUN(flext_base *c,const t_symbol *s,int argc,t_atom *argv) 
 	return StartThread(thr_ ## M_FUN,p,#M_FUN); \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
-	thisType *th = static_cast<thisType *>(p->cl); \
+	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
 	AtomAnything *args = p->var[0]._any.args; \
 	delete p; \
@@ -412,7 +417,7 @@ static bool cb_ ## M_FUN(flext_base *c,int argc,t_atom *argv) {  \
 	return StartThread(thr_ ## M_FUN,p,#M_FUN); \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
-	thisType *th = static_cast<thisType *>(p->cl); \
+	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
 	AtomList *args = p->var[0]._list.args; \
 	delete p; \
@@ -433,7 +438,7 @@ static bool cb_ ## M_FUN(flext_base *c,void *data) {  \
 	return StartThread(thr_ ## M_FUN,p,#M_FUN); \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
-	thisType *th = static_cast<thisType *>(p->cl); \
+	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
 	void *data = p->var[0]._ext.data; \
 	delete p; \
@@ -452,7 +457,7 @@ static bool cb_ ## M_FUN(flext_base *c,int &arg1) {  \
 	return StartThread(thr_ ## M_FUN,p,#M_FUN); \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
-	thisType *th = static_cast<thisType *>(p->cl); \
+	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
 	bool b = p->var[0]._bool; \
 	delete p; \
@@ -471,7 +476,7 @@ static bool cb_ ## M_FUN(flext_base *c,TP1 &arg1) {  \
 	return StartThread(thr_ ## M_FUN,p,#M_FUN); \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
-	thisType *th = static_cast<thisType *>(p->cl); \
+	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
 	delete p; \
@@ -491,7 +496,7 @@ static bool cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2) {  \
 	return StartThread(thr_ ## M_FUN,p,#M_FUN); \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
-	thisType *th = static_cast<thisType *>(p->cl); \
+	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
 	const TP1 v2 = p->var[1]._ ## TP2; \
@@ -513,7 +518,7 @@ static bool cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3) {  \
 	return StartThread(thr_ ## M_FUN,p,#M_FUN); \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
-	thisType *th = static_cast<thisType *>(p->cl); \
+	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
 	const TP2 v2 = p->var[1]._ ## TP2; \
@@ -537,7 +542,7 @@ static bool cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4) 
 	return StartThread(thr_ ## M_FUN,p,#M_FUN); \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
-	thisType *th = static_cast<thisType *>(p->cl); \
+	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
 	const TP2 v2 = p->var[1]._ ## TP2; \
@@ -563,7 +568,7 @@ static bool cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,T
 	return StartThread(thr_ ## M_FUN,p,#M_FUN); \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
-	thisType *th = static_cast<thisType *>(p->cl); \
+	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
 	const TP2 v2 = p->var[1]._ ## TP2; \

@@ -29,7 +29,6 @@ SUBDIRS = \
 EXTRA_DIST = \
 	readme.txt \
 	gpl.txt \
-	tutorial.dsw \
 	tutorial.sln
 
 DIST_SUBDIRS = pd \

@@ -8,8 +8,7 @@ NAME = signal2
 BUILT_SOURCES = main.cpp
 
 EXTRA_DIST = main.cpp \
-	$(NAME).cw \
-	$(NAME).dsp \
+	$(NAME).mcp \
 	$(NAME).vcproj
 
 CXXFLAGS  = @CXXFLAGS@ \

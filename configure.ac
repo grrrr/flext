@@ -7,7 +7,7 @@ dnl flext API version (current:release:age)
 API_VERSION=0:0:0
 
 AC_INIT([flext],[0.5.0],[gr@grrrr.org],[flext])
-AM_INIT_AUTOMAKE(1.8)
+AM_INIT_AUTOMAKE(1.6)
 
 
 dnl configure options
@@ -70,10 +70,10 @@ AC_ARG_ENABLE(optimize, [  --enable-optimize       enables optimized builds for:
 		OPT_FLAGS="-mtune=$enableval -march=$enableval -mmmx -msse -msse2 -mfpmath=sse";
 		AC_DEFINE(FLEXT_USE_SIMD);;
 	G5 | G4)
-		OPT_FLAGS="-mtune=$enableval -march=$enableval -maltivec -faltivec -malign-natural";
+		OPT_FLAGS="-mtune=$enableval --maltivec -faltivec -malign-natural";
 		AC_DEFINE(FLEXT_USE_SIMD);;
 	G3)
-		OPT_FLAGS="-mtune=$enableval -march=$enableval -malign-natural";;
+		OPT_FLAGS="-mtune=$enableval --malign-natural";;
 	*)
 		;;
 	esac
@@ -101,21 +101,23 @@ dnl Checks for library functions.
 dnl system specific
 
 if test `uname -s` == Linux; then
-	DYNAMIC_LDFLAGS="-Wl,-Bdynamic"
+	DYNAMIC_LDFLAGS="-Wl,-Bdynamic -shared"
 	EXTENSION=pd_linux
 	SOEXT=so
 fi
 
 if test `uname -s` == Darwin; then
-	DYNAMIC_LDFLAGS = "-version-info $API_VERSION -release $AC_PACKAGE_VERSION -dylib -dynamic -flat_namespace -undefined suppress"
+#	DYNAMIC_LDFLAGS="-version-info $API_VERSION -release $AC_PACKAGE_VERSION -dynamiclib -dynamic -flat_namespace -undefined suppress"
 
-	if test $system = max; then
-		echo "what's the name in max???" #EXEEXT = ???
+	DYNAMIC_LDFLAGS="-dynamiclib -dynamic -flat_namespace -undefined suppress"
+	if test $system == max; then
+		EXTENSION=mxo
 	else	
 		EXTENSION=pd_darwin
-		SOEXT=dylib
-		FRAMEWORKS=???
 	fi
+	
+	SOEXT=dylib
+	FRAMEWORKS="ApplicationServices vecLib"
 fi
 
 dnl todo: mingw / cygwin
@@ -155,3 +157,4 @@ AC_OUTPUT([
 			tutorial/pd/Makefile
 			tutorial/maxmsp/Makefile
 			source/Makefile])
+

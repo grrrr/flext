@@ -3,7 +3,7 @@
 # added by tim blechmann
 #
 
-lib_LIBRARIES = libflext.a libflext_d.a libflext_t.a libflext_td.a 
+lib_LIBRARIES = libflext-pd_s.a libflext-pd_sd.a libflext-pd_t.a libflext-pd_td.a 
 
 SRCS_FLEXT = \
 	flbase.cpp \
@@ -76,52 +76,53 @@ endif
 FRAMEWORKS = @FRAMEWORKS@
 
 # for static libraries we can use automake
-libflext_a_SOURCES    = $(SRCS_FLEXT)
-libflext_d_a_SOURCES  = $(SRCS_FLEXT)
-libflext_t_a_SOURCES  = $(SRCS_FLEXT)
-libflext_td_a_SOURCES = $(SRCS_FLEXT)
+libflext_pd_s_a_SOURCES    = $(SRCS_FLEXT)
+libflext_pd_sd_a_SOURCES  = $(SRCS_FLEXT)
+libflext_pd_t_a_SOURCES  = $(SRCS_FLEXT)
+libflext_pd_td_a_SOURCES = $(SRCS_FLEXT)
 
-libflext_a_CXXFLAGS    = @OPT_FLAGS@ @INCLUDEDIR@ 
-libflext_d_a_CXXFLAGS  = @INCLUDEDIR@ -g -DFLEXT_DEBUG
-libflext_t_a_CXXFLAGS  = @OPT_FLAGS@ @INCLUDEDIR@ -DFLEXT_THREADS 
-libflext_td_a_CXXFLAGS = @INCLUDEDIR@ -g -DFLEXT_DEBUG -DFLEXT_THREADS 
+libflext_pd_s_a_CXXFLAGS    = @OPT_FLAGS@ @INCLUDEDIR@ 
+libflext_pd_sd_a_CXXFLAGS  = @INCLUDEDIR@ -g -DFLEXT_DEBUG
+libflext_pd_t_a_CXXFLAGS  = @OPT_FLAGS@ @INCLUDEDIR@ -DFLEXT_THREADS 
+libflext_pd_td_a_CXXFLAGS = @INCLUDEDIR@ -g -DFLEXT_DEBUG -DFLEXT_THREADS 
 
-libflext_a_LDFLAGS    = @OPT_FLAGS@ @INCLUDEDIR@ \
+libflext_pd_s_a_LDFLAGS    = @OPT_FLAGS@ @INCLUDEDIR@ \
 	$(patsubst %,-framework %,$(FRAMEWORKS))
-libflext_d_a_LDFLAGS  = @INCLUDEDIR@ -g -DFLEXT_DEBUG \
+libflext_pd_sd_a_LDFLAGS  = @INCLUDEDIR@ -g -DFLEXT_DEBUG \
 	$(patsubst %,-framework %,$(FRAMEWORKS))
-libflext_t_a_LDFLAGS  = @OPT_FLAGS@ @INCLUDEDIR@ -DFLEXT_THREADS \
+libflext_pd_t_a_LDFLAGS  = @OPT_FLAGS@ @INCLUDEDIR@ -DFLEXT_THREADS \
 	$(patsubst %,-framework %,$(FRAMEWORKS))
-libflext_td_a_LDFLAGS = @INCLUDEDIR@ -g -DFLEXT_DEBUG -DFLEXT_THREADS \
+libflext_pd_td_a_LDFLAGS = @INCLUDEDIR@ -g -DFLEXT_DEBUG -DFLEXT_THREADS \
 	$(patsubst %,-framework %,$(FRAMEWORKS))
 
 # for shared libraries, we can't ...
-libflext_la_CXXFLAGS   = @OPT_FLAGS@ @INCLUDEDIR@ -DFLEXT_SHARED \
+libflext_pd_la_CXXFLAGS   = @OPT_FLAGS@ @INCLUDEDIR@ -DFLEXT_SHARED \
 	-DFLEXT_EXPORTS $(DEFS)
-libflext_d_la_CXXFLAGS = @INCLUDEDIR@ -g -DFLEXT_DEBUG -DFLEXT_SHARED \
+libflext_pd_d_la_CXXFLAGS = @INCLUDEDIR@ -g -DFLEXT_DEBUG -DFLEXT_SHARED \
 	-DFLEXT_EXPORTS $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES)
-libflext_la_LDFLAGS   = @DYNAMIC_LDFLAGS@ $(LIB_STK) $(LIB_SNDOBJ) $(LDFLAGS) \
+libflext_pd_la_LDFLAGS   = @DYNAMIC_LDFLAGS@ $(LIB_STK) $(LIB_SNDOBJ) $(LDFLAGS) \
 	$(patsubst %,-framework %,$(FRAMEWORKS))
-libflext_d_la_LDFLAGS = @DYNAMIC_LDFLAGS@ $(LIB_STK) $(LIB_SNDOBJ) $(LDFLAGS)
+libflext_pd_d_la_LDFLAGS = @DYNAMIC_LDFLAGS@ $(LIB_STK) $(LIB_SNDOBJ) $(LDFLAGS)
 	$(patsubst %,-framework %,$(FRAMEWORKS))
 
-libflext_la_NAME = libflext.@SOEXT@
-libflext_d_la_NAME = libflext_d.@SOEXT@
+libflext_pd_la_NAME = libflext-pd.@SOEXT@
+libflext_pd_d_la_NAME = libflext-pd_d.@SOEXT@
 
-all-local: $(libflext_la_NAME) $(libflext_d_la_NAME)
+all-local: $(libflext_pd_la_NAME) $(libflext_pd_d_la_NAME)
 
-$(libflext_la_NAME): $(patsubst %.cpp,libflext_la-%.o,$(SRCS_FLEXT))
-	$(CXX) -shared $(libflext_la_LDFLAGS) $(LIBS) -o $(libflext_la_NAME) $^
+$(libflext_pd_la_NAME): $(patsubst %.cpp,libflext_pd_la-%.o,$(SRCS_FLEXT))
+	$(CXX) $(libflext_pd_la_LDFLAGS) $(LIBS) -o $(libflext_pd_la_NAME) $^
 
-libflext_la-%.o : %.cpp
-	$(CXX) -shared -c $(libflext_la_CXXFLAGS) $< -o $@
+libflext_pd_la-%.o : %.cpp
+	$(CXX) -c $(libflext_pd_la_CXXFLAGS) $< -o $@
 
-$(libflext_d_la_NAME): $(patsubst %.cpp,libflext_d_la-%.o,$(SRCS_FLEXT))
-	$(CXX) -shared $(libflext_d_la_LDFLAGS) $(LIBS) -o $(libflext_d_la_NAME) $^
+$(libflext_pd_d_la_NAME): $(patsubst %.cpp,libflext_pd_d_la-%.o,$(SRCS_FLEXT))
+	$(CXX) $(libflext_pd_d_la_LDFLAGS) $(LIBS) -o $(libflext_pd_d_la_NAME) $^
 
-libflext_d_la-%.o: %.cpp
-	$(CXX) -shared -c $(libflext_d_la_CXXFLAGS) $< -o $@
+libflext_pd_d_la-%.o: %.cpp
+	$(CXX) -c $(libflext_pd_d_la_CXXFLAGS) $< -o $@
 
 install-exec-local: 
-	$(libLIBRARIES_INSTALL) $(libflext_la_NAME) $(DESTDIR)$(libdir)
-	$(libLIBRARIES_INSTALL) $(libflext_d_la_NAME) $(DESTDIR)$(libdir)
+	$(libLIBRARIES_INSTALL) $(libflext_pd_la_NAME) $(DESTDIR)$(libdir)
+	$(libLIBRARIES_INSTALL) $(libflext_pd_d_la_NAME) $(DESTDIR)$(libdir)
+

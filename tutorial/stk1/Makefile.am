@@ -8,7 +8,6 @@ NAME = stk1
 BUILT_SOURCES = main.cpp
 
 EXTRA_DIST = main.cpp \
-	$(NAME).dsp \
 	$(NAME).vcproj
 
 CXXFLAGS  = @CXXFLAGS@ \

@@ -88,6 +88,7 @@ Version history:
 - calling SetupInOut() has become obsolete - flext creates all inlets/outlets by itself at the right time
 - completely redesigned FLEXT_NEW macros, usage of dynamic classes (in fllib.cpp)
 - added ToQueue* functions - like ToOut* but messages or not directly sent (well suited for deadlock situations)
+- fixed potentially dangerous typo in flext.cpp - (was: FLEXT_THREAD instead of FLEXT_THREADS)
 - added OSX/darwin support (originally done by Adam T. Lindsay)
 - SndObj interface now also available for cygwin and BCC 
 - added prepend and append functions to AtomList class

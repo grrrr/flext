@@ -127,16 +127,16 @@ flext_base::flext_base():
 {
 	LOG1("%s - flext logging is on",thisName());
 
-#ifdef FLEXT_THREAD
+#ifdef FLEXT_THREADS
 	thrid = pthread_self();
 
 	shouldexit = false;
+	thrhead = thrtail = NULL;
+#endif
 	qhead = qtail = NULL;
 	qclk = (t_qelem *)(qelem_new(this,(t_method)QTick));
-	thrhead = thrtail = NULL;
 #ifdef MAXMSP
 	yclk = (t_clock *)(clock_new(this,(t_method)YTick));
-#endif
 #endif
 
 	AddMethod(0,"getattributes",(methfun)cb_ListAttrib);
@@ -144,7 +144,7 @@ flext_base::flext_base():
 
 flext_base::~flext_base()
 {
-#ifdef FLEXT_THREAD
+#ifdef FLEXT_THREADS
 	// wait for thread termination
 	shouldexit = true;
 	for(int wi = 0; thrhead && wi < 100; ++wi) Sleep(0.01f);
@@ -165,12 +165,13 @@ flext_base::~flext_base()
 #pragma message ("No tread cancelling")
 #endif
 
+#endif
+
 	// send remaining pending messages
 	while(qhead) QTick(this);
 	qelem_free((t_qelem *)qclk);
 #ifdef MAXMSP
 	clock_free((object *)yclk);
-#endif
 #endif
 
 	if(inlist) delete inlist;
@@ -198,30 +199,6 @@ flext_base::~flext_base()
 	if(attrhead) delete attrhead;
 }
 
-
-#ifdef MAXMSP
-#define CRITON() short state = lockout_set(1)
-#define CRITOFF() lockout_set(state) 
-#else
-#define CRITON() 
-#define CRITOFF() 
-#endif
-
-#ifndef FLEXT_THREADS
-void flext_base::ToOutBang(outlet *o) { CRITON(); outlet_bang((t_outlet *)o); CRITOFF(); }
-void flext_base::ToOutFloat(outlet *o,float f) { CRITON(); outlet_float((t_outlet *)o,f); CRITOFF(); }
-void flext_base::ToOutInt(outlet *o,int f) { CRITON(); outlet_flint((t_outlet *)o,f); CRITOFF(); }
-void flext_base::ToOutSymbol(outlet *o,const t_symbol *s) { CRITON(); outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); CRITOFF(); }
-void flext_base::ToOutList(outlet *o,int argc,const t_atom *argv) { CRITON(); outlet_list((t_outlet *)o,gensym("list"),argc,(t_atom *)argv); CRITOFF(); }
-void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,(t_atom *)argv); CRITOFF(); }
-#else
-void flext_base::ToOutBang(outlet *o) { if(IsSystemThread()) { CRITON(); outlet_bang((t_outlet *)o); CRITOFF(); } else ToQueueBang(o); }
-void flext_base::ToOutFloat(outlet *o,float f) { if(IsSystemThread()) { CRITON(); outlet_float((t_outlet *)o,f); CRITOFF(); } else ToQueueFloat(o,f); }
-void flext_base::ToOutInt(outlet *o,int f) { if(IsSystemThread()) { CRITON(); outlet_flint((t_outlet *)o,f); CRITOFF(); } else ToQueueInt(o,f); }
-void flext_base::ToOutSymbol(outlet *o,const t_symbol *s) { if(IsSystemThread()) { CRITON(); outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); CRITOFF(); } else ToQueueSymbol(o,s); }
-void flext_base::ToOutList(outlet *o,int argc,const t_atom *argv) { if(IsSystemThread()) { CRITON(); outlet_list((t_outlet *)o,gensym("list"),argc,(t_atom *)argv); CRITOFF(); } else ToQueueList(o,argc,(t_atom *)argv); }
-void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) { if(IsSystemThread()) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,(t_atom *)argv); CRITOFF(); } else ToQueueAnything(o,s,argc,(t_atom *)argv); }
-#endif
 
 bool flext_base::Init()
 {

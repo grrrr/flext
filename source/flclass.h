@@ -207,29 +207,19 @@ public:
 	//! Output anything (index n starts with 0)
 	void ToOutAnything(int n,const AtomAnything &any)  { ToOutAnything(n,any.Header(),any.Count(),any.Atoms()); }
 	
-#ifdef FLEXT_THREADS
 	void ToQueueBang(outlet *o); 
-	void ToQueueFloat(outlet *o,float f); 
-	void ToQueueInt(outlet *o,int f); 
-	void ToQueueList(outlet *o,int argc,const t_atom *argv); 
-	void ToQueueSymbol(outlet *o,const t_symbol *s); 
-	void ToQueueAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv); 
-#else
-	void ToQueueBang(outlet *o) { ToOutBang(o); }
-	void ToQueueFloat(outlet *o,float f) { ToOutFloat(o,f); }
-	void ToQueueInt(outlet *o,int f) { ToOutInt(o,f); }
-	void ToQueueList(outlet *o,int argc,const t_atom *argv) { ToOutList(o,argc,argv); }
-	void ToQueueSymbol(outlet *o,const t_symbol *s) { ToOutSymbol(o,s); }
-	void ToQueueAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) { ToOutAnything(o,s,argc,argv); }
-#endif
-
 	void ToQueueBang(int n) { outlet *o = GetOut(n); if(o) ToQueueBang(o); }
+	void ToQueueFloat(outlet *o,float f); 
 	void ToQueueFloat(int n,float f) { outlet *o = GetOut(n); if(o) ToQueueFloat(o,f); }
+	void ToQueueInt(outlet *o,int f); 
 	void ToQueueInt(int n,int f) { outlet *o = GetOut(n); if(o) ToQueueInt(o,f); }
+	void ToQueueSymbol(outlet *o,const t_symbol *s); 
 	void ToQueueSymbol(int n,const t_symbol *s) { outlet *o = GetOut(n); if(o) ToQueueSymbol(o,s); }
 	void ToQueueString(int n,const char *s) { ToQueueSymbol(n,MakeSymbol(s)); }
+	void ToQueueList(outlet *o,int argc,const t_atom *argv); 
 	void ToQueueList(int n,int argc,const t_atom *argv) { outlet *o = GetOut(n); if(o) ToQueueList(o,argc,argv); }
 	void ToQueueList(int n,const AtomList &list)  { ToQueueList(n,list.Count(),list.Atoms()); }
+	void ToQueueAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv); 
 	void ToQueueAnything(int n,const t_symbol *s,int argc,const t_atom *argv) { outlet *o = GetOut(n); if(o) ToQueueAnything(o,s,argc,argv); }
 	void ToQueueAnything(int n,const AtomAnything &any)  { ToQueueAnything(n,any.Header(),any.Count(),any.Atoms()); }
 
@@ -545,11 +535,15 @@ private:
 	int thrcount;
 	
 	pthread_t thrid;  // the thread that created the object (the system thread)
+	ThrMutex qmutex;
+
+	thr_entry *thrhead,*thrtail;
+	ThrMutex tlmutex;
+#endif
 
 	class qmsg;
 	qmsg *qhead,*qtail;
 	t_qelem *qclk;
-	ThrMutex qmutex;
 #ifdef MAXMSP
 	t_clock *yclk;
 	static void YTick(flext_base *th);
@@ -557,10 +551,6 @@ private:
 
 	static void QTick(flext_base *th);
 	void Queue(qmsg *m);
-
-	thr_entry *thrhead,*thrtail;
-	ThrMutex tlmutex;
-#endif
 
 #ifdef PD
 	// proxy object (for additional inlets) stuff

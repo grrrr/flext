@@ -11,38 +11,17 @@ Donations for further development of the package are highly appreciated.
 
 ----------------------------------------------------------------------------
 
-Package files:
-- readme.txt: this one
-- gpl.txt,license.txt: GPL license stuff
-- flext.h: main include file
-- flstdc.h: Basic definitions in classic C - some common vocabulary for the different platforms
-- flbase.h,flbase.cpp: C++ interface
-- flclass.h,flext.cpp: actual base classes for message (flext_base) and dsp (flext_dsp) processing
-- fldsp.h,fldsp.cpp: code for signal externals
-- flthr.h,flthr.cpp: code for threaded methods
-- flsupport.h,flsupport.cpp: various flext support functions and classes
-- flatom.cpp flatom_pr.cpp: code for functions dealing with lists of atoms
-- flutil.cpp: additional utility functions
-- flxlet.cpp: code for variable inlet/outlet stuff
-- flattr.cpp: code for attribute stuff
-- flinternals.h: internal definitions for flext library
-- flbuf.cpp: buffer object handling for base classes
-- fllib.cpp: code for handling external libraries in MaxMSP
-- fldefs.h: definitions for internal flext use
-- flcwmax*.h: trivial prefix headers for Max/MSP CodeWarrior projects
-- flmspbuffer.h: MaxMSP's inofficial buffer.h included here for conveniance
+o for PD you need the pd source code (which is most likely part of the distribution)
+o for Max/MSP you will also need the Max/MSP SDK (and for threading the Multiprocessing library)
 
-> for PD you need the pd source code (which is most likely part of the distribution)
-> for Max/MSP you will also need the Max/MSP SDK (and for threading the Multiprocessing library)
+o if you choose to compile with SndObj support you will need the respective library
+  download from: http://www.may.ie/academic/music/musictec/SndObj/main.html
 
-> if you choose to compile with SndObj support you will need the respective library
-> download from: http://www.may.ie/academic/music/musictec/SndObj/main.html
-
-> if you choose to compile with STK support you will need the respective package and build a library
-> download from: http://ccrma-www.stanford.edu/software/stk/
-> For linking it may preferable to use a library of all the STK objects.
-> Under linux you can create one from the STK directory with:
-> "g++ -c -pipe -I include -D __LINUX_OSS__ src/*.cpp && ar r libstk.a *.o && rm -f *.o"
+o if you choose to compile with STK support you will need the respective package and build a library
+  download from: http://ccrma-www.stanford.edu/software/stk/
+  For linking it may preferable to use a library of all the STK objects.
+  Under linux you can create one from the STK directory with:
+  "g++ -c -pipe -I include -D __LINUX_OSS__ src/*.cpp && ar r libstk.a *.o && rm -f *.o"
 
 ----------------------------------------------------------------------------
 
@@ -50,40 +29,47 @@ The package should at least compile (and is tested) with the following compilers
 
 pd - Windows:
 -------------
-For any of these compilers define "FLEXT_SYS=2".
-
 o Microsoft Visual C++ 6: edit "config-pd-msvc.txt" & run "build-pd-msvc.bat" 
 
 o Borland C++ 5.5 (free): edit "config-pd-bcc.txt" & run "build-pd-bcc.bat" 
 
 o Cygwin: edit "config-pd-cygwin.txt" & run "sh build-pd-cygwin.sh" 
+	additional settings (e.g. target processor, compiler flags) can be made in makefile.pd-cygwin
+
+With your project using flext, be sure to define "FLEXT_SYS=2".
+
 
 pd - linux:
 -----------
-Be sure to define "FLEXT_SYS=2".
-
 o GCC: edit "config-pd-linux.txt" & run "sh build-pd-linux.sh" 
+	additional settings (e.g. target processor, compiler flags) can be made in makefile.pd-linux
+
+With your project using flext, be sure to define "FLEXT_SYS=2".
+
 
 pd - MacOSX:
 -----------
-Be sure to define "FLEXT_SYS=2".
-
 o GCC: edit "config-pd-darwin.txt" & run "sh build-pd-darwin.sh" 
+	additional settings (e.g. target processor, compiler flags) can be made in makefile.pd-darwin
+
+With your project using flext, be sure to define "FLEXT_SYS=2".
+
 
 Max/MSP - MacOS 9:
 ------------------
-Be sure to define "FLEXT_SYS=1" - alternatively use the prefix file "flcwmax.h"
-
 o Metrowerks CodeWarrior V6: edit & use the "flext.cw" project file
 
 You must have the following "Source Trees" defined:
 "flext" - Pointing to the flext main directory
 "Cycling74" - Pointing to the Cycling 74 SDK
 
+
+With your project using flext, be sure to define "FLEXT_SYS=1" 
+- alternatively use the prefix file "flcwmax.h"
+
+
 Max/MSP - MacOSX:
 ------------------
-Be sure to define "FLEXT_SYS=1" - alternatively use the prefix file "flcwmax-x.h" or "flcwmax-x-thr.h" for threading support.
-
 o Metrowerks CodeWarrior V6: edit & use the "flext.cw" project file
 
 You must have the following "Source Trees" defined:
@@ -91,6 +77,11 @@ You must have the following "Source Trees" defined:
 "flext" - Pointing to the flext main directory
 "Cycling74 OSX" - Pointing to the Cycling 74 SDK for xmax
 "MP SDK" - Pointing to the Multiprocessing SDK (for threading support)
+
+
+With your project using flext, be sure to define "FLEXT_SYS=1" 
+- alternatively use the prefix file "flcwmax-x.h" or "flcwmax-x-thr.h" for threading support.
+
 
 ----------------------------------------------------------------------------
 

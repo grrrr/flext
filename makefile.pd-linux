@@ -15,11 +15,17 @@ include $(CONFIG)
 # compiler+linker stuff 
 INCLUDES=$(PDPATH) $(SNDOBJ) $(STK)
 FLAGS=-DFLEXT_SYS=2 
-CFLAGS=-O6 -fno-exceptions 
-CFLAGS+=-mcpu=pentiumpro # gcc 2.95
-# CFLAGS+=-mcpu=pentium3 -msse  # gcc 3.2
-CFLAGS_D=-mcpu=pentiumpro -g
-CFLAGS_T=-DFLEXT_THREADS
+
+# compiler flags for optimized build
+CFLAGS+=-O6 -fno-exceptions  
+
+# compiler flags for debug build
+CFLAGS_D=$(CFLAGS) -g -fno-exceptions     
+
+# additional flags for threading
+CFLAGS_T=-DFLEXT_THREADS  
+
+# libraries
 LIBS=
 
 # ----------------------------------------------

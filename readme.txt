@@ -126,6 +126,7 @@ Version history:
 - flext::setup is only run once now
 - fixed creation bug with objects that have attributes but no outlets
 - added FLEXT_BINDMETHOD,FLEXT_UNBINDMETHOD to bind a method to a symbol 
+- fixed bug with hard thread termination (of incooperative threads)
 
 0.4.2:
 - started port for jMax

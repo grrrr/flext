@@ -300,6 +300,7 @@ bool flext_base::StopThreads()
 				t = tn;
 			}
 			else t = t->nxt;
+        thrhead = NULL;
 
 		tlmutex.Unlock();
 		qmutex.Unlock();

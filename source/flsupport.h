@@ -16,7 +16,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __FLSUPPORT_H
 
 #include "flstdc.h"
-
+#include <new>
 
 class FLEXT_SHARE FLEXT_CLASSDEF(flext_root);
 typedef class FLEXT_CLASSDEF(flext_root) flext_root;
@@ -65,14 +65,21 @@ public:
 	//!	@}  FLEXT_S_MEMORY  	
 };
 
-// define global new/delete operators
-inline void *operator new(size_t bytes) { return flext_root::operator new(bytes); }
-inline void operator delete(void *blk) { flext_root::operator delete(blk); }
-#ifndef __MRC__ // doesn't allow new[] overloading?!
-inline void *operator new[](size_t bytes) { return flext_root::operator new[](bytes); }
-inline void operator delete[](void *blk) { flext_root::operator delete[](blk); }
+#ifndef _MSC_VER
+#define NEWTHROW throw(std::bad_alloc)
+#define DELTHROW throw()
+#else
+#define NEWTHROW
+#define DELTHROW
 #endif
 
+// define global new/delete operators
+inline void *operator new(size_t bytes) NEWTHROW { return flext_root::operator new(bytes); }
+inline void operator delete(void *blk) DELTHROW { flext_root::operator delete(blk); }
+#ifndef __MRC__ // doesn't allow new[] overloading?!
+inline void *operator new[](size_t bytes) NEWTHROW { return flext_root::operator new[](bytes); }
+inline void operator delete[](void *blk) DELTHROW { flext_root::operator delete[](blk); }
+#endif
 
 
 class FLEXT_SHARE FLEXT_CLASSDEF(flext);

@@ -66,30 +66,36 @@ void flext_base::SetAttrEditor(t_classid c)
 				"global $var_attr_val\n"
 				"set var_attr_save [concat [concat var_save_$ix]_$vid ]\n"
 				"global $var_attr_save\n"
+				"set var_attr_type [concat [concat var_type_$ix]_$vid ]\n"
+				"global $var_attr_type\n"
 		
-				"lappend lst [eval concat $$var_attr_name]\n" 
+				"if { [expr $$var_attr_type] != 0 } {\n"
+					// attribute is puttable
 
-				// process current value
-				"set len [llength [expr $$var_attr_val]]\n"
-				"if { $len == 1 } {\n"
-					// it's an atom
-					"lappend lst [expr $$var_attr_val]\n" 
-				"} else {\n"
-					// it's a list
-					"set lst [concat $lst {list} $len [expr $$var_attr_val]]\n" 
+					"lappend lst [eval concat $$var_attr_name]\n" 
+
+					// process current value
+					"set len [llength [expr $$var_attr_val]]\n"
+					"if { $len == 1 } {\n"
+						// it's an atom
+						"lappend lst [expr $$var_attr_val]\n" 
+					"} else {\n"
+						// it's a list
+						"set lst [concat $lst {list} $len [expr $$var_attr_val]]\n" 
+					"}\n"
+
+					// process init value
+					"set len [llength [expr $$var_attr_init]]\n"
+					"if { $len == 1 } {\n"
+						// it's an atom
+						"lappend lst [expr $$var_attr_init]\n" 
+					"} else {\n"
+						// it's a list
+						"set lst [concat $lst {list} $len [expr $$var_attr_init]]\n" 
+					"}\n"
+
+					"lappend lst [eval concat $$var_attr_save]\n" 
 				"}\n"
-
-				// process init value
-				"set len [llength [expr $$var_attr_init]]\n"
-				"if { $len == 1 } {\n"
-					// it's an atom
-					"lappend lst [expr $$var_attr_init]\n" 
-				"} else {\n"
-					// it's a list
-					"set lst [concat $lst {list} $len [expr $$var_attr_init]]\n" 
-				"}\n"
-
-				"lappend lst [eval concat $$var_attr_save]\n" 
 			"}\n"
 
 			"set cmd [concat $id attributedialog $lst \\;]\n"
@@ -167,31 +173,50 @@ void flext_base::SetAttrEditor(t_classid c)
 					"global $var_attr_save\n"
 					"set $var_attr_save $asv\n"
 
+					// get type flag
+					"set var_attr_type [concat [concat var_type_$ix]_$vid ]\n"
+					"global $var_attr_type\n"
+					"set $var_attr_type $afl\n"
+
 					// add dialog elements to window
 
 					// attribute label
 					"label $id.label-$ix -text \"$an :\" -font {Helvetica 8 bold}\n"
 					"grid config $id.label-$ix -column 0 -row $row -padx 5 -sticky {e}\n"
-					// entry field for initial value
-					"entry $id.init-$ix -textvariable $var_attr_init\n"
-					"grid config $id.init-$ix  -column 1 -row $row -padx 5 -sticky {ew}\n"
 
-					"button $id.b2i-$ix -text {<-} -height 1 -command \" flext_copyval $var_attr_init $var_attr_val \"\n"
-					"grid config $id.b2i-$ix  -column 2 -row $row  -sticky {ew}\n"
-					"button $id.b2c-$ix -text {->} -height 1 -command \" flext_copyval $var_attr_val $var_attr_init \"\n"
-					"grid config $id.b2c-$ix  -column 3 -row $row  -sticky {ew}\n"
+					"if { $afl != 0 } {\n"
+						// attribute is puttable
 
-					// entry field for current value
-					"entry $id.val-$ix -textvariable $var_attr_val\n"
-					"grid config $id.val-$ix   -column 4 -row $row -padx 5 -sticky {ew}\n"
+						// entry field for current value
+						"entry $id.val-$ix -textvariable $var_attr_val\n"
+						"grid config $id.val-$ix   -column 4 -row $row -padx 5 -sticky {ew}\n"
 
-//					"tk_optionMenu $id.opt-$ix $var_attr_save {don't save} {initialize} {always save}\n"
-//					"grid config $id.opt-$ix -column 5 -row $ix \n"
+						// entry field for initial value
+						"entry $id.init-$ix -textvariable $var_attr_init\n"
+						"grid config $id.init-$ix  -column 1 -row $row -padx 5 -sticky {ew}\n"
 
-					// radiobuttons
-					"foreach {i c} {0 black 1 blue 2 red} {\n"
-						"radiobutton $id.b$i-$ix -value $i -foreground $c -variable $var_attr_save \n"
-						"grid config $id.b$i-$ix -column [expr $i + 5] -row $row  \n"
+						"button $id.b2i-$ix -text {<-} -height 1 -command \" flext_copyval $var_attr_init $var_attr_val \"\n"
+						"grid config $id.b2i-$ix  -column 2 -row $row  -sticky {ew}\n"
+						"button $id.b2c-$ix -text {->} -height 1 -command \" flext_copyval $var_attr_val $var_attr_init \"\n"
+						"grid config $id.b2c-$ix  -column 3 -row $row  -sticky {ew}\n"
+
+	//					"tk_optionMenu $id.opt-$ix $var_attr_save {don't save} {initialize} {always save}\n"
+	//					"grid config $id.opt-$ix -column 5 -row $ix \n"
+
+						// radiobuttons
+						"foreach {i c} {0 black 1 blue 2 red} {\n"
+							"radiobutton $id.b$i-$ix -value $i -foreground $c -variable $var_attr_save \n"
+							"grid config $id.b$i-$ix -column [expr $i + 5] -row $row  \n"
+						"}\n"
+					"} else {\n"
+						// attribute is gettable only
+
+						// entry field for current value (read-only)
+						"entry $id.val-$ix -textvariable $var_attr_val -state disabled\n"
+						"grid config $id.val-$ix -column 4 -row $row -padx 5 -sticky {ew}\n"
+
+						"label $id.readonly-$ix -text \"read-only\"\n"
+						"grid config $id.readonly-$ix -column 5 -columnspan 3 -row $row -padx 5 -sticky {ew}\n"
 					"}\n"
 
 					// increase counter
@@ -263,7 +288,8 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 	STD::sprintf(b, " } { "); b += strlen(b);
 
 	AtomList la;
-	int cnt = th->ListAttrib(la);
+	th->ListAttrib(la);
+	int cnt = la.Count();
 
 	for(int i = 0; i < cnt; ++i) {
 		const t_symbol *sym = GetSymbol(la[i]); 
@@ -367,7 +393,8 @@ void flext_base::cb_GfxSave(t_gobj *c, t_binbuf *b)
 
 	// process the attributes
 	AtomList la;
-	cnt = th->ListAttrib(la);
+	th->ListAttrib(la);
+	cnt = la.Count();
 	char attrname[100];
 	*attrname= '@';
 

@@ -17,8 +17,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <stdarg.h>
 #include "flinternal.h"
 
+#include <set>
+
+
 flext_base::MethItem::MethItem(int in,const t_symbol *tg,AttrItem *conn): 
-	Item(tg,in,conn),
+	Item(tg,in,conn),index(0),
 	argc(0),args(NULL)
 	,fun(NULL)
 {}
@@ -86,4 +89,65 @@ void flext_base::AddMethod(ItemCont *ma,int inlet,const char *tag,methfun fun,me
 	mi->SetArgs(fun,argc,args);
 
 	ma->Add(mi);
+
+	// set index
+	MethItem *last = (MethItem *)ma->Last();
+	if(last) mi->index = last->index+1;
 }
+
+
+struct methless : public std::binary_function <flext_base::MethItem *,flext_base::MethItem *, bool> 
+{
+	bool operator()(const flext_base::MethItem *l,const flext_base::MethItem *r) const { 
+		return l->index != r->index?l->index < r->index:strcmp(flext::GetString(l->tag),flext::GetString(r->tag)) < 0; 
+	}
+};
+
+void flext_base::ListMethods(AtomList &la,int inlet) const
+{
+	typedef std::set<MethItem *,methless> MethList;
+	MethList list[2];
+
+	for(int i = 0; i <= 1; ++i) {
+		ItemCont *a = i?methhead:clmethhead;
+		if(a) {
+			for(int ai = 0; ai < a->Size(); ++ai) {
+				for(Item *l = a->GetItem(ai); l; l = l->nxt) {
+					MethItem *aa = (MethItem *)l;
+
+					// match inlet and see check it's not related to an attribute
+					if(aa->inlet == inlet && !aa->IsAttr())
+						list[i].insert(aa);
+				}
+			}
+		}
+	}
+
+	la(list[0].size()+list[1].size());
+	int ix = 0;
+	MethList::iterator it;
+	for(i = 0; i <= 1; ++i)
+		for(it = list[i].begin(); it != list[i].end(); ++it) 
+			SetSymbol(la[ix++],(*it)->tag);
+}
+
+bool flext_base::ListMethods(int inlet) const
+{
+	if(procattr) {
+		AtomList la;
+		ListMethods(la,inlet);
+		ToOutAnything(GetOutAttr(),MakeSymbol("methods"),la.Count(),la.Atoms());
+		return true;
+	}
+	else
+		return false;
+}
+
+bool flext_base::cb_ListMethods(flext_base *c,int argc,const t_atom *argv) 
+{ 
+	if(argc == 0 || (argc == 1 && CanbeInt(argv[0])))
+		return c->ListMethods(argc?GetAInt(argv[0]):0); 
+	else
+		return false;
+}
+

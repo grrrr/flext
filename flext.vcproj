@@ -369,7 +369,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="pd.lib pthreadVC.lib stk_d.lib sndobj.lib"
-				OutputFile=".\pd-msvc\flext_ld.dll"
+				OutputFile=".\pd-msvc\flext_d.dll"
 				AdditionalLibraryDirectories="f:\prog\packs\pthreads;&quot;f:\prog\pd\pd-cvs\bin&quot;;F:\prog\audio\stk\lib;F:\prog\audio\sndobj\lib"
 				GenerateDebugInformation="TRUE"
 				OptimizeReferences="1"
@@ -379,7 +379,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="copy flext to maestra"
-				CommandLine="copy F:\prog\max\flext\pd-msvc\flext_ld.dll F:\prog\maestra\dev\debug"/>
+				CommandLine="copy F:\prog\max\flext\pd-msvc\flext_d.dll f:\prog\maestra\dev\debug"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -412,11 +412,13 @@
 				Optimization="3"
 				GlobalOptimizations="FALSE"
 				InlineFunctionExpansion="2"
-				OmitFramePointers="FALSE"
+				FavorSizeOrSpeed="0"
+				EnableFiberSafeOptimizations="FALSE"
 				AdditionalIncludeDirectories="f:\prog\pd\pd-cvs\src,f:\prog\packs\pthreads,f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_PD;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_SHARED;FLEXT_EXPORTS;FLEXT_PDLOCK"
+				PreprocessorDefinitions="WIN32;_LIB;FLEXT_SYS_PD;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_SHARED;FLEXT_EXPORTS;FLEXT_PDLOCK"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
+				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="flext.h"
@@ -434,9 +436,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="pd.lib pthreadVC.lib stk.lib sndobj.lib"
-				OutputFile=".\pd-msvc\flext_l.dll"
+				OutputFile=".\pd-msvc\flext.dll"
 				AdditionalLibraryDirectories="f:\prog\packs\pthreads;&quot;f:\prog\pd\pd-cvs\bin&quot;;F:\prog\audio\stk\lib;F:\prog\audio\sndobj\lib"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="FALSE"
 				OptimizeReferences="1"
 				ImportLibrary="./pd-msvc/flext_l.lib"/>
 			<Tool
@@ -444,9 +446,9 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="copy flext to maestra"
-				CommandLine="copy F:\prog\max\flext\source\*.h F:\prog\maestra\dev\api\include
-copy F:\prog\max\flext\pd-msvc\flext_l.lib F:\prog\maestra\dev\api\lib
-copy F:\prog\max\flext\pd-msvc\flext_l.dll F:\prog\maestra\dev\Release
+				CommandLine="copy F:\prog\max\flext\source\*.h f:\prog\maestra\dev\api\include
+copy F:\prog\max\flext\pd-msvc\flext_l.lib f:\prog\maestra\dev\api\lib
+copy F:\prog\max\flext\pd-msvc\flext.dll f:\prog\maestra\dev\release
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>

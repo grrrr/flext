@@ -117,8 +117,7 @@ bool flext_base::ItemCont::Remove(Item *it)
 
 void flext_base::ItemCont::Finalize()
 {
-	if(!Ready()) 
-	{
+	if(!Ready()) {
 		bits = Int2Bits(cnt); // at least enough bits to hold all items
 		
 //		post("This=%p, Count %i, Bits %i",this,cnt,bits);

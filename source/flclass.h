@@ -531,14 +531,14 @@ protected:
 	bool DumpAttrib(const char *attr) const { return DumpAttrib(MakeSymbol(attr)); }
 
 	//! List attributes
-	int ListAttrib(AtomList &a) const;
+	void ListAttrib(AtomList &a) const;
 	//! Get an attribute value
 	bool GetAttrib(const t_symbol *s,AtomList &a) const;
 	//! Set an attribute value
 	bool SetAttrib(const t_symbol *s,const AtomList &a) { return SetAttrib(s,a.Count(),a.Atoms()); }
 
 	//! List methods
-	int ListMethods(AtomList &a,int inlet = 0) const;
+	void ListMethods(AtomList &a,int inlet = 0) const;
 
 /*!		\addtogroup FLEXT_C_INOUT 
 		@{ 
@@ -606,6 +606,11 @@ protected:
 
         //! Create hash table out of the preliminary linked lists
 		void Finalize();
+
+		//! Get first element
+		Item *First() { return !Ready()?arr[0]:NULL; }
+		//! Get last element
+		Item *Last() { return !Ready()?arr[1]:NULL; }
 		
         //! Query whether the array has been finalized
 		bool Ready() const { return bits >= 0; }
@@ -634,6 +639,7 @@ protected:
 		
 		void SetArgs(methfun fun,int argc,metharg *args);
 
+		int index;
 		int argc;
 		metharg *args;
 		methfun fun;
@@ -656,6 +662,7 @@ protected:
 		bool IsSet() const { return (flags&afl_getset) == afl_set; }
 		bool BothExist() const { return (flags&afl_bothexist) != 0; }
 
+		int index;
 		int flags;
 		metharg argtp;
 		methfun fun;

@@ -27,6 +27,7 @@ Version history:
 - added flext::CmpAtom and AtomList::operator < methods ... useful for using lists as keys for STL
 - make use of new PD thread locking (PD functions sys_lock() and sys_unlock())
 - better FLEXT_OSAPI resolution
+- ListAttributes (or the getattributes message) now lists attributes in the order they were created (first class, then object scope)
 
 0.4.4:
 - fixed deadly bug for Max/MSP method-to-symbol-binding proxies

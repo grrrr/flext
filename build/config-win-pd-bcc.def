@@ -15,5 +15,5 @@ OUTPATH=pd-bcc
 
 # user defined compiler flags
 # (check if they match your system!)
-OFLAGS=
+OFLAGS=-6 -O2 -OS -ff -d
 

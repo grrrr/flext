@@ -7,28 +7,32 @@ LIBPATH=$(LIBPATH) -L$(BCCPATH)\lib
 !endif
 
 LIBS=$(LIBS) cw32.lib import32.lib C0D32.OBJ 
-CFLAGS=$(CFLAGS) -tWD
+CFLAGS=$(CFLAGS) -tWD -tWM
+LDFLAGS=$(LDFLAGS) /C /Tpd 
 
 ##############################################
 
 # use multithreaded static libraries
 !ifdef DEBUG
-CFLAGS=$(CFLAGS) /D_DEBUG
+CFLAGS=$(CFLAGS) -v -D_DEBUG
+LDFLAGS=$(LDFLAGS) /v
 !else
-CFLAGS=$(CFLAGS) $(OFLAGS) /DNDEBUG
+CFLAGS=$(CFLAGS) $(OFLAGS) -DNDEBUG
 !endif
 
 !ifdef SHARED
 # --- shared ---
-DEFS=$(DEFS) /DFLEXT_SHARED
+DEFS=$(DEFS) -DFLEXT_SHARED
 
-!elseifdef THREADED
+!else
+!ifdef THREADED
 # --- static multi-threaded ---
-DEFS=$(DEFS) /DFLEXT_THREADS
+DEFS=$(DEFS) -DFLEXT_THREADS
 
 !else 
 # --- static single-threaded ---
 
+!endif
 !endif
 
 ##############################################
@@ -36,13 +40,17 @@ DEFS=$(DEFS) /DFLEXT_THREADS
 TARGET=$(OUTPATH)\$(NAME).$(EXT)
 
 # default target
-all: $(OUTPATH) 
+all: $(OUTPATH) print $(TARGET)
 
-OBJS= $(SRCS:.c=.obj)
-OBJS= $(OBJS:.objpp=.obj)
+# convert both *.c and *.cpp
+OBJSTMP= $(SRCS:.c=.obj)
+OBJS= $(OBJSTMP:.objpp=.obj)
+
+print:
+    echo $(OBJS)
 
 $(OUTPATH):
-	-@if not exist $< mkdir $<
+	@-if not exist $< mkdir $<
 
 $(OUTPATH)\pd.lib: $(PDPATH)\bin\pd.dll 
 	implib -a $< $**
@@ -64,7 +72,7 @@ $(TARGET) :: $(OUTPATH) $(OUTPATH)\$(NAME).def $(OUTPATH)\pd.lib
 
 $(TARGET) :: $(OBJS)
 	cd $(OUTPATH)
-	ilink32 -C -Tpd $(LIBPATH) $** ,..\$<,,$(LIBS),$(NAME).def
+	ilink32 $(LDFLAGS) $(LIBPATH) $** ,..\$<,,$(LIBS),$(NAME).def
 	cd ..
 
 # remove build

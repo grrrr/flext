@@ -460,41 +460,43 @@ private:
 // These should be the used in the class definition
 /////////////////////////////////////////////////////////
 
+#define FL_CBCAST static_cast // should be dynamic_cast, but for speed and as gcc 3.0.4 has some bugs in it
+
 // no arguments
 #define FLEXT_CALLBACK(M_FUN) \
-static void cb_ ## M_FUN(flext_base *c) { dynamic_cast<thisType *>(c)->M_FUN(); }
+static void cb_ ## M_FUN(flext_base *c) { FL_CBCAST<thisType *>(c)->M_FUN(); }
 
 // for anything
 #define FLEXT_CALLBACK_A(M_FUN) \
-static void cb_ ## M_FUN(flext_base *c,t_symbol *s,int argc,t_atom *argv) { dynamic_cast<thisType *>(c)->M_FUN(s,argc,argv); }
+static void cb_ ## M_FUN(flext_base *c,t_symbol *s,int argc,t_atom *argv) { FL_CBCAST<thisType *>(c)->M_FUN(s,argc,argv); }
 
 // for gimme
 #define FLEXT_CALLBACK_G(M_FUN) \
-static void cb_ ## M_FUN(flext_base *c,int argc,t_atom *argv) { dynamic_cast<thisType *>(c)->M_FUN(argc,argv); }
+static void cb_ ## M_FUN(flext_base *c,int argc,t_atom *argv) { FL_CBCAST<thisType *>(c)->M_FUN(argc,argv); }
 
 // for boolean argument
 #define FLEXT_CALLBACK_B(M_FUN) \
-static void cb_ ## M_FUN(flext_base *c,int &arg1) { dynamic_cast<thisType *>(c)->M_FUN(arg1 != 0); }
+static void cb_ ## M_FUN(flext_base *c,int &arg1) { FL_CBCAST<thisType *>(c)->M_FUN(arg1 != 0); }
 
 // 1 argument
 #define FLEXT_CALLBACK_1(M_FUN,TP1) \
-static void cb_ ## M_FUN(flext_base *c,TP1 &arg1) { dynamic_cast<thisType *>(c)->M_FUN(arg1); }
+static void cb_ ## M_FUN(flext_base *c,TP1 &arg1) { FL_CBCAST<thisType *>(c)->M_FUN(arg1); }
 
 // 2 arguments
 #define FLEXT_CALLBACK_2(M_FUN,TP1,TP2) \
-static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2); }
+static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2) { FL_CBCAST<thisType *>(c)->M_FUN(arg1,arg2); }
 
 // 3 arguments
 #define FLEXT_CALLBACK_3(M_FUN,TP1,TP2,TP3) \
-static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3); }
+static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3) { FL_CBCAST<thisType *>(c)->M_FUN(arg1,arg2,arg3); }
 
 // 4 arguments
 #define FLEXT_CALLBACK_4(M_FUN,TP1,TP2,TP3,TP4) \
-static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4); }
+static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4) { FL_CBCAST<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4); }
 
 // 5 arguments
 #define FLEXT_CALLBACK_5(M_FUN,TP1,TP2,TP3,TP4,TP5) \
-static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,TP5 &arg5) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4,arg5); }
+static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,TP5 &arg5) { FL_CBCAST<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4,arg5); }
 
 // Shortcuts
 
@@ -574,4 +576,5 @@ AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(
 #define FLEXT_ADDMETHOD_FFF(IX,M_TAG,M_FUN) FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,float,float,float)
 
 #endif
+
 

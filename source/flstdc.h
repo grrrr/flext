@@ -77,7 +77,8 @@ extern "C"
 #include "ext_user.h"
 #include "z_dsp.h"
 #include "z_atom.h"
-#include "buffer.h"
+
+#include "flmspbuffer.h" // inofficial buffer.h included here for conveniance
 }
 
 typedef t_pxobject t_sigobj;
@@ -124,6 +125,7 @@ typedef int t_atomtype;
 #endif
 
 #endif
+
 
 
 

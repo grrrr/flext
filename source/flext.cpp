@@ -56,6 +56,7 @@ void flext_base::cb_px_anything(t_class *c,const t_symbol *s,int argc,t_atom *ar
 	
 	flext_base *o = thisObject(c);
 	int ci = ((flext_hdr *)o->x_obj)->curinlet;
+
 	o->m_methodmain(ci,s,argc,argv);
 }
 
@@ -690,4 +691,5 @@ void flext_base::GetAString(const t_atom &a,char *buf,int szbuf)
 	else if(IsInt(a)) sprintf(buf,"%i",GetInt(a));
 #endif
 }  
+
 

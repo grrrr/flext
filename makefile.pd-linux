@@ -24,8 +24,8 @@ TARGDIR=./pd-linux
 # compiler+linker stuff 
 INCLUDES=$(PDPATH)
 FLAGS=-DPD
-CFLAGS=-O6 -mcpu=pentium
-CFLAGS_D=-mcpu=pentium -g
+CFLAGS=-O6 -mcpu=pentiumpro
+CFLAGS_D=-mcpu=pentiumpro -g
 LIBS=
 
 
@@ -36,10 +36,11 @@ LIBS=
 NAME=flext
 
 # all the source files from the package
-SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp
+SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp
 HDRS=flstdc.h flbase.h flext.h
 IHDRS=fldefs.h
 
+MAKEFILE=makefile.pd-linux
 TARGET=$(TARGDIR)/$(NAME).a
 TARGET_D=$(TARGDIR)/$(NAME)_d.a
 
@@ -48,7 +49,7 @@ all: $(TARGDIR) $(TARGET) $(TARGET_D)
 $(TARGDIR):
 	mkdir $(TARGDIR)
 
-$(SRCS): $(HDRS) $(IHDRS)
+$(SRCS): $(HDRS) $(IHDRS) $(MAKEFILE)
 	touch $@
 
 $(TARGDIR)/%.o : %.cpp
@@ -78,6 +79,11 @@ install:: $(TARGET) $(TARGET_D) $(HDRS)
 clean:
 	rm -f $(TARGDIR)/*.o $(TARGET) $(TARGET_D)
 	
+
+
+
+
+
 
 
 

@@ -40,7 +40,8 @@ o Metrowerks CodeWarrior V6: edit & use the "flext.cw" project file
 o Apple MPW-PR: edit & use the "flext.mpw" makefile
 
 
-for Max/MSP you will also need the Max/MSP SDK
+for Max/MSP you will also need the Max/MSP SDK and http://www.sirius.com/~cycling/objects/index.sit 
+
 for PD you need the pd source code (which is most likely part of the distribution)
 
 ----------------------------------------------------------------------------
@@ -72,6 +73,8 @@ Version history:
 - made NewAligned/FreeAligned static functions
 - introduced FLEXT(_TILDE)_SETUP for class setup in a library setup function
 - introduced external libraries for MaxMSP, changed library setup behavior (now via FLEXT_LIB_SETUP)
+- included MaxMsp's inofficial buffer.h with consent by David Zicarelli
+- changed dynamic casts in callback functions to static as gcc 3.0.4 has obvious bugs
 
 0.2.1:
 - fixed bug in message parsing code (anything messages were not correctly mapped to inlets)
@@ -163,5 +166,7 @@ premature thoughts:
 - interface for supercollider, csound?
 - interface for VST, DX, ...?
 - interface for scripting language modules? (python?)
+
+
 
 

@@ -54,6 +54,8 @@ bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *me
 		parm.sched_priority = prio-1;
 		pthread_setschedparam(id,policy,&parm);
 	}
+	
+	post("Create thread");
 
 	pthread_t thrid; 
 	int ret = pthread_create (&thrid,&attr,(void *(*)(void *))meth,p);
@@ -66,6 +68,8 @@ bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *me
 #ifdef _DEBUG	
 		error((char *)(ret == EAGAIN?"%s - Unsufficient resources to launch thread!":"%s - Could not launch method!"),methname); 
 #endif		
+		error((char *)("%s - Could not launch method!"),methname); 
+
 		delete p; 
 		return false;
 	}
@@ -73,6 +77,8 @@ bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *me
 #ifdef MAXMSP
 		sched_yield();
 #endif
+		post("Create thread: OK");
+
 		return true;
 	}
 }
@@ -80,6 +86,8 @@ bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *me
 bool flext_base::PushThread()
 {
 	tlmutex.Lock();
+
+	post("Push thread");
 
 	// make an entry into thread list
 	thr_entry *nt = new thr_entry;
@@ -129,6 +137,8 @@ bool flext_base::PushThread()
 void flext_base::PopThread()
 {
 	tlmutex.Lock();
+
+	post("Pop thread");
 
 	pthread_t id = pthread_self();
 

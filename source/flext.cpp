@@ -130,15 +130,8 @@ flext_base::flext_base():
 {
 	LOG1("%s - flext logging is on",thisName());
 
-#ifdef FLEXT_THREADS
-//	shouldexit = false;
-//	thrhead = thrtail = NULL;
-#endif
 	qhead = qtail = NULL;
 	qclk = (t_qelem *)(qelem_new(this,(t_method)QTick));
-#if FLEXT_SYS == FLEXT_SYS_MAX
-	yclk = (t_clock *)(clock_new(this,(t_method)YTick));
-#endif
 
 	AddMethod(0,"getattributes",(methfun)cb_ListAttrib);
 }
@@ -146,15 +139,12 @@ flext_base::flext_base():
 flext_base::~flext_base()
 {
 #ifdef FLEXT_THREADS
-	TermThreads();
+	StopThreads();
 #endif
 
 	// send remaining pending messages
 	while(qhead) QTick(this);
 	qelem_free((t_qelem *)qclk);
-#if FLEXT_SYS == FLEXT_SYS_MAX
-	clock_free((object *)yclk);
-#endif
 
 	if(inlist) delete inlist;
 	if(outlist) delete outlist;

@@ -396,7 +396,7 @@ public:
 	bool StartThread(void (*meth)(thr_params *p),thr_params *p,const char *) { p->cl = this; return flext::LaunchThread(meth,p); }
 
 	//! Terminate all threads of this object
-	bool TermThreads();
+	bool StopThreads();
 
 	//! Check if current thread should terminate
 	bool ShouldExit() const;
@@ -567,20 +567,18 @@ private:
 	static bool cb_GetAttrib(flext_base *c,const t_symbol *s,int argc,const t_atom *argv) { return c->GetAttrib(s,argc,argv); }
 	static bool cb_SetAttrib(flext_base *c,const t_symbol *s,int argc,const t_atom *argv) { return c->SetAttrib(s,argc,argv); }
 
-#ifdef FLEXT_THREADS
-	ThrMutex qmutex;
-#endif
+
+	// queue stuff
 
 	class qmsg;
 	qmsg *qhead,*qtail;
 	t_qelem *qclk;
-#if FLEXT_SYS == FLEXT_SYS_MAX
-	t_clock *yclk;
-	static void YTick(flext_base *th);
-#endif
-
 	static void QTick(flext_base *th);
 	void Queue(qmsg *m);
+#ifdef FLEXT_THREADS
+	ThrMutex qmutex;
+#endif
+
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 	// proxy object (for additional inlets) stuff

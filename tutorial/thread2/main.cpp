@@ -88,18 +88,18 @@ void thread2::m_start(int st)
 		ToOutInt(0,count); // output loop count
 	}
 
-	cond.Lock(); // lock conditional
 	running = false; // change state flag
-	cond.Signal(); // signal changed flag to watiting "stop" method
-	cond.Unlock(); // unlock conditional
+//	cond.Lock(); // lock conditional
+	cond.Signal(); // signal changed flag to waiting "stop" method
+//	cond.Unlock(); // unlock conditional
 }
 
 void thread2::m_stop()
 {
-	cond.Lock(); // lock conditional
+//	cond.Lock(); // lock conditional
 	stopit = true; // set termination flag
 
-	while(*(&running) || *(&blipping)) // workaround for CodeWarrior!
+	while(*(&running) || *(&blipping)) // workaround for CodeWarrior (doesn't honor volatile modifier!)
 	{
 		cond.Wait(); // wait for signal by running threads
 	}
@@ -107,7 +107,7 @@ void thread2::m_stop()
 	// --- Here, the threads should have stopped ---
 
 	stopit = false; // reset flag
-	cond.Unlock(); // unlock conditional
+//	cond.Unlock(); // unlock conditional
 }
 
 
@@ -126,9 +126,9 @@ void thread2::m_textout()
 		Sleep(1.f);
 	}
 
-	cond.Lock(); // lock conditional
 	blipping = false; // change state flag
-	cond.Signal(); // signal changed flag to watiting "stop" method
-	cond.Unlock(); // unlock conditional
+//	cond.Lock(); // lock conditional
+	cond.Signal(); // signal changed flag to waiting "stop" method
+//	cond.Unlock(); // unlock conditional
 }
 

@@ -67,8 +67,6 @@ public:
 		struct { int argc; t_atom *argv; } _list;
 		struct { const t_symbol *s; int argc; t_atom *argv; } _any;
 	};
-
-//	void Add(qmsg *o);
 };
 
 flext_base::qmsg::~qmsg() 
@@ -84,44 +82,24 @@ void flext_base::qmsg::Clear()
 	tp = tp_none;
 }
 
-/*
-void flext_base::qmsg::Add(qmsg *o) 
-{
-	if(nxt) nxt->Add(o);
-	else nxt = o;
-}
-*/
-
-#if FLEXT_SYS == FLEXT_SYS_MAX
-void flext_base::YTick(flext_base *th) 
-{ 
-	clock_delay(th->yclk,0); 
-	qelem_set(th->qclk); 
-#ifdef FLEXT_THREADS
-	ThrYield();
-#endif
-}
-#endif
-
 void flext_base::QTick(flext_base *th)
 {
-#ifdef FLEXT_THREADS
-
-#ifdef FLEXT_DEBUG
+//	post("qtick");
+#if defined(FLEXT_THREADS) && defined(FLEXT_DEBUG)
 	if(!th->IsSystemThread()) {
 		error("flext - Queue tick called by wrong thread!");
 		return;
 	}
 #endif
 
+#ifdef FLEXT_THREADS
 	th->qmutex.Lock();
 #endif
-	while(th->qhead) {
+	for(;;) {
 		qmsg *m = th->qhead;
+		if(!m) break;
 
-#if FLEXT_SYS == FLEXT_SYS_MAX
-		short state = lockout_set(1);
-#endif
+		CRITON();
 
 		switch(m->tp) {
 		case qmsg::tp_bang: th->ToOutBang(m->out); break;
@@ -135,9 +113,7 @@ void flext_base::QTick(flext_base *th)
 #endif
 		}
 
-#if FLEXT_SYS == FLEXT_SYS_MAX
-		lockout_set(state);
-#endif
+		CRITOFF();
 
 		th->qhead = m->nxt;
 		if(!th->qhead) th->qtail = NULL;
@@ -151,23 +127,26 @@ void flext_base::QTick(flext_base *th)
 
 void flext_base::Queue(qmsg *m)
 {
+//	post("Queue");
+
 #ifdef FLEXT_THREADS
 	qmutex.Lock();
 #endif
 	if(qtail) qtail->nxt = m;
 	else qhead = m;
 	qtail = m;
+#ifdef FLEXT_THREADS
+	qmutex.Unlock();
+#endif
+
 #if FLEXT_SYS == FLEXT_SYS_PD
 	clock_delay(qclk,0);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	clock_delay(yclk,0);
+	qelem_set(qclk); 
 #else
 #error 
 #endif
 
-#ifdef FLEXT_THREADS
-	qmutex.Unlock();
-#endif
 }
 
 void flext_base::ToQueueBang(outlet *o) const 

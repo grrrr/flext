@@ -597,7 +597,12 @@ public:
 		~ThrCond() { pthread_cond_destroy(&cond); }
 
 		//! Wait for condition 
-		bool Wait() { return pthread_cond_wait(&cond,&mutex) == 0; }
+		bool Wait() { 
+			Lock();
+			bool ret = pthread_cond_wait(&cond,&mutex) == 0; 
+			Unlock();
+			return ret;
+		}
 
 		/*! \brief Wait for condition (for a certain time)
 			\param time Wait time in seconds
@@ -605,11 +610,20 @@ public:
 		bool TimedWait(float time) 
 		{ 
 			timespec tm; tm.tv_sec = (long)time; tm.tv_nsec = (long)((time-(long)time)*1.e9);
-			return pthread_cond_timedwait(&cond,&mutex,&tm) == 0; 
+			Lock();
+			bool ret = pthread_cond_timedwait(&cond,&mutex,&tm) == 0; 
+			Unlock();
+			return ret;
 		}
 
 		//! Signal condition
-		bool Signal() { return pthread_cond_signal(&cond) == 0; }
+		bool Signal() 
+		{ 
+			Lock();
+			bool ret = pthread_cond_signal(&cond) == 0; 
+			Unlock();
+			return ret;
+		}
 		//! Broadcast condition
 //		int Broadcast() { return pthread_cond_broadcast(&cond); }
 	protected:

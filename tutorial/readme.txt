@@ -39,7 +39,7 @@ o Metrowerks CodeWarrior V6: edit & use the several ".cw" project files
 
 Max/MSP - MacOSX:
 ------------------
-... sorry, not yet... would someone please donate me a CodeWarrior V8 ?
+o Metrowerks CodeWarrior V6: edit & use the several ".cw" project files
 
 ----------------------------------------------------------------------------
 

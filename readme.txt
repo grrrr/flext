@@ -33,7 +33,7 @@ Package files:
 - flmspbuffer.h: MaxMSP's inofficial buffer.h included here for conveniance
 
 > for PD you need the pd source code (which is most likely part of the distribution)
-> for Max/MSP you will also need the Max/MSP SDK (and for threading the GUSI library)
+> for Max/MSP you will also need the Max/MSP SDK (and for threading the Multiprocessing library)
 
 > if you choose to compile with SndObj support you will need the respective library
 > download from: http://www.may.ie/academic/music/musictec/SndObj/main.html
@@ -44,7 +44,7 @@ The package should at least compile (and is tested) with the following compilers
 
 pd - Windows:
 -------------
-For any of these compilers define "PD" and "NT".
+For any of these compilers define "FLEXT_SYS=2".
 
 o Microsoft Visual C++ 6: edit "config-pd-msvc.txt" & run "build-pd-msvc.bat" 
 
@@ -54,25 +54,27 @@ o Cygwin: edit "config-pd-cygwin.txt" & run "sh build-pd-cygwin.sh"
 
 pd - linux:
 -----------
-Be sure to define "PD".
+Be sure to define "FLEXT_SYS=2".
 
 o GCC: edit "config-pd-linux.txt" & run "sh build-pd-linux.sh" 
 
 pd - MacOSX:
 -----------
-Be sure to define "PD".
+Be sure to define "FLEXT_SYS=2".
 
 o GCC: edit "config-pd-darwin.txt" & run "sh build-pd-darwin.sh" 
 
 Max/MSP - MacOS 9:
 ------------------
-Be sure to define "MAXMSP".
+Be sure to define "FLEXT_SYS=1" - alternatively use the prefix file "flcwmax.h"
 
 o Metrowerks CodeWarrior V6: edit & use the "flext.cw" project file
 
 Max/MSP - MacOSX:
 ------------------
-... sorry, not yet... would someone please donate me a CodeWarrior V8 ?
+Be sure to define "FLEXT_SYS=1" - alternatively use the prefix file "flcwmax-x.h" or "flcwmax-x-thr.h" for threading support.
+
+o Metrowerks CodeWarrior V6: edit & use the "flext.cw" project file
 
 ----------------------------------------------------------------------------
 
@@ -98,6 +100,7 @@ see flext.h, fldefs.h and flclass.h for the documented base definitions and clas
 Version history:
 
 0.4.1:
+- full port for Max@OSX
 - fixed crash issue in flext_dsp when there are NO signal inlets or outlets defined
 	(this is possibly only a problem for the signal2 tutorial example)
 - added flext::GetType(t_atom &), flext::ZeroMem
@@ -115,6 +118,9 @@ Version history:
 - put more flext functions into flext static class
 - replaced ChangePriority by RefPriority
 - fixed setting of priorities...  problems were caused by a compiler bug (MSVC 6)
+- made a portable threading interface with support for threading libraries other than pthreads (FLEXT_THREADS defined as FLEXT_THR_*)
+- implemented threading support with the MacOS MP thread library
+- stripped the ThrMutex and ThrCond classes of non-portable (and irrelevant) functionality
 
 0.4.0:
 - the use of the const keyword is enforced (e.g. the preferred type for symbols is now "const t_symbol *")

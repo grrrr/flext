@@ -37,7 +37,7 @@ protected:
 	void m_start(); // method function
 
 private:
-	// define threaded callback for method m_start (with boolean argument)
+	// define threaded callback for method m_start
 	// the same syntax as with FLEXT_CALLBACK is used here
 	FLEXT_THREAD(m_start); 
 };
@@ -64,17 +64,19 @@ void thread1::m_start()
 
 	for(int i = 0; i < 20 && !ShouldExit(); ++i) {
 		ToOutInt(0,i); // output loop count
+//		post("%i",i);
 
 		// wait for half a second
 		for(int j = 0; j < 5 && !ShouldExit(); ++j) Sleep(0.1f); 
 		// note: we shall not block a thread for a longer time.
 		// The system might want to destroy the object in the meantime and
-		// expects thread termination.
-		// Flext waits for 1 second by default, then it aborts the thread brutally
+		// expects thread termination. In such a case flext waits
+		// for 1 second by default, then it aborts the thread brutally
 	}
 
 	// output a final zero
 	ToOutInt(0,0);
+//	post("end");
 }
 
 

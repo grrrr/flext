@@ -166,6 +166,8 @@ bool flext::LaunchThread(void (*meth)(thr_params *p),thr_params *p)
 	}
 #endif
 
+//	post("make threads");
+
 	tlmutex.Lock();
 
 	// make an entry into thread list
@@ -174,20 +176,27 @@ bool flext::LaunchThread(void (*meth)(thr_params *p),thr_params *p)
 	else thrhead = nt;
 	thrtail = nt;
 
+	tlmutex.Unlock();
+
+//	post("signal helper");
+
 	// signal thread helper
 	thrhelpcond->Signal();
 
-	tlmutex.Unlock();
 	return true;
 }
 
 bool flext_base::ShouldExit() const 
 {
+	bool ret = true;
+
+	tlmutex.Lock();
 	for(thr_entry *ti = thrhead; ti; ti = ti->nxt)
-		if(ti->Is()) return ti->shouldexit;
+		if(ti->Is()) { ret = ti->shouldexit; break; }
+	tlmutex.Unlock();
 
 	// thread was not found -> EXIT!!!
-	return true;
+	return ret;
 }
 
 bool flext::PushThread()
@@ -227,7 +236,7 @@ void flext::PopThread()
 }
 
 //! Terminate all object threads
-bool flext_base::TermThreads()
+bool flext_base::StopThreads()
 {
 	thr_entry *t;
 

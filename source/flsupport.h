@@ -21,50 +21,13 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 class FLEXT_SHARE FLEXT_CLASSDEF(flext_root);
 typedef class FLEXT_CLASSDEF(flext_root) flext_root;
 
+/*! \brief Flext root support class
+
+    Moved memory functions and console output here so that all the classes
+    contained in flext can use them
+*/
 class FLEXT_SHARE FLEXT_CLASSDEF(flext_root) {
 public:
-};
-
-
-class FLEXT_SHARE FLEXT_CLASSDEF(flext);
-typedef class FLEXT_CLASSDEF(flext) flext;
-
-class FLEXT_SHARE FLEXT_CLASSDEF(flext_base);
-
-/*! \brief Flext support class
-
-	A number of methods (most are static functions) are defined here for convenience.
-	This class doesn't define any data members, hence it can be inherited to all
-	classes (not only PD objects) to profit from the cross-platform functionality.
-	Examples are the overloaded memory allocation, atom and atom list functions,
-	thread functions and classes, the sample buffer class and others.
-
-    This class can also be used for a non-object class (not representing an external object)
-    and won't give any extra burden to it.
-*/
-
-class FLEXT_SHARE FLEXT_CLASSDEF(flext):
-	public flext_root
-{
-
-	/*!	\defgroup FLEXT_SUPPORT Flext support class
-		@{ 
-	*/
-public:
-
-// --- version -----------------------------------------------	
-
-    /*! \brief Flext version number 
-
-        Return the version number of the flext library.
-        For statically linked flext this is identical to the header definition FLEXT_VERSION,
-        otherwise it reflects the version number of the shared flext library.
-    */
-    static int Version();    
-
-    //! Flext version string
-    static const char *VersionStr();    
-
 // --- console output -----------------------------------------------	
 
 		//! post message to console
@@ -107,6 +70,48 @@ public:
 		
 	//!	@}  FLEXT_S_MEMORY  	
 
+};
+
+
+class FLEXT_SHARE FLEXT_CLASSDEF(flext);
+typedef class FLEXT_CLASSDEF(flext) flext;
+
+class FLEXT_SHARE FLEXT_CLASSDEF(flext_base);
+
+/*! \brief Flext support class
+
+	A number of methods (most are static functions) are defined here for convenience.
+	This class doesn't define any data members, hence it can be inherited to all
+	classes (not only PD objects) to profit from the cross-platform functionality.
+	Examples are the overloaded memory allocation, atom and atom list functions,
+	thread functions and classes, the sample buffer class and others.
+
+    This class can also be used for a non-object class (not representing an external object)
+    and won't give any extra burden to it.
+*/
+
+class FLEXT_SHARE FLEXT_CLASSDEF(flext):
+	public flext_root
+{
+
+	/*!	\defgroup FLEXT_SUPPORT Flext support class
+		@{ 
+	*/
+public:
+
+// --- version -----------------------------------------------	
+
+    /*! \brief Flext version number 
+
+        Return the version number of the flext library.
+        For statically linked flext this is identical to the header definition FLEXT_VERSION,
+        otherwise it reflects the version number of the shared flext library.
+    */
+    static int Version();    
+
+    //! Flext version string
+    static const char *VersionStr();    
+
 // --- buffer/array stuff -----------------------------------------	
 
 	/*!	\defgroup FLEXT_S_BUFFER Buffer handling
@@ -117,7 +122,8 @@ public:
 #if FLEXT_SYS != FLEXT_SYS_JMAX
 
 	//! Class for platform independent buffer handling
-	class FLEXT_SHARE buffer
+    class FLEXT_SHARE buffer:
+        public flext_root
 	{
 	public:
 		/*! \brief Construct buffer.
@@ -481,7 +487,8 @@ public:
 // --- atom list stuff -------------------------------------------
 
 	//! Class representing a list of atoms
-	class FLEXT_SHARE AtomList
+    class FLEXT_SHARE AtomList:
+        public flext_root
 	{
 	public:
 		//! Construct list
@@ -663,7 +670,8 @@ public:
 	/*! \brief Thread parameters
 		\internal
 	*/
-	class FLEXT_SHARE thr_params
+    class FLEXT_SHARE thr_params:
+        public flext_root
 	{
 	public:
 		thr_params(int n = 1);
@@ -687,7 +695,8 @@ public:
 	/*! \brief This represents an entry to the list of active method threads
 		\internal
 	*/
-	class FLEXT_SHARE thr_entry 
+    class FLEXT_SHARE thr_entry:
+        public flext_root
 	{
 	public:
 		thr_entry(void (*m)(thr_params *),thr_params *p,thrid_t id = GetThreadId());
@@ -763,7 +772,8 @@ public:
 	/*! \brief Thread mutex
 		\sa pthreads documentation
 	*/
-	class FLEXT_SHARE ThrMutex 
+    class FLEXT_SHARE ThrMutex:
+        public flext_root
 #if FLEXT_THREADS == FLEXT_THR_POSIX
 	{
 	public:
@@ -932,7 +942,8 @@ public:
 	/*! \brief Class encapsulating a timer with callback functionality.
 		This class can either be used with FLEXT_ADDTIMER or used as a base class with an overloaded virtual Work function.
 	*/ 
-	class FLEXT_SHARE Timer
+    class FLEXT_SHARE Timer:
+        public flext_root
 	{
 	public:
 		Timer(bool queued = false);

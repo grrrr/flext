@@ -591,7 +591,9 @@ protected:
 
 	class AttrItem;
 
-	class Item {
+    class Item:
+        public flext_root
+    {
 	public:
 		Item(const t_symbol *t,int inl,AttrItem *a);
 		virtual ~Item();
@@ -605,7 +607,9 @@ protected:
 	};
 
     //! This class holds hashed item entries
-	class ItemCont {
+    class ItemCont:
+        public flext_root
+    {
 	public:
 		ItemCont();
 		~ItemCont();
@@ -685,7 +689,8 @@ protected:
 	};
 
 	//! Represent a data value of an attribute
-	class AttrData 
+    class AttrData:
+        public flext_root
 	{
 	public:
 		AttrData(): flags(0) {}
@@ -900,7 +905,9 @@ private:
 
 	static t_class *pxbnd_class;
 
-	class pxbnd_object  // no virtual table!
+    class pxbnd_object:
+        public flext_root
+        // no virtual table!
 	{ 
     public:
 		t_object obj;			// MUST reside at memory offset 0

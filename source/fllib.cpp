@@ -104,7 +104,9 @@ bool flext::chktilde(const char *objname)
 // this class stands for one registered object
 // it holds the class, type flags, constructor and destructor of the object and the creation arg types
 // it will never be destroyed
-class libclass {
+class libclass:
+    public flext_root
+{
 public:
 	libclass(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(flext_hdr *)); 
 	
@@ -126,7 +128,9 @@ libclass::libclass(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(f
 // this class stands for one registered object name
 // it holds a pointer to the respective object
 // it will never be destroyed
-class libname {
+class libname:
+    public flext_root
+{
 public:
 	const t_symbol *name;
 	libclass *obj;

@@ -79,7 +79,7 @@ void flext::Setup()
 //
 /////////////////////////////////////////////////////////
 
-void *flext::operator new(size_t bytes)
+void *flext_root::operator new(size_t bytes)
 {
 	bytes += sizeof(size_t);
 
@@ -98,7 +98,7 @@ void *flext::operator new(size_t bytes)
 	return blk+sizeof(size_t);
 }
 
-void flext::operator delete(void *blk)
+void flext_root::operator delete(void *blk)
 {
 	char *ori = (char *)blk-sizeof(size_t);
 #if FLEXT_SYS == FLEXT_SYS_JMAX
@@ -109,7 +109,7 @@ void flext::operator delete(void *blk)
 #endif
 }
 
-void *flext::NewAligned(size_t bytes,int bitalign)
+void *flext_root::NewAligned(size_t bytes,int bitalign)
 {
 	const size_t ovh = sizeof(size_t)+sizeof(char *);
 	const unsigned long alignovh = bitalign/8-1;
@@ -125,7 +125,7 @@ void *flext::NewAligned(size_t bytes,int bitalign)
 	return ablk;
 }
 
-void flext::FreeAligned(void *blk)
+void flext_root::FreeAligned(void *blk)
 {
 	char *ori = *(char **)((char *)blk-sizeof(size_t)-sizeof(char *));
 
@@ -182,10 +182,10 @@ int flext::Int2Bits(unsigned long n)
 }
 
 
-void flext::post(const char *fmt, ...)
+void flext_root::post(const char *fmt, ...)
 {
 #ifdef FLEXT_THREADS
-	static ThrMutex mutex;
+    static flext::ThrMutex mutex;
 	mutex.Lock();
 #endif
 	va_list ap;
@@ -204,10 +204,10 @@ void flext::post(const char *fmt, ...)
 #endif
 }
 
-void flext::error(const char *fmt,...)
+void flext_root::error(const char *fmt,...)
 {
 #ifdef FLEXT_THREADS
-	static ThrMutex mutex;
+    static flext::ThrMutex mutex;
 	mutex.Lock();
 #endif
 	va_list ap;

@@ -22,9 +22,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define BIGFLOAT 1.e10
 #define BIGLONG 0x7fffffffL
 
-#ifdef __MWERKS__
-#define MAXMSP  // how to define in CodeWarrior IDE?
-#endif
 
 #ifdef PD
 #pragma warning (push)
@@ -151,7 +148,7 @@ typedef _outlet t_outlet;
 #endif
 
 
-#ifdef _WINDOWS
+#if defined(NT)
 #define EXT_EXTERN __declspec(dllexport)
 #else                   // other OS's
 #define EXT_EXTERN

@@ -35,6 +35,9 @@ Package files:
 > for PD you need the pd source code (which is most likely part of the distribution)
 > for Max/MSP you will also need the Max/MSP SDK (and for threading the GUSI library)
 
+> if you choose to compile with SndObj support you will need the respective library
+> download from: http://www.may.ie/academic/music/musictec/SndObj/main.html
+
 ----------------------------------------------------------------------------
 
 The package should at least compile (and is tested) with the following compilers:

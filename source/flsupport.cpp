@@ -157,12 +157,16 @@ void *flext_root::operator new(size_t bytes)
         SYSUNLOCK();
     }
 
+	FLEXT_ASSERT(blk);
+
 	*(size_t *)blk = bytes;
 	return blk+sizeof(size_t);
 }
 
 void flext_root::operator delete(void *blk)
 {
+	FLEXT_ASSERT(blk);
+
 	char *ori = (char *)blk-sizeof(size_t);
 	size_t bytes = *(size_t *)ori;
 
@@ -213,6 +217,7 @@ void *flext_root::NewAligned(size_t bytes,int bitalign)
 #endif
         SYSUNLOCK();
     }
+	FLEXT_ASSERT(blk);
 
 	char *ablk = reinterpret_cast<char *>((reinterpret_cast<unsigned long>(blk)+ovh+alignovh) & ~alignovh);
 	*(char **)(ablk-sizeof(size_t)-sizeof(char *)) = blk;
@@ -222,6 +227,8 @@ void *flext_root::NewAligned(size_t bytes,int bitalign)
 
 void flext_root::FreeAligned(void *blk)
 {
+	FLEXT_ASSERT(blk);
+
 	char *ori = *(char **)((char *)blk-sizeof(size_t)-sizeof(char *));
 	size_t bytes = *(size_t *)((char *)blk-sizeof(size_t));
 

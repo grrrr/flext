@@ -18,6 +18,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __FLEXT_STDC_H
 #define __FLEXT_STDC_H
 
+#if defined(_MSC_VER) && (_MSC_VER < 0x1300)
+/* 
+    include math.h here - when included with PD or Max/MSP headers,  
+    C linkage would be used which disturbs MSVC6
+*/
+#include <math.h>
+#endif
+
 // PD stuff
 
 #if FLEXT_SYS == FLEXT_SYS_PD

@@ -46,7 +46,12 @@ public:
     {
     public:
         iterator() {}
-        iterator(AnyMap::iterator it): AnyMap::iterator(it) {}
+#if defined(_MSC_VER) && (_MSC_VER < 0x1300)
+        // with the MSVC6 STL implementation iterators can't be initialized...
+        iterator(AnyMap::iterator &it) { static_cast<AnyMap::iterator &>(*this) = it; }
+#else
+        iterator(AnyMap::iterator &it): AnyMap::iterator(it) {}
+#endif
 
         inline K &key() const { return *(K *)&((*this)->first); }
         inline T &data() const { return *(T *)&((*this)->second); }

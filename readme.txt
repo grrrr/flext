@@ -64,7 +64,7 @@ see flext.h for the documented base classes
 Version history:
 
 0.2.1:
-- fixed bug in message parsing code (anything messages were not not correctly mapped to inlets)
+- fixed bug in message parsing code (anything messages were not correctly mapped to inlets)
 - changed t_symtype to t_symptr (= t_symbol *), needed for method argument lists
 - eliminated flint type (t_flint remains)
 

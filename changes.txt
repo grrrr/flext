@@ -16,6 +16,8 @@ Version history:
 0.4.6:
 - added a text edit window for list attributes
 - finally use global allocator operators (MFC doesn't like but who cares)
+- fixed entry of local variables with attribute editor
+- help window for attribute editor
 
 0.4.5:
 - added some more SIMD functions

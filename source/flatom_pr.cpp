@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -29,7 +29,9 @@ bool flext::PrintAtom(const t_atom &a,char *buf,int bufsz)
 		STD::sprintf(buf,"%i",GetInt(a));
 	}
 	else if(IsSymbol(a)) {
-		STD::strcpy(buf,GetString(a));
+        if(!FLEXT_ASSERT(GetSymbol(a))) *buf = 0;
+        else 
+            STD::strcpy(buf,GetString(a));
 	}
 	else if(IsPointer(a)) {
 		STD::sprintf(buf,"%p",GetPointer(a));

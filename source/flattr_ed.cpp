@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -83,18 +83,16 @@ void flext_base::SetAttrEditor(t_classid c)
 			"set vid [string trimleft $id .]\n"
 
 			// make a list of the attribute values (including save flags)
+
 			"set lst {}\n"
 			"for {set ix 1} {$ix <= $alen} {incr ix} {\n"
 				"set var_attr_name [concat [concat var_name_$ix]_$vid ]\n"
-				"global $var_attr_name\n"
 				"set var_attr_init [concat [concat var_init_$ix]_$vid ]\n"
-				"global $var_attr_init\n"
 				"set var_attr_val [concat [concat var_val_$ix]_$vid ]\n"
-				"global $var_attr_val\n"
 				"set var_attr_save [concat [concat var_save_$ix]_$vid ]\n"
-				"global $var_attr_save\n"
 				"set var_attr_type [concat [concat var_type_$ix]_$vid ]\n"
-				"global $var_attr_type\n"
+
+				"global $var_attr_name $var_attr_init $var_attr_val $var_attr_save $var_attr_type\n"
 		
 				"if { [expr $$var_attr_type] != 0 } {\n"
 					// attribute is puttable
@@ -102,23 +100,33 @@ void flext_base::SetAttrEditor(t_classid c)
 					"lappend lst [eval concat $$var_attr_name]\n" 
 
 					// process current value
-					"set len [llength [expr $$var_attr_val]]\n"
+                    "set tmp [eval concat $$var_attr_val]\n"
+					"set len [llength $tmp]\n"
 					"if { $len == 1 } {\n"
 						// it's an atom
-						"lappend lst [expr $$var_attr_val]\n" 
+                        // if atom starts with $, replace it by # ($ can't be passed by TCL)
+                        "if { [string index $tmp 0] == \"$\" } {\n"
+                            "set tmp [string replace $tmp 0 0 #]\n" 
+                        "}\n"
+                        "lappend lst $tmp\n" 
 					"} else {\n"
 						// it's a list
-						"set lst [concat $lst {list} $len [expr $$var_attr_val]]\n" 
+						"set lst [concat $lst {list} $len $tmp]\n" 
 					"}\n"
 
 					// process init value
-					"set len [llength [expr $$var_attr_init]]\n"
+					"set tmp [eval concat $$var_attr_init]\n"
+					"set len [llength $tmp]\n"
 					"if { $len == 1 } {\n"
 						// it's an atom
-						"lappend lst [expr $$var_attr_init]\n" 
+                        // if atom starts with $, replace it by # ($ can't be passed by TCL)
+                        "if { [string index $tmp 0] == \"$\" } {\n"
+                            "set tmp [string replace $tmp 0 0 #]\n" 
+                        "}\n"
+                        "lappend lst $tmp\n" 
 					"} else {\n"
 						// it's a list
-						"set lst [concat $lst {list} $len [expr $$var_attr_init]]\n" 
+						"set lst [concat $lst {list} $len $tmp]\n" 
 					"}\n"
 
 					"lappend lst [eval concat $$var_attr_save]\n" 
@@ -139,9 +147,35 @@ void flext_base::SetAttrEditor(t_classid c)
 			"flext_cancel $id\n"
 		"}\n"
 
+        "proc flext_help {id} {\n"
+        	"toplevel $id.hw\n"
+            "wm title $id.hw \"Flext attribute editor help\"\n"
+
+            "frame $id.hw.buttons\n"
+            "pack $id.hw.buttons -side bottom -fill x -pady 2m\n"
+
+            "text $id.hw.text -relief sunken -bd 2 -yscrollcommand \"$id.hw.scroll set\" -setgrid 1 -width 80 -height 10 -wrap word\n"
+            "scrollbar $id.hw.scroll -command \"$id.hw.text yview\"\n"
+            "pack $id.hw.scroll -side right -fill y\n"
+            "pack $id.hw.text -expand yes -fill both\n"
+
+            "button $id.hw.buttons.ok -text OK -command \"destroy $id.hw\"\n"
+            "pack $id.hw.buttons.ok -side left -expand 1\n"
+			"bind $id.hw {<KeyPress-Escape>} \"destroy $id.hw\"\n"
+
+            "$id.hw.text tag configure big -font {Arial 10 bold}\n"
+            "$id.hw.text configure -font {Arial 8 bold}\n"
+            "$id.hw.text insert end \""
+                "The flext attribute editor lets you query or change attribute values exposed by an external object. \" big \"\n\n"
+                "Local variable names ($-values) will only be saved as such for init values. "
+                "Alternatively, # can be used instead of $.\n"
+                "Ctrl-Button on a text field will open an editor window where text can be entered more comfortably.\n"
+            "\"\n"
+            "$id.hw.text configure -state disabled\n"
+		"}\n"
+
 		"proc flext_copyval {dst src} {\n"
-			"global $src\n"
-			"global $dst\n"
+			"global $src $dst\n"
 			"set $dst [expr $$src]\n"
 		"}\n"
 
@@ -161,24 +195,24 @@ void flext_base::SetAttrEditor(t_classid c)
             "frame $id.w.buttons\n"
             "pack $id.w.buttons -side bottom -fill x -pady 2m\n"
 
-//            "if { $edit != 0 } {set st normal} {set st disabled}\n"
-            "text $id.w.text -relief sunken -bd 2 -yscrollcommand \"$id.w.scroll set\" -setgrid 1 -width 80 -height 20\n"  //  -state $st
+            "text $id.w.text -relief sunken -bd 2 -yscrollcommand \"$id.w.scroll set\" -setgrid 1 -width 80 -height 20\n"
             "scrollbar $id.w.scroll -command \"$id.w.text yview\"\n"
             "pack $id.w.scroll -side right -fill y\n"
             "pack $id.w.text -expand yes -fill both\n"
 
-			"if { $edit != 0 } {\n"
+            "$id.w.text insert 0.0 [expr $$var]\n"
+            "$id.w.text mark set insert 0.0\n"
+
+			"if { $edit != 0 } then {\n"
                 "button $id.w.buttons.ok -text OK -command \"flext_textcopy $id.w $id.w.text $var\"\n"
                 "pack $id.w.buttons.ok -side left -expand 1\n"
 //    			"bind $id.w {<Shift-KeyPress-Return>} \"flext_textcopy $id.w $id.w.text $var\"\n"
-    		"}\n"
+            "} "
+            "else { $id.w.text configure -state disabled }\n"
 
             "button $id.w.buttons.cancel -text Cancel -command \"destroy $id.w\"\n"
             "pack $id.w.buttons.cancel -side left -expand 1\n"
 			"bind $id.w {<KeyPress-Escape>} \"destroy $id.w\"\n"
-
-            "$id.w.text insert 0.0 [expr $$var]\n"
-            "$id.w.text mark set insert 0.0\n"
         "}\n"
 
 		"proc pdtk_flext_dialog {id title attrlist} {\n"
@@ -348,10 +382,12 @@ void flext_base::SetAttrEditor(t_classid c)
 				"button $id.buttonframe.cancel -text {Cancel} -width 20 -command \" flext_cancel $id \"\n"
 				"button $id.buttonframe.apply -text {Apply} -width 20 -command \" flext_apply $id $alen \"\n"
 				"button $id.buttonframe.ok -text {OK} -width 20 -command \" flext_ok $id $alen \"\n"
+				"button $id.buttonframe.help -text {Help} -width 10 -command \" flext_help $id \"\n"
 
 				"pack $id.buttonframe.cancel -side left -expand 1\n"
 				"pack $id.buttonframe.apply -side left -expand 1\n"
 				"pack $id.buttonframe.ok -side left -expand 1\n"
+				"pack $id.buttonframe.help -side left -expand 1\n"
 
 //                "grid rowconfigure $id $row -weight 0\n"
 				"grid config $id.buttonframe -column 0 -columnspan 8 -row $row -pady 5 -sticky {ew}\n"

@@ -30,11 +30,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 //! @}
 
-
-
 #ifdef FLEXT_THREADS
+extern "C" {
 #include <pthread.h>
 #include <sched.h>
+}
 #endif
 
 

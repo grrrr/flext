@@ -207,19 +207,29 @@ public:
 	//! Output anything (index n starts with 0)
 	void ToOutAnything(int n,const AtomAnything &any)  { ToOutAnything(n,any.Header(),any.Count(),any.Atoms()); }
 	
+#ifdef FLEXT_THREADS
 	void ToQueueBang(outlet *o); 
-	void ToQueueBang(int n) { outlet *o = GetOut(n); if(o) ToQueueBang(o); }
 	void ToQueueFloat(outlet *o,float f); 
-	void ToQueueFloat(int n,float f) { outlet *o = GetOut(n); if(o) ToQueueFloat(o,f); }
 	void ToQueueInt(outlet *o,int f); 
-	void ToQueueInt(int n,int f) { outlet *o = GetOut(n); if(o) ToQueueInt(o,f); }
+	void ToQueueList(outlet *o,int argc,const t_atom *argv); 
 	void ToQueueSymbol(outlet *o,const t_symbol *s); 
+	void ToQueueAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv); 
+#else
+	void ToQueueBang(outlet *o) { ToOutBang(o); }
+	void ToQueueFloat(outlet *o,float f) { ToOutFloat(o,f); }
+	void ToQueueInt(outlet *o,int f) { ToOutInt(o,f); }
+	void ToQueueList(outlet *o,int argc,const t_atom *argv) { ToOutList(o,argc,argv); }
+	void ToQueueSymbol(outlet *o,const t_symbol *s) { ToOutSymbol(o,s); }
+	void ToQueueAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) { ToOutAnything(o,s,argc,argv); }
+#endif
+
+	void ToQueueBang(int n) { outlet *o = GetOut(n); if(o) ToQueueBang(o); }
+	void ToQueueFloat(int n,float f) { outlet *o = GetOut(n); if(o) ToQueueFloat(o,f); }
+	void ToQueueInt(int n,int f) { outlet *o = GetOut(n); if(o) ToQueueInt(o,f); }
 	void ToQueueSymbol(int n,const t_symbol *s) { outlet *o = GetOut(n); if(o) ToQueueSymbol(o,s); }
 	void ToQueueString(int n,const char *s) { ToQueueSymbol(n,MakeSymbol(s)); }
-	void ToQueueList(outlet *o,int argc,const t_atom *argv); 
 	void ToQueueList(int n,int argc,const t_atom *argv) { outlet *o = GetOut(n); if(o) ToQueueList(o,argc,argv); }
 	void ToQueueList(int n,const AtomList &list)  { ToQueueList(n,list.Count(),list.Atoms()); }
-	void ToQueueAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv); 
 	void ToQueueAnything(int n,const t_symbol *s,int argc,const t_atom *argv) { outlet *o = GetOut(n); if(o) ToQueueAnything(o,s,argc,argv); }
 	void ToQueueAnything(int n,const AtomAnything &any)  { ToQueueAnything(n,any.Header(),any.Count(),any.Atoms()); }
 

@@ -26,6 +26,7 @@ INCLUDES=$(PDPATH)
 FLAGS=-DPD
 CFLAGS=-O6 -mcpu=pentiumpro
 CFLAGS_D=-mcpu=pentiumpro -g
+CFLAGS_T=-DFLEXT_THREADS
 LIBS=
 
 
@@ -44,7 +45,7 @@ MAKEFILE=makefile.pd-linux
 TARGET=$(TARGDIR)/$(NAME).a
 TARGET_D=$(TARGDIR)/$(NAME)_d.a
 
-all: $(TARGDIR) $(TARGET) $(TARGET_D)
+all: $(TARGDIR) $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
 
 $(TARGDIR):
 	mkdir $(TARGDIR)
@@ -58,12 +59,26 @@ $(TARGDIR)/%.o : %.cpp
 $(TARGDIR)/%.do : %.cpp
 	$(CXX) -c $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) .) $< -o $@
 
+$(TARGDIR)/%.to : %.cpp
+	$(CXX) -c $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) .) $< -o $@
+
+$(TARGDIR)/%.tdo : %.cpp
+	$(CXX) -c $(CFLAGS_T) $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) .) $< -o $@
+
 $(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS)) 
 	ar rc $@ $^ 
 	chmod 755 $@
 
 $(TARGET_D) : $(patsubst %.cpp,$(TARGDIR)/%.do,$(SRCS)) 
 	ar rc $@ $^ 
+	chmod 755 $@
+
+$(TARGET_T) : $(patsubst %.cpp,$(TARGDIR)/%.to,$(SRCS))
+	ar rc $@ $^
+	chmod 755 $@
+
+$(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(SRCS))
+	ar rc $@ $^
 	chmod 755 $@
 
 $(INSTDIR):

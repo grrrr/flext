@@ -19,7 +19,7 @@ include $(CONFIG)
 # compiler+linker stuff
 INCLUDES=/usr/include $(PDPATH)/src 
 
-FLAGS=-DFLEXT_SYS=2 -fno-exceptions $(UFLAGS)
+FLAGS=-DFLEXT_SYS=2 $(UFLAGS)
 CFLAGS=-O6 
 CFLAGS_D=-g
 CFLAGS_T=-DFLEXT_THREADS

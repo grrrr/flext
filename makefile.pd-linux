@@ -16,7 +16,7 @@ include ${CONFIG}
 INCLUDES=${PDPATH}
 
 # general compiler flags
-FLAGS=-DFLEXT_SYS=2 -fno-exceptions ${UFLAGS}
+FLAGS=-DFLEXT_SYS=2 ${UFLAGS}
 
 # compiler flags for optimized build
 CFLAGS=-O6 

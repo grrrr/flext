@@ -21,18 +21,21 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	@{
 */
 
+//! Key/Value type for AnyMap... must have size of pointer!
+typedef size_t AnyMapType;
+
 //! Base class for maps
 class AnyMap:
-    public std::map<unsigned int,unsigned int>
+    public std::map<AnyMapType,AnyMapType>
 {
-    typedef std::map<unsigned int,unsigned int> Parent;
+    typedef std::map<AnyMapType,AnyMapType> Parent;
 public:
     AnyMap();
     ~AnyMap();
-    iterator find(unsigned int k);
-    unsigned int &operator [](unsigned int k);
+    iterator find(AnyMapType k);
+    unsigned int &operator [](AnyMapType k);
 
-    typedef std::pair<unsigned int,unsigned int> pair;
+    typedef std::pair<AnyMapType,AnyMapType> pair;
 };
 
 //! Specialized map class for any 32-bit key/value types

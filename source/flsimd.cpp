@@ -386,8 +386,8 @@ void flext::CopySamples(t_sample *dst,const t_sample *src,int cnt)
             prefetcht0 [eax+32]
         }
 
-        if((reinterpret_cast<unsigned long>(src)&(__alignof(__m128)-1)) == 0) {
-            if((reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0) {
+        if((reinterpret_cast<size_t>(src)&(__alignof(__m128)-1)) == 0) {
+            if((reinterpret_cast<size_t>(dst)&(__alignof(__m128)-1)) == 0) {
                 // aligned src, aligned dst
                 __asm {
                     mov     eax,dword ptr [src]
@@ -435,7 +435,7 @@ loopau:
             }
         }
         else {
-            if((reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0) {
+            if((reinterpret_cast<size_t>(dst)&(__alignof(__m128)-1)) == 0) {
                 // unaligned src, aligned dst
                 __asm {
                     mov     eax,dword ptr [src]
@@ -683,7 +683,7 @@ void flext::SetSamples(t_sample *dst,int cnt,t_sample s)
             shufps  xmm0,xmm0,0
         }
 
-        if((reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0) {
+        if((reinterpret_cast<size_t>(dst)&(__alignof(__m128)-1)) == 0) {
             // aligned version
             __asm {
                 mov     ecx,[n]
@@ -769,8 +769,8 @@ void flext::MulSamples(t_sample *dst,const t_sample *src,t_sample op,int cnt)
             shufps  xmm0,xmm0,0
         }
 
-        if((reinterpret_cast<unsigned long>(src)&(__alignof(__m128)-1)) == 0
-            && (reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0
+        if((reinterpret_cast<size_t>(src)&(__alignof(__m128)-1)) == 0
+            && (reinterpret_cast<size_t>(dst)&(__alignof(__m128)-1)) == 0
         ) {
             // aligned version
             __asm {
@@ -905,10 +905,10 @@ void flext::MulSamples(t_sample *dst,const t_sample *src,const t_sample *op,int 
             prefetcht0 [ebx+32]
         }
 
-        if((reinterpret_cast<unsigned long>(src)&(__alignof(__m128)-1)) == 0
-            && (reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0
+        if((reinterpret_cast<size_t>(src)&(__alignof(__m128)-1)) == 0
+            && (reinterpret_cast<size_t>(dst)&(__alignof(__m128)-1)) == 0
         ) {
-            if((reinterpret_cast<unsigned long>(op)&(__alignof(__m128)-1)) == 0) {
+            if((reinterpret_cast<size_t>(op)&(__alignof(__m128)-1)) == 0) {
                 __asm {
                     mov     ecx,[n]
                     mov     eax,dword ptr [src]
@@ -986,7 +986,7 @@ void flext::MulSamples(t_sample *dst,const t_sample *src,const t_sample *op,int 
             }
         }
         else {
-            if((reinterpret_cast<unsigned long>(op)&(__alignof(__m128)-1)) == 0) {
+            if((reinterpret_cast<size_t>(op)&(__alignof(__m128)-1)) == 0) {
                 __asm {
                     mov     ecx,[n]
                     mov     eax,dword ptr [src]
@@ -1135,8 +1135,8 @@ void flext::AddSamples(t_sample *dst,const t_sample *src,t_sample op,int cnt)
             shufps  xmm0,xmm0,0
         }
 
-        if((reinterpret_cast<unsigned long>(src)&(__alignof(__m128)-1)) == 0
-            && (reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0
+        if((reinterpret_cast<size_t>(src)&(__alignof(__m128)-1)) == 0
+            && (reinterpret_cast<size_t>(dst)&(__alignof(__m128)-1)) == 0
         ) {
             // aligned version
                 __asm {
@@ -1264,10 +1264,10 @@ void flext::AddSamples(t_sample *dst,const t_sample *src,const t_sample *op,int 
         int n = cnt>>4;
         cnt -= n<<4;
 
-        if((reinterpret_cast<unsigned long>(src)&(__alignof(__m128)-1)) == 0
-            && (reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0
+        if((reinterpret_cast<size_t>(src)&(__alignof(__m128)-1)) == 0
+            && (reinterpret_cast<size_t>(dst)&(__alignof(__m128)-1)) == 0
         ) {
-            if((reinterpret_cast<unsigned long>(op)&(__alignof(__m128)-1)) == 0) {
+            if((reinterpret_cast<size_t>(op)&(__alignof(__m128)-1)) == 0) {
                 __asm {
                     mov     ecx,dword ptr [n]
                     mov     eax,dword ptr [src]
@@ -1345,7 +1345,7 @@ void flext::AddSamples(t_sample *dst,const t_sample *src,const t_sample *op,int 
             }
         }
         else {
-            if((reinterpret_cast<unsigned long>(op)&(__alignof(__m128)-1)) == 0) {
+            if((reinterpret_cast<size_t>(op)&(__alignof(__m128)-1)) == 0) {
                 __asm {
                     mov     ecx,dword ptr [n]
                     mov     eax,dword ptr [src]
@@ -1497,8 +1497,8 @@ void flext::ScaleSamples(t_sample *dst,const t_sample *src,t_sample opmul,t_samp
             shufps  xmm1,xmm1,0
         }
 
-        if((reinterpret_cast<unsigned long>(src)&(__alignof(__m128)-1)) == 0
-            && (reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0
+        if((reinterpret_cast<size_t>(src)&(__alignof(__m128)-1)) == 0
+            && (reinterpret_cast<size_t>(dst)&(__alignof(__m128)-1)) == 0
         ) {
             // aligned version
             __asm {

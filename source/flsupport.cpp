@@ -195,7 +195,7 @@ void *flext_root::NewAligned(size_t bytes,int bitalign)
     }
 	FLEXT_ASSERT(blk);
 
-	char *ablk = reinterpret_cast<char *>((reinterpret_cast<unsigned long>(blk)+ovh+alignovh) & ~alignovh);
+	char *ablk = reinterpret_cast<char *>((reinterpret_cast<size_t>(blk)+ovh+alignovh) & ~alignovh);
 	*(char **)(ablk-sizeof(size_t)-sizeof(char *)) = blk;
 	*(size_t *)(ablk-sizeof(size_t)) = bytes;
 	return ablk;

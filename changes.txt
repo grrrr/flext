@@ -13,6 +13,9 @@ Donations for further development of the package are highly appreciated.
 
 Version history:
 
+0.4.8:
+- fixes for 64 bit builds (size_t is integer type of pointer size)
+
 0.4.7:
 - added flext::GetBool (just because flext::GetInt has been there for a while)
 - added bool to usable types for creation arguments

@@ -64,7 +64,7 @@ public:
 		static void FreeAligned(void *blk);
 		//! Test for alignment
 		static bool IsAligned(void *ptr,int bitalign = 128)	{ 
-            return (reinterpret_cast<unsigned long>(ptr)&(bitalign-1)) == 0; 
+            return (reinterpret_cast<size_t>(ptr)&(bitalign-1)) == 0; 
         }
 	//!	@}  FLEXT_S_MEMORY  	
 };

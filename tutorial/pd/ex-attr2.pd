@@ -1,17 +1,17 @@
 #N canvas 364 29 605 442 12;
 #X msg 21 84 help;
 #X msg 23 119 getattributes;
-#X text 265 350 there is one additional outlet;
-#X text 265 365 for all attribute-enabled objects;
-#X obj 247 389 print;
-#X msg 23 162 getarg;
+#X text 265 357 there is one additional outlet;
+#X text 265 372 for all attribute-enabled objects;
+#X obj 247 396 print;
+#X msg 23 155 getarg;
 #X text 67 84 get some help;
-#X text 15 314 trigger output;
-#X msg 23 222 arg \$1;
+#X text 15 249 trigger output;
+#X msg 271 294 arg \$1;
 #X text 160 118 query object attributes (watch console);
-#X msg 96 162 getop;
-#X obj 159 330 attr2 @op +;
-#X text 255 161 query attributes;
+#X msg 96 155 getop;
+#X obj 159 337 attr2 @op +;
+#X text 238 154 query attributes;
 #X text 333 210 set attributes;
 #X msg 169 200 op +;
 #X msg 168 225 op -;
@@ -19,24 +19,25 @@
 #X msg 269 224 op **;
 #X msg 269 200 op =;
 #X msg 219 224 op /;
-#X msg 158 162 getresult;
-#X obj 16 8 cnv 15 550 40 empty empty attr2 10 22 32 24 -260818 -1
-0;
-#X text 173 8 flext tutorial \, (C)2002 Thomas Grill;
+#X msg 158 155 getresult;
+#X obj 16 8 cnv 15 550 40 empty empty attr2 10 22 0 24 -260818 -1 0
+;
 #X text 173 28 http://www.parasitaere-kapazitaeten.net;
-#X text 91 391 result;
-#X obj 23 336 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 32 12 -261681
--1 -1 -55 256;
-#X obj 23 201 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 96 12 -261681
--1 -1 1 256;
-#X obj 151 391 nbx 7 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 32
-12 -228992 -1 -1 -54 256;
+#X text 91 398 result;
+#X obj 23 271 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
+-1 -1 40 256;
+#X obj 271 273 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
+-1 -1 10 256;
+#X obj 151 398 nbx 7 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
+-228992 -1 -1 400 256;
+#X text 171 10 flext tutorial \, (C)2002 \, 2003 Thomas Grill;
+#X text 328 274 set argument;
 #X connect 0 0 11 0;
 #X connect 1 0 11 0;
 #X connect 5 0 11 0;
 #X connect 8 0 11 0;
 #X connect 10 0 11 0;
-#X connect 11 0 27 0;
+#X connect 11 0 26 0;
 #X connect 11 1 4 0;
 #X connect 14 0 11 0;
 #X connect 15 0 11 0;
@@ -45,5 +46,5 @@
 #X connect 18 0 11 0;
 #X connect 19 0 11 0;
 #X connect 20 0 11 0;
-#X connect 25 0 11 0;
-#X connect 26 0 8 0;
+#X connect 24 0 11 0;
+#X connect 25 0 8 0;

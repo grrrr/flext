@@ -11,9 +11,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __FLSTK_H
 #define __FLSTK_H
 
-#include "flext.h"
-
-#include <stk.h>
+#include <flext.h>
+#include <Stk.h>
 
 class FLEXT_SHARE flext_stk:
 	public flext_dsp

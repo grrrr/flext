@@ -3,14 +3,14 @@
 #X text 203 187 inverse;
 #X text 169 96 input;
 #X obj 113 141 simple1;
-#X obj 16 8 cnv 15 550 40 empty empty simple1 10 22 32 24 -260818 -1
+#X obj 16 8 cnv 15 550 40 empty empty simple1 10 22 0 24 -260818 -1
 0;
-#X text 175 8 flext tutorial \, (C)2002 Thomas Grill;
 #X text 175 28 http://www.parasitaere-kapazitaeten.net;
-#X obj 114 96 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 32 12 -261681
--1 -1 104 256;
-#X obj 112 190 nbx 7 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 32
-12 -228992 -1 -1 0.00961538 256;
+#X obj 114 96 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
+-1 -1 88 256;
+#X obj 112 190 nbx 7 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
+-228992 -1 -1 0.0113636 256;
+#X text 175 8 flext tutorial \, (C)2002 \, 2003 Thomas Grill;
 #X connect 0 0 3 0;
-#X connect 3 0 8 0;
-#X connect 7 0 3 0;
+#X connect 3 0 7 0;
+#X connect 6 0 3 0;

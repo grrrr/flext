@@ -49,7 +49,7 @@ public:
 		}
 		if(argc < 2) f2 = f1;
 
-		m_bound(f1,f2);
+		m_bounds(f1,f2);
 
 		i_count = i_down;
 
@@ -88,7 +88,7 @@ protected:
 		ToOutInt(0,f);
 	}
 
-	void m_bound(int f1,int f2)
+	void m_bounds(int f1,int f2)
 	{
 		i_down = f1 < f2?f1:f2;
 		i_up   = f1 > f2?f1:f2;
@@ -99,18 +99,18 @@ protected:
 	int i_count,i_down,i_up,i_step;
 	
 	// setter method of bounds variables
-	void ms_bound(const AtomList &l)
+	void ms_bounds(const AtomList &l)
 	{
 		if(l.Count() == 2 && CanbeInt(l[0]) && CanbeInt(l[1]))
-			// if it is a two element integer list use m_bound method
-			m_bound(GetAInt(l[0]),GetAInt(l[1]));
+			// if it is a two element integer list use m_bounds method
+			m_bounds(GetAInt(l[0]),GetAInt(l[1]));
 		else
 			// else post a warning
-			post("%s - bound needs to integer parameters",thisName());
+			post("%s - 'bounds' needs two integer parameters",thisName());
 	}
 
 	// getter method of bounds variables
-	void mg_bound(AtomList &l) const
+	void mg_bounds(AtomList &l) const
 	{
 		l(2); // initialize two element list
 		SetInt(l[0],i_down); // set first element
@@ -132,7 +132,7 @@ private:
 
 		// set up methods for inlets 1 and 2
 		// no message tag used
-		FLEXT_CADDMETHOD(c,1,m_bound);  // variable arg type recognized automatically
+		FLEXT_CADDMETHOD(c,1,m_bounds);  // variable arg type recognized automatically
 		FLEXT_CADDMETHOD(c,2,m_step);	// single int arg also recognized automatically
 
 		// --- set up attributes (class scope) ---
@@ -140,7 +140,7 @@ private:
 		FLEXT_CADDATTR_VAR1(c,"count",i_count);  
 		FLEXT_CADDATTR_VAR1(c,"step",i_step);  
 
-		FLEXT_CADDATTR_VAR(c,"bound",mg_bound,ms_bound);  
+		FLEXT_CADDATTR_VAR(c,"bounds",mg_bounds,ms_bounds);  
 	}
 
 	// normal method callbacks for bang and reset
@@ -150,8 +150,8 @@ private:
 	FLEXT_CALLBACK_V(m_set)  // normal method wrapper for m_set
 	FLEXT_ATTRVAR_I(i_count) // wrapper function for integer variable i_count
 
-	FLEXT_CALLBACK_II(m_bound) // normal method wrapper for m_bound
-	FLEXT_CALLVAR_V(mg_bound,ms_bound) // getter and setter method of bounds
+	FLEXT_CALLBACK_II(m_bounds) // normal method wrapper for m_bound
+	FLEXT_CALLVAR_V(mg_bounds,ms_bounds) // getter and setter method of bounds
 
 	FLEXT_CALLBACK_I(m_step)  // normal method wrapper for m_step
 	FLEXT_ATTRVAR_I(i_step) // wrapper function for integer variable i_step

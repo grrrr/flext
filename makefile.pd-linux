@@ -13,7 +13,7 @@ CONFIG=config-pd-linux.txt
 include $(CONFIG)
 
 # compiler+linker stuff 
-INCLUDES=$(PDPATH) $(SNDOBJ)
+INCLUDES=$(PDPATH) $(SNDOBJ) $(STK)
 FLAGS=-DFLEXT_SYS=2 
 CFLAGS=-O6 -mcpu=pentiumpro
 CFLAGS_D=-mcpu=pentiumpro -g
@@ -30,11 +30,13 @@ NAME=flext
 include make-files.txt
 
 ifdef SNDOBJ
-_SRCS=$(SRCS) $(SRCS_SNDOBJ)
-_HDRS=$(HDRS) $(HDRS_SNDOBJ)
-else
-_SRCS=$(SRCS)
-_HDRS=$(HDRS)
+SRCS+=$(SRCS_SNDOBJ)
+HDRS+=$(HDRS_SNDOBJ)
+endif
+
+ifdef STK
+SRCS+=$(SRCS_STK)
+HDRS+=$(HDRS_STK)
 endif
 
 MAKEFILE=makefile.pd-linux
@@ -48,7 +50,7 @@ all: $(TARGDIR) $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
 $(TARGDIR):
 	mkdir $(TARGDIR)
 
-$(patsubst %,source/%,$(_SRCS)): $(patsubst %,source/%,$(_HDRS)) $(patsubst %,source/%,$(IHDRS)) $(MAKEFILE) $(CONFIG)
+$(patsubst %,source/%,$(SRCS)): $(patsubst %,source/%,$(HDRS)) $(patsubst %,source/%,$(IHDRS)) $(MAKEFILE) $(CONFIG)
 	touch $@
 
 $(TARGDIR)/%.o : source/%.cpp
@@ -63,19 +65,19 @@ $(TARGDIR)/%.to : source/%.cpp
 $(TARGDIR)/%.tdo : source/%.cpp
 	$(CXX) -c $(CFLAGS_D) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
 
-$(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(_SRCS)) 
+$(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS)) 
 	ar rc $@ $^ 
 	chmod 755 $@
 
-$(TARGET_D) : $(patsubst %.cpp,$(TARGDIR)/%.do,$(_SRCS)) 
+$(TARGET_D) : $(patsubst %.cpp,$(TARGDIR)/%.do,$(SRCS)) 
 	ar rc $@ $^ 
 	chmod 755 $@
 
-$(TARGET_T) : $(patsubst %.cpp,$(TARGDIR)/%.to,$(_SRCS))
+$(TARGET_T) : $(patsubst %.cpp,$(TARGDIR)/%.to,$(SRCS))
 	ar rc $@ $^
 	chmod 755 $@
 
-$(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(_SRCS))
+$(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(SRCS))
 	ar rc $@ $^
 	chmod 755 $@
 
@@ -91,7 +93,7 @@ $(INSTDIR):
 install:: $(INSTDIR)
 endif
 
-install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)  $(patsubst %,source/%,$(_HDRS))
+install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)  $(patsubst %,source/%,$(HDRS))
 	cp $^ $(INSTDIR)
 	chmod 755 $(patsubst %,$(INSTDIR)/%,$(notdir $^))
 	chown root.users $(patsubst %,$(INSTDIR)/%,$(notdir $^))

@@ -12,6 +12,20 @@ Contribution of examples to the package is higly appreciated!
 
 ----------------------------------------------------------------------------
 
+The recommended order to go through the tutorial examples is the following:
+
+1) simple*
+2) attr*
+3) adv*
+4) signal*
+5) lib*
+6) thread*
+
+and, if needed
+7) sndobj* and/or stk*
+
+----------------------------------------------------------------------------
+
 The package should at least compile (and is tested) with the following compilers:
 
 pd - Windows:
@@ -40,6 +54,4 @@ o Metrowerks CodeWarrior V6: edit & use the several ".cw" project files
 Max/MSP - MacOSX:
 ------------------
 o Metrowerks CodeWarrior V6: edit & use the several ".cw" project files
-
-----------------------------------------------------------------------------
 

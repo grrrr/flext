@@ -1,9 +1,9 @@
 #N canvas 116 192 587 332 12;
 #X msg 84 188 stop;
 #X msg 255 192 stop;
-#X obj 199 99 bng 25 250 50 0 empty empty empty 0 -6 32 8 -261681 -1
+#X obj 199 99 bng 25 250 50 0 empty empty empty 0 -6 0 8 -261681 -1
 -1;
-#X obj 291 99 bng 25 250 50 0 empty empty empty 0 -6 32 8 -261681 -1
+#X obj 291 99 bng 25 250 50 0 empty empty empty 0 -6 0 8 -261681 -1
 -1;
 #X text 191 78 start;
 #X text 283 77 stop;
@@ -17,16 +17,16 @@
 #X msg 133 188 text;
 #X msg 302 192 text;
 #X msg 470 190 text;
-#X obj 16 8 cnv 15 550 40 empty empty thread2 10 22 32 24 -260818 -1
+#X obj 16 8 cnv 15 550 40 empty empty thread2 10 22 0 24 -260818 -1
 0;
-#X text 174 8 flext tutorial \, (C)2002 Thomas Grill;
 #X text 174 28 http://www.parasitaere-kapazitaeten.net;
-#X obj 65 264 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 32 12
+#X obj 65 264 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
 -228992 -1 -1 0 256;
-#X obj 231 265 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 32
-12 -228992 -1 -1 0 256;
-#X obj 403 267 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 32
-12 -228992 -1 -1 0 256;
+#X obj 231 265 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
+-228992 -1 -1 0 256;
+#X obj 403 267 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
+-228992 -1 -1 0 256;
+#X text 174 10 flext tutorial \, (C)2002 \, 2003 Thomas Grill;
 #X connect 0 0 12 0;
 #X connect 1 0 11 0;
 #X connect 2 0 6 0;
@@ -39,9 +39,9 @@
 #X connect 7 0 11 0;
 #X connect 8 0 10 0;
 #X connect 9 0 10 0;
-#X connect 10 0 21 0;
-#X connect 11 0 20 0;
-#X connect 12 0 19 0;
+#X connect 10 0 20 0;
+#X connect 11 0 19 0;
+#X connect 12 0 18 0;
 #X connect 13 0 12 0;
 #X connect 14 0 11 0;
 #X connect 15 0 10 0;

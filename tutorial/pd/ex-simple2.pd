@@ -4,18 +4,18 @@
 #X text 103 119 triggering;
 #X text 215 120 non-triggering;
 #X text 206 197 default argument;
-#X obj 16 8 cnv 15 550 40 empty empty simple2 10 22 32 24 -260818 -1
+#X obj 16 8 cnv 15 550 40 empty empty simple2 10 22 0 24 -260818 -1
 0;
-#X text 174 8 flext tutorial \, (C)2002 Thomas Grill;
 #X text 174 28 http://www.parasitaere-kapazitaeten.net;
 #X text 66 82 print a "help" message (to the console);
-#X obj 110 144 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 32 12 -261681
+#X obj 110 144 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
+-1 -1 22 256;
+#X obj 217 144 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
 -1 -1 0 256;
-#X obj 217 144 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 32 12 -261681
--1 -1 0 256;
-#X obj 111 239 nbx 7 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 32
-12 -228992 -1 -1 0 256;
-#X connect 0 0 11 0;
+#X obj 111 239 nbx 7 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
+-228992 -1 -1 25 256;
+#X text 174 10 flext tutorial \, (C)2002 \, 2003 Thomas Grill;
+#X connect 0 0 10 0;
 #X connect 1 0 0 0;
-#X connect 9 0 0 0;
-#X connect 10 0 0 1;
+#X connect 8 0 0 0;
+#X connect 9 0 0 1;

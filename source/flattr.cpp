@@ -140,7 +140,7 @@ bool flext_base::SetAttrib(const t_symbol *tag,int argc,const t_atom *argv)
 			post("%s - attribute %s has no get method",thisName(),GetString(tag));
 	}
 	else
-		error("%s - %s: attribute not found",thisName(),tag);
+		error("%s - %s: attribute not found",thisName(),GetString(tag));
 	return true;
 }
 
@@ -189,7 +189,7 @@ bool flext_base::GetAttrib(const t_symbol *tag,int argc,const t_atom *argv)
 			post("%s - attribute %s has no set method",thisName(),GetString(tag));
 	}
 	else
-		error("%s - %s: attribute not found",thisName(),tag);
+		error("%s - %s: attribute not found",thisName(),GetString(tag));
 	return true;
 }
 

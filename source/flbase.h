@@ -236,8 +236,10 @@ class flext_obj:
 		//! Hold object's name during construction
         static const t_symbol *m_holdname;  
 
-		//! Holder for attribute procession flag
+		//! Holders for attribute procession flag
 		static bool m_holdattr;
+		static int m_holdaargc;
+		static const t_atom *m_holdaargv;
 
         //! The object's name in the patcher
 		const t_symbol *m_name;

@@ -442,11 +442,17 @@ bool flext_base::Init()
 		delete[] list;
 	}
 
+	if(procattr) {
 #ifdef PD
-	if(procattr) 
 		// attribute dump outlet is the last one
 		outattr = (outlet *)newout_anything(&x_obj->obj);
 #endif
+
+		// initialize creation attributes
+		if(m_holdaargc && m_holdaargv)
+			ok = InitAttrib(m_holdaargc,m_holdaargv);
+	}
+
 
 	return ok;
 }

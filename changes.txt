@@ -301,6 +301,19 @@ for 0.4.7:
 - SIMD for gcc
 - individual apply buttons for each attribute in the attribute editor
 
+bugs:
+- recreation of object with different argument line forgets about eventually present attributes
+- deletion of object with open attribute editor: press apply -> crash
+
+- attributes and attribute editor saving with patcher arguments (like $0-gugu )
+
+- PD: problems with timed buffer redrawing (takes a lot of cpu time)
+- hard thread termination upon object destruction doesn't seem to work properly -> crash
+- Max rounding bug ... buffer resize could be one sample less!
+- flext_dsp: Max/MSP doesn't correctly report in/out channel counts
+
+- can't use MFC libraries because of global new and delete overloadings
+
 general:
 - documentation
 - add log messages for debugging version
@@ -315,17 +328,6 @@ general:
 		there should be a way to avoid this
 
 - flext::post and flext::error should print via a worker thread (and should be unlimited in characters)
-
-bugs:
-- attributes and attribute editor saving with patcher arguments (like $0-gugu )
-
-- PD: problems with timed buffer redrawing (takes a lot of cpu time)
-- hard thread termination upon object destruction doesn't seem to work properly -> crash
-- Max rounding bug ... buffer resize could be one sample less!
-- flext_dsp: Max/MSP doesn't correctly report in/out channel counts
-
-- can't use MFC libraries because of global new and delete overloadings
-
 
 tests:
 - PD: figure out what "pointer" messages do and where they occur

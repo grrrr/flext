@@ -192,8 +192,8 @@ BL flext_base::setup_inout()
 						break;
 					}
 					case xlet::tp_sym: 
-						// is this still true for proxy inlets?
 						if(compatibility) {
+							// is this still true for proxy inlets?
 							post("%s: No symbol inlets (apart from leftmost) in compatibility mode",thisName());
 							ok = false;
 						}
@@ -205,9 +205,13 @@ BL flext_base::setup_inout()
 						++insigs;
 						break;
 					case xlet::tp_list:
+					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
+						inlet_new(x_obj,&inlets[ix]->x_obj.ob_pd, &s_list, &s_list);  
+						break;
 					case xlet::tp_any:
 					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
-						inlet_new(x_obj,&inlets[ix]->x_obj.ob_pd, &s_symbol, &s_symbol);  
+						inlet_new(x_obj,&inlets[ix]->x_obj.ob_pd, 0, 0);  
+						break;
 					default:
 						error("%s: Wrong type for inlet #%i",thisName(),ix);
 						ok = false;

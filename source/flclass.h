@@ -630,11 +630,20 @@ public:
 		//! Append an atom to the list
 		AtomList &Append(const t_atom &a);
 		//! Append an atom list to the list
-		AtomList &Append(const AtomList &a);	
+		AtomList &Append(int argc,const t_atom *argv);
+		//! Append an atom list to the list
+		AtomList &Append(const AtomList &a) { return Append(a.Count(),a.Atoms()); }
 		//! Prepend an atom to the list
 		AtomList &Prepend(const t_atom &a);
 		//! Prepend an atom list to the list
-		AtomList &Prepend(const AtomList &a);
+		AtomList &Prepend(int argc,const t_atom *argv);
+		//! Prepend an atom list to the list
+		AtomList &Prepend(const AtomList &a) { return Prepend(a.Count(),a.Atoms()); }
+
+		//! Get a part of the list
+		AtomList GetPart(int offs,int len) const;
+		//! Set to a part of the list
+		AtomList &Part(int offs,int len) { return (*this = GetPart(offs,len)); }
 
 	protected:
 		int cnt;

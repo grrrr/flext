@@ -407,6 +407,11 @@ public:
 	//! Set atom from another atom
 	static void SetAtom(t_atom &a,const t_atom &b) { CopyAtom(&a,&b); }
 
+	//! Check whether the atom is nothing
+	static bool IsNothing(const t_atom &a) { return a.a_type == A_NULL; }
+	//! Set the atom to represent nothing
+	static void SetNothing(t_atom &a) { a.a_type = A_NULL; }
+
 	//! Check whether the atom is a float
 	static bool IsFloat(const t_atom &a) { return a.a_type == A_FLOAT; }
 	//! Check whether the atom can be represented as a float

@@ -79,10 +79,10 @@ see flext.h, fldefs.h and flclass.h for the documented base definitions and clas
 Version history:
 
 0.3.4:
+- added OSX/darwin support (originally done by Adam T. Lindsay)
 - SndObj interface now also available for cygwin and BCC 
-- added Makefiles for OSX/darwin (originally done by Adam T. Lindsay)
 - added prepend and append functions to AtomList class
-- added CanbeBool and GetABool function
+- added IsNothing, SetNothing, CanbeBool and GetABool functions
 - deprecated the remaining Get*Flint and Set*Flint functions - will be eliminated in flext 0.4.0
 
 0.3.3:

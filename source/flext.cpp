@@ -192,14 +192,11 @@ flext_base::~flext_base()
 	if(inlets) {
 		for(int ix = 0; ix < incnt; ++ix)
 			if(inlets[ix]) {
-				object_free(inlets[ix]->obj);
-/*
 #ifdef PD
 				pd_free(&inlets[ix]->obj.ob_pd);
 #elif defined(MAXMSP)
 				freeobject((object *)inlets[ix]);
 #endif
-*/
 			}
 		delete[] inlets;
 	}
@@ -229,15 +226,15 @@ void flext_base::ToOutBang(outlet *o) { CRITON(); outlet_bang((t_outlet *)o); CR
 void flext_base::ToOutFloat(outlet *o,float f) { CRITON(); outlet_float((t_outlet *)o,f); CRITOFF(); }
 void flext_base::ToOutInt(outlet *o,int f) { CRITON(); outlet_flint((t_outlet *)o,f); CRITOFF(); }
 void flext_base::ToOutSymbol(outlet *o,const t_symbol *s) { CRITON(); outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); CRITOFF(); }
-void flext_base::ToOutList(outlet *o,int argc,t_atom *argv) { CRITON(); outlet_list((t_outlet *)o,gensym("list"),argc,argv); CRITOFF(); }
-void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,t_atom *argv) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,argv); CRITOFF(); }
+void flext_base::ToOutList(outlet *o,int argc,const t_atom *argv) { CRITON(); outlet_list((t_outlet *)o,gensym("list"),argc,(t_atom *)argv); CRITOFF(); }
+void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,(t_atom *)argv); CRITOFF(); }
 #else
 void flext_base::ToOutBang(outlet *o) { if(IsSystemThread()) { CRITON(); outlet_bang((t_outlet *)o); CRITOFF(); } else QueueBang(o); }
 void flext_base::ToOutFloat(outlet *o,float f) { if(IsSystemThread()) { CRITON(); outlet_float((t_outlet *)o,f); CRITOFF(); } else QueueFloat(o,f); }
 void flext_base::ToOutInt(outlet *o,int f) { if(IsSystemThread()) { CRITON(); outlet_flint((t_outlet *)o,f); CRITOFF(); } else QueueInt(o,f); }
 void flext_base::ToOutSymbol(outlet *o,const t_symbol *s) { if(IsSystemThread()) { CRITON(); outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); CRITOFF(); } else QueueSymbol(o,s); }
-void flext_base::ToOutList(outlet *o,int argc,t_atom *argv) { if(IsSystemThread()) { CRITON(); outlet_list((t_outlet *)o,gensym("list"),argc,argv); CRITOFF(); } else QueueList(o,argc,argv); }
-void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,t_atom *argv) { if(IsSystemThread()) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,argv); CRITOFF(); } else QueueAnything(o,s,argc,argv); }
+void flext_base::ToOutList(outlet *o,int argc,const t_atom *argv) { if(IsSystemThread()) { CRITON(); outlet_list((t_outlet *)o,gensym("list"),argc,(t_atom *)argv); CRITOFF(); } else QueueList(o,argc,(t_atom *)argv); }
+void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) { if(IsSystemThread()) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,(t_atom *)argv); CRITOFF(); } else QueueAnything(o,s,argc,(t_atom *)argv); }
 #endif
 
 bool flext_base::SetupInOut()
@@ -249,14 +246,11 @@ bool flext_base::SetupInOut()
 	if(inlets) { 
 		for(int ix = 0; ix < incnt; ++ix) 
 			if(inlets[ix]) {
-				object_free(inlets[ix]->obj);
-/*
 #ifdef PD
 				pd_free(&inlets[ix]->obj.ob_pd);
 #elif defined(MAXMSP)
 				freeobject(inlets[ix]);
 #endif
-*/
 			}
 		delete[] inlets; 
 		inlets = NULL; 

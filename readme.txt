@@ -85,7 +85,8 @@ Version history:
 - bugfix for threaded methods with var list or anything arguments
 - added threaded method for arbitrary (void *) data structs
 - ThrMutex: added lock count functions Push() and Pop()
-- eliminated dangerous SetThing,GetThing and introduced DoBind,DoUnbind,GetBound instead
+- eliminated potentiallly dangerous SetThing,GetThing and introduced DoBind,DoUnbind,GetBound instead
+- fixed severe bug with the current threads list
 
 0.3.1:
 - added some more functionality to the AtomList class
@@ -225,13 +226,10 @@ tests:
 - PD: test argument order (t_symbol, pointers before floats)
 
 features:
-- abstraction for parsing argument lists
 - abstraction for clock functions
-- sending messages to own inlet (passing computation to other patch objects - message queue?)
 - manage running threads individually (stop, isrunning?, priority etc.)
 
 premature thoughts:
-- explore jMax interface style
 - interface for scripting language modules? (python?)
 - GUI objects
 

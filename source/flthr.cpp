@@ -74,6 +74,8 @@ void flext_base::PopThread()
 {
 	tlmutex.Lock();
 
+	pthread_t id = pthread_self();
+
 	thr_entry *prv = NULL,*ti;
 	for(ti = thrhead; ti; prv = ti,ti = ti->nxt)
 		if(ti->Is()) break;
@@ -83,7 +85,7 @@ void flext_base::PopThread()
 			prv->nxt = ti->nxt;
 		else 
 			thrhead = ti->nxt;
-		if(!ti->nxt) thrtail = ti;
+		if(thrtail == ti) thrtail = prv;
 
 		ti->nxt = NULL;
 		delete ti;
@@ -108,6 +110,7 @@ void flext_base::YTick(flext_base *th) {
 #endif
 
 
+/*
 void flext_base::NormalPriority()
 {
 #ifdef NT
@@ -154,6 +157,36 @@ void flext_base::LowestPriority()
 	}
 #endif
 }
+
+int flext_base::GetPriority()
+{
+	sched_param parm;
+	int policy;
+	if(pthread_getschedparam(pthread_self(),&policy,&parm)) {
+		post("flext - failed to get parms");
+		return -1;
+	}
+	else
+		return parm.sched_priority;
+}
+*/
+
+
+void flext_base::ChangePriority(int dp)
+{
+	sched_param parm;
+	int policy;
+	if(pthread_getschedparam(pthread_self(),&policy,&parm)) {
+		post("flext - failed to get parms");
+	}
+	else {
+		parm.sched_priority += dp;
+		if(pthread_setschedparam(pthread_self(),policy,&parm)) {
+			post("flext - failed to change priority");
+		}
+	}
+}
+
 
 
 class flext_base::qmsg

@@ -485,6 +485,7 @@ public:
 	;
 #endif
 
+#if 0
 	/*! \brief Set current thread to normal priority
 		\bug Not working under all platforms
 	*/
@@ -497,6 +498,13 @@ public:
 		\bug Not working under all platforms
 	*/
 	void LowestPriority();
+	static int GetPriority();
+#else
+	/*! \brief Increase/Decrease priority of the current thread
+	*/
+	static void ChangePriority(int dp);
+#endif
+
 
 	/*! \brief Thread mutex
 		\sa pthreads documentation
@@ -511,7 +519,7 @@ public:
 
 		//! Lock thread mutex
 		int Lock() { cnt = 1; return pthread_mutex_lock(&mutex); }
-		//! Try if thread mutex is locked
+		//! Try to lock, but don't wait
 		int TryLock() { return pthread_mutex_trylock(&mutex); }
 		//! Unlock thread mutex
 		int Unlock() { cnt = 0; return pthread_mutex_unlock(&mutex); }

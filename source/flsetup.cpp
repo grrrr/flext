@@ -16,6 +16,16 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <ctype.h>
 #include <string.h>
 
+#define ALIASDEL ','
+
+#ifdef MAXMSP
+	#define ALIASSLASH ':'
+#elif defined(NT)
+	#define ALIASSLASH '/'
+#else
+	#define ALIASSLASH '/'
+#endif
+
 //! C++ strcup function
 char *flext::strdup(const char *t)
 {
@@ -31,12 +41,23 @@ const char *flext::extract(const char *name,int ix)
 {
 	static char tmp[1024];
 	const char *n = name;
+	
+	const char *del = strchr(name,ALIASDEL);
+	if(del) {
+		char *t;
+		for(t = tmp; *n && n < del && !isspace(*n); ++t,++n) *t = *n;
+		*(t++) = ALIASSLASH;
+
+		n = del+1;
+	}
+	
 	for(int i = 0; n && *n; ++i) {
 		if(i == ix) {
 			char *t;
 			for(t = tmp; *n && !isspace(*n); ++t,++n) *t = *n;
 			*t = 0;
-			return *tmp?flext::strdup(tmp):NULL;
+//			return *tmp?flext::strdup(tmp):NULL;
+			return *tmp?tmp:NULL;
 		}
 		else {
 			while(*n && !isspace(*n)) ++n;

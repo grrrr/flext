@@ -29,7 +29,7 @@ flext::AtomList::AtomList(const AtomList &a):
 
 flext::AtomList::~AtomList() {	Clear(); }
 
-flext::AtomList &flext::AtomList::operator()(int argc,const t_atom *argv)
+flext::AtomList &flext::AtomList::Set(int argc,const t_atom *argv)
 {
 	if(lst && cnt != argc) { delete[] lst; lst = NULL; cnt = 0; }
 
@@ -41,6 +41,16 @@ flext::AtomList &flext::AtomList::operator()(int argc,const t_atom *argv)
 			for(int i = 0; i < argc; ++i) SetAtom(lst[i],argv[i]);
 		}
 	}
+	return *this;
+}
+
+flext::AtomList &flext::AtomList::Get(int &argc,t_atom *argv,int mxsz) 
+{
+	argc = Count();
+	if(mxsz >= 0 && argc > mxsz) argc = mxsz;
+
+	for(int i = 0; i < argc; ++i) SetAtom(argv[i],lst[i]);
+
 	return *this;
 }
 

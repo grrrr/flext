@@ -280,7 +280,12 @@ public:
 		AtomList &Clear() { return operator()(); }
 
 		//! Set list
-		AtomList &operator()(int argc = 0,const t_atom *argv = NULL);
+		AtomList &Set(int argc,const t_atom *argv);
+		//! Get list
+		AtomList &Get(int &argc,t_atom *argv,int mxsz = -1);
+
+		//! Set list
+		AtomList &operator()(int argc = 0,const t_atom *argv = NULL) { return Set(argc,argv); }
 		//! Set list by another AtomList
 		AtomList &operator =(const AtomList &a) { return operator()(a.Count(),a.Atoms()); }
 

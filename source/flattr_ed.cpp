@@ -71,20 +71,22 @@ void flext_base::SetAttrEditor(t_classid c)
 
 				// process current value
 				"set len [llength [expr $$var_attr_val]]\n"
-				// see if it's a list
-				"if { $len > 1 } {\n"
-					"set lst [concat $lst {list} $len [expr $$var_attr_val]]\n" 
-				"} else {\n"
+				"if { $len == 1 } {\n"
+					// it's an atom
 					"lappend lst [expr $$var_attr_val]\n" 
+				"} else {\n"
+					// it's a list
+					"set lst [concat $lst {list} $len [expr $$var_attr_val]]\n" 
 				"}\n"
 
 				// process init value
 				"set len [llength [expr $$var_attr_init]]\n"
-				// see if it's a list
-				"if { $len > 1 } {\n"
-					"set lst [concat $lst {list} $len [expr $$var_attr_init]]\n" 
-				"} else {\n"
+				"if { $len == 1 } {\n"
+					// it's an atom
 					"lappend lst [expr $$var_attr_init]\n" 
+				"} else {\n"
+					// it's a list
+					"set lst [concat $lst {list} $len [expr $$var_attr_init]]\n" 
 				"}\n"
 
 				"lappend lst [eval concat $$var_attr_save]\n" 

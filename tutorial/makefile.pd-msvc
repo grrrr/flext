@@ -38,8 +38,8 @@ normal:
 	nmake /f make-sub.pd-msvc NAME=bind1 DIR=bind1
 
 threads:
-	nmake /f make-sub.pd-msvc NAME=thread1  DIR=thread1 
-	nmake /f make-sub.pd-msvc NAME=thread2  DIR=thread2 
+	nmake /f make-sub.pd-msvc NAME=thread1  DIR=thread1 THR=1
+	nmake /f make-sub.pd-msvc NAME=thread2  DIR=thread2 THR=1	
 
 sndobj:
 	nmake /f make-sub.pd-msvc NAME=sndobj1~ DIR=sndobj1

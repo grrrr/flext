@@ -10,9 +10,9 @@
 # includes
 INCPATH=/I"$(MSVCPATH)\include" /I"$(PDPATH)\src" /I"$(FLEXTPATH)" 
 LIBPATH=/LIBPATH:"$(MSVCPATH)\lib" /LIBPATH:"$(PDPATH)\bin" /LIBPATH:"$(FLEXTPATH)"
-LIBS=pd.lib pthreadVC.lib flext_t-pdwin.lib
+LIBS=pd.lib 
 
-CFLAGS=/GR /GD /G6 /Ox /MT
+CFLAGS=/GR /GD /G6 /Ox
 
 !ifdef SNDOBJ
 INCPATH=$(INCPATH) /I"$(SNDOBJ)" 
@@ -26,7 +26,15 @@ CFLAGS=$(CFLAGS) /GX
 !endif
 
 # compiler definitions and flags
-DEFS=/DFLEXT_SYS=2 /DFLEXT_THREADS
+DEFS=/DFLEXT_SYS=2 
+
+!ifdef THR
+LIBS=$(LIBS) flext_t-pdwin.lib pthreadVC.lib 
+DEFS=$(DEFS) /DFLEXT_THREADS
+CFLAGS=$(CFLAGS) /MT
+!else
+LIBS=$(LIBS) flext-pdwin.lib
+!endif
 
 
 

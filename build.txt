@@ -11,6 +11,7 @@ This document consists of the following parts:
 1) Using the flext build system
 1.1) Building flext
 1.2) Building externals
+1.3) Tested configurations
 
 2) Using autoconf
 
@@ -70,6 +71,7 @@ Operating System, real-time system and compiler need to be provided as arguments
 See buildsys/readme.txt for developer-centered information.
 
 
+
 1.1) Building flext
 ===================
 
@@ -104,12 +106,35 @@ e.g. under Windows
 	..\flext\build win pd msvc
 Then install your newly built external with
 	..\flext\build win pd msvc install
+You can clean up the intermediate build folders with
+	..\flext\build win pd msvc clean
 
 or under unix with
 	bash ../flext/build.sh lnx pd gcc
 Then install your external with
 	bash ../flext/build.sh lnx pd gcc install
+You can clean up the intermediate build folders with
+	bash ../flext/build.sh lnx pd gcc clean
 
+
+1.3) Building externals
+=======================
+
+Both flext and flext-based externals have been successfully built with the 
+following combination of platform-system-compiler, build type.
+A missing combination does not necessarily mean that it won't work.
+
+win-pd-msvc, single/multi/shared
+win-pd-bcc, single/multi/shared
+win-pd-mingw, single/multi/shared
+win-pd-cygwin, 
+win-max-msvc, single/multi/shared
+
+
+mac-pd-gcc, single/multi/shared
+mac-max-gcc, single/multi/shared
+
+lnx-pd-gcc, single/multi/shared
 
 ----------------------------------------------------------------------------
 

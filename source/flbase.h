@@ -534,6 +534,10 @@ add_method(CLASS,cb_ ## M_FUN,M_NAME)
 #define FLEXT_ADDMETHOD_G(CLASS,M_NAME,M_FUN) \
 add_methodG(CLASS,cb_ ## M_FUN,M_NAME)
 
+// add handler for list (with gimme)
+#define FLEXT_ADDLIST(CLASS,M_FUN) \
+add_methodG(CLASS,cb_ ## M_FUN,"list")
+
 // add handler for method with 1 boolean arg
 #define FLEXT_ADDMETHOD_B(CLASS,M_NAME,M_FUN) \
 add_method1(CLASS,cb_ ## M_FUN,M_NAME,FLEXTTP(t_flint))

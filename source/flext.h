@@ -142,12 +142,12 @@ public:
 	V to_out_float(I n,F f) { t_outlet *o = get_out(n); if(o) to_out_float(o,f); }
 	V to_out_flint(t_outlet *o,FI f) { outlet_flint(o,f); }
 	V to_out_flint(I n,FI f) { t_outlet *o = get_out(n); if(o) to_out_flint(o,f); }
-	V to_out_symbol(t_outlet *o,t_symbol *s) { outlet_symbol(o,s); }
-	V to_out_symbol(I n,t_symbol *s) { t_outlet *o = get_out(n); if(o) to_out_symbol(o,s); }
+	V to_out_symbol(t_outlet *o,const t_symbol *s) { outlet_symbol(o,const_cast<t_symbol *>(s)); }
+	V to_out_symbol(I n,const t_symbol *s) { t_outlet *o = get_out(n); if(o) to_out_symbol(o,const_cast<t_symbol *>(s)); }
 	V to_out_list(t_outlet *o,I argc,t_atom *argv) { outlet_list(o,gensym("list"),argc,argv); }
 	V to_out_list(I n,I argc,t_atom *argv)  { t_outlet *o = get_out(n); if(o) to_out_list(o,argc,argv); }
-	V to_out_anything(t_outlet *o,t_symbol *s,I argc,t_atom *argv) { outlet_anything(o,s,argc,argv); }
-	V to_out_anything(I n,t_symbol *s,I argc,t_atom *argv)  { t_outlet *o = get_out(n); if(o) to_out_anything(o,s,argc,argv); }
+	V to_out_anything(t_outlet *o,const t_symbol *s,I argc,t_atom *argv) { outlet_anything(o,const_cast<t_symbol *>(s),argc,argv); }
+	V to_out_anything(I n,const t_symbol *s,I argc,t_atom *argv)  { t_outlet *o = get_out(n); if(o) to_out_anything(o,const_cast<t_symbol *>(s),argc,argv); }
 		
 // --- argument list stuff ----------------------------------------
 		

@@ -8,7 +8,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-/*! \file fldefs_header.h
+/*! \file fldefs_hdr.h
     \brief This file contains all #defines for actual usage
     
 */

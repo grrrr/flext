@@ -636,6 +636,8 @@ public:
 	typedef MPTaskID thrid_t;
 #elif FLEXT_THREADS == FLEXT_THR_POSIX
 	typedef pthread_t thrid_t;
+#elif FLEXT_THREADS == FLEXT_THR_WIN32
+    typedef DWORD thrid_t;
 #else
 #error
 #endif
@@ -647,6 +649,8 @@ public:
 		return pthread_self(); 
 #elif FLEXT_THREADS == FLEXT_THR_MP
 		return MPCurrentTaskID();
+#elif FLEXT_THREADS == FLEXT_THR_WIN32
+		return GetCurrentThreadId();
 #else
 #error
 #endif
@@ -660,6 +664,8 @@ public:
 	static bool IsThread(thrid_t t,thrid_t ref = GetThreadId()) { 
 #if FLEXT_THREADS == FLEXT_THR_POSIX
 		return pthread_equal(ref,t) != 0; 
+#elif FLEXT_THREADS == FLEXT_THR_WIN32
+        return ref == t; 
 #else
 		return ref == t;
 #endif
@@ -727,6 +733,7 @@ protected:
 	static bool StartHelper();
 	static bool StopHelper();
 	static void ThrHelper(void *);
+    static void LaunchHelper(thr_entry *e);
 
 	//! the system's thread id
 	static thrid_t thrid;  // the system thread
@@ -742,6 +749,8 @@ public:
 		sched_yield(); 
 #elif FLEXT_THREADS == FLEXT_THR_MP
 		MPYield();
+#elif FLEXT_THREADS == FLEXT_THR_WIN32
+        SwitchToThread();
 #else
 #error
 #endif
@@ -800,6 +809,28 @@ public:
 		pthread_mutex_t mutex;
 //		int cnt;
 	};
+#elif FLEXT_THREADS == FLEXT_THR_WIN32
+	{
+	public:
+		//! Construct thread mutex
+        ThrMutex() { ::InitializeCriticalSection(&mutex); }
+		//! Destroy thread mutex
+        ~ThrMutex() { ::DeleteCriticalSection(&mutex); }
+
+		//! Lock thread mutex
+        bool Lock() { ::EnterCriticalSection(&mutex); return true; }
+		/*! Wait to lock thread mutex.
+			\todo Implement!
+		*/
+//		bool WaitForLock(double tm) { return pthread_mutex_lock(&mutex) == 0; }
+		//! Try to lock, but don't wait
+        bool TryLock() { return ::TryEnterCriticalSection(&mutex) != 0; }
+		//! Unlock thread mutex
+        bool Unlock() { ::LeaveCriticalSection(&mutex); return true; }
+
+	protected:
+		CRITICAL_SECTION mutex;
+	};
 #elif FLEXT_THREADS == FLEXT_THR_MP
 	{
 	public:
@@ -842,17 +873,42 @@ public:
 
 		/*! Wait for condition (for a certain time).
 			\param ftime Wait time in seconds
-			\ret 0 = signalled, 1 = timed out 
+			\ret true = signalled, false = timed out 
 			\remark If ftime = 0 this may suck away your cpu if used in a signalled loop.
 			\remark The time resolution of the implementation is required to be at least ms.
 		*/
 		bool TimedWait(double ftime);
 
 		//! Signal condition
-		bool Signal();
+        bool Signal() { return pthread_cond_signal(&cond) == 0; }
 
 	protected:
 		pthread_cond_t cond;
+	};
+#elif FLEXT_THREADS == FLEXT_THR_WIN32
+	{
+	public:
+		//! Construct thread conditional
+		ThrCond() { cond = CreateEvent(NULL,FALSE,FALSE,NULL); }
+		//! Destroy thread conditional
+		~ThrCond() { CloseHandle(cond); }
+
+		//! Wait for condition 
+		bool Wait() { return WaitForSingleObject(cond,INFINITE) == WAIT_OBJECT_0; }
+
+		/*! Wait for condition (for a certain time).
+			\param ftime Wait time in seconds
+			\ret true = signalled, false = timed out 
+			\remark If ftime = 0 this may suck away your cpu if used in a signalled loop.
+			\remark The time resolution of the implementation is required to be at least ms.
+		*/
+        bool TimedWait(double ftime) { return WaitForSingleObject(cond,(LONG)(ftime*1000)) == WAIT_OBJECT_0; }
+
+		//! Signal condition
+        bool Signal() { return SetEvent(cond) != 0; }
+
+	protected:
+		HANDLE cond;
 	};
 #elif FLEXT_THREADS == FLEXT_THR_MP
 	{

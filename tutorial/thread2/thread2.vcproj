@@ -45,7 +45,7 @@
 				OutputFile="../pd-msvc/thread2.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\pd-msvc"
+				AdditionalLibraryDirectories="C:\Programme\audio\pd\bin;..\..\pd-msvc"
 				ProgramDatabaseFile=".\msvc/thread2.pdb"
 				ImportLibrary=".\msvc/thread2.lib"
 				TargetMachine="1"/>
@@ -90,7 +90,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="c:\programme\audio\pd\src,..\..\source"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PD;FLEXT_THREADS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FLEXT_THREADS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="2"
@@ -107,11 +107,11 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="pd.lib flext_td-pdwin.lib pthreadVC.lib"
+				AdditionalDependencies="pd.lib flext_td-pdwin.lib  pthreadVC.lib"
 				OutputFile=".\msvc-debug/thread2.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\pd-msvc"
+				AdditionalLibraryDirectories="c:\programme\audio\pd\bin;..\..\pd-msvc"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\msvc-debug/thread2.pdb"
 				ImportLibrary=".\msvc-debug/thread2.lib"

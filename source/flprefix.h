@@ -335,8 +335,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifdef FLEXT_THREADS
 	#undef FLEXT_THREADS
 	#if FLEXT_OS == FLEXT_OS_MAC && FLEXT_SYS == FLEXT_SYS_MAX
-		// Max crashes with posix threads (but don't know why...)
+		// Max crashes with posix threads (because it's in the CFM model)
 		#define FLEXT_THREADS FLEXT_THR_MP		
+	#elif FLEXT_SYS == FLEXT_SYS_MAX && FLEXT_OS == FLEXT_OS_WIN
+		// for wmax use native Windows threads
+		#define FLEXT_THREADS FLEXT_THR_WIN32
 	#else
 		#define FLEXT_THREADS FLEXT_THR_POSIX
 	#endif

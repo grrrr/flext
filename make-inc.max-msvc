@@ -10,7 +10,7 @@
 SOURCE=source
 
 # includes
-INCPATH=/I$(MSVCPATH)\include /I$(MAXSDKPATH)\max-includes /I$(MAXSDKPATH)\msp-includes /I$(PTHREADS) /I$(SOURCE)
+INCPATH=/I$(MSVCPATH)\include /I$(MAXSDKPATH)\max-includes /I$(MAXSDKPATH)\msp-includes /I$(SOURCE)
 LDFLAGS=/LIBPATH:$(MSVCPATH)\lib
 
 
@@ -27,8 +27,6 @@ TARGET=maxwin  # appendix to lib name
 
 !ifdef FLEXT_SHARED
 DEFS=$(DEFS) /DFLEXT_SHARED /DFLEXT_EXPORTS 
-
-LIBS=$(LIBS) $(PTHREADS)\pthreadVC.lib 
 
 !ifdef _DEBUG
 LIBS=$(LIBS) $(MAXSDKPATH)\max-includes\win-includes\debug\maxapi.lib $(MAXSDKPATH)\msp-includes\win-includes\debug\maxaudio.lib

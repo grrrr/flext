@@ -5,9 +5,6 @@
 # where is the Max SDK?
 MAXSDKPATH=F:\prog\audio\MaxWinSDK\c74support		
 
-# where is the pthreads package?
-PTHREADS=F:\prog\packs\pthreads		
-
 # where is MS VC++? 
 # (should be commented out when called from the Visual Studio Command prompt)
 # MSVCPATH="c:\programme\prog\microsoft visual studio\VC98"

@@ -48,6 +48,12 @@ static flext::ThrCond *thrhelpcond = NULL;
 flext::thrid_t flext::GetSysThreadId() { return thrid; }
 
 
+void flext::LaunchHelper(thr_entry *e)
+{
+    e->thrid = GetThreadId();
+    e->meth(e->params);
+}
+
 //! Start helper thread
 bool flext::StartHelper()
 {
@@ -75,6 +81,8 @@ bool flext::StartHelper()
 		OSStatus ret = MPCreateTask((TaskProc)ThrHelper,NULL,0,0,0,0,0,&thrhelpid);
 		ok = ret == noErr;
 	}
+#elif FLEXT_THREADS == FLEXT_THR_WIN32
+    ok = _beginthread(ThrHelper,0,NULL) >= 0;
 #else
 #error
 #endif
@@ -100,10 +108,11 @@ bool flext::StopHelper()
 }
 #endif
 
-
 //! Static helper thread function
 void flext::ThrHelper(void *)
 {
+    thrhelpid = GetThreadId();
+
 #if FLEXT_THREADS == FLEXT_THR_POSIX
 	// set prototype thread attributes
 	pthread_attr_t attr;
@@ -139,9 +148,13 @@ void flext::ThrHelper(void *)
 				
 //				post("Helper start thread");
 #if FLEXT_THREADS == FLEXT_THR_POSIX
-				ok = pthread_create (&ti->thrid,&attr,(void *(*)(void *))ti->meth,ti->params) == 0;
+                thrid_t dummy;
+				ok = pthread_create (&dummy,&attr,(void *(*)(void *))LaunchHelper,ti) == 0;
 #elif FLEXT_THREADS == FLEXT_THR_MP
-				ok = MPCreateTask((TaskProc)ti->meth,ti->params,0,0,0,0,0,&ti->thrid) == noErr;
+                thrid_t dummy;
+				ok = MPCreateTask((TaskProc)LaunchHelper,ti,0,0,0,0,0,&dummy) == noErr;
+#elif FLEXT_THREADS == FLEXT_THR_WIN32
+				ok = _beginthread((void (*)(void *))LaunchHelper,0,ti) >= 0;
 #else
 #error
 #endif
@@ -342,6 +355,10 @@ bool flext_base::StopThreads()
 		#elif FLEXT_THREADS == FLEXT_THR_MP
 				MPTerminateTask(t->thrid,0);
 				// here, we should use a task queue to check whether the task has really terminated!!
+		#elif FLEXT_THREADS == FLEXT_THR_WIN32
+                // can't use the c library function _endthread.. memory leaks will occur
+                HANDLE hnd = OpenThread(THREAD_ALL_ACCESS,TRUE,t->thrid);
+                TerminateThread(hnd,0);
 		#else
 		#error
 		#endif
@@ -399,6 +416,41 @@ bool flext::RelPriority(int dp,thrid_t ref,thrid_t id)
 		}
 	}
 	return true;
+
+#elif FLEXT_THREADS == FLEXT_THR_WIN32
+    HANDLE href = OpenThread(THREAD_ALL_ACCESS,TRUE,ref);
+    HANDLE hid = OpenThread(THREAD_ALL_ACCESS,TRUE,id);
+    int pr = GetThreadPriority(href);
+
+    if(pr == THREAD_PRIORITY_ERROR_RETURN) {
+#ifdef FLEXT_DEBUG
+		post("flext - failed to get thread priority");
+#endif
+		return false;
+	}
+
+    pr += dp;
+	if(pr < THREAD_PRIORITY_IDLE) {
+#ifdef FLEXT_DEBUG		
+		post("flext - minimum thread priority reached");
+#endif
+		pr = THREAD_PRIORITY_IDLE;
+	}
+	else if(pr > THREAD_PRIORITY_TIME_CRITICAL) {
+#ifdef FLEXT_DEBUG		
+		post("flext - maximum thread priority reached");
+#endif
+		pr = THREAD_PRIORITY_TIME_CRITICAL;
+	}
+	
+	if(SetThreadPriority(hid,pr) == 0) {
+#ifdef FLEXT_DEBUG		
+		post("flext - failed to change thread priority");
+#endif
+		return false;
+	}
+    return true;
+
 #elif FLEXT_THREADS == FLEXT_THR_MP
 	thr_entry *t;
 	for(t = thrhead; t && t->Id() != id; t = t->nxt) {}
@@ -441,6 +493,19 @@ int flext::GetPriority(thrid_t id)
 		return -1;
 	}
 	return parm.sched_priority;
+
+#elif FLEXT_THREADS == FLEXT_THR_WIN32
+    HANDLE hid = OpenThread(THREAD_ALL_ACCESS,TRUE,id);
+    int pr = GetThreadPriority(hid);
+
+    if(pr == THREAD_PRIORITY_ERROR_RETURN) {
+#ifdef FLEXT_DEBUG
+		post("flext - failed to get thread priority");
+#endif
+		return -1;
+	}
+    return pr;
+
 #elif FLEXT_THREADS == FLEXT_THR_MP
 	thr_entry *t;
 	for(t = thrhead; t && t->Id() != id; t = t->nxt) {}
@@ -472,6 +537,17 @@ bool flext::SetPriority(int p,thrid_t id)
 		}
 	}
 	return true;
+
+#elif FLEXT_THREADS == FLEXT_THR_WIN32
+    HANDLE hid = OpenThread(THREAD_ALL_ACCESS,TRUE,id);
+	if(SetThreadPriority(hid,p) == 0) {
+#ifdef FLEXT_DEBUG		
+		post("flext - failed to change thread priority");
+#endif
+		return false;
+	}
+    return true;
+
 #elif FLEXT_THREADS == FLEXT_THR_MP
 	thr_entry *t;
 	for(t = thrhead; t && t->Id() != id; t = t->nxt) {}
@@ -538,14 +614,6 @@ bool flext::ThrCond::TimedWait(double ftime)
 	Lock();
 	bool ret = pthread_cond_timedwait(&cond,&mutex,&tm) == 0; 
 	Unlock();
-	return ret;
-}
-
-bool flext::ThrCond::Signal() 
-{ 
-//	Lock();
-	bool ret = pthread_cond_signal(&cond) == 0; 
-//	Unlock();
 	return ret;
 }
 #endif

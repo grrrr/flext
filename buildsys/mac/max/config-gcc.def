@@ -1,6 +1,6 @@
 # where are the Max/MSP SDK header files?
 # you should have the latest version!
-MAXSDKPATH=/Volumes/Daten/Prog/MaxMSP-SDK/4.5\ headers/c74support
+MAXSDKPATH=/Applications/MaxMSP\ 4.5/MaxMSP-SDK/4.5\ headers/c74support
 
 ###############################################################
 
@@ -25,7 +25,7 @@ INSTPATH=/Library/Application\ Support/Cycling\ \'74/externals/flext
 INITPATH=/Library/Application\ Support/Cycling\ \'74/init
 
 # where should the help files be installed?
-HELPPATH=/Applications/MaxMSP 4.5/max-help/flext
+HELPPATH=/Applications/MaxMSP\ 4.5/max-help/flext
 
 ###############################################################
 

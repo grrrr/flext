@@ -98,7 +98,7 @@ typedef void t_outlet;
 #define newout_flint(clss) outlet_new(clss,"int")
 #define newout_list(clss) outlet_new(clss,"list")
 #define newout_symbol(clss) outlet_new(clss,"symbol")
-#define newout_anything(clss) outlet_new(clss,"anything")
+#define newout_anything(clss) outlet_new(clss,0)
 
 #define outlet_flint(o,v) outlet_int(o,(int)(v))
 #define outlet_symbol(o,s) outlet_anything(o,s,0,NULL)

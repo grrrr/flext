@@ -101,6 +101,7 @@ Version history:
 - deprecated the remaining Get*Flint and Set*Flint functions 
 - added/completed Is/Canbe/Get/Set for pointer atoms
 - added print/scan functions for atoms
+- fixed anything outlets for Max/MSP... for some strange reason this severe bug has not had severe consequences....
 
 0.3.3:
 - PD: fixed bug for DSP objects having no signal inlets

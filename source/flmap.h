@@ -50,6 +50,7 @@ public:
         // with the MSVC6 STL implementation iterators can't be initialized...
         iterator(AnyMap::iterator it) { static_cast<AnyMap::iterator &>(*this) = it; }
 #else
+        // note: &it doesn't work for gcc (i don't know why it doesn't...)
         iterator(AnyMap::iterator it): AnyMap::iterator(it) {}
 #endif
 
@@ -65,7 +66,7 @@ public:
         inline T &data() const { return *(T *)&second; }
 	};
 
-    inline iterator find(K k) { return iterator(AnyMap::find(*(unsigned int *)&k)); }
+    inline iterator find(K k) { return AnyMap::find(*(unsigned int *)&k); }
     inline T &operator [](K k) { return *(T *)&(AnyMap::operator [](*(unsigned int *)&k)); }
     inline void erase(K k) { AnyMap::erase(*(unsigned int *)&k); }
 };

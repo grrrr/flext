@@ -138,7 +138,7 @@ class FLEXT_EXT flext_obj
     	static void callb_setup(t_class *) {}	
 
     	// --------------------
-        // This is a holder - don't touch it
+        // This is a temporary holder - don't touch it
         static flext_hdr     *m_holder;
         static const char *m_holdname;  // hold object's name during construction
 

@@ -218,7 +218,6 @@ void flext_base::AddOutlets(unsigned long code)
 
 void flext_base::ToOutBang(outlet *o) { outlet_bang((t_outlet *)o); }
 void flext_base::ToOutFloat(outlet *o,float f) { outlet_float((t_outlet *)o,f); }
-//void flext_base::ToOutFlint(outlet *o,t_flint f) { outlet_flint((t_outlet *)o,f); }
 void flext_base::ToOutInt(outlet *o,int f) { outlet_flint((t_outlet *)o,f); }
 void flext_base::ToOutSymbol(outlet *o,const t_symbol *s) { outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); }
 void flext_base::ToOutList(outlet *o,int argc,t_atom *argv) { outlet_list((t_outlet *)o,gensym("list"),argc,argv); }
@@ -290,7 +289,6 @@ bool flext_base::SetupInOut()
 			for(int ix = 1; ix < incnt; ++ix,++cnt) {
 				switch(list[ix]) {
 					case xlet::tp_float:
-//					case xlet::tp_flint: {
 					case xlet::tp_int: {
 						char sym[] = "ft??";
 						if(ix >= 10) { 
@@ -366,7 +364,6 @@ bool flext_base::SetupInOut()
 							else
 								floatin(x_obj,ix);  
 							break;
-//						case xlet::tp_flint:
 						case xlet::tp_int:
 							if(ix >= 10) { 
 								post("%s: Only 9 int inlets possible",thisName());
@@ -645,7 +642,7 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 	}
 
 
-	// if switched on then distribute list elements over inlets (Max/MSP behavior)
+	// if distmsgs is switched on then distribute list elements over inlets (Max/MSP behavior)
 	if(!ret && distmsgs && inlet == 0 && s == sym_list && insigs <= 1) {
 		int i = incnt;
 		if(i > argc) i = argc;

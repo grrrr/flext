@@ -25,7 +25,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // Do some compiler checking
 #if defined(__MRC__) && __MRC__ < 0x500
-#error Apples MPW MrCpp v.5.0.0 or better compiler required
+#error Apple MPW MrCpp v.5.0.0 or better compiler required
 #endif
 
 

@@ -217,17 +217,17 @@ public:
 	//! output float (index n starts with 0)
 	void ToOutFloat(int n,float f) { outlet *o = GetOut(n); if(o) ToOutFloat(o,f); }
 
-//	void ToOutFlint(outlet *o,t_flint f); 
-	//! output flint (index n starts with 0)
-//	void ToOutFlint(int n,t_flint f) { outlet *o = GetOut(n); if(o) ToOutFlint(o,f); }
-	
 	void ToOutInt(outlet *o,int f); 
 	//! output int (index n starts with 0)
 	void ToOutInt(int n,int f) { outlet *o = GetOut(n); if(o) ToOutInt(o,f); }
 	
 	void ToOutSymbol(outlet *o,const t_symbol *s); 
 	//! output symbol (index n starts with 0)
-	void ToOutSymbol(int n,const t_symbol *s) { outlet *o = GetOut(n); if(o) ToOutSymbol(o,const_cast<t_symbol *>(s)); }
+	void ToOutSymbol(int n,const t_symbol *s) { outlet *o = GetOut(n); if(o) ToOutSymbol(o,s); }
+
+	void ToOutString(outlet *o,const char *s) { ToOutSymbol(o,gensym(const_cast<char *>(s))); }
+	//! output string (index n starts with 0)
+	void ToOutString(int n,const char *s) { outlet *o = GetOut(n); if(o) ToOutString(o,s); }
 
 	void ToOutList(outlet *o,int argc,t_atom *argv); 
 	//! output list (index n starts with 0)
@@ -363,7 +363,7 @@ protected:
 	struct xlet {	
 		enum type {
 			tp_none = 0,
-			tp_float,/*tp_flint,*/ tp_int,tp_sym,tp_list,tp_sig,tp_any
+			tp_float,tp_int,tp_sym,tp_list,tp_sig,tp_any
 		};
 
 		xlet(type t,const char *desc = NULL);

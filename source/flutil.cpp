@@ -34,8 +34,7 @@ bool flext::Forward(const t_symbol *recv,int argc,const t_atom *argv)
 #if FLEXT_SYS == FLEXT_SYS_PD
 	pd_forwardmess(cl,argc,(t_atom *)argv);
 #else
-#pragma message ("Send is not implemented")
-    return false;
+    #error Not implemented
 #endif
 
     return true;

@@ -1,4 +1,4 @@
-#N canvas 70 150 621 456 12;
+#N canvas 70 150 647 456 12;
 #X msg 160 85 help;
 #X obj 59 321 attr1 @arg 3;
 #X text 114 298 attribute as a creation arg;
@@ -7,12 +7,12 @@
 #X text 167 359 for all attribute-enabled objects;
 #X obj 150 392 print;
 #X msg 160 166 getarg;
-#X text 21 117 trigger output;
+#X text 12 117 trigger output;
 #X msg 160 228 arg \$1;
 #X text 222 216 set attribute "arg";
-#X text 277 124 query object attributes (watch console);
+#X text 284 124 query object attributes (watch console);
 #X text 220 167 query attribute "arg" (watch console);
-#X obj 16 8 cnv 15 500 40 empty empty attr1 10 22 0 24 -260818 -1 0
+#X obj 16 8 cnv 15 550 40 empty empty attr1 10 22 0 24 -260818 -1 0
 ;
 #X text 197 8 flext tutorial \, (C)2002 Thomas Grill;
 #X text 197 28 http://www.parasitaere-kapazitaeten.net;
@@ -20,8 +20,8 @@
 #X text 26 413 result;
 #X obj 23 139 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
 -1 -1 0 256;
-#X obj 29 395 nbx 7 16 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
-12 -228992 -1 -1 0 256;
+#X obj 29 395 nbx 7 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
+-228992 -1 -1 0 256;
 #X obj 161 206 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
 -1 -1 0 256;
 #X connect 0 0 1 0;

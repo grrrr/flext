@@ -17,16 +17,16 @@
 #X msg 133 188 text;
 #X msg 302 192 text;
 #X msg 470 190 text;
-#X obj 16 8 cnv 15 500 40 empty empty thread2 10 22 0 24 -260818 -1
+#X obj 16 8 cnv 15 550 40 empty empty thread2 10 22 0 24 -260818 -1
 0;
 #X text 197 8 flext tutorial \, (C)2002 Thomas Grill;
 #X text 197 28 http://www.parasitaere-kapazitaeten.net;
-#X obj 65 264 nbx 5 16 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
-12 -228992 -1 -1 485 256;
-#X obj 231 265 nbx 5 16 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
-12 -228992 -1 -1 99 256;
-#X obj 403 267 nbx 5 16 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
-12 -228992 -1 -1 30 256;
+#X obj 65 264 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
+-228992 -1 -1 0 256;
+#X obj 231 265 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
+-228992 -1 -1 0 256;
+#X obj 403 267 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
+-228992 -1 -1 0 256;
 #X connect 0 0 12 0;
 #X connect 1 0 11 0;
 #X connect 2 0 6 0;

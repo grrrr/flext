@@ -1,23 +1,23 @@
-#N canvas 41 125 550 259 12;
+#N canvas 41 125 579 259 12;
 #X obj 81 133 signal2~;
 #X obj 76 88 bng 25 250 50 0 empty empty empty 0 -6 0 8 -261681 -1
 -1;
-#X text 19 211 sample rate;
-#X text 126 211 block size;
+#X text 12 211 sample rate;
+#X text 128 211 block size;
 #X text 108 94 bang to get audio system parameters;
 #X text 233 212 channels in and out;
-#X obj 16 8 cnv 15 500 40 empty empty signal2 10 22 0 24 -260818 -1
+#X obj 16 8 cnv 15 550 40 empty empty signal2 10 22 0 24 -260818 -1
 0;
 #X text 197 8 flext tutorial \, (C)2002 Thomas Grill;
 #X text 197 28 http://www.parasitaere-kapazitaeten.net;
-#X obj 38 191 nbx 5 16 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
-12 -228992 -1 -1 44100 256;
-#X obj 130 191 nbx 5 16 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
-12 -228992 -1 -1 64 256;
-#X obj 233 191 nbx 5 16 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
-12 -228992 -1 -1 2 256;
-#X obj 325 191 nbx 5 16 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
-12 -228992 -1 -1 2 256;
+#X obj 38 191 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
+-228992 -1 -1 0 256;
+#X obj 130 191 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
+-228992 -1 -1 0 256;
+#X obj 233 191 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
+-228992 -1 -1 0 256;
+#X obj 325 191 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
+-228992 -1 -1 0 256;
 #X connect 0 0 9 0;
 #X connect 0 1 10 0;
 #X connect 0 2 11 0;

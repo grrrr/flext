@@ -12,9 +12,9 @@ FLEXTLIB=$(FLEXTPATH)/flext_t.a  # take threaded library for all
 
 
 # compiler+linker stuff	### EDIT! ###
-INCLUDES=$(PDPATH)/src
+INCLUDES=$(PDPATH)
 LIBPATH=
-FLAGS=-DPD -DFLEXT_THREADS
+FLAGS=-DPD -Dunix -DMACOSX -DFLEXT_THREADS -maltivec -Wno-unused -Wno-parentheses -Wno-switch -Wstrict-prototypes
 CFLAGS=-O6 
 LIBS=m
 
@@ -54,4 +54,17 @@ $(OUTPATH)/%.pd_darwin : $(OUTPATH)/%.o $(FLEXTLIB)
 clean:
 	rm -f $(OUTPATH)/*.o $(TARGETS)
 	
+ifdef INSTDIR
+$(INSTDIR):
+	-mkdir $(INSTDIR)
+
+install:: $(INSTDIR)
+endif
+
+install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)  $(patsubst %,source/%,$(_HDRS))
+	cp $^ $(INSTDIR)
+	ranlib $(INSTDIR)/*.a  # have to rerun ranlib at install dir ?!
+#	chmod 755 $(patsubst %,$(INSTDIR)/%,$(notdir $^))
+#	chgrp admin $(patsubst %,$(INSTDIR)/%,$(notdir $^))
+
 

@@ -55,3 +55,14 @@ clean:
 	rm -f $(OUTPATH)/*.o $(TARGETS)
 	
 
+ifdef INSTPATH
+$(INSTPATH):
+	-mkdir $(INSTPATH)
+
+install:: $(INSTPATH)
+endif
+
+install:: $(patsubst %,$(OUTPATH)/%.pd_linux,$(EXAMPLES))
+	cp $^ $(INSTPATH)
+	chmod 755 $(patsubst %,$(INSTPATH)/%,$(notdir $^))
+	chown root.users $(patsubst %,$(INSTPATH)/%,$(notdir $^))

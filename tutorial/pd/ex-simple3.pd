@@ -1,4 +1,4 @@
-#N canvas 329 97 568 340 12;
+#N canvas 329 97 579 340 12;
 #X msg 22 87 help;
 #X msg 119 136 born;
 #X msg 168 137 to;
@@ -10,7 +10,7 @@
 #X text 257 140 tag without argument;
 #X text 293 180 tag and argument;
 #X text 68 87 print a help message;
-#X obj 16 8 cnv 15 500 40 empty empty simple3 10 22 0 24 -260818 -1
+#X obj 16 8 cnv 15 550 40 empty empty simple3 10 22 0 24 -260818 -1
 0;
 #X text 197 8 flext tutorial \, (C)2002 Thomas Grill;
 #X text 197 28 http://www.parasitaere-kapazitaeten.net;

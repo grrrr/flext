@@ -27,6 +27,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 void flext::PrintAtom(const t_atom &a,char *buf)
 {
 	switch(a.a_type) {
+	case A_NULL:
+		break;
 	case A_FLOAT:
 #ifdef PD
 		if(a.a_w.w_float == (int)a.a_w.w_float)
@@ -48,6 +50,10 @@ void flext::PrintAtom(const t_atom &a,char *buf)
 	case A_SYMBOL:
 		strcpy(buf,flext::GetString(a.a_w.w_symbol));
 		break;
+#ifdef _DEBUG
+	default:
+		ERRINTERNAL();
+#endif
 	}
 }
 

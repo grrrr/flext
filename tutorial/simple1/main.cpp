@@ -32,10 +32,36 @@ class simple1:
  
 public:
 	// constructor
-	simple1();
+	simple1()
+	{ 
+		// define inlets:
+		// first inlet must always be of type anything (or signal for dsp objects)
+		AddInAnything();  // add one inlet for any message
+		
+		// define outlets:
+		AddOutFloat();  // add one float outlet (has index 0)
+		
+		// register methods
+		FLEXT_ADDMETHOD(0,m_float);  // register method (for float messages) "m_float" for inlet 0
+	} 
 
 protected:
-	void m_float(float f);  // method for float values
+	void m_float(float input)  // method for float values
+	{
+		float result;
+
+		if(input == 0) {
+			// special case 0
+			post("%s - zero can't be inverted!",thisName());
+			result = 0;
+		}
+		else 
+			// normal case
+			result = 1/input;
+
+		// output value to outlet
+		ToOutFloat(0,result); // (0 stands for the outlet index 0 - the leftmost outlet)
+	}
 
 private:
 	FLEXT_CALLBACK_1(m_float,float)  // callback for method "m_float" (with one float argument)
@@ -44,33 +70,4 @@ private:
 // instantiate the class
 FLEXT_NEW("simple1",simple1)
 
-
-simple1::simple1()
-{ 
-	// define inlets:
-	// first inlet must always be of type anything (or signal for dsp objects)
-	AddInAnything();  // add one inlet for any message
-	
-	// define outlets:
-	AddOutFloat();  // add one float outlet (has index 0)
-	
-	// register methods
-	FLEXT_ADDMETHOD(0,m_float);  // register method (for float messages) "m_float" for inlet 0
-} 
-
-void simple1::m_float(float f)
-{
-	float res;
-	if(f == 0) {
-		// special case 0
-		post("%s - zero can't be inverted!",thisName());
-		res = 0;
-	}
-	else 
-		// normal case
-		res = 1/f;
-
-	// output value to outlet
-	ToOutFloat(0,res); // (0 stands for the outlet index 0 - the leftmost outlet)
-}
 

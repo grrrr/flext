@@ -338,8 +338,8 @@
 		</Configuration>
 		<Configuration
 			Name="Shared Debug|Win32"
-			OutputDirectory=".\ddl"
-			IntermediateDirectory=".\ddl"
+			OutputDirectory=".\pd-msvc\ddl"
+			IntermediateDirectory=".\pd-msvc\ddl"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -348,7 +348,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="f:\prog\pd\pd-cvs\src,f:\prog\packs\pthreads,f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_PD;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_SHARED;FLEXT_EXPORTS;FLEXT_PDLOCK"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_PD;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_SHARED;FLEXT_EXPORTS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
@@ -368,10 +368,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="pd.lib pthreadVC.lib stk_d.lib sndobj.lib"
-				OutputFile=".\pd_msvc\flext_ld.dll"
+				OutputFile=".\pd-msvc\flext_ld.dll"
 				AdditionalLibraryDirectories="f:\prog\packs\pthreads;&quot;f:\prog\pd\pd-cvs\bin&quot;;F:\prog\audio\stk\lib;F:\prog\audio\sndobj\lib"
 				OptimizeReferences="1"
-				ImportLibrary="./pd-msvc/flext_dl.lib"/>
+				ImportLibrary="./pd-msvc/flext_ld.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -397,8 +397,8 @@
 		</Configuration>
 		<Configuration
 			Name="Shared Release|Win32"
-			OutputDirectory=".\dd"
-			IntermediateDirectory=".\dd"
+			OutputDirectory=".\pd-msvc\dd"
+			IntermediateDirectory=".\pd-msvc\dd"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -408,9 +408,9 @@
 				Optimization="3"
 				GlobalOptimizations="FALSE"
 				InlineFunctionExpansion="2"
-				OmitFramePointers="TRUE"
+				OmitFramePointers="FALSE"
 				AdditionalIncludeDirectories="f:\prog\pd\pd-cvs\src,f:\prog\packs\pthreads,f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_PD;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_SHARED;FLEXT_EXPORTS;FLEXT_PDLOCK"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_PD;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_SHARED;FLEXT_EXPORTS"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="TRUE"
@@ -430,7 +430,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="pd.lib pthreadVC.lib stk.lib sndobj.lib"
-				OutputFile=".\pd_msvc\flext_l.dll"
+				OutputFile=".\pd-msvc\flext_l.dll"
 				AdditionalLibraryDirectories="f:\prog\packs\pthreads;&quot;f:\prog\pd\pd-cvs\bin&quot;;F:\prog\audio\stk\lib;F:\prog\audio\sndobj\lib"
 				OptimizeReferences="1"
 				ImportLibrary="./pd-msvc/flext_l.lib"/>

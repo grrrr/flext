@@ -310,8 +310,8 @@ public:
 		a_null = 0,
 		a_float,a_int,
 		a_symbol,a_pointer,
-		a_list,a_any,
-		a_LIST,a_ANY
+		a_list,a_any, // (t_symbol *) / int / t_atom *
+		a_LIST,a_ANY // AtomList, AtomAnything
 	};
 
 	typedef bool (*methfun)(flext_base *c);
@@ -519,6 +519,11 @@ protected:
 
 //!		@} FLEXT_C_CATTR
 
+	//! Dump an attribute to the attribute outlet
+	bool DumpAttrib(const t_symbol *attr) const;
+    //! Dump an attribute to the attribute outlet
+	bool DumpAttrib(const char *attr) const { return DumpAttrib(MakeSymbol(attr)); }
+
 	/*!	\addtogroup FLEXT_C_INOUT 
 		@{ 
 	*/
@@ -717,15 +722,18 @@ private:
 
 	attritem *FindAttr(const t_symbol *tag,bool get) const;
 	int ListAttr(AtomList &a) const;
+	int ListMeth(AtomList &a,int inlet = 0) const;
 
 	static int CheckAttrib(int argc,const t_atom *argv);
 	bool InitAttrib(int argc,const t_atom *argv);
 
-	bool ListAttrib();
+	bool ListMethods(int inlet = 0) const;
+	bool ListAttrib() const;
 	bool GetAttrib(attritem *a);
 	bool SetAttrib(const t_symbol *s,int argc,const t_atom *argv);
 	bool SetAttrib(attritem *a,int argc,const t_atom *argv);
 
+	static bool cb_ListMethods(flext_base *c,int argc,const t_atom *argv);
 	static bool cb_ListAttrib(flext_base *c) { return c->ListAttrib(); }
 
 	// queue stuff

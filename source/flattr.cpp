@@ -14,6 +14,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
  
 #include "flext.h"
 #include <string.h>
+#include <stdlib.h>
 
 #ifdef __MWERKS__
 #define STD std
@@ -76,6 +77,13 @@ void flext_base::AddAttrib(t_classid c,const char *attr,metharg tp,methfun gfun,
 	AddAttrib(ClAttrs(c),ClMeths(c),attr,tp,gfun,sfun);
 }
 
+
+//! Sorting function for pure symbol atom lists (used with qsort below)
+static int sortcmp(const void *a, const void *b) 
+{ 
+	return strcmp(flext::GetString(*(t_atom *)a),flext::GetString(*(t_atom *)b)); 
+}
+
 int flext_base::ListAttr(AtomList &la) const
 {
 	int cnt = attrhead?attrhead->Count():0;
@@ -90,12 +98,43 @@ int flext_base::ListAttr(AtomList &la) const
 				for(item *l = a->Item(ai); l; l = l->nxt) 
 				{
 					attritem *aa = (attritem *)l;
+
+					// only list once!
 					if(!aa->BothExist() || aa->IsGet())
 						SetSymbol(la[ix++],aa->tag);
 				}
 			}
 		}
 	}
+
+	qsort(la.Atoms(),ix,sizeof(t_atom),sortcmp);
+	return ix;
+}
+
+int flext_base::ListMeth(AtomList &la,int inlet) const
+{
+	int cnt = methhead?methhead->Count():0;
+	int ccnt = clmethhead?clmethhead->Count():0;
+	la(ccnt+cnt);
+
+	int ix = 0;
+	for(int i = 0; i <= 1; ++i) {
+		itemarr *a = i?methhead:clmethhead;
+		if(a) {
+			for(int ai = 0; ai < a->Size(); ++ai) {
+				for(item *l = a->Item(ai); l; l = l->nxt) 
+				{
+					methitem *aa = (methitem *)l;
+
+					// match inlet and see that it's not related to an attribute
+					if(aa->inlet == inlet && !aa->IsAttr())
+						SetSymbol(la[ix++],aa->tag);
+				}
+			}
+		}
+	}
+
+	qsort(la.Atoms(),ix,sizeof(t_atom),sortcmp);
 	return ix;
 }
 
@@ -122,7 +161,7 @@ bool flext_base::InitAttrib(int argc,const t_atom *argv)
 	return true;
 }
 
-bool flext_base::ListAttrib()
+bool flext_base::ListAttrib() const
 {
 	if(procattr) {
 		AtomList la;
@@ -130,6 +169,26 @@ bool flext_base::ListAttrib()
 		ToOutAnything(GetOutAttr(),MakeSymbol("attributes"),c,la.Atoms());
 		return true;
 	}
+	else
+		return false;
+}
+
+bool flext_base::ListMethods(int inlet) const
+{
+	if(procattr) {
+		AtomList la;
+		int c = ListMeth(la,inlet);
+		ToOutAnything(GetOutAttr(),MakeSymbol("methods"),c,la.Atoms());
+		return true;
+	}
+	else
+		return false;
+}
+
+bool flext_base::cb_ListMethods(flext_base *c,int argc,const t_atom *argv) 
+{ 
+	if(argc == 0 || (argc == 1 && CanbeInt(argv[0])))
+		return c->ListMethods(argc?GetAInt(argv[0]):0); 
 	else
 		return false;
 }
@@ -249,3 +308,8 @@ bool flext_base::GetAttrib(attritem *a)
 	return true;
 }
 
+bool flext_base::DumpAttrib(const t_symbol *attr) const
+{
+	attritem *item = FindAttr(attr,true);
+	return item && const_cast<flext_base *>(this)->GetAttrib(item);
+}

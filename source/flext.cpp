@@ -154,8 +154,10 @@ void flext_base::Setup(t_classid id)
 	#pragma message ("no implementation of loadbang or assist")	
 #endif
 
-	if(process_attributes) 
-		AddMethod(id,0,"getattributes",(methfun)cb_ListAttrib);
+	if(process_attributes) {
+		AddMethod(id,0,"getattributes",cb_ListAttrib);
+		AddMethod(id,0,"getmethods",cb_ListMethods);
+	}
 
 	SetProxies(c);
 

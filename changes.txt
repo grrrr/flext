@@ -18,6 +18,9 @@ Version history:
 - fixed wrong returned result of flext::buffer::set function
 - fix for linux static exported function name-clash (flext::Setup() single- vs. multi-threading)
 - made message queue stuff global (static) for all flext objects
+- added flext_base::DumpAttrib to send an attribute value to the attribute outlet
+- added "getmethods" message (for attribute-enabled externals) to list methods for a specified inlet (default = 0)
+- "getattributes" or "getmethods" output lists are now alphabethically sorted
 
 0.4.4:
 - fixed deadly bug for Max/MSP method-to-symbol-binding proxies

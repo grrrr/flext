@@ -17,10 +17,10 @@ INCLUDES=$(PDPATH) $(SNDOBJ) $(STK)
 FLAGS=-DFLEXT_SYS=2 
 
 # compiler flags for optimized build
-CFLAGS+=-O6 -fno-exceptions  
+CFLAGS=$(UFLAGS) -O6 -fno-exceptions  
 
 # compiler flags for debug build
-CFLAGS_D=$(CFLAGS) -g -fno-exceptions     
+CFLAGS_D=$(UFLAGS) -g -fno-exceptions     
 
 # additional flags for threading
 CFLAGS_T=-DFLEXT_THREADS  

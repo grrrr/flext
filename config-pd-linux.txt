@@ -26,5 +26,5 @@ TARGDIR=./pd-linux
 INSTDIR=/usr/local/lib/pd/flext
 
 # additional compiler flags
-CFLAGS= -mcpu=pentiumpro  # gcc 2.95
-# CFLAGS= -mcpu=pentium3 -msse  # gcc 3.2
+UFLAGS= -mcpu=pentiumpro  # gcc 2.95
+# UFLAGS= -mcpu=pentium3 -msse  # gcc 3.2

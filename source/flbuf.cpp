@@ -10,6 +10,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <flext.h>
 
+#ifdef MAXMSP
+#include "flmspbuffer.h" // include inofficial buffer.h
+#endif
+
 #ifdef PD
 #define DIRTY_INTERVAL 0   // buffer dirty check in msec
 #endif
@@ -164,4 +168,5 @@ void flext_base::buffer::cb_tick(buffer *b)
 		b->ticking = false;
 }
 #endif
+
 

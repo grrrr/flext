@@ -1,5 +1,5 @@
 // this file comes from David Zicarellis inofficial package index.sit
-// The latter is not easily found so i included the original file buffer.h with this flext
+// The latter is not easily found so i included the original file buffer.h with flext
 
 enum {
 	MAXCHAN = 4
@@ -60,3 +60,4 @@ typedef struct _buffer
 } t_buffer;
 
 #define BUFWIND(x) ((t_wind *)(x->b_wind))
+

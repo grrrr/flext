@@ -55,7 +55,9 @@ flext_obj :: flext_obj()
 // Destructor
 //
 /////////////////////////////////////////////////////////
-flext_obj :: ~flext_obj() {}
+flext_obj :: ~flext_obj() {
+	x_obj = NULL;
+}
 
 
 bool flext_obj::Init() { return true; }

@@ -27,6 +27,7 @@ LIBS=gcc
 # ----------------------------------------------
 
 NAME=flext
+
 SRCDIR=source
 
 # all the source files from the package
@@ -48,10 +49,17 @@ endif
 CFLAGS+=-framework Carbon -framework veclib -Fveclib -FCarbon
 
 MAKEFILE=makefile.pd-darwin
+ifdef V4_NAMING
 TARGET=$(TARGDIR)/lib$(NAME).a
 TARGET_D=$(TARGDIR)/lib$(NAME)_d.a
 TARGET_T=$(TARGDIR)/lib$(NAME)_t.a
 TARGET_TD=$(TARGDIR)/lib$(NAME)_td.a
+else
+TARGET=$(TARGDIR)/$(NAME).a
+TARGET_D=$(TARGDIR)/$(NAME)_d.a
+TARGET_T=$(TARGDIR)/$(NAME)_t.a
+TARGET_TD=$(TARGDIR)/$(NAME)_td.a
+endif
 TARGET_S=$(TARGDIR)/lib$(NAME).dylib
 TARGET_SD=$(TARGDIR)/lib$(NAME)_d.dylib
 

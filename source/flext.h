@@ -32,6 +32,7 @@ public:
 	virtual V m_assist(L msg,L arg,C *s) = 0;
 #endif	
 
+	// class for platform independent buffer handling
 	class buffer
 	{
 	public:
@@ -71,6 +72,8 @@ public:
 
 protected:
 
+	// inlets/outlets - all (also default) inlets must be defined
+
 	V Inlet_def() { AddInlet(xlet::tp_def,1); }
 	V Inlet_float(I m = 1) { AddInlet(xlet::tp_float,m); }
 	V Inlet_flint(I m = 1) { AddInlet(xlet::tp_flint,m); }
@@ -82,8 +85,10 @@ protected:
 	V Outlet_list(I m = 1) { AddOutlet(xlet::tp_list,m); }
 	V Outlet_signal(I m = 1) { AddOutlet(xlet::tp_sig,m); }
 	
-	BL SetupInOut();
-	
+	// must be called to actually set up the defined inlets/outlets
+	BL SetupInOut(); 
+
+	// get pointer _after_wards	
 	t_outlet *Outlet(I ix) { return (out && ix < outcnt)?out[ix]:NULL; }
 
 private:

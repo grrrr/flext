@@ -20,4 +20,6 @@ TARGDIR=./pd-darwin
 # (leave blank to omit installation)
 INSTDIR=/usr/local/pd/flext
 
-
+# additional compiler flags
+# (check if they fit for your system!)
+# UFLAGS=-maltivec

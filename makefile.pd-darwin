@@ -10,13 +10,13 @@
 
 CONFIG=config-pd-darwin.txt
 
-include $(CONFIG)
+include ${CONFIG}
 
 # compiler+linker stuff 
-INCLUDES=$(PDPATH) $(SNDOBJ)
-FLAGS=-DFLEXT_SYS=2 -Wno-unused -Wno-parentheses -Wno-switch -Wstrict-prototypes # -maltivec 
-CFLAGS=-O6 -fno-exceptions 
-CFLAGS_D=-g -Wshadow 
+INCLUDES=${PDPATH}
+FLAGS=-DFLEXT_SYS=2 -Wno-unused -Wno-parentheses -Wshadow -Wno-switch -Wstrict-prototypes -fno-exceptions ${UFLAGS} 
+CFLAGS=-O6 
+CFLAGS_D=-g
 CFLAGS_T=-DFLEXT_THREADS
 LIBS=
 
@@ -26,16 +26,21 @@ LIBS=
 # ----------------------------------------------
 
 NAME=flext
+SRCDIR=source
 
 # all the source files from the package
 include make-files.txt
 
 ifdef SNDOBJ
-_SRCS=$(SRCS) $(SRCS_SNDOBJ)
-_HDRS=$(HDRS) $(HDRS_SNDOBJ)
-else
-_SRCS=$(SRCS)
-_HDRS=$(HDRS)
+INCLUDES+=$(SNDOBJ)
+SRCS+=$(SRCS_SNDOBJ)
+HDRS+=$(HDRS_SNDOBJ)
+endif
+
+ifdef STK
+INCLUDES+=$(STK)
+SRCS+=$(SRCS_STK)
+HDRS+=$(HDRS_STK)
 endif
 
 MAKEFILE=makefile.pd-darwin
@@ -49,31 +54,31 @@ all: $(TARGDIR) $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
 $(TARGDIR):
 	mkdir $(TARGDIR)
 
-$(patsubst %,source/%,$(_SRCS)): $(patsubst %,source/%,$(HDRS)) $(patsubst %,source/%,$(IHDRS)) $(MAKEFILE) $(CONFIG)
+$(patsubst %,$(SRCDIR)/%,$(SRCS)): $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(patsubst %,$(SRCDIR)/%,$(IHDRS)) $(MAKEFILE) $(CONFIG)
 	touch $@
 
-$(TARGDIR)/%.o : source/%.cpp
-	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
+$(TARGDIR)/%.o : $(SRCDIR)/%.cpp
+	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
-$(TARGDIR)/%.do : source/%.cpp
-	$(CXX) -c $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
+$(TARGDIR)/%.do : $(SRCDIR)/%.cpp
+	$(CXX) -c $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
-$(TARGDIR)/%.to : source/%.cpp
-	$(CXX) -c $(CFLAGS) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
+$(TARGDIR)/%.to : $(SRCDIR)/%.cpp
+	$(CXX) -c $(CFLAGS) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
-$(TARGDIR)/%.tdo : source/%.cpp
-	$(CXX) -c $(CFLAGS_D) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
+$(TARGDIR)/%.tdo : $(SRCDIR)/%.cpp
+	$(CXX) -c $(CFLAGS_D) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
-$(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(_SRCS)) 
+$(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS)) 
 	libtool -static -o $@ $^
 
-$(TARGET_D) : $(patsubst %.cpp,$(TARGDIR)/%.do,$(_SRCS)) 
+$(TARGET_D) : $(patsubst %.cpp,$(TARGDIR)/%.do,$(SRCS)) 
 	libtool -static -o $@ $^
 
-$(TARGET_T) : $(patsubst %.cpp,$(TARGDIR)/%.to,$(_SRCS))
+$(TARGET_T) : $(patsubst %.cpp,$(TARGDIR)/%.to,$(SRCS))
 	libtool -static -o $@ $^
 
-$(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(_SRCS))
+$(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(SRCS))
 	libtool -static -o $@ $^
 
 .PHONY: clean install
@@ -88,7 +93,7 @@ $(INSTDIR):
 install:: $(INSTDIR)
 endif
 
-install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)  $(patsubst %,source/%,$(_HDRS))
+install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)  $(patsubst %,$(SRCDIR)/%,$(HDRS))
 	cp $^ $(INSTDIR)
 	ranlib $(INSTDIR)/*.a  # have to rerun ranlib at install dir ?!
 #	chmod 755 $(patsubst %,$(INSTDIR)/%,$(notdir $^))

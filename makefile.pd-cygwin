@@ -18,9 +18,9 @@ include $(CONFIG)
 
 # compiler+linker stuff
 INCLUDES=$(PDPATH)/src 
-FLAGS=-DFLEXT_SYS=2
-CFLAGS=-O6 -fno-exceptions 
-CFLAGS+=-mcpu=pentium3 -msse    # cygwin gcc 3.2
+
+FLAGS=-DFLEXT_SYS=2 -fno-exceptions $(UFLAGS)
+CFLAGS=-O6 
 CFLAGS_D=-g
 CFLAGS_T=-DFLEXT_THREADS
 LIBS=
@@ -32,6 +32,7 @@ INSTDIR=$(PDPATH)/flext
 # ----------------------------------------------
 
 NAME=flext
+SRCDIR=source
 
 # all the source files from the package
 include make-files.txt
@@ -62,17 +63,17 @@ $(TARGDIR):
 $(SRCS): $(HDRS) $(IHDRS) $(MAKEFILE) $(CONFIG)
 	touch $@
 
-$(TARGDIR)/%.o : source/%.cpp
-	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
+$(TARGDIR)/%.o : $(SRCDIR)/%.cpp
+	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
-$(TARGDIR)/%.do : source/%.cpp
-	$(CXX) -c $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
+$(TARGDIR)/%.do : $(SRCDIR)/%.cpp
+	$(CXX) -c $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
-$(TARGDIR)/%.to : source/%.cpp
-	$(CXX) -c $(CFLAGS) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
+$(TARGDIR)/%.to : $(SRCDIR)/%.cpp
+	$(CXX) -c $(CFLAGS) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
-$(TARGDIR)/%.tdo : source/%.cpp
-	$(CXX) -c $(CFLAGS_D) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
+$(TARGDIR)/%.tdo : $(SRCDIR)/%.cpp
+	$(CXX) -c $(CFLAGS_D) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
 $(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS))
 	ar rc $@ $^
@@ -101,7 +102,7 @@ $(INSTDIR):
 install:: $(INSTDIR)
 endif
 
-install:: $(TARGET) $(TARGET_D) $(patsubst %,source/%,$(HDRS)) # $(TARGET_T) $(TARGET_TD)  
+install:: $(TARGET) $(TARGET_D) $(patsubst %,$(SRCDIR)/%,$(HDRS)) # $(TARGET_T) $(TARGET_TD)  
 	cp $^ $(INSTDIR)
 
 

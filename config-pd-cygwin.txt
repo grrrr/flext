@@ -20,3 +20,6 @@ TARGDIR=./pd-cygwin
 # (leave blank to omit installation)
 INSTDIR=${PDPATH}/flext
 
+# additional compiler flags
+# (check if they fit for your system!)
+# UFLAGS=-mcpu=pentium3 -msse

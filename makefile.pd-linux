@@ -13,14 +13,16 @@ CONFIG=config-pd-linux.txt
 include $(CONFIG)
 
 # compiler+linker stuff 
-INCLUDES=$(PDPATH) $(SNDOBJ) $(STK)
-FLAGS=-DFLEXT_SYS=2 
+INCLUDES=$(PDPATH)
+
+# general compiler flags
+FLAGS=-DFLEXT_SYS=2 -fno-exceptions $(UFLAGS)
 
 # compiler flags for optimized build
-CFLAGS=$(UFLAGS) -O6 -fno-exceptions  
+CFLAGS= -O6 
 
 # compiler flags for debug build
-CFLAGS_D=$(UFLAGS) -g -fno-exceptions     
+CFLAGS_D=-g      
 
 # additional flags for threading
 CFLAGS_T=-DFLEXT_THREADS  
@@ -33,16 +35,19 @@ LIBS=
 # ----------------------------------------------
 
 NAME=flext
+SRCDIR=source
 
 # all the source files from the package
 include make-files.txt
 
 ifdef SNDOBJ
+INCLUDES+=$(SNDOBJ)
 SRCS+=$(SRCS_SNDOBJ)
 HDRS+=$(HDRS_SNDOBJ)
 endif
 
 ifdef STK
+INCLUDES+=$(STK)
 SRCS+=$(SRCS_STK)
 HDRS+=$(HDRS_STK)
 endif
@@ -58,20 +63,20 @@ all: $(TARGDIR) $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
 $(TARGDIR):
 	mkdir $(TARGDIR)
 
-$(patsubst %,source/%,$(SRCS)): $(patsubst %,source/%,$(HDRS)) $(patsubst %,source/%,$(IHDRS)) $(MAKEFILE) $(CONFIG)
+$(patsubst %,$(SRCDIR)/%,$(SRCS)): $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(patsubst %,$(SRCDIR)/%,$(IHDRS)) $(MAKEFILE) $(CONFIG)
 	touch $@
 
-$(TARGDIR)/%.o : source/%.cpp
-	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
+$(TARGDIR)/%.o : $(SRCDIR)/%.cpp
+	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
-$(TARGDIR)/%.do : source/%.cpp
-	$(CXX) -c $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
+$(TARGDIR)/%.do : $(SRCDIR)/%.cpp
+	$(CXX) -c $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
-$(TARGDIR)/%.to : source/%.cpp
-	$(CXX) -c $(CFLAGS) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
+$(TARGDIR)/%.to : $(SRCDIR)/%.cpp
+	$(CXX) -c $(CFLAGS) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
-$(TARGDIR)/%.tdo : source/%.cpp
-	$(CXX) -c $(CFLAGS_D) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
+$(TARGDIR)/%.tdo : $(SRCDIR)/%.cpp
+	$(CXX) -c $(CFLAGS_D) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
 $(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS)) 
 	ar rc $@ $^ 
@@ -101,7 +106,7 @@ $(INSTDIR):
 install:: $(INSTDIR)
 endif
 
-install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)  $(patsubst %,source/%,$(HDRS))
+install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)  $(patsubst %,$(SRCDIR)/%,$(HDRS))
 	cp $^ $(INSTDIR)
 	chmod 755 $(patsubst %,$(INSTDIR)/%,$(notdir $^))
 	chown root.users $(patsubst %,$(INSTDIR)/%,$(notdir $^))

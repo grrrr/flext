@@ -19,6 +19,9 @@ This is an example of an object digesting several "tagged" messages
 #error You need at least flext version 0.3.0
 #endif
 
+#if FLEXT_VERSION >= 400
+namespace flext {
+#endif
 
 class simple3:
 	public flext_base
@@ -88,3 +91,7 @@ void simple3::m_help()
 	post("%s - example for tagged messages",thisName());
 }
 	
+#if FLEXT_VERSION >= 400
+}
+#endif
+

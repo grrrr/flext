@@ -22,6 +22,10 @@ This shows an example of multiple threads and syncing with a thread conditional
 #endif
 
 
+#if FLEXT_VERSION >= 400
+namespace flext {
+#endif
+
 
 class thread2:
 	public flext_base
@@ -130,3 +134,8 @@ void thread2::m_textout()
 	cond.Signal(); // signal changed flag to watiting "stop" method
 	cond.Unlock(); // unlock conditional
 }
+
+#if FLEXT_VERSION >= 400
+}
+#endif
+

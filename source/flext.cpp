@@ -129,9 +129,6 @@ const t_symbol *sym_int = NULL;
 const t_symbol *sym_signal = NULL;
 #endif
 
-const t_symbol *MakeSymbol(const char *s) { return gensym(const_cast<char *>(s)); }
-
-
 //flext_base::flext_base():
 CBase::CBase():
 	inlist(NULL),outlist(NULL),

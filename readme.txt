@@ -78,12 +78,13 @@ see flext.h, fldefs.h and flclass.h for the documented base definitions and clas
 
 Version history:
 
-0.3.4:
+0.4.0:
+- introduced a flext namespace instead of using numerous static class functions (better isolation of functions, easier usage of flext functions outside inherited flext classes)
 - added OSX/darwin support (originally done by Adam T. Lindsay)
 - SndObj interface now also available for cygwin and BCC 
 - added prepend and append functions to AtomList class
 - added IsNothing, SetNothing, CanbeBool and GetABool functions
-- deprecated the remaining Get*Flint and Set*Flint functions - will be eliminated in flext 0.4.0
+- deprecated the remaining Get*Flint and Set*Flint functions 
 
 0.3.3:
 - PD: fixed bug for DSP objects having no signal inlets

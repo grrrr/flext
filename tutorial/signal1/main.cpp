@@ -6,7 +6,7 @@
 
 #include <flext.h>
 #include <math.h>
-
+ 
 #if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 300)
 #error You need at least flext version 0.3.0
 #endif

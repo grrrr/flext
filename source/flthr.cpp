@@ -26,6 +26,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 #include <errno.h>
 
+namespace flext {
+
 bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *methname)
 {
 	static bool init = false;
@@ -164,7 +166,6 @@ void flext_base::YTick(flext_base *th)
 }
 #endif
 
-
 flext_base::thrid_t flext_base::GetThreadId() 
 { 
 	return pthread_self(); 
@@ -245,8 +246,8 @@ public:
 	void SetFloat(outlet *o,float f) { Clear(); out = o; tp = tp_float; _float = f; }
 	void SetInt(outlet *o,int i) { Clear(); out = o; tp = tp_int; _int = i; }
 	void SetSymbol(outlet *o,const t_symbol *s) { Clear(); out = o; tp = tp_sym; _sym = s; }
-	void SetList(outlet *o,int argc,t_atom *argv) { Clear(); out = o; tp = tp_list; _list.argc = argc,_list.argv = flext_base::CopyList(argc,argv); }
-	void SetAny(outlet *o,const t_symbol *s,int argc,t_atom *argv) { Clear(); out = o; tp = tp_any; _any.s = s,_any.argc = argc,_any.argv = flext_base::CopyList(argc,argv); }
+	void SetList(outlet *o,int argc,t_atom *argv) { Clear(); out = o; tp = tp_list; _list.argc = argc,_list.argv = CopyList(argc,argv); }
+	void SetAny(outlet *o,const t_symbol *s,int argc,t_atom *argv) { Clear(); out = o; tp = tp_any; _any.s = s,_any.argc = argc,_any.argv = CopyList(argc,argv); }
 
 	outlet *out;
 	enum { tp_none,tp_bang,tp_float,tp_int,tp_sym,tp_list,tp_any } tp;
@@ -389,5 +390,6 @@ flext_base::thr_params::~thr_params() { if(var) delete[] var; }
 void flext_base::thr_params::set_any(const t_symbol *s,int argc,t_atom *argv) { var[0]._any.args = new AtomAnything(s,argc,argv); }
 void flext_base::thr_params::set_list(int argc,t_atom *argv) { var[0]._list.args = new AtomList(argc,argv); }
 
+} // namespace flext
 
 #endif // FLEXT_THREADS

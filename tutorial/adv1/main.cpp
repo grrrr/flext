@@ -12,8 +12,12 @@ This is an example of a simplified prepend object
 
 #include <flext.h>
 
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 301)
-#error You need at least flext version 0.3.1
+#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 400)
+#error You need at least flext version 0.4.0
+#endif
+
+#if FLEXT_VERSION >= 400
+namespace flext {
 #endif
 
 
@@ -100,4 +104,8 @@ void adv1::m_any(const t_symbol *s,int argc,t_atom *argv)
 	// output result list as an anything
 	ToOutAnything(0,GetSymbol(result[0]),ix-1,result.Atoms()+1);
 }
+
+#if FLEXT_VERSION >= 400
+}
+#endif
 

@@ -18,7 +18,7 @@ Includes        = -i :,"{MaxSDK}:Max Includes","{MaxSDK}:MSP Includes"
 Defines			= -d MAXMSP
 
 Sym-PPC         = -sym off
-Flags			= -bool on -includes unix -opt speed 
+Flags			= -bool on -includes unix -opt speed,unroll,unswitch 
 WarnOff			= -w 35  # arg not used
 
 PPCCPlusOptions = {Includes} {Sym-PPC} {Defines} {Flags} {WarnOff}
@@ -53,7 +53,7 @@ LibFiles-PPC    =
 
 ### Build Rules ###
 
-{Name}    Ÿ Folder {ObjDir}{Name}.o
+all  Ÿ Folder {ObjDir}{Name}.o
 
 Folder Ÿ
 	if !`Exists {ObjDir}` ; NewFolder {ObjDir} ; end

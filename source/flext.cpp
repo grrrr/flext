@@ -584,50 +584,20 @@ flext_base::methitem::methitem(I in,t_symbol *t):
 	nxt(NULL)
 {}
 
-flext_base::methitem::methitem(I in,t_symbol *t,metharg &argl,methfun f): 
-	inlet(in),tag(t),
-	fun(f),
-	argc(0),args(NULL),
-	nxt(NULL)
-{ 
-	va_list marker;
-	va_start(marker,argl);
-	argc = 0;
-	metharg arg = argl;
-	for(; arg != a_null; ++argc) arg = va_arg(marker,metharg);
-	va_end(marker);
-	
-	if(argc > 0) {
-		if(argc > MAXARGS) {
-			error("Only %i arguments are type-checkable: use GIMME for more",MAXARGS);
-			argc = MAXARGS;
-		}
-
-		args = new metharg[argc];
-
-		va_start(marker,argl);
-		metharg a = argl;
-		for(I ix = 0; ix < argc; ++ix) {
-			if(a == a_gimme && ix > 0) {
-				error("GIMME argument must be the first and only one");
-			}
-#ifdef PD
-			if(a == a_pointer && flext_base::compatibility) {
-				post("Pointer arguments are not allowed in compatibility mode"); 
-			}
-#endif
-			args[ix] = a;
-			a = va_arg(marker,metharg);
-		}
-		va_end(marker);
-	}
-}
-
 flext_base::methitem::~methitem() 
 { 
 	if(nxt) delete nxt;
 	if(args) delete[] args; 
 }
+
+V flext_base::methitem::SetArgs(methfun _fun,I _argc,metharg *_args)
+{
+	fun = _fun;
+	if(args) delete[] args;
+	argc = _argc,args = _args;
+}
+
+
 
 V flext_base::AddMethItem(methitem *m)
 {
@@ -650,11 +620,45 @@ V flext_base::add_meth_def(I inlet,const C *tag)
 	AddMethItem(new methitem(inlet,gensym(const_cast<C *>(tag))));
 }
 
-
-
 V flext_base::add_meth_one(I inlet,const C *tag,methfun fun,metharg tp,...)
 {
-	AddMethItem(new methitem(inlet,gensym(const_cast<C *>(tag)),tp,fun));
+	methitem *mi = new methitem(inlet,gensym(const_cast<C *>(tag)));
+
+	va_list marker;
+	va_start(marker,tp);
+	I argc = 0;
+	metharg *args = NULL,arg = tp;
+	for(; arg != a_null; ++argc) arg = va_arg(marker,metharg);
+	va_end(marker);
+	
+	if(argc > 0) {
+		if(argc > MAXARGS) {
+			error("Method %s: only %i arguments are type-checkable: use GIMME for more",tag?tag:"?",MAXARGS);
+			argc = MAXARGS;
+		}
+
+		args = new metharg[argc];
+
+		va_start(marker,tp);
+		metharg a = tp;
+		for(I ix = 0; ix < argc; ++ix) {
+			if(a == a_gimme && ix > 0) {
+				error("GIMME argument must be the first and only one");
+			}
+#ifdef PD
+			if(a == a_pointer && flext_base::compatibility) {
+				post("Pointer arguments are not allowed in compatibility mode"); 
+			}
+#endif
+			args[ix] = a;
+			a = va_arg(marker,metharg);
+		}
+		va_end(marker);
+	}
+	
+	mi->SetArgs(fun,argc,args);
+
+	AddMethItem(mi);
 }
 
 

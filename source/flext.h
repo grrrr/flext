@@ -303,14 +303,14 @@ protected:
 	class methitem { 
 	public:
 		methitem(I inlet,t_symbol *t);
-		methitem(I inlet,t_symbol *t,metharg &arg,methfun fun);
 		~methitem();
+
+		V SetArgs(methfun fun,I argc,metharg *args);
 
 		t_symbol *tag;
 		I inlet;
 		I argc;
 		metharg *args;
-
 		methfun fun;
 		
 		methitem *nxt;
@@ -446,46 +446,55 @@ private:
 // These should be the used in the class definition
 /////////////////////////////////////////////////////////
 
+// no arguments
 #define FLEXT_CALLBACK(M_FUN) \
 static void cb_ ## M_FUN(flext_base *c) { dynamic_cast<thisType *>(c)->M_FUN(); }
 
+// for anything
 #define FLEXT_CALLBACK_A(M_FUN) \
 static void cb_ ## M_FUN(flext_base *c,t_symbol *s,int argc,t_atom *argv) { dynamic_cast<thisType *>(c)->M_FUN(s,argc,argv); }
 
+// for gimme
 #define FLEXT_CALLBACK_G(M_FUN) \
 static void cb_ ## M_FUN(flext_base *c,int argc,t_atom *argv) { dynamic_cast<thisType *>(c)->M_FUN(argc,argv); }
 
-// converting t_flint to bool
+// for boolean argument
 #define FLEXT_CALLBACK_B(M_FUN) \
 static void cb_ ## M_FUN(flext_base *c,int &arg1) { dynamic_cast<thisType *>(c)->M_FUN(arg1 != 0); }
 
-// converting t_flint to enum
-#define FLEXT_CALLBACK_E(M_FUN,TPE) \
-static void cb_ ## M_FUN(flext_base *c,int &arg1) { dynamic_cast<thisType *>(c)->M_FUN((TPE)(int)arg1); }
-
+// 1 argument
 #define FLEXT_CALLBACK_1(M_FUN,TP1) \
 static void cb_ ## M_FUN(flext_base *c,TP1 &arg1) { dynamic_cast<thisType *>(c)->M_FUN(arg1); }
 
+// 2 arguments
 #define FLEXT_CALLBACK_2(M_FUN,TP1,TP2) \
 static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2); }
 
+// 3 arguments
 #define FLEXT_CALLBACK_3(M_FUN,TP1,TP2,TP3) \
 static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3); }
 
+// 4 arguments
 #define FLEXT_CALLBACK_4(M_FUN,TP1,TP2,TP3,TP4) \
 static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4); }
 
+// 5 arguments
 #define FLEXT_CALLBACK_5(M_FUN,TP1,TP2,TP3,TP4,TP5) \
 static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,TP5 &arg5) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4,arg5); }
+
+// Shortcuts
+
+// for float argument(s)
+#define FLEXT_CALLBACK_F(M_FUN) FLEXT_CALLBACK_1(M_FUN,F)
+#define FLEXT_CALLBACK_FF(M_FUN) FLEXT_CALLBACK_2(M_FUN,F,F)
+#define FLEXT_CALLBACK_FFF(M_FUN) FLEXT_CALLBACK_3(M_FUN,F,F,F)
 
 
 // Shortcuts for method arguments
 #define FLEXTARG_float a_float
 #define FLEXTARG_int a_int
-//#define FLEXTARG_bool a_bool
 #define FLEXTARG_bool a_int
 #define FLEXTARG_t_float a_float
-//#define FLEXTARG_t_flint a_int
 #define FLEXTARG_t_symtype a_symbol
 #define FLEXTARG_t_ptrtype a_pointer
 
@@ -532,6 +541,14 @@ add_meth_one(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTA
 #define FLEXT_ADDMETHOD_5(IX,M_TAG,M_FUN,TP1,TP2,TP3,TP4,TP5) \
 add_meth_one(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),FLEXTARG(TP5),a_null)
 
+// shortcuts
+// boolean argument
+#define FLEXT_ADDMETHOD_B(IX,M_TAG,M_FUN) FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,BL)
+
+// float argument(s)
+#define FLEXT_ADDMETHOD_F(IX,M_TAG,M_FUN) FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,F)
+#define FLEXT_ADDMETHOD_FF(IX,M_TAG,M_FUN) FLEXT_ADDMETHOD_2(IX,M_TAG,M_FUN,F,F)
+#define FLEXT_ADDMETHOD_FFF(IX,M_TAG,M_FUN) FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,F,F,F)
 
 #endif
 

@@ -1,88 +1,29 @@
 # flext - C++ layer for Max/MSP and pd (pure data) externals
-# Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+# Copyright (c) 2001-2004 Thomas Grill (gr@grrrr.org)
 #
-# Makefile for BorlandC++ 
+# Makefile for BCC++
 #
-# usage: make -f makefile.bcc
 #
-# ---------------------------------------------
+# IMPORTANT: Adjust some of the paths also in makefile-inc.bcc
 #
-# note: no threading support for BorlandC++
+# usage: make -f makefile.pd-bcc
 #
-# ---------------------------------------------
+# ---------------------------------------------------------------
 
-!include config-pd-bcc.txt
+all: flext flext_t flext_d flext_td
 
-SOURCE=source
+flext:
+	make /f make-inc.pd-bcc  NAME=$* 
 
-NAME=flext
-TARGET=pdwin  # appendix to lib name
+flext_d:
+	make /f make-inc.pd-bcc  NAME=$* DEBUG=1
 
-# includes
-INCPATH=-I$(BCCPATH)\include -I$(PDPATH)\src -I$(SOURCE)
+flext_t:
+	make /f make-inc.pd-bcc  NAME=$* THREADED=1
 
-!ifdef SNDOBJ
-INCPATH=$(INCPATH) -I$(SNDOBJ)
-!endif
-
-# compiler definitions and flags
-DEFS=-DFLEXT_SYS=2
-CFLAGS=-6 -O2 -OS -ff -tWD 
+flext_td:
+	make /f make-inc.pd-bcc  NAME=$* THREADED=1 DEBUG=1
 
 
-
-# the rest can stay untouched
-# ----------------------------------------------
-
-# all the source files from the package
-!include make-files.txt
-
-!ifdef SNDOBJ
-SRCS=$(SRCS) $(SRCS_SNDOBJ)
-HDRS=$(HDRS) $(HDRS_SNDOBJ)
-!endif
-
-#default target
-all: $(OUTPATH)\$(NAME)-$(TARGET).lib
-
-# remove build
 clean:
-	-del /s /q $(OUTPATH) > nul
-	rmdir $(OUTPATH)
-
-# -----------------------------------------------
-
-OBJS= $(SRCS:.cpp=.obj)
-
-#.PATH.obj=$(OUTPATH)
-
-
-DIR="/"
-
-{$(SOURCE)}.cpp.obj:
-	bcc32 -c $(CFLAGS) $(DEFS) $(INCPATH) -n$(OUTPATH) $<
-
-$(OUTPATH):
-	@if not exist $< mkdir $<
-
-$(OUTPATH)\$(NAME)-$(TARGET).lib:: $(OUTPATH)
-
-$(OUTPATH)\$(NAME)-$(TARGET).lib:: $(OBJS) 
-	@-del "$<"
-	cd $(OUTPATH)
-	tlib "..\$<" +$(**: = +)
-	cd ..
-!if $d(INSTDIR) && "$(INSTDIR)" != ""
-	@-if not exist $(INSTDIR) mkdir $(INSTDIR)
-	copy $< $(INSTDIR) >nul
-	copy $(SOURCE)\*.h $(INSTDIR) >nul
-!endif
-
-
-
-
-
-
-
-
-
+	make /f make-inc.pd-bcc  clean

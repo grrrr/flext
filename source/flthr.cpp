@@ -604,12 +604,17 @@ bool flext::ThrCond::Wait() {
 	return ret;
 }
 
-bool flext::ThrCond::TimedWait(double ftime) 
+bool flext::ThrCond::TimedWait(double ftm) 
 { 
 	timespec tm; 
 #if FLEXT_OS == FLEXT_OS_WIN && FLEXT_OSAPI == FLEXT_OSAPI_WIN_NATIVE
+#ifdef _MSC_VER
 	_timeb tmb;
 	_ftime(&tmb);
+#else
+	timeb tmb;
+	ftime(&tmb);
+#endif
 	tm.tv_nsec = tmb.millitm*1000000;
 	tm.tv_sec = tmb.time; 
 #else // POSIX
@@ -623,9 +628,9 @@ bool flext::ThrCond::TimedWait(double ftime)
 #endif
 #endif
 
-	tm.tv_nsec += (long)((ftime-(long)ftime)*1.e9);
+	tm.tv_nsec += (long)((ftm-(long)ftm)*1.e9);
 	long nns = tm.tv_nsec%1000000000;
-	tm.tv_sec += (long)ftime+(tm.tv_nsec-nns)/1000000000; 
+	tm.tv_sec += (long)ftm+(tm.tv_nsec-nns)/1000000000; 
 	tm.tv_nsec = nns;
 
 	Lock();

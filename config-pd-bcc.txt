@@ -22,6 +22,3 @@ OUTPATH=.\pd-bcc
 # where should flext libraries be installed?
 # (leave blank to omit installation)
 INSTDIR=$(PDPATH)\flext
-
-
-

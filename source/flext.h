@@ -251,7 +251,7 @@ public:
 
 	static BL is_flint(const t_atom &a) { return is_float(a); }
 	static F geta_flint(const t_atom &a) { return get_float(a); }
-	static V set_flint(t_atom &a,I v) { a.a_type = A_FLOAT; a.a_w.w_float = v; }
+	static V set_flint(t_atom &a,I v) { a.a_type = A_FLOAT; a.a_w.w_float = (F)v; }
 #elif defined(MAXMSP)
 	static BL is_pointer(const t_atom &) { return false; }
 	static V *get_pointer(const t_atom &) { return NULL; }

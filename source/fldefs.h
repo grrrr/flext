@@ -45,7 +45,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #define outlet_flint(o,v) outlet_float(o,v)
 
-typedef t_perfroutine t_method;
+typedef t_perfroutine t_dspmethod;
 
 
 #elif defined(MAXMSP)

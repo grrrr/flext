@@ -110,6 +110,10 @@ SOURCE=.\fldefs.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\fldsp.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\flext.cpp
 # End Source File
 # Begin Source File

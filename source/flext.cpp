@@ -460,7 +460,7 @@ union t_any {
 	I it;
 	t_symbol *st;
 #ifdef PD
-	t_gpointer *gt;
+	t_gpointer *pt;
 #endif
 };
 
@@ -508,12 +508,12 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 					switch(m->args[ix]) {
 					case a_float: {
 						if(is_float(argv[ix])) aargs[ix].ft = get_float(argv[ix]);
-						else if(is_int(argv[ix])) aargs[ix].ft = get_int(argv[ix]);
+						else if(is_int(argv[ix])) aargs[ix].ft = (F)get_int(argv[ix]);
 						else ok = false;
 						break;
 					}
 					case a_int: {
-						if(is_float(argv[ix])) aargs[ix].it = get_float(argv[ix]);
+						if(is_float(argv[ix])) aargs[ix].it = (I)get_float(argv[ix]);
 						else if(is_int(argv[ix])) aargs[ix].it = get_int(argv[ix]);
 						else ok = false;
 						break;

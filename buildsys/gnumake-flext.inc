@@ -1,4 +1,4 @@
 DEFS+=-DFLEXT_EXPORTS
 
 # override product name
-OUTNAME=$(FLEXTNAME)
+OUTNAME=lib$(FLEXTNAME)

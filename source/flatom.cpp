@@ -53,10 +53,12 @@ flext::AtomList &flext::AtomList::Set(int argc,const t_atom *argv,int offs,bool 
 }
 
 
-
+#if FLEXT_SYS != FLEXT_SYS_JMAX 
+// not for jmax as long as t_symbol * == char *
 flext::AtomAnything::AtomAnything(const t_symbol *h,int argc,const t_atom *argv): 
 	AtomList(argc,argv),hdr(h?h:MakeSymbol("")) 
 {}
+#endif
 
 flext::AtomAnything::AtomAnything(const char *h,int argc,const t_atom *argv): 
 	AtomList(argc,argv),hdr(MakeSymbol(h)) 

@@ -25,14 +25,14 @@ public:
 
 	void Clear();
 
-	void SetBang(outlet *o) { Clear(); out = o; tp = tp_bang; }
-	void SetFloat(outlet *o,float f) { Clear(); out = o; tp = tp_float; _float = f; }
-	void SetInt(outlet *o,int i) { Clear(); out = o; tp = tp_int; _int = i; }
-	void SetSymbol(outlet *o,const t_symbol *s) { Clear(); out = o; tp = tp_sym; _sym = s; }
-	void SetList(outlet *o,int argc,const t_atom *argv) { Clear(); out = o; tp = tp_list; _list.argc = argc,_list.argv = CopyList(argc,argv); }
-	void SetAny(outlet *o,const t_symbol *s,int argc,const t_atom *argv) { Clear(); out = o; tp = tp_any; _any.s = s,_any.argc = argc,_any.argv = CopyList(argc,argv); }
+	void SetBang(int o) { Clear(); out = o; tp = tp_bang; }
+	void SetFloat(int o,float f) { Clear(); out = o; tp = tp_float; _float = f; }
+	void SetInt(int o,int i) { Clear(); out = o; tp = tp_int; _int = i; }
+	void SetSymbol(int o,const t_symbol *s) { Clear(); out = o; tp = tp_sym; _sym = s; }
+	void SetList(int o,int argc,const t_atom *argv) { Clear(); out = o; tp = tp_list; _list.argc = argc,_list.argv = CopyList(argc,argv); }
+	void SetAny(int o,const t_symbol *s,int argc,const t_atom *argv) { Clear(); out = o; tp = tp_any; _any.s = s,_any.argc = argc,_any.argv = CopyList(argc,argv); }
 
-	outlet *out;
+	int out;
 	enum { tp_none,tp_bang,tp_float,tp_int,tp_sym,tp_list,tp_any } tp;
 	union {
 		float _float;
@@ -56,8 +56,14 @@ void flext_base::qmsg::Clear()
 	tp = tp_none;
 }
 
+#if FLEXT_SYS == FLEXT_SYS_JMAX
+void flext_base::QTick(fts_object_t *c, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at)
+{
+	flext_base *th = thisObject(c);
+#else
 void flext_base::QTick(flext_base *th)
 {
+#endif
 //	post("qtick");
 #if defined(FLEXT_THREADS) && defined(FLEXT_DEBUG)
 	if(!th->IsSystemThread()) {
@@ -73,8 +79,6 @@ void flext_base::QTick(flext_base *th)
 		qmsg *m = th->qhead;
 		if(!m) break;
 
-		CRITON();
-
 		switch(m->tp) {
 		case qmsg::tp_bang: th->ToOutBang(m->out); break;
 		case qmsg::tp_float: th->ToOutFloat(m->out,m->_float); break;
@@ -86,8 +90,6 @@ void flext_base::QTick(flext_base *th)
 		default: ERRINTERNAL();
 #endif
 		}
-
-		CRITOFF();
 
 		th->qhead = m->nxt;
 		if(!th->qhead) th->qtail = NULL;
@@ -117,48 +119,50 @@ void flext_base::Queue(qmsg *m)
 	clock_delay(qclk,0);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	qelem_set(qclk); 
+#elif FLEXT_SYS == FLEXT_SYS_JMAX
+	// this is dangerous because there may be other timers on this object!
+	fts_timebase_add_call(fts_get_timebase(), (fts_object_t *)thisHdr(), QTick, NULL, 0);
 #else
-#error 
+#error
 #endif
-
 }
 
-void flext_base::ToQueueBang(outlet *o) const 
+void flext_base::ToQueueBang(int o) const 
 {
 	qmsg *m = new qmsg(); 
 	m->SetBang(o);
 	const_cast<flext_base &>(*this).Queue(m);
 }
 
-void flext_base::ToQueueFloat(outlet *o,float f) const
+void flext_base::ToQueueFloat(int o,float f) const
 {
 	qmsg *m = new qmsg; 
 	m->SetFloat(o,f);
 	const_cast<flext_base &>(*this).Queue(m);
 }
 
-void flext_base::ToQueueInt(outlet *o,int f) const
+void flext_base::ToQueueInt(int o,int f) const
 {
 	qmsg *m = new qmsg; 
 	m->SetInt(o,f);
 	const_cast<flext_base &>(*this).Queue(m);
 }
 
-void flext_base::ToQueueSymbol(outlet *o,const t_symbol *s) const
+void flext_base::ToQueueSymbol(int o,const t_symbol *s) const
 {
 	qmsg *m = new qmsg; 
 	m->SetSymbol(o,s);
 	const_cast<flext_base &>(*this).Queue(m);
 }
 
-void flext_base::ToQueueList(outlet *o,int argc,const t_atom *argv) const
+void flext_base::ToQueueList(int o,int argc,const t_atom *argv) const
 {
 	qmsg *m = new qmsg; 
 	m->SetList(o,argc,argv);
 	const_cast<flext_base &>(*this).Queue(m);
 }
 
-void flext_base::ToQueueAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) const
+void flext_base::ToQueueAnything(int o,const t_symbol *s,int argc,const t_atom *argv) const
 {
 	qmsg *m = new qmsg; 
 	m->SetAny(o,s,argc,argv);

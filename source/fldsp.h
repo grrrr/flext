@@ -57,8 +57,14 @@ public:
 	*/
 	int ChannelsOut() const { return chnsout; }
 	
-//!	@} 
+	//! typedef describing a signal vector
+#if FLEXT_SYS == FLEXT_SYS_JMAX
+	typedef fts_symbol_t t_signalvec;
+#else
+	typedef t_sample *t_signalvec;
+#endif
 
+//!	@} 
 
 // --- inheritable virtual methods --------------------------------
 
@@ -73,7 +79,7 @@ public:
 		\param insigs: array of input vectors  (get number with function CntInSig())
 		\param outsigs: array of output vectors  (get number with function CntOutSig())
 	*/
-	virtual void m_dsp(int n,t_sample *const *insigs,t_sample *const *outsigs);
+	virtual void m_dsp(int n,t_signalvec const *insigs,t_signalvec const *outsigs);
 
 	/*! \brief Called with every signal vector - here you do the dsp calculation
 
@@ -141,16 +147,32 @@ private:
 
 	// callback functions
 
+#if FLEXT_SYS == FLEXT_SYS_JMAX
+	static void	cb_dsp(fts_object_t *o, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at);
+//	static void	cb_dsp_init(fts_object_t *o, int winlet, fts_symbol_t *s, int ac, const fts_atom_t *at);
+//	static void	cb_dsp_delete(fts_object_t *o, int winlet, fts_symbol_t *s, int ac, const fts_atom_t *at);
+#else
 	static void cb_dsp(t_class *c,t_signal **s);
+#endif
+
 #if FLEXT_SYS != FLEXT_SYS_MAX
+#if FLEXT_SYS == FLEXT_SYS_JMAX
+	static void cb_enable(fts_object_t *o, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at);
+#else
 	static void cb_enable(t_class *c,t_float on);
+#endif
 	bool dspon;
 #endif
 
 	// dsp stuff
 
+#if FLEXT_SYS == FLEXT_SYS_JMAX
+	static void dspmeth(fts_word_t *);
+	static const t_symbol *dspsym;
+#else
 	static t_int *dspmeth(t_int *w); 
-	t_sample **invecs,**outvecs;
+#endif
+	t_signalvec *invecs,*outvecs;
 };
 
 #endif

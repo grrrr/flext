@@ -14,6 +14,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
  
 #include "flext.h"
 
+#if FLEXT_SYS != FLEXT_SYS_JMAX
+
 #if FLEXT_SYS == FLEXT_SYS_MAX
 #include "flmspbuffer.h" // include inofficial buffer.h
 #endif
@@ -58,7 +60,7 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
 		chns = 0; 
 	}
 
-	if(s && *s->s_name)	sym = s;
+	if(s && *GetString(s))	sym = s;
 
 	if(!sym) {
 		if(valid) ret = -1;
@@ -110,7 +112,7 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
     		if(valid) ret = -1;
 		}
 #else
-#error
+#error not implemented
 #endif
 	}
 
@@ -152,7 +154,7 @@ bool flext::buffer::Update()
 			return false;
 	}
 #else
-#error
+#error not implemented
 #endif
 }
 
@@ -263,3 +265,5 @@ void flext::buffer::cb_tick(buffer *b)
 }
 #endif
 
+
+#endif // Jmax

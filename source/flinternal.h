@@ -112,6 +112,9 @@ typedef t_perfroutine t_dspmethod;
 #define CRITON() short state = lockout_set(1)
 #define CRITOFF() lockout_set(state) 
 
+#elif FLEXT_SYS == FLEXT_SYS_JMAX
+
+
 #endif
 
 

@@ -13,6 +13,8 @@
 				F55CEE4C0383F59B01A80AC9,
 				F5AAF632038683E801A80AC9,
 				F59A5FAD0386DF3201A80AC9,
+				F5C2051103D403B401A80AC9,
+				F5C2062403D470B401A80AC9,
 			);
 			isa = PBXGroup;
 			name = Products;
@@ -45,6 +47,8 @@
 				F55CEE300383F59B01A80AC9,
 				F5AAF616038683E801A80AC9,
 				F59A5F910386DF3201A80AC9,
+				F5C204ED03D403B401A80AC9,
+				F5C2060003D470B401A80AC9,
 			);
 		};
 		0867D691FE84028FC02AAC07 = {
@@ -1633,7 +1637,7 @@
 				F55CEE560383F9A301A80AC9,
 			);
 			isa = PBXAggregateTarget;
-			name = "PD@OSX";
+			name = "all PD@OSX";
 			productName = "PD@OSX";
 			shouldUseHeadermap = 0;
 		};
@@ -2119,6 +2123,570 @@
 		F5AAF632038683E801A80AC9 = {
 			isa = PBXLibraryReference;
 			path = flext.max.a;
+			refType = 3;
+		};
+		F5C204ED03D403B401A80AC9 = {
+			buildPhases = (
+				F5C204EE03D403B401A80AC9,
+				F5C204FA03D403B401A80AC9,
+				F5C2050F03D403B401A80AC9,
+				F5C2051003D403B401A80AC9,
+			);
+			buildSettings = {
+				DEBUGGING_SYMBOLS = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				HEADER_SEARCH_PATHS = "\"$(SYSTEM_APPS_DIR)/audio/jMax/include\"";
+				LIBRARY_STYLE = STATIC;
+				OPTIMIZATION_CFLAGS = "-O3";
+				OTHER_CFLAGS = "-D FLEXT_SYS_JMAX -fno-exceptions -Wno-switch";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOL_FLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = flext.a;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			comments = "flext for PD running on OS X (darwin)\nmulti-threaded performance version";
+			dependencies = (
+			);
+			isa = PBXLibraryTarget;
+			name = "jMax@OSX single";
+			productName = "PD@OSX";
+			productReference = F5C2051103D403B401A80AC9;
+			shouldUseHeadermap = 0;
+		};
+		F5C204EE03D403B401A80AC9 = {
+			buildActionMask = 2147483647;
+			files = (
+				F5C204EF03D403B401A80AC9,
+				F5C204F003D403B401A80AC9,
+				F5C204F103D403B401A80AC9,
+				F5C204F203D403B401A80AC9,
+				F5C204F303D403B401A80AC9,
+				F5C204F403D403B401A80AC9,
+				F5C204F503D403B401A80AC9,
+				F5C204F603D403B401A80AC9,
+				F5C204F703D403B401A80AC9,
+				F5C204F803D403B401A80AC9,
+				F5C204F903D403B401A80AC9,
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F5C204EF03D403B401A80AC9 = {
+			fileRef = F55CED7F0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C204F003D403B401A80AC9 = {
+			fileRef = F55CED810383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C204F103D403B401A80AC9 = {
+			fileRef = F55CED860383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C204F203D403B401A80AC9 = {
+			fileRef = F55CED870383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C204F303D403B401A80AC9 = {
+			fileRef = F55CED890383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C204F403D403B401A80AC9 = {
+			fileRef = F55CED8B0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C204F503D403B401A80AC9 = {
+			fileRef = F55CED8C0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C204F603D403B401A80AC9 = {
+			fileRef = F55CED8E0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C204F703D403B401A80AC9 = {
+			fileRef = F55CED920383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C204F803D403B401A80AC9 = {
+			fileRef = F55CED940383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C204F903D403B401A80AC9 = {
+			fileRef = F504A67003CE39F501A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C204FA03D403B401A80AC9 = {
+			buildActionMask = 2147483647;
+			files = (
+				F5C204FB03D403B401A80AC9,
+				F5C204FC03D403B401A80AC9,
+				F5C204FD03D403B401A80AC9,
+				F5C204FE03D403B401A80AC9,
+				F5C204FF03D403B401A80AC9,
+				F5C2050003D403B401A80AC9,
+				F5C2050103D403B401A80AC9,
+				F5C2050203D403B401A80AC9,
+				F5C2050303D403B401A80AC9,
+				F5C2050403D403B401A80AC9,
+				F5C2050503D403B401A80AC9,
+				F5C2050603D403B401A80AC9,
+				F5C2050703D403B401A80AC9,
+				F5C2050803D403B401A80AC9,
+				F5C2050903D403B401A80AC9,
+				F5C2050A03D403B401A80AC9,
+				F5C2050B03D403B401A80AC9,
+				F5C2050C03D403B401A80AC9,
+				F5C2050D03D403B401A80AC9,
+				F5C2050E03D403B401A80AC9,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F5C204FB03D403B401A80AC9 = {
+			fileRef = F55CED7B0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C204FC03D403B401A80AC9 = {
+			fileRef = F55CED7C0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C204FD03D403B401A80AC9 = {
+			fileRef = F55CED7D0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C204FE03D403B401A80AC9 = {
+			fileRef = F55CED7E0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C204FF03D403B401A80AC9 = {
+			fileRef = F55CED800383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2050003D403B401A80AC9 = {
+			fileRef = F55CED880383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2050103D403B401A80AC9 = {
+			fileRef = F55CED8A0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2050203D403B401A80AC9 = {
+			fileRef = F55CED8D0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2050303D403B401A80AC9 = {
+			fileRef = F55CED8F0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2050403D403B401A80AC9 = {
+			fileRef = F55CED930383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2050503D403B401A80AC9 = {
+			fileRef = F55CED950383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2050603D403B401A80AC9 = {
+			fileRef = F55CED960383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2050703D403B401A80AC9 = {
+			fileRef = F55CED970383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2050803D403B401A80AC9 = {
+			fileRef = F504A66B03CE39F501A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2050903D403B401A80AC9 = {
+			fileRef = F504A66C03CE39F501A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2050A03D403B401A80AC9 = {
+			fileRef = F504A66D03CE39F501A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2050B03D403B401A80AC9 = {
+			fileRef = F504A66E03CE39F501A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2050C03D403B401A80AC9 = {
+			fileRef = F504A66F03CE39F501A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2050D03D403B401A80AC9 = {
+			fileRef = F504A67103CE39F501A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2050E03D403B401A80AC9 = {
+			fileRef = F504A67203CE39F501A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2050F03D403B401A80AC9 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F5C2051003D403B401A80AC9 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXRezBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F5C2051103D403B401A80AC9 = {
+			isa = PBXLibraryReference;
+			path = flext.a;
+			refType = 3;
+		};
+		F5C2060003D470B401A80AC9 = {
+			buildPhases = (
+				F5C2060103D470B401A80AC9,
+				F5C2060D03D470B401A80AC9,
+				F5C2062203D470B401A80AC9,
+				F5C2062303D470B401A80AC9,
+			);
+			buildSettings = {
+				DEBUGGING_SYMBOLS = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				HEADER_SEARCH_PATHS = "\"$(SYSTEM_APPS_DIR)/audio/jMax/include\"";
+				LIBRARY_STYLE = STATIC;
+				OPTIMIZATION_CFLAGS = "-O3";
+				OTHER_CFLAGS = "-D FLEXT_SYS_JMAX -D FLEXT_THREADS -fno-exceptions -Wno-switch";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOL_FLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = flext_t.a;
+				REZ_EXECUTABLE = YES;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+			};
+			comments = "flext for PD running on OS X (darwin)\nmulti-threaded performance version";
+			dependencies = (
+			);
+			isa = PBXLibraryTarget;
+			name = "jMax@OSX threaded";
+			productName = "PD@OSX";
+			productReference = F5C2062403D470B401A80AC9;
+			shouldUseHeadermap = 0;
+		};
+		F5C2060103D470B401A80AC9 = {
+			buildActionMask = 2147483647;
+			files = (
+				F5C2060203D470B401A80AC9,
+				F5C2060303D470B401A80AC9,
+				F5C2060403D470B401A80AC9,
+				F5C2060503D470B401A80AC9,
+				F5C2060603D470B401A80AC9,
+				F5C2060703D470B401A80AC9,
+				F5C2060803D470B401A80AC9,
+				F5C2060903D470B401A80AC9,
+				F5C2060A03D470B401A80AC9,
+				F5C2060B03D470B401A80AC9,
+				F5C2060C03D470B401A80AC9,
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F5C2060203D470B401A80AC9 = {
+			fileRef = F55CED7F0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2060303D470B401A80AC9 = {
+			fileRef = F55CED810383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2060403D470B401A80AC9 = {
+			fileRef = F55CED860383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2060503D470B401A80AC9 = {
+			fileRef = F55CED870383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2060603D470B401A80AC9 = {
+			fileRef = F55CED890383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2060703D470B401A80AC9 = {
+			fileRef = F55CED8B0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2060803D470B401A80AC9 = {
+			fileRef = F55CED8C0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2060903D470B401A80AC9 = {
+			fileRef = F55CED8E0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2060A03D470B401A80AC9 = {
+			fileRef = F55CED920383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2060B03D470B401A80AC9 = {
+			fileRef = F55CED940383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2060C03D470B401A80AC9 = {
+			fileRef = F504A67003CE39F501A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2060D03D470B401A80AC9 = {
+			buildActionMask = 2147483647;
+			files = (
+				F5C2060E03D470B401A80AC9,
+				F5C2060F03D470B401A80AC9,
+				F5C2061003D470B401A80AC9,
+				F5C2061103D470B401A80AC9,
+				F5C2061203D470B401A80AC9,
+				F5C2061303D470B401A80AC9,
+				F5C2061403D470B401A80AC9,
+				F5C2061503D470B401A80AC9,
+				F5C2061603D470B401A80AC9,
+				F5C2061703D470B401A80AC9,
+				F5C2061803D470B401A80AC9,
+				F5C2061903D470B401A80AC9,
+				F5C2061A03D470B401A80AC9,
+				F5C2061B03D470B401A80AC9,
+				F5C2061C03D470B401A80AC9,
+				F5C2061D03D470B401A80AC9,
+				F5C2061E03D470B401A80AC9,
+				F5C2061F03D470B401A80AC9,
+				F5C2062003D470B401A80AC9,
+				F5C2062103D470B401A80AC9,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F5C2060E03D470B401A80AC9 = {
+			fileRef = F55CED7B0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2060F03D470B401A80AC9 = {
+			fileRef = F55CED7C0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2061003D470B401A80AC9 = {
+			fileRef = F55CED7D0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2061103D470B401A80AC9 = {
+			fileRef = F55CED7E0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2061203D470B401A80AC9 = {
+			fileRef = F55CED800383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2061303D470B401A80AC9 = {
+			fileRef = F55CED880383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2061403D470B401A80AC9 = {
+			fileRef = F55CED8A0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2061503D470B401A80AC9 = {
+			fileRef = F55CED8D0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2061603D470B401A80AC9 = {
+			fileRef = F55CED8F0383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2061703D470B401A80AC9 = {
+			fileRef = F55CED930383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2061803D470B401A80AC9 = {
+			fileRef = F55CED950383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2061903D470B401A80AC9 = {
+			fileRef = F55CED960383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2061A03D470B401A80AC9 = {
+			fileRef = F55CED970383E50201A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2061B03D470B401A80AC9 = {
+			fileRef = F504A66B03CE39F501A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2061C03D470B401A80AC9 = {
+			fileRef = F504A66C03CE39F501A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2061D03D470B401A80AC9 = {
+			fileRef = F504A66D03CE39F501A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2061E03D470B401A80AC9 = {
+			fileRef = F504A66E03CE39F501A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2061F03D470B401A80AC9 = {
+			fileRef = F504A66F03CE39F501A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2062003D470B401A80AC9 = {
+			fileRef = F504A67103CE39F501A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2062103D470B401A80AC9 = {
+			fileRef = F504A67203CE39F501A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5C2062203D470B401A80AC9 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F5C2062303D470B401A80AC9 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXRezBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F5C2062403D470B401A80AC9 = {
+			isa = PBXLibraryReference;
+			path = flext_t.a;
 			refType = 3;
 		};
 	};

@@ -183,16 +183,18 @@ public:
 	//! Get number of signal outlets
 	int CntOutSig() const { return outsigs; }
 
-	class outlet;
-
 	//! Retrieve currently processed message tag (NULL if no message processing)
 	const t_symbol *thisTag() const { return curtag; }
+
+#if FLEXT_SYS == FLEXT_PD || FLEXT_SYS == FLEXT_MAX
+	class outlet;
 
 	//! Get pointer to outlet (not in the constructor!)
 	outlet *GetOut(int ix) const { return (outlets && ix < outcnt)?outlets[ix]:NULL; }
 
 	//! Get pointer to attribute outlet 
 	outlet *GetOutAttr() const { return outattr; }
+#endif
 
 	//! @} FLEXT_C_IO_MISC
 
@@ -203,40 +205,40 @@ public:
 	// output messages 
 
 	//! Output bang (to appointed outlet)
-	void ToOutBang(outlet *o) const;
+//	void ToOutBang(outlet *o) const;
 	//! Output bang (index n starts with 0)
-	void ToOutBang(int n) const { outlet *o = GetOut(n); if(o) ToOutBang(o); }
+	void ToOutBang(int n) const; // { outlet *o = GetOut(n); if(o) ToOutBang(o); }
 
 	//! Output float (to appointed outlet)
-	void ToOutFloat(outlet *o,float f) const; 
+//	void ToOutFloat(outlet *o,float f) const; 
 	//! Output float (index n starts with 0)
-	void ToOutFloat(int n,float f) const { outlet *o = GetOut(n); if(o) ToOutFloat(o,f); }
+	void ToOutFloat(int n,float f) const; // { outlet *o = GetOut(n); if(o) ToOutFloat(o,f); }
 
 	//! Output integer (to appointed outlet)
-	void ToOutInt(outlet *o,int f) const; 
+//	void ToOutInt(outlet *o,int f) const; 
 	//! Output integer (index n starts with 0)
-	void ToOutInt(int n,int f) const { outlet *o = GetOut(n); if(o) ToOutInt(o,f); }
+	void ToOutInt(int n,int f) const; // { outlet *o = GetOut(n); if(o) ToOutInt(o,f); }
 	
 	//! Output symbol (to appointed outlet)
-	void ToOutSymbol(outlet *o,const t_symbol *s) const; 
+//	void ToOutSymbol(outlet *o,const t_symbol *s) const; 
 	//! Output symbol (index n starts with 0)
-	void ToOutSymbol(int n,const t_symbol *s) const { outlet *o = GetOut(n); if(o) ToOutSymbol(o,s); }
+	void ToOutSymbol(int n,const t_symbol *s) const; // { outlet *o = GetOut(n); if(o) ToOutSymbol(o,s); }
 	//! Output string aka symbol (to appointed outlet)
-	void ToOutString(outlet *o,const char *s) const { ToOutSymbol(o,MakeSymbol(s)); }
+//	void ToOutString(outlet *o,const char *s) const { ToOutSymbol(o,MakeSymbol(s)); }
 	//! Output string aka symbol (index n starts with 0)
-	void ToOutString(int n,const char *s) const { outlet *o = GetOut(n); if(o) ToOutString(o,s); }
+	void ToOutString(int n,const char *s) const; // { outlet *o = GetOut(n); if(o) ToOutString(o,s); }
 
 	//! Output list (to appointed outlet)
-	void ToOutList(outlet *o,int argc,const t_atom *argv) const; 
+//	void ToOutList(outlet *o,int argc,const t_atom *argv) const; 
 	//! Output list (index n starts with 0)
-	void ToOutList(int n,int argc,const t_atom *argv) const { outlet *o = GetOut(n); if(o) ToOutList(o,argc,argv); }
+	void ToOutList(int n,int argc,const t_atom *argv) const; // { outlet *o = GetOut(n); if(o) ToOutList(o,argc,argv); }
 	//! Output list (index n starts with 0)
 	void ToOutList(int n,const AtomList &list) const { ToOutList(n,list.Count(),list.Atoms()); }
 	
 	//! Output anything (to appointed outlet)
-	void ToOutAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) const; 
+//	void ToOutAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) const; 
 	//! Output anything (index n starts with 0)
-	void ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const  { outlet *o = GetOut(n); if(o) ToOutAnything(o,const_cast<t_symbol *>(s),argc,argv); }
+	void ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const; //  { outlet *o = GetOut(n); if(o) ToOutAnything(o,const_cast<t_symbol *>(s),argc,argv); }
 	//! Output anything (index n starts with 0)
 	void ToOutAnything(int n,const AtomAnything &any) const { ToOutAnything(n,any.Header(),any.Count(),any.Atoms()); }
 	
@@ -247,44 +249,44 @@ public:
 	*/
 
 	//! Output bang (to appointed outlet)
-	void ToQueueBang(outlet *o) const; 
+//	void ToQueueBang(outlet *o) const; 
 	//! Output bang (index n starts with 0)
-	void ToQueueBang(int n) const { outlet *o = GetOut(n); if(o) ToQueueBang(o); }
+	void ToQueueBang(int n) const; // { outlet *o = GetOut(n); if(o) ToQueueBang(o); }
 
 	//! Output float (to appointed outlet)
-	void ToQueueFloat(outlet *o,float f) const; 
+//	void ToQueueFloat(outlet *o,float f) const; 
 	//! Output float (index n starts with 0)
-	void ToQueueFloat(int n,float f) const { outlet *o = GetOut(n); if(o) ToQueueFloat(o,f); }
+	void ToQueueFloat(int n,float f) const; // { outlet *o = GetOut(n); if(o) ToQueueFloat(o,f); }
 
 	//! Output integer (to appointed outlet)
-	void ToQueueInt(outlet *o,int f) const; 
+//	void ToQueueInt(outlet *o,int f) const; 
 	//! Output integer (index n starts with 0)
-	void ToQueueInt(int n,int f) const { outlet *o = GetOut(n); if(o) ToQueueInt(o,f); }
+	void ToQueueInt(int n,int f) const; // { outlet *o = GetOut(n); if(o) ToQueueInt(o,f); }
 
 	//! Output symbol (to appointed outlet)
-	void ToQueueSymbol(outlet *o,const t_symbol *s) const; 
+//	void ToQueueSymbol(outlet *o,const t_symbol *s) const; 
 	//! Output symbol (index n starts with 0)
-	void ToQueueSymbol(int n,const t_symbol *s) const { outlet *o = GetOut(n); if(o) ToQueueSymbol(o,s); }
+	void ToQueueSymbol(int n,const t_symbol *s) const; // { outlet *o = GetOut(n); if(o) ToQueueSymbol(o,s); }
 	//! Output string aka symbol (to appointed outlet)
-	void ToQueueString(outlet *o,const char *s) const { ToQueueSymbol(o,MakeSymbol(s)); }
+//	void ToQueueString(outlet *o,const char *s) const { ToQueueSymbol(o,MakeSymbol(s)); }
 	//! Output string aka symbol (to appointed outlet)
-	void ToQueueString(int n,const char *s) const { ToQueueSymbol(n,MakeSymbol(s)); }
+	void ToQueueString(int n,const char *s) const; // { ToQueueSymbol(n,MakeSymbol(s)); }
 
 	//! Output list (to appointed outlet)
-	void ToQueueList(outlet *o,int argc,const t_atom *argv) const; 
+//	void ToQueueList(outlet *o,int argc,const t_atom *argv) const; 
 	//! Output list (to appointed outlet)
-	void ToQueueList(outlet *o,const AtomList &list) const { ToQueueList(o,list.Count(),list.Atoms()); }
+//	void ToQueueList(outlet *o,const AtomList &list) const { ToQueueList(o,list.Count(),list.Atoms()); }
 	//! Output list (index n starts with 0)
-	void ToQueueList(int n,int argc,const t_atom *argv) const { outlet *o = GetOut(n); if(o) ToQueueList(o,argc,argv); }
+	void ToQueueList(int n,int argc,const t_atom *argv) const; // { outlet *o = GetOut(n); if(o) ToQueueList(o,argc,argv); }
 	//! Output list (index n starts with 0)
 	void ToQueueList(int n,const AtomList &list) const  { ToQueueList(n,list.Count(),list.Atoms()); }
 
 	//! Output anything (to appointed outlet)
-	void ToQueueAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) const; 
+//	void ToQueueAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) const; 
 	//! Output anything (to appointed outlet)
-	void ToQueueAnything(outlet *o,const AtomAnything &any) const  { ToQueueAnything(o,any.Header(),any.Count(),any.Atoms()); }
+//	void ToQueueAnything(outlet *o,const AtomAnything &any) const  { ToQueueAnything(o,any.Header(),any.Count(),any.Atoms()); }
 	//! Output anything (index n starts with 0)
-	void ToQueueAnything(int n,const t_symbol *s,int argc,const t_atom *argv)  const { outlet *o = GetOut(n); if(o) ToQueueAnything(o,s,argc,argv); }
+	void ToQueueAnything(int n,const t_symbol *s,int argc,const t_atom *argv)  const; // { outlet *o = GetOut(n); if(o) ToQueueAnything(o,s,argc,argv); }
 	//! Output anything (index n starts with 0)
 	void ToQueueAnything(int n,const AtomAnything &any) const  { ToQueueAnything(n,any.Header(),any.Count(),any.Atoms()); }
 
@@ -324,7 +326,7 @@ public:
 	void AddMethod(int inlet,bool (*m)(flext_base *,float &,float &,float &)) { AddMethod(ThMeths(),inlet,"list",(methfun)m,a_float,a_float,a_float,a_null); } // list of 3 floats
 #if FLEXT_SYS == FLEXT_SYS_PD
 	void AddMethod(int inlet,bool (*m)(flext_base *,int &)) { AddMethod(ThMeths(),inlet,"float",(methfun)m,a_int,a_null); }  // single float
-#elif FLEXT_SYS == FLEXT_SYS_MAX
+#elif FLEXT_SYS == FLEXT_SYS_MAX || FLEXT_SYS == FLEXT_SYS_JMAX
 	void AddMethod(int inlet,bool (*m)(flext_base *,int &)) { AddMethod(ThMeths(),inlet,"int",(methfun)m,a_int,a_null); }  // single float
 #else
 #error
@@ -361,9 +363,9 @@ public:
 	static void AddMethod(t_classid c,int inlet,bool (*m)(flext_base *,float &,float &)) { AddMethod(ClMeths(c),inlet,"list",(methfun)m,a_float,a_float,a_null); } // list of 2 floats
 	static void AddMethod(t_classid c,int inlet,bool (*m)(flext_base *,float &,float &,float &)) { AddMethod(ClMeths(c),inlet,"list",(methfun)m,a_float,a_float,a_float,a_null); } // list of 3 floats
 #if FLEXT_SYS == FLEXT_SYS_PD
-	static void AddMethod(t_classid c,int inlet,bool (*m)(flext_base *,int &)) { AddMethod(ClMeths(c),inlet,"float",(methfun)m,a_int,a_null); }  // single float
-#elif FLEXT_SYS == FLEXT_SYS_MAX
-	static void AddMethod(t_classid c,int inlet,bool (*m)(flext_base *,int &)) { AddMethod(ClMeths(c),inlet,"int",(methfun)m,a_int,a_null); }  // single float
+	static void AddMethod(t_classid c,int inlet,bool (*m)(flext_base *,int &)) { AddMethod(ClMeths(c),inlet,"float",(methfun)m,a_int,a_null); }  // single integer
+#elif FLEXT_SYS == FLEXT_SYS_MAX || FLEXT_SYS == FLEXT_SYS_JMAX
+	static void AddMethod(t_classid c,int inlet,bool (*m)(flext_base *,int &)) { AddMethod(ClMeths(c),inlet,"int",(methfun)m,a_int,a_null); }  // single integer
 #else
 #error
 #endif
@@ -392,16 +394,24 @@ public:
 	bool Bind(const t_symbol *s) { pd_bind(&thisHdr()->ob_pd,const_cast<t_symbol *>(s)); return true; }
 	//! Unbind object from a symbol
 	bool Unbind(const t_symbol *s) { pd_unbind(&thisHdr()->ob_pd,const_cast<t_symbol *>(s)); return true; }
-#else
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 	//! Bind object to a symbol
 	bool Bind(const t_symbol *s) { if(s->s_thing) return false; else { const_cast<t_symbol *>(s)->s_thing = (t_object *)thisHdr(); return true; } }
 	//! Unbind object from a symbol
 	bool Unbind(const t_symbol *s) { if(s->s_thing != (t_object *)thisHdr()) return false; else { const_cast<t_symbol *>(s)->s_thing = NULL; return true; } }
 #endif
+
+#if FLEXT_SYS == FLEXT_SYS_JMAX
+	//! Bind object to a symbol (as string)
+	bool Bind(const char *c); // ** TODO **  
+	//! Unbind object from a symbol (as string)
+	bool Unbind(const char *c);  // ** TODO **   
+#else
 	//! Bind object to a symbol (as string)
 	bool Bind(const char *c) { return Bind(MakeSymbol(c)); }  
 	//! Unbind object from a symbol (as string)
 	bool Unbind(const char *c) { return Unbind(MakeSymbol(c)); }  
+#endif
 
 /*
 	// Low level
@@ -619,8 +629,12 @@ private:
 	xlet *inlist,*outlist;
 	const t_symbol *curtag;
 	int incnt,outcnt,insigs,outsigs;
-	outlet **outlets,*outattr;
 	bool distmsgs;
+#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
+	outlet **outlets,*outattr;
+#elif FLEXT_SYS == FLEXT_SYS_JMAX
+	int outattr;
+#endif
 
 	void AddXlet(xlet::type tp,int mult,const char *desc,xlet *&root);	
 	void DescXlet(int ix,const char *desc,xlet *&root);	
@@ -673,8 +687,12 @@ private:
 
 	class qmsg;
 	qmsg *qhead,*qtail;
+#if FLEXT_SYS == FLEXT_SYS_JMAX
+	static void QTick(fts_object_t *c, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at);
+#else
 	t_qelem *qclk;
 	static void QTick(flext_base *th);
+#endif
 	void Queue(qmsg *m);
 #ifdef FLEXT_THREADS
 	ThrMutex qmutex;
@@ -711,9 +729,9 @@ private:
 	static void cb_px_in7(t_class *c,int v);
 	static void cb_px_in8(t_class *c,int v);
 	static void cb_px_in9(t_class *c,int v);
-#else
-#error
 #endif
+
+#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
 	static void cb_px_anything(t_class *c,const t_symbol *s,int argc,t_atom *argv);
 
 	static void cb_px_ft1(t_class *c,float f);
@@ -727,6 +745,9 @@ private:
 	static void cb_px_ft9(t_class *c,float f);
 
 	px_object **inlets;
+#elif FLEXT_SYS == FLEXT_SYS_JMAX
+	static void jmax_proxy(fts_object_t *c, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at);
+#endif
 
 	static void SetProxies(t_class *c);
 
@@ -735,9 +756,13 @@ private:
 
 	// callback functions
 
+#if FLEXT_SYS == FLEXT_SYS_JMAX
+	static void	cb_help(fts_object_t *o, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at);
+#else
 	static void cb_help(t_class *c);
-
 	static void cb_loadbang(t_class *c);
+#endif
+
 #if FLEXT_SYS == FLEXT_SYS_MAX
 	char **indesc,**outdesc;
 

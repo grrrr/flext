@@ -84,10 +84,9 @@ void flext_base::cb_px_ft ## IX(t_class *c,float v) { long &ci = ((flext_hdr *)t
 add_method1(c,cb_px_in ## IX,"in" #IX,A_INT); \
 add_method1(c,cb_px_ft ## IX,"ft" #IX,A_FLOAT)
 
-#else
-#error // Other system
 #endif 
 
+#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
 
 DEF_IN_FT(1)
 DEF_IN_FT(2)
@@ -98,7 +97,6 @@ DEF_IN_FT(6)
 DEF_IN_FT(7)
 DEF_IN_FT(8)
 DEF_IN_FT(9)
-
 
 void flext_base::SetProxies(t_class *c)
 {
@@ -128,5 +126,19 @@ void flext_base::SetProxies(t_class *c)
 	ADD_IN_FT(8);
 	ADD_IN_FT(9);
 }
+
+#elif FLEXT_SYS == FLEXT_SYS_JMAX
+void flext_base::jmax_proxy(fts_object_t *c, int winlet, fts_symbol_t s, int argc, const fts_atom_t *argv)
+{
+	flext_base *o = thisObject(c);
+	o->m_methodmain(winlet,s,argc,argv);
+}
+
+void flext_base::SetProxies(t_class *c) 
+{
+	fts_class_set_default_handler(c, jmax_proxy);
+}
+
+#endif
 
 

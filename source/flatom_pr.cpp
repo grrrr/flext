@@ -26,35 +26,25 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 void flext::PrintAtom(const t_atom &a,char *buf)
 {
-	switch(a.a_type) {
-	case A_NULL:
-		break;
-	case A_FLOAT:
+	if(IsFloat(a)) {
 #if FLEXT_SYS == FLEXT_SYS_PD
 		if(a.a_w.w_float == (int)a.a_w.w_float)
 			STD::sprintf(buf,"%i",(int)GetFloat(a));
 		else
 #endif
 		STD::sprintf(buf,"%f",GetFloat(a));
-		break;
-#if FLEXT_SYS == FLEXT_SYS_MAX
-	case A_LONG:
+	}
+	else if(IsInt(a)) 
 		STD::sprintf(buf,"%i",GetInt(a));
-		break;
-#endif
-#if FLEXT_SYS == FLEXT_SYS_PD
-	case A_POINTER:
+	else if(IsPointer(a))
 		STD::sprintf(buf,"%p",GetPointer(a));
-		break;
-#endif
-	case A_SYMBOL:
+	else if(IsSymbol(a))
 		strcpy(buf,GetString(a));
-		break;
+	else if(IsNothing(a)) {}
 #ifdef FLEXT_DEBUG
-	default:
+	else
 		ERRINTERNAL();
 #endif
-	}
 }
 
 bool flext::ScanAtom(t_atom &a,const char *buf)

@@ -54,7 +54,6 @@ typedef t_object t_sigobj;
 typedef t_gpointer *t_ptrtype;
 
 typedef t_float t_flint;
-typedef t_symbol *t_symptr;
 typedef t_symbol *t_symtype;
 typedef t_class **t_thing;
 
@@ -97,7 +96,6 @@ typedef t_pxbox t_sigobj;  // that's the all-in-one object type of Max/MSP (not 
 typedef t_patcher t_canvas;
 
 typedef t_int t_flint;
-typedef t_symbol *t_symptr;
 typedef t_symbol *t_symtype;
 typedef t_object *t_thing;
 
@@ -124,8 +122,46 @@ typedef void t_binbuf;
 #define A_SYMBOL A_SYM
 #endif
 
-#endif
 
+#elif FLEXT_SYS == FLEXT_SYS_JMAX
+
+extern "C" {
+	// Wow, the jMax developers made excessive use of C++ reserved words
+	// good hit!
+	#define typeid c_typeid_
+	#define template c_template_
+	#define this c_this_
+	#define class c_class_
+	
+	#include <fts/fts.h>
+	
+	// undefine them again
+	#undef typeid 
+	#undef template 
+	#undef this 
+	#undef class 
+}
+
+typedef fts_dsp_object t_sigobj;
+typedef void t_canvas; // decide type later on
+
+typedef char t_symbol;
+typedef fts_atom_t t_atom;
+typedef fts_class_t t_class;
+typedef float t_sample; // is there no sample type in jMax?
+
+typedef fts_timebase_entry_t t_clock;
+typedef fts_timebase_entry_t t_qelem;
+
+#endif // FLEXT_SYS
+
+
+// general definitions
+
+typedef t_symbol *t_symptr;
+
+
+// -------------------------
 
 #ifdef _LOG
 

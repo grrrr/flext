@@ -85,9 +85,9 @@ static bool chktilde(const char *objname)
 
 	if((objname[strlen(objname)-1] == '~'?1:0)^(tilde?1:0)) {
 		if(tilde) 
-			error("flext: %s (no trailing ~) is defined as a tilde object",objname);
+			flext::error("flext: %s (no trailing ~) is defined as a tilde object",objname);
 		else
-			error("flext::check_tilde: %s is no tilde object",objname);
+			flext::error("flext::check_tilde: %s is no tilde object",objname);
 		return true;
 	} 
 	else
@@ -202,6 +202,13 @@ void flext_obj::lib_init(const char *name,void setupfun(),bool attr)
 	setupfun();
 }
 
+#if FLEXT_SYS == FLEXT_SYS_JMAX
+static void jmax_class_inst(t_class *cl) 
+{
+	fts_class_init(cl, sizeof(flext_hdr),flext_obj::obj_new,flext_obj::obj_free);
+}
+#endif
+
 void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const char *names,void setupfun(t_classid),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...)
 {
 	// get first possible object name
@@ -235,6 +242,8 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
      	// attention: in Max/MSP the *cl variable is not initialized after that call.
      	// just the address is stored, the initialization then occurs with the first object instance!
 	}
+#elif FLEXT_SYS == FLEXT_SYS_JMAX
+	*cl = fts_class_install(nsym, jmax_class_inst);
 #else
 #error
 #endif
@@ -248,7 +257,7 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 //	post("ADDCLASS %p -> LIBOBJ %p -> %p",*cl,lo,lo->clss);
 
 	// parse the argument type list and store it with the object
-	if(argtp1 == A_GIMME)
+	if(argtp1 == FLEXTTPN_VAR)
 		lo->argc = -1;
 	else {
 		int argtp,i;
@@ -256,7 +265,7 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 		
 		// parse a first time and count only
 		va_start(marker,argtp1);
-		for(argtp = argtp1; argtp != A_NULL; ++lo->argc) argtp = (int)va_arg(marker,int); 
+		for(argtp = argtp1; argtp != FLEXTTPN_NULL; ++lo->argc) argtp = (int)va_arg(marker,int); 
 		va_end(marker);
 
 		lo->argv = new int[lo->argc];
@@ -271,7 +280,7 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 	}
 
 	// get unique class id
-#if FLEXT_SYS == FLEXT_SYS_PD
+#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_JMAX
 	t_classid clid = lo->clss;
 #else
 	// in Max/MSP the t_class *value can't be used because it's possible that's it's not yet set!!
@@ -299,6 +308,8 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 			// in Max/MSP the first alias gets its name from the name of the object file,
 			// unless it is a library (then the name can be different)
 			::alias(const_cast<char *>(c));  
+#elif FLEXT_SYS == FLEXT_SYS_JMAX
+		if(ix > 0)  fts_class_alias(lo->clss,l->name);
 #else
 #error
 #endif	
@@ -311,9 +322,15 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 
 typedef flext_obj *(*libfun)(int,t_atom *);
 
+#if FLEXT_SYS == FLEXT_SYS_JMAX
+void flext_obj::obj_new(fts_object_t *o, int, fts_symbol_t s, int _argc_, const fts_atom_t *argv)
+{
+	flext_hdr *obj = (flext_hdr *)o;
+#else
 flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 {
 	flext_hdr *obj = NULL;
+#endif
 	libname *l = libname::Find(s);
 	if(l) {
 		bool ok = true;
@@ -333,19 +350,19 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 			if(argc == lo->argc) {
 				for(int i = 0; /*ok &&*/ i < lo->argc; ++i) {
 					switch(lo->argv[i]) {
-#if FLEXT_SYS == FLEXT_SYS_MAX
-					case A_INT:
+#if FLEXT_SYS != FLEXT_SYS_PD
+					case FLEXTTPN_INT:
 						if(flext::IsInt(argv[i])) args[i] = argv[i];
 						else if(flext::IsFloat(argv[i])) flext::SetInt(args[i],(int)flext::GetFloat(argv[i]));
 						else ok = false;
 						break;
 #endif
-					case A_FLOAT:
+					case FLEXTTPN_FLOAT:
 						if(flext::IsInt(argv[i])) flext::SetFloat(args[i],(float)flext::GetInt(argv[i]));
 						else if(flext::IsFloat(argv[i])) args[i] = argv[i];
 						else ok = false;
 						break;
-					case A_SYMBOL:
+					case FLEXTTPN_SYM:
 						if(flext::IsSymbol(argv[i])) args[i] = argv[i];
 						else ok = false;
 						break;
@@ -353,10 +370,10 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 				}
 			
 				if(!ok)
-					post("%s: Creation arguments do not match",s->s_name);
+					post("%s: Creation arguments do not match",GetString(s));
 			}
 			else {
-				error("%s: %s creation arguments",s->s_name,argc < lo->argc?"Not enough":"Too many");
+				error("%s: %s creation arguments",GetString(s),argc < lo->argc?"Not enough":"Too many");
 				ok = false;
 			}
 		}
@@ -370,6 +387,8 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 			clid = lo;
 			obj = (flext_hdr *)::newobject(lo->clss);
+#elif FLEXT_SYS == FLEXT_SYS_JMAX
+			clid = lo->clss;
 #else
 #error
 #endif
@@ -384,7 +403,7 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 				// for interpreted arguments
 				obj->data = lo->newfun(lo->argc,args); 
 			else
-				obj->data = lo->newfun(argc,argv); 
+				obj->data = lo->newfun(argc,(t_atom *)argv); 
 	
 			flext_obj::m_holder = NULL;
 			flext_obj::m_holdname = NULL;
@@ -426,11 +445,18 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 		error("Class %s not found in library!",s->s_name);
 #endif
 
+#if FLEXT_SYS != FLEXT_SYS_JMAX
 	return obj;
+#endif
 }
 
-void flext_obj::obj_free(flext_hdr *hdr)
+#if FLEXT_SYS == FLEXT_SYS_JMAX
+void flext_obj::obj_free(fts_object_t *h, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at)
+#else
+void flext_obj::obj_free(flext_hdr *h)
+#endif
 {
+	flext_hdr *hdr = (flext_hdr *)h;
 	const t_symbol *name = hdr->data->thisNameSym();
 	libname *l = libname::Find(name);
 

@@ -16,22 +16,43 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flinternal.h"
 #include <string.h>
  
+#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
+ 
 #ifndef FLEXT_THREADS
-void flext_base::ToOutBang(outlet *o) const { CRITON(); outlet_bang((t_outlet *)o); CRITOFF(); }
-void flext_base::ToOutFloat(outlet *o,float f) const { CRITON(); outlet_float((t_outlet *)o,f); CRITOFF(); }
-void flext_base::ToOutInt(outlet *o,int f) const { CRITON(); outlet_flint((t_outlet *)o,f); CRITOFF(); }
-void flext_base::ToOutSymbol(outlet *o,const t_symbol *s) const { CRITON(); outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); CRITOFF(); }
-void flext_base::ToOutList(outlet *o,int argc,const t_atom *argv) const { CRITON(); outlet_list((t_outlet *)o,gensym("list"),argc,(t_atom *)argv); CRITOFF(); }
-void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) const { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,(t_atom *)argv); CRITOFF(); }
+void flext_base::ToOutBang(int n) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_bang((t_outlet *)o); CRITOFF(); } }
+void flext_base::ToOutFloat(int n,float f) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_float((t_outlet *)o,f); CRITOFF(); } }
+void flext_base::ToOutInt(int n,int f) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_flint((t_outlet *)o,f); CRITOFF(); } }
+void flext_base::ToOutSymbol(int n,const t_symbol *s) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); CRITOFF(); } }
+void flext_base::ToOutList(int n,int argc,const t_atom *argv) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_list((t_outlet *)o,sym_list,argc,(t_atom *)argv); CRITOFF(); } }
+void flext_base::ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,(t_atom *)argv); CRITOFF(); } }
 #else
-void flext_base::ToOutBang(outlet *o) const { if(IsSystemThread()) { CRITON(); outlet_bang((t_outlet *)o); CRITOFF(); } else ToQueueBang(o); }
-void flext_base::ToOutFloat(outlet *o,float f) const { if(IsSystemThread()) { CRITON(); outlet_float((t_outlet *)o,f); CRITOFF(); } else ToQueueFloat(o,f); }
-void flext_base::ToOutInt(outlet *o,int f) const { if(IsSystemThread()) { CRITON(); outlet_flint((t_outlet *)o,f); CRITOFF(); } else ToQueueInt(o,f); }
-void flext_base::ToOutSymbol(outlet *o,const t_symbol *s) const { if(IsSystemThread()) { CRITON(); outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); CRITOFF(); } else ToQueueSymbol(o,s); }
-void flext_base::ToOutList(outlet *o,int argc,const t_atom *argv) const { if(IsSystemThread()) { CRITON(); outlet_list((t_outlet *)o,gensym("list"),argc,(t_atom *)argv); CRITOFF(); } else ToQueueList(o,argc,(t_atom *)argv); }
-void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) const { if(IsSystemThread()) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,(t_atom *)argv); CRITOFF(); } else ToQueueAnything(o,s,argc,(t_atom *)argv); }
+void flext_base::ToOutBang(int n) const { if(IsSystemThread()) { outlet *o = GetOut(n); if(o) { CRITON(); outlet_bang((t_outlet *)o); CRITOFF(); } } else ToQueueBang(n); }
+void flext_base::ToOutFloat(int n,float f) const { if(IsSystemThread()) { outlet *o = GetOut(n); if(o) { CRITON(); outlet_float((t_outlet *)o,f); CRITOFF(); } } else ToQueueFloat(n,f); }
+void flext_base::ToOutInt(int n,int f) const { if(IsSystemThread()) { outlet *o = GetOut(n); if(o) { CRITON(); outlet_flint((t_outlet *)o,f); CRITOFF(); } } else ToQueueInt(n,f); }
+void flext_base::ToOutSymbol(int n,const t_symbol *s) const { if(IsSystemThread()) { outlet *o = GetOut(n); if(o) { CRITON(); outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); CRITOFF(); } } else ToQueueSymbol(n,s); }
+void flext_base::ToOutList(int n,int argc,const t_atom *argv) const { if(IsSystemThread()) { outlet *o = GetOut(n); if(o) { CRITON(); outlet_list((t_outlet *)o,sym_list,argc,(t_atom *)argv); CRITOFF(); } } else ToQueueList(n,argc,(t_atom *)argv); }
+void flext_base::ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { if(IsSystemThread()) { outlet *o = GetOut(n); if(o) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,(t_atom *)argv); CRITOFF(); } } else ToQueueAnything(n,s,argc,(t_atom *)argv); }
 #endif
 
+#elif FLEXT_SYS == FLEXT_SYS_JMAX
+
+#ifndef FLEXT_THREADS
+void flext_base::ToOutBang(int n) const { fts_outlet_bang((fts_object *)thisHdr(),n); }
+void flext_base::ToOutFloat(int n,float f) const { fts_outlet_float((fts_object *)thisHdr(),n,f); }
+void flext_base::ToOutInt(int n,int f) const { fts_outlet_int((fts_object *)thisHdr(),n,f); }
+void flext_base::ToOutSymbol(int n,const t_symbol *s) const { fts_outlet_symbol((fts_object *)thisHdr(),n,s); }
+void flext_base::ToOutList(int n,int argc,const t_atom *argv) const { fts_outlet_send((fts_object *)thisHdr(),n,sym_list,argc,(t_atom *)argv); }
+void flext_base::ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { fts_outlet_send((fts_object *)thisHdr(),n,const_cast<t_symbol *>(s),argc,(t_atom *)argv); }
+#else
+void flext_base::ToOutBang(int n) const { if(IsSystemThread()) fts_outlet_bang((fts_object *)thisHdr(),n); else ToQueueBang(n); }
+void flext_base::ToOutFloat(int n,float f) const { if(IsSystemThread()) fts_outlet_float((fts_object *)thisHdr(),n,f); else ToQueueFloat(n,f); }
+void flext_base::ToOutInt(int n,int f) const { if(IsSystemThread()) fts_outlet_int((fts_object *)thisHdr(),n,f); else ToQueueInt(n,f); }
+void flext_base::ToOutSymbol(int n,const t_symbol *s) const { if(IsSystemThread()) fts_outlet_symbol((fts_object *)thisHdr(),n,s); else ToQueueSymbol(n,s); }
+void flext_base::ToOutList(int n,int argc,const t_atom *argv) const { if(IsSystemThread()) fts_outlet_send((fts_object *)thisHdr(),n,sym_list,argc,(t_atom *)argv); else ToQueueList(n,argc,(t_atom *)argv); }
+void flext_base::ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { if(IsSystemThread()) fts_outlet_send((fts_object *)thisHdr(),n,const_cast<t_symbol *>(s),argc,(t_atom *)argv); else ToQueueAnything(n,s,argc,(t_atom *)argv); }
+#endif
+
+#endif
 
 bool flext_base::InitInlets()
 {
@@ -68,8 +89,10 @@ bool flext_base::InitInlets()
 
 		delete inlist; inlist = NULL;
 		
+#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
 		inlets = new px_object *[incnt];
 		for(i = 0; i < incnt; ++i) inlets[i] = NULL;
+#endif
 		
 		// type info is now in list array
 #if FLEXT_SYS == FLEXT_SYS_PD
@@ -195,6 +218,43 @@ bool flext_base::InitInlets()
 //				dsp_setup(thisHdr(),insigs); // signal inlets	
 				dsp_setupbox(thisHdr(),insigs); // signal inlets	
 		}
+#elif FLEXT_SYS == FLEXT_SYS_JMAX
+		{
+			t_class *cl = thisClass();
+			int cnt = 0;
+			for(int ix = 0; ix < incnt; ++ix,++cnt) {
+				switch(list[ix]) {
+					case xlet::tp_float:
+					case xlet::tp_int:
+//						fts_class_inlet_number(cl, ix, jmax_proxy);
+						break;
+					case xlet::tp_sym: 
+//						fts_class_inlet_symbol(cl, ix, jmax_proxy);
+						break;
+					case xlet::tp_sig:
+						if(compatibility && list[ix-1] != xlet::tp_sig) {
+							post("%s: All signal inlets must be left-aligned in compatibility mode",thisName());
+							ok = false;
+						}
+						else {
+							if(!insigs) fts_dsp_declare_inlet(cl,0);							
+							++insigs;
+						}
+						// no break -> let a signal inlet also accept any messages
+					case xlet::tp_list:
+					case xlet::tp_any:
+//						fts_class_inlet_varargs(cl,ix, jmax_proxy);
+						break;
+					default:
+						error("%s: Wrong type for inlet #%i: %i",thisName(),ix,(int)list[ix]);
+						ok = false;
+				} 
+			}
+
+			incnt = cnt;
+
+			fts_object_set_inlets_number((fts_object_t *)thisHdr(), incnt);
+		}
 #else
 #error
 #endif
@@ -218,7 +278,7 @@ bool flext_base::InitOutlets()
 #if FLEXT_SYS == FLEXT_SYS_MAX
 	// for Max/MSP the rightmost outlet has to be created first
 	if(procattr) 
-		outattr = (outlet *)newout_anything(&x_obj->obj);
+		outattr = (outlet *)newout_anything(thisHdr());
 #endif
 
 	if(outlist) {
@@ -249,6 +309,7 @@ bool flext_base::InitOutlets()
 
 		delete outlist; outlist = NULL;
 		
+#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
 		outlets = new outlet *[outcnt];
 
 		// type info is now in list array
@@ -287,6 +348,35 @@ bool flext_base::InitOutlets()
 #endif
 			} 
 		}
+#elif FLEXT_SYS == FLEXT_SYS_JMAX
+		t_class *cl = thisClass();
+		for(int ix = 0; ix < outcnt; ++ix) {
+			switch(list[ix]) {
+				case xlet::tp_float:
+				case xlet::tp_int: 
+//					fts_class_outlet_number(cl, ix);
+					break;
+				case xlet::tp_sym:
+//					fts_class_outlet_symbol(cl, ix);
+					break;
+				case xlet::tp_list:
+				case xlet::tp_any:
+//					fts_class_outlet_anything(cl, ix);
+					break;
+				case xlet::tp_sig:
+					if(!outsigs) fts_dsp_declare_outlet(cl,0);
+					++outsigs;
+					break;
+#ifdef FLEXT_DEBUG
+				default:
+					ERRINTERNAL();
+					ok = false;
+#endif
+			} 
+		}
+
+		fts_object_set_outlets_number((fts_object_t *)thisHdr(), outcnt);
+#endif
 
 		delete[] list;
 	}

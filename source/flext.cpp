@@ -25,9 +25,13 @@ flext_base::flext_base():
 	curtag(NULL),
 	incnt(0),outcnt(0),
 	insigs(0),outsigs(0),
-	outlets(NULL),outattr(NULL),
-	distmsgs(false),
-	inlets(NULL)
+	distmsgs(false)
+#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
+	,outlets(NULL),outattr(NULL),
+	,inlets(NULL)
+#elif FLEXT_SYS == FLEXT_SYS_JMAX
+	,outattr(0)
+#endif
 #if FLEXT_SYS == FLEXT_SYS_MAX
 	,indesc(NULL),outdesc(NULL)
 #endif
@@ -48,7 +52,9 @@ flext_base::flext_base():
 
 	// message queue ticker
 	qhead = qtail = NULL;
+#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
 	qclk = (t_qelem *)(qelem_new(this,(t_method)QTick));
+#endif
 }
 
 flext_base::~flext_base()
@@ -58,8 +64,14 @@ flext_base::~flext_base()
 #endif
 
 	// send remaining pending messages and destroy queue ticker
+#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
 	while(qhead) QTick(this);
 	qelem_free((t_qelem *)qclk);
+#elif FLEXT_SYS == FLEXT_SYS_JMAX
+	while(qhead) QTick((fts_object_t *)thisHdr(),0,NULL,0,NULL);
+	// this is dangerous because there may be other timers on this object!
+    fts_timebase_remove_object(fts_get_timebase(), (fts_object_t *)thisHdr());
+#endif
 
 	// delete message lists
 	if(methhead) delete methhead;
@@ -68,6 +80,8 @@ flext_base::~flext_base()
 	// destroy inlets and outlets and their proxy objects
 	if(inlist) delete inlist;
 	if(outlist) delete outlist;
+
+#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
 	if(outlets) delete[] outlets;
 
 	if(inlets) {
@@ -82,6 +96,7 @@ flext_base::~flext_base()
 			}
 		delete[] inlets;
 	}
+#endif
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
 	if(indesc) {
@@ -139,10 +154,15 @@ void flext_base::Setup(t_classid id)
 {
 	t_class *c = getClass(id);
 
+#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
 	add_method(c,cb_help,"help");
 	add_loadbang(c,cb_loadbang);
 #if FLEXT_SYS == FLEXT_SYS_MAX
 	add_assist(c,cb_assist);
+#endif
+#else
+	fts_class_message_varargs(c,MakeSymbol("help"),cb_help);
+	#pragma message ("no implementation of loadbang or assist")	
 #endif
 
 	if(process_attributes) 
@@ -156,9 +176,12 @@ void flext_base::Setup(t_classid id)
 #endif
 }
 
+#if FLEXT_SYS == FLEXT_SYS_JMAX
+void flext_base::cb_help(fts_object_t *c,int, fts_symbol_t, int, const fts_atom_t *) { thisObject(c)->m_help(); }	
+#else
 void flext_base::cb_help(t_class *c) { thisObject(c)->m_help(); }	
-
 void flext_base::cb_loadbang(t_class *c) { thisObject(c)->m_loadbang(); }	
+#endif
 
 void flext_base::m_help()
 {

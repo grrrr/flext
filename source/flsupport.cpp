@@ -18,9 +18,12 @@ const t_symbol *flext::sym_float = NULL;
 const t_symbol *flext::sym_symbol = NULL;
 const t_symbol *flext::sym_bang = NULL;
 const t_symbol *flext::sym_list = NULL;
-const t_symbol *flext::sym_anything = NULL;
 const t_symbol *flext::sym_pointer = NULL;
 const t_symbol *flext::sym_int = NULL;
+
+#if FLEXT_SYS != FLEXT_SYS_JMAX
+const t_symbol *flext::sym_anything = NULL;
+#endif
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 const t_symbol *flext::sym_signal = NULL;
@@ -43,8 +46,14 @@ void flext::Setup()
 	sym_bang = gensym("bang");
 	sym_list = gensym("list");
 	sym_anything = gensym("anything");
+#elif FLEXT_SYS == FLEXT_SYS_JMAX
+	sym_int = fts_s_int;
+	sym_float = fts_s_float;
+	sym_symbol = fts_s_symbol;
+	sym_bang = fts_s_bang;
+	sym_list = fts_s_list;
+	sym_pointer = fts_s_pointer;
 #else
-#error
 #endif
 }
 
@@ -69,10 +78,10 @@ void *flext::operator new(size_t bytes)
 void flext::operator delete(void *blk)
 {
 	char *ori = (char *)blk-sizeof(size_t);
-	size_t bytes = *(size_t *)ori;
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-	::fts_free(ori);
+	fts_free(ori);
 #else
+	size_t bytes = *(size_t *)ori;
 	::freebytes(ori,bytes);
 #endif
 }
@@ -96,11 +105,11 @@ void *flext::NewAligned(size_t bytes,int bitalign)
 void flext::FreeAligned(void *blk)
 {
 	char *ori = *(char **)((char *)blk-sizeof(size_t)-sizeof(char *));
-	size_t bytes = *(size_t *)((char *)blk-sizeof(size_t));
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-	::fts_free(ori);
+	fts_free(ori);
 #else
+	size_t bytes = *(size_t *)((char *)blk-sizeof(size_t));
 	::freebytes(ori,bytes);
 #endif
 }

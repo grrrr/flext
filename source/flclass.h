@@ -587,7 +587,8 @@ protected:
 
 		enum { 
 			afl_getset = 0x01, afl_get = 0x00, afl_set = 0x01,
-			afl_bothexist = 0x02
+			afl_bothexist = 0x02,
+			afl_save = 0x04
 		};
 
 		bool IsGet() const { return (flags&afl_getset) == afl_get; }
@@ -656,6 +657,9 @@ private:
 	bool TryMethAny(const methitem *m,int inlet,const t_symbol *t,const t_symbol *s,int argc,const t_atom *argv);
 
 	itemarr *attrhead,*clattrhead;
+
+	attritem *FindAttr(const t_symbol *tag,bool get) const;
+	int ListAttr(AtomList &a) const;
 
 	static int CheckAttrib(int argc,const t_atom *argv);
 	bool InitAttrib(int argc,const t_atom *argv);

@@ -24,8 +24,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 flext_base::attritem::attritem(const t_symbol *t,metharg tp,methfun f,int fl):
 	item(t,0,NULL),argtp(tp),
 	fun(f),flags(fl)
-{
-}
+{}
 
 flext_base::attritem::~attritem()
 {
@@ -94,6 +93,29 @@ void flext_base::AddAttrib(t_class *c,const char *attr,metharg tp,methfun gfun,m
 	AddAttrib(ClAttrs(c),ClMeths(c),attr,tp,gfun,sfun);
 }
 
+int flext_base::ListAttr(AtomList &la) const
+{
+	int cnt = attrhead?attrhead->Count():0;
+	int ccnt = clattrhead?clattrhead->Count():0;
+	la(ccnt+cnt);
+
+	int ix = 0;
+	for(int i = 0; i <= 1; ++i) {
+		itemarr *a = i?attrhead:clattrhead;
+		if(a) {
+			for(int ai = 0; ai < a->Size(); ++ai) {
+				for(item *l = a->Item(ai); l; l = l->nxt) 
+				{
+					attritem *a = (attritem *)l;
+					if(!a->BothExist() || a->IsGet())
+						SetSymbol(la[ix++],a->tag);
+				}
+			}
+		}
+	}
+	return ix;
+}
+
 
 int flext_base::CheckAttrib(int argc,const t_atom *argv)
 {
@@ -120,42 +142,30 @@ bool flext_base::InitAttrib(int argc,const t_atom *argv)
 bool flext_base::ListAttrib()
 {
 	if(outattr) {
-		int cnt = attrhead?attrhead->Count():0;
-		int ccnt = clattrhead?clattrhead->Count():0;
-		AtomList la(ccnt+cnt);
-
-		int ix = 0;
-		for(int i = 0; i <= 1; ++i) {
-			itemarr *a = i?attrhead:clattrhead;
-			if(a) {
-				for(int ai = 0; ai < a->Size(); ++ai) {
-					for(item *l = a->Item(ai); l; l = l->nxt) 
-					{
-						attritem *a = (attritem *)l;
-						if(!a->BothExist() || a->IsGet())
-							SetSymbol(la[ix++],a->tag);
-					}
-				}
-			}
-		}
-
-		ToOutAnything(outattr,MakeSymbol("attributes"),ix,la.Atoms());
+		AtomList la;
+		int c = ListAttr(la);
+		ToOutAnything(outattr,MakeSymbol("attributes"),c,la.Atoms());
 		return true;
 	}
 	else
 		return false;
 }
 
+flext_base::attritem *flext_base::FindAttr(const t_symbol *tag,bool get) const
+{
+	attritem *a = (attritem *)attrhead->Find(tag);
+	while(a && (a->tag != tag || a->inlet != 0 || (get?a->IsSet():a->IsGet()))) a = (attritem *)a->nxt;
+	if(!a) {
+		a = (attritem *)clattrhead->Find(tag);	
+		while(a && (a->tag != tag || a->inlet != 0 || (get?a->IsSet():a->IsGet()))) a = (attritem *)a->nxt;
+	}
+	return a;
+}
+
 bool flext_base::SetAttrib(const t_symbol *tag,int argc,const t_atom *argv)
 {
 	// search for matching attribute
-	attritem *a = (attritem *)attrhead->Find(tag);
-	while(a && (a->tag != tag || a->inlet != 0 || a->IsGet())) a = (attritem *)a->nxt;
-	if(!a) {
-		a = (attritem *)clattrhead->Find(tag);	
-		while(a && (a->tag != tag || a->inlet != 0 || a->IsGet())) a = (attritem *)a->nxt;
-	}
-
+	attritem *a = FindAttr(tag,false);
 	if(a) 
 		return SetAttrib(a,argc,argv);
 	else {

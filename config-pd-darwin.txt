@@ -3,10 +3,10 @@
 #
 
 # your c++ compiler (define only if it's different than g++)
-CXX=g++-3.3
+# CXX=g++-3.3
 
 # where are the PD header files? (m_pd.h, m_imp.h, g_canvas.h)
-PDPATH=/Users/thomas/Desktop/pd-0.37-test8/src
+PDPATH=/usr/src/pd-0.37-0/src
 
 # where is the SndObj include directory? 
 # (leave blank or comment out to disable SndObj support)

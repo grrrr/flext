@@ -376,12 +376,13 @@ bool flext_base::InitOutlets()
 			} 
 		}
 
-		fts_object_set_outlets_number((fts_object_t *)thisHdr(), outcnt);
+		fts_object_set_outlets_number((fts_object_t *)thisHdr(), outcnt+(procattr?1:0));
 #endif
 
 		delete[] list;
 	}
 
+#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
 	if(procattr) {
 		// attribute dump outlet is the last one
 		outlets[outcnt] = 
@@ -393,6 +394,7 @@ bool flext_base::InitOutlets()
 #endif
 
 	}
+#endif
 	
 	return ok;
 }

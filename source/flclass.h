@@ -190,13 +190,7 @@ public:
 	class outlet;
 
 	//! Get pointer to outlet (not in the constructor!)
-	outlet *GetOut(int ix) const { 
-#ifdef FLEXT_DEBUG
-		return (outlets && ix < (procattr?outcnt+1:outcnt))?outlets[ix]:NULL; 
-#else
-		return outlets[ix]; 
-#endif
-	}
+	outlet *GetOut(int ix) const { return outlets[ix]; }
 #endif
 	int GetOutAttr() const { return procattr?CntOut():0; }
 
@@ -240,7 +234,7 @@ public:
 	void ToOutList(int n,const AtomList &list) const { ToOutList(n,list.Count(),list.Atoms()); }
 	
 	//! Output anything (to appointed outlet)
-	void ToOutAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) const; 
+//	void ToOutAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) const; 
 	//! Output anything (index n starts with 0)
 	void ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const; //  { outlet *o = GetOut(n); if(o) ToOutAnything(o,const_cast<t_symbol *>(s),argc,argv); }
 	//! Output anything (index n starts with 0)

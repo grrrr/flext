@@ -6,8 +6,8 @@
 
 #include <flext.h>
  
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 400)
-#error You need at least flext version 0.4.0
+#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 401)
+#error You need at least flext version 0.4.1
 #endif
 
 
@@ -34,10 +34,14 @@ class signal1:
 			// The constructor of your class is responsible for
 			// setting up inlets and outlets and for registering
 			// inlet-methods:
-			
-			AddInSignal(2);         // 2 audio ins
-			AddInFloat();           // 1 float in
-			AddOutSignal();         // 1 audio out [ == AddOutSignal(1) ]
+			// The descriptions of the inlets and outlets are output
+			// via the Max/MSP assist method (when mousing over them in edit mode).
+			// PD will hopefully provide such a feature as well soon
+
+			AddInSignal("left audio in");       // left audio in
+			AddInSignal("right audio in");      // right audio in
+			AddInFloat("panning parameter");    // 1 float in
+			AddOutSignal("audio out");          // 1 audio out 
 			
 			// Now we need to bind the handler function to our
 			// panning inlet, which is inlet 2 (counting all inlets
@@ -87,7 +91,7 @@ class signal1:
 // that be for?  Registering is made easy with the FLEXT_NEW_* macros defined
 // in flext.h. For tilde objects without arguments call:
 
-FLEXT_NEW_DSP("signal1~ signal1~", signal1)
+FLEXT_NEW_DSP("signal1~ pan~", signal1)
 // T.Grill: there are two names for the object: signal1~ as main name and pan~ as its alias
 
 // Now we define our DSP function. It gets this arguments:

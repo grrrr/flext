@@ -147,9 +147,6 @@ void flext_base::Setup(t_class *c)
 void flext_base::cb_help(t_class *c) { thisObject(c)->m_help(); }	
 
 void flext_base::cb_loadbang(t_class *c) { thisObject(c)->m_loadbang(); }	
-#if FLEXT_SYS == FLEXT_SYS_MAX
-void flext_base::cb_assist(t_class *c,void * /*b*/,long msg,long arg,char *s) { thisObject(c)->m_assist(msg,arg,s); }
-#endif
 
 void flext_base::m_help()
 {
@@ -159,8 +156,13 @@ void flext_base::m_help()
 
 void flext_base::m_loadbang() {}
 
+#if FLEXT_SYS == FLEXT_SYS_MAX
+void flext_base::cb_assist(t_class *c,void * /*b*/,long msg,long arg,char *s) { thisObject(c)->m_assist(msg,arg,s); }
+#endif
+
 void flext_base::m_assist(long msg,long arg,char *s) 
 {
+#if FLEXT_SYS == FLEXT_SYS_MAX
 	switch(msg) {
 	case 1: //ASSIST_INLET:
 		strcpy(s,arg < incnt && indesc[arg]?indesc[arg]:""); 
@@ -169,4 +171,5 @@ void flext_base::m_assist(long msg,long arg,char *s)
 		strcpy(s,arg < outcnt && outdesc[arg]?outdesc[arg]:""); 
 		break;
 	}
+#endif
 }

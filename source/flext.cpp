@@ -333,14 +333,14 @@ V flext_base::cb_setup(t_class *c)
 
 	// proxy for extra inlets
 #ifdef PD
-	add_anything(c,cb_px_anything); // for leftmost inlet
+//	add_anything(c,cb_px_anything); // for leftmost inlet
     px_class = class_new(gensym("flext_base proxy"),NULL,NULL,sizeof(px_object),CLASS_PD|CLASS_NOINLET, A_NULL);
 	add_anything(px_class,px_object::px_method); // for other inlets
 #elif defined(MAXMSP) 
 	add_anything(c,cb_px_anything);
 	add_bang(c,cb_px_bang);
-	add_method1(c,cb_px_int,"int",A_INT);  // does this interfere with other int inlets
-	add_method1(c,cb_px_float,"float",A_FLOAT);  // does this interfere with other float inlets
+	add_method1(c,cb_px_int,"int",A_INT);  // does this interfere with other int inlets?
+	add_method1(c,cb_px_float,"float",A_FLOAT);  // does this interfere with other float inlets?
 #endif
 }
 

@@ -63,7 +63,7 @@ Version history:
 0.1.2:
 - defines for callback-to-method functions and method setup (FLEXT_CALLBACK*, FLEXT_ADD*)
 - deprecated support for default arguments (A_DEFFLOAT and A_DEFSYMBOL).. use GIMME instead!
-- flext now uses PD's or Max's memory allocation functions (for safety in Max's overdrive)
+- uses PD's or Max's memory allocation functions (for safety in Max's overdrive)
 - added outlets for anythings
 - better graphics update behavior for PD
 - changed "enable" message for DSP objects to "dspon" (enable is reserved in Max/MSP)
@@ -83,7 +83,7 @@ Version history:
 - fixed bug: wrong return code from buffer::Set
 
 0.1.0: 
-- max-pd 0.2 became flext 0.1.0
+- max-pd 0.2 becomes flext 0.1.0
 - heavy usage of unchanged GEM code
 
 
@@ -109,7 +109,7 @@ TODO list:
 general:
 - documentation
 - add log messages for debugging version
-- add #defines to exclude unwanted features
+- add #defines to exclude unwanted features (should we really?)
 - exchange more preprocessor definitions for C++ base class code (esp. pd and max calls)
 - cleaner makefile for BCC
 - makefile for MS VC++ 6
@@ -122,6 +122,7 @@ none known
 
 tests:
 - test loadbang upon object creation in Max/MSP
+- test effects of Max/MSP proxy objects (loadbang, assist, floatx, intx, ...)
 
 features:
 - use anything inlets from system - do method parsing in flext_base?

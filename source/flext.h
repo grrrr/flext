@@ -26,7 +26,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define FLEXT_VERSION 404
 
 //! \brief flext version string
-#define FLEXT_VERSTR "0.4.4pre"
+#define FLEXT_VERSTR "0.4.4"
 
 //! @}
 

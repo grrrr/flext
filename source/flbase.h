@@ -129,6 +129,7 @@ class FLEXT_EXT flext_obj
         //////////
         // This is a holder - don't touch it
         static t_sigobj     *m_holder;
+        static const char *m_holdname;
 
         //////////
         // The object's name in the patcher
@@ -287,9 +288,9 @@ void * EXTERN_NAME ## NEW_CLASS ()                              \
 {     	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = &obj->pd_obj;                         \
+    flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS;                                  \
     flext_obj::m_holder = NULL;                                 \
-	obj->data->m_name = NAME;									\
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
@@ -314,9 +315,9 @@ void * EXTERN_NAME ## NEW_CLASS (VAR_TYPE arg)                  \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = &obj->pd_obj;                         \
+    flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS(arg);                             \
     flext_obj::m_holder = NULL;                                 \
-	obj->data->m_name = NAME;									\
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
@@ -342,9 +343,9 @@ void * EXTERN_NAME ## NEW_CLASS (t_symbol *, int argc, t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = &obj->pd_obj;                         \
+    flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS(argc, argv);                      \
     flext_obj::m_holder = NULL;                                 \
-	obj->data->m_name = NAME;									\
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
@@ -370,9 +371,9 @@ void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo) \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = &obj->pd_obj;                         \
+    flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS(arg, argtwo);                     \
     flext_obj::m_holder = NULL;                                 \
-	obj->data->m_name = NAME;									\
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
@@ -398,10 +399,10 @@ void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo, THREE_VA
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = &obj->pd_obj;                         \
+    flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS(arg, argtwo, argthree);           \
     flext_obj::m_holder = NULL;                                 \
-   	obj->data->m_name = NAME;									\
-return(obj);                                                \
+	return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
 FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
@@ -426,9 +427,9 @@ void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo, THREE_VA
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = &obj->pd_obj;                         \
+    flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS(arg, argtwo, argthree, argfour);  \
     flext_obj::m_holder = NULL;                                 \
-	obj->data->m_name = NAME;									\
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\

@@ -15,6 +15,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 FLEXT_EXT void *operator new(size_t, void *location, void *) {return(location);}
 
 t_sigobj *flext_obj::m_holder;
+const char *flext_obj::m_holdname;
 
 /////////////////////////////////////////////////////////
 //
@@ -26,7 +27,7 @@ t_sigobj *flext_obj::m_holder;
 /////////////////////////////////////////////////////////
 flext_obj :: flext_obj()
            : x_obj(m_holder)
-		   , m_name("#object in construction#")
+		   , m_name(m_holdname)
 {
 #ifdef PD
     m_canvas = canvas_getcurrent();

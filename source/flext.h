@@ -226,7 +226,7 @@ public:
 	static BL is_symbol(const t_atom &a) { return a.a_type == A_SYMBOL; }
 	static t_symbol *get_symbol(const t_atom &a) { return a.a_w.w_symbol; }
 	static t_symbol *geta_symbol(const t_atom &a) { return is_symbol(a)?get_symbol(a):NULL; }  // NULL or empty symbol?
-	static V set_symbol(t_atom &a,t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_symbol = s; }
+	static V set_symbol(t_atom &a,const t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_symbol = const_cast<t_symbol *>(s); }
 
 #ifdef PD
 	static BL is_pointer(const t_atom &a) { return a.a_type == A_POINTER; }
@@ -241,6 +241,7 @@ public:
 
 	static BL is_flint(const t_atom &a) { return is_float(a); }
 	static F geta_flint(const t_atom &a) { return get_float(a); }
+	static V set_flint(t_atom &a,I v) { a.a_type = A_FLOAT; a.a_w.w_float = v; }
 #elif defined(MAXMSP)
 	static BL is_pointer(const t_atom &) { return false; }
 	static V *get_pointer(const t_atom &) { return NULL; }
@@ -253,6 +254,7 @@ public:
 
 	static BL is_flint(const t_atom &a) { return is_float(a) || is_int(a); }
 	static F geta_flint(const t_atom &a) { return is_float(a)?get_float(a):(is_int(a)?get_int(a):0); }
+	static V set_flint(t_atom &a,I v) { a.a_type = A_INT; a.a_w.w_long = v; }
 #endif
 
 		

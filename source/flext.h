@@ -27,18 +27,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 
-// a few type definitions for the lazy
-
-#define F float 
-#define D double
-#define I int
-#define L long
-#define C char
-#define BL bool
-#define V void
-#define FI t_flint
-
-
 // === flext_base ==================================================
 
 // message only base object
@@ -55,27 +43,27 @@ public:
 
 	// if set flext allows only operations valid for all platforms
 	// true by default!
-	static BL compatibility;  
+//	static bool compatibility;  
 
 
 // --- inheritable virtual methods --------------------------------
 
 	// called on "help" message: should post some text
-	virtual V m_help();
+	virtual void m_help();
 	
 	// called on patcher load (not on mere object creation!)
-	virtual V m_loadbang() {}
+	virtual void m_loadbang() {}
 
 	// quickhelp for inlets/outlets (Max/MSP only)
-	virtual V m_assist(L /*msg*/,L /*arg*/,C * /*s*/) {}
+	virtual void m_assist(long /*msg*/,long /*arg*/,char * /*s*/) {}
 
 	// called for every incoming message 
 	// all method handling is done in there
 	// returns true if a handler was found and called)
-	virtual BL m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv);
+	virtual bool m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv);
 
 	// called for every unhandled message (by m_methodmain)
-	virtual V m_method_(I inlet,const t_symbol *s,I argc,t_atom *argv);
+	virtual void m_method_(int inlet,const t_symbol *s,int argc,t_atom *argv);
 
 
 // --- buffer/array stuff -----------------------------------------	
@@ -87,41 +75,41 @@ public:
 		// construct buffer 
 		// delayed = true: needs another Set(NULL) to initialize the buffer 
 		//                 (in Max the externals are often created prior to the buffer objects)
-		buffer(t_symbol *s = NULL,BL delayed = false);
+		buffer(t_symbol *s = NULL,bool delayed = false);
 		
 		~buffer();
 		
 		// set to another buffer 
 		// nameonly = true: sets name only, no buffer data 
-		I Set(t_symbol *s = NULL,BL nameonly = false);
+		int Set(t_symbol *s = NULL,bool nameonly = false);
 		
 		// dirty buffer content
 		// refr = true: forces immediate graphics refresh
-		V Dirty(BL refr = false);
+		void Dirty(bool refr = false);
 		
 		// get symbol (or literal name) of buffer 
 		t_symbol *Symbol() const { return sym; }
-		const C *Name() const { return sym?sym->s_name:""; }
+		const char *Name() const { return sym?sym->s_name:""; }
 		
 		// get pointer to buffer, channel and frame count
-		F *Data() { return data; }
-		I Channels() const { return chns; }
-		I Frames() const { return frames; }
+		float *Data() { return data; }
+		int Channels() const { return chns; }
+		int Frames() const { return frames; }
 		
 		// graphic auto refresh interval
-		V SetRefrIntv(F intv);
+		void SetRefrIntv(float intv);
 
 	protected:
 		t_symbol *sym;
-		F *data;
-		I chns,frames;
+		float *data;
+		int chns,frames;
 #ifdef PD
-		F interval;
-		BL isdirty,ticking;
+		float interval;
+		bool isdirty,ticking;
 		t_clock *tick;
 
 	private:
-		static V cb_tick(buffer *b);
+		static void cb_tick(buffer *b);
 #endif
 	};
 
@@ -131,46 +119,46 @@ public:
 	// define inlets/outlets - all (also default) inlets must be defined
 	// argument m specifies multiple inlet/outlet count
 	
-//	V add_in_def() { AddInlet(xlet::tp_def,1); }
-	V add_in_anything(I m = 1) { AddInlet(xlet::tp_any,m); } // leftmost or via proxy
-	V add_in_float(I m = 1) { AddInlet(xlet::tp_float,m); }
-	V add_in_flint(I m = 1) { AddInlet(xlet::tp_flint,m); }
-	V add_in_symbol(I m = 1) { AddInlet(xlet::tp_sym,m); }
-	V add_in_list(I m = 1) { AddInlet(xlet::tp_list,m); }  // via proxy
+//	void AddInDef() { AddInlet(xlet::tp_def,1); }
+	void AddInAnything(int m = 1) { AddInlet(xlet::tp_any,m); } // leftmost or via proxy
+	void AddInFloat(int m = 1) { AddInlet(xlet::tp_float,m); }
+	void AddInFlint(int m = 1) { AddInlet(xlet::tp_flint,m); }
+	void AddInSymbol(int m = 1) { AddInlet(xlet::tp_sym,m); }
+	void AddInList(int m = 1) { AddInlet(xlet::tp_list,m); }  // via proxy
 	
-	V add_out_anything(I m = 1) { AddOutlet(xlet::tp_any,m); }
-	V add_out_float(I m = 1) { AddOutlet(xlet::tp_float,m); }
-	V add_out_flint(I m = 1) { AddOutlet(xlet::tp_flint,m); }
-	V add_out_symbol(I m = 1) { AddOutlet(xlet::tp_sym,m); }
-	V add_out_list(I m = 1) { AddOutlet(xlet::tp_list,m); }
+	void AddOutAnything(int m = 1) { AddOutlet(xlet::tp_any,m); }
+	void AddOutFloat(int m = 1) { AddOutlet(xlet::tp_float,m); }
+	void AddOutFlint(int m = 1) { AddOutlet(xlet::tp_flint,m); }
+	void AddOutSymbol(int m = 1) { AddOutlet(xlet::tp_sym,m); }
+	void AddOutList(int m = 1) { AddOutlet(xlet::tp_list,m); }
 	
 	// must be called to actually set up the defined inlets/outlets 
 	// only ONCE!!!
 	// returns true on successful creation of all inlets and outlets
-	BL setup_inout(); 
+	bool SetupInOut(); 
 
-	I cnt_in() const { return incnt; }
-	I cnt_out() const { return outcnt; }
-	I cnt_insig() const { return insigs; }
-	I cnt_outsig() const { return outsigs; }
+	int CntIn() const { return incnt; }
+	int CntOut() const { return outcnt; }
+	int CntInSig() const { return insigs; }
+	int CntOutSig() const { return outsigs; }
 
 
 	class outlet;
 
 	// get pointer _after_ calling setup_inout()
-	outlet *get_out(I ix) { return (outlets && ix < outcnt)?outlets[ix]:NULL; }
+	outlet *GetOut(int ix) { return (outlets && ix < outcnt)?outlets[ix]:NULL; }
 
 	// output messages (n starts with 0)
-	V to_out_float(outlet *o,F f); 
-	V to_out_float(I n,F f) { outlet *o = get_out(n); if(o) to_out_float(o,f); }
-	V to_out_flint(outlet *o,FI f); 
-	V to_out_flint(I n,FI f) { outlet *o = get_out(n); if(o) to_out_flint(o,f); }
-	V to_out_symbol(outlet *o,const t_symbol *s); 
-	V to_out_symbol(I n,const t_symbol *s) { outlet *o = get_out(n); if(o) to_out_symbol(o,const_cast<t_symbol *>(s)); }
-	V to_out_list(outlet *o,I argc,t_atom *argv); 
-	V to_out_list(I n,I argc,t_atom *argv)  { outlet *o = get_out(n); if(o) to_out_list(o,argc,argv); }
-	V to_out_anything(outlet *o,const t_symbol *s,I argc,t_atom *argv); 
-	V to_out_anything(I n,const t_symbol *s,I argc,t_atom *argv)  { outlet *o = get_out(n); if(o) to_out_anything(o,const_cast<t_symbol *>(s),argc,argv); }
+	void ToOutFloat(outlet *o,float f); 
+	void ToOutFloat(int n,float f) { outlet *o = GetOut(n); if(o) ToOutFloat(o,f); }
+	void ToOutFlint(outlet *o,flint f); 
+	void ToOutFlint(int n,flint f) { outlet *o = GetOut(n); if(o) ToOutFlint(o,f); }
+	void ToOutSymbol(outlet *o,const t_symbol *s); 
+	void ToOutSymbol(int n,const t_symbol *s) { outlet *o = GetOut(n); if(o) ToOutSymbol(o,const_cast<t_symbol *>(s)); }
+	void ToOutList(outlet *o,int argc,t_atom *argv); 
+	void ToOutList(int n,int argc,t_atom *argv)  { outlet *o = GetOut(n); if(o) ToOutList(o,argc,argv); }
+	void ToOutAnything(outlet *o,const t_symbol *s,int argc,t_atom *argv); 
+	void ToOutAnything(int n,const t_symbol *s,int argc,t_atom *argv)  { outlet *o = GetOut(n); if(o) ToOutAnything(o,const_cast<t_symbol *>(s),argc,argv); }
 		
 		
 // --- message handling -------------------------------------------
@@ -182,29 +170,29 @@ public:
 		a_gimme
 	};
 
-	typedef V (*methfun)(t_class *c);
+	typedef void (*methfun)(t_class *c);
 
-	V add_meth_def(I inlet); // call virtual function for inlet
-	V add_meth_def(I inlet,const C *tag); // call virtual function for tag && inlet
-	V add_meth_one(I inlet,const C *tag,methfun fun,metharg tp,...); 
+	void AddMethodDef(int inlet); // call virtual function for inlet
+	void AddMethodDef(int inlet,const char *tag); // call virtual function for tag && inlet
+	void AddMethod(int inlet,const char *tag,methfun fun,metharg tp,...); 
 
-	V add_meth(I inlet,V (*m)(flext_base *,I argc,t_atom *argv)) { add_meth_one(inlet,"list",(methfun)m,a_gimme,a_null); }
-	V add_meth(I inlet,const C *tag,V (*m)(flext_base *)) { add_meth_one(inlet,tag,(methfun)m,a_null); }  // pure method
-	V add_meth(I inlet,V (*m)(flext_base *,t_symbol *s,I argc,t_atom *argv)) { add_meth_one(inlet,"anything",(methfun)m,a_gimme,a_null); } // anything
-	V add_meth(I inlet,V (*m)(flext_base *,t_symbol *s)) { add_meth_one(inlet,"symbol",(methfun)m,a_symbol,a_null); } // anything
-	V add_meth(I inlet,V (*m)(flext_base *,F &)) { add_meth_one(inlet,"float",(methfun)m,a_float,a_null); }  // single float
-	V add_meth(I inlet,V (*m)(flext_base *,F &,F &)) { add_meth_one(inlet,"list",(methfun)m,a_float,a_float,a_null); } // list of 2 floats
-	V add_meth(I inlet,V (*m)(flext_base *,F &,F &,F &)) { add_meth_one(inlet,"list",(methfun)m,a_float,a_float,a_float,a_null); } // list of 3 floats
-	V add_meth(I inlet,V (*m)(flext_base *,I &)) { add_meth_one(inlet,"int",(methfun)m,a_int,a_null); }  // single float
-	V add_meth(I inlet,V (*m)(flext_base *,I &,I &)) { add_meth_one(inlet,"list",(methfun)m,a_int,a_int,a_null); } // list of 2 floats
-	V add_meth(I inlet,V (*m)(flext_base *,I &,I &,I &)) { add_meth_one(inlet,"list",(methfun)m,a_int,a_int,a_int,a_null); } // list of 3 floats
-	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,I argc,t_atom *argv)) { add_meth_one(inlet,tag,(methfun)m,a_gimme,a_null); } // method+gimme
-	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,t_symbol *s)) { add_meth_one(inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
-	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,F &)) { add_meth_one(inlet,tag,(methfun)m,a_float,a_null); }  // method+float
-	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,I &)) { add_meth_one(inlet,tag,(methfun)m,a_int,a_null); } // method+int
+	void AddMethod(int inlet,void (*m)(flext_base *,int argc,t_atom *argv)) { AddMethod(inlet,"list",(methfun)m,a_gimme,a_null); }
+	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *)) { AddMethod(inlet,tag,(methfun)m,a_null); }  // pure method
+	void AddMethod(int inlet,void (*m)(flext_base *,t_symbol *s,int argc,t_atom *argv)) { AddMethod(inlet,"anything",(methfun)m,a_gimme,a_null); } // anything
+	void AddMethod(int inlet,void (*m)(flext_base *,t_symbol *s)) { AddMethod(inlet,"symbol",(methfun)m,a_symbol,a_null); } // anything
+	void AddMethod(int inlet,void (*m)(flext_base *,float &)) { AddMethod(inlet,"float",(methfun)m,a_float,a_null); }  // single float
+	void AddMethod(int inlet,void (*m)(flext_base *,float &,float &)) { AddMethod(inlet,"list",(methfun)m,a_float,a_float,a_null); } // list of 2 floats
+	void AddMethod(int inlet,void (*m)(flext_base *,float &,float &,float &)) { AddMethod(inlet,"list",(methfun)m,a_float,a_float,a_float,a_null); } // list of 3 floats
+	void AddMethod(int inlet,void (*m)(flext_base *,int &)) { AddMethod(inlet,"int",(methfun)m,a_int,a_null); }  // single float
+	void AddMethod(int inlet,void (*m)(flext_base *,int &,int &)) { AddMethod(inlet,"list",(methfun)m,a_int,a_int,a_null); } // list of 2 floats
+	void AddMethod(int inlet,void (*m)(flext_base *,int &,int &,int &)) { AddMethod(inlet,"list",(methfun)m,a_int,a_int,a_int,a_null); } // list of 3 floats
+	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,int argc,t_atom *argv)) { AddMethod(inlet,tag,(methfun)m,a_gimme,a_null); } // method+gimme
+	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,t_symbol *s)) { AddMethod(inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
+	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,float &)) { AddMethod(inlet,tag,(methfun)m,a_float,a_null); }  // method+float
+	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,int &)) { AddMethod(inlet,tag,(methfun)m,a_int,a_null); } // method+int
 
 	// MaxMSP style of distributing list elements over (message) inlets
-	V set_dist(BL d = true) { distmsgs = d; }
+	void SetDist(bool d = true) { distmsgs = d; }
 
 // --- various symbols --------------------------------------------
 
@@ -221,53 +209,53 @@ public:
 #endif
 
 	// get symbol string
-	static const C *get_string(const t_symbol *s) { return s->s_name; }  
-	static const C *geta_string(const t_symbol *s) { return s?s->s_name:""; }  
+	static const char *GetString(const t_symbol *s) { return s->s_name; }  
+	static const char *GetAString(const t_symbol *s) { return s?s->s_name:""; }  
 		
 // --- argument list stuff ----------------------------------------
 		
-	static BL is_float(const t_atom &a) { return a.a_type == A_FLOAT; }
-	static F get_float(const t_atom &a) { return a.a_w.w_float; }
-	static F geta_float(const t_atom &a) { return is_float(a)?get_float(a):0; }
-	static V set_float(t_atom &a,F v) { a.a_type = A_FLOAT; a.a_w.w_float = v; }
+	static bool IsFloat(const t_atom &a) { return a.a_type == A_FLOAT; }
+	static float GetFloat(const t_atom &a) { return a.a_w.w_float; }
+	static float GetAFloat(const t_atom &a) { return IsFloat(a)?GetFloat(a):0; }
+	static void SetFloat(t_atom &a,float v) { a.a_type = A_FLOAT; a.a_w.w_float = v; }
 
-	static BL is_symbol(const t_atom &a) { return a.a_type == A_SYMBOL; }
-	static t_symbol *get_symbol(const t_atom &a) { return a.a_w.w_symbol; }
-	static t_symbol *geta_symbol(const t_atom &a) { return is_symbol(a)?get_symbol(a):NULL; }  // NULL or empty symbol?
-	static V set_symbol(t_atom &a,const t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_symbol = const_cast<t_symbol *>(s); }
+	static bool IsSymbol(const t_atom &a) { return a.a_type == A_SYMBOL; }
+	static t_symbol *GetSymbol(const t_atom &a) { return a.a_w.w_symbol; }
+	static t_symbol *GetASymbol(const t_atom &a) { return IsSymbol(a)?GetSymbol(a):NULL; }  // NULL or empty symbol?
+	static void SetSymbol(t_atom &a,const t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_symbol = const_cast<t_symbol *>(s); }
 
-	static BL is_string(const t_atom &a) { return is_symbol(a); }
-	static const C *get_string(const t_atom &a) { t_symbol *s = get_symbol(a); return s?get_string(s):NULL; }  
-	static V geta_string(const t_atom &a,C *buf,I szbuf);
-	static V set_string(t_atom &a,const C *c) { set_symbol(a,gensym(const_cast<C *>(c))); }
+	static bool IsString(const t_atom &a) { return IsSymbol(a); }
+	static const char *GetString(const t_atom &a) { t_symbol *s = GetSymbol(a); return s?GetString(s):NULL; }  
+	static void GetAString(const t_atom &a,char *buf,int szbuf);
+	static void SetString(t_atom &a,const char *c) { SetSymbol(a,gensym(const_cast<char *>(c))); }
 
 #ifdef PD
-	static BL is_pointer(const t_atom &a) { return a.a_type == A_POINTER; }
-	static t_gpointer *get_pointer(const t_atom &a) { return a.a_w.w_gpointer; }
-	static t_gpointer *geta_pointer(const t_atom &a) { return is_pointer(a)?get_pointer(a):NULL; }
-	static V set_pointer(t_atom &a,t_gpointer *p) { a.a_type = A_POINTER; a.a_w.w_gpointer = p; }
+	static bool IsPointer(const t_atom &a) { return a.a_type == A_POINTER; }
+	static t_gpointer *GetPointer(const t_atom &a) { return a.a_w.w_gpointer; }
+	static t_gpointer *GetAPointer(const t_atom &a) { return IsPointer(a)?GetPointer(a):NULL; }
+	static void SetPointer(t_atom &a,t_gpointer *p) { a.a_type = A_POINTER; a.a_w.w_gpointer = p; }
 
-	static BL is_int(const t_atom &) { return false; }
-	static I get_int(const t_atom &) { return 0; }
-	static I geta_int(const t_atom &) { return 0; }
-//	static V set_int(const t_atom &,I) { }
+	static bool IsInt(const t_atom &) { return false; }
+	static int GetInt(const t_atom &) { return 0; }
+	static int GetAInt(const t_atom &) { return 0; }
+//	static void SetInt(const t_atom &,int) { }
 
-	static BL is_flint(const t_atom &a) { return is_float(a); }
-	static F geta_flint(const t_atom &a) { return get_float(a); }
-	static V set_flint(t_atom &a,I v) { a.a_type = A_FLOAT; a.a_w.w_float = (F)v; }
+	static bool IsFlint(const t_atom &a) { return IsFloat(a); }
+	static float GetAFlint(const t_atom &a) { return GetFloat(a); }
+	static void SetFlint(t_atom &a,int v) { a.a_type = A_FLOAT; a.a_w.w_float = (float)v; }
 #elif defined(MAXMSP)
-	static BL is_pointer(const t_atom &) { return false; }
-	static V *get_pointer(const t_atom &) { return NULL; }
-	static V *geta_pointer(const t_atom &) { return NULL; }
-//	static V set_pointer(t_atom &,V *) {}
-	static BL is_int(const t_atom &a) { return a.a_type == A_INT; }
-	static I get_int(const t_atom &a) { return a.a_w.w_long; }
-	static I geta_int(const t_atom &a) { return is_int(a)?get_int(a):0; }
-	static V set_int(t_atom &a,I v) { a.a_type = A_INT, a.a_w.w_long = v; }
+	static bool IsPointer(const t_atom &) { return false; }
+	static void *GetPointer(const t_atom &) { return NULL; }
+	static void *GetAPointer(const t_atom &) { return NULL; }
+//	static void SetPointer(t_atom &,void *) {}
+	static bool IsInt(const t_atom &a) { return a.a_type == A_INT; }
+	static int GetInt(const t_atom &a) { return a.a_w.w_long; }
+	static int GetAInt(const t_atom &a) { return IsInt(a)?GetInt(a):0; }
+	static void SetInt(t_atom &a,int v) { a.a_type = A_INT, a.a_w.w_long = v; }
 
-	static BL is_flint(const t_atom &a) { return is_float(a) || is_int(a); }
-	static F geta_flint(const t_atom &a) { return is_float(a)?get_float(a):(is_int(a)?get_int(a):0); }
-	static V set_flint(t_atom &a,I v) { a.a_type = A_INT; a.a_w.w_long = v; }
+	static bool IsFlint(const t_atom &a) { return IsFloat(a) || IsInt(a); }
+	static float GetAFlint(const t_atom &a) { return IsFloat(a)?GetFloat(a):(IsInt(a)?GetInt(a):0); }
+	static void SetFlint(t_atom &a,int v) { a.a_type = A_INT; a.a_w.w_long = v; }
 #endif
 
 // --- list creation stuff ----------------------------------------
@@ -298,37 +286,37 @@ protected:
 		xlet *nxt;
 	};
 	
-	V AddInlet(xlet::type tp,I mult) { AddXlet(tp,mult,inlist); }
-	V AddOutlet(xlet::type tp,I mult) { AddXlet(tp,mult,outlist); }
+	void AddInlet(xlet::type tp,int mult) { AddXlet(tp,mult,inlist); }
+	void AddOutlet(xlet::type tp,int mult) { AddXlet(tp,mult,outlist); }
 
 // method handling
 
 	class methitem { 
 	public:
-		methitem(I inlet,t_symbol *t);
+		methitem(int inlet,t_symbol *t);
 		~methitem();
 
-		V SetArgs(methfun fun,I argc,metharg *args);
+		void SetArgs(methfun fun,int argc,metharg *args);
 
 		t_symbol *tag;
-		I inlet;
-		I argc;
+		int inlet;
+		int argc;
 		metharg *args;
 		methfun fun;
 		
 		methitem *nxt;
 	};
 	
-	V AddMethItem(methitem *m);
+	void AddMethItem(methitem *m);
 	
 private:
 
 	xlet *inlist,*outlist;
-	I incnt,outcnt,insigs,outsigs;
+	int incnt,outcnt,insigs,outsigs;
 	outlet **outlets;
-	BL distmsgs;
+	bool distmsgs;
 
-	V AddXlet(xlet::type tp,I mult,xlet *&root);	
+	void AddXlet(xlet::type tp,int mult,xlet *&root);	
 
 	methitem *mlst;
 
@@ -336,44 +324,44 @@ private:
 	// proxy object (for additional inlets) stuff
 	struct px_object;
 	friend struct px_object;
-	static V cb_px_anything(t_class *c,const t_symbol *s,I argc,t_atom *argv);
+	static void cb_px_anything(t_class *c,const t_symbol *s,int argc,t_atom *argv);
 #elif defined(MAXMSP)
 	typedef object px_object;
-	static V cb_px_anything(t_class *c,const t_symbol *s,I argc,t_atom *argv);
-	static V cb_px_int(t_class *c,I v);
-	static V cb_px_float(t_class *c,F f);
-	static V cb_px_bang(t_class *c);
+	static void cb_px_anything(t_class *c,const t_symbol *s,int argc,t_atom *argv);
+	static void cb_px_int(t_class *c,int v);
+	static void cb_px_float(t_class *c,float f);
+	static void cb_px_bang(t_class *c);
 
-	static V cb_px_in1(t_class *c,I v);
-	static V cb_px_in2(t_class *c,I v);
-	static V cb_px_in3(t_class *c,I v);
-	static V cb_px_in4(t_class *c,I v);
-	static V cb_px_in5(t_class *c,I v);
-	static V cb_px_in6(t_class *c,I v);
-	static V cb_px_in7(t_class *c,I v);
-	static V cb_px_in8(t_class *c,I v);
-	static V cb_px_in9(t_class *c,I v);
+	static void cb_px_in1(t_class *c,int v);
+	static void cb_px_in2(t_class *c,int v);
+	static void cb_px_in3(t_class *c,int v);
+	static void cb_px_in4(t_class *c,int v);
+	static void cb_px_in5(t_class *c,int v);
+	static void cb_px_in6(t_class *c,int v);
+	static void cb_px_in7(t_class *c,int v);
+	static void cb_px_in8(t_class *c,int v);
+	static void cb_px_in9(t_class *c,int v);
 #endif
 
-	static V cb_px_ft1(t_class *c,F f);
-	static V cb_px_ft2(t_class *c,F f);
-	static V cb_px_ft3(t_class *c,F f);
-	static V cb_px_ft4(t_class *c,F f);
-	static V cb_px_ft5(t_class *c,F f);
-	static V cb_px_ft6(t_class *c,F f);
-	static V cb_px_ft7(t_class *c,F f);
-	static V cb_px_ft8(t_class *c,F f);
-	static V cb_px_ft9(t_class *c,F f);
+	static void cb_px_ft1(t_class *c,float f);
+	static void cb_px_ft2(t_class *c,float f);
+	static void cb_px_ft3(t_class *c,float f);
+	static void cb_px_ft4(t_class *c,float f);
+	static void cb_px_ft5(t_class *c,float f);
+	static void cb_px_ft6(t_class *c,float f);
+	static void cb_px_ft7(t_class *c,float f);
+	static void cb_px_ft8(t_class *c,float f);
+	static void cb_px_ft9(t_class *c,float f);
 
 	px_object **inlets;
 
 	// callback functions
 
-	static V cb_help(t_class *c);
+	static void cb_help(t_class *c);
 
-	static V cb_loadbang(t_class *c);
+	static void cb_loadbang(t_class *c);
 #ifdef MAXMSP
-	static V cb_assist(t_class *c,V *b,L msg,L arg,C *s);
+	static void cb_assist(t_class *c,void *b,long msg,long arg,char *s);
 #endif
 };
 
@@ -391,7 +379,7 @@ class flext_dsp:
 public:
 
 	// returns current sample rate
-	F samplerate() const { return srate; }
+	float samplerate() const { return srate; }
 	
 
 // --- inheritable virtual methods --------------------------------
@@ -400,26 +388,26 @@ public:
 	//   n: frames (aka samples) in one signal vector
 	//   insigs: array of input vectors  (get number with function cnt_insig())
 	//   outsigs: array of output vectors  (get number with function cnt_outsig())
-	virtual V m_dsp(I n,F *const *insigs,F *const *outsigs);
+	virtual void m_dsp(int n,float *const *insigs,float *const *outsigs);
 
 	// called with every signal vector (here you do the dsp calculation)
 	//   n: frames (aka samples) in one signal vector
 	//   insigs: array of input vectors  (get number with function cnt_insig())
 	//   outsigs: array of output vectors  (get number with function cnt_outsig())
-	virtual V m_signal(I n,F *const *insigs,F *const *outsigs) = 0;
+	virtual void m_signal(int n,float *const *insigs,float *const *outsigs) = 0;
 
 	// called with "enable" message: pauses/resumes dsp - implicitely defined in MaxMSP
 #ifndef MAXMSP
-	virtual V m_enable(BL on);
+	virtual void m_enable(bool on);
 #endif
 
 // --- inlet/outlet stuff -----------------------------------------	
 
 	// add signal inlet
-	V add_in_signal(I m = 1) { AddInlet(xlet::tp_sig,m); }
+	void AddInSignal(int m = 1) { AddInlet(xlet::tp_sig,m); }
 
 	// add signal outlet
-	V add_out_signal(I m = 1) { AddOutlet(xlet::tp_sig,m); }
+	void AddOutSignal(int m = 1) { AddOutlet(xlet::tp_sig,m); }
 
 
 protected:
@@ -429,21 +417,21 @@ protected:
 	
 private:
 
-	F srate;
+	float srate;
 
 
 	// callback functions
 
-	static V cb_dsp(t_class *c,t_signal **s);
+	static void cb_dsp(t_class *c,t_signal **s);
 #ifndef MAXMSP
-	static V cb_enable(t_class *c,FI on);
-	BL dspon;
+	static void cb_enable(t_class *c,flint on);
+	bool dspon;
 #endif
 
 	// dsp stuff
 
 	static t_int *dspmeth(t_int *w); 
-	F **invecs,**outvecs;
+	float **invecs,**outvecs;
 };
 
 
@@ -492,9 +480,9 @@ static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,T
 // Shortcuts
 
 // for float argument(s)
-#define FLEXT_CALLBACK_F(M_FUN) FLEXT_CALLBACK_1(M_FUN,F)
-#define FLEXT_CALLBACK_FF(M_FUN) FLEXT_CALLBACK_2(M_FUN,F,F)
-#define FLEXT_CALLBACK_FFF(M_FUN) FLEXT_CALLBACK_3(M_FUN,F,F,F)
+#define FLEXT_CALLBACK_F(M_FUN) FLEXT_CALLBACK_1(M_FUN,float)
+#define FLEXT_CALLBACK_FF(M_FUN) FLEXT_CALLBACK_2(M_FUN,float,float)
+#define FLEXT_CALLBACK_FFF(M_FUN) FLEXT_CALLBACK_3(M_FUN,float,float,float)
 
 
 // Shortcuts for method arguments
@@ -514,52 +502,52 @@ static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,T
 
 // enable list element distribution over inlets (if no better handler found)
 #define FLEXT_ADDDIST() \
-set_dist(true)	
+SetDist(true)	
 
 // add handler for bang 
 #define FLEXT_ADDBANG(IX,M_FUN) \
-add_meth(IX,"bang",cb_ ## M_FUN)	
+AddMethod(IX,"bang",cb_ ## M_FUN)	
 
 // add handler for method with no args
 #define FLEXT_ADDMETHOD(IX,M_FUN) \
-add_meth(IX,cb_ ## M_FUN)	
+AddMethod(IX,cb_ ## M_FUN)	
 
 // add handler for method with no args
 #define FLEXT_ADDMETHOD_(IX,M_TAG,M_FUN) \
-add_meth(IX,M_TAG,cb_ ## M_FUN)	
+AddMethod(IX,M_TAG,cb_ ## M_FUN)	
 
 // add handler for method with 1 enum type arg
 #define FLEXT_ADDMETHOD_E(IX,M_TAG,M_FUN) \
-add_meth_one(IX,M_TAG,(methfun)(cb_ ## M_FUN),a_int,a_null)
+AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),a_int,a_null)
 
 // add handler for method with 1 arg
 #define FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,TP1) \
-add_meth_one(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),a_null)	
+AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),a_null)	
 
 // add handler for method with 2 args
 #define FLEXT_ADDMETHOD_2(IX,M_TAG,M_FUN,TP1,TP2) \
-add_meth_one(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),a_null)
+AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),a_null)
 
 // add handler for method with 3 args
 #define FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,TP1,TP2,TP3) \
-add_meth_one(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),a_null)
+AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),a_null)
 
 // add handler for method with 4 args
 #define FLEXT_ADDMETHOD_4(IX,M_TAG,M_FUN,TP1,TP2,TP3,TP4) \
-add_meth_one(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),a_null)
+AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),a_null)
 
 // add handler for method with 5 args
 #define FLEXT_ADDMETHOD_5(IX,M_TAG,M_FUN,TP1,TP2,TP3,TP4,TP5) \
-add_meth_one(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),FLEXTARG(TP5),a_null)
+AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),FLEXTARG(TP5),a_null)
 
 // shortcuts
 // boolean argument
-#define FLEXT_ADDMETHOD_B(IX,M_TAG,M_FUN) FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,BL)
+#define FLEXT_ADDMETHOD_B(IX,M_TAG,M_FUN) FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,bool)
 
 // float argument(s)
-#define FLEXT_ADDMETHOD_F(IX,M_TAG,M_FUN) FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,F)
-#define FLEXT_ADDMETHOD_FF(IX,M_TAG,M_FUN) FLEXT_ADDMETHOD_2(IX,M_TAG,M_FUN,F,F)
-#define FLEXT_ADDMETHOD_FFF(IX,M_TAG,M_FUN) FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,F,F,F)
+#define FLEXT_ADDMETHOD_F(IX,M_TAG,M_FUN) FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,float)
+#define FLEXT_ADDMETHOD_FF(IX,M_TAG,M_FUN) FLEXT_ADDMETHOD_2(IX,M_TAG,M_FUN,float,float)
+#define FLEXT_ADDMETHOD_FFF(IX,M_TAG,M_FUN) FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,float,float,float)
 
 #endif
 

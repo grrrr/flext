@@ -22,25 +22,25 @@ struct flext_base::px_object  // no virtual table!
 { 
 	t_object obj;			// MUST reside at memory offset 0
 	flext_base *base;
-	I index;
+	int index;
 
-	V init(flext_base *b,I ix) { base = b; index = ix; }
-	static V px_method(px_object *c,const t_symbol *s,I argc,t_atom *argv);
+	void init(flext_base *b,int ix) { base = b; index = ix; }
+	static void px_method(px_object *c,const t_symbol *s,int argc,t_atom *argv);
 };
 
 
-V flext_base::px_object::px_method(px_object *obj,const t_symbol *s,I argc,t_atom *argv)
+void flext_base::px_object::px_method(px_object *obj,const t_symbol *s,int argc,t_atom *argv)
 {
 	obj->base->m_methodmain(obj->index,s,argc,argv);
 }
 
-V flext_base::cb_px_anything(t_class *c,const t_symbol *s,I argc,t_atom *argv)
+void flext_base::cb_px_anything(t_class *c,const t_symbol *s,int argc,t_atom *argv)
 {
 	thisObject(c)->m_methodmain(0,s,argc,argv);
 }
 
 #define DEF_IN_FT(IX) \
-V flext_base::cb_px_ft ## IX(t_class *c,F v) { \
+void flext_base::cb_px_ft ## IX(t_class *c,float v) { \
 	t_atom atom; SETFLOAT(&atom,v);  \
 	thisObject(c)->m_methodmain(IX,&s_float,1,&atom); \
 }
@@ -50,16 +50,16 @@ add_method1(c,cb_px_ft ## IX,"ft" #IX,A_FLOAT)
 
 #elif defined(MAXMSP)
 
-V flext_base::cb_px_anything(t_class *c,const t_symbol *s,I argc,t_atom *argv)
+void flext_base::cb_px_anything(t_class *c,const t_symbol *s,int argc,t_atom *argv)
 {
 	// check if inlet allows anything (or list)
 	
 	flext_base *o = thisObject(c);
-	I ci = ((flext_hdr *)o->x_obj)->curinlet;
+	int ci = ((flext_hdr *)o->x_obj)->curinlet;
 	o->m_methodmain(ci,s,argc,argv);
 }
 
-V flext_base::cb_px_int(t_class *c,I v)
+void flext_base::cb_px_int(t_class *c,int v)
 {
 	// check if inlet allows int type
 	t_atom atom;
@@ -67,7 +67,7 @@ V flext_base::cb_px_int(t_class *c,I v)
 	cb_px_anything(c,sym_int,1,&atom);
 }
 
-V flext_base::cb_px_float(t_class *c,F v)
+void flext_base::cb_px_float(t_class *c,float v)
 {
 	// check if inlet allows float type
 	t_atom atom;
@@ -75,15 +75,15 @@ V flext_base::cb_px_float(t_class *c,F v)
 	cb_px_anything(c,sym_float,1,&atom);
 }
 
-V flext_base::cb_px_bang(t_class *c)
+void flext_base::cb_px_bang(t_class *c)
 {
 	// check if inlet allows bang
 	cb_px_anything(c,sym_bang,0,NULL);
 }
 
 #define DEF_IN_FT(IX) \
-V flext_base::cb_px_in ## IX(t_class *c,I v) { L &ci = ((flext_hdr *)thisObject(c)->x_obj)->curinlet; ci = IX; cb_px_int(c,v); ci = 0; } \
-V flext_base::cb_px_ft ## IX(t_class *c,F v) { L &ci = ((flext_hdr *)thisObject(c)->x_obj)->curinlet; ci = IX; cb_px_float(c,v); ci = 0; }
+void flext_base::cb_px_in ## IX(t_class *c,int v) { long &ci = ((flext_hdr *)thisObject(c)->x_obj)->curinlet; ci = IX; cb_px_int(c,v); ci = 0; } \
+void flext_base::cb_px_ft ## IX(t_class *c,float v) { long &ci = ((flext_hdr *)thisObject(c)->x_obj)->curinlet; ci = IX; cb_px_float(c,v); ci = 0; }
 
 #define ADD_IN_FT(IX) \
 add_method1(c,cb_px_in ## IX,"in" #IX,A_INT); \
@@ -106,7 +106,7 @@ DEF_IN_FT(9)
 
 // === flext_base ============================================
 
-BL flext_base::compatibility = true;
+//bool flext_base::compatibility = true;
 
 
 const t_symbol *flext_base::sym_float = NULL;
@@ -140,7 +140,7 @@ flext_base::~flext_base()
 	if(outlets) delete[] outlets;
 
 	if(inlets) {
-		for(I ix = 0; ix < incnt; ++ix)
+		for(int ix = 0; ix < incnt; ++ix)
 			if(inlets[ix]) {
 #ifdef PD
 				pd_free(&inlets[ix]->obj.ob_pd);
@@ -156,7 +156,7 @@ flext_base::~flext_base()
 
 flext_base::xlet::~xlet() { if(nxt) delete nxt; }
 
-V flext_base::AddXlet(xlet::type tp,I mult,xlet *&root)
+void flext_base::AddXlet(xlet::type tp,int mult,xlet *&root)
 {
 	if(!root && mult) { root = new xlet(tp); --mult; }
 	if(mult) {
@@ -167,21 +167,21 @@ V flext_base::AddXlet(xlet::type tp,I mult,xlet *&root)
 }
 
 
-V flext_base::to_out_float(outlet *o,F f) { outlet_float((t_outlet *)o,f); }
-V flext_base::to_out_flint(outlet *o,FI f) { outlet_flint((t_outlet *)o,f); }
-V flext_base::to_out_symbol(outlet *o,const t_symbol *s) { outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); }
-V flext_base::to_out_list(outlet *o,I argc,t_atom *argv) { outlet_list((t_outlet *)o,gensym("list"),argc,argv); }
-V flext_base::to_out_anything(outlet *o,const t_symbol *s,I argc,t_atom *argv) { outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,argv); }
+void flext_base::ToOutFloat(outlet *o,float f) { outlet_float((t_outlet *)o,f); }
+void flext_base::ToOutFlint(outlet *o,flint f) { outlet_flint((t_outlet *)o,f); }
+void flext_base::ToOutSymbol(outlet *o,const t_symbol *s) { outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); }
+void flext_base::ToOutList(outlet *o,int argc,t_atom *argv) { outlet_list((t_outlet *)o,gensym("list"),argc,argv); }
+void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,t_atom *argv) { outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,argv); }
 
 
-BL flext_base::setup_inout()
+bool flext_base::SetupInOut()
 {
-	BL ok = true;
+	bool ok = true;
 	
 	incnt = insigs = 0; 
 
 	if(inlets) { 
-		for(I ix = 0; ix < incnt; ++ix) 
+		for(int ix = 0; ix < incnt; ++ix) 
 			if(inlets[ix]) {
 #ifdef PD
 				pd_free(&inlets[ix]->obj.ob_pd);
@@ -198,7 +198,7 @@ BL flext_base::setup_inout()
 		incnt = 0;
 		for(xi = inlist; xi; xi = xi->nxt) ++incnt;
 		xlet::type *list = new xlet::type[incnt];
-		I i;
+		int i;
 		for(xi = inlist,i = 0; xi; xi = xi->nxt,++i) list[i] = xi->tp;
 		delete inlist; inlist = NULL;
 		
@@ -208,7 +208,7 @@ BL flext_base::setup_inout()
 		// type info is now in list array
 #ifdef PD
 		{
-			I cnt = 0;
+			int cnt = 0;
 
 			if(incnt >= 1) {
 				switch(list[0]) {
@@ -225,11 +225,11 @@ BL flext_base::setup_inout()
 				} 
 			}		
 
-			for(I ix = 1; ix < incnt; ++ix,++cnt) {
+			for(int ix = 1; ix < incnt; ++ix,++cnt) {
 				switch(list[ix]) {
 					case xlet::tp_float:
 					case xlet::tp_flint: {
-						C sym[] = "ft??";
+						char sym[] = "ft??";
 						if(ix >= 10) { 
 							if(compatibility) {
 								// Max allows max. 9 inlets
@@ -269,7 +269,7 @@ BL flext_base::setup_inout()
 						}
 						break;
 					default:
-						error("%s: Wrong type for inlet #%i: %i",thisName(),ix,(I)list[ix]);
+						error("%s: Wrong type for inlet #%i: %i",thisName(),ix,(int)list[ix]);
 						ok = false;
 				} 
 			}
@@ -278,7 +278,7 @@ BL flext_base::setup_inout()
 		}
 #elif defined(MAXMSP)
 		{
-			I ix,cnt;
+			int ix,cnt;
 			// count leftmost signal inlets
 			while(insigs < incnt && list[insigs] == xlet::tp_sig) ++insigs;
 			
@@ -322,7 +322,7 @@ BL flext_base::setup_inout()
 							break;
 	*/
 						default:
-							error("%s: Wrong type for inlet #%i: %i",thisName(),ix,(I)list[ix]);
+							error("%s: Wrong type for inlet #%i: %i",thisName(),ix,(int)list[ix]);
 							ok = false;
 					} 
 				}
@@ -345,7 +345,7 @@ BL flext_base::setup_inout()
 		outcnt = 0;
 		for(xi = outlist; xi; xi = xi->nxt) ++outcnt;
 		xlet::type *list = new xlet::type[outcnt];
-		I i;
+		int i;
 		for(xi = outlist,i = 0; xi; xi = xi->nxt,++i) list[i] = xi->tp;
 		delete outlist; outlist = NULL;
 		
@@ -353,9 +353,9 @@ BL flext_base::setup_inout()
 
 		// type info is now in list array
 #ifdef PD
-		for(I ix = 0; ix < outcnt; ++ix) 
+		for(int ix = 0; ix < outcnt; ++ix) 
 #elif defined(MAXMSP)
-		for(I ix = outcnt-1; ix >= 0; --ix) 
+		for(int ix = outcnt-1; ix >= 0; --ix) 
 #endif
 		{
 			switch(list[ix]) {
@@ -391,7 +391,7 @@ BL flext_base::setup_inout()
 }
 
 
-V flext_base::cb_setup(t_class *c)
+void flext_base::cb_setup(t_class *c)
 {
 #ifdef PD
 	sym_anything = &s_anything;
@@ -442,14 +442,14 @@ V flext_base::cb_setup(t_class *c)
 	ADD_IN_FT(9);
 }
 
-V flext_base::cb_help(t_class *c) { thisObject(c)->m_help(); }	
+void flext_base::cb_help(t_class *c) { thisObject(c)->m_help(); }	
 
-V flext_base::cb_loadbang(t_class *c) { thisObject(c)->m_loadbang(); }	
+void flext_base::cb_loadbang(t_class *c) { thisObject(c)->m_loadbang(); }	
 #ifdef MAXMSP
-V flext_base::cb_assist(t_class *c,V * /*b*/,L msg,L arg,C *s) { thisObject(c)->m_assist(msg,arg,s); }
+void flext_base::cb_assist(t_class *c,void * /*b*/,long msg,long arg,char *s) { thisObject(c)->m_assist(msg,arg,s); }
 #endif
 
-V flext_base::m_help()
+void flext_base::m_help()
 {
 	// This should better be overloaded
 	post("%s (using flext " FLEXT_VERSTR ") - compiled on %s %s",thisName(),__DATE__,__TIME__);
@@ -457,29 +457,29 @@ V flext_base::m_help()
 
 
 union t_any {
-	F ft;
-	I it;
+	float ft;
+	int it;
 	t_symbol *st;
 #ifdef PD
 	t_gpointer *pt;
 #endif
 };
 
-typedef V (*methfun_G)(flext_base *c,I argc,t_atom *argv);
-typedef V (*methfun_A)(flext_base *c,const t_symbol *s,I argc,t_atom *argv);
-typedef V (*methfun_0)(flext_base *c);
+typedef void (*methfun_G)(flext_base *c,int argc,t_atom *argv);
+typedef void (*methfun_A)(flext_base *c,const t_symbol *s,int argc,t_atom *argv);
+typedef void (*methfun_0)(flext_base *c);
 
 #define MAXARGS 5
 
-typedef V (*methfun_1)(flext_base *c,t_any &);
-typedef V (*methfun_2)(flext_base *c,t_any &,t_any &);
-typedef V (*methfun_3)(flext_base *c,t_any &,t_any &,t_any &);
-typedef V (*methfun_4)(flext_base *c,t_any &,t_any &,t_any &,t_any &);
-typedef V (*methfun_5)(flext_base *c,t_any &,t_any &,t_any &,t_any &,t_any &);
+typedef void (*methfun_1)(flext_base *c,t_any &);
+typedef void (*methfun_2)(flext_base *c,t_any &,t_any &);
+typedef void (*methfun_3)(flext_base *c,t_any &,t_any &,t_any &);
+typedef void (*methfun_4)(flext_base *c,t_any &,t_any &,t_any &,t_any &);
+typedef void (*methfun_5)(flext_base *c,t_any &,t_any &,t_any &,t_any &,t_any &);
 
-BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
+bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 {
-	BL ret = false;
+	bool ret = false;
 	
 	LOG3("methodmain inlet:%i args:%i symbol:%s",inlet,argc,s?s->s_name:"");
 	
@@ -501,29 +501,29 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 				ret = true;
 			}
 			else if(argc == m->argc) {
-				I ix;
+				int ix;
 				t_any aargs[MAXARGS];
-				BL ok = true;
+				bool ok = true;
 				for(ix = 0; ix < argc && ok; ++ix) {
 					switch(m->args[ix]) {
 					case a_float: {
-						if(is_float(argv[ix])) aargs[ix].ft = get_float(argv[ix]);
-						else if(is_int(argv[ix])) aargs[ix].ft = (F)get_int(argv[ix]);
+						if(IsFloat(argv[ix])) aargs[ix].ft = GetFloat(argv[ix]);
+						else if(IsInt(argv[ix])) aargs[ix].ft = (float)GetInt(argv[ix]);
 						else ok = false;
 						
 //						if(ok) LOG2("int arg %i = %f",ix,aargs[ix].ft);
 						break;
 					}
 					case a_int: {
-						if(is_float(argv[ix])) aargs[ix].it = (I)get_float(argv[ix]);
-						else if(is_int(argv[ix])) aargs[ix].it = get_int(argv[ix]);
+						if(IsFloat(argv[ix])) aargs[ix].it = (int)GetFloat(argv[ix]);
+						else if(IsInt(argv[ix])) aargs[ix].it = GetInt(argv[ix]);
 						else ok = false;
 						
 //						if(ok) LOG2("float arg %i = %i",ix,aargs[ix].it);
 						break;
 					}
 					case a_symbol: {
-						if(is_symbol(argv[ix])) aargs[ix].st = get_symbol(argv[ix]);
+						if(IsSymbol(argv[ix])) aargs[ix].st = GetSymbol(argv[ix]);
 						else ok = false;
 						
 //						if(ok) LOG2("symbol arg %i = %s",ix,get_string(aargs[ix].st));
@@ -531,7 +531,7 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 					}
 #ifdef PD					
 					case a_pointer: {
-						if(is_pointer(argv[ix])) aargs[ix].pt = get_pointer(argv[ix]);
+						if(IsPointer(argv[ix])) aargs[ix].pt = GetPointer(argv[ix]);
 						else ok = false;
 						break;
 					}
@@ -559,15 +559,15 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 	
 	if(!ret && distmsgs && inlet == 0 && s == sym_list && insigs <= 1) {
 		// distribute list elements over inlets (Max/MSP behavior)
-		I i = incnt;
+		int i = incnt;
 		if(i > argc) i = argc;
 		for(--i; i >= 0; --i) { // right to left distribution
 			const t_symbol *s = NULL;
-			if(is_float(argv[i])) s = sym_float;
-			else if(is_int(argv[i])) s = sym_int;
-			else if(is_symbol(argv[i])) s = sym_symbol;
+			if(IsFloat(argv[i])) s = sym_float;
+			else if(IsInt(argv[i])) s = sym_int;
+			else if(IsSymbol(argv[i])) s = sym_symbol;
 #ifdef PD
-			else if(is_pointer(argv[i])) s = sym_pointer;  // can pointer atoms occur here?
+			else if(IsPointer(argv[i])) s = sym_pointer;  // can pointer atoms occur here?
 #endif
 			if(s) m_methodmain(i,s,1,argv+i);			
 		}
@@ -580,7 +580,7 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 	return ret; // true if appropriate handler was found and called
 }
 
-V flext_base::m_method_(I inlet,const t_symbol *s,I argc,t_atom *argv) 
+void flext_base::m_method_(int inlet,const t_symbol *s,int argc,t_atom *argv) 
 {
 #ifdef _DEBUG
 	post("%s: message unhandled - inlet:%i args:%i symbol:%s",thisName(),inlet,argc,s?s->s_name:"");
@@ -588,7 +588,7 @@ V flext_base::m_method_(I inlet,const t_symbol *s,I argc,t_atom *argv)
 }
 
 
-flext_base::methitem::methitem(I in,t_symbol *t): 
+flext_base::methitem::methitem(int in,t_symbol *t): 
 	inlet(in),tag(t),
 	fun(NULL), 
 	argc(0),args(NULL),
@@ -601,7 +601,7 @@ flext_base::methitem::~methitem()
 	if(args) delete[] args; 
 }
 
-V flext_base::methitem::SetArgs(methfun _fun,I _argc,metharg *_args)
+void flext_base::methitem::SetArgs(methfun _fun,int _argc,metharg *_args)
 {
 	fun = _fun;
 	if(args) delete[] args;
@@ -610,36 +610,36 @@ V flext_base::methitem::SetArgs(methfun _fun,I _argc,metharg *_args)
 
 
 
-V flext_base::AddMethItem(methitem *m)
+void flext_base::AddMethItem(methitem *m)
 {
 	if(mlst) {
 		methitem *mi;
-		for(mi = mlst; mi->nxt; mi = mi->nxt) (V)0;
+		for(mi = mlst; mi->nxt; mi = mi->nxt) (void)0;
 		mi->nxt = m;
 	}
 	else 
 		mlst = m;
 }
 
-V flext_base::add_meth_def(I inlet)
+void flext_base::AddMethodDef(int inlet)
 {
 	AddMethItem(new methitem(inlet,NULL));
 }
 
-V flext_base::add_meth_def(I inlet,const C *tag)
+void flext_base::AddMethodDef(int inlet,const char *tag)
 {
-	AddMethItem(new methitem(inlet,gensym(const_cast<C *>(tag))));
+	AddMethItem(new methitem(inlet,gensym(const_cast<char *>(tag))));
 }
 
-V flext_base::add_meth_one(I inlet,const C *tag,methfun fun,metharg tp,...)
+void flext_base::AddMethod(int inlet,const char *tag,methfun fun,metharg tp,...)
 {
-	methitem *mi = new methitem(inlet,gensym(const_cast<C *>(tag)));
+	methitem *mi = new methitem(inlet,gensym(const_cast<char *>(tag)));
 
 	va_list marker;
 	va_start(marker,tp);
-	I argc = 0;
+	int argc = 0;
 	metharg *args = NULL,arg = tp;
-	for(; arg != a_null; ++argc) arg = (metharg)va_arg(marker,I); //metharg);
+	for(; arg != a_null; ++argc) arg = (metharg)va_arg(marker,int); //metharg);
 	va_end(marker);
 	
 	if(argc > 0) {
@@ -652,7 +652,7 @@ V flext_base::add_meth_one(I inlet,const C *tag,methfun fun,metharg tp,...)
 
 		va_start(marker,tp);
 		metharg a = tp;
-		for(I ix = 0; ix < argc; ++ix) {
+		for(int ix = 0; ix < argc; ++ix) {
 			if(a == a_gimme && ix > 0) {
 				error("GIMME argument must be the first and only one");
 			}
@@ -662,7 +662,7 @@ V flext_base::add_meth_one(I inlet,const C *tag,methfun fun,metharg tp,...)
 			}
 #endif
 			args[ix] = a;
-			a = (metharg)va_arg(marker,I); //metharg);
+			a = (metharg)va_arg(marker,int); //metharg);
 		}
 		va_end(marker);
 	}
@@ -674,14 +674,14 @@ V flext_base::add_meth_one(I inlet,const C *tag,methfun fun,metharg tp,...)
 
 
 
-V flext_base::geta_string(const t_atom &a,C *buf,I szbuf)
+void flext_base::GetAString(const t_atom &a,char *buf,int szbuf)
 { 
 #ifdef PD
 	atom_string(const_cast<t_atom *>(&a),buf,szbuf);
 #else
-	if(is_symbol(a)) sprintf(buf,get_string(a));
-	else if(is_float(a)) sprintf(buf,"%f",get_float(a));
-	else if(is_int(a)) sprintf(buf,"%i",get_int(a));
+	if(IsSymbol(a)) sprintf(buf,GetString(a));
+	else if(IsFloat(a)) sprintf(buf,"%f",GetFloat(a));
+	else if(IsInt(a)) sprintf(buf,"%i",GetInt(a));
 #endif
 }  
 

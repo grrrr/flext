@@ -169,7 +169,7 @@ protected:    \
 inline t_sigobj *thisHdr() { return &x_obj->obj; } \
 inline t_class *thisClass() { return FLEXT_GETCLASS(x_obj); } \
 inline const char *thisName() const { return m_name; } \
-static NEW_CLASS *thisObject(V *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; }	  
+static NEW_CLASS *thisObject(void *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; }	  
 
 
 #define FLEXT_HEADER_S(NEW_CLASS, PARENT_CLASS)    	    	\
@@ -185,7 +185,7 @@ protected:    \
 inline t_sigobj *thisHdr() { return &x_obj->obj; } \
 inline t_class *thisClass() { return FLEXT_GETCLASS(x_obj); } \
 inline const char *thisName() const { return m_name; } \
-static NEW_CLASS *thisObject(V *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; }	  \
+static NEW_CLASS *thisObject(void *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; }	  \
 private:    \
 static void cb_setup(t_class *classPtr);
 
@@ -251,6 +251,9 @@ static void cb_setup(t_class *classPtr);
 #define FLEXT_TILDE_3ARGS(NAME,NEW_CLASS, TYPE, TTWO, TTHREE)	\
     REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, FLEXTTP(TYPE), TTWO, FLEXTTP(TTWO), TTHREE, FLEXTTP(TTHREE))
 
+
+#ifndef COMPAT
+
 //
 // FOUR ARGUMENTS
 /////////////////////////////////////////////////
@@ -259,6 +262,8 @@ static void cb_setup(t_class *classPtr);
 
 #define FLEXT_TILDE_4ARGS(NAME,NEW_CLASS, TYPE, TTWO, TTHREE, TFOUR) \
     REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, FLEXTTP(TYPE), TTWO, FLEXTTP(TTWO), TTHREE, FLEXTTP(TTHREE), TFOUR, FLEXTTP(TFOUR))
+
+#endif
 
 ////////////////////////////////////////
 // These definitions are used below

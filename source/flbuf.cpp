@@ -14,7 +14,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define DIRTY_INTERVAL 0   // buffer dirty check in msec
 #endif
 
-flext_base::buffer::buffer(t_symbol *bn,BL delayed):
+flext_base::buffer::buffer(t_symbol *bn,bool delayed):
 	sym(NULL),data(NULL),
 	chns(0),frames(0)
 {
@@ -35,10 +35,10 @@ flext_base::buffer::~buffer()
 #endif
 }
 
-I flext_base::buffer::Set(t_symbol *s,BL nameonly)
+int flext_base::buffer::Set(t_symbol *s,bool nameonly)
 {
-	I ret = 0;
-	BL valid = data != NULL; // valid now? (before change)
+	int ret = 0;
+	bool valid = data != NULL; // valid now? (before change)
 
 	if(s && sym != s) {
 		ret = -1;
@@ -54,8 +54,8 @@ I flext_base::buffer::Set(t_symbol *s,BL nameonly)
 	}	
 	else if(!nameonly) {
 #ifdef PD
-		I frames1;
-		F *data1;
+		int frames1;
+		float *data1;
     
 		t_garray *a = (t_garray *)pd_findbyclass(sym, garray_class);
 		if(!a)
@@ -106,7 +106,7 @@ I flext_base::buffer::Set(t_symbol *s,BL nameonly)
 
 
 #ifdef PD
-V flext_base::buffer::SetRefrIntv(F intv) 
+void flext_base::buffer::SetRefrIntv(float intv) 
 { 
 	interval = intv; 
 	if(interval == 0 && ticking) {
@@ -115,11 +115,11 @@ V flext_base::buffer::SetRefrIntv(F intv)
 	}
 }
 #else
-V flext_base::buffer::SetRefrIntv(F) {}
+void flext_base::buffer::SetRefrIntv(float) {}
 #endif
 
 
-V flext_base::buffer::Dirty(BL force)
+void flext_base::buffer::Dirty(bool force)
 {
 	if(sym) {
 #ifdef PD
@@ -150,7 +150,7 @@ V flext_base::buffer::Dirty(BL force)
 }
 
 #ifdef PD
-V flext_base::buffer::cb_tick(buffer *b)
+void flext_base::buffer::cb_tick(buffer *b)
 {
 	t_garray *a = (t_garray *)pd_findbyclass(b->sym, garray_class);
 	if (a) garray_redraw(a);

@@ -68,7 +68,7 @@ Version history:
 - Max/MSP: all signal inlets can receive messages 
 - method/argument parsing is done by flext - float/int are not distinguished, the first handler wins
 - integrated more system functions into flext_base & eliminated superfluous #defines
-- distribute list (into inlet 0) elements over inlets (right to left, only if no explicit list handler defined)
+- distribute list (into inlet 0) elements over inlets (right to left)
 - added outlets for anythings
 - defines for callback-to-method functions and method setup (FLEXT_CALLBACK*, FLEXT_ADD*)
 - uses PD's or Max's memory allocation functions (for safety in Max's overdrive)
@@ -78,6 +78,9 @@ Version history:
 - 128-bit aligned memory allocation with new[] 
 - use MaxMSP internal z_disabled flag with flext_dsp for pausing/resuming dsp processing 
 - included CHECK_TILDE, a test whether a tilde object (defined as FLEXT_TILDE_*) has a trailing ~. (debug mode only)
+- changed notation of flext functions from to_out_float like to ToOutFloat like
+- eliminated trivial shortcuts for built-in types
+- compatibility mode is now set by the preprocessor define COMPAT
 
 0.1.1:
 - documentation for flext.h
@@ -108,6 +111,7 @@ Platform specific:
 
 Restrictions in compatibility mode:
 - Max allows only 9 float/int inlets
+- Max allows only 3 typed creation arguments -> use GIMME for more
 
 Porting to new platforms:
 - enums must be int-sized
@@ -130,6 +134,7 @@ bugs:
 
 tests:
 - PD: figure out what "pointer" messages do and where they occur
+- MaxMSP: is it true that float creation arguments are doubles? (see Max-dev-list)
 
 features:
 - abstraction for parsing argument lists

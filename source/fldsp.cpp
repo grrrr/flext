@@ -14,7 +14,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // === flext_dsp ==============================================
 
-V flext_dsp::cb_setup(t_class *c)
+void flext_dsp::cb_setup(t_class *c)
 {
 #ifdef PD
 	CLASS_MAINSIGNALIN(c,flext_hdr,defsig);
@@ -52,13 +52,13 @@ t_int *flext_dsp::dspmeth(t_int *w)
 #else
 	if(obj->dspon) 
 #endif
-		obj->m_signal((I)w[2],obj->invecs,obj->outvecs); 
+		obj->m_signal((int)w[2],obj->invecs,obj->outvecs); 
 	return w+3;
 }
 
-V flext_dsp::m_dsp(I /*n*/,F *const * /*insigs*/,F *const * /*outsigs*/) {}
+void flext_dsp::m_dsp(int /*n*/,float *const * /*insigs*/,float *const * /*outsigs*/) {}
 
-V flext_dsp::cb_dsp(t_class *c,t_signal **sp) 
+void flext_dsp::cb_dsp(t_class *c,t_signal **sp) 
 { 
 	flext_dsp *obj = thisObject(c); 
 
@@ -66,13 +66,13 @@ V flext_dsp::cb_dsp(t_class *c,t_signal **sp)
 	obj->srate = sp[0]->s_sr;
 
 	// store in and out signal vectors
-	I i,in = obj->cnt_insig(),out = obj->cnt_outsig();
+	int i,in = obj->CntInSig(),out = obj->CntOutSig();
 	if(obj->invecs) delete[] obj->invecs;
-	obj->invecs = new F *[in];
+	obj->invecs = new float *[in];
 	for(i = 0; i < in; ++i) obj->invecs[i] = sp[i]->s_vec;
 
 	if(obj->outvecs) delete[] obj->outvecs;
-	obj->outvecs = new F *[out];
+	obj->outvecs = new float *[out];
 	for(i = 0; i < out; ++i) obj->outvecs[i] = sp[in+i]->s_vec;
 
 	// with the following call derived classes can do their eventual DSP setup
@@ -83,8 +83,8 @@ V flext_dsp::cb_dsp(t_class *c,t_signal **sp)
 }
 
 #ifndef MAXMSP
-V flext_dsp::cb_enable(t_class *c,FI on) { thisObject(c)->m_enable(on != 0); }
-V flext_dsp::m_enable(BL en) { dspon = en; }
+void flext_dsp::cb_enable(t_class *c,flint on) { thisObject(c)->m_enable(on != 0); }
+void flext_dsp::m_enable(bool en) { dspon = en; }
 #endif
 
 

@@ -95,6 +95,8 @@ typedef int t_atomtype;
 
 typedef t_symbol *t_symtype;
 
+#define flint t_flint
+
 
 #ifdef _LOG
 #define LOG(s) post(s)

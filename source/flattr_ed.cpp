@@ -78,6 +78,18 @@ void flext_base::SetAttrEditor(t_classid c)
     // generate the script for the property dialog
 
     sys_gui(
+        "proc flext_escatoms {lst} {\n"
+            "set tmp {}\n"
+            "foreach a $lst {\n"
+                "set a [regsub {\\$} $a \\\\$]\n"  // replace $ with \$
+                "set a [regsub {,} $a \\\\,]\n"  // replace , with \,
+                "set a [regsub {;} $a \\\\\\;]\n"  // replace ; with \;
+//                "set tmp [concat $tmp $a]\n"
+                "lappend tmp $a\n"
+            "}\n"
+            "return $tmp\n"
+        "}\n"
+
         "proc flext_makevalue {id ix} {\n"
             // strip "." from the TK id to make a variable name suffix
             "set vid [string trimleft $id .]\n"
@@ -90,6 +102,8 @@ void flext_base::SetAttrEditor(t_classid c)
 
             "global $var_attr_name $var_attr_init $var_attr_val $var_attr_save $var_attr_type\n"
 
+            "set lst {}\n"
+
             "if { [expr $$var_attr_type] != 0 } {\n"
                 // attribute is puttable
 
@@ -99,15 +113,19 @@ void flext_base::SetAttrEditor(t_classid c)
                 "set tmp [eval concat $$var_attr_val]\n"
                 "set len [llength $tmp]\n"
                 "if { $len == 1 } {\n"
+#if 0
                     // it's an atom
                     // if atom starts with $, replace it by # ($ can't be passed by TCL)
                     "if { [string index $tmp 0] == \"$\" } {\n"
                         "set tmp [string replace $tmp 0 0 #]\n" 
                     "}\n"
-                    "lappend lst $tmp\n" 
+                    "lappend lst $tmp\n"
+#else
+                    "set lst [concat $lst [flext_escatoms $tmp]]\n" 
+#endif
                 "} else {\n"
                     // it's a list
-                    "set lst [concat $lst {list} $len $tmp]\n" 
+                    "set lst [concat $lst {list} $len [flext_escatoms $tmp]]\n" 
                 "}\n"
 
                 // process init value
@@ -122,22 +140,21 @@ void flext_base::SetAttrEditor(t_classid c)
                     "lappend lst $tmp\n" 
                 "} else {\n"
                     // it's a list
-                    "set lst [concat $lst {list} $len $tmp]\n" 
+//                    "set lst [concat $lst {list} $len $tmp]\n" 
+                    "set lst [concat $lst {list} $len [flext_escatoms $tmp]]\n" 
                 "}\n"
 
-                // return value
-                "return [list [eval concat $$var_attr_save]]\n" 
-            "} else {\n"
-                // return empty list
-                "return [list]\n"
+                "lappend lst [eval concat $$var_attr_save]\n" 
             "}\n"
+
+            // return list
+            "return $lst\n" 
         "}\n"
 
         "proc flext_apply {id ix} {\n"
             "set lst [flext_makevalue $id $ix]\n"
-            "set cmd [concat $id attributedialog $lst \\;]\n"
-            "puts $cmd\n"
-            "pd $cmd\n"
+            "set lst [eval concat $lst]\n" // remove curly braces from character escaping
+            "pd [concat $id attributedialog $lst \\;]\n"
         "}\n"
 
         "proc flext_applyall {id alen} {\n"
@@ -145,17 +162,15 @@ void flext_base::SetAttrEditor(t_classid c)
 
             "set lst {}\n"
             "for {set ix 1} {$ix <= $alen} {incr ix} {\n"
-                "lappend lst [flext_makevalue $id $ix]\n" 
+                "set lst [concat $lst [flext_makevalue $id $ix]]\n" 
             "}\n"
+            "set lst [eval concat $lst]\n" // remove curly braces from character escaping
 
-            "set cmd [concat $id attributedialog $lst \\;]\n"
-            "puts $cmd\n"
-            "pd $cmd\n"
+            "pd [concat $id attributedialog $lst \\;]\n"
         "}\n"
 
         "proc flext_cancel {id} {\n"
-            "set cmd [concat $id cancel \\;]\n"
-            "pd $cmd\n"
+            "pd [concat $id cancel \\;]\n"
         "}\n"
 
         "proc flext_ok {id alen} {\n"
@@ -216,7 +231,15 @@ void flext_base::SetAttrEditor(t_classid c)
             "pack $id.w.scroll -side right -fill y\n"
             "pack $id.w.text -expand yes -fill both\n"
 
-            "$id.w.text insert 0.0 [expr $$var]\n"
+            // insert text with newlines
+            "set txt [split [expr $$var] ,]\n"
+            "set lines [llength $txt]\n"
+            "for {set ix 0} {$ix < ($lines-1)} {incr ix} {\n"
+                "$id.w.text insert end [string trim [lindex $txt $ix] ]\n"
+                "$id.w.text insert end \" ,\\n\"\n"
+            "}\n"
+            "$id.w.text insert end [string trim [lindex $txt end] ]\n"
+
             "$id.w.text mark set insert 0.0\n"
 
             "if { $edit != 0 } then {\n"

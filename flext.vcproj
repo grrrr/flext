@@ -347,13 +347,14 @@
 				AdditionalLibraryDirectories="f:\prog\pd\pd-cvs\bin;f:\prog\packs\pthreads;F:\prog\audio\stk\lib;F:\prog\audio\sndobj\lib"
 				GenerateDebugInformation="TRUE"
 				OptimizeReferences="1"
-				ImportLibrary="./pd-msvc/flext_ld.lib"/>
+				ImportLibrary="./pd-msvc/flext_ld.lib"
+				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="copy flext to maestra"
-				CommandLine="copy F:\prog\max\flext\pd-msvc\flext_d.dll f:\prog\maestra\dev\debug"/>
+				Description="copy flext to vibrez"
+				CommandLine="copy F:\prog\max\flext\pd-msvc\flext_d.dll f:\prog\vibrez\debug"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -410,15 +411,16 @@
 				AdditionalLibraryDirectories="f:\prog\packs\pthreads;&quot;f:\prog\pd\pd-cvs\bin&quot;;F:\prog\audio\stk\lib;F:\prog\audio\sndobj\lib"
 				GenerateDebugInformation="FALSE"
 				OptimizeReferences="1"
-				ImportLibrary="./pd-msvc/flext_l.lib"/>
+				ImportLibrary="./pd-msvc/flext_l.lib"
+				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="copy flext to maestra"
-				CommandLine="copy F:\prog\max\flext\source\*.h f:\prog\maestra\dev\api\include
-copy F:\prog\max\flext\pd-msvc\flext_l.lib f:\prog\maestra\dev\api\lib
-copy F:\prog\max\flext\pd-msvc\flext.dll f:\prog\maestra\dev\release
+				Description="copy flext to vibrez"
+				CommandLine="copy F:\prog\max\flext\source\*.h f:\prog\vibrez\api\include
+copy F:\prog\max\flext\pd-msvc\flext_l.lib f:\prog\vibrez\api\lib
+copy F:\prog\max\flext\pd-msvc\flext.dll f:\prog\vibrez\release
 copy F:\prog\max\flext\pd-msvc\flext.dll f:\prog\dll
 "/>
 			<Tool

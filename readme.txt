@@ -115,8 +115,9 @@ see flext.h, fldefs.h and flclass.h for the documented base definitions and clas
 Version history:
 
 0.4.4:
-- fix deadly bug for Max/MSP method-to-symbol-binding proxies
+- fixed deadly bug for Max/MSP method-to-symbol-binding proxies
 - some fixes for CodeWarrior Mach-O compilation 
+- fixed destruction bug for hashed "item arrays"
 
 0.4.3:
 - added forgotten flext_base::ToQueueString method

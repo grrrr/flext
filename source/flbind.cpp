@@ -60,6 +60,22 @@ flext_base::binditem::binditem(int in,const t_symbol *sym,bool (*f)(flext_base *
 	item(sym,0,NULL),fun(f),px(p)
 {}
 
+flext_base::binditem::~binditem()
+{
+    if(px) {
+#if FLEXT_SYS == FLEXT_SYS_PD
+        pd_unbind(&px->obj.ob_pd,const_cast<t_symbol *>(tag)); 
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+        if(tag->s_thing == (t_object *)px) 
+            const_cast<t_symbol *>(tag)->s_thing = NULL; 
+        else
+            error("%s - Binding not found",thisName());
+#else
+#           pragma warning("Not implemented")
+#endif
+        object_free(&px->obj);
+    }
+}
 
 bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbol *s,int argc,t_atom *argv,void *data),void *data)
 {
@@ -112,21 +128,7 @@ bool flext_base::UnbindMethod(const t_symbol *sym)
     item *it = bindhead?bindhead->Find(sym,0):NULL;
     if(it) {
         bool ok = bindhead->Remove(it);
-        if(ok) {
-            pxbnd_object *px = ((binditem *)it)->px;
-#if FLEXT_SYS == FLEXT_SYS_PD
-    	    pd_unbind(&px->obj.ob_pd,const_cast<t_symbol *>(sym)); 
-#elif FLEXT_SYS == FLEXT_SYS_MAX
-    	    if(sym->s_thing == (t_object *)px) 
-                const_cast<t_symbol *>(sym)->s_thing = NULL; 
-            else
-                error("%s - Binding not found",thisName());
-#else
-#           pragma warning("Not implemented")
-#endif
-            object_free(&px->obj);
-            delete it;
-        }
+        if(ok) delete it;
         return ok;
     }
     else

@@ -536,7 +536,7 @@ protected:
 	class item {
 	public:
 		item(const t_symbol *t,int inl,attritem *a);
-		~item();
+		virtual ~item();
 		
 		bool IsAttr() const { return attr != NULL; }
 
@@ -546,22 +546,34 @@ protected:
 		item *nxt;
 	};
 
+    //! This class holds hashed item entries
 	class itemarr {
 	public:
 		itemarr();
 		~itemarr();
-		
+
+        //! Add an entry
 		void Add(item *it);
+        //! Remove an entry
 		bool Remove(item *it);
+        //! Find an entry in the item array
 		item *Find(const t_symbol *tag,int inlet = 0) const;
+
+        //! Create hash table out of the preliminary linked lists
 		void Finalize();
 		
+        //! Query whether the array has been finalized
 		bool Ready() const { return bits >= 0; }
+        //! Number of items in the array
 		int Count() const { return cnt; }
+        //! Number of array slots (0 if not finalized)
 		int Size() const { return bits?1<<bits:0; }
+
+        //! Get an array slot
 		item *Item(int ix) { return arr[ix]; }
 	
 	protected:		
+        //! Calculate a hash value
 		static int Hash(const t_symbol *,int inlet,int bits);
 	
 		item **arr;
@@ -573,7 +585,7 @@ protected:
 		public item { 
 	public:
 		methitem(int inlet,const t_symbol *tg,attritem *conn = NULL);
-		~methitem();
+		virtual ~methitem();
 		
 		void SetArgs(methfun fun,int argc,metharg *args);
 
@@ -587,7 +599,7 @@ protected:
 		public item { 
 	public:
 		attritem(const t_symbol *tag,metharg tp,methfun fun,int flags);
-		~attritem();
+		virtual ~attritem();
 
 		enum { 
 			afl_getset = 0x01, afl_get = 0x00, afl_set = 0x01,
@@ -608,12 +620,12 @@ private:
 	class pxbnd_object;
 public:
 
-	//! \brief This represents an item of the method list
+	//! \brief This represents an item of the symbol-bound method list
 	class binditem:
 		public item { 
 	public:
 		binditem(int inlet,const t_symbol *sym,bool (*f)(flext_base *,t_symbol *s,int,t_atom *,void *),pxbnd_object *px);
-		~binditem();
+		virtual ~binditem();
 		
 		bool (*fun)(flext_base *,t_symbol *s,int,t_atom *,void *);
         pxbnd_object *px;
@@ -773,14 +785,19 @@ private:
 		void init(flext_base *b,binditem *it,void *d) { base = b; item = it; data = d; }
 		static void px_method(pxbnd_object *c,const t_symbol *s,int argc,t_atom *argv);
 	};
-		
+	
+    //! create proxy class for symbol binding
 	static void SetupBindProxy();
 
 	// ---------
 
+    //! set up inlet proxies
 	static void SetProxies(t_class *c);
 
+    //! initialize inlets (according to class or object constructor definitions)
 	bool InitInlets();
+
+    //! initialize outlets (according to class or object constructor definitions)
 	bool InitOutlets();
 
 	// callback functions

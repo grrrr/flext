@@ -30,16 +30,20 @@ flext_base::itemarr::itemarr():
 	arr(new item *[2]),cnt(0),bits(-1)
 {
 	arr[0] = arr[1] = NULL;
-//	post("NEWARR %p",this);
 }
 
 flext_base::itemarr::~itemarr()
 {
-//	post("DELARR %p",this);
-	int c = Ready()?Size():2;
+    if(Ready()) {
+        // if finalized, the array has several slots
+        int c = Size();
+	    for(int i = 0; i < c; ++i)
+		    if(arr[i]) delete arr[i];
+    }
+    else
+        // the array only has a head (arr[0]) and a tail (arr[1]) pointer
+        delete arr[0];
 
-	for(int i = 0; i < c; ++i)
-		if(arr[i]) delete arr[i];
 	delete[] arr;
 }
 

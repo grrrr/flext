@@ -50,7 +50,7 @@ public:
 	
 	//! returns current block (aka vector) size
 	int Blocksize() const { return blksz; }
-	
+    
 	/*! \brief returns number of audio system input channels
 		\bug Doesn't work in Max/MSP - is always 0
 	*/
@@ -60,7 +60,7 @@ public:
 		\bug Doesn't work in Max/MSP - is always 0
 	*/
 	int ChannelsOut() const { return chnsout; }
-	
+
 	//! typedef describing a signal vector
 #if FLEXT_SYS == FLEXT_SYS_JMAX
 	typedef fts_symbol_t t_signalvec;

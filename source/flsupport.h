@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -225,7 +225,7 @@ public:
 		bool IsDirty() const;
 
 		//! Get symbol of buffer 
-		t_symbol *Symbol() const { return const_cast<t_symbol *>(sym); }
+		const t_symbol *Symbol() const { return sym; }
 
 		//! Get literal name of buffer 
 		const char *Name() const { return sym?GetString(sym):""; }

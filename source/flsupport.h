@@ -54,13 +54,6 @@ public:
 		void operator delete[](void *blk) { operator delete(blk); }
 		#endif
 
-		/*! Get a large memory block
-			the normal C library function is used here
-		*/
-		static void *NewLarge(size_t bytes) { return ::operator new(bytes); }
-		//! Free a large memory block
-		static void FreeLarge(void *blk) { ::operator delete(blk); }
-
 		//! Get an aligned memory block
 		static void *NewAligned(size_t bytes,int bitalign = 128);
 		//! Free an aligned memory block
@@ -69,10 +62,17 @@ public:
 		static bool IsAligned(void *ptr,int bitalign = 128)	{ 
             return (reinterpret_cast<unsigned long>(ptr)&(bitalign-1)) == 0; 
         }
-		
 	//!	@}  FLEXT_S_MEMORY  	
-
 };
+
+// define global new/delete operators
+inline void *operator new(size_t bytes) { return flext_root::operator new(bytes); }
+inline void operator delete(void *blk) { flext_root::operator delete(blk); }
+#ifndef __MRC__ // doesn't allow new[] overloading?!
+inline void *operator new[](size_t bytes) { return flext_root::operator new[](bytes); }
+inline void operator delete[](void *blk) { flext_root::operator delete[](blk); }
+#endif
+
 
 
 class FLEXT_SHARE FLEXT_CLASSDEF(flext);

@@ -30,7 +30,6 @@ Version history:
 - ListAttributes (or the getattributes message) now lists attributes in the order they were created (first class, then object scope)
 - enforcing usage of STL
 - explicit boolean attributes (great for attribute editor layout!)
-- added flext::NewLarge and flext::FreeLarge memory allocation functions which use the C-Library heap and should mainly be used in secondary threads
 - flext_dsp reported wrong inlet/outlet count (CntInSig, CntOutSig functions)
 - added support for patcher arguments for attributes (use # instead of $ to save them with a patch)
 - moved memory functions and console output from flext to super-base-class flext_root and derived all helper classes from that

@@ -88,20 +88,26 @@ void flext::Setup()
 //
 /////////////////////////////////////////////////////////
 
+#define LARGEALLOC 32000
+
 void *flext_root::operator new(size_t bytes)
 {
 	bytes += sizeof(size_t);
 
-#ifdef FLEXT_DEBUG
-	if(bytes > 32000)
-		post("flext - warning: excessive memory allocation of %i bytes",bytes);
-#endif
+    char *blk;
+    if(bytes >= LARGEALLOC) {
+        // use C library function for large memory blocks
+        blk = (char *)::operator new(bytes);
+    }
+    else {
+	//! \todo We need system locking here for secondary threads!
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-	char *blk = (char *)::fts_malloc(bytes);
+    	blk = (char *)::fts_malloc(bytes);
 #else
-	char *blk = (char *)::getbytes(bytes);
+	    blk = (char *)::getbytes(bytes);
 #endif
+    }
 
 	*(size_t *)blk = bytes;
 	return blk+sizeof(size_t);
@@ -110,13 +116,21 @@ void *flext_root::operator new(size_t bytes)
 void flext_root::operator delete(void *blk)
 {
 	char *ori = (char *)blk-sizeof(size_t);
+	size_t bytes = *(size_t *)ori;
+
+    if(bytes >= LARGEALLOC) {
+        // use C library function for large memory blocks
+        ::operator delete(ori);
+    }
+    else {
+	//! \todo We need system locking here for secondary threads!
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-	fts_free(ori);
+    	fts_free(ori);
 #else
-	size_t bytes = *(size_t *)ori;
-	::freebytes(ori,bytes);
+	    ::freebytes(ori,bytes);
 #endif
+    }
 }
 
 void *flext_root::NewAligned(size_t bytes,int bitalign)
@@ -125,11 +139,20 @@ void *flext_root::NewAligned(size_t bytes,int bitalign)
 	const unsigned long alignovh = bitalign/8-1;
 	bytes += ovh+alignovh;
 
+    char *blk;
+    if(bytes >= LARGEALLOC) {
+        // use C library function for large memory blocks
+        blk = (char *)::operator new(bytes);
+    }
+    else {
+	//! \todo We need system locking here for secondary threads!
+
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-	char *blk = (char *)::fts_malloc(bytes);
+    	blk = (char *)::fts_malloc(bytes);
 #else
-	char *blk = (char *)::getbytes(bytes);
+	    blk = (char *)::getbytes(bytes);
 #endif
+    }
 
 	char *ablk = reinterpret_cast<char *>((reinterpret_cast<unsigned long>(blk)+ovh+alignovh) & ~alignovh);
 	*(char **)(ablk-sizeof(size_t)-sizeof(char *)) = blk;
@@ -140,13 +163,21 @@ void *flext_root::NewAligned(size_t bytes,int bitalign)
 void flext_root::FreeAligned(void *blk)
 {
 	char *ori = *(char **)((char *)blk-sizeof(size_t)-sizeof(char *));
+	size_t bytes = *(size_t *)((char *)blk-sizeof(size_t));
+
+    if(bytes >= LARGEALLOC) {
+        // use C library function for large memory blocks
+        ::operator delete(ori);
+    }
+    else {
+	//! \todo We need system locking here for secondary threads!
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-	fts_free(ori);
+    	fts_free(ori);
 #else
-	size_t bytes = *(size_t *)((char *)blk-sizeof(size_t));
-	::freebytes(ori,bytes);
+	    ::freebytes(ori,bytes);
 #endif
+    }
 }
 
 // ------------------------------------------

@@ -194,7 +194,7 @@ void flext::buffer::Frames(int fr,bool keep,bool zero)
 
 	if(keep) {
 		// copy buffer data to tmp storage
-		tmp = new t_sample[sz];
+        tmp = (t_sample *)NewAligned(sz*sizeof(t_sample));
         if(tmp)
 			CopySamples(tmp,data,sz);
 		else
@@ -215,7 +215,7 @@ void flext::buffer::Frames(int fr,bool keep,bool zero)
 	if(tmp) {
 		// copy data back
 		CopySamples(data,tmp,sz);
-		delete[] tmp;
+		FreeAligned(tmp);
         if(zero && sz < fr) ZeroSamples(data+sz,fr-sz);
 	}
     else

@@ -16,8 +16,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flinternal.h"
 #include <string.h>
 
-
-
 // === flext_dsp ==============================================
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX

@@ -514,6 +514,7 @@ copy F:\prog\max\flext\pd-msvc\flext.dll f:\prog\dll
 				AdditionalIncludeDirectories="F:\prog\audio\MaxWinSDK\c74support\max-includes,F:\prog\audio\MaxWinSDK\c74support\msp-includes,f:\prog\packs\pthreads,f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
 				PreprocessorDefinitions="WIN32;_LIB;FLEXT_SYS_MAX;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_SHARED;FLEXT_EXPORTS"
 				StringPooling="TRUE"
+				ExceptionHandling="TRUE"
 				RuntimeLibrary="2"
 				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
@@ -528,9 +529,10 @@ copy F:\prog\max\flext\pd-msvc\flext.dll f:\prog\dll
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="maxapi.lib maxext.lib maxaudio.lib  pthreadVC.lib stk.lib sndobj.lib"
+				AdditionalDependencies="maxapi.lib maxext.lib maxaudio.lib  stk.lib sndobj.lib"
 				OutputFile=".\max-msvc\flext.max.dll"
 				AdditionalLibraryDirectories="&quot;F:\prog\audio\MaxWinSDK\c74support\max-includes\win-includes\debug&quot;;&quot;F:\prog\audio\MaxWinSDK\c74support\msp-includes\win-includes\debug&quot;;f:\prog\packs\pthreads;F:\prog\audio\stk\lib;F:\prog\audio\sndobj\lib"
+				IgnoreAllDefaultLibraries="TRUE"
 				GenerateDebugInformation="FALSE"
 				OptimizeReferences="1"
 				ImportLibrary="./max-msvc/flext_l.lib"/>
@@ -4439,6 +4441,22 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 			</File>
 			<File
 				RelativePath="source\fldefs_setup.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="build"
+			Filter="">
+			<File
+				RelativePath=".\build-max-msvc.bat">
+			</File>
+			<File
+				RelativePath=".\build-pd-msvc.bat">
+			</File>
+			<File
+				RelativePath=".\config-max-msvc.txt">
+			</File>
+			<File
+				RelativePath=".\config-pd-msvc.txt">
 			</File>
 		</Filter>
 	</Files>

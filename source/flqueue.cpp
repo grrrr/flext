@@ -58,7 +58,9 @@ private:
     const t_atom *argv;
 };
 
-// _should_ work without locks.... have yet to check if it really does....
+/* \TODO This is only thread-safe if called fro one thread which need NOT be the case.
+         Reimplement in a thread-safe manner!!!
+*/
 class Queue:
     public flext
 {
@@ -222,7 +224,7 @@ static void QWork(bool syslock)
         if(!qc) break;
 
     #if FLEXT_QMODE == 2
-        if(syslock) sys_lock();
+        if(syslock) flext::Lock();
     #endif
 
         // once more, because flushing in destructors could have reduced the count
@@ -232,7 +234,7 @@ static void QWork(bool syslock)
         } // inner loop
 
     #if FLEXT_QMODE == 2
-        if(syslock) sys_unlock();
+        if(syslock) flext::Unlock();
     #endif
 
     }
@@ -253,13 +255,23 @@ static void QTick(flext_base *c)
 }
 
 #elif FLEXT_QMODE == 1
+#ifndef FLEXT_SHARED
+static bool qtickactive = false;
+#endif
 static t_int QTick(t_int *)
 {
+#ifndef FLEXT_SHARED
+    qtickactive = false;
+#endif
     QWork(false);
 #ifdef FLEXT_SHARED
-    return 1;
+    // will be run in the next idle cycle
+    return 2; 
 #else
-    return 0;
+    // won't be run again
+    // for non-shared externals assume that there's rarely a message waiting
+    // so it's better to delete the callback meanwhile
+    return 0; 
 #endif
 }
 #endif
@@ -287,7 +299,10 @@ static void Trigger()
         // wake up worker thread
         qthrcond.Signal();
     #elif FLEXT_QMODE == 1 && !defined(FLEXT_SHARED)
-        set_callback(QTick,NULL,0);
+        if(!qtickactive) {
+            sys_callback(QTick,NULL,0);
+            qtickactive = true;
+        }
     #elif FLEXT_QMODE == 0
         clock_delay(qclk,0);
     #endif
@@ -324,7 +339,7 @@ void flext_base::StartQueue()
 
 #if FLEXT_QMODE == 1
 #ifdef FLEXT_SHARED
-    set_callback(QTick,NULL,0);
+    sys_callback(QTick,NULL,0);
 #endif
 #elif FLEXT_QMODE == 2
     LaunchThread(QWorker,NULL);

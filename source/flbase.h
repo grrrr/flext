@@ -105,7 +105,7 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
     	FLEXT_CLASSDEF(flext_obj)();
 
     	//! Destructor
-    	virtual ~FLEXT_CLASSDEF(flext_obj)() = 0;
+    	virtual ~FLEXT_CLASSDEF(flext_obj)();
 
         /*! \brief Signal a construction problem
 			\note This should only be used in the constructor. Object creation will be aborted.

@@ -89,7 +89,7 @@ void flext_dsp::dspmeth(fts_word_t *w)
 #else
 t_int *flext_dsp::dspmeth(t_int *w) 
 { 
-    flext_dsp *obj = (flext_dsp *)w[1];
+    flext_dsp *obj = (flext_dsp *)(size_t)w[1];
 /*
 #ifdef FLEXT_DEBUG
     if(!obj->thisHdr()) {

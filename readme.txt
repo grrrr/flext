@@ -43,6 +43,7 @@ Version history:
 
 0.1.1:
 - more emancipation from GEM code
+- renamed virtually everything
 - abstraction for dsp processing
 - makefile for BCC
 - manual call of extern_setup or main unnecessary for single objects - only in pd libraries
@@ -68,11 +69,13 @@ Restrictions in compatibility mode:
 TODO list:
 - documentation
 - add warning messages for debugging version
-- exchange preprocessor definitions for C++ base class code
+- exchange more preprocessor definitions for C++ base class code
 - cleaner makefiles
 - makefile and project for MS VC++ 6
 - flext project and example template for CodeWarrior
 - better function names
+
+- prevent buffer warning message at max patcher load (wait for loadbang)
 - abstraction for parsing GIMME args
 - abstraction for creating lists
 

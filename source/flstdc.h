@@ -26,12 +26,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #ifdef _MSC_VER
 	#pragma warning (push)
-	#pragma warning (disable:4091)
+	#pragma warning (disable:4091 4005)
 #endif
 
-#define PD
 #if FLEXT_OS == FLEXT_OS_WIN
-#define NT
+#define NT 1
 #endif
 
 extern "C" {	    	    	    	    	    	    	
@@ -43,15 +42,12 @@ extern "C" {
 	#endif
 }
 
-#undef PD
-#undef NT
-
 #ifdef _MSC_VER
 	#pragma warning (pop)
 #endif
 
 #ifdef cabs
-#undef cabs // this is defined in m_pd.h (clashes with math.h)
+#undef cabs // this is defined in m_pd.h (clashes with math.h in MacOSX)
 #endif
 
 typedef t_object t_sigobj;

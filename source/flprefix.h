@@ -39,11 +39,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // Old definitions
 #if defined(MAXMSP)
 	#define FLEXT_SYS FLEXT_SYS_MAX
-	#undef MAXMSP
+//	#undef MAXMSP
 #elif defined(PD)
 	#define FLEXT_SYS FLEXT_SYS_PD
-	#undef PD
-	#undef NT
+//	#undef PD
+//	#undef NT
 #endif
 
 #if defined(_DEBUG)
@@ -53,7 +53,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // Definition of supported real-time systems
 #if FLEXT_SYS == FLEXT_SYS_MAX
 #elif FLEXT_SYS == FLEXT_SYS_PD
-	#define PD
 #else
 	#error "System must be defined by either FLEXT_SYS_MAX or FLEXT_SYS_PD"
 #endif

@@ -391,7 +391,7 @@ void flext_obj::obj_free(flext_hdr *hdr)
 	}
 #ifdef FLEXT_DEBUG
 	else 
-#if FLEXT_SYS == FLEXT_SYS_PD
+#if FLEXT_SYS == FLEXT_SYS_MAX
 		// in Max/MSP an object with the name of the library exists, even if not explicitely declared!
 		if(name != lib_name) 
 #endif

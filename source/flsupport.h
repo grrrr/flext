@@ -163,7 +163,7 @@ public:
 	static void CopyAtom(t_atom *dst,const t_atom *src) { *dst = *src; }
 
 	//! Print an atom
-	static void PrintAtom(const t_atom &a,char *buf);
+	static void PrintAtom(const t_atom &a,char *buf,int bufsz = 0);
 	//! Scan an atom
 	static bool ScanAtom(t_atom &a,const char *buf);
 

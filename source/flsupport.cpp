@@ -122,9 +122,10 @@ void flext::GetAString(const t_atom &a,char *buf,int szbuf)
 #if FLEXT_SYS == FLEXT_SYS_PD
 	atom_string(const_cast<t_atom *>(&a),buf,szbuf);
 #else
-	if(IsSymbol(a)) sprintf(buf,GetString(a));
-	else if(IsFloat(a)) sprintf(buf,"%f",GetFloat(a));
-	else if(IsInt(a)) sprintf(buf,"%i",GetInt(a));
+	if(IsSymbol(a)) snprintf(buf,szbuf,GetString(a));
+	else if(IsFloat(a)) snprintf(buf,szbuf,"%f",GetFloat(a));
+	else if(IsInt(a)) snprintf(buf,szbuf,"%i",GetInt(a));
+    else strncpy(buf,"",szbuf);
 #endif
 }  
 

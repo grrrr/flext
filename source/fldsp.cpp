@@ -192,7 +192,7 @@ void flext_dsp::m_dsp(int /*n*/,t_signalvec const * /*insigs*/,t_signalvec const
 
 void flext_dsp::m_signal(int n,t_sample *const * /*insigs*/,t_sample *const *outs) 
 {
-	for(int i = 0; i < CntOutSig(); ++i) ZeroMem(outs[i],n*sizeof(*outs[i]));
+	for(int i = 0; i < CntOutSig(); ++i) ZeroSamples(outs[i],n);
 }
 
 #if FLEXT_SYS != FLEXT_SYS_MAX

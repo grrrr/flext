@@ -16,7 +16,7 @@ flext doesn't support default arguments, hence a message "bound 1" will translat
 This can be easily circumvented by using a method digesting a variable argument list, but
 was omitted for the sake of clearness.
 
-Apart from that you'll notice several differences:
+Apart from that you'll notice several differences to the original C object:
 - with flext, callbacks have to be declared for all registered methods
 - Flext allows the full usage of integer types 
 - there are no real "passive" methods with flext. 
@@ -24,7 +24,6 @@ Apart from that you'll notice several differences:
 - Help symbols can't be defined that freely. This is because in Max/MSP help files always
 	have the name of the object with a suffix .help appended.
 	However with flext, a path to the respective help file may be specified
-
 */
 
 // include flext header

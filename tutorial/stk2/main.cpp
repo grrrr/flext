@@ -86,7 +86,7 @@ bool stk2::NewObjs()
         vec = new MY_FLOAT[Blocksize()];
 	}
 	catch (StkError &) {
-		post("%s - Noise() setup failed!",thisName());
+		post("%s - Creation failed!",thisName());
 		ok = false;
 	}
 	return ok;

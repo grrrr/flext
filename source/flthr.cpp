@@ -25,10 +25,6 @@ flext::thrid_t flext::thrid = 0;
 //! Thread id of helper thread
 flext::thrid_t flext::thrhelpid = 0;
 
-/*
-flext::thr_entry *flext::thrhead = NULL,*flext::thrtail = NULL;
-flext::ThrMutex flext::tlmutex;
-*/
 static flext::thr_entry *thrhead = NULL,*thrtail = NULL;
 static flext::ThrMutex tlmutex;
 
@@ -196,6 +192,49 @@ bool flext::LaunchThread(void (*meth)(thr_params *p),thr_params *p)
 	thrhelpcond->Signal();
 
 	return true;
+}
+
+bool flext::StopThread(void (*meth)(thr_params *p),thr_params *p,bool wait)
+{
+#ifdef FLEXT_DEBUG
+	if(!thrhelpcond) {
+		ERRINTERNAL(); 
+		return false;
+	}
+#endif
+
+	int found = 0;
+
+	tlmutex.Lock();
+	for(thr_entry *ti = thrhead; ti; ti = ti->nxt)
+		// set shouldexit if meth and params match
+		if(ti->meth == meth && ti->params == p) { ti->shouldexit = true; found++; }
+	tlmutex.Unlock();
+
+	if(found) {
+		// signal thread helper
+		thrhelpcond->Signal();
+
+		int cnt = 0;
+		for(int wi = 0; wi < 100; ++wi) {
+			// lock and count this object's threads
+			cnt = 0;
+			tlmutex.Lock();
+			for(thr_entry *t = thrhead; t; t = t->nxt)
+				if(t->meth == meth && t->params == p) ++cnt;
+			tlmutex.Unlock();
+
+			// if no threads are remaining, we are done
+			if(!cnt) break;
+
+			// Wait
+			Sleep(0.01f);
+		}
+
+		return cnt == 0;
+	}
+	else
+		return false;
 }
 
 bool flext_base::ShouldExit() const 

@@ -109,7 +109,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib pd.lib pthreadVC.lib sndobj.lib stk_d.lib /nologo /dll /debug /machine:I386 /out:"../flext/pd-msvc/flext_d.dll" /pdbtype:sept /libpath:"f:\prog\audio\sndobj\lib" /libpath:"f:\prog\audio\stk\lib"
-# ADD LINK32 kernel32.lib user32.lib pd.lib pthreadVC.lib sndobj.lib stk_d.lib /nologo /dll /debug /machine:I386 /out:"pd-msvc/flext_dl.dll" /pdbtype:sept /libpath:"f:\prog\audio\sndobj\lib" /libpath:"f:\prog\audio\stk\lib"
+# ADD LINK32 kernel32.lib user32.lib pd.lib pthreadVC.lib sndobj.lib stk_d.lib /nologo /dll /debug /machine:I386 /out:"pd-msvc/flext_ld.dll" /pdbtype:sept /libpath:"f:\prog\audio\sndobj\lib" /libpath:"f:\prog\audio\stk\lib"
 
 !ELSEIF  "$(CFG)" == "flext_sh - Win32 DLL Release"
 

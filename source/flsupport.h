@@ -18,6 +18,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flstdc.h"
 #include <time.h>
 
+#if FLEXT_OS == FLEXT_OS_WIN
+#include <sys/timeb.h>
+#endif
+
 class FLEXT_SHARE flext_base;
 
 /*! \brief Flext support class
@@ -53,12 +57,10 @@ public:
 
 // --- console output -----------------------------------------------	
 
-#if FLEXT_SYS == FLEXT_SYS_JMAX
 		//! post message to console
 		static void post(const char *s,...);
 		//! post error message to console
 		static void error(const char *s,...);
-#endif
 
 // --- memory -------------------------------------------------------	
 
@@ -608,7 +610,7 @@ public:
 	/*! \brief Thread parameters
 		\internal
 	*/
-	class thr_params
+	class FLEXT_SHARE thr_params
 	{
 	public:
 		thr_params(int n = 1);
@@ -632,7 +634,7 @@ public:
 	/*! \brief This represents an entry to the list of active method threads
 		\internal
 	*/
-	class thr_entry 
+	class FLEXT_SHARE thr_entry 
 	{
 	public:
 		thr_entry(void (*m)(thr_params *),thr_params *p,thrid_t id = GetThreadId());
@@ -780,22 +782,31 @@ public:
 		/*! \brief Wait for condition (for a certain time).
 			\param ftime Wait time in seconds
 			\ret 0 = signalled, 1 = timed out 
-			\remark Depending on the implementation ftime may not be fractional. 
-			\remark So if ftime = 0 this may suck away your cpu if used in a signalled loop.
+			\remark If ftime = 0 this may suck away your cpu if used in a signalled loop.
 		*/
 		bool TimedWait(double ftime) 
 		{ 
 			timespec tm; 
-#if 0 // find out when the following is defined
+#if FLEXT_OS == FLEXT_OS_WIN
+			_timeb tmb;
+			_ftime(&tmb);
+			tm.tv_nsec = tmb.millitm*1000000;
+			tm.tv_sec = tmb.time; 
+#else
+	#if 0 // find out when the following is defined
 			clock_gettime(CLOCK_REALTIME,tm);
+	#else
+			struct timeval tp;
+			rs = gettimeofday(&tp, NULL);
+			tm.tv_nsec = tp.tv_usec*1000;
+			tm.tv_sec = tp.tv_sec;
+	#endif
+#endif
 			tm.tv_nsec += (long)((ftime-(long)ftime)*1.e9);
 			long nns = tm.tv_nsec%1000000000;
 			tm.tv_sec += (long)ftime+(tm.tv_nsec-nns)/1000000000; 
 			tm.tv_nsec = nns;
-#else
-			tm.tv_sec = time(NULL)+(long)ftime;
-			tm.tv_nsec = 0;
-#endif
+
 			Lock();
 			bool ret = pthread_cond_timedwait(&cond,&mutex,&tm) == 0; 
 			Unlock();
@@ -854,9 +865,19 @@ public:
 	static void PopThread();
 
 	/*! \brief Launch a thread.
-		\remark thr_params *p may be NULL if not needed.
+		\param meth Thread function
+		\param params Parameters to pass to the thread, may be NULL if not needed.
+		\return Thread id on success, NULL on failure
 	*/
-	static bool LaunchThread(void (*meth)(thr_params *p),thr_params *p = NULL);
+	static bool LaunchThread(void (*meth)(thr_params *p),thr_params *params = NULL);
+
+	/*! \brief Terminate a thread.
+		\param meth Thread function
+		\param params Parameters to pass to the thread, may be NULL if not needed.
+		\return True if at least one matching thread has been found.
+		\remark Terminates all running threads with matching meth and params.
+	*/
+	static bool StopThread(void (*meth)(thr_params *p),thr_params *params = NULL,bool wait = false);
 
 //!		@} FLEXT_S_THREAD
 

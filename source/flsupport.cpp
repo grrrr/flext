@@ -14,6 +14,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
  
 #include "flext.h"
 
+#include <stdio.h>
+#include <stdarg.h>
+
 const t_symbol *flext::sym_float = NULL;
 const t_symbol *flext::sym_symbol = NULL;
 const t_symbol *flext::sym_bang = NULL;
@@ -171,3 +174,35 @@ int flext::Int2Bits(unsigned long n)
 	return b;
 }
 
+void flext::post(const char *fmt, ...)
+{
+#ifdef FLEXT_THREADS
+	static ThrMutex mutex;
+	mutex.Lock();
+#endif
+	va_list ap;
+    va_start(ap, fmt);
+    vfprintf(stderr, fmt, ap);
+    va_end(ap);
+    putc('\n', stderr);
+#ifdef FLEXT_THREADS
+	mutex.Unlock();
+#endif
+}
+
+void flext::error(const char *fmt,...)
+{
+#ifdef FLEXT_THREADS
+	static ThrMutex mutex;
+	mutex.Lock();
+#endif
+	va_list ap;
+    va_start(ap, fmt);
+    fprintf(stderr, "error: ");
+    vfprintf(stderr, fmt, ap);
+    va_end(ap);
+    putc('\n', stderr);
+#ifdef FLEXT_THREADS
+	mutex.Unlock();
+#endif
+}

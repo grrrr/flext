@@ -60,20 +60,7 @@ class Queue:
     public flext
 {
 public:
-    Queue(): 
-        lst(new qmsg[QUEUE_LENGTH]),
-        atoms(new t_atom[QUEUE_ATOMS])
-    {
-        Init();
-    }
-
-    ~Queue() 
-    { 
-        if(lst) delete[] lst;
-        if(atoms) delete[] atoms;
-    }
-
-    void Init()
+    Queue()
     {
         qhead = qtail = 0;
         ahead = atail = 0;
@@ -102,14 +89,14 @@ public:
 
     void Push(flext_base *th,int o,float dt) 
     { 
-        t_atom *at = GetAtoms(1);
+        t_atom *at = GetAtoms(1); 
         SetFloat(*at,dt);
         Set(th,o,sym_float,1,at); 
     }
 
     void Push(flext_base *th,int o,int dt) 
     { 
-        t_atom *at = GetAtoms(1);
+        t_atom *at = GetAtoms(1); 
         SetInt(*at,dt);
 #if FLEXT_SYS == FLEXT_SYS_PD
         const t_symbol *sym = sym_float;
@@ -123,7 +110,7 @@ public:
 
     void Push(flext_base *th,int o,const t_symbol *dt) 
     { 
-        t_atom *at = GetAtoms(1);
+        t_atom *at = GetAtoms(1); 
         SetSymbol(*at,dt);
         Set(th,o,sym_symbol,1,at); 
     }
@@ -150,25 +137,38 @@ protected:
         qtail = (qtail+1)%QUEUE_LENGTH;
     }
 
-    int CntAtoms() const { return ahead <= atail?atail-ahead:atail+QUEUE_ATOMS-ahead; }
+    int CntAtoms() const 
+    { 
+        int c = atail-ahead;
+        return c >= 0?c:c+QUEUE_ATOMS;
+    }
 
-    t_atom *GetAtoms(int argc) 
+    // must return contiguous region
+    t_atom *GetAtoms(int argc)
     {
-        FLEXT_ASSERT(CntAtoms() < QUEUE_ATOMS-1);
-        t_atom *at = atoms+atail;
-        atail = (atail+argc)%QUEUE_ATOMS;
-        return at;
+        // \todo check for available space
+
+        if(atail+argc >= QUEUE_ATOMS) {
+            atail = argc;
+            return atoms;
+        }
+        else {
+            t_atom *at = atoms+atail;
+            atail += argc;
+            return at;
+        }
     }
 
     void PopAtoms(int argc) 
     {
-        ahead = (ahead+argc)%QUEUE_ATOMS;
+        const int p = ahead+argc;
+        ahead = p >= QUEUE_ATOMS?argc:p;
     }
 
     int qhead,qtail;
-    qmsg *lst;
+    qmsg lst[QUEUE_LENGTH];
     int ahead,atail;
-    t_atom *atoms;
+    t_atom atoms[QUEUE_ATOMS];
 };
 
 static Queue queue;
@@ -276,9 +276,6 @@ void flext_base::StartQueue()
     static bool started = false;
     if(started) return;
     else started = true;
-
-    // message queue ticker
-    queue.Init();
 
 #ifdef FLEXT_QTHR
     LaunchThread(QWorker,NULL);

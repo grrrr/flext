@@ -29,7 +29,7 @@ Package files:
 - flbuf.cpp: buffer object handling for base classes
 - fllib.cpp: code for handling external libraries in MaxMSP
 - fldefs.h: definitions for internal flext use
-- flcwmax.h: trivial prefix header file for Max/MSP CodeWarrior projects
+- flcwmax*.h: trivial prefix headers for Max/MSP CodeWarrior projects
 - flmspbuffer.h: MaxMSP's inofficial buffer.h included here for conveniance
 
 > for PD you need the pd source code (which is most likely part of the distribution)
@@ -70,11 +70,21 @@ Be sure to define "FLEXT_SYS=1" - alternatively use the prefix file "flcwmax.h"
 
 o Metrowerks CodeWarrior V6: edit & use the "flext.cw" project file
 
+You must have the following "Source Trees" defined:
+"flext" - Pointing to the flext main directory
+"Cycling74" - Pointing to the Cycling 74 SDK
+
 Max/MSP - MacOSX:
 ------------------
 Be sure to define "FLEXT_SYS=1" - alternatively use the prefix file "flcwmax-x.h" or "flcwmax-x-thr.h" for threading support.
 
 o Metrowerks CodeWarrior V6: edit & use the "flext.cw" project file
+
+You must have the following "Source Trees" defined:
+"OS X Volume" - Pointing to your OSX boot drive
+"flext" - Pointing to the flext main directory
+"Cycling74 OSX" - Pointing to the Cycling 74 SDK for xmax
+"MP SDK" - Pointing to the Multiprocessing SDK (for threading support)
 
 ----------------------------------------------------------------------------
 

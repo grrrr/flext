@@ -51,7 +51,17 @@ Max/MSP - MacOS 9:
 ------------------
 o Metrowerks CodeWarrior V6: edit & use the several ".cw" project files
 
+You must have the following "Source Trees" defined:
+"flext" - Pointing to the flext main directory
+"Cycling74" - Pointing to the Cycling 74 SDK
+
 Max/MSP - MacOSX:
 ------------------
 o Metrowerks CodeWarrior V6: edit & use the several ".cw" project files
+
+You must have the following "Source Trees" defined:
+"OS X Volume" - Pointing to your OSX boot drive
+"flext" - Pointing to the flext main directory
+"Cycling74 OSX" - Pointing to the Cycling 74 SDK for xmax
+"MP SDK" - Pointing to the Multiprocessing SDK (for threading support)
 

@@ -14,20 +14,20 @@ FLEXTLIB=$(FLEXTPATH)/flext_t.a  # take threaded library for all
 # compiler+linker stuff	### EDIT! ###
 INCLUDES=$(PDPATH)
 LIBPATH=
-FLAGS=-DPD -Dunix -DMACOSX -DFLEXT_THREADS -maltivec -Wno-unused -Wno-parentheses -Wno-switch -Wstrict-prototypes
+FLAGS=-DPD -Dunix -DMACOSX -DFLEXT_THREADS -Wno-unused -Wno-parentheses -Wno-switch -Wstrict-prototypes # -maltivec
 CFLAGS=-O6 
 LIBS=m
-
+LDFLAGS=-bundle -bundle_loader $(PD)
 
 # the rest can stay untouched
 # ----------------------------------------------
 
 # all the source files from the package
 
-EXAMPLES=simple1 simple2 simple3 adv1 attr1 attr2 signal1~ signal2~ lib1 thread1 thread2
+EXAMPLES=simple1 simple2 simple3 adv1 attr1 attr2 signal1~ signal2~ lib1 thread1 thread2 # attr2
 
 
-TARGETS=$(patsubst %,$(OUTPATH)/%.pd_linux,$(EXAMPLES))
+TARGETS=$(patsubst %,$(OUTPATH)/%.pd_darwin,$(EXAMPLES))
 
 # default target
 all: $(OUTPATH) $(TARGETS)
@@ -46,7 +46,7 @@ $(OUTPATH)/%.o : %/main.cpp
 	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(FLEXTPATH)) $< -o $@
 
 $(OUTPATH)/%.pd_darwin : $(OUTPATH)/%.o $(FLEXTLIB)
-	$(CXX) $(LDFLAGS) -shared $(patsubst %,-L%,$(LIBPATH)) $^ $(patsubst %,-l%,$(LIBS)) -o $@
+	$(CXX) $(LDFLAGS) $(patsubst %,-L%,$(LIBPATH)) $^ $(patsubst %,-l%,$(LIBS)) -o $@
 	chmod 755 $@
 
 
@@ -54,17 +54,14 @@ $(OUTPATH)/%.pd_darwin : $(OUTPATH)/%.o $(FLEXTLIB)
 clean:
 	rm -f $(OUTPATH)/*.o $(TARGETS)
 	
-ifdef INSTDIR
-$(INSTDIR):
-	-mkdir $(INSTDIR)
+ifdef INSTPATH
+$(INSTPATH):
+	-mkdir $(INSTPATH)
 
-install:: $(INSTDIR)
+install:: $(INSTPATH)
 endif
 
-install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)  $(patsubst %,source/%,$(_HDRS))
-	cp $^ $(INSTDIR)
-	ranlib $(INSTDIR)/*.a  # have to rerun ranlib at install dir ?!
-#	chmod 755 $(patsubst %,$(INSTDIR)/%,$(notdir $^))
-#	chgrp admin $(patsubst %,$(INSTDIR)/%,$(notdir $^))
+install:: $(patsubst %,$(OUTPATH)/%.pd_darwin,$(EXAMPLES))
+	cp $^ $(INSTPATH)
 
 

@@ -59,6 +59,10 @@ extern "C" {
 #pragma warning (pop)
 #endif
 
+#ifdef cabs
+#undef cabs // this is defined in m_pd.h (clashes with math.h)
+#endif
+
 typedef t_object t_sigobj;
 typedef t_gpointer *t_ptrtype;
 

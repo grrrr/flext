@@ -6,10 +6,13 @@
 # where are the PD header files?
 # if it is a system include path (like /usr/local/include) 
 # you should leave it blank (as e.g. g++ 3.2 complains about it)
-PDPATH=
+PDPATH=/usr/local/pd/src
+
+# where is the PD executable?
+PD=/usr/local/pd/bin/pd
 
 # where do the flext libraries reside?
-FLEXTPATH=/usr/local/lib/pd/flext
+FLEXTPATH=/usr/local/pd/flext
 
 # where should the examples be built? (relative path)
 OUTPATH=./pd-darwin

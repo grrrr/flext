@@ -26,7 +26,7 @@ PPCCPlusOptions = {Includes} {Sym-PPC} {Defines} {Flags} {WarnOff}
 
 ### Source Files ###
 
-Headers			= flstdc.h flbase.h fldefs.h flext.h
+Headers			= flstdc.h flbase.h fldefs.h flext.h flmspbuffer.h
 SrcFiles        = flbase.cpp flbuf.cpp flext.cpp fllib.cpp fldsp.cpp
 
 ### Object Files ###

@@ -80,12 +80,11 @@ Version history:
 
 0.3.2:
 - doxygen generated inline documentation / functional reference
-// - added FLEXT_ADDMETHOD_V (for var arg lists) and FLEXT_ADDMETHOD_A (anythings)... just for clarity
 - added some more functionality to the AtomAnything class
 - bugfix for threaded methods with var list or anything arguments
 - added threaded method for arbitrary (void *) data structs
 - ThrMutex: added lock count functions Push() and Pop()
-- eliminated potentiallly dangerous SetThing,GetThing and introduced DoBind,DoUnbind,GetBound instead
+- eliminated potentially dangerous SetThing,GetThing and introduced DoBind,DoUnbind,GetBound instead
 - fixed severe bug with the current threads list
 - add path specification possibility for help symbols (in FLEXT_NEW*)
 - use pthread_attr and DETACHED flag
@@ -226,6 +225,7 @@ tests:
 - some more mutexes needed for thread safety?
 - buffer resize: flext_base::buffer::Frames(): should we use buffer or system sample rate?
 - PD: test argument order (t_symbol, pointers before floats)
+- what about FLEXT_ADDMETHOD_V (for var arg lists) and FLEXT_ADDMETHOD_A (anythings)... nonsense?
 
 features:
 - abstraction for clock functions

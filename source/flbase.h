@@ -90,7 +90,7 @@ class FLEXT_EXT flext_obj
 
 		// --- overloading of new/delete memory allocation methods ----
 		// MaxMSP allows only 16K in overdrive mode!
-/*
+
 		void *operator new(size_t bytes);
 		void operator delete(void *blk);
 
@@ -98,7 +98,7 @@ class FLEXT_EXT flext_obj
 		void *operator new[](size_t bytes) { return operator new(bytes); }
 		void operator delete[](void *blk) { operator delete(blk); }
 		#endif
-*/
+
 		// these are aligned 
 		static void *NewAligned(size_t bytes,int bitalign = 128);
 		static void FreeAligned(void *blk);

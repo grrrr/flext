@@ -5,18 +5,27 @@
 # COMPILER - msvc/gcc/mingw/cygwin
 # BUILDPATH including trailing \
 
+# package info
+!include build\package.txt
+
 SYSCONFIG=$(BUILDPATH)config-$(PLATFORM)-$(RTSYS)-$(COMPILER).txt
 SYSDEFAULT=$(BUILDPATH)$(PLATFORM)\$(RTSYS)\config-$(COMPILER).def
-USRCONFIG=config.txt
-USRDEFAULT=build\config-$(PLATFORM).def
-USRMAKE=build/makefile-$(PLATFORM)-$(COMPILER).inc
-
-EMPTYMSG=^# nothing to adjust!
 
 
 OPTIONS=-f $(BUILDPATH)bmake-sub.mak -N \
 	PLATFORM=$(PLATFORM) RTSYS=$(RTSYS) COMPILER=$(COMPILER) \
 	BUILDPATH=$(BUILDPATH)
+
+!ifdef HAVECONFIG
+USRCONFIG=config.txt
+USRDEFAULT=build\config-$(PLATFORM).def
+OPTIONS=$(OPTIONS) USRCONFIG=$(USRCONFIG)
+!endif
+
+!ifdef HAVEMAKE
+USRMAKE=build\makefile-$(PLATFORM)-$(COMPILER).inc
+OPTIONS=$(OPTIONS) USRMAKE=$(USRMAKE)
+!endif
 
 
 all: config
@@ -48,18 +57,22 @@ $(SYSCONFIG): $(SYSDEFAULT)
 	@echo to match your platform and start again.
 	@echo -------------------------------------------------------------------------
 	@exit 1
-	
-$(USRCONFIG):
-	@if exist $(USRDEFAULT) ( copy $(USRDEFAULT) $@ ) else ( echo $(EMPTYMSG) > $@ )
+
+!ifdef HAVECONFIG	
+$(USRCONFIG): $(USRDEFAULT)
+	@copy $** $@
 	@echo -------------------------------------------------------------------------
 	@echo A default package configuration file has been created.
 	@echo Please edit $(USRCONFIG) and start again.
 	@echo -------------------------------------------------------------------------
 	@exit 1
+!endif
 
+!ifdef HAVEMAKE
 $(USRMAKE):
 	@echo -------------------------------------------------------------------------
 	@echo Your combination of platform, system and compiler is not supported yet.
 	@echo Required file: $(USRMAKE)
 	@echo -------------------------------------------------------------------------
 	@exit 1
+!endif

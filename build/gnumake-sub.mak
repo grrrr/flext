@@ -5,14 +5,18 @@ include $(BUILDPATH)config-$(PLATFORM)-$(RTSYS)-$(COMPILER).txt
 
 # these are project specific
 
-# special settings
-include config.txt
-
-# package specific make stuff
-include build/makefile-$(PLATFORM)-$(COMPILER).inc
-
 # package info
 include build/package.txt
+
+# special settings
+ifdef USRCONFIG
+include $(USRCONFIG)
+endif
+
+# package specific make stuff
+ifdef USRMAKE
+include $(USRMAKE)
+endif
 
 ##############################
 

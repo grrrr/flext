@@ -4,14 +4,18 @@
 
 # these are project specific
 
-# special package settings
-!include config.txt
-
-# package specific make stuff
-!include build\makefile-$(PLATFORM)-$(COMPILER).inc
-
 # package info
 !include build\package.txt
+
+# special package settings
+!ifdef USRCONFIG
+!include $(USRCONFIG)
+!endif
+
+# package specific make stuff
+!ifdef USRMAKE
+!include $(USRMAKE)
+!endif
 
 ##############################
 

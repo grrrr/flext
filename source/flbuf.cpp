@@ -102,16 +102,33 @@ I flext_base::buffer::Set(t_symbol *s,BL nameonly)
 	return ret;
 }
 
+
+#ifdef PD
+V flext_base::buffer::SetRefrIntv(F intv) 
+{ 
+	interval = intv; 
+	if(interval == 0 && ticking) {
+		clock_unset(tick);
+		ticking = false;
+	}
+}
+#else
+V flext_base::buffer::SetRefrIntv(F) {}
+#endif
+
+
 V flext_base::buffer::Dirty(BL force)
 {
 	if(sym) {
 #ifdef PD
 		if((!ticking) && (interval || force)) {
 			ticking = true;
-			clock_delay(tick,0);
+			cb_tick(this); // immediately redraw
 		}
-		else
+		else {
+			if(force) clock_delay(tick,0);
 			isdirty = true;
+		}
 #elif defined(MAXMSP)
 		if(sym->s_thing) {
 			_buffer *p = (_buffer *)sym->s_thing;

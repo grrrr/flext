@@ -90,11 +90,7 @@ public:
 		I Frames() const { return frames; }
 		
 		// graphic auto refresh interval
-	#ifdef PD
-		V SetRefrIntv(F intv) { interval = intv; }
-	#else
-		V SetRefrIntv(F) {}
-	#endif
+		V SetRefrIntv(F intv);
 
 	protected:
 		t_symbol *sym;

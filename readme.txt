@@ -45,9 +45,13 @@ for PD you need the pd source code (which is most likely part of the distributio
 
 Goals/features of the package:
 
+pros:
 - better readability of code compared to straight C externals
 - faster development, more robust coding
 - sharing of common methods and data by using base classes
+
+cons:
+- introduces a small overhead to speed (esp. to messages)
 
 
 see flext.h for the documented base classes
@@ -58,9 +62,10 @@ Version history:
 
 0.1.2:
 - defines for callback-to-method functions and method setup (FLEXT_CALLBACK*, FLEXT_ADD*)
-- deprecated support for default arguments (A_DEFFLOAT and A_DEFSYMBOL)
-- flext now uses PD's or Max's memory allocation functions
+- deprecated support for default arguments (A_DEFFLOAT and A_DEFSYMBOL).. use GIMME instead!
+- flext now uses PD's or Max's memory allocation functions (for safety in Max's overdrive)
 - added outlets for anythings
+- better graphics update behavior for PD
 
 0.1.1:
 - documentation for flext.h
@@ -102,11 +107,13 @@ TODO list:
 general:
 - documentation
 - add log messages for debugging version
-- exchange more preprocessor definitions for C++ base class code
+- add #defines to exclude unwanted features
+- exchange more preprocessor definitions for C++ base class code (esp. pd and max calls)
 - cleaner makefile for BCC
 - makefile for MS VC++ 6
 - should we use a namespace?
 - Apple MPW project
+- where to put flext source/lib in linux: /usr/local/lib,/usr/local/include ?
 
 bugs:
 none known
@@ -115,11 +122,13 @@ tests:
 - test loadbang upon object creation in Max/MSP
 
 features:
+- proxy object for any non-leftmost inlets (see existing gate object, Krzysztof Czajas spy))
 - abstraction for parsing argument lists
 - abstraction for creating lists and anythings
 - simulate loadbang on object creation for PD
 - abstraction for clock functions
-- sending messages to own inlet
+- message queue? (for multithreaded operation)
+- sending messages to own inlet (passing computation to other patch objects)
 
 premature thoughts:
 - explore jMax interface style

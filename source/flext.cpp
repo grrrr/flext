@@ -71,7 +71,7 @@ BL flext_base::SetupInOut()
 					case xlet::tp_def:
 						break;
 					case xlet::tp_sig:
-						CLASS_MAINSIGNALIN(thisClass(), flext_hdr, defsig);
+//						CLASS_MAINSIGNALIN(thisClass(), flext_hdr, defsig);
 						++insigs;
 						break;
 					default:
@@ -254,8 +254,10 @@ V flext_dsp::cb_dsp(V *c,t_signal **sp)
 { 
 	flext_dsp *obj = thisObject(c); 
 
+	// store current sample rate
 	obj->srate = sp[0]->s_sr;
 
+	// store in and out signal vectors
 	I i,in = obj->InSignals(),out = obj->OutSignals();
 	if(obj->invecs) delete[] obj->invecs;
 	obj->invecs = new F *[in];
@@ -265,8 +267,10 @@ V flext_dsp::cb_dsp(V *c,t_signal **sp)
 	obj->outvecs = new F *[out];
 	for(i = 0; i < out; ++i) obj->outvecs[i] = sp[in+i]->s_vec;
 
+	// with the following call derived classes can do some DSP setup
 	obj->m_dsp(sp[0]->s_n,obj->invecs,obj->outvecs);
 
+	// set the DSP function
 	dsp_add(dspmeth,2,obj,sp[0]->s_n);  
 }
 

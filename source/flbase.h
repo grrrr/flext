@@ -93,8 +93,8 @@ class FLEXT_EXT flext_obj
 		#endif
 
 		// these are aligned 
-		void *NewAligned(size_t bytes,int bitalign = 128);
-		void FreeAligned(void *blk);
+		static void *NewAligned(size_t bytes,int bitalign = 128);
+		static void FreeAligned(void *blk);
 		
 		// ---------------------
 
@@ -250,6 +250,18 @@ static NEW_CLASS *thisObject(void *c) { return (NEW_CLASS *)((flext_hdr *)c)->da
     REAL_NEW_4(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, TTWO, TTHREE, TFOUR)
 */
 
+
+//////////////////////////////////////////////////////
+// This is to be called in the library setup function
+//////////////////////////////////////////////////////
+
+#define FLEXT_SETUP(cl) \
+	FLEXT_EXT V cl##_setup();  \
+	cl##_setup()  
+
+#define FLEXT_TILDE_SETUP(cl) \
+	FLEXT_EXT V cl##_tilde_setup();  \
+	cl##_tilde_setup()  
 
 
 ////////////////////////////////////////

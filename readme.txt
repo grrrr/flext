@@ -68,6 +68,8 @@ Version history:
 - more information on DSP system with flext_dsp object (block size,number of inputs and outputs)
 - cleaner gcc makefile
 - added IsDirty question for buffers
+- made NewAligned/FreeAligned static functions
+- introduced FLEXT(_TILDE)_SETUP for class setup in a library setup function
 
 0.2.1:
 - fixed bug in message parsing code (anything messages were not correctly mapped to inlets)

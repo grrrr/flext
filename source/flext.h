@@ -211,6 +211,8 @@ public:
 	static const t_symbol *sym_signal;
 #endif
 
+	static const t_symbol *MakeSymbol(const char *s);
+
 	// get symbol string
 	static const char *GetString(const t_symbol *s) { return s->s_name; }  
 	static const char *GetAString(const t_symbol *s) { return s?s->s_name:""; }  

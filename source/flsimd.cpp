@@ -375,14 +375,16 @@ void flext::CopySamples(t_sample *dst,const t_sample *src,int cnt)
     if(GetSIMDCapabilities()&simd_sse) {
         // single precision
 
+   	    int n = cnt>>4;
+        cnt -= n<<4;
+
+		if(!n) goto zero;
+
 		__asm {
 			mov		eax,dword ptr [src]
 			prefetcht0 [eax+0]
 			prefetcht0 [eax+32]
 		}
-
-   	    int n = cnt>>4;
-        cnt -= n<<4;
 
 		if((reinterpret_cast<unsigned long>(src)&(__alignof(__m128)-1)) == 0) {
 			if((reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0) {
@@ -480,6 +482,7 @@ loopuu:
 				}
 			}
 		}
+zero:
        	while(cnt--) *(dst++) = *(src++); 
     }
     else
@@ -673,6 +676,7 @@ void flext::SetSamples(t_sample *dst,int cnt,t_sample s)
 
   	    int n = cnt>>4;
         cnt -= n<<4;
+		if(!n) goto zero;
 
         __asm {
 			movss	xmm0,xmmword ptr [s]
@@ -709,6 +713,7 @@ loopu:
 				loop	loopu
 			}
         }
+zero:
       	while(cnt--) *(dst++) = s; 
     }
     else
@@ -752,6 +757,8 @@ void flext::MulSamples(t_sample *dst,const t_sample *src,t_sample op,int cnt)
 
    	    int n = cnt>>4;
         cnt -= n<<4;
+
+		if(!n) goto zero;
 
         __asm {
 			mov		eax,dword ptr [src]
@@ -826,6 +833,7 @@ loopu:
 				loop	loopu
 		    }
         }
+zero:
 	    while(cnt--) *(dst++) = *(src++)*op; 
     }
     else
@@ -885,6 +893,8 @@ void flext::MulSamples(t_sample *dst,const t_sample *src,const t_sample *op,int 
         // single precision
    	    int n = cnt>>4;
         cnt -= n<<4;
+
+		if(!n) goto zero;
 
 		__asm {
 			mov		eax,[src]
@@ -1053,6 +1063,7 @@ loopuu:
 				}
 			}
         }
+zero:
 	    while(cnt--) *(dst++) = *(src++) * *(op++); 
     }
     else

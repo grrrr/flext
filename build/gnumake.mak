@@ -2,8 +2,10 @@
 # RTSYS - pd/max
 # COMPILER - msvc/gcc/mingw/cygwin
 
-# general settings
-include config-$(PLATFORM)-$(RTSYS)-$(COMPILER).txt
+# this should be improved
+BUILDPATH=../flext/build
+
+include $(BUILDPATH)/config-$(PLATFORM)-$(RTSYS)-$(COMPILER).txt
 
 ###############################
 
@@ -21,6 +23,6 @@ include make-files.txt
 ##############################
 
 # platform-specific make stuff
-include make-$(PLATFORM)-$(RTSYS)-$(COMPILER).inc
+include $(BUILDPATH)/make-$(PLATFORM)-$(RTSYS)-$(COMPILER).inc
 # general make stuff
-include make-$(PLATFORM)-gen-$(COMPILER).inc
+include $(BUILDPATH)/make-$(PLATFORM)-gen-$(COMPILER).inc

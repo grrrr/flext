@@ -1,17 +1,17 @@
 # where are the Max/MSP SDK header files?
 # you should have the latest version!
-MAXSDKPATH="c:\data\prog\audio\maxmspsdk_win\4.5 headers\c74support"	
+MAXSDKPATH="c:/data/prog/audio/maxmspsdk_win/4.5 headers/c74support"
 
 # where should the external be installed?
-INSTPATH="%CommonProgramFiles%\Cycling '74\externals\flext"
+INSTPATH="%CommonProgramFiles%/Cycling '74/externals/flext"
 
 # where do the flext headers and libraries reside?
-FLEXTPATH="%CommonProgramFiles%\Cycling '74\flext"
+FLEXTPATH="%CommonProgramFiles%/Cycling '74/flext"
 
 # where should the external be built?
 # (path for temporary files)
-OUTPATH=max-msvc
+OUTPATH=max-mingw
 
 # some user-definable flags
 # (check if they match your system!)
-OFLAGS=/G6 /Ox /arch:SSE
+OFLAGS=-O2 -march=pentium4 -msse

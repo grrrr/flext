@@ -1,7 +1,10 @@
 # where is PD?
 PDPATH=c:\programme\audio\pd		
 
-# where do the flext libraries reside?
+# where should the external be installed?
+INSTPATH=$(PDPATH)\extra
+
+# where do the flext headers and libraries reside?
 FLEXTPATH=$(PDPATH)\flext
 
 # where is MS VC++?
@@ -10,10 +13,6 @@ FLEXTPATH=$(PDPATH)\flext
 
 # where should the external be built?
 OUTPATH=pd-msvc
-
-# where should the external be installed?
-# (leave blank to omit installation)
-INSTPATH=$(PDPATH)\extra
 
 # user defined compiler flags
 # (check if they match your system!)

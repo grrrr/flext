@@ -6,7 +6,7 @@ INCPATH=$(INCPATH) /I$(MSVCPATH)\include
 LIBPATH=$(LIBPATH) /LIBPATH:$(MSVCPATH)\lib
 !endif
 
-# for VC7 - exception handling
+# for VC7 - enable exception handling
 CFLAGS=$(CFLAGS) /EHsc 
 
 ##############################################
@@ -35,12 +35,8 @@ DEFS=$(DEFS) /DFLEXT_THREADS
 
 ##############################################
 
+# default target
 all: $(OUTPATH) $(OUTPATH)\$(NAME).$(EXT)
-
-# remove build
-clean:
-	-del /q $(OUTPATH) > nul
-	-rmdir $(OUTPATH) > nul
 
 OBJS= $(SRCS:.c=.obj)
 OBJS= $(OBJS:.objpp=.obj)
@@ -60,7 +56,13 @@ $(OUTPATH)\$(NAME).$(EXT): $(OBJS)
 	@-del *.exp
 	@-del *.lib
 	cd ..
-!ifdef INSTPATH
+
+# remove build
+clean:
+	-del /q $(OUTPATH) > nul
+	-rmdir $(OUTPATH) > nul
+
+# install build
+install:
 	@-if not exist $(INSTPATH) mkdir $(INSTPATH)
-	copy $@ $(INSTPATH) > nul
-!endif
+	copy $(OUTPATH)\$(NAME).$(EXT) $(INSTPATH) > nul

@@ -14,7 +14,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define DIRTY_INTERVAL 0   // buffer dirty check in msec
 #endif
 
-buffer::buffer(t_symbol *bn):
+ext_obj::buffer::buffer(t_symbol *bn):
 	sym(NULL),data(NULL),
 	chns(0),frames(0)
 {
@@ -28,14 +28,14 @@ buffer::buffer(t_symbol *bn):
 	if(bn) Set(bn);
 }
 
-buffer::~buffer()
+ext_obj::buffer::~buffer()
 {
 #ifdef PD
     clock_free(tick);
 #endif
 }
 
-I buffer::Set(t_symbol *s)
+I ext_obj::buffer::Set(t_symbol *s)
 {
 	I ret = 0;
 
@@ -102,7 +102,7 @@ I buffer::Set(t_symbol *s)
 	return ret;
 }
 
-V buffer::Dirty(BL force)
+V ext_obj::buffer::Dirty(BL force)
 {
 	if(sym) {
 #ifdef PD
@@ -131,7 +131,7 @@ V buffer::Dirty(BL force)
 }
 
 #ifdef PD
-V buffer::cb_tick(buffer *b)
+V ext_obj::buffer::cb_tick(buffer *b)
 {
 	t_garray *a = (t_garray *)pd_findbyclass(b->sym, garray_class);
 	if (a) garray_redraw(a);

@@ -4,7 +4,7 @@
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=flext_sh - Win32 Debug
+CFG=flext_sh - Win32 DLL Debug
 !MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
 !MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
@@ -13,12 +13,14 @@ CFG=flext_sh - Win32 Debug
 !MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
 !MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
-!MESSAGE NMAKE /f "flext_sh.mak" CFG="flext_sh - Win32 Debug"
+!MESSAGE NMAKE /f "flext_sh.mak" CFG="flext_sh - Win32 DLL Debug"
 !MESSAGE 
 !MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
 !MESSAGE "flext_sh - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
 !MESSAGE "flext_sh - Win32 Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "flext_sh - Win32 DLL Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "flext_sh - Win32 DLL Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -43,7 +45,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FLEXT_SH_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /G6 /MD /W3 /GR /GX /O2 /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "FLEXT_DLL" /D FLEXT_SYS=2 /D "FLEXT_SHARED" /D "FLEXT_THREADS" /YX /FD /c
+# ADD CPP /nologo /G6 /MT /W3 /GR /GX /O2 /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "FLEXT_DLL" /D FLEXT_SYS=2 /D "FLEXT_SHARED" /D "FLEXT_THREADS" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0xc07 /d "NDEBUG"
@@ -53,7 +55,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 pd.lib pthreadVC.lib kernel32.lib user32.lib pd.lib sndobj.lib stk.lib /nologo /dll /machine:I386 /out:"../flext/pd-msvc/flext.dll" /libpath:"f:\prog\audio\sndobj\lib" /libpath:"f:\prog\audio\stk\lib"
+# ADD LINK32 pd.lib pthreadVC.lib kernel32.lib user32.lib pd.lib sndobj.lib stk.lib /nologo /dll /machine:I386 /out:"pd-msvc/flext.dll" /libpath:"f:\prog\audio\sndobj\lib" /libpath:"f:\prog\audio\stk\lib"
 # SUBTRACT LINK32 /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "flext_sh - Win32 Debug"
@@ -70,7 +72,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FLEXT_SH_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /G6 /MDd /W3 /Gm /GR /GX /ZI /Od /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FLEXT_DLL" /D "FLEXT_SHARED" /D FLEXT_SYS=2 /D "FLEXT_THREADS" /YX /FD /GZ /c
+# ADD CPP /nologo /G6 /MTd /W3 /Gm /GR /GX /ZI /Od /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FLEXT_DLL" /D "FLEXT_SHARED" /D FLEXT_SYS=2 /D "FLEXT_THREADS" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0xc07 /d "_DEBUG"
@@ -80,7 +82,63 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib pd.lib pthreadVC.lib sndobj.lib stk_d.lib /nologo /dll /debug /machine:I386 /out:"../flext/pd-msvc/flext_d.dll" /pdbtype:sept /libpath:"f:\prog\audio\sndobj\lib" /libpath:"f:\prog\audio\stk\lib"
+# ADD LINK32 kernel32.lib user32.lib pd.lib pthreadVC.lib sndobj.lib stk_d.lib /nologo /dll /debug /machine:I386 /out:"pd-msvc/flext_d.dll" /pdbtype:sept /libpath:"f:\prog\audio\sndobj\lib" /libpath:"f:\prog\audio\stk\lib"
+
+!ELSEIF  "$(CFG)" == "flext_sh - Win32 DLL Debug"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "flext_sh___Win32_DLL_Debug"
+# PROP BASE Intermediate_Dir "flext_sh___Win32_DLL_Debug"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "pd-msvc\ddl"
+# PROP Intermediate_Dir "pd-msvc\ddl"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /G6 /MDd /W3 /Gm /GR /GX /ZI /Od /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FLEXT_DLL" /D "FLEXT_SHARED" /D FLEXT_SYS=2 /D "FLEXT_THREADS" /YX /FD /GZ /c
+# ADD CPP /nologo /G6 /MDd /W3 /Gm /GR /GX /ZI /Od /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FLEXT_DLL" /D "FLEXT_SHARED" /D FLEXT_SYS=2 /D "FLEXT_THREADS" /YX /FD /GZ /c
+# ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0xc07 /d "_DEBUG"
+# ADD RSC /l 0xc07 /d "_DEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 kernel32.lib user32.lib pd.lib pthreadVC.lib sndobj.lib stk_d.lib /nologo /dll /debug /machine:I386 /out:"../flext/pd-msvc/flext_d.dll" /pdbtype:sept /libpath:"f:\prog\audio\sndobj\lib" /libpath:"f:\prog\audio\stk\lib"
+# ADD LINK32 kernel32.lib user32.lib pd.lib pthreadVC.lib sndobj.lib stk_d.lib /nologo /dll /debug /machine:I386 /out:"pd-msvc/flext_dl.dll" /pdbtype:sept /libpath:"f:\prog\audio\sndobj\lib" /libpath:"f:\prog\audio\stk\lib"
+
+!ELSEIF  "$(CFG)" == "flext_sh - Win32 DLL Release"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "flext_sh___Win32_DLL_Release"
+# PROP BASE Intermediate_Dir "flext_sh___Win32_DLL_Release"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "pd-msvc\drl"
+# PROP Intermediate_Dir "pd-msvc\drl"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /G6 /MD /W3 /GR /GX /O2 /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "FLEXT_DLL" /D FLEXT_SYS=2 /D "FLEXT_SHARED" /D "FLEXT_THREADS" /YX /FD /c
+# ADD CPP /nologo /G6 /MD /W3 /GR /GX /O2 /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "FLEXT_DLL" /D FLEXT_SYS=2 /D "FLEXT_SHARED" /D "FLEXT_THREADS" /YX /FD /c
+# ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0xc07 /d "NDEBUG"
+# ADD RSC /l 0xc07 /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 pd.lib pthreadVC.lib kernel32.lib user32.lib pd.lib sndobj.lib stk.lib /nologo /dll /machine:I386 /out:"../flext/pd-msvc/flext.dll" /libpath:"f:\prog\audio\sndobj\lib" /libpath:"f:\prog\audio\stk\lib"
+# SUBTRACT BASE LINK32 /nodefaultlib
+# ADD LINK32 pd.lib pthreadVC.lib kernel32.lib user32.lib pd.lib sndobj.lib stk.lib /nologo /dll /machine:I386 /out:"pd-msvc/flext_l.dll" /libpath:"f:\prog\audio\sndobj\lib" /libpath:"f:\prog\audio\stk\lib"
+# SUBTRACT LINK32 /nodefaultlib
 
 !ENDIF 
 
@@ -88,6 +146,8 @@ LINK32=link.exe
 
 # Name "flext_sh - Win32 Release"
 # Name "flext_sh - Win32 Debug"
+# Name "flext_sh - Win32 DLL Debug"
+# Name "flext_sh - Win32 DLL Release"
 # Begin Group "doc"
 
 # PROP Default_Filter ""
@@ -262,7 +322,27 @@ SOURCE=..\flext\source\fldsp.h
 # Begin Source File
 
 SOURCE=..\flext\source\flsndobj.cpp
+
+!IF  "$(CFG)" == "flext_sh - Win32 Release"
+
 # PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "flext_sh - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "flext_sh - Win32 DLL Debug"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "flext_sh - Win32 DLL Release"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -275,7 +355,27 @@ SOURCE=..\flext\source\flsndobj.h
 # Begin Source File
 
 SOURCE=..\flext\source\flstk.cpp
+
+!IF  "$(CFG)" == "flext_sh - Win32 Release"
+
 # PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "flext_sh - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "flext_sh - Win32 DLL Debug"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "flext_sh - Win32 DLL Release"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 

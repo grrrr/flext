@@ -26,4 +26,17 @@ void flext::ZeroMem(void *dst,int bytes)
 }
 
 
+bool flext::Forward(const t_symbol *recv,int argc,const t_atom *argv)
+{
+	t_class **cl = (t_class **)recv->s_thing;
+	if(!cl) return false;
+    
+#if FLEXT_SYS == FLEXT_SYS_PD
+	pd_forwardmess(cl,argc,(t_atom *)argv);
+#else
+#pragma message ("Send is not implemented")
+    return false;
+#endif
 
+    return true;
+}

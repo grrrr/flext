@@ -118,6 +118,8 @@ Version history:
 - added forgotten flext_base::ToQueueString method
 - added timer functions and flext::Timer class
 - added functions for SIMD support
+- fixed race condition when using LaunchThread in a setup function (now waiting for thread helper to initialize)
+- added flext::Forward function to send messages to bound symbols
 
 0.4.2:
 - started port for jMax

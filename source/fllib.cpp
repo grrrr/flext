@@ -234,7 +234,7 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
     *cl = ::class_new(
 		(t_symbol *)nsym,
     	(t_newmethod)obj_new,(t_method)obj_free,
-     	sizeof(flext_hdr),0,A_GIMME,A_NULL);
+     	sizeof(flext_hdr),CLASS_DEFAULT,A_GIMME,A_NULL);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	if(!lib) {
 		::setup(

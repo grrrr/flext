@@ -12,6 +12,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     \brief Implementation of the flext message queuing functionality.
 
     \todo Let's see if queuing can be implemented for Max/MSP with defer_low
+
+    if FLEXT_PDLOCK is defined, the new PD thread lock functions are used
 */
 
 #include "flext.h"
@@ -67,7 +69,7 @@ void flext_base::QTick(flext_base *th)
 {
 #endif
 //	post("qtick");
-#if defined(FLEXT_THREADS) && defined(FLEXT_DEBUG)
+#if defined(FLEXT_THREADS) && defined(FLEXT_DEBUG) && !defined(FLEXT_PDLOCK)
 	if(!th->IsSystemThread()) {
 		error("flext - Queue tick called by wrong thread!");
 		return;
@@ -76,6 +78,9 @@ void flext_base::QTick(flext_base *th)
 
 #ifdef FLEXT_THREADS
 	th->qmutex.Lock();
+#endif
+#ifdef FLEXT_PDLOCK
+    pd_lock();
 #endif
 	for(;;) {
 		qmsg *m = th->qhead;
@@ -140,6 +145,9 @@ void flext_base::QTick(flext_base *th)
 		m->nxt = NULL;
 		delete m;
 	}
+#ifdef FLEXT_PDLOCK
+    pd_unlock();
+#endif
 #ifdef FLEXT_THREADS
 	th->qmutex.Unlock();
 #endif
@@ -160,7 +168,13 @@ void flext_base::Queue(qmsg *m)
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_PD
-	clock_delay(qclk,0);
+    #ifdef FLEXT_PDLOCK
+        // wake up a worker thread 
+        // (instead of triggering the clock)
+	    clock_delay(qclk,0);
+    #else
+	    clock_delay(qclk,0);
+    #endif
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	qelem_set(qclk); 
 #elif FLEXT_SYS == FLEXT_SYS_JMAX

@@ -138,7 +138,7 @@ public:
     static int Version();    
 
     //! Flext version string
-    static const char *VersionStr();    
+    static const char *VersionStr();
 
 // --- buffer/array stuff -----------------------------------------	
 

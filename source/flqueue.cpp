@@ -155,7 +155,7 @@ static void QWork(bool syslock)
         // qc will be a minimum guaranteed number of present queue elements.
         // On the other hand, if new queue elements are added by the methods called
         // in the loop, these will be sent in the next tick to avoid recursion overflow.
-        int qc = queue.Size();
+        size_t qc = queue.Size();
         if(!qc) break;
 
     #if FLEXT_QMODE == 2

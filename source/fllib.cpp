@@ -16,243 +16,253 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <stdarg.h>
 
 
-enum libargtp { a_null,a_int,a_float,a_sym };
-
-class libfunction {
+// this class stands for one registered object
+// it holds the class, type flags, constructor and destructor of the object and the creation arg types
+// it will never be destroyed
+class libobject {
 public:
-	libfunction(t_symbol *n,t_newmethod newf,void (*freef)(flext_hdr *));
-	~libfunction();
-	void add(libfunction *n);
+	libobject(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(flext_hdr *)); 
 	
-	t_symbol *name;
-	t_newmethod newfun;
+	flext_obj *(*newfun)(int,t_atom *);
 	void (*freefun)(flext_hdr *c);
+
+	t_class *const &clss;
+	bool lib,dsp;
 	int argc;
 	int *argv;
-	bool lib,dsp;
-	t_class *clss;
-	
-	libfunction *nxt;
 };
 
-static libfunction *libfuncs = NULL;
-t_class *flext_obj::lib_class = NULL;
-t_symbol *flext_obj::lib_name = NULL;
+libobject::libobject(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(flext_hdr *)): 
+	clss(cl),newfun(newf),freefun(freef),argc(0),argv(NULL) 
+{}
+	
+// this class stands for one registered object name
+// it holds a pointer to the respective object
+// it will never be destroyed
+class libname {
+public:
+	libname(const t_symbol *n,libobject *o): name(n),obj(o),nxt(NULL) {}	
 
-libfunction::libfunction(t_symbol *n,t_newmethod newf,void (*freef)(flext_hdr *)): name(n),newfun(newf),freefun(freef),nxt(NULL),argc(0),argv(NULL),clss(NULL) {}
-libfunction::~libfunction() { if(argv) delete[] argv; if(nxt) delete nxt; }
-void libfunction::add(libfunction *n) { if(nxt) nxt->add(n); else nxt = n; }
+	const t_symbol *name;
+	libobject *obj;
 
-void flext_obj::libfun_add(bool lib,bool dsp,t_class *&clss,const char *name,void setupfun(t_class *),t_newmethod newfun,void (*freefun)(flext_hdr *),int argtp1,...)
+	static void add(libname *n);
+	static libname *find(const t_symbol *s);
+	
+protected:
+	libname *nxt;
+	void addrec(libname *n);
+	static libname *root;
+};
+
+void libname::addrec(libname *n) { if(nxt) nxt->addrec(n); else nxt = n; }
+
+libname *libname::root = NULL;
+
+void libname::add(libname *l) {
+	if(root) root->addrec(l);
+	else root = l;
+}
+
+libname *libname::find(const t_symbol *s) {
+	libname *l;
+	for(l = root; l; l = l->nxt)
+		if(s == l->name) break;
+	return l;
+}
+
+// for MAXMSP, the library is represented by a special object (class) registered at startup
+// all objects in the library are clones of that library object - they share the same class
+#ifdef MAXMSP
+static t_class *lib_class = NULL;
+static const t_symbol *lib_name = NULL;
+#endif
+
+void flext_obj::lib_init(const char *name,void setupfun())
+{
+#ifdef MAXMSP
+	lib_name = MakeSymbol(name);
+	::setup(
+		(t_messlist **)&lib_class,
+		(t_newmethod)obj_new,(t_method)obj_free,
+		sizeof(flext_hdr),NULL,A_GIMME,A_NULL);
+#endif
+	setupfun();
+}
+
+void flext_obj::obj_add(bool lib,bool dsp,const char *name,void setupfun(t_class *),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...)
 {
 	if(dsp) flext_util::chktilde(name);
 
+	t_class **cl = lib?&lib_class:new t_class *;
+	const t_symbol *nsym = MakeSymbol(flext_util::extract(name));
+	
+	// register object class
 #ifdef PD
-    clss = ::class_new(
-		::gensym((char *)flext_util::extract(name)),
-    	(t_newmethod)&flext_obj::libfun_new,
-    	(t_method)&flext_obj::libfun_free,
+    *cl = ::class_new(
+		nsym,
+    	(t_newmethod)obj_new,(t_method)obj_free,
      	sizeof(flext_hdr),0,A_GIMME,A_NULL);
-#elif defined(MAX)
-	if(lib) 
-		clss = flext_obj::lib_class;
-	else {
+#elif defined(MAXMSP)
+	if(!lib) {
 		::setup(
-			(t_messlist **)&clss,
-    		(t_newmethod)&flext_obj::libfun_new,
-    		(t_method)&flext_obj::libfun_free,
-     		sizeof(flext_hdr),0,A_GIMME,A_NULL);
+			(t_messlist **)cl,
+    		(t_newmethod)obj_new,(t_method)obj_free,
+     		sizeof(flext_hdr),NULL,A_GIMME,A_NULL);
 	}
 #endif
 
+	// make new dynamic object
+	libobject *lo = new libobject(*cl,newfun,freefun);
+	lo->lib = lib;
+	lo->dsp = dsp;
+
+	// parse the argument type list and store it with the object
+	if(argtp1 == A_GIMME)
+		lo->argc = -1;
+	else {
+		int argtp,i;
+		va_list marker;
+		
+		// parse a first time and count only
+		va_start(marker,argtp1);
+		for(argtp = argtp1; argtp != A_NULL; ++lo->argc) argtp = (int)va_arg(marker,int); 
+		va_end(marker);
+
+		lo->argv = new int[lo->argc];
+	
+		// now parse and store
+		va_start(marker,argtp1);
+		for(argtp = argtp1,i = 0; i < lo->argc; ++i) {
+			lo->argv[i] = argtp;
+			argtp = (int)va_arg(marker,int); 
+		}
+		va_end(marker);
+	}
+
+	// make help reference
+	flext_obj::DefineHelp(lo->clss,GetString(nsym),flext_util::extract(name,-1),dsp);
+
 	for(int ix = 0; ; ++ix) {
-		const char *c = flext_util::extract(name,ix);
+		// in this loop register all the possible aliases of the object
+	
+		const char *c = ix?flext_util::extract(name,ix):GetString(nsym);
 		if(!c || !*c) break;
 
-		libfunction *l = new libfunction(gensym(const_cast<char *>(c)),newfun,freefun);
+		// add to name list
+		libname *l = new libname(MakeSymbol(c),lo);
+		libname::add(l);
 	
-		l->clss = clss;
-		l->lib = lib;
-		l->dsp = dsp;
-
-		if(argtp1 == A_GIMME)
-			l->argc = -1;
-		else {
-			int argtp,i;
-			va_list marker;
-			va_start(marker,argtp1);
-			l->argc = 0;
-			for(argtp = argtp1; argtp != A_NULL; ++l->argc) argtp = (int)va_arg(marker,int); 
-			va_end(marker);
-	
-			l->argv = new int[l->argc];
-		
-			va_start(marker,argtp1);
-			for(argtp = argtp1,i = 0; i < l->argc; ++i) {
-				l->argv[i] = argtp;
-				argtp = (int)va_arg(marker,int); 
-			}
-			va_end(marker);
-		}
-	
-		if(libfuncs) libfuncs->add(l);
-		else libfuncs = l;
-
-		if(ix == 0) {
-			// make help reference
-			flext_obj::DefineHelp(clss,c,flext_util::extract(name,-1),dsp);
-		}
 #ifdef PD
-		if(ix > 0) ::class_addcreator((t_newmethod)libfun_new,l->name,A_GIMME,A_NULL);
+		if(ix > 0) 
+			// in PD the first name is already registered with class creation
+			::class_addcreator((t_newmethod)libfun_new,l->name,A_GIMME,A_NULL);
 #elif defined(MAXMSP)
-		if(ix > 0 || lib) ::alias(const_cast<char *>(c));  // make object name available to Max
+		if(ix > 0 || lib) 
+			// in MaxMSP the first alias gets its name from the name of the object file,
+			// unless it is a library (then the name can be different)
+			::alias(const_cast<char *>(c));  
 #endif	
 	}
 
-    setupfun(clss);
+	// call class setup function
+    setupfun(lo->clss);
 }
 	
-/*
-void flext_obj::libfun_add(const char *name,t_newmethod newfun,void (*freefun)(flext_hdr *),int argtp1,...)
-{
-	for(int ix = 0; ; ++ix) {
-		const char *c = flext::extract(name,ix);
-		if(!c || !*c) break;
 
-#ifdef PD
-		if(ix > 0) { FLEXT_ADDALIAS1(c,libfun_new,A_GIMME); }
-#elif defined(MAXMSP)
-	 	alias(const_cast<char *>(c));  // make object name available to Max
-#endif	
+typedef flext_obj *(*libfun)(int,t_atom *);
 
-		libfunction *l = new libfunction(gensym(const_cast<char *>(c)),newfun,freefun);
-	
-		if(argtp1 == A_GIMME)
-			l->argc = -1;
-		else {
-			int argtp,i;
-			va_list marker;
-			va_start(marker,argtp1);
-			l->argc = 0;
-			for(argtp = argtp1; argtp != A_NULL; ++l->argc) argtp = (int)va_arg(marker,int); 
-			va_end(marker);
-	
-			l->argv = new int[l->argc];
-		
-			va_start(marker,argtp1);
-			for(argtp = argtp1,i = 0; i < l->argc; ++i) {
-				l->argv[i] = argtp;
-				argtp = (int)va_arg(marker,int); 
-			}
-			va_end(marker);
-		}
-	
-		if(libfuncs) libfuncs->add(l);
-		else libfuncs = l;
-	}
-}
-*/
-
-typedef flext_obj *(*libfunV)(int,t_atom *);
-typedef flext_obj *(*libfun0)();
-typedef flext_obj *(*libfun1)(flext_obj::lib_arg &a1);
-typedef flext_obj *(*libfun2)(flext_obj::lib_arg &a1,flext_obj::lib_arg &a2);
-typedef flext_obj *(*libfun3)(flext_obj::lib_arg &a1,flext_obj::lib_arg &a2,flext_obj::lib_arg &a3);
-typedef flext_obj *(*libfun4)(flext_obj::lib_arg &a1,flext_obj::lib_arg &a2,flext_obj::lib_arg &a3,flext_obj::lib_arg &a4);
-typedef flext_obj *(*libfun5)(flext_obj::lib_arg &a1,flext_obj::lib_arg &a2,flext_obj::lib_arg &a3,flext_obj::lib_arg &a4,flext_obj::lib_arg &a5);
-
-flext_hdr *flext_obj::libfun_new(t_symbol *s,int argc,t_atom *argv)
+flext_hdr *flext_obj::obj_new(const t_symbol *s,int argc,t_atom *argv)
 {
 	flext_hdr *obj = NULL;
-
-	libfunction *l;
-	for(l = libfuncs; l; l = l->nxt) 
-		if(s == l->name) break;
-	
+	libname *l = libname::find(s);
 	if(l) {
 		bool ok = true;
-		lib_arg args[5];
+		t_atom args[FLEXT_MAXNEWARGS]; 
+		libobject *lo = l->obj;
 
-		if(l->argc >= 0) {
-			if(l->argc > 5) { ERRINTERNAL(); ok = false; }
+		if(lo->argc >= 0) {
+#ifdef _DEBUG
+			if(lo->argc > FLEXT_MAXNEWARGS) { ERRINTERNAL(); ok = false; }
+#endif
 
-			if(argc == l->argc) {
-				for(int i = 0; /*ok &&*/ i < l->argc; ++i) {
-					switch(l->argv[i]) {
+			if(argc == lo->argc) {
+				for(int i = 0; /*ok &&*/ i < lo->argc; ++i) {
+					switch(lo->argv[i]) {
 #ifdef MAXMSP
 					case A_INT:
-						if(flext::IsInt(argv[i])) args[i].i = flext::GetInt(argv[i]);
-						else if(flext::IsFloat(argv[i])) args[i].i = (int)flext::GetFloat(argv[i]);
+						if(flext::IsInt(argv[i])) args[i] = argv[i];
+						else if(flext::IsFloat(argv[i])) flext::SetInt(args[i],(int)flext::GetFloat(argv[i]));
 						else ok = false;
 						break;
 #endif
 					case A_FLOAT:
-						if(flext::IsInt(argv[i])) args[i].f = (float)flext::GetInt(argv[i]);
-						else if(flext::IsFloat(argv[i])) args[i].f = flext::GetFloat(argv[i]);
+						if(flext::IsInt(argv[i])) flext::SetFloat(args[i],(float)flext::GetInt(argv[i]));
+						else if(flext::IsFloat(argv[i])) args[i] = argv[i];
 						else ok = false;
 						break;
 					case A_SYMBOL:
-						if(flext::IsSymbol(argv[i])) args[i].s = flext::GetSymbol(argv[i]);
+						if(flext::IsSymbol(argv[i])) args[i] = argv[i];
 						else ok = false;
 						break;
 					}
 				}
 			
-				if(ok) {
-				}
-				else
+				if(!ok)
 					post("%s: Creation arguments do not match",s->s_name);
 			}
 			else {
-				error("%s: %s creation arguments",s->s_name,argc < l->argc?"Not enough":"Too many");
+				error("%s: %s creation arguments",s->s_name,argc < lo->argc?"Not enough":"Too many");
 				ok = false;
 			}
 		}
 
 		if(ok) {
 #ifdef PD
-			obj = (flext_hdr *)::pd_new(l->clss);
+			obj = (flext_hdr *)::pd_new(lo->clss);
 #elif defined(MAXMSP)
-			obj = (flext_hdr *)::newobject(l->clss);
+			obj = (flext_hdr *)::newobject(lo->clss);
 #endif
 		    flext_obj::m_holder = obj;
 			flext_obj::m_holdname = flext::GetString(l->name);
 
-			switch(l->argc) {
-				case -1: obj->data = ((libfunV)l->newfun)(argc,argv); break;
-				case 0: obj->data = ((libfun0)l->newfun)(); break;
-				case 1: obj->data = ((libfun1)l->newfun)(args[0]); break;
-				case 2: obj->data = ((libfun2)l->newfun)(args[0],args[1]); break;
-				case 3: obj->data = ((libfun3)l->newfun)(args[0],args[1],args[2]); break;
-				case 4: obj->data = ((libfun4)l->newfun)(args[0],args[1],args[2],args[3]); break;
-				case 5: obj->data = ((libfun5)l->newfun)(args[0],args[1],args[2],args[3],args[4]); break;
-			}
-			
+			// get actual flext object (newfun calls "new flext_obj()")
+			obj->data = lo->argc >= 0?lo->newfun(lo->argc,args):lo->newfun(argc,argv); 
+
 			flext_obj::m_holder = NULL;
 			if(!obj->data || !obj->data->InitOk()) { 
-				l->freefun(obj); 
+				lo->freefun(obj); 
 				obj = NULL; 
 			}
 		}
 	}
-	else {
-		if(s != lib_name) error("Class %s not found in library!",s->s_name);
-	}
+#ifdef _DEBUG
+	else
+#ifdef MAXMSP
+		// in MaxMSP an object with the name of the library exists, even if not explicitely declared!
+		if(s != lib_name) 
+#endif
+		error("Class %s not found in library!",s->s_name);
+#endif
 
 	return obj;
 }
 
-void flext_obj::libfun_free(flext_hdr *hdr)
+void flext_obj::obj_free(flext_hdr *hdr)
 {
-	t_symbol *name = gensym(const_cast<char *>(hdr->data->m_name));
-	libfunction *l;
-	for(l = libfuncs; l; l = l->nxt)
-		if(name == l->name) break;
+	const t_symbol *name = MakeSymbol(hdr->data->m_name);
+	libname *l = libname::find(name);
 
 	if(l) 
-		l->freefun(hdr);
+		l->obj->freefun(hdr);
+#ifdef _DEBUG
 	else 
-		if(name != lib_name) error("Class %s not found in library!",name);
+#ifdef MAXMSP
+		// in MaxMSP an object with the name of the library exists, even if not explicitely declared!
+		if(name != lib_name) 
+#endif
+		error("Class %s not found in library!",name);
+#endif
 }
 
 

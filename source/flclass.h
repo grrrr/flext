@@ -87,6 +87,10 @@ public:
 		
 		//! Destroy buffer
 		~buffer();
+
+		/*! \brief Check if the data is valid
+		*/
+		bool Ok() const { return sym != NULL && data != NULL; }
 		
 		/*! \brief Set to specified buffer.
 			@param nameonly: if true sets name only, but doesn't look at buffer actually

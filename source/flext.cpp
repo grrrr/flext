@@ -10,7 +10,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <flext.h>
 #include <stdarg.h>
-#include <assert.h>
 
 // === proxy class for flext_base ============================
 
@@ -456,7 +455,9 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 		if(!m) break;
 		if(m->tag == sym_anything && m->argc == 1 && m->args[0] == a_gimme) {
 			// any
-//			((methfun_A)m->fun)(this,s,argc,argv);
+			LOG4("found any method for %s: inlet=%i, symbol=%s, argc=%i",m->tag->s_name,inlet,s->s_name,argc);
+
+			((methfun_A)m->fun)(this,s,argc,argv);
 			ret = true;
 		}
 		else
@@ -465,7 +466,7 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 			LOG4("found method tag %s: inlet=%i, symbol=%s, argc=%i",m->tag->s_name,inlet,s->s_name,argc);
 
 			if(m->argc == 1 && m->args[0] == a_gimme) {
-//				((methfun_G)m->fun)(this,argc,argv);
+				((methfun_G)m->fun)(this,argc,argv);
 				ret = true;
 			}
 			else if(argc == m->argc) {
@@ -474,21 +475,21 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 				for(ix = 0; ix < argc && ok; ++ix) {
 					switch(m->args[ix]) {
 					case a_float: {
-						assert(sizeof(F) == sizeof(I));
+						ASSERT(sizeof(F) == sizeof(I));
 
 						F a;
-						if(ISFLOAT(argv[ix])) iargs[ix] = *(I *)&(a = argv[ix].a_w.w_float);
+						if(ISFLOAT(argv[ix])) iargs[ix] = *(I *)&(a = GETFLOAT(argv[ix]));
 #ifdef MAXMSP
-						else if(ISINT(argv[ix])) iargs[ix] = *(I *)&(a = argv[ix].a_w.w_int);
+						else if(ISINT(argv[ix])) iargs[ix] = *(I *)&(a = GETINT(argv[ix]));
 #endif
 						else ok = false;
 						break;
 					}
 					case a_int: {
 						I a;
-						if(ISFLOAT(argv[ix])) iargs[ix] = *(I *)&(a = argv[ix].a_w.w_float);
+						if(ISFLOAT(argv[ix])) iargs[ix] = *(I *)&(a = GETFLOAT(argv[ix]));
 #ifdef MAXMSP
-						else if(ISINT(argv[ix])) iargs[ix] = *(I *)&(a = argv[ix].a_w.w_int);
+						else if(ISINT(argv[ix])) iargs[ix] = *(I *)&(a = GETINT(argv[ix]));
 #endif
 						else ok = false;
 						break;
@@ -505,19 +506,19 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 					}
 */
 					case a_symbol: {
-						assert(sizeof(t_symbol *) == sizeof(I));
+						ASSERT(sizeof(t_symbol *) == sizeof(I));
 
 						t_symbol *a;
-						if(ISSYMBOL(argv[ix])) iargs[ix] = *(I *)&(a = argv[ix].a_w.w_symbol);
+						if(ISSYMBOL(argv[ix])) iargs[ix] = *(I *)&(a = GETSYMBOL(argv[ix]));
 						else ok = false;
 						break;
 					}
 #ifdef PD					
 					case a_pointer: {
-						assert(sizeof(t_gpointer *) == sizeof(I));
+						ASSERT(sizeof(t_gpointer *) == sizeof(I));
 
 						t_gpointer *a;
-						if(ISPOINTER(argv[ix])) iargs[ix] = *(I *)&(a = argv[ix].a_w.w_gpointer);
+						if(ISPOINTER(argv[ix])) iargs[ix] = *(I *)&(a = GETPOINTER(argv[ix]));
 						else ok = false;
 						break;
 					}
@@ -527,7 +528,7 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 						ok = false;
 					}
 				}
-/*				
+
 				if(ix == argc) {
 					switch(argc) {
 					case 0:	((methfun_0)m->fun)(this); break;
@@ -539,7 +540,6 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 					}
 					ret = true;	
 				}
-*/
 			}
 		} 
 		if(it == mlst.end()) break;

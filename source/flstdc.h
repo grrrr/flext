@@ -129,7 +129,6 @@ typedef int t_atomtype;
 #define atom_getflintarg atom_getintarg
 #define atom_getsymbolarg atom_getsymarg
 #define SETFLINT(atom,value) SETINT(atom,(int)(value))
-#define ISINT(atom) ((atom).a_type == A_INT)
 #define ISFLINT(atom) ISINT(atom)
 
 #define add_dsp(clss,meth) addmess((method)meth,"dsp",A_CANT,A_NOTHING)
@@ -175,9 +174,19 @@ extern const t_symbol *const sym_anything;
 typedef t_symbol *t_symtype;
 
 #define ISFLOAT(atom) ((atom).a_type == A_FLOAT)
+#define GETFLOAT(atom) (atom.a_w.w_float)
 #define ISSYMBOL(atom) ((atom).a_type == A_SYMBOL)
-#define ISPOINTER(atom) ((atom).a_type == A_POINTER)
+#define GETSYMBOL(atom) (atom.a_w.w_symbol)
 
+#ifdef PD
+#define ISPOINTER(atom) ((atom).a_type == A_POINTER)
+#define GETPOINTER(atom) (atom.a_w.w_gpointer)
+#endif
+
+#ifdef MAXMSP
+#define ISINT(atom) ((atom).a_type == A_INT)
+#define GETINT(atom) (atom.a_w.w_long)
+#endif
 
 #ifdef _LOG
 #define LOG(s) post(s)
@@ -186,6 +195,7 @@ typedef t_symbol *t_symtype;
 #define LOG3(s,v1,v2,v3) post(s,v1,v2,v3)
 #define LOG4(s,v1,v2,v3,v4) post(s,v1,v2,v3,v4)
 #define LOG5(s,v1,v2,v3,v4,v5) post(s,v1,v2,v3,v4,v5)
+#define ASSERT(b) ((void)(!(b)?(error("Assertion failed: " #b " - in " __FILE__ " line %i",(I)__LINE__),0):0)) 
 #else
 #define LOG(s) ((void)0)
 #define LOG1(s,v1) ((void)0)
@@ -193,6 +203,7 @@ typedef t_symbol *t_symtype;
 #define LOG3(s,v1,v2,v3) ((void)0)
 #define LOG4(s,v1,v2,v3,v4) ((void)0)
 #define LOG5(s,v1,v2,v3,v4,v5) ((void)0)
+#define ASSERT(b) ((void)0)
 #endif
 
 

@@ -3,12 +3,11 @@ dnl autoconf template
 dnl added by tim blechmann
 dnl
 
-dnl flext API version (current:release:age)
-API_VERSION="1:0:0"
-
 AC_INIT([flext],[0.4.8pre],[gr@grrrr.org],[flext])
 AM_INIT_AUTOMAKE(1.6)
 
+dnl flext API version (current:release:age)
+API_VERSION="1:0:0"
 
 dnl configure options
 AC_ARG_ENABLE(system, [  --enable-system         flext system (default: pd)],

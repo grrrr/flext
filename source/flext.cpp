@@ -27,14 +27,24 @@ flext_base::flext_base():
 	insigs(0),outsigs(0),
 	outlets(NULL),outattr(NULL),
 	distmsgs(false),
-	methhead(new itemarr),attrhead(new itemarr), 
-	clmethhead(ClMeths(thisClassId())),clattrhead(ClAttrs(thisClassId())), 
 	inlets(NULL)
 #if FLEXT_SYS == FLEXT_SYS_MAX
 	,indesc(NULL),outdesc(NULL)
 #endif
 {
 	LOG1("%s - flext logging is on",thisName());
+
+	t_classid clid = thisClassId();
+	clmethhead = ClMeths(clid);
+	methhead = new itemarr;
+
+	if(procattr) {
+		// initialize when attribute processing is enabled
+		attrhead = new itemarr;
+		clattrhead = ClAttrs(clid);
+	}
+	else
+		attrhead = clattrhead = NULL;
 
 	// message queue ticker
 	qhead = qtail = NULL;

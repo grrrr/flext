@@ -128,6 +128,9 @@ bool flext_base::TryMethAny(const methitem *m,int inlet,const t_symbol *t,const 
 	return false;
 }
 
+/*! \brief Find a method item for a specific tag and arguments
+	\remark All attributes are also stored in the method list and retrieved by a member of the method item
+*/
 bool flext_base::FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *argv)
 {
 	methitem *m;

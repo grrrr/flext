@@ -71,7 +71,6 @@ typedef t_float t_flint;
 
 #define outlet_flint(o,v) outlet_float(o,v)
 
-
 #elif defined(MAXMSP)
 
 extern "C"
@@ -159,5 +158,7 @@ typedef _outlet t_outlet;
 #endif
 
 #endif
+
+
 
 

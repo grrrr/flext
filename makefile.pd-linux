@@ -1,0 +1,50 @@
+CFLAGS=-O6 -mpentium -g
+FLAGS=-DPD
+
+INCLUDES=/usr/lib/pd/include .
+LIBS=
+
+TARGDIR=./pd-linux
+TARGET=$(TARGDIR)/flext.a
+SRCS=flbase.cpp flext.cpp flbuf.cpp
+
+flbase.cpp flext.cpp flbuf.cpp: flstdc.h flbase.h flext.h
+	touch $@
+
+$(TARGDIR)/%.o : %.cpp
+	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES)) $< -o $@
+
+$(MAXPDPATH)/$(TARGDIR)/%.o : %.cpp
+	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES)) $< -o $@
+
+all: $(TARGET)
+
+$(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS)) 
+	ar rc $@ $^ 
+	chmod 755 $@
+
+install: $(TARGET)
+	chown root.root $^ 
+	cp $^ $(PDEXTRA)
+
+.PHONY: clean
+clean:
+	rm -f $(TARGDIR)/*.o $(TARGET)
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

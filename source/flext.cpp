@@ -213,7 +213,6 @@ BL flext_base::setup_inout()
 }
 
 
-
 V flext_base::cb_setup(t_class *c)
 {
 	add_method(c,cb_help,"help");
@@ -302,4 +301,6 @@ V flext_dsp::cb_dsp(V *c,t_signal **sp)
 V flext_dsp::cb_enable(V *c,FI on) { thisObject(c)->m_enable(on != 0); }
 
 V flext_dsp::m_enable(BL en) { enable = en; }
+
+
 

@@ -116,16 +116,19 @@ void flext::FreeAligned(void *blk)
 
 // ------------------------------------------
 
-//! \todo there is probably also a shortcut for Max and jMax
+/*! \todo there is probably also a shortcut for Max and jMax
+    \todo size checking
+*/
 void flext::GetAString(const t_atom &a,char *buf,int szbuf)
 { 
 #if FLEXT_SYS == FLEXT_SYS_PD
 	atom_string(const_cast<t_atom *>(&a),buf,szbuf);
 #else
-	if(IsSymbol(a)) snprintf(buf,szbuf,GetString(a));
-	else if(IsFloat(a)) snprintf(buf,szbuf,"%f",GetFloat(a));
-	else if(IsInt(a)) snprintf(buf,szbuf,"%i",GetInt(a));
-    else strncpy(buf,"",szbuf);
+    // no checking for size here
+    if(IsSymbol(a)) sprintf(tmp,GetString(a));
+	else if(IsFloat(a)) sprintf(tmp,"%f",GetFloat(a));
+	else if(IsInt(a)) sprintf(tmp,"%i",GetInt(a));
+    else *buf = 0;
 #endif
 }  
 

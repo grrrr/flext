@@ -27,7 +27,7 @@ bool flext_base::CallMeth(const methitem &m,int argc,const t_atom *argv)
 			else if(IsInt(argv[ix])) aargs[ix].ft = (float)GetInt(argv[ix]);
 			else ok = false;
 			
-			if(ok) LOG2("int arg %i = %f",ix,aargs[ix].ft);
+			if(ok) FLEXT_LOG2("int arg %i = %f",ix,aargs[ix].ft);
 			break;
 		}
 		case a_int: {
@@ -35,14 +35,14 @@ bool flext_base::CallMeth(const methitem &m,int argc,const t_atom *argv)
 			else if(IsInt(argv[ix])) aargs[ix].it = GetInt(argv[ix]);
 			else ok = false;
 			
-			if(ok) LOG2("float arg %i = %i",ix,aargs[ix].it);
+			if(ok) FLEXT_LOG2("float arg %i = %i",ix,aargs[ix].it);
 			break;
 		}
 		case a_symbol: {
 			if(IsSymbol(argv[ix])) aargs[ix].st = GetSymbol(argv[ix]);
 			else ok = false;
 			
-			if(ok) LOG2("symbol arg %i = %s",ix,GetString(aargs[ix].st));
+			if(ok) FLEXT_LOG2("symbol arg %i = %s",ix,GetString(aargs[ix].st));
 			break;
 		}
 #if FLEXT_SYS == FLEXT_SYS_PD
@@ -76,7 +76,7 @@ bool flext_base::TryMethTag(const methitem *m,int inlet,const t_symbol *t,int ar
 {
 	do {
 		if(m->inlet == inlet && m->tag == t) {
-			LOG3("found method tag %s: inlet=%i, argc=%i",GetString(m->tag),m->inlet,argc);
+			FLEXT_LOG3("found method tag %s: inlet=%i, argc=%i",GetString(m->tag),m->inlet,argc);
 		
 			if(m->attr) {
 				// attributes are treated differently
@@ -107,7 +107,7 @@ bool flext_base::TryMethSym(const methitem *m,int inlet,const t_symbol *t,const 
 {
 	do {
 		if(!m->IsAttr() && m->inlet == inlet && m->tag == t) {
-			LOG3("found symbol method for %s: inlet=%i, symbol=%s",GetString(m->tag),m->inlet,GetString(s));
+			FLEXT_LOG3("found symbol method for %s: inlet=%i, symbol=%s",GetString(m->tag),m->inlet,GetString(s));
 
 			t_any sym; sym.st = const_cast<t_symbol *>(s);
 			if(((methfun_1)m->fun)(this,sym)) return true;
@@ -120,7 +120,7 @@ bool flext_base::TryMethAny(const methitem *m,int inlet,const t_symbol *t,const 
 {
 	do {
 		if(!m->IsAttr() && m->inlet == inlet && m->tag == t) {
-			LOG4("found any method for %s: inlet=%i, symbol=%s, argc=%i",GetString(m->tag),m->inlet,GetString(s),argc);
+			FLEXT_LOG4("found any method for %s: inlet=%i, symbol=%s, argc=%i",GetString(m->tag),m->inlet,GetString(s),argc);
 
 			if(((methfun_A)m->fun)(this,s,argc,const_cast<t_atom *>(argv))) return true;
 		}

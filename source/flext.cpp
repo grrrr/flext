@@ -33,7 +33,7 @@ flext_base::flext_base():
 	,indesc(NULL),outdesc(NULL)
 #endif
 {
-	LOG1("%s - flext logging is on",thisName());
+	FLEXT_LOG1("%s - flext logging is on",thisName());
 
 	t_classid clid = thisClassId();
 	clmethhead = ClMeths(clid);

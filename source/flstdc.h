@@ -163,26 +163,26 @@ typedef t_symbol *t_symptr;
 
 // -------------------------
 
-#ifdef _LOG
+#ifdef FLEXT_LOGGING
 
 /* If _LOG is defined implement logging */
-#define LOG(s) post(s)
-#define LOG1(s,v1) post(s,v1)
-#define LOG2(s,v1,v2) post(s,v1,v2)
-#define LOG3(s,v1,v2,v3) post(s,v1,v2,v3)
-#define LOG4(s,v1,v2,v3,v4) post(s,v1,v2,v3,v4)
-#define LOG5(s,v1,v2,v3,v4,v5) post(s,v1,v2,v3,v4,v5)
+#define FLEXT_LOG(s) post(s)
+#define FLEXT_LOG1(s,v1) post(s,v1)
+#define FLEXT_LOG2(s,v1,v2) post(s,v1,v2)
+#define FLEXT_LOG3(s,v1,v2,v3) post(s,v1,v2,v3)
+#define FLEXT_LOG4(s,v1,v2,v3,v4) post(s,v1,v2,v3,v4)
+#define FLEXT_LOG5(s,v1,v2,v3,v4,v5) post(s,v1,v2,v3,v4,v5)
 
 
 #else
 
 /* If _LOG is not defined avoid logging */
-#define LOG(s) ((void)0)
-#define LOG1(s,v1) ((void)0)
-#define LOG2(s,v1,v2) ((void)0)
-#define LOG3(s,v1,v2,v3) ((void)0)
-#define LOG4(s,v1,v2,v3,v4) ((void)0)
-#define LOG5(s,v1,v2,v3,v4,v5) ((void)0)
+#define FLEXT_LOG(s) ((void)0)
+#define FLEXT_LOG1(s,v1) ((void)0)
+#define FLEXT_LOG2(s,v1,v2) ((void)0)
+#define FLEXT_LOG3(s,v1,v2,v3) ((void)0)
+#define FLEXT_LOG4(s,v1,v2,v3,v4) ((void)0)
+#define FLEXT_LOG5(s,v1,v2,v3,v4,v5) ((void)0)
 
 #endif
 

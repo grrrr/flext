@@ -1592,3 +1592,58 @@ loopu:
 #endif
 }
 
+void flext::ScaleSamples(t_sample *dst,const t_sample *src,t_sample opmul,const t_sample *add,int cnt) 
+{
+    {
+        int n = cnt>>3;
+        cnt -= n<<3;
+        if(dst == add) {
+            while(n--) {
+                dst[0] += src[0]*opmul; dst[1] += src[1]*opmul; 
+                dst[2] += src[2]*opmul; dst[3] += src[3]*opmul; 
+                dst[4] += src[4]*opmul; dst[5] += src[5]*opmul; 
+                dst[6] += src[6]*opmul; dst[7] += src[7]*opmul; 
+                src += 8,dst += 8;
+            }
+            while(cnt--) *(dst++) += *(src++)*opmul; 
+        }
+        else {
+            while(n--) {
+                dst[0] = src[0]*opmul+add[0]; dst[1] = src[1]*opmul+add[1]; 
+                dst[2] = src[2]*opmul+add[2]; dst[3] = src[3]*opmul+add[3]; 
+                dst[4] = src[4]*opmul+add[4]; dst[5] = src[5]*opmul+add[5]; 
+                dst[6] = src[6]*opmul+add[6]; dst[7] = src[7]*opmul+add[7]; 
+                src += 8,dst += 8,add += 8;
+            }
+            while(cnt--) *(dst++) = *(src++)*opmul+*(add++); 
+        }
+    }
+}
+
+void flext::ScaleSamples(t_sample *dst,const t_sample *src,const t_sample *mul,const t_sample *add,int cnt) 
+{
+    {
+        int n = cnt>>3;
+        cnt -= n<<3;
+        if(dst == add) {
+            while(n--) {
+                dst[0] += src[0]*mul[0]; dst[1] += src[1]*mul[1]; 
+                dst[2] += src[2]*mul[2]; dst[3] += src[3]*mul[3]; 
+                dst[4] += src[4]*mul[4]; dst[5] += src[5]*mul[5]; 
+                dst[6] += src[6]*mul[6]; dst[7] += src[7]*mul[7]; 
+                src += 8,dst += 8,mul += 8;
+            }
+            while(cnt--) *(dst++) += *(src++) * *(mul++); 
+        }
+        else {
+            while(n--) {
+                dst[0] = src[0]*mul[0]+add[0]; dst[1] = src[1]*mul[1]+add[1]; 
+                dst[2] = src[2]*mul[2]+add[2]; dst[3] = src[3]*mul[3]+add[3]; 
+                dst[4] = src[4]*mul[4]+add[4]; dst[5] = src[5]*mul[5]+add[5]; 
+                dst[6] = src[6]*mul[6]+add[6]; dst[7] = src[7]*mul[7]+add[7]; 
+                src += 8,dst += 8,mul += 8,add += 8;
+            }
+            while(cnt--) *(dst++) = *(src++)* *(mul++) + *(add++); 
+        }
+    }
+}

@@ -353,6 +353,9 @@ public:
 	static const t_symbol *sym_signal;
 #endif
 
+    //! \note This is used in macros where the type of the arg is not clear
+	static const t_symbol *MakeSymbol(const t_symbol *s) { return s; }
+
 #if FLEXT_SYS == FLEXT_SYS_JMAX
 	//! Make a symbol from a string
 	static const t_symbol *MakeSymbol(const char *s) { return ::fts_new_symbol(s); }
@@ -1150,6 +1153,8 @@ public:
         static void AddSamples(t_sample *dst,const t_sample *src,t_sample add,int cnt);
         static void AddSamples(t_sample *dst,const t_sample *src,const t_sample *add,int cnt);
         static void ScaleSamples(t_sample *dst,const t_sample *src,t_sample mul,t_sample add,int cnt);
+        static void ScaleSamples(t_sample *dst,const t_sample *src,t_sample mul,const t_sample *add,int cnt);
+        static void ScaleSamples(t_sample *dst,const t_sample *src,const t_sample *mul,const t_sample *add,int cnt);
 
 //!		@} FLEXT_S_SIMD
 

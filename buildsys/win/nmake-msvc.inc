@@ -22,7 +22,7 @@ CFLAGS=$(CFLAGS) /YX$(PRECOMPILE) /Fp$(OBJPATH)\precompiled.pch
 CFLAGS=$(CFLAGS) /LD
 
 # enable exception handling
-CFLAGS=$(CFLAGS) /GX
+CFLAGS=$(CFLAGS) /EHsc
 
 # no banner
 CFLAGS=$(CFLAGS) /nologo

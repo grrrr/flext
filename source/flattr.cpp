@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -43,9 +43,8 @@ flext_base::AttrDataCont::~AttrDataCont()
 
 
 //! Add get and set attributes
-void flext_base::AddAttrib(ItemCont *aa,ItemCont *ma,const char *attr,metharg tp,methfun gfun,methfun sfun)
+void flext_base::AddAttrib(ItemCont *aa,ItemCont *ma,const t_symbol *asym,metharg tp,methfun gfun,methfun sfun)
 {
-	const t_symbol *asym = MakeSymbol(attr);
 	AttrItem *a,*b;
 
     FLEXT_ASSERT(asym != sym__ && asym != sym_list && asym != sym_float && asym != sym_symbol && asym != sym_anything);
@@ -71,7 +70,7 @@ void flext_base::AddAttrib(ItemCont *aa,ItemCont *ma,const char *attr,metharg tp
 		aa->Add(b,asym); 
 
 		static char tmp[256] = "get";
-		strcpy(tmp+3,attr);
+		strcpy(tmp+3,GetString(asym));
 
 		// bind attribute to a method
 		MethItem *mi = new MethItem(b);
@@ -87,7 +86,7 @@ void flext_base::AddAttrib(ItemCont *aa,ItemCont *ma,const char *attr,metharg tp
 	}
 }
 
-void flext_base::AddAttrib(const char *attr,metharg tp,methfun gfun,methfun sfun)
+void flext_base::AddAttrib(const t_symbol *attr,metharg tp,methfun gfun,methfun sfun)
 {
 	if(procattr)
 		AddAttrib(ThAttrs(),ThMeths(),attr,tp,gfun,sfun);
@@ -95,7 +94,7 @@ void flext_base::AddAttrib(const char *attr,metharg tp,methfun gfun,methfun sfun
 		error("%s - attribute procession is not enabled!",thisName());
 }
 
-void flext_base::AddAttrib(t_classid c,const char *attr,metharg tp,methfun gfun,methfun sfun)
+void flext_base::AddAttrib(t_classid c,const t_symbol *attr,metharg tp,methfun gfun,methfun sfun)
 {
 	AddAttrib(ClAttrs(c),ClMeths(c),attr,tp,gfun,sfun);
 }
@@ -169,12 +168,14 @@ bool flext_base::InitAttrib(int argc,const t_atom *argv)
 	return true;
 }
 
+static const t_symbol *sym_attributes = flext::MakeSymbol("attributes");
+
 bool flext_base::ListAttrib() const
 {
     if(procattr) {
 		AtomList la;
 		ListAttrib(la);
-		ToOutAnything(GetOutAttr(),MakeSymbol("attributes"),la.Count(),la.Atoms());
+		ToOutAnything(GetOutAttr(),sym_attributes,la.Count(),la.Atoms());
 		return true;
 	}
 	else

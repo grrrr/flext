@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -39,15 +39,14 @@ void flext_base::MethItem::SetArgs(methfun _fun,int _argc,metharg *_args)
 }
 
 
-void flext_base::AddMethodDef(int inlet,const char *tag)
+void flext_base::AddMethodDef(int inlet,const t_symbol *tag)
 {
-    const t_symbol *t = tag?MakeSymbol(tag):NULL;
-    methhead->Add(new MethItem,t,inlet);
+    methhead->Add(new MethItem,tag,inlet);
 }
 
 /*! \brief Add a method to the queue
 */
-void flext_base::AddMethod(ItemCont *ma,int inlet,const char *tag,methfun fun,metharg tp,...)
+void flext_base::AddMethod(ItemCont *ma,int inlet,const t_symbol *tag,methfun fun,metharg tp,...)
 {
     va_list marker; 
 
@@ -60,7 +59,7 @@ void flext_base::AddMethod(ItemCont *ma,int inlet,const char *tag,methfun fun,me
     
     if(argc > 0) {
         if(argc > FLEXT_MAXMETHARGS) {
-            error("flext - method %s: only %i arguments are type-checkable: use variable argument list for more",tag?tag:"?",FLEXT_MAXMETHARGS);
+            error("flext - method %s: only %i arguments are type-checkable: use variable argument list for more",tag?GetString(tag):"?",FLEXT_MAXMETHARGS);
             argc = FLEXT_MAXMETHARGS;
         }
 
@@ -88,7 +87,7 @@ void flext_base::AddMethod(ItemCont *ma,int inlet,const char *tag,methfun fun,me
     MethItem *mi = new MethItem;
     mi->index = ma->Members();
     mi->SetArgs(fun,argc,args);
-    ma->Add(mi,MakeSymbol(tag),inlet);
+    ma->Add(mi,tag,inlet);
 }
 
 void flext_base::ListMethods(AtomList &la,int inlet) const
@@ -123,24 +122,17 @@ void flext_base::ListMethods(AtomList &la,int inlet) const
             SetSymbol(la[ix++],it.data());
 }
 
-bool flext_base::ListMethods(int inlet) const
-{
-    static const t_symbol *sym_methods = MakeSymbol("methods");
-
-    if(procattr) {
-        AtomList la;
-        ListMethods(la,inlet);
-        ToOutAnything(GetOutAttr(),sym_methods,la.Count(),la.Atoms());
-        return true;
-    }
-    else
-        return false;
-}
+static const t_symbol *sym_methods = flext::MakeSymbol("methods");
 
 bool flext_base::cb_ListMethods(flext_base *c,int argc,const t_atom *argv) 
 { 
-    if(argc == 0 || (argc == 1 && CanbeInt(argv[0])))
-        return c->ListMethods(argc?GetAInt(argv[0]):0); 
+    if(c->procattr && (argc == 0 || (argc == 1 && CanbeInt(argv[0])))) {
+        int inlet = argc?GetAInt(argv[0]):0;
+        AtomList la;
+        c->ListMethods(la,inlet);
+        c->ToOutAnything(c->GetOutAttr(),sym_methods,la.Count(),la.Atoms());
+        return true;
+    }
     else
         return false;
 }

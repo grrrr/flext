@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -21,6 +21,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 bool flext_base::compatibility = true;
 
 flext_base::FLEXT_CLASSDEF(flext_base)():
+    indsp(false),
     inlist(NULL),outlist(NULL),
     curtag(NULL),
     incnt(0),outcnt(0),
@@ -161,9 +162,12 @@ void flext_base::Setup(t_classid id)
 
 #if FLEXT_SYS == FLEXT_SYS_PD && !defined(FLEXT_NOATTREDIT)
         AddMethod(id,0,"attributedialog",cb_AttrDialog);
-        SetAttrEditor(id);
 #endif
     }
+
+#if FLEXT_SYS == FLEXT_SYS_PD
+    SetGfx(id);
+#endif
 
     SetProxies(c);
 

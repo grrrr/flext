@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -26,7 +26,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 //! Add a method handler for bang 
 #define FLEXT_CADDBANG(CL,IX,M_FUN) \
 \
-AddMethod(CL,IX,"bang",FLEXT_CALL_PRE(M_FUN))   
+AddMethod(CL,IX,flext::sym_bang,FLEXT_CALL_PRE(M_FUN))   
 
 //! Add a handler for a method with either no, list or anything arguments
 #define FLEXT_CADDMETHOD(CL,IX,M_FUN) \
@@ -35,37 +35,37 @@ AddMethod(CL,IX,FLEXT_CALL_PRE(M_FUN))
 //! Add a a handler for a method with implicit arguments
 #define FLEXT_CADDMETHOD_(CL,IX,M_TAG,M_FUN) \
 \
-AddMethod(CL,IX,M_TAG,FLEXT_CALL_PRE(M_FUN))    
+AddMethod(CL,IX,flext::MakeSymbol(M_TAG),FLEXT_CALL_PRE(M_FUN))    
 
 //! Add a handler for a method with 1 enum type argument
 #define FLEXT_CADDMETHOD_E(CL,IX,M_TAG,M_FUN) \
 \
-AddMethod(ClMeths(CL),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),a_int,a_null)
+AddMethod(ClMeths(CL),IX,flext::MakeSymbol(M_TAG),(methfun)(FLEXT_CALL_PRE(M_FUN)),a_int,a_null)
 
 //! Add a handler for a method with 1 argument
 #define FLEXT_CADDMETHOD_1(CL,IX,M_TAG,M_FUN,TP1) \
 \
-AddMethod(ClMeths(CL),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),a_null)   
+AddMethod(ClMeths(CL),IX,flext::MakeSymbol(M_TAG),(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),a_null)   
 
 //! Add a handler for a method with 2 arguments
 #define FLEXT_CADDMETHOD_2(CL,IX,M_TAG,M_FUN,TP1,TP2) \
 \
-AddMethod(ClMeths(CL),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),a_null)
+AddMethod(ClMeths(CL),IX,flext::MakeSymbol(M_TAG),(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),a_null)
 
 //! Add a handler for a method with 3 arguments
 #define FLEXT_CADDMETHOD_3(CL,IX,M_TAG,M_FUN,TP1,TP2,TP3) \
 \
-AddMethod(ClMeths(CL),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),a_null)
+AddMethod(ClMeths(CL),IX,flext::MakeSymbol(M_TAG),(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),a_null)
 
 //! Add a handler for a method with 4 arguments
 #define FLEXT_CADDMETHOD_4(CL,IX,M_TAG,M_FUN,TP1,TP2,TP3,TP4) \
 \
-AddMethod(ClMeths(CL),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),a_null)
+AddMethod(ClMeths(CL),IX,flext::MakeSymbol(M_TAG),(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),a_null)
 
 //! Add a handler for a method with 5 arguments
 #define FLEXT_CADDMETHOD_5(CL,IX,M_TAG,M_FUN,TP1,TP2,TP3,TP4,TP5) \
 \
-AddMethod(ClMeths(CL),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),FLEXTARG(TP5),a_null)
+AddMethod(ClMeths(CL),IX,flext::MakeSymbol(M_TAG),(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),FLEXTARG(TP5),a_null)
 
 
 //  Shortcuts
@@ -73,37 +73,37 @@ AddMethod(ClMeths(CL),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FL
 //! Add a handler for a method with a boolean argument
 #define FLEXT_CADDMETHOD_B(CL,IX,M_TAG,M_FUN) \
 \
-FLEXT_CADDMETHOD_1(CL,IX,M_TAG,M_FUN,bool)
+FLEXT_CADDMETHOD_1(CL,IX,flext::MakeSymbol(M_TAG),M_FUN,bool)
 
 //! Add a handler for a method with 1 float argument
 #define FLEXT_CADDMETHOD_F(CL,IX,M_TAG,M_FUN) \
 \
-FLEXT_CADDMETHOD_1(CL,IX,M_TAG,M_FUN,float)
+FLEXT_CADDMETHOD_1(CL,IX,flext::MakeSymbol(M_TAG),M_FUN,float)
 
 //! Add a handler for a method with 2 float arguments
 #define FLEXT_CADDMETHOD_FF(CL,IX,M_TAG,M_FUN) \
 \
-FLEXT_CADDMETHOD_2(CL,IX,M_TAG,M_FUN,float,float)
+FLEXT_CADDMETHOD_2(CL,IX,flext::MakeSymbol(M_TAG),M_FUN,float,float)
 
 //! Add a handler for a method with 3 float arguments
 #define FLEXT_CADDMETHOD_FFF(CL,IX,M_TAG,M_FUN) \
 \
-FLEXT_CADDMETHOD_3(CL,IX,M_TAG,M_FUN,float,float,float)
+FLEXT_CADDMETHOD_3(CL,IX,flext::MakeSymbol(M_TAG),M_FUN,float,float,float)
 
 //! Add a handler for a method with 1 integer argument
 #define FLEXT_CADDMETHOD_I(CL,IX,M_TAG,M_FUN) \
 \
-FLEXT_CADDMETHOD_1(CL,IX,M_TAG,M_FUN,int)
+FLEXT_CADDMETHOD_1(CL,IX,flext::MakeSymbol(M_TAG),M_FUN,int)
 
 //! Add a handler for a method with 2 integer arguments
 #define FLEXT_CADDMETHOD_II(CL,IX,M_TAG,M_FUN) \
 \
-FLEXT_CADDMETHOD_2(CL,IX,M_TAG,M_FUN,int,int)
+FLEXT_CADDMETHOD_2(CL,IX,flext::MakeSymbol(M_TAG),M_FUN,int,int)
 
 //! Add a handler for a method with 3 integer arguments
 #define FLEXT_CADDMETHOD_III(CL,IX,M_TAG,M_FUN) \
 \
-FLEXT_CADDMETHOD_3(CL,IX,M_TAG,M_FUN,int,int,int)
+FLEXT_CADDMETHOD_3(CL,IX,flext::MakeSymbol(M_TAG),M_FUN,int,int,int)
 
 //! @} FLEXT_D_CADDMETHOD
 
@@ -153,37 +153,37 @@ AddMethod(IX,FLEXT_CALL_PRE(M_FUN))
 //! Add a a handler for a tagged method with implicit arguments
 #define FLEXT_ADDMETHOD_(IX,M_TAG,M_FUN) \
 \
-AddMethod(IX,M_TAG,FLEXT_CALL_PRE(M_FUN))   
+AddMethod(IX,flext::MakeSymbol(M_TAG),FLEXT_CALL_PRE(M_FUN))   
 
 //! Add a handler for a method with 1 enum type argument
 #define FLEXT_ADDMETHOD_E(IX,M_TAG,M_FUN) \
 \
-AddMethod(ThMeths(),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),a_int,a_null)
+AddMethod(ThMeths(),IX,flext::MakeSymbol(M_TAG),(methfun)(FLEXT_CALL_PRE(M_FUN)),a_int,a_null)
 
 //! Add a handler for a method with 1 argument
 #define FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,TP1) \
 \
-AddMethod(ThMeths(),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),a_null) 
+AddMethod(ThMeths(),IX,flext::MakeSymbol(M_TAG),(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),a_null) 
 
 //! Add a handler for a method with 2 arguments
 #define FLEXT_ADDMETHOD_2(IX,M_TAG,M_FUN,TP1,TP2) \
 \
-AddMethod(ThMeths(),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),a_null)
+AddMethod(ThMeths(),IX,flext::MakeSymbol(M_TAG),(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),a_null)
 
 //! Add a handler for a method with 3 arguments
 #define FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,TP1,TP2,TP3) \
 \
-AddMethod(ThMeths(),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),a_null)
+AddMethod(ThMeths(),IX,flext::MakeSymbol(M_TAG),(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),a_null)
 
 //! Add a handler for a method with 4 arguments
 #define FLEXT_ADDMETHOD_4(IX,M_TAG,M_FUN,TP1,TP2,TP3,TP4) \
 \
-AddMethod(ThMeths(),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),a_null)
+AddMethod(ThMeths(),IX,flext::MakeSymbol(M_TAG),(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),a_null)
 
 //! Add a handler for a method with 5 arguments
 #define FLEXT_ADDMETHOD_5(IX,M_TAG,M_FUN,TP1,TP2,TP3,TP4,TP5) \
 \
-AddMethod(ThMeths(),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),FLEXTARG(TP5),a_null)
+AddMethod(ThMeths(),IX,flext::MakeSymbol(M_TAG),(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),FLEXTARG(TP5),a_null)
 
 
 //  Shortcuts
@@ -191,37 +191,37 @@ AddMethod(ThMeths(),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEX
 //! Add a handler for a method with a boolean argument
 #define FLEXT_ADDMETHOD_B(IX,M_TAG,M_FUN) \
 \
-FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,bool)
+FLEXT_ADDMETHOD_1(IX,flext::MakeSymbol(M_TAG),M_FUN,bool)
 
 //! Add a handler for a method with 1 float argument
 #define FLEXT_ADDMETHOD_F(IX,M_TAG,M_FUN) \
 \
-FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,float)
+FLEXT_ADDMETHOD_1(IX,flext::MakeSymbol(M_TAG),M_FUN,float)
 
 //! Add a handler for a method with 2 float arguments
 #define FLEXT_ADDMETHOD_FF(IX,M_TAG,M_FUN) \
 \
-FLEXT_ADDMETHOD_2(IX,M_TAG,M_FUN,float,float)
+FLEXT_ADDMETHOD_2(IX,flext::MakeSymbol(M_TAG),M_FUN,float,float)
 
 //! Add a handler for a method with 3 float arguments
 #define FLEXT_ADDMETHOD_FFF(IX,M_TAG,M_FUN) \
 \
-FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,float,float,float)
+FLEXT_ADDMETHOD_3(IX,flext::MakeSymbol(M_TAG),M_FUN,float,float,float)
 
 //! Add a handler for a method with 1 integer argument
 #define FLEXT_ADDMETHOD_I(IX,M_TAG,M_FUN) \
 \
-FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,int)
+FLEXT_ADDMETHOD_1(IX,flext::MakeSymbol(M_TAG),M_FUN,int)
 
 //! Add a handler for a method with 2 integer arguments
 #define FLEXT_ADDMETHOD_II(IX,M_TAG,M_FUN) \
 \
-FLEXT_ADDMETHOD_2(IX,M_TAG,M_FUN,int,int)
+FLEXT_ADDMETHOD_2(IX,flext::MakeSymbol(M_TAG),M_FUN,int,int)
 
 //! Add a handler for a method with 3 integer arguments
 #define FLEXT_ADDMETHOD_III(IX,M_TAG,M_FUN) \
 \
-FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,int,int,int)
+FLEXT_ADDMETHOD_3(IX,flext::MakeSymbol(M_TAG),M_FUN,int,int,int)
 
 
 //! @} FLEXT_D_ADDMETHOD

@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -51,14 +51,10 @@ public:
 	//! returns current block (aka vector) size
 	int Blocksize() const { return blksz; }
     
-	/*! \brief returns number of audio system input channels
-		\bug Doesn't work in Max/MSP - is always 0
-	*/
+	//! returns number of input channels
 	int ChannelsIn() const { return chnsin; }
 
-	/*! \brief returns number of audio system output channels
-		\bug Doesn't work in Max/MSP - is always 0
-	*/
+	//! returns number of output channels
 	int ChannelsOut() const { return chnsout; }
 
 	//! typedef describing a signal vector
@@ -92,13 +88,6 @@ public:
 		\param outsigs: array of output vectors  (get number with function CntOutSig())
 	*/
 	virtual void m_signal(int n,t_sample *const *insigs,t_sample *const *outsigs);
-
-#if FLEXT_SYS != FLEXT_SYS_MAX
-	/*! \brief called with "enable" message: pauses/resumes dsp
-		\note PD only - implicitely defined in Max/MSP
-	*/
-	virtual void m_enable(bool on);
-#endif
 
 //!	@} 
 

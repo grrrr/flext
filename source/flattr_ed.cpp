@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -14,17 +14,17 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "flext.h"
 
-#if FLEXT_SYS == FLEXT_SYS_PD && !defined(FLEXT_NOATTREDIT)
+#if FLEXT_SYS == FLEXT_SYS_PD 
+
+#ifdef _MSC_VER
+#pragma warning( disable : 4091 ) 
+#endif
 
 /*
 #ifdef PD_DEVEL_VERSION
 #define FLEXT_CLONEWIDGET
 #endif
 */
-
-#ifdef _MSC_VER
-#pragma warning( disable : 4091 ) 
-#endif
 
 #ifndef FLEXT_CLONEWIDGET
 // This is problematic... non-public headers!
@@ -38,6 +38,39 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <stdio.h>
 
 static t_widgetbehavior widgetbehavior; 
+
+void flext_base::SetGfx(t_classid c)
+{
+    // widgetbehavior struct MUST be resident... (static is just ok here)
+
+#ifndef FLEXT_CLONEWIDGET
+    widgetbehavior.w_visfn =        c->c_wb->w_visfn; 
+    widgetbehavior.w_selectfn =     c->c_wb->w_selectfn; 
+    widgetbehavior.w_getrectfn =    c->c_wb->w_getrectfn; 
+    widgetbehavior.w_displacefn =   c->c_wb->w_displacefn; 
+    widgetbehavior.w_activatefn =   c->c_wb->w_activatefn; 
+    widgetbehavior.w_deletefn =     c->c_wb->w_deletefn; 
+    widgetbehavior.w_selectfn =     c->c_wb->w_selectfn;
+#else
+    widgetbehavior.w_visfn =        text_widgetbehavior.w_visfn; 
+    widgetbehavior.w_selectfn =     text_widgetbehavior.w_selectfn; 
+    widgetbehavior.w_getrectfn =    text_widgetbehavior.w_getrectfn; 
+    widgetbehavior.w_displacefn =   text_widgetbehavior.w_displacefn; 
+    widgetbehavior.w_activatefn =   text_widgetbehavior.w_activatefn; 
+    widgetbehavior.w_deletefn =     text_widgetbehavior.w_deletefn; 
+    widgetbehavior.w_selectfn =     text_widgetbehavior.w_selectfn;
+#endif
+
+#ifndef FLEXT_NOATTREDIT
+    attrsetup(c);
+#endif // FLEXT_NOATTREDIT
+
+    widgetbehavior.w_clickfn =      cb_click;
+    class_setwidget(c, &widgetbehavior);
+}
+
+
+#ifndef FLEXT_NOATTREDIT
 
 #ifndef FLEXT_CLONEWIDGET
 static void (*ori_vis)(t_gobj *c, t_glist *, int vis) = NULL;
@@ -408,25 +441,15 @@ static void tclscript()
     );
 }
 
-void flext_base::SetAttrEditor(t_classid c)
+void flext_base::attrsetup(t_classid c)
 {
-    // widgetbehavior struct MUST be resident... (static is just ok here)
-
 #ifndef FLEXT_CLONEWIDGET
     ori_vis = c->c_wb->w_visfn; 
     ori_select = c->c_wb->w_selectfn; 
-    widgetbehavior.w_getrectfn =    c->c_wb->w_getrectfn; 
-    widgetbehavior.w_displacefn =   c->c_wb->w_displacefn; 
-    widgetbehavior.w_activatefn =   c->c_wb->w_activatefn; 
-    widgetbehavior.w_deletefn =     c->c_wb->w_deletefn; 
-    widgetbehavior.w_selectfn =     c->c_wb->w_selectfn;
-#else
-    widgetbehavior.w_getrectfn =    text_widgetbehavior.w_getrectfn; 
-    widgetbehavior.w_displacefn =   text_widgetbehavior.w_displacefn; 
-    widgetbehavior.w_activatefn =   text_widgetbehavior.w_activatefn; 
-    widgetbehavior.w_deletefn =     text_widgetbehavior.w_deletefn; 
-    widgetbehavior.w_selectfn =     text_widgetbehavior.w_selectfn;
 #endif
+
+    widgetbehavior.w_visfn =        cb_GfxVis;
+    widgetbehavior.w_selectfn =     cb_GfxSelect; 
 
 #if PD_MINOR_VERSION >= 37
     class_setpropertiesfn(c,cb_GfxProperties);
@@ -435,11 +458,6 @@ void flext_base::SetAttrEditor(t_classid c)
     widgetbehavior.w_propertiesfn = cb_GfxProperties;
     widgetbehavior.w_savefn =       cb_GfxSave;
 #endif
-
-    widgetbehavior.w_clickfn =      cb_click;
-    widgetbehavior.w_visfn =        cb_GfxVis;
-    widgetbehavior.w_selectfn =     cb_GfxSelect; 
-    class_setwidget(c, &widgetbehavior);
 
     tclscript();
 }
@@ -799,6 +817,8 @@ void flext_base::BinbufAttr(t_binbuf *b,bool transdoll)
         }
     }
 }
+
+#endif // FLEXT_NOATTREDIT
 
 #endif // FLEXT_SYS_PD
 

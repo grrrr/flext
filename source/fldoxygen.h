@@ -57,7 +57,7 @@ Currently, flext supports
 Flext is covered by the GPL.
 
 flext - C++ layer for Max/MSP and pd (pure data) externals<BR>
-Copyright (C) 2001-2003 Thomas Grill
+Copyright (C) 2001-2005 Thomas Grill
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License

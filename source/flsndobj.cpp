@@ -2,7 +2,8 @@
 
 flext_sndobj::flext_sndobj():
 	inobjs(0),outobjs(0),
-	inobj(NULL),tmpobj(NULL),outobj(NULL)
+	inobj(NULL),tmpobj(NULL),outobj(NULL),
+	smprt(0),blsz(0)
 {}
 
 flext_sndobj::~flext_sndobj()
@@ -30,20 +31,33 @@ void flext_sndobj::m_dsp(int n,t_sample *const *in,t_sample *const *out)
 {
 	// called on every rebuild of the dsp chain
 	
-	ClearObjs();
-
-	// set up sndobjs for inlets and outlets
 	int i;
-	inobj = new Inlet *[inobjs = CntInSig()];
-	tmpobj = new SndObj *[inobjs];
-	for(i = 0; i < inobjs; ++i) {
-		inobj[i] = new Inlet(in[i],Blocksize(),Samplerate());
-		tmpobj[i] = new SndObj(NULL,Blocksize(),Samplerate());
-	}
-	outobj = new Outlet *[outobjs = CntInSig()];
-	for(i = 0; i < outobjs; ++i) outobj[i] = new Outlet(out[i],Blocksize(),Samplerate());
+	if(Blocksize() != blsz || Samplerate() != smprt) {
+		// block size or sample rate has changed... rebuild all objects
 
-	NewObjs();
+		ClearObjs();
+
+		blsz = Blocksize();
+		smprt = Samplerate();
+
+		// set up sndobjs for inlets and outlets
+		inobj = new Inlet *[inobjs = CntInSig()];
+		tmpobj = new SndObj *[inobjs];
+		for(i = 0; i < inobjs; ++i) {
+			inobj[i] = new Inlet(in[i],blsz,smprt);
+			tmpobj[i] = new SndObj(NULL,blsz,smprt);
+		}
+		outobj = new Outlet *[outobjs = CntInSig()];
+		for(i = 0; i < outobjs; ++i) outobj[i] = new Outlet(out[i],blsz,smprt);
+
+		NewObjs();
+	}
+	else {
+		// assign changed input/output vectors
+
+		for(i = 0; i < inobjs; ++i) inobj[i]->SetBuf(in[i]);
+		for(i = 0; i < outobjs; ++i) outobj[i]->SetBuf(out[i]);
+	}
 }
 
 void flext_sndobj::m_signal(int n,t_sample *const *in,t_sample *const *out)

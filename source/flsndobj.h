@@ -47,6 +47,8 @@ private:
 		virtual short Read();
 		virtual short Write();
 
+		void SetBuf(const t_sample *b) { buf = b; }
+
 	private:
 		const t_sample *buf;
 	};
@@ -60,6 +62,8 @@ private:
 		virtual short Read();
 		virtual short Write();
 
+		void SetBuf(t_sample *b) { buf = b; }
+
 	private:
 		t_sample *buf;
 	};
@@ -70,6 +74,9 @@ private:
 	SndObj **tmpobj;
 	Inlet **inobj;
 	Outlet **outobj;
+
+	float smprt;
+	int blsz;
 };
 
 #endif

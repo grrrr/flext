@@ -65,7 +65,7 @@ Version history:
 
 0.2.0:
 - internal proxy objects for any non-leftmost inlets
-- all signal inlets can receive messages
+- MaxMSP: all signal inlets can receive messages 
 - method/argument parsing is done by flext
 - integrated more system functions into flext_base & eliminated superfluous #defines
 - distribute list (into inlet 0) elements over inlets (right to left, only if no explicit list handler defined)
@@ -128,13 +128,13 @@ bugs:
 no unfixed known
 
 tests:
-- do i have to destroy the method list elements with the list? i guess so....
+- PD: figure out what "pointer" messages do and where they occur
 
 features:
 - abstraction for parsing argument lists
 - abstraction for creating lists and anythings
 - abstraction for clock functions
-- message queue? (for multithreaded operation)
+- multithreaded operation: detached method handling, message queue
 - sending messages to own inlet (passing computation to other patch objects - message queue?)
 - adding/removing methods anytime
 

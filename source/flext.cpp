@@ -55,9 +55,7 @@ V flext_base::cb_px_anything(t_class *c,const t_symbol *s,I argc,t_atom *argv)
 	// check if inlet allows anything (or list)
 	
 	flext_base *o = thisObject(c);
-	I ci = ((flext_hdr *)o->x_obj)->curinlet; // index of (proxy) inlet
-	if(!ci) ci = ((flext_hdr *)o->x_obj)->obj.z_in; // index of signal inlet
-	
+	I ci = ((flext_hdr *)o->x_obj)->curinlet;
 	o->m_methodmain(ci,s,argc,argv);
 }
 
@@ -266,7 +264,9 @@ BL flext_base::setup_inout()
 							ok = false;
 						}
 						else {
-		    				inlet_new(&x_obj->obj, &x_obj->obj.ob_pd, &s_signal, &s_signal);  
+							// pd doesn't seem to be able to handle signals and messages into the same inlet...
+							
+							inlet_new(&x_obj->obj, &x_obj->obj.ob_pd, &s_signal, &s_signal);  
 							++insigs;
 						}
 						break;

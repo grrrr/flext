@@ -59,7 +59,7 @@ Version history:
 0.1.2:
 - defines for callback-to-method functions and method setup (FLEXT_CALLBACK*, FLEXT_ADD*)
 - deprecated support for default arguments (A_DEFFLOAT and A_DEFSYMBOL)
-- flext now use PD's or Max's memory allocation functions
+- flext now uses PD's or Max's memory allocation functions
 - added outlets for anythings
 
 0.1.1:
@@ -111,8 +111,19 @@ general:
 bugs:
 none known
 
+tests:
+- test loadbang upon object creation in Max/MSP
+
 features:
 - abstraction for parsing argument lists
 - abstraction for creating lists and anythings
 - simulate loadbang on object creation for PD
-- acstraction for clock functions
+- abstraction for clock functions
+- sending messages to own inlet
+
+premature thoughts:
+- explore jMax interface style
+- interface for supercollider, csound?
+- interface for VST, DX, ...?
+- interface for scripting language modules? (python?)
+

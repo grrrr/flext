@@ -33,13 +33,13 @@ class attr1:
 	FLEXT_HEADER(attr1,flext_base)
  
 public:
-	// constructor with float argument
+	// constructor 
 	attr1();
 
 protected:
 	void m_trigger(float f);   
 	
-	// stored argument of right inlet
+	// stored argument
 	float arg; 
 
 private:
@@ -50,7 +50,7 @@ private:
 	FLEXT_ATTRVAR_F(arg);  
 };
 
-// instantiate the class (constructor has one float argument)
+// instantiate the class 
 FLEXT_NEW("attr1",attr1)
 
 

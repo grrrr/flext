@@ -4,9 +4,9 @@ dnl added by tim blechmann
 dnl
 
 dnl flext API version (current:release:age)
-API_VERSION=0:0:0
+API_VERSION="1:0:0"
 
-AC_INIT([flext],[0.4.7],[gr@grrrr.org],[flext])
+AC_INIT([flext],[0.4.8pre],[gr@grrrr.org],[flext])
 AM_INIT_AUTOMAKE(1.6)
 
 
@@ -95,12 +95,13 @@ dnl Checks for library functions.
 
 dnl system specific
 
-if test 'uname -s' == Linux; then
-	DYNAMIC_LDFLAGS = "-version-info $API_VERSION -release $AC_PACKAGE_VERSION -Wl,-Bdynamic"
+if test $(uname -s) == Linux; then
+	DYNAMIC_LDFLAGS = "-version-info $API_VERSION -Wl,-Bdynamic"
+	echo flags: $DYNAMIC_LDFLAGS
 fi
 
-if test 'uname -s' == Darwin; then
-	DYNAMIC_LDFLAGS = "-version-info $API_VERSION -release $AC_PACKAGE_VERSION -dylib -dynamic -flat_namespace -undefined suppress"
+if test $(uname -s) == Darwin; then
+	DYNAMIC_LDFLAGS = "-version-info $API_VERSION -dylib -dynamic -flat_namespace -undefined suppress"
 fi
 
 
@@ -109,5 +110,4 @@ AC_SUBST(OPT_FLAGS)
 AC_SUBST(DYNAMIC_LDFLAGS)
 AC_SUBST(stkdir)
 AC_SUBST(sndobjdir)
-AC_OUTPUT([Makefile
-		   source/Makefile])
+AC_OUTPUT([Makefile source/Makefile])

@@ -37,6 +37,7 @@
 				F5128F2503864E5501A80AC9,
 				F5128F2603864E5501A80AC9,
 			);
+			hasScannedForEncodings = 1;
 			isa = PBXProject;
 			mainGroup = 0867D691FE84028FC02AAC07;
 			productRefGroup = 034768DDFF38A45A11DB9C8B;
@@ -131,6 +132,7 @@
 				F5B1FAC8041191190179CFEF,
 				F598D263044CC4A001A80AC9,
 				F598D264044CC4A001A80AC9,
+				E9BDCC4104F4D7C1008929A0,
 			);
 			isa = PBXGroup;
 			name = Source;
@@ -142,66 +144,153 @@
 //082
 //083
 //084
+//E90
+//E91
+//E92
+//E93
+//E94
+		E9BDCC4104F4D7C1008929A0 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = flattr_ed.cpp;
+			path = source/flattr_ed.cpp;
+			refType = 4;
+		};
+		E9BDCC4204F4D7C1008929A0 = {
+			fileRef = E9BDCC4104F4D7C1008929A0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		E9BDCC4304F4D7C1008929A0 = {
+			fileRef = E9BDCC4104F4D7C1008929A0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		E9BDCC4404F4D7C1008929A0 = {
+			fileRef = E9BDCC4104F4D7C1008929A0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		E9BDCC4504F4D7C1008929A0 = {
+			fileRef = E9BDCC4104F4D7C1008929A0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		E9BDCC4604F4D7C1008929A0 = {
+			fileRef = E9BDCC4104F4D7C1008929A0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		E9BDCC4704F4D7C1008929A0 = {
+			fileRef = E9BDCC4104F4D7C1008929A0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		E9BDCC4804F4D7C1008929A0 = {
+			fileRef = E9BDCC4104F4D7C1008929A0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		E9BDCC4904F4D7C1008929A0 = {
+			fileRef = E9BDCC4104F4D7C1008929A0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		E9BDCC4A04F4D7C1008929A0 = {
+			fileRef = E9BDCC4104F4D7C1008929A0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		E9BDCC4B04F4D7C1008929A0 = {
+			fileRef = E9BDCC4104F4D7C1008929A0;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+//E90
+//E91
+//E92
+//E93
+//E94
 //F50
 //F51
 //F52
 //F53
 //F54
 		F504A66B03CE39F501A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flatom_app.cpp;
 			path = source/flatom_app.cpp;
 			refType = 4;
 		};
 		F504A66C03CE39F501A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flatom_part.cpp;
 			path = source/flatom_part.cpp;
 			refType = 4;
 		};
 		F504A66D03CE39F501A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flitem.cpp;
 			path = source/flitem.cpp;
 			refType = 4;
 		};
 		F504A66E03CE39F501A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flmeth.cpp;
 			path = source/flmeth.cpp;
 			refType = 4;
 		};
 		F504A66F03CE39F501A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flmsg.cpp;
 			path = source/flmsg.cpp;
 			refType = 4;
 		};
 		F504A67003CE39F501A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flprefix.h;
 			path = source/flprefix.h;
 			refType = 4;
 		};
 		F504A67103CE39F501A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flproxy.cpp;
 			path = source/flproxy.cpp;
 			refType = 4;
 		};
 		F504A67203CE39F501A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flqueue.cpp;
 			path = source/flqueue.cpp;
 			refType = 4;
 		};
 		F504A67303CE39F501A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flstk.cpp;
 			path = source/flstk.cpp;
 			refType = 4;
 		};
 		F504A67403CE39F501A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flstk.h;
 			path = source/flstk.h;
@@ -514,150 +603,175 @@
 			name = Deployment;
 		};
 		F55CED7B0383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flatom_pr.cpp;
 			path = source/flatom_pr.cpp;
 			refType = 2;
 		};
 		F55CED7C0383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flatom.cpp;
 			path = source/flatom.cpp;
 			refType = 2;
 		};
 		F55CED7D0383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flattr.cpp;
 			path = source/flattr.cpp;
 			refType = 2;
 		};
 		F55CED7E0383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flbase.cpp;
 			path = source/flbase.cpp;
 			refType = 2;
 		};
 		F55CED7F0383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flbase.h;
 			path = source/flbase.h;
 			refType = 2;
 		};
 		F55CED800383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flbuf.cpp;
 			path = source/flbuf.cpp;
 			refType = 2;
 		};
 		F55CED810383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flclass.h;
 			path = source/flclass.h;
 			refType = 2;
 		};
 		F55CED860383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = fldefs.h;
 			path = source/fldefs.h;
 			refType = 2;
 		};
 		F55CED870383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = fldoxygen.h;
 			path = source/fldoxygen.h;
 			refType = 2;
 		};
 		F55CED880383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = fldsp.cpp;
 			path = source/fldsp.cpp;
 			refType = 2;
 		};
 		F55CED890383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = fldsp.h;
 			path = source/fldsp.h;
 			refType = 2;
 		};
 		F55CED8A0383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flext.cpp;
 			path = source/flext.cpp;
 			refType = 2;
 		};
 		F55CED8B0383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flext.h;
 			path = source/flext.h;
 			refType = 2;
 		};
 		F55CED8C0383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flinternal.h;
 			path = source/flinternal.h;
 			refType = 2;
 		};
 		F55CED8D0383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = fllib.cpp;
 			path = source/fllib.cpp;
 			refType = 2;
 		};
 		F55CED8E0383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flmspbuffer.h;
 			path = source/flmspbuffer.h;
 			refType = 2;
 		};
 		F55CED8F0383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flout.cpp;
 			path = source/flout.cpp;
 			refType = 2;
 		};
 		F55CED900383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flsndobj.cpp;
 			path = source/flsndobj.cpp;
 			refType = 2;
 		};
 		F55CED910383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flsndobj.h;
 			path = source/flsndobj.h;
 			refType = 2;
 		};
 		F55CED920383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flstdc.h;
 			path = source/flstdc.h;
 			refType = 2;
 		};
 		F55CED930383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flsupport.cpp;
 			path = source/flsupport.cpp;
 			refType = 2;
 		};
 		F55CED940383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flsupport.h;
 			path = source/flsupport.h;
 			refType = 2;
 		};
 		F55CED950383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flthr.cpp;
 			path = source/flthr.cpp;
 			refType = 2;
 		};
 		F55CED960383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flutil.cpp;
 			path = source/flutil.cpp;
 			refType = 2;
 		};
 		F55CED970383E50201A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flxlet.cpp;
 			path = source/flxlet.cpp;
@@ -738,6 +852,7 @@
 				F5B1FACE0411935C0179CFEF,
 				F5CBC62004757C1C01A0C81C,
 				F5CBC62104757C1D01A0C81C,
+				E9BDCC4B04F4D7C1008929A0,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -786,7 +901,6 @@
 			name = "PD@OSX single";
 			productName = "PD@OSX";
 			productReference = F55CEDC20383E6E401A80AC9;
-			shouldUseHeadermap = 0;
 		};
 		F55CEDC20383E6E401A80AC9 = {
 			isa = PBXLibraryReference;
@@ -963,7 +1077,6 @@
 			productInstallPath = /usr/local/pd/flext;
 			productName = "PD@OSX";
 			productReference = F55CEE120383F55201A80AC9;
-			shouldUseHeadermap = 0;
 		};
 		F55CEDF70383F55201A80AC9 = {
 			buildActionMask = 2147483647;
@@ -1079,6 +1192,7 @@
 				F5B1FACF041193680179CFEF,
 				F5CBC62204757C2201A0C81C,
 				F5CBC62304757C2301A0C81C,
+				E9BDCC4A04F4D7C1008929A0,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1211,7 +1325,6 @@
 			productInstallPath = /usr/local/pd/flext;
 			productName = "PD@OSX";
 			productReference = F55CEE2F0383F57A01A80AC9;
-			shouldUseHeadermap = 0;
 		};
 		F55CEE140383F57A01A80AC9 = {
 			buildActionMask = 2147483647;
@@ -1327,6 +1440,7 @@
 				F5B1FAD0041193740179CFEF,
 				F5CBC62404757C2601A0C81C,
 				F5CBC62504757C2701A0C81C,
+				E9BDCC4904F4D7C1008929A0,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1459,7 +1573,6 @@
 			productInstallPath = /usr/local/pd/flext;
 			productName = "PD@OSX";
 			productReference = F55CEE4C0383F59B01A80AC9;
-			shouldUseHeadermap = 0;
 		};
 		F55CEE310383F59B01A80AC9 = {
 			buildActionMask = 2147483647;
@@ -1575,6 +1688,7 @@
 				F5B1FACD0411918B0179CFEF,
 				F598D265044CC4A001A80AC9,
 				F598D266044CC4A001A80AC9,
+				E9BDCC4804F4D7C1008929A0,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1696,7 +1810,6 @@
 			isa = PBXAggregateTarget;
 			name = "all PD@OSX";
 			productName = "PD@OSX";
-			shouldUseHeadermap = 0;
 		};
 		F55CEE530383F9A301A80AC9 = {
 			isa = PBXTargetDependency;
@@ -1715,12 +1828,14 @@
 			target = F55CEE300383F59B01A80AC9;
 		};
 		F598D263044CC4A001A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flbind.cpp;
 			path = source/flbind.cpp;
 			refType = 4;
 		};
 		F598D264044CC4A001A80AC9 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = flsimd.cpp;
 			path = source/flsimd.cpp;
@@ -1768,7 +1883,6 @@
 			name = "Max@OSX threaded";
 			productName = "PD@OSX";
 			productReference = F59A5FAD0386DF3201A80AC9;
-			shouldUseHeadermap = 0;
 		};
 		F59A5F920386DF3201A80AC9 = {
 			buildActionMask = 2147483647;
@@ -1881,6 +1995,7 @@
 				F504A6A203CE3C2801A80AC9,
 				F504A6A303CE3C2901A80AC9,
 				F504A6A403CE3C2901A80AC9,
+				E9BDCC4604F4D7C1008929A0,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2012,7 +2127,6 @@
 			name = "Max@OSX single";
 			productName = "PD@OSX";
 			productReference = F5AAF632038683E801A80AC9;
-			shouldUseHeadermap = 0;
 		};
 		F5AAF617038683E801A80AC9 = {
 			buildActionMask = 2147483647;
@@ -2125,6 +2239,7 @@
 				F504A69A03CE3C1E01A80AC9,
 				F504A69B03CE3C1F01A80AC9,
 				F504A69C03CE3C2001A80AC9,
+				E9BDCC4704F4D7C1008929A0,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2227,6 +2342,7 @@
 			refType = 3;
 		};
 		F5B1FAC8041191190179CFEF = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = fltimer.cpp;
 			path = source/fltimer.cpp;
@@ -2286,7 +2402,6 @@
 			name = "jMax@OSX single";
 			productName = "PD@OSX";
 			productReference = F5C2051103D403B401A80AC9;
-			shouldUseHeadermap = 0;
 		};
 		F5C204EE03D403B401A80AC9 = {
 			buildActionMask = 2147483647;
@@ -2405,6 +2520,7 @@
 				F5C2050C03D403B401A80AC9,
 				F5C2050D03D403B401A80AC9,
 				F5C2050E03D403B401A80AC9,
+				E9BDCC4504F4D7C1008929A0,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2578,7 +2694,6 @@
 			name = "jMax@OSX threaded";
 			productName = "PD@OSX";
 			productReference = F5C2062403D470B401A80AC9;
-			shouldUseHeadermap = 0;
 		};
 		F5C2060103D470B401A80AC9 = {
 			buildActionMask = 2147483647;
@@ -2697,6 +2812,7 @@
 				F5C2061F03D470B401A80AC9,
 				F5C2062003D470B401A80AC9,
 				F5C2062103D470B401A80AC9,
+				E9BDCC4404F4D7C1008929A0,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2848,14 +2964,17 @@
 				F5CBC5B604757A5901A0C81C,
 			);
 			buildSettings = {
+				CC = "/usr/bin/gcc-3.3";
+				CPLUSPLUS = "/usr/bin/g++-3.3";
 				DEBUGGING_SYMBOLS = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				HEADER_SEARCH_PATHS = /usr/local/pd/src;
+				GCC_VERSION = 3.x;
+				HEADER_SEARCH_PATHS = /Volumes/Daten/Prog/pd/pd/src;
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_STYLE = DYNAMIC;
 				OPTIMIZATION_CFLAGS = "-O3";
-				OTHER_CFLAGS = "-D FLEXT_SYS_PD -D FLEXT_SHARED -D FLEXT_THREADS -D FLEXT_USE_SIMD -Wno-switch  -Wno-long-double";
+				OTHER_CFLAGS = "-D FLEXT_SYS_PD -D FLEXT_SHARED -D FLEXT_PDLOCK -D FLEXT_USE_SIMD -Wno-switch  -Wno-long-double -faltivec -maltivec -fkeep-inline-functions";
 				OTHER_LDFLAGS = "-lgcc -lstdc++ -flat_namespace -undefined suppress";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -2872,7 +2991,6 @@
 			productInstallPath = /usr/local/lib;
 			productName = "PD@OSX";
 			productReference = F5CBC5B704757A5901A0C81C;
-			shouldUseHeadermap = 0;
 		};
 		F5CBC59304757A5901A0C81C = {
 			buildActionMask = 2147483647;
@@ -2994,6 +3112,7 @@
 				F5CBC5B404757A5901A0C81C,
 				F5CBC61E04757C1401A0C81C,
 				F5CBC61F04757C1401A0C81C,
+				E9BDCC4204F4D7C1008929A0,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3145,60 +3264,70 @@
 			refType = 3;
 		};
 		F5CBC5B804757BC801A0C81C = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = fldefs_attradd.h;
 			path = source/fldefs_attradd.h;
 			refType = 4;
 		};
 		F5CBC5B904757BC801A0C81C = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = fldefs_attrcb.h;
 			path = source/fldefs_attrcb.h;
 			refType = 4;
 		};
 		F5CBC5BA04757BC801A0C81C = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = fldefs_attrvar.h;
 			path = source/fldefs_attrvar.h;
 			refType = 4;
 		};
 		F5CBC5BB04757BC801A0C81C = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = fldefs_hdr.h;
 			path = source/fldefs_hdr.h;
 			refType = 4;
 		};
 		F5CBC5BC04757BC801A0C81C = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = fldefs_methadd.h;
 			path = source/fldefs_methadd.h;
 			refType = 4;
 		};
 		F5CBC5BD04757BC801A0C81C = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = fldefs_methbind.h;
 			path = source/fldefs_methbind.h;
 			refType = 4;
 		};
 		F5CBC5BE04757BC801A0C81C = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = fldefs_methcall.h;
 			path = source/fldefs_methcall.h;
 			refType = 4;
 		};
 		F5CBC5BF04757BC801A0C81C = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = fldefs_methcb.h;
 			path = source/fldefs_methcb.h;
 			refType = 4;
 		};
 		F5CBC5C004757BC801A0C81C = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = fldefs_meththr.h;
 			path = source/fldefs_meththr.h;
 			refType = 4;
 		};
 		F5CBC5C104757BC801A0C81C = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = fldefs_setup.h;
 			path = source/fldefs_setup.h;
@@ -3826,11 +3955,11 @@
 			buildSettings = {
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				HEADER_SEARCH_PATHS = /usr/local/pd/src;
+				HEADER_SEARCH_PATHS = /Volumes/Daten/Prog/pd/pd/src;
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_STYLE = DYNAMIC;
 				OPTIMIZATION_CFLAGS = "-O0";
-				OTHER_CFLAGS = "-DFLEXT_SYS_PD -DFLEXT_DEBUG -DFLEXT_SHARED -DFLEXT_THREADS -DFLEXT_USE_SIMD -Wno-switch  -Wno-long-double";
+				OTHER_CFLAGS = "-DFLEXT_SYS_PD -DFLEXT_DEBUG -DFLEXT_SHARED -DFLEXT_PDLOCK -DFLEXT_USE_SIMD -Wno-switch  -Wno-long-double  -faltivec -maltivec -fkeep-inline-functions";
 				OTHER_LDFLAGS = "-lgcc -lstdc++ -flat_namespace -undefined suppress";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -3847,7 +3976,6 @@
 			productInstallPath = /usr/local/lib;
 			productName = "PD@OSX";
 			productReference = F5CBC69B047584CD01A0C81C;
-			shouldUseHeadermap = 0;
 		};
 		F5CBC66A047584CD01A0C81C = {
 			buildActionMask = 2147483647;
@@ -4029,6 +4157,7 @@
 				F5CBC695047584CD01A0C81C,
 				F5CBC696047584CD01A0C81C,
 				F5CBC697047584CD01A0C81C,
+				E9BDCC4304F4D7C1008929A0,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

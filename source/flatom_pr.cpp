@@ -66,6 +66,12 @@ bool flext::PrintList(int argc,const t_atom *argv,char *buf,int bufsz)
     return ok;
 }
 
+bool flext::AtomList::Print(char *buffer,int buflen) const 
+{ 
+	return flext::PrintList(Count(),Atoms(),buffer,buflen); 
+}
+
+
 bool flext::ScanAtom(t_atom &a,const char *buf)
 {
 	// skip whitespace

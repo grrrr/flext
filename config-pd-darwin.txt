@@ -3,10 +3,10 @@
 #
 
 # your c++ compiler (define only if it's different than g++)
-# CXX=g++
+CXX=g++-3.3
 
 # where are the PD header files? (m_pd.h, m_imp.h, g_canvas.h)
-PDPATH=/usr/local/pd/src
+PDPATH=/Users/thomas/Desktop/pd-0.37-test8/src
 
 # where is the SndObj include directory? 
 # (leave blank or comment out to disable SndObj support)
@@ -21,7 +21,7 @@ TARGDIR=./pd-darwin
 
 # where should flext libraries be installed?
 # (leave blank to omit installation)
-INSTDIR=/usr/local/pd/flext
+INSTDIR=/usr/local/lib/pd/flext
 
 # additional compiler flags
 # (check if they fit for your system!)

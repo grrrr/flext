@@ -328,7 +328,6 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 
 	for(int i = 0; i < cnt; ++i) {
 		const t_symbol *sym = GetSymbol(la[i]); 
-		const char *bcur = b;
 
 		// get attribute
 		AttrItem *gattr = th->FindAttrib(sym,true);

@@ -17,7 +17,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "flstdc.h"
 
-
 class FLEXT_SHARE FLEXT_CLASSDEF(flext);
 typedef class FLEXT_CLASSDEF(flext) flext;
 
@@ -535,7 +534,7 @@ public:
 		AtomList &Part(int offs,int len) { return (*this = GetPart(offs,len)); }
 
 		//! Represent as a string
-		bool Print(char *buffer,int buflen) const { return flext::PrintList(Count(),Atoms(),buffer,buflen); }
+		bool Print(char *buffer,int buflen) const;
 
 	protected:
 		int cnt;

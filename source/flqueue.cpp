@@ -22,7 +22,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 class qmsg
 {
 public:
-	qmsg(flext_base *b): th(b),nxt(NULL),tp(tp_none) {}
+	qmsg(flext_base *b): nxt(NULL),th(b),tp(tp_none) {}
 	~qmsg();
 
 	qmsg *nxt;

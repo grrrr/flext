@@ -92,7 +92,7 @@ public:
 		//! Free an aligned memory block
 		static void FreeAligned(void *blk);
 		//! Test for alignment
-		static bool IsAligned(void *ptr,int bitalign = 128)	{ return (reinterpret_cast<unsigned long>(ptr)&(bitalign-1)) == 0; }
+		static bool IsAligned(void *ptr,int bitalign = 128)	{ return (reinterpret_cast<unsigned long long>(ptr)&(bitalign-1)) == 0; }
 		
 	//!	@}  FLEXT_S_MEMORY  	
 

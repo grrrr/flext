@@ -342,21 +342,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	#endif
 #endif
 
-// ----- set message queue mode -----
-#undef FLEXT_QTHR
-
-#ifdef FLEXT_PDLOCK
-	// new PD thread locking functionality shall be used
-	#if FLEXT_SYS == FLEXT_SYS_PD
-		#ifdef FLEXT_THREADS
-			// can only be used with PD and threaded build
-			#define FLEXT_QTHR
-		#endif
-	#else
-		#error FLEXT_PDLOCK can only be defined with PD
-	#endif
-#endif
-
 // ----- macros for class names -----
 /*
         With linux (flat linker namespace) and more than one flext-based external loaded all calls to static 

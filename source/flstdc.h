@@ -236,4 +236,26 @@ typedef t_symbol *t_symptr;
 #endif
 
 
+// ----- set message queue mode -----
+#undef FLEXT_QTHR
+
+#if FLEXT_SYS == FLEXT_SYS_PD && PD_MINOR_VERSION >= 37
+	// for PD version >= 0.37test10 FLEXT_PDLOCK is standard
+	#undef FLEXT_PDLOCK
+	#define FLEXT_PDLOCK
+#endif
+
+#ifdef FLEXT_PDLOCK
+	// new PD thread locking functionality shall be used
+	#if FLEXT_SYS == FLEXT_SYS_PD
+		#ifdef FLEXT_THREADS
+			// can only be used with PD and threaded build
+			#define FLEXT_QTHR
+		#endif
+	#else
+		#error FLEXT_PDLOCK can only be defined with PD
+	#endif
+#endif
+
+
 #endif

@@ -61,11 +61,17 @@ void flext_base::SetAttrEditor(t_classid c)
     widgetbehavior.w_deletefn =     text_widgetbehavior.w_deletefn; 
     widgetbehavior.w_clickfn =      text_widgetbehavior.w_clickfn;
 #endif
-    widgetbehavior.w_propertiesfn = cb_GfxProperties;
-    widgetbehavior.w_savefn =       cb_GfxSave;
+
     widgetbehavior.w_visfn =        cb_GfxVis;
     class_setwidget(c, &widgetbehavior);
 
+#if PD_MINOR_VERSION >= 37
+    class_setpropertiesfn(c,cb_GfxProperties);
+    class_setsavefn(c,cb_GfxSave);
+#else
+    widgetbehavior.w_propertiesfn = cb_GfxProperties;
+    widgetbehavior.w_savefn =       cb_GfxSave;
+#endif
 
 	// generate the script for the property dialog
 

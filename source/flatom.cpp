@@ -125,3 +125,16 @@ flext::AtomList flext::AtomList::GetPart(int offs,int len) const
 }
 
 
+flext::AtomAnything::AtomAnything(const t_symbol *h,int argc,const t_atom *argv): 
+	AtomList(argc,argv),hdr(h?h:MakeSymbol("")) 
+{}
+
+flext::AtomAnything::AtomAnything(const char *h,int argc,const t_atom *argv): 
+	AtomList(argc,argv),hdr(MakeSymbol(h)) 
+{}
+
+flext::AtomAnything::AtomAnything(const AtomAnything &a): 
+	AtomList(a),hdr(a.hdr) 
+{}
+
+

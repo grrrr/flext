@@ -331,11 +331,11 @@ public:
 	{
 	public:
 		//! Construct anything
-		AtomAnything(const t_symbol *h = NULL,int argc = 0,const t_atom *argv = NULL): AtomList(argc,argv),hdr(h) {}
+		AtomAnything(const t_symbol *h = NULL,int argc = 0,const t_atom *argv = NULL);
 		//! Construct anything
-		AtomAnything(const char *h,int argc = 0,const t_atom *argv = NULL): AtomList(argc,argv),hdr(MakeSymbol(h)) {}
+		AtomAnything(const char *h,int argc = 0,const t_atom *argv = NULL);
 		//! Construct anything
-		AtomAnything(const AtomAnything &a): AtomList(a),hdr(a.hdr) {}
+		AtomAnything(const AtomAnything &a);
 
 		//! Clear anything
 		AtomAnything &Clear() { return operator()(); }

@@ -227,7 +227,7 @@ void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,const t_atom
 
 bool flext_base::Init()
 {
-	if(!flext_obj::Init()) return false;
+//	if(!flext_obj::Init()) return false;
 
 	bool ok = true;
 	

@@ -48,15 +48,27 @@ void flext_base::AddAttrib(const char *attr,metharg tp,methfun gfun,methfun sfun
 	sprintf(tmp,"get%s",attr);
 	AddAttrItem(new attritem(MakeSymbol(attr),MakeSymbol(tmp),tp,gfun,sfun));
 
-	if(sfun)
-		AddMethod(0,attr,(methfun)cb_SetAttrib,a_any,a_null);
-	else
-		AddMethod(0,attr,(methfun)cb_NoSetAttrib,a_any,a_null);
+	AddMethod(0,attr,(methfun)cb_SetAttrib,a_any,a_null);
+	AddMethod(0,tmp,(methfun)cb_GetAttrib,a_any,a_null);
+}
 
-	if(gfun)
-		AddMethod(0,tmp,(methfun)cb_GetAttrib,a_any,a_null);
-	else
-		AddMethod(0,tmp,(methfun)cb_NoGetAttrib,a_any,a_null);
+bool flext_base::InitAttrib(int argc,const t_atom *argv)
+{
+	if(procattr) {
+		int nxt = 0,cur = 0;
+		while(nxt < argc) {
+			// find next @symbol
+			cur = nxt;
+			if(nxt) ++nxt;
+			for(; nxt < argc; ++nxt)
+				if(IsString(argv[nxt]) && *GetString(argv[nxt]) == '@') break;
+			if(!cur) continue;
+
+			const t_symbol *tag = MakeSymbol(GetString(argv[cur])+1);
+			SetAttrib(tag,nxt-cur-1,argv+cur+1);
+		}
+	}
+	return true;
 }
 
 bool flext_base::ListAttrib()
@@ -69,60 +81,52 @@ bool flext_base::ListAttrib()
 	return true;
 }
 
-bool flext_base::cb_NoGetAttrib(flext_base *c,const t_symbol *tag,int argc,const t_atom *argv)
-{
-	post("%s - attribute %s has no get method",c->thisName(),GetString(tag));
-	return true;
-}
-
-bool flext_base::cb_NoSetAttrib(flext_base *c,const t_symbol *tag,int argc,const t_atom *argv)
-{
-	post("%s - attribute %s has no set method",c->thisName(),GetString(tag));
-	return true;
-}
-
 bool flext_base::SetAttrib(const t_symbol *tag,int argc,const t_atom *argv)
 {
 	attritem *a = attrhead;
 	for(; a && a->tag != tag; a = a->nxt) {}
 
 	if(a) {
-		bool ok = true;
+		if(a->sfun) {
+			bool ok = true;
 
-		AtomList la;
-		t_any any;
-		switch(a->argtp) {
-		case a_float:
-			if(argc == 1 && CanbeFloat(argv[0])) {
-				any.ft = GetAFloat(argv[0]);
+			AtomList la;
+			t_any any;
+			switch(a->argtp) {
+			case a_float:
+				if(argc == 1 && CanbeFloat(argv[0])) {
+					any.ft = GetAFloat(argv[0]);
+					((methfun_1)a->sfun)(this,any);				
+				}
+				else ok = false;
+				break;
+			case a_int:
+				if(argc == 1 && CanbeInt(argv[0])) {
+					any.it = GetAInt(argv[0]);
+					((methfun_1)a->sfun)(this,any);				
+				}
+				else ok = false;
+				break;
+			case a_symbol:
+				if(argc == 1 && IsSymbol(argv[0])) {
+					any.st = GetSymbol(argv[0]);
+					((methfun_1)a->sfun)(this,any);				
+				}
+				else ok = false;
+				break;
+			case a_LIST:
+				any.vt = &(la(argc,argv));
 				((methfun_1)a->sfun)(this,any);				
+				break;
+			default:
+				ERRINTERNAL();
 			}
-			else ok = false;
-			break;
-		case a_int:
-			if(argc == 1 && CanbeInt(argv[0])) {
-				any.it = GetAInt(argv[0]);
-				((methfun_1)a->sfun)(this,any);				
-			}
-			else ok = false;
-			break;
-		case a_symbol:
-			if(argc == 1 && IsSymbol(argv[0])) {
-				any.st = GetSymbol(argv[0]);
-				((methfun_1)a->sfun)(this,any);				
-			}
-			else ok = false;
-			break;
-		case a_LIST:
-			any.vt = &(la(argc,argv));
-			((methfun_1)a->sfun)(this,any);				
-			break;
-		default:
-			ERRINTERNAL();
+
+			if(!ok)
+				post("%s - wrong arguments for attribute %s",thisName(),GetString(tag));
 		}
-
-		if(!ok)
-			post("%s - wrong arguments for attribute %s",thisName(),GetString(tag));
+		else
+			post("%s - attribute %s has no get method",thisName(),GetString(tag));
 	}
 	else
 		error("%s - %s: attribute not found",thisName(),tag);
@@ -138,36 +142,40 @@ bool flext_base::GetAttrib(const t_symbol *tag,int argc,const t_atom *argv)
 	for(; a && a->gtag != tag; a = a->nxt) {}
 
 	if(a) {
-		AtomList la;
-		t_any any;
-		switch(a->argtp) {
-		case a_float: {
-			((methfun_1)a->gfun)(this,any);				
-			la(1);
-			SetFloat(la[0],any.ft);
-			break;
+		if(a->gfun) {
+			AtomList la;
+			t_any any;
+			switch(a->argtp) {
+			case a_float: {
+				((methfun_1)a->gfun)(this,any);				
+				la(1);
+				SetFloat(la[0],any.ft);
+				break;
+			}
+			case a_int: {
+				((methfun_1)a->gfun)(this,any);				
+				la(1);
+				SetInt(la[0],any.it);
+				break;
+			}
+			case a_symbol: {
+				((methfun_1)a->gfun)(this,any);				
+				la(1);
+				SetSymbol(la[0],any.st);
+				break;
+			}
+			case a_LIST: {
+				any.vt = &la;
+				((methfun_1)a->gfun)(this,any);				
+				break;
+			}
+			default:
+				ERRINTERNAL();
+			}
+			ToOutAnything(outattr,a->tag,la.Count(),la.Atoms());
 		}
-		case a_int: {
-			((methfun_1)a->gfun)(this,any);				
-			la(1);
-			SetInt(la[0],any.it);
-			break;
-		}
-		case a_symbol: {
-			((methfun_1)a->gfun)(this,any);				
-			la(1);
-			SetSymbol(la[0],any.st);
-			break;
-		}
-		case a_LIST: {
-			any.vt = &la;
-			((methfun_1)a->gfun)(this,any);				
-			break;
-		}
-		default:
-			ERRINTERNAL();
-		}
-		ToOutAnything(outattr,a->tag,la.Count(),la.Atoms());
+		else 
+			post("%s - attribute %s has no set method",thisName(),GetString(tag));
 	}
 	else
 		error("%s - %s: attribute not found",thisName(),tag);

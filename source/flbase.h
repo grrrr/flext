@@ -129,7 +129,8 @@ class FLEXT_EXT flext_obj:
 
 		void InitProblem() { init_ok = false; }
 
-		virtual bool Init() { return true; }
+		// this also guarantees that there are no instances of flext_obj
+		virtual bool Init() = 0; 
 		virtual void Exit() {}
 
 // --- help -------------------------------------------------------	

@@ -148,6 +148,10 @@ SOURCE=.\source\flatom.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\source\flattr.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\source\flbase.cpp
 # End Source File
 # Begin Source File
@@ -217,10 +221,6 @@ SOURCE=.\source\flsupport.h
 # Begin Source File
 
 SOURCE=.\source\flthr.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\source\flthr.h
 # End Source File
 # Begin Source File
 

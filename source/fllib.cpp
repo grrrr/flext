@@ -10,8 +10,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // Code for handling of object creation functions
 
-#include "flbase.h"
-#include "flsupport.h"
+#include "flext.h"
 
 #include <stdarg.h>
 #include <string.h>
@@ -168,17 +167,20 @@ void flext_obj::lib_init(const char *name,void setupfun())
 
 void flext_obj::obj_add(bool lib,bool dsp,const char *idname,const char *names,void setupfun(t_class *),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...)
 {
+	// get first possible object name
+	const t_symbol *nsym = MakeSymbol(extract(names));
+	
 #ifdef _DEBUG
-	if(dsp) chktilde(idname);
+	if(dsp) chktilde(GetString(nsym));
 #endif
 
+	// set dynamic class pointer
 	t_class **cl = 
 #ifdef MAXMSP
 		lib?&lib_class:
 #endif
 		new t_class *;
-	const t_symbol *nsym = MakeSymbol(extract(names));
-	
+
 	// register object class
 #ifdef PD
     *cl = ::class_new(
@@ -308,23 +310,27 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int argc,t_atom *argv)
 		    flext_obj::m_holder = obj;
 			flext_obj::m_holdname = l->name;
 
-			// get actual flext object (newfun calls "new flext_obj()")
 			if(lo->argc >= 0)
 				// for interpreted arguments
-				obj->data = lo->newfun(lo->argc,args);
-			else
-				// for variable argument list
-				obj->data = lo->newfun(argc,argv); 
+				argc = lo->argc,argv = args;
+
+			// get actual flext object (newfun calls "new flext_obj()")
+			obj->data = lo->newfun(argc,argv); 
 
 			flext_obj::m_holder = NULL;
 			flext_obj::m_holdname = NULL;
 
-			if(!obj->data || 
+			bool ok = obj->data ||
 				// check constructor exit flag
-				!obj->data->InitOk() || 
-				// call virtual init function 
-				!obj->data->Init()) 
-			{ 
+				obj->data->InitOk();
+
+			if(ok) // set cmdline attributes (this is a flext_base function!)
+				ok = ((flext_base *)obj->data)->InitAttrib(argc,argv);
+
+			if(ok) // call virtual init function 
+				ok = obj->data->Init();
+
+			if(!ok) { 
 				// there was some init error, free object
 				lo->freefun(obj); 
 				obj = NULL; 

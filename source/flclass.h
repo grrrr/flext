@@ -50,6 +50,8 @@ class flext_base:
 {
 	FLEXT_HEADER_S(flext_base,flext_obj,Setup)
 	
+	friend class flext_obj;
+
 public:
 
 	/*!	\defgroup FLEXT_C_BASE Flext basic class functionality
@@ -397,6 +399,11 @@ protected:
 
 // inlets and outlets
 		
+	/*! \brief Set up inlets and outlets
+		\return True on successful creation of all inlets and outlets
+	*/
+	virtual bool Init();
+
 	struct xlet {	
 		enum type {
 			tp_none = 0,
@@ -421,7 +428,7 @@ protected:
 	void AddAttrib(const char *attr,bool (*get)(flext_base *,float &),bool (*set)(flext_base *,float &)) { AddAttrib(attr,a_float,(methfun)get,(methfun)set); }
 	void AddAttrib(const char *attr,bool (*get)(flext_base *,int &),bool (*set)(flext_base *,int &)) { AddAttrib(attr,a_int,(methfun)get,(methfun)set); }
 	void AddAttrib(const char *attr,bool (*get)(flext_base *,t_symbol *&),bool (*set)(flext_base *,t_symbol *&)) { AddAttrib(attr,a_symbol,(methfun)get,(methfun)set); }
-	void AddAttrib(const char *attr,bool (*get)(flext_base *,AtomList &),bool (*set)(flext_base *,AtomList &)) { AddAttrib(attr,a_LIST,(methfun)get,(methfun)set); }
+	void AddAttrib(const char *attr,bool (*get)(flext_base *,AtomList *&),bool (*set)(flext_base *,AtomList *&)) { AddAttrib(attr,a_LIST,(methfun)get,(methfun)set); }
 
 //!		@} 
 
@@ -489,11 +496,6 @@ private:
 	void AddXlet(xlet::type tp,int mult,const char *desc,xlet *&root);	
 	void DescXlet(int ix,const char *desc,xlet *&root);	
 
-	/*! \brief Set up inlets and outlets
-		\return True on successful creation of all inlets and outlets
-	*/
-	virtual bool Init();
-
 	union t_any {
 		float ft;
 		int it;
@@ -522,6 +524,8 @@ private:
 
 	void AddAttrib(const char *attr,metharg tp,methfun gfun,methfun sfun);
 
+	bool InitAttrib(int argc,const t_atom *argv);
+
 	bool ListAttrib();
 	bool GetAttrib(const t_symbol *s,int argc,const t_atom *argv);
 	bool SetAttrib(const t_symbol *s,int argc,const t_atom *argv);
@@ -529,8 +533,6 @@ private:
 	static bool cb_ListAttrib(flext_base *c) { return c->ListAttrib(); }
 	static bool cb_GetAttrib(flext_base *c,const t_symbol *s,int argc,const t_atom *argv) { return c->GetAttrib(s,argc,argv); }
 	static bool cb_SetAttrib(flext_base *c,const t_symbol *s,int argc,const t_atom *argv) { return c->SetAttrib(s,argc,argv); }
-	static bool cb_NoGetAttrib(flext_base *c,const t_symbol *s,int argc,const t_atom *argv);
-	static bool cb_NoSetAttrib(flext_base *c,const t_symbol *s,int argc,const t_atom *argv);
 
 #ifdef FLEXT_THREADS
 	bool shouldexit;
@@ -550,7 +552,6 @@ private:
 	static void QTick(flext_base *th);
 	void Queue(qmsg *m);
 
-	class thr_entry;
 	thr_entry *thrhead,*thrtail;
 	ThrMutex tlmutex;
 #endif

@@ -871,16 +871,21 @@ static bool FLEXT_SET_PRE(VAR)(flext_base *c,TP &arg) \
 static bool FLEXT_GET_PRE(VAR)(flext_base *c,TP &arg) \
 { arg = FLEXT_CAST<thisType *>(c)->VAR; return true; }
 
-
 #define FLEXT_CALLSET_F(SFUN) FLEXT_CALLSET_(SFUN,float)
 #define FLEXT_CALLSET_I(SFUN) FLEXT_CALLSET_(SFUN,int)
 #define FLEXT_CALLSET_S(SFUN) FLEXT_CALLSET_(SFUN,t_symptr)
-#define FLEXT_CALLSET_V(SFUN) FLEXT_CALLSET_(SFUN,AtomList)
+
+#define FLEXT_CALLSET_V(FUN) \
+static bool FLEXT_SET_PRE(FUN)(flext_base *c,AtomList *&arg) \
+{ FLEXT_CAST<thisType *>(c)->FUN(*arg); return true; }
 
 #define FLEXT_CALLGET_F(GFUN) FLEXT_CALLGET_(GFUN,float)
 #define FLEXT_CALLGET_I(GFUN) FLEXT_CALLGET_(GFUN,int)
 #define FLEXT_CALLGET_S(GFUN) FLEXT_CALLGET_(GFUN,t_symptr)
-#define FLEXT_CALLGET_V(GFUN) FLEXT_CALLGET_(GFUN,AtomList)
+
+#define FLEXT_CALLGET_V(FUN) \
+static bool FLEXT_GET_PRE(FUN)(flext_base *c,AtomList *&arg) \
+{ FLEXT_CAST<thisType *>(c)->FUN(*arg); return true; }
 
 #define FLEXT_CALLXFER_F(GFUN,SFUN) FLEXT_CALLGET_F(GFUN) FLEXT_CALLSET_F(SFUN) 
 #define FLEXT_CALLXFER_I(GFUN,SFUN) FLEXT_CALLGET_I(GFUN) FLEXT_CALLSET_I(SFUN) 
@@ -890,12 +895,18 @@ static bool FLEXT_GET_PRE(VAR)(flext_base *c,TP &arg) \
 #define FLEXT_ATTRSET_F(VAR) FLEXT_ATTRSET_(VAR,float)
 #define FLEXT_ATTRSET_I(VAR) FLEXT_ATTRSET_(VAR,int)
 #define FLEXT_ATTRSET_S(VAR) FLEXT_ATTRSET_(VAR,t_symptr)
-#define FLEXT_ATTRSET_V(VAR) FLEXT_ATTRSET_(VAR,AtomList)
+
+#define FLEXT_ATTRSET_V(VAR) \
+static bool FLEXT_SET_PRE(VAR)(flext_base *c,AtomList *&arg) \
+{ FLEXT_CAST<thisType *>(c)->VAR = *arg; return true; }
 
 #define FLEXT_ATTRGET_F(VAR) FLEXT_ATTRGET_(VAR,float)
 #define FLEXT_ATTRGET_I(VAR) FLEXT_ATTRGET_(VAR,int)
 #define FLEXT_ATTRGET_S(VAR) FLEXT_ATTRGET_(VAR,t_symptr)
-#define FLEXT_ATTRGET_V(VAR) FLEXT_ATTRGET_(VAR,AtomList)
+
+#define FLEXT_ATTRGET_V(VAR) \
+static bool FLEXT_GET_PRE(VAR)(flext_base *c,AtomList *&arg) \
+{ *arg = FLEXT_CAST<thisType *>(c)->VAR; return true; }
 
 #define FLEXT_ATTRXFER_F(VAR) FLEXT_ATTRGET_F(VAR) FLEXT_ATTRSET_F(VAR) 
 #define FLEXT_ATTRXFER_I(VAR) FLEXT_ATTRGET_I(VAR) FLEXT_ATTRSET_I(VAR) 

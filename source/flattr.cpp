@@ -103,7 +103,7 @@ void flext_base::AddAttrib(t_classid c,const t_symbol *attr,metharg tp,methfun g
 
 void flext_base::ListAttrib(AtomList &la) const
 {
-	typedef TableMap<int,t_symbol,32> AttrList;
+	typedef TablePtrMap<int,t_symbol,32> AttrList;
 	AttrList list[2];
 
 	int i;

@@ -126,7 +126,7 @@ libclass::libclass(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(f
 {}
 
 
-typedef TableMap<const t_symbol *,libclass,8> LibMap;
+typedef TablePtrMap<const t_symbol *,libclass,8> LibMap;
 
 static LibMap libnames;
 

@@ -378,7 +378,7 @@ public:
 	static const char *GetString(const t_symbol *s) { return s->s_name; }  
 #endif
 	//! Check for symbol and get string
-	static const char *GetAString(const t_symbol *s,const char *def = "") { return s?GetString(s):def; }
+	static const char *GetAString(const t_symbol *s,const char *def = NULL) { return s?GetString(s):def; }
 
 // --- atom stuff ----------------------------------------
 		
@@ -459,6 +459,8 @@ public:
 	static bool IsString(const t_atom &a) { return IsSymbol(a); }
 	//! Access the string value (without type check)
 	static const char *GetString(const t_atom &a) { t_symbol *s = GetSymbol(a); return s?GetString(s):NULL; }  
+	//! Check for a string and get its value 
+    static const char *GetAString(const t_atom &a,const char *def = NULL) { return IsSymbol(a)?GetAString(GetSymbol(a),def):def; }
 	//! Check for a string and get its value 
 	static void GetAString(const t_atom &a,char *buf,size_t szbuf);
 	//! Set the atom to represent a string

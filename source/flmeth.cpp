@@ -89,7 +89,7 @@ void flext_base::AddMethod(ItemCont *ma,int inlet,const t_symbol *tag,methfun fu
 
 void flext_base::ListMethods(AtomList &la,int inlet) const
 {
-	typedef TableMap<int,t_symbol,32> MethList;
+	typedef TablePtrMap<int,t_symbol,32> MethList;
     MethList list[2];
 
     int i;

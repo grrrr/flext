@@ -86,8 +86,11 @@ bool flext_base::ItemCont::Remove(Item *item,const t_symbol *tag,int inlet,bool 
         for(Item *prv = NULL; lit; prv = lit,lit = lit->nxt) {
             if(lit == item) {
                 if(prv) prv->nxt = lit->nxt;
-                else set.insert(tag,lit->nxt);
-            
+                else if(lit->nxt)
+                    set.insert(tag,lit->nxt);
+                else
+                    set.erase(tag);
+
                 lit->nxt = NULL; 
                 if(free) delete lit;
                 return true;
@@ -105,7 +108,7 @@ flext_base::Item *flext_base::ItemCont::FindList(const t_symbol *tag,int inlet)
 
 // --- class item lists (methods and attributes) ----------------
 
-typedef TableMap<flext_base::t_classid,flext_base::ItemCont,64> ClassMap;
+typedef TablePtrMap<flext_base::t_classid,flext_base::ItemCont,64> ClassMap;
 
 static ClassMap classarr[2];
 

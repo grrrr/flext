@@ -310,14 +310,12 @@ void TableAnyMap::clear()
 {
     if(left) { delete left; left = NULL; }
     if(right) { delete right; right = NULL; }
-    if(owned)
-        for(int i = 0; i < n; ++i) {
-            FLEXT_ASSERT(data[i].value);
-            Free(data[i].value);
-        }
-    n = 0;
+
+    for(int i = 0; i < n; ++i) Free(data[i].value);
+    count = n = 0;
 }
 
+/*
 int TableAnyMap::size() const 
 {
     int sz = n;
@@ -325,72 +323,57 @@ int TableAnyMap::size() const
         if(left) sz += left->size();
         if(right) sz += right->size();
     }
+    FLEXT_ASSERT(sz == count);
     return sz;
 }
+*/
 
-void TableAnyMap::_set(size_t k,void *t)
+bool TableAnyMap::_set(size_t k,void *t)
 {
     FLEXT_ASSERT(n);
 
     if(n < tsize) {
         // fall through
     }
-    else if(k < data[0].key) {
-        _toleft(k,t);
-        return;
-    }
-    else if(k > data[tsize-1].key) {
-        _toright(k,t);
-        return;
-    }
+    else if(k < data[0].key)
+        return _toleft(k,t);
+    else if(k > data[tsize-1].key)
+        return _toright(k,t);
 
-    int ix = 0;
-    {
-        int b = n;
-        while(ix != b) {
-            const int c = (ix+b)/2;
-            const size_t dk = data[c].key;
-            if(k == dk) {
-                ix = c;
-                break;
-            }
-            else if(k < dk)
-                b = c;
-            else if(ix < c)
-                ix = c;
-            else {
-                ix = b;
-                break;
-            }
-        }
-    }
-
+    int ix = _tryix(k);
     size_t dk = data[ix].key;
     if(k == dk) {
         // update data in existing slot (same key)
-        if(owned) Free(data[ix].value);
+        Free(data[ix].value);
         data[ix] = t;
+        return false;
     }
     else if(ix >= n) {
         FLEXT_ASSERT(ix == n);
         // after last entry
         data[n++](k,t);
+        ++count;
+        return true;
     }
     else {
         // insert new slot by shifting the higher ones
         FLEXT_ASSERT(k < dk);
+        bool a;
         if(n == tsize)
-            _toright(data[tsize-1]);
-        else
-            ++n;
+            a = _toright(data[tsize-1]);
+        else {
+            ++n,++count;
+            a = true;
+        }
 
         Data *tg = data+ix;
         for(Data *d = data+n-1; d > tg; d--) d[0] = d[-1];
         (*tg)(k,t);
+        return a;
     }
 }
 
-void *TableAnyMap::_find(size_t k) 
+void *TableAnyMap::_find(size_t k)
 {
     FLEXT_ASSERT(n);
     if(n < tsize) {
@@ -401,32 +384,120 @@ void *TableAnyMap::_find(size_t k)
     else if(k > data[n-1].key)
         return right?right->_find(k):NULL;
 
-    //! return index of data item with key <= k
+    const int ix = _tryix(k);
+    return data[ix].key == k?data[ix].value:NULL;
+}
 
+void *TableAnyMap::_remove(size_t k)
+{
     FLEXT_ASSERT(n);
-    int ix = 0;
-    {
-        int b = n;
-        while(ix != b) {
-            const int c = (ix+b)/2;
-            const size_t dk = data[c].key;
-            if(k == dk)
-                return data[c].value;
-            else if(k < dk)
-                b = c;
-            else if(ix < c)
-                ix = c;
-            else {
-                ix = b;
-                break;
-            }
+    if(n < tsize) {
+        // fall through
+    }
+    else if(k < data[0].key) {
+        void *r = left?left->_remove(k):NULL;
+        if(r) {
+            _eraseempty(left);
+            --count;
         }
+        return r;
+    }
+    else if(k > data[n-1].key) {
+        void *r = right?right->_remove(k):NULL;
+        if(r) {
+            _eraseempty(right);
+            --count;
+        }
+        return r;
     }
 
-    if(data[ix].key == k)
-        return data[ix].value;
-    else
+    const int ix = _tryix(k);
+    if(data[ix].key != k)
         return NULL;
+    else {
+        // found key in this map
+        void *ret = data[ix].value;
+
+        Data dt;
+        bool fnd,ins = false;
+        if(n >= tsize) {
+            // if this table is full get fill-in elements from branches
+            if(left) {
+                // try to get biggest element from left branch
+                left->_getbig(dt);
+                _eraseempty(left);
+                fnd = true,ins = true;
+            }
+            else if(right) {
+                // try to get smallest element from right branch
+                right->_getsmall(dt);
+                _eraseempty(right);
+                fnd = true;
+            }
+            else
+                fnd = false;
+        }
+        else fnd = false;
+
+        if(ins) {
+            // insert smaller element from left
+            for(int i = ix; i; --i) data[i] = data[i-1];
+            data[0] = dt;
+        }
+        else {
+            // shift elements
+            for(int i = ix+1; i < n; ++i) data[i-1] = data[i];
+            // insert bigger element from right or reduce table size
+            if(fnd)
+                data[n-1] = dt;
+            else
+                --n;
+        }
+
+        --count;
+        return ret;
+    }
+}
+
+void TableAnyMap::_getbig(Data &dt)
+{
+    FLEXT_ASSERT(n);
+
+    if(right) {
+        right->_getbig(dt);
+        _eraseempty(right);
+    }
+    else {
+        if(left) {
+            for(int i = n; i; --i) data[i] = data[i-1];
+            left->_getbig(data[0]);
+            _eraseempty(left);
+        }
+        else
+            dt = data[--n];
+    }
+    --count;
+}
+
+void TableAnyMap::_getsmall(Data &dt)
+{
+    FLEXT_ASSERT(n);
+
+    if(left) {
+        left->_getsmall(dt);
+        _eraseempty(left);
+    }
+    else {
+        dt = data[0];
+        for(int i = 1; i < n; ++i) data[i-1] = data[i];
+        if(right) {
+            right->_getsmall(data[n-1]);
+            _eraseempty(right);
+        }
+        else
+            --n;
+    }
+    --count;
 }
 
 void TableAnyMap::iterator::forward() 

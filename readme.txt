@@ -87,6 +87,7 @@ Version history:
 - Changed basic MaxMSP object to t_pxbox (ok, a bit more memory is used....)
 - MaxMSP library can now be loaded from startup folder (but can't use aliases)
 - if no handler is found for pure anything (just symbol, no args...) try list handler
+- add interface for SndObj (http://www.may.ie/academic/music/musictec/SndObj/ )
 
 0.3.2:
 - doxygen generated inline documentation / functional reference

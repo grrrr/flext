@@ -9,7 +9,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef FLEXT_SNDOBJ
 #define FLEXT_SNDOBJ
 
-#include <flext.h>
+#include "flext.h"
 
 #if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 300)
 #error You need at least flext version 0.3.0 

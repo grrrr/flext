@@ -18,6 +18,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // threading must be turned on
 #ifdef FLEXT_THREADS
 
+#include <pthread.h>
+
 class thr_params {
 public:
 	thr_params(flext_base *c): cl(c) {}

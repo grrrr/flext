@@ -237,7 +237,7 @@ public:
 	//! output anything (index n starts with 0)
 	void ToOutAnything(int n,const t_symbol *s,int argc,t_atom *argv)  { outlet *o = GetOut(n); if(o) ToOutAnything(o,const_cast<t_symbol *>(s),argc,argv); }
 		
-		
+
 // --- message handling -------------------------------------------
 
 	enum metharg {
@@ -384,6 +384,15 @@ protected:
 	void DescInlet(int ix,const char *desc) { DescXlet(ix,desc,inlist); }
 	void DescOutlet(int ix,const char *desc) { DescXlet(ix,desc,outlist); }
 
+
+#ifdef FLEXT_THREADS
+	void QueueBang(outlet *o); 
+	void QueueFloat(outlet *o,float f); 
+	void QueueInt(outlet *o,int f); 
+	void QueueSymbol(outlet *o,const t_symbol *s); 
+	void QueueList(outlet *o,int argc,t_atom *argv); 
+	void QueueAnything(outlet *o,const t_symbol *s,int argc,t_atom *argv); 
+#endif
 
 // method handling
 

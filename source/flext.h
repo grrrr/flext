@@ -30,7 +30,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // include pthreads if threading is enabled
 #ifdef FLEXT_THREADS
-#include <pthread.h>
 #include <flthr.h>
 #endif
 

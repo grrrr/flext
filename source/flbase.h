@@ -21,6 +21,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <flstdc.h>
 
+#ifdef FLEXT_THREADS
+#include <pthread.h>
+#endif
 
 class flext_obj;
 
@@ -121,7 +124,11 @@ class FLEXT_EXT flext_obj
 #elif defined(MAXMSP)
 		t_class *thisClass() { return (t_class *)(((t_tinyobject *)x_obj)->t_messlist-1); } 
 #endif
- 
+
+#ifdef FLEXT_THREADS
+		bool IsSystemThread() const { pthread_t cur = pthread_self(); return pthread_equal(cur,thrid) != 0; }
+#endif
+
     protected:    	
 		
         //! The object header
@@ -131,6 +138,11 @@ class FLEXT_EXT flext_obj
 
         //! The canvas (patcher) that the object is in
         t_canvas            *m_canvas;
+
+#ifdef FLEXT_THREADS
+        //! The thread that created the object (the system thread)
+		pthread_t			thrid;
+#endif
 
 	public:
 

@@ -215,14 +215,21 @@ void flext_base::AddOutlets(unsigned long code)
 }
 
 
-
+#ifndef FLEXT_THREADS
 void flext_base::ToOutBang(outlet *o) { outlet_bang((t_outlet *)o); }
 void flext_base::ToOutFloat(outlet *o,float f) { outlet_float((t_outlet *)o,f); }
 void flext_base::ToOutInt(outlet *o,int f) { outlet_flint((t_outlet *)o,f); }
 void flext_base::ToOutSymbol(outlet *o,const t_symbol *s) { outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); }
 void flext_base::ToOutList(outlet *o,int argc,t_atom *argv) { outlet_list((t_outlet *)o,gensym("list"),argc,argv); }
 void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,t_atom *argv) { outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,argv); }
-
+#else
+void flext_base::ToOutBang(outlet *o) { if(IsSystemThread()) outlet_bang((t_outlet *)o); else QueueBang(o); }
+void flext_base::ToOutFloat(outlet *o,float f) { if(IsSystemThread()) outlet_float((t_outlet *)o,f); else QueueFloat(o,f); }
+void flext_base::ToOutInt(outlet *o,int f) { if(IsSystemThread()) outlet_flint((t_outlet *)o,f); else QueueInt(o,f); }
+void flext_base::ToOutSymbol(outlet *o,const t_symbol *s) { if(IsSystemThread()) outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); else QueueSymbol(o,s); }
+void flext_base::ToOutList(outlet *o,int argc,t_atom *argv) { if(IsSystemThread()) outlet_list((t_outlet *)o,gensym("list"),argc,argv); else QueueList(o,argc,argv); }
+void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,t_atom *argv) { if(IsSystemThread()) outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,argv); else QueueAnything(o,s,argc,argv); }
+#endif
 
 bool flext_base::SetupInOut()
 {

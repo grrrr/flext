@@ -37,6 +37,10 @@ flext_obj :: flext_obj()
     m_canvas = (t_patcher *)gensym("#P")->s_thing;
     x_obj->curinlet = 0;
 #endif
+
+#ifdef FLEXT_THREADS
+	thrid = pthread_self();
+#endif
 }
 
 /////////////////////////////////////////////////////////

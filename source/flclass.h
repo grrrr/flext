@@ -327,7 +327,7 @@ public:
 	static void SetString(t_atom &a,const char *c) { SetSymbol(a,gensym(const_cast<char *>(c))); }
 
 	static bool CanbeInt(const t_atom &a) { return IsFloat(a) || IsInt(a); }
-	static float GetAInt(const t_atom &a) { return GetAFlint(a); }
+	static int GetAInt(const t_atom &a) { return (int)GetAFlint(a); }
 
 	static bool IsFlint(const t_atom &a) { return IsFloat(a) || IsInt(a); }
 	static float GetAFlint(const t_atom &a) { return IsFloat(a)?GetFloat(a):(IsInt(a)?GetInt(a):0); }

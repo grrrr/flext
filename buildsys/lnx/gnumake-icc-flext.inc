@@ -1,5 +1,12 @@
 # build class specific settings
 
+ifdef SHARED
+SONAME=$(OUTNAME).$(EXT)
+TARGET=$(TARGETPATH)/$(OUTNAME).$(PKGVERSION).$(EXT)
+else
+TARGET=$(TARGETPATH)/$(OUTNAME).$(EXT)
+endif
+
 ##############################################
 
 # default target
@@ -53,4 +60,7 @@ $(FLEXTLIBINST):
 
 _install_: $(FLEXTINC) $(FLEXTLIBINST)
 	install $(TARGET) $(FLEXTLIBINST)
+ifdef SHARED
+	/sbin/ldconfig -l $(TARGET)
+endif
 	install $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTINC)

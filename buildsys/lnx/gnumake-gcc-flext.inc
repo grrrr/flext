@@ -61,6 +61,6 @@ $(FLEXTLIBINST):
 _install_: $(FLEXTINC) $(FLEXTLIBINST)
 	install $(TARGET) $(FLEXTLIBINST)
 ifdef SHARED
-	ldconfig -l $(TARGET)
+	/sbin/ldconfig -l $(TARGET)
 endif
 	install $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTINC)

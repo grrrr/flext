@@ -174,14 +174,14 @@ bool flext_base::InitInlets()
 			for(cnt = 0,ix = incnt-1; ix >= insigs; --ix,++cnt) {
 				if(ix == 0) {
 					if(list[ix] != xlet::tp_any) {
-						error("%s: Leftmost inlet must be of type signal or default",thisName());
+						error("%s: Leftmost inlet must be of type signal or anything",thisName());
 						ok = false;
 					}
 				}
 				else {
 					switch(list[ix]) {
 						case xlet::tp_sig:
-							error("%s: All signal inlets must be at the left side",thisName());
+							error("%s: All signal inlets must be left-aligned",thisName());
 							ok = false;
 							break;
 						case xlet::tp_float:

@@ -119,6 +119,7 @@ Version history:
 - MaxMSP: added assist string for attribute outlets
 - added new POSIX for ThrCond::TimedWait (but still have to find out when to enable it....)
 - added CopySamples and ZeroSamples
+- fixed bug for DSP object with zero signal inlets in PD
 
 0.4.1:
 - full port for Max@OSX

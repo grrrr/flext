@@ -134,6 +134,12 @@ void flext_dsp::cb_dsp(t_class *c,t_signal **sp)
 
 	// store in and out signal vectors
 	int i,in = obj->CntInSig(),out = obj->CntOutSig();
+
+#if FLEXT_SYS == FLEXT_SYS_PD
+	// min. 1 input channel! (CLASS_MAININLET in pd...)
+	if(!in) in = 1;
+#endif
+
 	if(obj->invecs) delete[] obj->invecs;
 	obj->invecs = new t_signalvec[in];
 	for(i = 0; i < in; ++i) 

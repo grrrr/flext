@@ -1,0 +1,104 @@
+# flext - C++ layer for Max/MSP and pd (pure data) externals
+# Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
+#
+# Makefile for gcc @ linux
+#
+# usage:
+# to build run "make -f makefile.pd-linux"
+# to install (as root), do "make -f makefile.pd-linux install"
+#
+
+include config-pd-darwin.txt
+
+# compiler+linker stuff 
+INCLUDES=$(PDPATH)
+FLAGS=-DPD -Dunix
+CFLAGS=-DMACOSX -DPD -Dunix -O2 -W -Wshadow -Wstrict-prototypes \
+    -Wno-unused -Wno-parentheses -Wno-switch
+#CFLAGS_D=-mcpu=pentiumpro -g
+CFLAGS_T=-DFLEXT_THREADS
+LIBS=
+
+
+# ----------------------------------------------
+# the rest can stay untouched
+# ----------------------------------------------
+
+NAME=flext
+
+# all the source files from the package
+SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flsetup.cpp \
+flutil.cpp flatom.cpp flthr.cpp
+HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h flthr.h fldsp.h flinternal.h
+IHDRS=
+
+MAKEFILE=makefile.pd-darwin
+TARGET=$(TARGDIR)/$(NAME).a
+TARGET_D=$(TARGDIR)/$(NAME)_d.a
+TARGET_T=$(TARGDIR)/$(NAME)_t.a
+TARGET_TD=$(TARGDIR)/$(NAME)_td.a
+
+all: $(TARGDIR) $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
+
+$(TARGDIR):
+	mkdir $(TARGDIR)
+
+$(patsubst %,source/%,$(SRCS)): $(patsubst %,source/%,$(HDRS)) $(patsubst %,source/%,$(IHDRS)) $(MAKEFILE)
+	touch $@
+
+$(TARGDIR)/%.o : source/%.cpp
+	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
+
+$(TARGDIR)/%.do : source/%.cpp
+	$(CXX) -c $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
+
+$(TARGDIR)/%.to : source/%.cpp
+	$(CXX) -c $(CFLAGS) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
+
+$(TARGDIR)/%.tdo : source/%.cpp
+	$(CXX) -c $(CFLAGS_D) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
+
+$(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS)) 
+	ar rc $@ $^
+	ranlib $@
+	chmod 755 $@
+
+$(TARGET_D) : $(patsubst %.cpp,$(TARGDIR)/%.do,$(SRCS)) 
+	ar rc $@ $^ 
+	ranlib $@
+	chmod 755 $@
+
+$(TARGET_T) : $(patsubst %.cpp,$(TARGDIR)/%.to,$(SRCS))
+	ar rc $@ $^
+	ranlib $@
+	chmod 755 $@
+
+$(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(SRCS))
+	ar rc $@ $^
+	ranlib $@
+	chmod 755 $@
+
+.PHONY: clean install
+
+clean:
+	rm -f $(TARGDIR)/*.{o,do,to,tdo} $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
+	
+$(INSTDIR):
+	-mkdir $(INSTDIR)
+
+install:: $(INSTDIR)
+
+install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)  $(patsubst %,source/%,$(HDRS))
+	cp $^ $(INSTDIR)
+#	chmod 755 $(patsubst %,$(INSTDIR)/%,$(notdir $^))
+#	chgrp admin $(patsubst %,$(INSTDIR)/%,$(notdir $^))
+
+
+
+
+
+
+
+
+
+

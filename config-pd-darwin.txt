@@ -1,0 +1,17 @@
+# flext - C++ layer for Max/MSP and pd (pure data) externals
+# Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
+#
+
+# where are the PD header files?
+PDPATH=/usr/local/pd/src
+
+# where should flext libraries be built?
+TARGDIR=./pd-darwin
+
+# should the flext stuff be installed? (yes/no)
+INSTALL=yes
+
+# where should flext libraries be installed?
+INSTDIR=/usr/local/pd/extra/flext
+
+

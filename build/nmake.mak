@@ -1,30 +1,50 @@
+# required settings:
+#
 # PLATFORM - win/mac/lnx
 # RTSYS - pd/max
 # COMPILER - msvc/gcc/mingw/cygwin
+# BUILDPATH including trailing \
 
-# general settings
-!include config-$(PLATFORM)-$(RTSYS)-$(COMPILER).txt
+SYSCONFIG=$(BUILDPATH)config-$(PLATFORM)-$(RTSYS)-$(COMPILER).txt
+USRCONFIG=config.txt
 
-###############################
+.precious: $(SYSCONFIG) $(USRCONFIG)
 
-# these are project specific
 
-# special package settings
-!if exist(config-$(PLATFORM)-$(COMPILER).txt)
-!include config-$(PLATFORM)-$(COMPILER).txt
-!endif
+OPTIONS=-f $(BUILDPATH)nmake-sub.mak \
+	PLATFORM=$(PLATFORM) RTSYS=$(RTSYS) COMPILER=$(COMPILER) \
+	BUILDPATH=$(BUILDPATH)
 
-# package specific make stuff
-!if exist(makefile-$(PLATFORM)-$(COMPILER).txt)
-!include makefile-$(PLATFORM)-$(COMPILER).txt
-!endif
 
-# package info
-!include make-files.txt
+all: $(SYSCONFIG) $(USRCONFIG)
+	$(MAKE) $(OPTIONS) all
 
-##############################
+all-debug: $(SYSCONFIG) $(USRCONFIG)
+	$(MAKE) $(OPTIONS) DEBUG=1 $@
 
-# platform-specific make stuff
-!include make-$(PLATFORM)-$(RTSYS)-$(COMPILER).inc
-# general make stuff
-!include make-$(PLATFORM)-gen-$(COMPILER).inc
+all-shared: $(SYSCONFIG) $(USRCONFIG)
+	$(MAKE) $(OPTIONS) SHARED=1 $@
+
+all-shared-debug: $(SYSCONFIG) $(USRCONFIG)
+	$(MAKE) $(OPTIONS) SHARED=1 DEBUG=1 $@
+
+clean install:
+	$(MAKE) $(OPTIONS) $@
+
+
+$(SYSCONFIG): $(BUILDPATH)$(PLATFORM)\$(RTSYS)\config-$(COMPILER).def
+	copy $** $@
+	@echo -------------------------------------------------------------------------
+	@echo A default system configuration file has been created.
+	@echo Please edit $(SYSCONFIG) 
+	@echo to match your platform and start again.
+	@echo -------------------------------------------------------------------------
+	@exit 1
+	
+$(USRCONFIG): build\config-$(PLATFORM).def
+	copy $** $@
+	@echo -------------------------------------------------------------------------
+	@echo A default package configuration file has been created.
+	@echo Please edit $(USRCONFIG) and start again.
+	@echo -------------------------------------------------------------------------
+	@exit 1

@@ -1,11 +1,11 @@
+# required settings:
+#
 # PLATFORM - win/mac/lnx
 # RTSYS - pd/max
 # COMPILER - msvc/gcc/mingw/cygwin
+# BUILDPATH including trailing /
 
-# this should be improved
-BUILDPATH=../flext/build
-
-include $(BUILDPATH)/config-$(PLATFORM)-$(RTSYS)-$(COMPILER).txt
+include $(BUILDPATH)config-$(PLATFORM)-$(RTSYS)-$(COMPILER).txt
 
 ###############################
 
@@ -23,6 +23,6 @@ include make-files.txt
 ##############################
 
 # platform-specific make stuff
-include $(BUILDPATH)/make-$(PLATFORM)-$(RTSYS)-$(COMPILER).inc
+include $(BUILDPATH)$(PLATFORM)/$(RTSYS)/make-$(COMPILER).inc
 # general make stuff
-include $(BUILDPATH)/make-$(PLATFORM)-gen-$(COMPILER).inc
+include $(BUILDPATH)$(PLATFORM)/make-$(COMPILER).inc

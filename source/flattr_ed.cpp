@@ -64,9 +64,6 @@ void flext_base::SetAttrEditor(t_classid c)
     widgetbehavior.w_clickfn =      text_widgetbehavior.w_clickfn;
 #endif
 
-    widgetbehavior.w_visfn =        cb_GfxVis;
-    class_setwidget(c, &widgetbehavior);
-
 #if PD_MINOR_VERSION >= 37
     class_setpropertiesfn(c,cb_GfxProperties);
     class_setsavefn(c,cb_GfxSave);
@@ -74,6 +71,9 @@ void flext_base::SetAttrEditor(t_classid c)
     widgetbehavior.w_propertiesfn = cb_GfxProperties;
     widgetbehavior.w_savefn =       cb_GfxSave;
 #endif
+
+    widgetbehavior.w_visfn =        cb_GfxVis;
+    class_setwidget(c, &widgetbehavior);
 
 	// generate the script for the property dialog
 
@@ -411,29 +411,33 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 //! Strip the attributes off the object command line
 void flext_base::cb_GfxVis(t_gobj *c, t_glist *gl, int vis)
 {
-	t_text *x = (t_text *)c;
+    // show object if it's not a GOP
+    if(!gl->gl_isgraph || gl->gl_havewindow) {
 
-	FLEXT_ASSERT(x->te_binbuf);
+	    t_text *x = (t_text *)c;
+	    FLEXT_ASSERT(x->te_binbuf);
 
-	int argc = binbuf_getnatom(x->te_binbuf);
-	t_atom *argv = binbuf_getvec(x->te_binbuf);
-	int cnt = CheckAttrib(argc,argv);
+	    int argc = binbuf_getnatom(x->te_binbuf);
+	    t_atom *argv = binbuf_getvec(x->te_binbuf);
+	    int cnt = CheckAttrib(argc,argv);
 
-	if(cnt)	{
-		t_binbuf *nb = binbuf_new();
-		binbuf_restore(nb,cnt,argv);
-		binbuf_free(x->te_binbuf);
-		x->te_binbuf = nb;
-	}
+	    if(cnt)	{
+		    t_binbuf *nb = binbuf_new();
+		    binbuf_restore(nb,cnt,argv);
+		    binbuf_free(x->te_binbuf);
+		    x->te_binbuf = nb;
+	    }
 
-	t_rtext *rt = glist_findrtext(gl,x);
-	rtext_retext(rt);
+	    t_rtext *rt = glist_findrtext(gl,x);
+	    rtext_retext(rt);
 
-#ifdef FLEXT_CLONEWIDGET
-	text_widgetbehavior.w_visfn(c,gl,vis);
-#else
-	ori_vis(c,gl,vis);
-#endif
+        // now display the changed text with the normal drawing function
+    #ifdef FLEXT_CLONEWIDGET
+	    text_widgetbehavior.w_visfn(c,gl,vis);
+    #else
+	    ori_vis(c,gl,vis);
+    #endif
+   }
 }
 
 static void BinbufAdd(t_binbuf *b,const t_atom &at)

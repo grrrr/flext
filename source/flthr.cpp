@@ -25,6 +25,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifdef NT
 #include <windows.h>
 #endif
+#include <errno.h>
 
 bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *methname)
 {
@@ -38,7 +39,8 @@ bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *me
 	pthread_t thrid; 
 	int ret = pthread_create (&thrid,NULL,(void *(*)(void *))meth,p);
 	if(ret) { 
-		error(ret == EAGAIN?"%s - Unsufficient resources to launch thread!":"%s - Could not launch method!",methname); 
+		error((char *)(ret == EAGAIN?"%s - Unsufficient resources to launch thread!":"%s - Could not
+		launch method!"),methname); 
 		delete p; 
 		return false;
 	}

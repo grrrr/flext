@@ -40,6 +40,7 @@ TODO LIST:
 - optimizations for object initialization and messaging
 - speed up message handling (usage of other containers?)
 - SIMD for gcc
+- lock-free code for 64-bit architectures
 
 - update documentation
 - add log messages for debugging version

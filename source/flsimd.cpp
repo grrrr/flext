@@ -66,7 +66,7 @@ unsigned long flext::GetSIMDCapabilities() { return simdcaps; }
 
 #ifdef FLEXT_USE_SIMD
 
-#if FLEXT_CPU == FLEXT_CPU_INTEL
+#if FLEXT_CPU == FLEXT_CPU_IA32 || FLEXT_CPU == FLEXT_CPU_X84_64
 
 #define _CPU_FEATURE_MMX    0x0001
 #define _CPU_FEATURE_SSE    0x0002
@@ -294,7 +294,7 @@ static int _cpuid (_p_info *pinfo)
 static unsigned long setsimdcaps()
 {
     unsigned long simdflags = flext::simd_none;
-#if FLEXT_CPU == FLEXT_CPU_INTEL 
+#if FLEXT_CPU == FLEXT_CPU_IA32 || FLEXT_CPU == FLEXT_CPU_AMD64
     _p_info cpuinfo;
     int feature = _cpuid(&cpuinfo);
     if(cpuinfo.os_support&_CPU_FEATURE_MMX) simdflags += flext::simd_mmx;

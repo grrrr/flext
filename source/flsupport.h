@@ -782,40 +782,12 @@ public:
 		} *var;
 	};
 
-	/*! \brief This represents an entry to the list of active method threads
-		\internal
-	*/
-    class FLEXT_SHARE thr_entry:
-        public flext_root
-	{
-	public:
-		thr_entry(void (*m)(thr_params *),thr_params *p,thrid_t id = GetThreadId());
-
-		//! \brief Check if this class represents the current thread
-		bool Is(thrid_t id = GetThreadId()) const { return IsThread(thrid,id); }
-
-		FLEXT_CLASSDEF(flext_base) *This() const { return th; }
-		thrid_t Id() const { return thrid; }
-
-		FLEXT_CLASSDEF(flext_base) *th;
-		void (*meth)(thr_params *);
-		thr_params *params;
-		thrid_t thrid;
-		bool active,shouldexit;
-#if FLEXT_THREADS == FLEXT_THR_MP
-		int weight;
-#endif
-		thr_entry *nxt;
-	};
-
 protected:
 
 	static thrid_t thrhelpid;
 	static thrid_t thrmsgid;
 	static bool StartHelper();
-	static bool StopHelper();
 	static void ThrHelper(void *);
-    static void LaunchHelper(thr_entry *e);
 
 	//! the system's thread id
 	static thrid_t thrid;  // the system thread
@@ -1080,6 +1052,9 @@ public:
 		\note Clearly in a real-time system this should only be used in a detached thread.
 	*/
 	static void Sleep(double s);
+
+	//! Sleep for a very short amount of time, just to let other threads wake up
+	static void MiniSleep();
 
 	/*! \brief Class encapsulating a timer with callback functionality.
 		This class can either be used with FLEXT_ADDTIMER or used as a base class with an overloaded virtual Work function.

@@ -33,7 +33,7 @@ Version history:
 - added some more SIMD functionality
 - fixes to flext::Timer::At method
 - eliminated misleading flext_dsp::ChannelsIn and ChannelsOut
-- added lock-free Lifo and Fifo structures and used it with message queueing
+- added lock-free Lifo and Fifo structures and used it with message queueing and thread management
 
 0.4.7:
 - added flext::GetBool (just because flext::GetInt has been there for a while)

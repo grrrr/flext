@@ -66,10 +66,16 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // --- definitions for FLEXT_CPU ---------------------
 #define FLEXT_CPU_UNKNOWN   0
-#define FLEXT_CPU_INTEL 1
-#define FLEXT_CPU_PPC   2
-#define FLEXT_CPU_MIPS  3
-#define FLEXT_CPU_ALPHA 4
+#define FLEXT_CPU_IA32   1
+#define FLEXT_CPU_PPC    2
+#define FLEXT_CPU_MIPS   3
+#define FLEXT_CPU_ALPHA  4
+
+#define FLEXT_CPU_IA64   5 // Itanium
+#define FLEXT_CPU_X86_64 6 // AMD-K8, EMT64
+
+// compatibility
+#define FLEXT_CPU_INTEL FLEXT_CPU_IA32
 
 // --- definitions for FLEXT_THREADS -----------------
 #define FLEXT_THR_POSIX 1 // pthreads
@@ -110,8 +116,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     // and Intel C++ (as guessed)
     
     #ifndef FLEXT_CPU
-        #if defined(_M_IX86)
-            #define FLEXT_CPU FLEXT_CPU_INTEL
+        #if defined(_M_AMD64)
+            #define FLEXT_CPU FLEXT_CPU_X86_64
+        #elif defined(_M_IA64)
+            #define FLEXT_CPU FLEXT_CPU_IA64
+        #elif defined(_M_IX86)
+            #define FLEXT_CPU FLEXT_CPU_IA32
         #elif defined(_M_PPC)
             #define FLEXT_CPU FLEXT_CPU_PPC
         #elif defined(_M_MRX000)
@@ -124,7 +134,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     #endif
 
     #ifndef FLEXT_OS
-        #if defined(_WIN32)
+        #if defined(_WIN32) || defined(_WIN64)
             #define FLEXT_OS FLEXT_OS_WIN
             #define FLEXT_OSAPI FLEXT_OSAPI_WIN_NATIVE
         #else
@@ -211,8 +221,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     // and Intel (as suggested by Tim Blechmann)
 
     #ifndef FLEXT_CPU
-        #if defined(_X86_) || defined(__i386__) || defined(__i586__) || defined(__i686__)
-            #define FLEXT_CPU FLEXT_CPU_INTEL
+        #if defined(_X86_64_) // not sure about this one
+            #define FLEXT_CPU FLEXT_CPU_X86_64
+        #elif defined(_X86_) || defined(__i386__) || defined(__i586__) || defined(__i686__)
+            #define FLEXT_CPU FLEXT_CPU_IA32
         #elif defined(__POWERPC__)
             #define FLEXT_CPU FLEXT_CPU_PPC
         #elif defined(__MIPS__)

@@ -44,7 +44,7 @@ public:
 
     inline Cell *Avail() { return (Cell *)top; }
 
-#if defined(_MSC_VER) && (defined(_WIN32))
+#if defined(_MSC_VER) && FLEXT_CPU == FLEXT_CPU_IA32
     #ifdef __SMP__
     #define LOCK lock
     #else
@@ -109,7 +109,7 @@ public:
     }
 
     inline size_t Size() const { return ic-oc; }
-#elif defined(__GNUC__) && (defined(_X86_) || defined(__i386__))
+#elif defined(__GNUC__) && FLEXT_CPU == FLEXT_CPU_IA32
     #ifndef SMPLOCK
     # ifdef __SMP__
     #  define SMPLOCK "lock ; "
@@ -180,11 +180,11 @@ public:
 		    :"memory", "edx");
 	    return n;
     }
-#elif defined(__GNUC__) && defined(__x86_64__)
+#elif defined(__GNUC__) && FLEXT_CPU == FLEXT_CPU_X64_64
 
 #error x86-64 architecture not supported yet
 
-#elif defined(__GNUC__) && defined(__POWERPC__)
+#elif defined(__GNUC__) && FLEXT_CPU == FLEXT_CPU_PPC
     inline void Push(register Cell *cl) 
     {
         register volatile long t1;

@@ -109,7 +109,6 @@ void flext::Sleep(double s)
 #endif
 }
 
-
 /* \param qu determines whether timed messages should be queued (low priority - only when supported by the system).
 */
 flext::Timer::Timer(bool qu):

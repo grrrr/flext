@@ -61,6 +61,8 @@ const char *flext::extract(const char *name,int ix)
 
 		n = del+1;
 	}
+
+	while(*n && isspace(*n)) ++n;
 	
 	for(int i = 0; n && *n; ++i) {
 		if(i == ix) {

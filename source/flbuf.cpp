@@ -102,13 +102,13 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
 		if(sym->s_thing) {
 			const _buffer *p = (const _buffer *)sym->s_thing;
 			
-			if(NOGOOD(p)) {
+			if(NOGOOD(p) || !p->b_valid) {
 				post("buffer: buffer object '%s' no good",GetString(sym)); 
-				if(valid) ret = -1;
+				if(valid) ret = -2;
 			}
 			else {
 #ifdef FLEXT_DEBUG
-				post("flext: buffer object '%s' - valid:%i samples:%i channels:%i frames:%i",GetString(sym),p->b_valid,p->b_frames,p->b_nchans,p->b_frames);
+//				post("flext: buffer object '%s' - valid:%i samples:%i channels:%i frames:%i",GetString(sym),p->b_valid,p->b_frames,p->b_nchans,p->b_frames);
 #endif
 				if(data != p->b_samples) { data = p->b_samples; if(!ret) ret = 1; }
 				if(chns != p->b_nchans) { chns = p->b_nchans; if(!ret) ret = 1; }
@@ -117,7 +117,7 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
 		}
 		else {
     		FLEXT_LOG1("buffer: symbol '%s' not defined", GetString(sym)); 
-    		if(valid) ret = -1;
+    		/*if(valid)*/ ret = -1;
 		}
 #else
 #error not implemented

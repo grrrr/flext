@@ -933,11 +933,11 @@ public:
 		//! Clear timer.
 		bool Reset();
 		//! Trigger a one shot at an absolute time.
-		bool At(double tm,void *data = NULL,bool dopast = true);
+		bool At(double time,void *data = NULL,bool dopast = true);
 		//! Trigger a one shot interval.
-		bool Delay(double tm,void *data = NULL);
+		bool Delay(double time,void *data = NULL);
 		//! Trigger a periodic interval.
-		bool Periodic(double tm,void *data = NULL);
+		bool Periodic(double time,void *data = NULL);
 		//! Trigger immediately.
         bool Now(void *data = NULL) { return Delay(0,data); }
 

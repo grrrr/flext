@@ -115,8 +115,8 @@ t_int *flext_dsp::dspmeth(t_int *w)
 #else
 	if(obj->dspon) 
 #endif
-		obj->m_signal((int)w[2],obj->invecs,obj->outvecs); 
-	return w+3;
+		obj->m_signal(obj->blksz,obj->invecs,obj->outvecs); 
+	return w+2;
 }
 #endif
 
@@ -186,12 +186,11 @@ void flext_dsp::cb_dsp(t_class *c,t_signal **sp)
 
 	// set the DSP function
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-	fts_atom_t args[2];
-	fts_set_pointer(args+0,obj);
-	fts_set_int(args+1,obj->blksz);
-	fts_dsp_add_function(dspsym,2,args);
+	fts_atom_t args;
+	fts_set_pointer(args,obj);
+	fts_dsp_add_function(dspsym,1,args);
 #else
-	dsp_add((t_dspmethod)dspmeth,2,obj,obj->blksz);  
+	dsp_add((t_dspmethod)dspmeth,1,obj);  
 #endif
 }
 

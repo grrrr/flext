@@ -17,7 +17,7 @@ INCPATH=$(INCPATH) /I$(SNDOBJ)
 !endif
 
 # compiler definitions and flags
-DEFS=/DPD /DNT 
+DEFS=/DFLEXT_SYS=2 
 
 CFLAGS=/GR- /GX- /GD /G6
 OFLAGS=/Ox

@@ -14,7 +14,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define _FLEXT_CW_MAX_X_THR_H
 
 #define FLEXT_THREADS
-#define _POSIX_THREADS
 
 /*
 	old CodeWarrior version (<= 6) don't have sigset_t defined which

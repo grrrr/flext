@@ -14,7 +14,7 @@ include $(CONFIG)
 
 # compiler+linker stuff 
 INCLUDES=$(PDPATH) $(SNDOBJ)
-FLAGS=-DPD 
+FLAGS=-DFLEXT_SYS=2 
 CFLAGS=-O6 -mcpu=pentiumpro
 CFLAGS_D=-mcpu=pentiumpro -g
 CFLAGS_T=-DFLEXT_THREADS

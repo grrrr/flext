@@ -162,9 +162,11 @@ bool flext::Timer::At(double tm,void *data,bool dopast)
     userdata = data;
     period = 0;
 #if FLEXT_SYS == FLEXT_SYS_PD 
-    const double ms = tm*1000.;
-    if(dopast || clock_gettimesince(ms) <= 0)
-        clock_set(clk,ms);
+    const double systm = clock_gettimesince(0);
+    double df = tm*1000.-systm;
+    if(dopast && df < 0) df = 0;
+    if(df >= 0)
+        clock_delay(clk,df);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
     const double ms = tm*1000.;
     double cur;

@@ -31,6 +31,7 @@ Version history:
 - in ToOut check if we are inside dsp (and use ToQueue then...)
 - some restructuring and use symbols (rather the char *) natively for AddMethod* and AddAttrib* functions
 - added some more SIMD functionality
+- fixes to flext::Timer::At method
 
 0.4.7:
 - added flext::GetBool (just because flext::GetInt has been there for a while)

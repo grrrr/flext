@@ -59,8 +59,8 @@ typedef t_perfroutine t_dspmethod;
 
 #define qelem_new clock_new
 #define qelem_free clock_free
-#define qelem_set clock_set
-#define qelem_front clock_set
+#define qelem_set clock_delay
+#define qelem_front clock_delay
 #define qelem_unset clock_unset
 
 #define CRITON() 

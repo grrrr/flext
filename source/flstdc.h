@@ -92,8 +92,8 @@ typedef t_pxbox t_sigobj;  // that's the all-in-one object type of MaxMSP (not v
 typedef t_patcher t_canvas;
 
 typedef t_int t_flint;
-typedef t_symbol *t_symptr;
-typedef t_symbol *t_symtype;
+typedef const t_symbol *t_symptr;
+typedef const t_symbol *t_symtype;
 typedef t_object *t_thing;
 
 typedef qelem t_qelem;

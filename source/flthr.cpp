@@ -155,15 +155,6 @@ void flext_base::PopThread()
 	tlmutex.Unlock();
 }
 
-#ifdef MAXMSP
-void flext_base::YTick(flext_base *th) 
-{ 
-	clock_delay(th->yclk,0); 
-	qelem_set(th->qclk); 
-	sched_yield();
-}
-#endif
-
 flext_base::thrid_t flext_base::GetThreadId() 
 { 
 	return pthread_self(); 

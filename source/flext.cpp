@@ -366,6 +366,12 @@ bool flext_base::Init()
 	if(outlets) { delete[] outlets; outlets = NULL; }
 	outcnt = outsigs = 0; 
 	
+#ifdef MAXMSP
+	if(procattr) 
+		// attribute dump outlet is the last one
+		outattr = (outlet *)newout_anything(&x_obj->obj);
+#endif
+
 	if(outlist) {
 		xlet *xi;
 
@@ -418,10 +424,12 @@ bool flext_base::Init()
 		delete[] list;
 	}
 
+#ifdef PD
 	if(procattr) 
 		// attribute dump outlet is the last one
 		outattr = (outlet *)newout_anything(&x_obj->obj);
-	
+#endif
+
 	return ok;
 }
 

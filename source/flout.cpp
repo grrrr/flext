@@ -92,6 +92,17 @@ void flext_base::qmsg::Add(qmsg *o)
 }
 */
 
+#ifdef MAXMSP
+void flext_base::YTick(flext_base *th) 
+{ 
+	clock_delay(th->yclk,0); 
+	qelem_set(th->qclk); 
+#ifdef FLEXT_THREADS
+	sched_yield();
+#endif
+}
+#endif
+
 void flext_base::QTick(flext_base *th)
 {
 #ifdef DEBUG

@@ -16,6 +16,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <string.h>
 #include <stdio.h>
 
+#ifdef MAXMSP
+#define STD std
+#else
+#define STD
+#endif
+
 flext_base::attritem::attritem(const t_symbol *t,const t_symbol *gt,metharg tp,methfun gf,methfun sf):
 	tag(t),gtag(gt),argtp(tp),gfun(gf),sfun(sf),nxt(NULL)
 {}
@@ -41,7 +47,7 @@ void flext_base::AddAttrib(const char *attr,metharg tp,methfun gfun,methfun sfun
 {
 	if(procattr) {
 		char tmp[1024];
-		sprintf(tmp,"get%s",attr);
+		STD::sprintf(tmp,"get%s",attr);
 		AddAttrItem(new attritem(MakeSymbol(attr),MakeSymbol(tmp),tp,gfun,sfun));
 
 		AddMethod(0,attr,(methfun)cb_SetAttrib,a_any,a_null);
@@ -80,7 +86,7 @@ bool flext_base::ListAttrib()
 		attritem *a = attrhead;
 		for(int i = 0; i < attrcnt; ++i,a = a->nxt) SetSymbol(la[i],a->tag);
 
-		ToOutAnything(outattr,thisTag(),la.Count(),la.Atoms());
+		ToOutAnything(outattr,MakeSymbol("attributes"),la.Count(),la.Atoms());
 		return true;
 	}
 	else

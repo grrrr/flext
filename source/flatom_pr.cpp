@@ -18,25 +18,31 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <string.h>
 #include <stdio.h>
 
+#ifdef MAXMSP
+#define STD std
+#else
+#define STD
+#endif
+
 void flext::PrintAtom(const t_atom &a,char *buf)
 {
 	switch(a.a_type) {
 	case A_FLOAT:
 #ifdef PD
 		if(a.a_w.w_float == (int)a.a_w.w_float)
-			sprintf(buf,"%i",(int)a.a_w.w_float);
+			STD::sprintf(buf,"%i",(int)a.a_w.w_float);
 		else
 #endif
-		sprintf(buf,"%f",(float)a.a_w.w_float);
+		STD::sprintf(buf,"%f",(float)a.a_w.w_float);
 		break;
 #ifdef MAXMSP
 	case A_LONG:
-		sprintf(buf,"%i",(int)a.a_w.w_long);
+		STD::sprintf(buf,"%i",(int)a.a_w.w_long);
 		break;
 #endif
 #ifdef PD
 	case A_POINTER:
-		sprintf(buf,"%x",a.a_w.w_gpointer);
+		STD::sprintf(buf,"%x",a.a_w.w_gpointer);
 		break;
 #endif
 	case A_SYMBOL:

@@ -84,8 +84,10 @@ static flext::ThrMutex qmutex;
 static void QWork(bool qlock,bool syslock)
 {
 	for(;;) {
-		// since qcnt can only be increased from any other function than QWork
-		// qc will be a minimum guaranteed number of present queue elements
+		// Since qcnt can only be increased from any other function than QWork
+		// qc will be a minimum guaranteed number of present queue elements.
+		// On the other hand, if new queue elements are added by the methods called
+		// in the loop, these will be sent in the next tick to avoid recursion overflow.
 		int qc = qcnt;
 		if(!qc) break;
 

@@ -21,6 +21,7 @@ Version history:
 - appended lacking ~ for tilde object help patches
 - uniform STL container for all kinds of attribute, method, class handling
 - support for MinGW
+- added flext_obj::CanvasArgs
 
 0.4.5:
 - added some more SIMD functions
@@ -284,14 +285,15 @@ TODO list:
 general:
 - documentation
 - add log messages for debugging version
-- use PD's t_float and t_int types (or comparable for 32-Bit safety)
+- use PD's t_float and t_int types (or comparable for 32-bit safety)
 
 - add double handlers
 - add signal in/out connection query function
 
 - support for Max qelem style
 
-- unify STL containers so that there's only one code template
+- PD: with DSP objects all float messages to left input are currently converted to signal
+		there should be a way to avoid this
 
 
 bugs:

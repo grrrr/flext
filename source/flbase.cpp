@@ -120,3 +120,23 @@ const t_symbol *flext_obj::GetParamSym(const t_symbol *sym,t_canvas *c)
 	return sym;
 }
 
+
+#if FLEXT_SYS == FLEXT_SYS_PD
+// this declaration is missing in m_pd.h (0.37-0 and -1)
+extern "C" void canvas_getargs(int *argcp, t_atom **argvp);
+#endif
+
+
+void flext_obj::CanvasArgs(AtomList &args) const
+{
+#if FLEXT_SYS == FLEXT_SYS_PD
+	int argc;
+	t_atom *argv;
+	canvas_getargs(&argc,&argv);
+	args(argc);
+	for(int i = 0; i < argc; ++i) args[i] = argv[i];
+#else
+	#pragma message("Not implemented")
+	args(0);
+#endif
+}

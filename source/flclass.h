@@ -467,19 +467,18 @@ protected:
 	class thr_entry 
 	{
 	public:
-		thr_entry(pthread_t id = pthread_self()): thrid(id),nxt(NULL) {}
+		thr_entry(flext_base *t,void *(*m)(thr_params *),thr_params *p,pthread_t id = pthread_self()): th(t),meth(m),params(p),thrid(id),active(false),nxt(NULL) {}
 
 		//! \brief Check if this class represents the current thread
 		bool Is(pthread_t id = pthread_self()) const { return pthread_equal(thrid,id) != 0; }
 
+		bool active;
 		pthread_t thrid;
+		void *(*meth)(thr_params *);
+		thr_params *params;
+		flext_base *th;
 		thr_entry *nxt;
 	};
-
-	/*! \brief Start a method thread
-		\internal
-	*/
-	static bool StartThread(void *(*meth)(thr_params *p),thr_params *p,char *methname);
 
 	/*! \brief Add current thread to list of active threads
 		\return true on success
@@ -491,6 +490,13 @@ protected:
 		\internal
 	*/
 	void PopThread();
+
+public:
+	/*! \brief Start a method thread
+		\internal
+	*/
+	bool StartThread(void *(*meth)(thr_params *p),thr_params *p,char *methname);
+
 #endif
 
 protected:
@@ -657,11 +663,18 @@ private:
 	bool shouldexit;
 	int thrcount;
 	
-	pthread_t thrid;  // the thread that created the object (the system thread)
+	static pthread_t thrid;  // the thread that created the object (the system thread)
 	ThrMutex qmutex;
 
-	thr_entry *thrhead,*thrtail;
-	ThrMutex tlmutex;
+	static thr_entry *thrhead,*thrtail;
+	static ThrMutex tlmutex;
+
+	static pthread_t thrhelpid;
+	static bool StartHelper();
+	static bool StopHelper();
+	static void ThrHelper(void *);
+
+	void TermThreads();
 #endif
 
 	class qmsg;

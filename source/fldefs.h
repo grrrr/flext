@@ -413,7 +413,7 @@ FLEXT_CALLBACK_1(M_FUN,t_symptr)
 #define FLEXT_THREAD(M_FUN) \
 static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c) {  \
 	thr_params *p = new thr_params(c); \
-	return StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
+	return c->StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
 static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
@@ -430,7 +430,7 @@ static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 #define FLEXT_THREAD_A(M_FUN) \
 static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,t_symbol *s,int argc,t_atom *argv) {  \
 	thr_params *p = new thr_params(c); p->set_any(s,argc,argv); \
-	return StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
+	return c->StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
 static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
@@ -449,7 +449,7 @@ static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 #define FLEXT_THREAD_V(M_FUN) \
 static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,int argc,t_atom *argv) {  \
 	thr_params *p = new thr_params(c); p->set_list(argc,argv); \
-	return StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
+	return c->StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
 static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
@@ -470,7 +470,7 @@ static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 #define FLEXT_THREAD_X(M_FUN) \
 static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,void *data) {  \
 	thr_params *p = new thr_params(c); p->var[0]._ext.data = data; \
-	return StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
+	return c->StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
 static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
@@ -489,7 +489,7 @@ static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 #define FLEXT_THREAD_B(M_FUN) \
 static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,int &arg1) {  \
 	thr_params *p = new thr_params(c); p->var[0]._bool = arg1 != 0; \
-	return StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
+	return c->StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
 static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
@@ -508,7 +508,7 @@ static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1) {  \
 	thr_params *p = new thr_params(c,1); \
 	p->var[0]._ ## TP1 = arg1; \
-	return StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
+	return c->StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
 static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
@@ -528,7 +528,7 @@ static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2) {  \
 	thr_params *p = new thr_params(c,2); \
 	p->var[0]._ ## TP1 = arg1; \
 	p->var[1]._ ## TP2 = arg2; \
-	return StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
+	return c->StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
 static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
@@ -550,7 +550,7 @@ static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3) {
 	p->var[0]._ ## TP1 = arg1; \
 	p->var[1]._ ## TP2 = arg2; \
 	p->var[2]._ ## TP3 = arg3; \
-	return StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
+	return c->StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
 static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
@@ -574,7 +574,7 @@ static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP
 	p->var[1]._ ## TP2 = arg2; \
 	p->var[2]._ ## TP3 = arg3; \
 	p->var[3]._ ## TP4 = arg4; \
-	return StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
+	return c->StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
 static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
@@ -600,7 +600,7 @@ static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP
 	p->var[2]._ ## TP3 = arg3; \
 	p->var[3]._ ## TP4 = arg4; \
 	p->var[4]._ ## TP5 = arg5; \
-	return StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
+	return c->StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
 static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \

@@ -109,6 +109,8 @@ Version history:
 - also FLEXT_DEBUG for debug build
 - SndObjs: virtual FreeObject routine is now called at destruction (by parent class), derived class doesn't need to call it!
 - SndObjs: fixed typo (numbers of output slots was wrong) and init bug
+- introduced a helper thread for launching flext threads in the background
+- threads are now handled on class (as opposed to object) level
 
 0.4.0:
 - the use of the const keyword is enforced (e.g. the preferred type for symbols is now "const t_symbol *")

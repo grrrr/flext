@@ -130,10 +130,8 @@ flext_base::flext_base():
 	LOG1("%s - flext logging is on",thisName());
 
 #ifdef FLEXT_THREADS
-	thrid = pthread_self();
-
 	shouldexit = false;
-	thrhead = thrtail = NULL;
+//	thrhead = thrtail = NULL;
 #endif
 	qhead = qtail = NULL;
 	qclk = (t_qelem *)(qelem_new(this,(t_method)QTick));
@@ -147,26 +145,7 @@ flext_base::flext_base():
 flext_base::~flext_base()
 {
 #ifdef FLEXT_THREADS
-	// wait for thread termination
-	shouldexit = true;
-	for(int wi = 0; thrhead && wi < 100; ++wi) Sleep(0.01f);
-	
-//#ifdef _POSIX_THREADS	
-	qmutex.Lock(); // Lock message queue
-	tlmutex.Lock();
-	// timeout -> hard termination
-	while(thrhead) {
-		thr_entry *t = thrhead;
-		if(pthread_cancel(t->thrid)) post("%s - Thread could not be terminated!",thisName());
-		thrhead = t->nxt;
-		t->nxt = NULL; delete t;
-	}
-	tlmutex.Unlock();
-	qmutex.Unlock();
-//#else
-//#pragma message ("No tread cancelling")
-//#endif
-
+	TermThreads();
 #endif
 
 	// send remaining pending messages
@@ -482,6 +461,12 @@ void flext_base::Setup(t_class *c)
 	ADD_IN_FT(7);
 	ADD_IN_FT(8);
 	ADD_IN_FT(9);
+
+#ifdef FLEXT_THREADS
+	thrid = pthread_self();
+
+	StartHelper();
+#endif
 }
 
 void flext_base::cb_help(t_class *c) { thisObject(c)->m_help(); }	

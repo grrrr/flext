@@ -1,5 +1,5 @@
 # where is the PD source package?
-PDPATH=/usr/local/src/pd-0.38-0test10
+PDPATH=/usr/local/src/pd
 
 ###############################################################
 

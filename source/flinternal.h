@@ -46,12 +46,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define add_anything(clss,meth) class_addanything(clss,meth)
 
 
-#define newout_signal(clss) outlet_new(clss,gensym("signal"))
-#define newout_float(clss) outlet_new(clss,gensym("float"))
-#define newout_flint(clss) outlet_new(clss,gensym("float"))
-#define newout_list(clss) outlet_new(clss,gensym("list"))
-#define newout_symbol(clss) outlet_new(clss,gensym("symbol"))
-#define newout_anything(clss) outlet_new(clss,gensym("anything"))
+#define newout_signal(clss) outlet_new(clss,const_cast<t_symbol *>(flext::sym_signal))
+#define newout_float(clss) outlet_new(clss,const_cast<t_symbol *>(flext::sym_float))
+#define newout_flint(clss) outlet_new(clss,const_cast<t_symbol *>(flext::sym_float))
+#define newout_list(clss) outlet_new(clss,const_cast<t_symbol *>(flext::sym_list))
+#define newout_symbol(clss) outlet_new(clss,const_cast<t_symbol *>(flext::sym_symbol))
+#define newout_anything(clss) outlet_new(clss,const_cast<t_symbol *>(flext::sym_anything))
 
 #define outlet_flint(o,v) outlet_float(o,(float)(v))
 
@@ -60,6 +60,7 @@ typedef t_perfroutine t_dspmethod;
 #define qelem_new clock_new
 #define qelem_free clock_free
 #define qelem_set clock_set
+#define qelem_front clock_set
 #define qelem_unset clock_unset
 
 #define CRITON() 

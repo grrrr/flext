@@ -207,7 +207,8 @@ static Queue queue;
 #if FLEXT_QMODE == 2
 static flext::ThrCond qthrcond;
 #elif FLEXT_QMODE == 0
-static t_qelem *qclk = NULL;
+//static t_qelem *qclk = NULL;
+static t_clock *qclk = NULL;
 #endif
 
 
@@ -308,7 +309,8 @@ static void Trigger()
     #endif
 #elif FLEXT_SYS == FLEXT_SYS_MAX
     #if FLEXT_QMODE == 0
-        qelem_set(qclk); 
+//        qelem_front(qclk);
+        clock_delay(qclk,0);
     #endif
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
     #if FLEXT_QMODE == 0
@@ -344,7 +346,8 @@ void flext_base::StartQueue()
 #elif FLEXT_QMODE == 2
     LaunchThread(QWorker,NULL);
 #elif FLEXT_QMODE == 0 && (FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX)
-    qclk = (t_qelem *)(qelem_new(NULL,(t_method)QTick));
+//    qclk = (t_qelem *)(qelem_new(NULL,(t_method)QTick));
+    qclk = (t_clock *)(clock_new(NULL,(t_method)QTick));
 #else
 #error Not implemented!
 #endif

@@ -346,12 +346,8 @@ public:
 	*/
 	static const t_symbol *sym_pointer;
 
-#if FLEXT_SYS == FLEXT_SYS_PD
-	/*! \brief Symbol constant for "signal"
-		\note PD only
-	*/
+	//! Symbol constant for "signal"
 	static const t_symbol *sym_signal;
-#endif
 
     //! \note This is used in macros where the type of the arg is not clear
 	static const t_symbol *MakeSymbol(const t_symbol *s) { return s; }

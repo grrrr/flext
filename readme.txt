@@ -1,5 +1,4 @@
 flext - C++ layer for Max/MSP and pd (pure data) externals
-version 0.2.3
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -15,9 +14,11 @@ Donations for further development of the package are highly appreciated.
 Package files:
 - readme.txt: this one
 - gpl.txt,license.txt: GPL license stuff
+- flext.h: main include file
 - flstdc.h: Basic definitions in classic C - some common vocabulary for the different platforms
 - flbase.h,flbase.cpp: GEM-like C++ interface
-- flext.h,flext.cpp: actual base classes for message (flext_base) and dsp (flext_dsp) processing
+- flclass.h,flext.cpp: actual base classes for message (flext_base) and dsp (flext_dsp) processing
+- flinternals.h: internal definitions for flext library
 - flbuf.cpp: buffer object handling for base classes
 - fllib.cpp: code for handling external libraries in MaxMSP
 - fldefs.h: definitions for internal flext use
@@ -72,7 +73,7 @@ Version history:
 
 0.2.3:
 - restructured files and started usable inline documentation
-- found that there was no means to output a bang?! Ugh! -> corrected
+- found that there was no method to output a bang?! Ugh! -> corrected
 - finally eliminated awful t_flint type and all other schizophrenic flint functions (float and int exist now equally)
 - now (finally) using type t_sample for sample values (should just be identical to float)
 - added AddInBang/AddOutBang (same as Add*Symbol - unchecked)

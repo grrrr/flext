@@ -195,25 +195,25 @@ static NEW_CLASS *thisObject(void *c) { return (NEW_CLASS *)((flext_hdr *)c)->da
 // NO ARGUMENTS
 /////////////////////////////////////////////////
 #define FLEXT_NEW(NAME,NEW_CLASS)    	\
-    REAL_NEW(NAME,NEW_CLASS, _setup, _class)
+    REAL_NEW(NAME,NEW_CLASS, _setup)
 
 #define FLEXT_NEW_TILDE(NAME,NEW_CLASS)    \
-    REAL_NEW(NAME,NEW_CLASS, _tilde_setup, _class)
+    REAL_NEW(NAME,NEW_CLASS, _tilde_setup)
 
 //
 // ONE ARGUMENT
 /////////////////////////////////////////////////
 #define FLEXT_NEW_1(NAME,NEW_CLASS, TYPE)    \
-    REAL_NEW_1(NAME,NEW_CLASS, _setup, _class, TYPE)
+    REAL_NEW_1(NAME,NEW_CLASS, _setup, TYPE)
 
 #define FLEXT_NEW_TILDE_1(NAME,NEW_CLASS, TYPE)    \
-    REAL_NEW_1(NAME,NEW_CLASS, _tilde_setup, _class, TYPE)
+    REAL_NEW_1(NAME,NEW_CLASS, _tilde_setup, TYPE)
 
 //
 // GIMME ARGUMENT
 /////////////////////////////////////////////////
 #define FLEXT_NEW_G(NAME,NEW_CLASS)  	 \
-    REAL_NEW_G(NAME,NEW_CLASS, _setup, _class)
+    REAL_NEW_G(NAME,NEW_CLASS, _setup)
 
 #define FLEXT_NEW_TILDE_G(NAME,NEW_CLASS)  	 \
     REAL_NEW_G(NAME,NEW_CLASS, _tilde_setup, _class)
@@ -222,19 +222,19 @@ static NEW_CLASS *thisObject(void *c) { return (NEW_CLASS *)((flext_hdr *)c)->da
 // TWO ARGUMENTS
 /////////////////////////////////////////////////
 #define FLEXT_NEW_2(NAME,NEW_CLASS, TYPE, TTWO)	\
-    REAL_NEW_2(NAME,NEW_CLASS, _setup, _class, TYPE, TTWO)
+    REAL_NEW_2(NAME,NEW_CLASS, _setup, TYPE, TTWO)
 
 #define FLEXT_NEW_TILDE_2(NAME,NEW_CLASS, TYPE, TTWO)	\
-    REAL_NEW_2(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, TTWO)
+    REAL_NEW_2(NAME,NEW_CLASS, _tilde_setup, TYPE, TTWO)
 
 //
 // THREE ARGUMENTS
 /////////////////////////////////////////////////
 #define FLEXT_NEW_3(NAME,NEW_CLASS, TYPE, TTWO, TTHREE)	\
-    REAL_NEW_3(NAME,NEW_CLASS, _setup, _class, TYPE, TTWO, TTHREE)
+    REAL_NEW_3(NAME,NEW_CLASS, _setup, TYPE, TTWO, TTHREE)
 
 #define FLEXT_NEW_TILDE_3(NAME,NEW_CLASS, TYPE, TTWO, TTHREE)	\
-    REAL_NEW_3(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, TTWO, TTHREE)
+    REAL_NEW_3(NAME,NEW_CLASS, _tilde_setup, TYPE, TTWO, TTHREE)
 
 
 /*
@@ -298,11 +298,11 @@ static NEW_CLASS *thisObject(void *c) { return (NEW_CLASS *)((flext_hdr *)c)->da
 ///////////////////////////////////////////////////////////////////////////////
 // no args
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME)        \
-static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
-void * EXTERN_NAME ## NEW_CLASS ()                              \
+#define REAL_NEW(NAME,NEW_CLASS, SETUP_FUNCTION)        \
+static t_class * NEW_CLASS ## _class;    	    	    	\
+void * class_ ## NEW_CLASS ()                              \
 {     	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS;                                  \
@@ -313,24 +313,24 @@ extern "C" {	    	    	    	    	    	    	\
 FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 {					\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
-    NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
-    	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
-    	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
+    NEW_CLASS ## _class = FLEXT_NEWFN(                       \
+    	     	FLEXT_CLREF(NAME,NEW_CLASS ## _class), 	    	    	    	\
+    	    	(t_newmethod)class_ ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
     	     	A_NULL);                                        \
-    NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
+    NEW_CLASS::callb_setup(NEW_CLASS ## _class); \
 }   	    	    	    	    	    	    	    	\
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // one arg
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW_1(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, TYPE) \
-static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
-void * EXTERN_NAME ## NEW_CLASS (TYPE arg)                  \
+#define REAL_NEW_1(NAME,NEW_CLASS, SETUP_FUNCTION, TYPE) \
+static t_class * NEW_CLASS ## _class;    	    	    	\
+void * class_ ## NEW_CLASS (TYPE arg)                  \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS(arg);                             \
@@ -341,25 +341,25 @@ extern "C" {	    	    	    	    	    	    	\
 FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
-    NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
-    	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
-    	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
+    NEW_CLASS ## _class = FLEXT_NEWFN(                       \
+    	     	FLEXT_CLREF(NAME,NEW_CLASS ## _class), 	    	    	    	\
+    	    	(t_newmethod)class_ ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
     	     	FLEXTTP(TYPE),                                        \
     	     	A_NULL);      	    	    	    	    	\
-    NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
+    NEW_CLASS::callb_setup(NEW_CLASS ## _class); \
 }   	    	    	    	    	    	    	    	\
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // gimme arg
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW_G(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME) \
-static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
-void * EXTERN_NAME ## NEW_CLASS (t_symbol *, int argc, t_atom *argv) \
+#define REAL_NEW_G(NAME,NEW_CLASS, SETUP_FUNCTION) \
+static t_class * NEW_CLASS ## _class;    	    	    	\
+void * class_ ## NEW_CLASS (t_symbol *, int argc, t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS(argc, argv);                      \
@@ -370,25 +370,25 @@ extern "C" {	    	    	    	    	    	    	\
 FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
-    NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
-    	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
-    	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
+    NEW_CLASS ## _class = FLEXT_NEWFN(                       \
+    	     	FLEXT_CLREF(NAME,NEW_CLASS ## _class), 	    	    	    	\
+    	    	(t_newmethod)class_ ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
     	     	A_GIMME,                                        \
     	     	A_NULL);      	    	    	    	    	\
-    NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
+    NEW_CLASS::callb_setup(NEW_CLASS ## _class); \
 }   	    	    	    	    	    	    	    	\
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // two args
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW_2(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, ONE_TYPE, TWO_TYPE) \
-static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
-void * EXTERN_NAME ## NEW_CLASS (ONE_TYPE arg, TWO_TYPE argtwo) \
+#define REAL_NEW_2(NAME,NEW_CLASS, SETUP_FUNCTION, ONE_TYPE, TWO_TYPE) \
+static t_class * NEW_CLASS ## _class;    	    	    	\
+void * class_ ## NEW_CLASS (ONE_TYPE arg, TWO_TYPE argtwo) \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS(arg, argtwo);                     \
@@ -399,25 +399,25 @@ extern "C" {	    	    	    	    	    	    	\
 FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
-    NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
-    	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
-    	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
+    NEW_CLASS ## _class = FLEXT_NEWFN(                       \
+    	     	FLEXT_CLREF(NAME,NEW_CLASS ## _class), 	    	    	    	\
+    	    	(t_newmethod)class_ ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
     	     	FLEXTTP(ONE_TYPE), FLEXTTP(TWO_TYPE),                       \
     	     	A_NULL);      	    	    	    	    	\
-    NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
+    NEW_CLASS::callb_setup(NEW_CLASS ## _class); \
 }   	    	    	    	    	    	    	    	\
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // three args
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW_3(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, ONE_TYPE, TWO_TYPE, THREE_TYPE) \
-static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
-void * EXTERN_NAME ## NEW_CLASS (ONE_TYPE arg, TWO_TYPE argtwo, THREE_TYPE argthree) \
+#define REAL_NEW_3(NAME,NEW_CLASS, SETUP_FUNCTION, ONE_TYPE, TWO_TYPE, THREE_TYPE) \
+static t_class * NEW_CLASS ## _class;    	    	    	\
+void * class_ ## NEW_CLASS (ONE_TYPE arg, TWO_TYPE argtwo, THREE_TYPE argthree) \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS(arg, argtwo, argthree);           \
@@ -428,25 +428,25 @@ extern "C" {	    	    	    	    	    	    	\
 FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
-    NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
-    	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
-    	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
+    NEW_CLASS ## _class = FLEXT_NEWFN(                       \
+    	     	FLEXT_CLREF(NAME,NEW_CLASS ## _class), 	    	    	    	\
+    	    	(t_newmethod)class_ ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(flext_hdr), CLNEW_OPTIONS,                     \
     	     	FLEXTTP(ONE_TYPE),FLEXTTP(TWO_TYPE),FLEXTTP(THREE_TYPE),        \
     	     	A_NULL);      	    	    	    	    	\
-    NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
+    NEW_CLASS::callb_setup(NEW_CLASS ## _class); \
 }   	    	    	    	    	    	    	    	\
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // four args
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW_4(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, ONE_TYPE, TWO_TYPE, THREE_TYPE, FOUR_TYPE) \
-static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
-void * EXTERN_NAME ## NEW_CLASS (ONE_TYPE arg, TWO_TYPE argtwo, THREE_TYPE argthree, FOUR_TYPE argfour) \
+#define REAL_NEW_4(NAME,NEW_CLASS, SETUP_FUNCTION, ONE_TYPE, TWO_TYPE, THREE_TYPE, FOUR_TYPE) \
+static t_class * NEW_CLASS ## _class;    	    	    	\
+void * class_ ## NEW_CLASS (ONE_TYPE arg, TWO_TYPE argtwo, THREE_TYPE argthree, FOUR_TYPE argfour) \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS(arg, argtwo, argthree, argfour);  \
@@ -454,17 +454,17 @@ void * EXTERN_NAME ## NEW_CLASS (ONE_TYPE arg, TWO_TYPE argtwo, THREE_TYPE argth
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
-FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
+FLEXT_EXT void FLEXT_MAIN(class_ ## SETUP_FUNCTION)()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
-    NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
-    	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
-    	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
+    NEW_CLASS ## _class = FLEXT_NEWFN(                       \
+    	     	FLEXT_CLREF(NAME,NEW_CLASS ## _class), 	    	    	    	\
+    	    	(t_newmethod)class_ ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
     	     	FLEXTTP(ONE_TYPE),FLEXTTP(TWO_TYPE),FLEXTTP(THREE_TYPE),FLEXTTP(FOUR_TYPE), \
     	     	A_NULL);      	    	    	    	    	\
-    NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
+    NEW_CLASS::callb_setup(NEW_CLASS ## _class); \
 }   	    	    	    	    	    	    	    	\
 }
 

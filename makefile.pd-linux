@@ -12,21 +12,22 @@ NAME=flext
 # where to build
 TARGDIR=./pd-linux
 
-# where to install
-INSTDIR=/usr/lib/pd/flext  ### EDIT! ###
+# where to install ### EDIT! ###
+INSTDIR=/usr/lib/pd/flext
 
-# compiler+linker stuff
-INCLUDES=/usr/lib/pd/include ### EDIT! ###
+# compiler+linker stuff ### EDIT! ###
+INCLUDES=/usr/lib/pd/include
 FLAGS=-DPD
-CFLAGS=-O6 -mpentium -g
+CFLAGS=-O6 -mpentium -g 
 LIBS=
 
 # the rest can stay untouched
 # ----------------------------------------------
 
 # all the source files from the package
-SRCS=flbase.cpp flext.cpp flbuf.cpp
-HDRS=flstdc.h flbase.h fldefs.h flext.h
+SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp
+HDRS=flstdc.h flbase.h flext.h
+IHDRS=fldefs.h
 
 TARGET=$(TARGDIR)/$(NAME).a
 
@@ -35,7 +36,7 @@ all: $(TARGDIR) $(TARGET)
 $(TARGDIR):
 	mkdir $(TARGDIR)
 
-$(SRCS): $(HDRS)
+$(SRCS): $(HDRS) $(IHDRS)
 	touch $@
 
 $(TARGDIR)/%.o : %.cpp
@@ -48,13 +49,14 @@ $(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS))
 $(INSTDIR):
 	mkdir $(INSTDIR)
 
-install: $(INSTDIR)
+install:: $(INSTDIR)
 
-install: $(TARGET) $(HDRS)
-	cp $< $(INSTDIR)
-	chown root.root $(INSTDIR)/$<
+install:: $(TARGET) $(HDRS)
+	cp $^ $(INSTDIR)
+	chown root.root $(patsubst %,$(INSTDIR)/%,$(notdir $^))
 
 .PHONY: clean
 clean:
 	rm -f $(TARGDIR)/*.o $(TARGET)
 	
+

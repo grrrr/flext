@@ -635,7 +635,7 @@ V flext_base::add_meth_one(I inlet,const C *tag,methfun fun,metharg tp,...)
 	va_start(marker,tp);
 	I argc = 0;
 	metharg *args = NULL,arg = tp;
-	for(; arg != a_null; ++argc) arg = va_arg(marker,metharg);
+	for(; arg != a_null; ++argc) arg = (metharg)va_arg(marker,I); //metharg);
 	va_end(marker);
 	
 	if(argc > 0) {
@@ -658,7 +658,7 @@ V flext_base::add_meth_one(I inlet,const C *tag,methfun fun,metharg tp,...)
 			}
 #endif
 			args[ix] = a;
-			a = va_arg(marker,metharg);
+			a = (metharg)va_arg(marker,I); //metharg);
 		}
 		va_end(marker);
 	}
@@ -680,3 +680,4 @@ V flext_base::geta_string(const t_atom &a,C *buf,I szbuf)
 	else if(is_int(a)) sprintf(buf,"%i",get_int(a));
 #endif
 }  
+

@@ -24,26 +24,29 @@ Package files:
 - flcwmax.h: trivial prefix header file for Max/MSP CodeWarrior projects
 - flmspbuffer.h: MaxMSP's inofficial buffer.h included here for conveniance
 
+> for PD you need the pd source code (which is most likely part of the distribution)
+> for Max/MSP you will also need the Max/MSP SDK and http://www.sirius.com/~cycling/objects/index.sit 
 
 ----------------------------------------------------------------------------
 
 The package should at least compile (and is tested) with the following compilers:
 
-- pd - Windows:
+pd - Windows:
+-------------
 o Borland C++ 5.5 (free): edit & run "make -f makefile.bcc" 
-o Microsoft Visual C++ 6: use the "flext.dsp" project file  - you have to edit the pd path in the project properties/C-C++/preprocessor tab!
 
-- pd - linux:
+o Microsoft Visual C++ 6: use the "flext.dsp" project file  
+> you have to edit the pd path in the project properties/C-C++/preprocessor tab!
+
+pd - linux:
+-----------
 o GCC: edit & run "make -f makefile.pd-linux" and as root "make -f makefile.pd-linux install"
 
-- Max/MSP - MacOS:
+Max/MSP - MacOS:
+----------------
 o Metrowerks CodeWarrior V6: edit & use the "flext.cw" project file
+
 o Apple MPW-PR: edit & use the "flext.mpw" makefile
-
-
-for Max/MSP you will also need the Max/MSP SDK and http://www.sirius.com/~cycling/objects/index.sit 
-
-for PD you need the pd source code (which is most likely part of the distribution)
 
 ----------------------------------------------------------------------------
 
@@ -167,6 +170,7 @@ premature thoughts:
 - interface for supercollider, csound?
 - interface for VST, DX, ...?
 - interface for scripting language modules? (python?)
+
 
 
 

@@ -484,13 +484,13 @@ loopuu:
     }
     else
 #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VECTOROPS__)
-    {
+    if(true) {
    	    int n = cnt>>2,n4 = n<<2;
-        cnt -= n4;
 		vScopy(n4,(vector float *)src,(vector float *)dst);
-		src += n4,dst += n4;
+		cnt -= n4,src += n4,dst += n4;
        	while(cnt--) *(dst++) = *(src++); 
 	}
+	else
 #endif // _MSC_VER
 #endif // FLEXT_USE_SIMD
     {
@@ -693,9 +693,10 @@ loopu:
     }
     else
 #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VDSP__)
-    {
+    if(true) {
 		vsmul(src,1,&op,dst,1,cnt);
 	}
+	else
 #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__ALTIVEC__)
     if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(dst)) {
 		const vector float arg = LoadValue(op);
@@ -942,9 +943,10 @@ loopuu:
     }
     else
 #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VDSP__)
-    {
+    if(true) {
 		vmul(src,1,op,1,dst,1,cnt);
 	}
+	else
 #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__ALTIVEC__)
     if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(op) && IsVectorAligned(dst)) {
 	    const vector float zero = (vector float)(0);
@@ -1342,9 +1344,10 @@ void flext::AddSamples(t_sample *dst,const t_sample *src,const t_sample *op,int 
     }
     else
 #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VDSP__)
-    {
+    if(true) {
 		vadd(src,1,op,1,dst,1,cnt);
 	}
+	else
 #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__ALTIVEC__)
     if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(op) && IsVectorAligned(dst)) {
    	    int n = cnt>>4;

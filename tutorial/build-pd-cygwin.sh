@@ -1,1 +1,3 @@
-#!/bin/shmake -f makefile.pd-cygwin
+#!/bin/sh
+
+make -f makefile.pd-cygwin

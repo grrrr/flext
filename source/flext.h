@@ -86,7 +86,7 @@ public:
 		// dirty buffer content
 		// refr = true: forces immediate graphics refresh
 		void Dirty(bool refr = false);
-		bool IsDirty() const { return isdirty; }
+//		bool IsDirty() const { return isdirty; }
 		
 		// get symbol (or literal name) of buffer 
 		t_symbol *Symbol() const { return sym; }

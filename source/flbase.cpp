@@ -11,7 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // This is all derived from GEM by Mark Danks
  
 #include "flbase.h"
-#include <string.h>
+#include "flinternal.h"
 
 /////////////////////////////////////////////////////////
 //
@@ -29,7 +29,7 @@ const char *flext_obj::m_holdname;
 /////////////////////////////////////////////////////////
 flext_obj :: flext_obj()
            : x_obj(m_holder)
-		   , m_name(m_holdname)
+		   , m_name(fl_strdup(m_holdname))
 		   , init_ok(true)
 {
 #ifdef PD
@@ -45,7 +45,9 @@ flext_obj :: flext_obj()
 //
 /////////////////////////////////////////////////////////
 flext_obj :: ~flext_obj()
-{ }
+{ 
+	if(m_name) delete[] const_cast<char *>(m_name);
+}
 
 
 
@@ -90,33 +92,6 @@ void flext_obj::FreeAligned(void *blk)
 	freebytes(ori,bytes);
 }
 
-
-
-
-
-/////////////////////////////////////////////////////////
-// check if tilde object's name ends with a tilde
-//
-/////////////////////////////////////////////////////////
-
-
-#ifdef _DEBUG
-bool flext_obj::check_tilde(const char *objname)
-{
-//	int stplen = strlen(setupfun);
-	bool tilde = true; //!strncmp(setupfun,"_tilde",6);
-
-	if((objname[strlen(objname)-1] == '~'?1:0)^(tilde?1:0)) {
-		if(tilde) 
-			error("flext_obj::check_tilde: %s (no trailing ~) is defined as a tilde object",objname);
-		else
-			error("flext_obj::check_tilde: %s is no tilde object",objname);
-		return true;
-	} 
-	else
-		return false;
-}
-#endif
 
 
 

@@ -118,8 +118,6 @@ typedef struct clock t_clock;
 #define LOG5(s,v1,v2,v3,v4,v5) post(s,v1,v2,v3,v4,v5)
 
 
-#define ASSERT(b) ((void)(!(b)?(error("Assertion failed: " #b " - in " __FILE__ " line %i",(int)__LINE__),0):0)) 
-
 #else
 
 /*! If _LOG is not defined avoid logging */
@@ -129,8 +127,13 @@ typedef struct clock t_clock;
 #define LOG3(s,v1,v2,v3) ((void)0)
 #define LOG4(s,v1,v2,v3,v4) ((void)0)
 #define LOG5(s,v1,v2,v3,v4,v5) ((void)0)
-#define ASSERT(b) ((void)0)
 
+#endif
+
+#ifdef _DEBUG
+#define ASSERT(b) ((void)(!(b)?(error("Assertion failed: " #b " - in " __FILE__ " line %i",(int)__LINE__),0):0)) 
+#else
+#define ASSERT(b) ((void)0)
 #endif
 
 #define ERRINTERNAL() error("flext: Internal error in file " __FILE__ ", line %i - please report",(int)__LINE__)

@@ -959,6 +959,11 @@ public:
 		
 		static unsigned long GetSIMDCapabilities();
 
+
+        static void MulSamples(t_sample *dst,const t_sample *src,t_sample mul,int cnt);
+        static void AddSamples(t_sample *dst,const t_sample *src,t_sample add,int cnt);
+        static void ScaleSamples(t_sample *dst,const t_sample *src,t_sample mul,t_sample add,int cnt);
+
 //!		@} FLEXT_S_SIMD
 
 		

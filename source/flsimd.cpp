@@ -284,15 +284,14 @@ void flext::CopySamples(t_sample *dst,const t_sample *src,int cnt)
 #else
 #ifdef FLEXT_USE_SIMD
 #ifdef _MSC_VER
-#if 1  // t_sample is float
     if(GetSIMDCapabilities()&simd_sse) {
         // single precision
 
    	    int n = cnt>>4;
         cnt -= n<<4;
 
-        if((reinterpret_cast<unsigned long>(src)&(__alignof(t_sample)-1)) == 0
-            && (reinterpret_cast<unsigned long>(dst)&(__alignof(t_sample)-1)) == 0
+        if((reinterpret_cast<unsigned long>(src)&(__alignof(__m128)-1)) == 0
+            && (reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0
         ) {
             // aligned version
     	    while(n--) {
@@ -316,41 +315,6 @@ void flext::CopySamples(t_sample *dst,const t_sample *src,int cnt)
        	while(cnt--) *(dst++) = *(src++); 
     }
     else
-#elif 0  // t_sample is double
-    if(GetSIMDCapabilities()&simd_sse2) {
-        // double precision
-
-   	    int n = cnt>>3;
-        cnt -= n<<3;
-
-        if((reinterpret_cast<unsigned long>(src)&(__alignof(t_sample)-1)) == 0
-            && (reinterpret_cast<unsigned long>(dst)&(__alignof(t_sample)-1)) == 0
-        ) {
-            // aligned version
-    	    while(n--) {
-                _mm_store_pd(dst+0,_mm_load_pd(src+0));
-                _mm_store_pd(dst+2,_mm_load_pd(src+2));
-                _mm_store_pd(dst+4,_mm_load_pd(src+4));
-                _mm_store_pd(dst+6,_mm_load_pd(src+6));
-                src += 8,dst += 8;
-            }
-        }
-        else {
-            // unaligned version
-    	    while(n--) {
-                _mm_storeu_pd(dst+0,_mm_loadu_pd(src+0));
-                _mm_storeu_pd(dst+2,_mm_loadu_pd(src+2));
-                _mm_storeu_pd(dst+4,_mm_loadu_pd(src+4));
-                _mm_storeu_pd(dst+6,_mm_loadu_pd(src+6));
-                src += 8,dst += 8;
-            }
-        }
-       	while(cnt--) *(dst++) = *(src++); 
-    }
-    else
-#else
-    #error t_sample data type has illegal size
-#endif
 #elif FLEXT_OS == FLEXT_OS_MAC && defined(__VEC__) && defined(__VECTOROPS__)
 	{
    	    int n = cnt>>2,n4 = n<<2;
@@ -388,7 +352,6 @@ void flext::SetSamples(t_sample *dst,int cnt,t_sample s)
 #else
 #ifdef FLEXT_USE_SIMD
 #ifdef _MSC_VER
-#if 1  // t_sample is float
     if(GetSIMDCapabilities()&simd_sse) {
         // single precision
 
@@ -396,7 +359,7 @@ void flext::SetSamples(t_sample *dst,int cnt,t_sample s)
   	    int n = cnt>>4;
         cnt -= n<<4;
 
-        if((reinterpret_cast<unsigned long>(dst)&(__alignof(t_sample)-1)) == 0) {
+        if((reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0) {
             // aligned version
     	    while(n--) {
                 _mm_store_ps(dst+0,v);
@@ -419,40 +382,6 @@ void flext::SetSamples(t_sample *dst,int cnt,t_sample s)
       	while(cnt--) *(dst++) = s; 
     }
     else
-#elif 0  // t_sample is double
-    if(GetSIMDCapabilities()&simd_sse2) {
-        // double precision
-
-        __m128 v = _mm_load1_pd(&s);
-   	    int n = cnt>>3;
-        cnt -= n<<3;
-
-        if((reinterpret_cast<unsigned long>(dst)&(__alignof(t_sample)-1)) == 0) {
-            // aligned version
-            while(n--) {
-                _mm_store_pd(dst+0,v);
-                _mm_store_pd(dst+2,v);
-                _mm_store_pd(dst+4,v);
-                _mm_store_pd(dst+8,v);
-                dst += 8;
-            }
-        }
-        else {
-            // unaligned version
-    	    while(n--) {
-                _mm_storeu_pd(dst+0,v);
-                _mm_storeu_pd(dst+2,v);
-                _mm_storeu_pd(dst+4,v);
-                _mm_storeu_pd(dst+8,v);
-                dst += 8;
-            }
-        }
-       	while(cnt--) *(dst++) = s; 
-    }
-    else
-#else
-    #error t_sample data type has illegal size
-#endif
 #endif // _MSC_VER
 #endif // FLEXT_USE_SIMD
     {
@@ -467,3 +396,247 @@ void flext::SetSamples(t_sample *dst,int cnt,t_sample s)
     }
 #endif
 }
+
+
+void flext::MulSamples(t_sample *dst,const t_sample *src,t_sample mul,int cnt) 
+{
+#ifdef FLEXT_USE_IPP
+    if(sizeof(t_sample) == 4) {
+        ippsCopy_32f((const float *)src,(float *)dst,cnt); 
+        ippsMulC_32f_I((float)mul,(float *)dst,cnt); 
+    }
+    else if(sizeof(t_sample) == 8) {
+        ippsCopy_64f((const double *)src,(double *)dst,cnt); 
+        ippsMulC_64f_I((double)mul,(double *)dst,cnt); 
+    }
+    else
+        ERRINTERNAL();
+#else
+#ifdef FLEXT_USE_SIMD
+#ifdef _MSC_VER
+    if(GetSIMDCapabilities()&simd_sse) {
+        // single precision
+        __m128 a = _mm_load1_ps(&mul);
+
+   	    int n = cnt>>4;
+        cnt -= n<<4;
+
+        if((reinterpret_cast<unsigned long>(src)&(__alignof(__m128)-1)) == 0
+            && (reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0
+        ) {
+            // aligned version
+    	    while(n--) {
+                _mm_store_ps(dst+0,_mm_mul_ps(a,_mm_load_ps(src+0)));
+                _mm_store_ps(dst+4,_mm_mul_ps(a,_mm_load_ps(src+4)));
+                _mm_store_ps(dst+8,_mm_mul_ps(a,_mm_load_ps(src+8)));
+                _mm_store_ps(dst+12,_mm_mul_ps(a,_mm_load_ps(src+12)));
+                src += 16,dst += 16;
+            }
+        }
+        else {
+            // unaligned version
+    	    while(n--) {
+                _mm_storeu_ps(dst+0,_mm_mul_ps(a,_mm_loadu_ps(src+0)));
+                _mm_storeu_ps(dst+4,_mm_mul_ps(a,_mm_loadu_ps(src+4)));
+                _mm_storeu_ps(dst+8,_mm_mul_ps(a,_mm_loadu_ps(src+8)));
+                _mm_storeu_ps(dst+12,_mm_mul_ps(a,_mm_loadu_ps(src+12)));
+                src += 16,dst += 16;
+            }
+        }
+	    while(cnt--) *(dst++) = *(src++)*mul; 
+    }
+    else
+/*
+#elif FLEXT_OS == FLEXT_OS_MAC && defined(__VEC__) && defined(__VECTOROPS__)
+	{
+   	    int n = cnt>>2,n4 = n<<2;
+        cnt -= n4;
+		vScopy(n4,src,dst);
+		src += n4,dst += n4;
+       	while(cnt--) *(dst++) = *(src++); 
+	}
+*/
+#endif // _MSC_VER
+#endif // FLEXT_USE_SIMD
+    {
+	    int n = cnt>>3;
+	    cnt -= n<<3;
+	    while(n--) {
+		    dst[0] = src[0]*mul; 
+		    dst[1] = src[1]*mul; 
+		    dst[2] = src[2]*mul; 
+		    dst[3] = src[3]*mul; 
+		    dst[4] = src[4]*mul; 
+		    dst[5] = src[5]*mul; 
+		    dst[6] = src[6]*mul; 
+		    dst[7] = src[7]*mul; 
+		    src += 8,dst += 8;
+	    }
+	    while(cnt--) *(dst++) = *(src++)*mul; 
+    }
+#endif
+}
+
+
+void flext::AddSamples(t_sample *dst,const t_sample *src,t_sample add,int cnt) 
+{
+#ifdef FLEXT_USE_IPP
+    if(sizeof(t_sample) == 4) {
+        ippsCopy_32f((const float *)src,(float *)dst,cnt); 
+        ippsAddC_32f_I((float)mul,(float *)dst,cnt); 
+    }
+    else if(sizeof(t_sample) == 8) {
+        ippsCopy_64f((const double *)src,(double *)dst,cnt); 
+        ippsAddC_64f_I((double)mul,(double *)dst,cnt); 
+    }
+    else
+        ERRINTERNAL();
+#else
+#ifdef FLEXT_USE_SIMD
+#ifdef _MSC_VER
+    if(GetSIMDCapabilities()&simd_sse) {
+        // single precision
+        __m128 a = _mm_load1_ps(&add);
+
+   	    int n = cnt>>4;
+        cnt -= n<<4;
+
+        if((reinterpret_cast<unsigned long>(src)&(__alignof(__m128)-1)) == 0
+            && (reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0
+        ) {
+            // aligned version
+    	    while(n--) {
+                _mm_store_ps(dst+0,_mm_add_ps(a,_mm_load_ps(src+0)));
+                _mm_store_ps(dst+4,_mm_add_ps(a,_mm_load_ps(src+4)));
+                _mm_store_ps(dst+8,_mm_add_ps(a,_mm_load_ps(src+8)));
+                _mm_store_ps(dst+12,_mm_add_ps(a,_mm_load_ps(src+12)));
+                src += 16,dst += 16;
+            }
+        }
+        else {
+            // unaligned version
+    	    while(n--) {
+                _mm_storeu_ps(dst+0,_mm_add_ps(a,_mm_loadu_ps(src+0)));
+                _mm_storeu_ps(dst+4,_mm_add_ps(a,_mm_loadu_ps(src+4)));
+                _mm_storeu_ps(dst+8,_mm_add_ps(a,_mm_loadu_ps(src+8)));
+                _mm_storeu_ps(dst+12,_mm_add_ps(a,_mm_loadu_ps(src+12)));
+                src += 16,dst += 16;
+            }
+        }
+	    while(cnt--) *(dst++) = *(src++)+add; 
+    }
+    else
+/*
+#elif FLEXT_OS == FLEXT_OS_MAC && defined(__VEC__) && defined(__VECTOROPS__)
+	{
+   	    int n = cnt>>2,n4 = n<<2;
+        cnt -= n4;
+		vScopy(n4,src,dst);
+		src += n4,dst += n4;
+       	while(cnt--) *(dst++) = *(src++); 
+	}
+*/
+#endif // _MSC_VER
+#endif // FLEXT_USE_SIMD
+    {
+	    int n = cnt>>3;
+	    cnt -= n<<3;
+	    while(n--) {
+		    dst[0] = src[0]+add; 
+		    dst[1] = src[1]+add; 
+		    dst[2] = src[2]+add; 
+		    dst[3] = src[3]+add; 
+		    dst[4] = src[4]+add; 
+		    dst[5] = src[5]+add; 
+		    dst[6] = src[6]+add; 
+		    dst[7] = src[7]+add; 
+		    src += 8,dst += 8;
+	    }
+	    while(cnt--) *(dst++) = *(src++)+add; 
+    }
+#endif
+}
+
+
+void flext::ScaleSamples(t_sample *dst,const t_sample *src,t_sample mul,t_sample add,int cnt) 
+{
+#ifdef FLEXT_USE_IPP
+    if(sizeof(t_sample) == 4) {
+        ippsCopy_32f((const float *)src,(float *)dst,cnt); 
+        ippsMulC_32f_I((float)mul,(float *)dst,cnt); 
+        ippsAddC_32f_I((float)add,(float *)dst,cnt); 
+    }
+    else if(sizeof(t_sample) == 8) {
+        ippsCopy_64f((const double *)src,(double *)dst,cnt); 
+        ippsMulC_64f_I((double)mul,(double *)dst,cnt); 
+        ippsAddC_64f_I((double)add,(double *)dst,cnt); 
+    }
+    else
+        ERRINTERNAL();
+#else
+#ifdef FLEXT_USE_SIMD
+#ifdef _MSC_VER
+    if(GetSIMDCapabilities()&simd_sse) {
+        // single precision
+        __m128 a = _mm_load1_ps(&add);
+        __m128 m = _mm_load1_ps(&mul);
+
+   	    int n = cnt>>4;
+        cnt -= n<<4;
+
+        if((reinterpret_cast<unsigned long>(src)&(__alignof(__m128)-1)) == 0
+            && (reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0
+        ) {
+            // aligned version
+    	    while(n--) {
+                _mm_store_ps(dst+0,_mm_add_ps(a,_mm_mul_ps(m,_mm_load_ps(src+0))));
+                _mm_store_ps(dst+4,_mm_add_ps(a,_mm_mul_ps(m,_mm_load_ps(src+4))));
+                _mm_store_ps(dst+8,_mm_add_ps(a,_mm_mul_ps(m,_mm_load_ps(src+8))));
+                _mm_store_ps(dst+12,_mm_add_ps(a,_mm_mul_ps(m,_mm_load_ps(src+12))));
+                src += 16,dst += 16;
+            }
+        }
+        else {
+            // unaligned version
+    	    while(n--) {
+                _mm_storeu_ps(dst+0,_mm_add_ps(a,_mm_mul_ps(m,_mm_loadu_ps(src+0))));
+                _mm_storeu_ps(dst+4,_mm_add_ps(a,_mm_mul_ps(m,_mm_loadu_ps(src+4))));
+                _mm_storeu_ps(dst+8,_mm_add_ps(a,_mm_mul_ps(m,_mm_loadu_ps(src+8))));
+                _mm_storeu_ps(dst+12,_mm_add_ps(a,_mm_mul_ps(m,_mm_loadu_ps(src+12))));
+                src += 16,dst += 16;
+            }
+        }
+	    while(cnt--) *(dst++) = *(src++)*mul+add; 
+    }
+    else
+/*
+#elif FLEXT_OS == FLEXT_OS_MAC && defined(__VEC__) && defined(__VECTOROPS__)
+	{
+   	    int n = cnt>>2,n4 = n<<2;
+        cnt -= n4;
+		vScopy(n4,src,dst);
+		src += n4,dst += n4;
+       	while(cnt--) *(dst++) = *(src++); 
+	}
+*/
+#endif // _MSC_VER
+#endif // FLEXT_USE_SIMD
+    {
+	    int n = cnt>>3;
+	    cnt -= n<<3;
+	    while(n--) {
+		    dst[0] = src[0]*mul+add; 
+		    dst[1] = src[1]*mul+add; 
+		    dst[2] = src[2]*mul+add; 
+		    dst[3] = src[3]*mul+add; 
+		    dst[4] = src[4]*mul+add; 
+		    dst[5] = src[5]*mul+add; 
+		    dst[6] = src[6]*mul+add; 
+		    dst[7] = src[7]*mul+add; 
+		    src += 8,dst += 8;
+	    }
+	    while(cnt--) *(dst++) = *(src++)*mul+add; 
+    }
+#endif
+}
+

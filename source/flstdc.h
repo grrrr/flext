@@ -44,7 +44,7 @@ typedef t_float t_flint;
 #define A_FLINT A_FLOAT
 #define A_DEFFLINT A_DEFFLOAT
  
-#define atom_getflintarg atom_getfloatarg
+#define atom_getflintarg(ix,argc,argv) ((int)atom_getfloatarg(ix,argc,argv))
 #define atom_getsymarg atom_getsymbolarg
 #define SETFLINT(atom,value) SETFLOAT(atom,(float)(value))
 #define ISFLINT(atom) ISFLOAT(atom)

@@ -44,7 +44,7 @@ void flext_base::AddAttrib(itemarr *aa,itemarr *ma,const char *attr,metharg tp,m
 
 		// bind attribute to a method
 		methitem *mi = new methitem(0,asym,a);
-		mi->SetArgs(sfun,1,&tp);
+		mi->SetArgs(sfun,1,new metharg(tp));
 		ma->Add(mi);
 	}
 

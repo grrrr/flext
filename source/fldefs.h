@@ -425,8 +425,7 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 } 
 
 /*! \brief Set up a threaded method callback for an arbitrary data struct
-	\note Pointer of data struct is only borrowed ... no destruction is done
-	\note This can be done in the called method
+	\note Data is pure... no destructor is called upon delete
 */
 #define FLEXT_THREAD_X(M_FUN) \
 static void cb_ ## M_FUN(flext_base *c,void *data) {  \

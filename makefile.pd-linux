@@ -76,7 +76,7 @@ $(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(SRCS))
 .PHONY: clean install
 
 clean:
-	rm -f $(TARGDIR)/*.o $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
+	rm -f $(TARGDIR)/*.{o,do,to,tdo} $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
 	
 $(INSTDIR):
 	-mkdir $(INSTDIR)

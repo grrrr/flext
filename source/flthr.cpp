@@ -29,15 +29,22 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *methname)
 {
+	static bool init = false;
+	static pthread_attr_t attr;
 #ifdef _DEBUG
 	if(!p) {
 		ERRINTERNAL(); 
 		return false;
 	}
 #endif
+	if(!init) {
+		pthread_attr_init(&attr);
+		pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);
+		init = true;
+	}
 
 	pthread_t thrid; 
-	int ret = pthread_create (&thrid,NULL,(void *(*)(void *))meth,p);
+	int ret = pthread_create (&thrid,&attr,(void *(*)(void *))meth,p);
 	if(ret) { 
 		error((char *)(ret == EAGAIN?"%s - Unsufficient resources to launch thread!":"%s - Could not launch method!"),methname); 
 		delete p; 

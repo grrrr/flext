@@ -1,6 +1,6 @@
 /* 
 
-max-pd - compatibility library for Max/MSP and pd (pure data) externals
+max-pd - C++ compatibility layer for Max/MSP and pd (pure data) externals
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -23,7 +23,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define BIGLONG 0x7fffffffL
 
 #ifdef __MWERKS__
-#define MAX  // how to define in CodeWarrior IDE?
+#define MAXMSP  // how to define in CodeWarrior IDE?
 #endif
 
 #ifdef PD
@@ -73,7 +73,7 @@ typedef t_float t_flint;
 #define newout_symbol(clss) outlet_new(clss,&s_symbol)
 
 
-#elif defined(MAX)
+#elif defined(MAXMSP)
 
 extern "C"
 {

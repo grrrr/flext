@@ -1,6 +1,6 @@
 /* 
 
-max-pd - compatibility library for Max/MSP and pd (pure data) externals
+max-pd - C++ compatibility layer for Max/MSP and pd (pure data) externals
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -16,7 +16,7 @@ EXT_EXTERN void *operator new(size_t, void *location, void *) {return(location);
 
 #ifdef PD
 t_object *CPPExtern::m_holder;
-#elif defined(MAX)
+#elif defined(MAXMSP)
 t_pxobject *CPPExtern::m_holder;
 #endif
 

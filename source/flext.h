@@ -1,6 +1,6 @@
 /* 
 
-max-pd - compatibility library for Max/MSP and pd (pure data) externals
+max-pd - C++ compatibility layer for Max/MSP and pd (pure data) externals
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -27,7 +27,7 @@ public:
 	
 	virtual V m_help();
 	
-#ifdef MAX
+#ifdef MAXMSP
 	virtual V m_loadbang() {}
 	virtual V m_assist(L msg,L arg,C *s) = 0;
 #endif	
@@ -37,7 +37,7 @@ protected:
 private:
 	static V cb_help(V *c);
 
-#ifdef MAX
+#ifdef MAXMSP
 	static V cb_loadbang(V *c);
 	static V cb_assist(V *c,V *b,L msg,L arg,C *s);
 #endif
@@ -46,21 +46,35 @@ private:
 
 // ----------------------------
 
-class buf_obj:
-	public ext_obj
+class buffer
 {
-	CPPEXTERN_HEADER(buf_obj,ext_obj)
-	
 public:
-	buf_obj();
+	buffer(t_symbol *s = NULL);
+	~buffer();
 	
-protected:
-	virtual V setbuf(t_symbol *s = NULL);
-	virtual V setdirty();
+	BL Set(t_symbol *s = NULL);
+	V Dirty();
+	
+	t_symbol *Symbol() { return sym; }
+	const C *Name() const { return sym?sym->s_name:""; }
+	F *Data() { return data; }
+	I Channels() const { return chns; }
+	I Frames() const { return frames; }
 
-	t_symbol *bufname;
-	F *buf;
-	I bufchns,buflen;
+protected:
+	const C *thisName() const { return typeid(*this).name(); }
+
+	t_symbol *sym;
+	F *data;
+	I chns,frames;
+#ifdef PD
+	F interval;
+	BL isdirty,ticking;
+	t_clock *tick;
+#endif
+
+private:
+	static V cb_tick(buffer *b);
 };
 
 
@@ -87,28 +101,4 @@ private:
 };
 
 
-// ----------------------------
-
-class bufdsp_obj:
-	public buf_obj
-{
-	CPPEXTERN_HEADER(bufdsp_obj,buf_obj)
-	
-public:
-	bufdsp_obj();
-	
-	virtual V m_dsp(t_signal **s) = 0;
-	virtual V m_enable(BL on);
-	
-protected:
-	BL enable;
-
-private:
-
-	static V cb_dsp(V *c,t_signal **s);
-	static V cb_enable(V *c,FI on);
-};
-
-
 #endif
-

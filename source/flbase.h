@@ -1,6 +1,6 @@
 /* 
 
-max-pd - compatibility library for Max/MSP and pd (pure data) externals 
+max-pd - C++ compatibility layer for Max/MSP and pd (pure data) externals
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -15,6 +15,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __CPP_H
 
 #include <max-pd.h>
+#include <typeinfo.h>
 
 class CPPExtern;
 
@@ -114,7 +115,7 @@ class EXT_EXTERN CPPExtern
 #ifdef PD
 			((Obj_header *)classPtr)->defsig = def;
 			CLASS_MAINSIGNALIN(classPtr, Obj_header, defsig);
-#elif defined(MAX)
+#elif defined(MAXMSP)
 			dsp_initclass();
 #endif
 		}
@@ -137,7 +138,7 @@ EXT_EXTERN void *operator new(size_t, void *location, void *dummy);
 
 #define CPPEXTERN_HEADER(NEW_CLASS, PARENT_CLASS)    	    	\
 public:     	    	    \
-static const char *thisName() { return #NEW_CLASS; } 	    	\
+const char *thisName() const { return typeid(*this).name(); /*#return NEW_CLASS;*/ } 	    	\
 static void callb_free(void *data)    	    	    	\
 { CPPExtern *mydata = ((Obj_header *)data)->data; delete mydata; \
   ((Obj_header *)data)->Obj_header::~Obj_header(); }   	    	\
@@ -196,7 +197,7 @@ static void cb_setup(t_class *classPtr);
 #ifdef PD
 #define CPPEXTERN_NEWFN ::class_new
 #define CPPEXTERN_CLREF(NAME,CLASS) gensym(NAME)
-#elif defined(MAX)
+#elif defined(MAXMSP)
 #define CPPEXTERN_NEWFN NULL; ::setup
 #define CPPEXTERN_CLREF(NAME,CLASS) (t_messlist **)&(CLASS)
 #endif

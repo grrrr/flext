@@ -196,6 +196,7 @@ general:
 - check that SetupInOut is only called once
 - feed assist function with in/outlet description
 - MaxMSP: how to call separate help files for objects in a library?
+- PD: enable help files with path specifier (e.g. vasp/vasp_mul.pd)
 
 bugs:
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)

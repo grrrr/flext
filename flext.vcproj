@@ -124,7 +124,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="c:\programme\audio\pd-0.37\src,f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
+				AdditionalIncludeDirectories="c:\programme\audio\pd\src,f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_PD;FLEXT_THREADS;FLEXT_USE_SIMD"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -673,6 +673,116 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 			<Tool
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
+		<Configuration
+			Name="Max Threaded Debug|Win32"
+			OutputDirectory="max-msvc/td"
+			IntermediateDirectory="max-msvc/td"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				GlobalOptimizations="FALSE"
+				InlineFunctionExpansion="0"
+				FavorSizeOrSpeed="0"
+				EnableFiberSafeOptimizations="FALSE"
+				AdditionalIncludeDirectories="F:\prog\audio\MaxWinSDK\c74support\max-includes,F:\prog\audio\MaxWinSDK\c74support\msp-includes,f:\prog\packs\pthreads,f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_MAX;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_EXPORTS"
+				StringPooling="TRUE"
+				RuntimeLibrary="1"
+				StructMemberAlignment="2"
+				EnableEnhancedInstructionSet="1"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="flext.h"
+				BrowseInformation="1"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="max-msvc/flext_td.lib"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="3079"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Max Threaded Release|Win32"
+			OutputDirectory="max-msvc/tr"
+			IntermediateDirectory="max-msvc/tr"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="3"
+				GlobalOptimizations="FALSE"
+				InlineFunctionExpansion="2"
+				FavorSizeOrSpeed="0"
+				EnableFiberSafeOptimizations="FALSE"
+				AdditionalIncludeDirectories="F:\prog\audio\MaxWinSDK\c74support\max-includes,F:\prog\audio\MaxWinSDK\c74support\msp-includes,f:\prog\packs\pthreads,f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
+				PreprocessorDefinitions="WIN32;_LIB;FLEXT_SYS_MAX;FLEXT_USE_SIMD;FLEXT_EXPORTS;FLEXT_THREADS"
+				StringPooling="TRUE"
+				RuntimeLibrary="0"
+				EnableEnhancedInstructionSet="1"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="flext.h"
+				BrowseInformation="1"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="0"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="max-msvc/flext_t.lib"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="copy flext to maestra"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="3079"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -812,6 +922,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="source\flatom_app.cpp">
@@ -921,6 +1051,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1046,6 +1196,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="source\flatom_pr.cpp">
@@ -1155,6 +1325,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1276,6 +1466,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1407,6 +1617,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="source\flext.h">
@@ -1522,6 +1752,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1653,6 +1903,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -1766,6 +2036,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1894,6 +2184,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="source\flitem.cpp">
@@ -2003,6 +2313,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -2128,6 +2458,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="source\flmsg.cpp">
@@ -2237,6 +2587,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -2362,6 +2732,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="source\flproxy.cpp">
@@ -2471,6 +2861,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -2596,6 +3006,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="source\flxlet.cpp">
@@ -2705,6 +3135,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -2834,6 +3284,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="source\flmspbuffer.h">
@@ -2954,6 +3424,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="source\flsupport.cpp">
@@ -3063,6 +3553,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -3191,6 +3701,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="source\flutil.cpp">
@@ -3300,6 +3830,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -3421,6 +3971,26 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -3559,6 +4129,28 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="source\flsndobj.h">
@@ -3594,6 +4186,18 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Debug|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32"
 					ExcludedFromBuild="TRUE">
 					<Tool
 						Name="VCCustomBuildTool"/>
@@ -3725,6 +4329,28 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="source\flstk.h">
@@ -3760,6 +4386,18 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Debug|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Debug|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Max Threaded Release|Win32"
 					ExcludedFromBuild="TRUE">
 					<Tool
 						Name="VCCustomBuildTool"/>

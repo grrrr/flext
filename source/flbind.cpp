@@ -95,10 +95,15 @@ bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbo
         bindhead = new ItemCont;
     else {
         // Search for symbol
-        if(bindhead->Find(sym,0)) {
-            post("%s - Symbol already bound",thisName());
-            return false;
-        }
+        flext_base::BindItem *item = (flext_base::BindItem *)bindhead->Find(sym,0);
+
+        // go through all items with matching tag
+        for(; item && item->tag == sym; item = (flext_base::BindItem *)item->nxt) 
+            if(item->fun == fun) {
+                // function already registered -> bail out!
+                post("%s - Symbol already bound with this method",thisName());
+                return false;
+            }
     
     	if(bindhead->Count() > 20) {
   			// Hash it!
@@ -153,12 +158,14 @@ bool flext_base::UnbindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_sym
             }
         }
         else {
-            int sz = bindhead->Size();
+            // any tag
+
+            int sz = bindhead->Count();
             if(!sz) sz = 1;
 
             for(int i = 0; i < sz; ++i) {
                 for(it = (BindItem *)bindhead->GetItem(i); it; it = (BindItem *)it->nxt) {
-                    if(it->tag == sym && (!fun || it->fun == fun)) break;
+                    if(!fun || it->fun == fun) break;
                 }
                 if(it) break;
             }
@@ -172,11 +179,27 @@ bool flext_base::UnbindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_sym
     return ok;
 }
 
+bool flext_base::GetBoundMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbol *s,int argc,t_atom *argv,void *data),void *&data)
+{
+    if(bindhead) {
+        // Search for symbol
+        flext_base::BindItem *item = (flext_base::BindItem *)bindhead->Find(sym,0);
+
+        // go through all items with matching tag
+        for(; item && item->tag == sym; item = (flext_base::BindItem *)item->nxt) 
+            if(item->fun == fun) {
+                data = item->px->data;
+                return true;
+            }
+    }
+    return false;
+}
+
 bool flext_base::UnbindAll()
 {
 //	bool memleak = false;
 
-    int sz = bindhead->Size();
+    int sz = bindhead->Count();
     if(!sz) sz = 1;
 
     for(int i = 0; i < sz; ++i) {

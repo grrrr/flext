@@ -437,11 +437,20 @@ public:
         \return true on success
     */
 	bool UnbindMethod(const t_symbol *sym,bool (*meth)(flext_base *obj,t_symbol *sym,int argc,t_atom *argv,void *data) = NULL,void **data = NULL);
+    /*! \brief Get data of bound method of a symbol
+        \param sym Symbol to bind to
+        \param meth Function to bind
+        \param data Reference to returned user data
+        \return true on success (symbol/method combination was found)
+    */
+	bool GetBoundMethod(const t_symbol *sym,bool (*meth)(flext_base *obj,t_symbol *sym,int argc,t_atom *argv,void *data),void *&data);
 
     //! \brief Bind a method to a symbol (as string)
     bool BindMethod(const char *sym,bool (*meth)(flext_base *obj,t_symbol *sym,int argc,t_atom *argv,void *data),void *data = NULL) { return BindMethod(MakeSymbol(sym),meth,data); }
     //! \brief Unbind a method from a symbol (as string)
     bool UnbindMethod(const char *sym,bool (*meth)(flext_base *obj,t_symbol *sym,int argc,t_atom *argv,void *data) = NULL,void **data = NULL) { return UnbindMethod(MakeSymbol(sym),meth,data); }
+    //! \brief Get data of bound method of a symbol (as string)
+    bool GetBoundMethod(const char *sym,bool (*meth)(flext_base *obj,t_symbol *sym,int argc,t_atom *argv,void *data),void *&data) { return GetBoundMethod(MakeSymbol(sym),meth,data); }
 
 	/*! Unbind all symbol bindings
 		\note Memory associated to data pointers passed by BindMethod will not be freed!

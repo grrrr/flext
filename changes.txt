@@ -20,6 +20,7 @@ Version history:
 - added flext_base::ToSelf* methods for queued (deferred) self messaging
 - deleted flext::buffer console outputs for undefined arrays/buffer~s: should be done by externals
 - a few changes for the flext shared library
+- tiny update for PD 0.37 header usage
 
 0.4.3:
 - added forgotten flext_base::ToQueueString method

@@ -36,9 +36,17 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 extern "C" {	    	    	    
 	// Include the relevant PD header files
 	#ifdef FLEXT_DEBUG
-		#include <m_imp.h>  // for easier debugging
-	#else
-		#include <m_pd.h>
+        /*  PD header file structure has changed with version 0.37
+            from then on m_imp.h needs m_pd.h to be included before
+            on the other hand versions < 0.37 don't like that....
+            (they want m_imp.h solely)
+            So better use the m_pd.h here also for the debug version.
+            Change that if really needed for debugging PD internals...
+        */
+        #include <m_pd.h>
+//		#include <m_imp.h>  // for easier debugging
+    #else
+		#include <m_pd.h>  // for easier debugging
 	#endif
 }
 
@@ -165,7 +173,7 @@ typedef t_symbol *t_symptr;
 
 #ifdef FLEXT_LOGGING
 
-/* If _LOG is defined implement logging */
+/* If FLEXT_LOGGING is defined implement logging */
 #define FLEXT_LOG(s) post(s)
 #define FLEXT_LOG1(s,v1) post(s,v1)
 #define FLEXT_LOG2(s,v1,v2) post(s,v1,v2)
@@ -176,7 +184,7 @@ typedef t_symbol *t_symptr;
 
 #else
 
-/* If _LOG is not defined avoid logging */
+/* If FLEXT_LOGGING is not defined avoid logging */
 #define FLEXT_LOG(s) ((void)0)
 #define FLEXT_LOG1(s,v1) ((void)0)
 #define FLEXT_LOG2(s,v1,v2) ((void)0)

@@ -199,7 +199,11 @@ typedef t_symbol *t_symptr;
 
 #ifdef _MSC_VER
 	#ifdef FLEXT_SHARED
-		#define FLEXT_SHARE __declspec(dllexport)
+        #ifdef FLEXT_DLL
+		    #define FLEXT_SHARE __declspec(dllexport)
+        #else
+		    #define FLEXT_SHARE __declspec(dllimport)
+        #endif
 	#else
 		#define FLEXT_SHARE
 	#endif

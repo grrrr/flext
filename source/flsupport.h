@@ -572,7 +572,7 @@ public:
 
 	/*! \brief Get system thread id
 	*/
-	static thrid_t GetSysThreadId() { return thrid; }
+	static thrid_t GetSysThreadId();
 	
 	//! Check if current thread is the realtime system's thread
 	static bool IsThread(thrid_t t,thrid_t ref = GetThreadId()) { 
@@ -940,7 +940,7 @@ public:
 			simd_altivec = 0x10
 		};
 		
-		static unsigned long GetSIMDCapabilities() { return simdcaps; }
+		static unsigned long GetSIMDCapabilities();
 
 //!		@} FLEXT_S_SIMD
 

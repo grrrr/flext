@@ -34,6 +34,9 @@ static unsigned long setsimdcaps();
 */
 unsigned long flext::simdcaps = setsimdcaps();
 
+unsigned long flext::GetSIMDCapabilities() { return simdcaps; }
+
+
 
 #if FLEXT_CPU == FLEXT_CPU_INTEL
 

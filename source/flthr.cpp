@@ -39,6 +39,9 @@ static bool thrhelpexit = false;
 static flext::ThrCond *thrhelpcond = NULL;
 
 
+flext::thrid_t flext::GetSysThreadId() { return thrid; }
+
+
 //! Start helper thread
 bool flext::StartHelper()
 {

@@ -31,6 +31,11 @@ CFLAGS_S=-DFLEXT_SHARED -DFLEXT_EXPORTS
 # flags for shared linking
 LSHFLAGS= -dylib -dynamic -flat_namespace -undefined suppress
 
+ifdef $(INSTDIR)
+LSHFLAGS_R=-dylib_install_name $(INSTDIR)/libflext.dylib
+LSHFLAGS_D=-dylib_install_name $(INSTDIR)/libflext_d.dylib
+endif
+
 # frameworks
 #FRAMEWORKS=Carbon veclib
 
@@ -59,7 +64,7 @@ HDRS+=$(HDRS_STK)
 endif
 
 
-MAKEFILE=makefile.pd-darwin
+MAKEFILE=#makefile.pd-darwin
 
 TARGET=$(TARGDIR)/lib$(NAME).a
 TARGET_D=$(TARGDIR)/lib$(NAME)_d.a
@@ -108,10 +113,10 @@ $(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(SRCS))
 	libtool -static -o $@ $^
 
 $(TARGET_S) : $(patsubst %.cpp,$(TARGDIR)/%.so,$(SRCS))
-	ld $(LSHFLAGS) -o $@ $^ -ldylib1.o -lgcc -lstdc++ $(patsubst %,-framework %,$(FRAMEWORKS)) 
+	ld $(LSHFLAGS) $(LSHFLAGS_R) -o $@ $^ -ldylib1.o -lgcc -lstdc++ $(patsubst %,-framework %,$(FRAMEWORKS)) 
 
 $(TARGET_SD) : $(patsubst %.cpp,$(TARGDIR)/%.sdo,$(SRCS))
-	ld $(LSHFLAGS) -o $@ $^ -ldylib1.o -lgcc -lstdc++ $(patsubst %,-framework %,$(FRAMEWORKS)) 
+	ld $(LSHFLAGS) $(LSHFLAGS_D) -o $@ $^ -ldylib1.o -lgcc -lstdc++ $(patsubst %,-framework %,$(FRAMEWORKS)) 
 
 .PHONY: clean install
 

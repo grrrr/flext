@@ -25,4 +25,9 @@ INSTDIR=/usr/local/lib/pd/flext
 
 # additional compiler flags
 # (check if they fit for your system!)
-UFLAGS=-DFLEXT_USE_SIMD -malign-power -maltivec -faltivec
+UFLAGS=-DFLEXT_USE_SIMD -maltivec -faltivec
+
+
+
+
+

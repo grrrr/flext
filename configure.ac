@@ -7,7 +7,7 @@ dnl flext API version (current:release:age)
 API_VERSION=0:0:0
 
 AC_INIT([flext],[0.4.7],[gr@grrrr.org],[flext])
-AM_INIT_AUTOMAKE(1.8)
+AM_INIT_AUTOMAKE(1.6)
 
 
 dnl configure options

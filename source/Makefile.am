@@ -32,7 +32,7 @@ SRCS_FLEXT = \
 	flqueue.cpp \
 	flbind.cpp
 
-pkginclude_HEADERS = \
+HDRS_FLEXT = \
 	flprefix.h \
 	flstdc.h \
 	flbase.h \
@@ -56,30 +56,26 @@ pkginclude_HEADERS = \
 
 
 #handling for stk / sndobj
-SRCS_STK = flstk.cpp
-HDRS_STK = flstk.h
-
+if SNDOBJ
 SRCS_SNDOBJ = flsndobj.cpp
 HDRS_SNDOBJ = flsndobj.h
-
-if SNDOBJ
-SRCS_FLEXT         += $(SRCS_SNDOBJ)
-pkginclude_HEADERS += $(HDRS_SNDOBJ)
-LIB_SNDOBJ         = -lsndobj
+LIB_SNDOBJ  = -lsndobj
 endif
 
 if STK
-SRCS_FLEXT         += $(SRCS_STK)
-pkginclude_HEADERS += $(HDRS_STK)
-LIB_STK            =  -lstk
+SRCS_STK = flstk.cpp
+HDRS_STK = flstk.h
+LIB_STK  =  -lstk
 endif
 
-libflext_a_SOURCES    = $(SRCS_FLEXT)
-libflext_d_a_SOURCES  = $(SRCS_FLEXT)
-libflext_t_a_SOURCES  = $(SRCS_FLEXT)
-libflext_td_a_SOURCES = $(SRCS_FLEXT)
-libflext_la_SOURCES   = $(SRCS_FLEXT)
-libflext_d_la_SOURCES = $(SRCS_FLEXT)
+pkginclude_HEADERS = $(HDRS_FLEXT) $(HDRS_SNDOBJ) $(HDRS_STK)
+
+libflext_a_SOURCES    = $(SRCS_FLEXT) $(SRCS_SNDOBJ) $(SRCS_STK)
+libflext_d_a_SOURCES  = $(SRCS_FLEXT) $(SRCS_SNDOBJ) $(SRCS_STK)
+libflext_t_a_SOURCES  = $(SRCS_FLEXT) $(SRCS_SNDOBJ) $(SRCS_STK)
+libflext_td_a_SOURCES = $(SRCS_FLEXT) $(SRCS_SNDOBJ) $(SRCS_STK)
+libflext_la_SOURCES   = $(SRCS_FLEXT) $(SRCS_SNDOBJ) $(SRCS_STK)
+libflext_d_la_SOURCES = $(SRCS_FLEXT) $(SRCS_SNDOBJ) $(SRCS_STK)
 
 libflext_a_CXXFLAGS    = @OPT_FLAGS@ @INCLUDEDIR@ 
 libflext_d_a_CXXFLAGS  = @INCLUDEDIR@ -g -DFLEXT_DEBUG

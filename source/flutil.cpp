@@ -51,6 +51,6 @@ void flext_base::Sleep(float s)
 		YieldToAnyThread(); // should we really yield?
 	}
 #else
-#message ("Sleep not defined")
+#pragma message("Sleep not defined")
 #endif
 }

@@ -48,17 +48,7 @@ flext_dsp::FLEXT_CLASSDEF(flext_dsp)():
 #else
     srate(sys_getsr()),blksz(sys_getblksize()),
 #endif
-#if FLEXT_SYS == FLEXT_SYS_PD
-    chnsin(sys_get_inchannels()),
-    chnsout(sys_get_outchannels()),
-#elif FLEXT_SYS == FLEXT_SYS_MAX
     chnsin(0),chnsout(0),
-#elif FLEXT_SYS == FLEXT_SYS_JMAX
-    #pragma message("not implemented")
-    chnsin(0),chnsout(0),
-#else
-#error
-#endif
 #if FLEXT_SYS != FLEXT_SYS_MAX
     dspon(true),
 #endif
@@ -75,6 +65,9 @@ flext_dsp::~FLEXT_CLASSDEF(flext_dsp)()
 #if FLEXT_SYS == FLEXT_SYS_JMAX
     fts_dsp_object_delete(thisHdr());
 #endif
+
+    if(invecs) delete[] invecs;
+    if(outvecs) delete[] outvecs;
 
 /*
 #if FLEXT_SYS == FLEXT_SYS_MAX
@@ -138,18 +131,6 @@ void flext_dsp::cb_dsp(t_class *c,t_signal **sp)
     obj->blksz = sp[0]->s_n;  // is this guaranteed to be the same as sys_getblksize() ?
 #endif
 
-/*
-#if FLEXT_SYS == FLEXT_SYS_PD
-    obj->chnsin = sys_get_inchannels();
-    obj->chnsout = sys_get_outchannels();
-#elif FLEXT_SYS == FLEXT_SYS_MAX
-    obj->chnsin = obj->chnsout = sys_getch();
-#elif FLEXT_SYS == FLEXT_SYS_JMAX
-    #pragma message ("How to query the channels?")
-#else
-#error
-#endif
-*/
     // store in and out signal vectors
     int i;
     int in = obj->chnsin = obj->CntInSig();

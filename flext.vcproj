@@ -811,6 +811,9 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				RelativePath="make-files.txt">
 			</File>
 			<File
+				RelativePath=".\notes.txt">
+			</File>
+			<File
 				RelativePath="readme.txt">
 			</File>
 		</Filter>

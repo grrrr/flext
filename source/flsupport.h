@@ -296,12 +296,7 @@ public:
 	//! Compare two atoms
 	static int CmpAtom(const t_atom &a,const t_atom &b);
 
-	static bool operator ==(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) == 0; }
-	static bool operator !=(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) != 0; }
-	static bool operator <(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) < 0; }
-	static bool operator <=(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) <= 0; }
-	static bool operator >(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) > 0; }
-	static bool operator >=(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) >= 0; }
+	// there are some more comparison functions for t_atom types outside the class
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
 	//! Set atom from another atom
@@ -817,6 +812,7 @@ public:
 			\param ftime Wait time in seconds
 			\ret 0 = signalled, 1 = timed out 
 			\remark If ftime = 0 this may suck away your cpu if used in a signalled loop.
+			\remark The time resolution of the implementation is required to be at least ms.
 		*/
 		bool TimedWait(double ftime) 
 		{ 
@@ -831,7 +827,7 @@ public:
 			clock_gettime(CLOCK_REALTIME,tm);
 	#else
 			struct timeval tp;
-			rs = gettimeofday(&tp, NULL);
+			gettimeofday(&tp, NULL);
 			tm.tv_nsec = tp.tv_usec*1000;
 			tm.tv_sec = tp.tv_sec;
 	#endif
@@ -1049,5 +1045,16 @@ protected:
 
 	static unsigned long simdcaps;
 };
+
+
+// gcc doesn't like these to be included into the flext class (even if static)
+inline bool operator ==(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) == 0; }
+inline bool operator !=(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) != 0; }
+inline bool operator <(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) < 0; }
+inline bool operator <=(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) <= 0; }
+inline bool operator >(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) > 0; }
+inline bool operator >=(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) >= 0; }
+
+
 
 #endif

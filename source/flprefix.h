@@ -334,4 +334,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	#endif
 #endif
 
+// std namespace
+#ifdef __MWERKS__
+#define STD std
+#else
+#define STD
+#endif
+
+
 #endif // __FLEXT_PREFIX_H

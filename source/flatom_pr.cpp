@@ -18,12 +18,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <string.h>
 #include <stdio.h>
 
-#ifdef __MWERKS__
-#define STD std
-#else
-#define STD
-#endif
-
 void flext::PrintAtom(const t_atom &a,char *buf,int bufsz)
 {
     GetAString(a,buf,bufsz?bufsz:100000);

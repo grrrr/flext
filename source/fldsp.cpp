@@ -184,7 +184,11 @@ void flext_dsp::cb_dsp_delete(fts_object_t *c, int winlet, fts_symbol_t *s, int 
 
 void flext_dsp::m_dsp(int /*n*/,t_signalvec const * /*insigs*/,t_signalvec const * /*outsigs*/) {}
 
-bool flext_dsp::CbDsp() { m_dsp(Blocksize(),invecs,outvecs); return true; }
+bool flext_dsp::CbDsp() 
+{ 
+    m_dsp(Blocksize(),invecs,outvecs); 
+    return true;
+}
 
 void flext_dsp::m_signal(int n,t_sample *const * /*insigs*/,t_sample *const *outs) 
 {

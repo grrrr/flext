@@ -10,7 +10,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <flext.h>
 
-#ifdef PROXYIN
 // === proxy class for flext_base ============================
 
 #ifdef PD
@@ -78,7 +77,7 @@ V flext_base::cb_px_bang(V *c)
 
 #endif
 
-#endif
+
 
 // === flext_base ============================================
 
@@ -89,10 +88,7 @@ flext_base::flext_base():
 	inlist(NULL),outlist(NULL),
 	incnt(0),outcnt(0),
 	insigs(0),outsigs(0),
-	outlets(NULL)
-#ifdef PROXYIN
-	,inlets(NULL)
-#endif
+	outlets(NULL),inlets(NULL)
 {}
 
 flext_base::~flext_base()
@@ -101,7 +97,6 @@ flext_base::~flext_base()
 	if(outlist) delete outlist;
 	if(outlets) delete[] outlets;
 
-#ifdef PROXYIN
 	if(inlets) {
 		for(I ix = 0; ix < incnt; ++ix)
 			if(inlets[ix]) {
@@ -113,7 +108,6 @@ flext_base::~flext_base()
 			}
 		delete[] inlets;
 	}
-#endif
 }
 
 flext_base::xlet::~xlet() { if(nxt) delete nxt; }
@@ -134,7 +128,6 @@ BL flext_base::setup_inout()
 	
 	incnt = insigs = 0; 
 
-#ifdef PROXYIN
 	if(inlets) { 
 		for(I ix = 0; ix < incnt; ++ix) 
 			if(inlets[ix]) {
@@ -147,7 +140,6 @@ BL flext_base::setup_inout()
 		delete[] inlets; 
 		inlets = NULL; 
 	}
-#endif
 
 	if(inlist) {
 		xlet *xi;
@@ -158,98 +150,9 @@ BL flext_base::setup_inout()
 		for(xi = inlist,i = 0; xi; xi = xi->nxt,++i) list[i] = xi->tp;
 		delete inlist; inlist = NULL;
 		
-#ifdef PROXYIN
 		inlets = new px_object *[incnt];
 		for(i = 0; i < incnt; ++i) inlets[i] = NULL;
 		
-#ifdef PD
-		{
-			I ix;
-			if(incnt == 0) {
-				;
-			}
-			else if(incnt >= 1) {
-				switch(list[0]) {
-					case xlet::tp_def:
-						break;
-					case xlet::tp_sig:
-						++insigs;
-						break;
-					default:
-						error("%s: Leftmost inlet must be of type default or signal",thisName());
-						ok = false;
-				} 
-			}		
-			for(ix = 1; ix < incnt; ++ix) {
-				switch(list[ix]) {
-					case xlet::tp_float:
-					case xlet::tp_flint: 
-					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
-						inlet_new(x_obj,&inlets[ix]->x_obj.ob_pd, &s_float, &s_float);  
-						break;
-					case xlet::tp_sym: 
-					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
-						inlet_new(x_obj,&inlets[ix]->x_obj.ob_pd, &s_symbol, &s_symbol);  
-						break;
-					case xlet::tp_any:
-					case xlet::tp_list:
-					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
-						inlet_new(x_obj,&inlets[ix]->x_obj.ob_pd, 0, 0);  // create proxy inlet 
-						break;
-					case xlet::tp_sig:
-	    				inlet_new(x_obj, &x_obj->ob_pd, &s_signal, &s_signal);  
-						++insigs;
-						break;
-					default:
-						error("%s: Wrong type for inlet #%i",thisName(),ix);
-						ok = false;
-				} 
-			}
-		}
-#elif defined(MAXMSP)
-		{
-			I ix;
-			// count leftmost signal inlets
-			while(insigs < incnt && list[insigs] == xlet::tp_sig) ++insigs;
-			
-			for(ix = incnt-1; ix >= insigs; --ix) {
-				switch(list[ix]) {
-					case xlet::tp_float:
-						inlets[ix] = (px_object *)proxy_new(x_obj,ix,&((flext_hdr *)x_obj)->curinlet);  // proxy for 2nd inlet messages 
-						break;
-					case xlet::tp_flint:
-						inlets[ix] = (px_object *)proxy_new(x_obj,ix,&((flext_hdr *)x_obj)->curinlet);  // proxy for 2nd inlet messages 
-						break;
-					case xlet::tp_sym:
-					case xlet::tp_any:
-					case xlet::tp_list:
-						inlets[ix] = (px_object *)proxy_new(x_obj,ix,&((flext_hdr *)x_obj)->curinlet);  // proxy for 2nd inlet messages 
-						break;
-					case xlet::tp_sig:
-						error("%s: All signal inlets must be at the left side",thisName());
-						ok = false;
-						break;
-					default:
-						error("%s: Wrong type for inlet #%i",thisName(),ix);
-						ok = false;
-				}
-				 
-			}
-			
-			if(insigs) {
-				dsp_setup(x_obj,insigs); // signal inlets	
-			}
-			else {
-				if(incnt && list[0] != xlet::tp_def) {
-					error("%s: Leftmost inlet must be of type signal or default",thisName());
-					ok = false;
-				}
-			}
-		}
-#endif
-
-#else // PROXYIN
-
 		// type info is now in list array
 #ifdef PD
 		{
@@ -289,6 +192,7 @@ BL flext_base::setup_inout()
 						break;
 					}
 					case xlet::tp_sym: 
+						// is this still true for proxy inlets?
 						if(compatibility) {
 							post("%s: No symbol inlets (apart from leftmost) in compatibility mode",thisName());
 							ok = false;
@@ -300,6 +204,10 @@ BL flext_base::setup_inout()
 	    				inlet_new(x_obj, &x_obj->ob_pd, &s_signal, &s_signal);  
 						++insigs;
 						break;
+					case xlet::tp_list:
+					case xlet::tp_any:
+					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
+						inlet_new(x_obj,&inlets[ix]->x_obj.ob_pd, &s_symbol, &s_symbol);  
 					default:
 						error("%s: Wrong type for inlet #%i",thisName(),ix);
 						ok = false;
@@ -334,6 +242,11 @@ BL flext_base::setup_inout()
 						error("%s: All signal inlets must be at the left side",thisName());
 						ok = false;
 						break;
+					case xlet::tp_sym:
+					case xlet::tp_any:
+					case xlet::tp_list:
+						inlets[ix] = (px_object *)proxy_new(x_obj,ix,&((flext_hdr *)x_obj)->curinlet);  
+						break;
 					default:
 						error("%s: Wrong type for inlet #%i",thisName(),ix);
 						ok = false;
@@ -352,7 +265,6 @@ BL flext_base::setup_inout()
 		}
 #endif
 
-#endif // PROXYIN
 		delete[] list;
 	}
 	
@@ -419,7 +331,6 @@ V flext_base::cb_setup(t_class *c)
 	add_assist(c,cb_assist);
 #endif
 
-#ifdef PROXYIN
 	// proxy for extra inlets
 #ifdef PD
 	add_anything(c,cb_px_anything); // for leftmost inlet
@@ -428,9 +339,8 @@ V flext_base::cb_setup(t_class *c)
 #elif defined(MAXMSP) 
 	add_anything(c,cb_px_anything);
 	add_bang(c,cb_px_bang);
-	add_method1(c,cb_px_int,"int",A_INT);
-	add_method1(c,cb_px_float,"float",A_FLOAT);
-#endif
+	add_method1(c,cb_px_int,"int",A_INT);  // does this interfere with other int inlets
+	add_method1(c,cb_px_float,"float",A_FLOAT);  // does this interfere with other float inlets
 #endif
 }
 
@@ -447,10 +357,30 @@ V flext_base::m_help()
 	post("%s (using flext) - compiled on %s %s",thisName(),__DATE__,__TIME__);
 }
 
-
-#ifdef PROXYIN
 V flext_base::m_methodmain(I inlet,t_symbol *s,I argc,t_atom *argv)
 {
+
+
+#if 0 // future
+	std::list<method>::const_iterator it(mlst.begin());
+	for(;;) {
+		const method &m = *it;
+		if(m.tag == s) {
+			// tag fits
+			post("found method tag %s",m.tag->s_name);
+		} 
+		if(it == mlst.end()) break;
+		else ++it;
+	}
+#endif
+}
+
+
+#if 0 // future
+V flext_base::add_meth(const C *tag,V (flext_base::*m)())
+{
+	method meth(gensym(const_cast<C *>(tag)));
+	mlst.push_back(meth);
 }
 #endif
 

@@ -53,7 +53,7 @@ struct FLEXT_EXT flext_hdr
 		float defsig;			// float signal holder for pd
 #endif
 
-#if defined(MAXMSP) && defined(PROXYIN)
+#if defined(MAXMSP) 
 		long curinlet;      // current inlet used by proxy objects
 #endif
 
@@ -152,6 +152,7 @@ inline void *operator new(size_t, void *location, void *) { return location; }
 
 #define FLEXT_HEADER(NEW_CLASS, PARENT_CLASS)    	    	\
 public:     	    	    \
+typedef NEW_CLASS thisType;  \
 static void callb_free(void *data)    	    	    	\
 { flext_obj *mydata = ((flext_hdr *)data)->data; delete mydata; \
   ((flext_hdr *)data)->flext_hdr::~flext_hdr(); }   	    	\
@@ -276,17 +277,12 @@ static void cb_setup(t_class *classPtr);
 #define FLEXT_MAIN(MAINNAME) MAINNAME
 #define CLNEW_OPTIONS 0  // flags for class creation
 #elif defined(MAXMSP)
-#define FLEXT_NEWFN NULL; ::setup    // very bad!!! I hope Mark Danks doesn't see that......
+#define FLEXT_NEWFN NULL; ::setup    // extremely ugly!!! I hope Mark Danks doesn't see that......
 #define FLEXT_CLREF(NAME,CLASS) (t_messlist **)&(CLASS)
 #define FLEXT_MAIN(MAINNAME) main
 #define CLNEW_OPTIONS 0  // flags for class creation
 #endif
 
-#ifdef PROXYIN
-#define DEF_CALLB(CLASS) void CLASS::cb_setup(t_class *) {}
-#else
-#define DEF_CALLB(CLASS) 
-#endif
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -300,7 +296,6 @@ static void cb_setup(t_class *classPtr);
 // no args
 ///////////////////////////////////////////////////////////////////////////////
 #define REAL_NEW(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME)        \
-DEF_CALLB(NEW_CLASS)     \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS ()                              \
 {     	    	    	    	    	    	    	\
@@ -328,7 +323,6 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 // one arg
 ///////////////////////////////////////////////////////////////////////////////
 #define REAL_NEW_WITH_ARG(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, VAR_TYPE, PD_TYPE) \
-DEF_CALLB(NEW_CLASS)     \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (VAR_TYPE arg)                  \
 {     	    	    	    	    	    	    	    	\
@@ -357,7 +351,6 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 // gimme arg
 ///////////////////////////////////////////////////////////////////////////////
 #define REAL_NEW_WITH_GIMME(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME) \
-DEF_CALLB(NEW_CLASS)     \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (t_symbol *, int argc, t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
@@ -386,7 +379,6 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 // two args
 ///////////////////////////////////////////////////////////////////////////////
 #define REAL_NEW_WITH_ARG_ARG(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, ONE_VAR_TYPE, ONE_PD_TYPE, TWO_VAR_TYPE, TWO_PD_TYPE) \
-DEF_CALLB(NEW_CLASS)     \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo) \
 {     	    	    	    	    	    	    	    	\
@@ -415,7 +407,6 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 // three args
 ///////////////////////////////////////////////////////////////////////////////
 #define REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, ONE_VAR_TYPE, ONE_PD_TYPE, TWO_VAR_TYPE, TWO_PD_TYPE, THREE_VAR_TYPE, THREE_PD_TYPE) \
-DEF_CALLB(NEW_CLASS)     \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo, THREE_VAR_TYPE argthree) \
 {     	    	    	    	    	    	    	    	\
@@ -444,7 +435,6 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 // four args
 ///////////////////////////////////////////////////////////////////////////////
 #define REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, ONE_VAR_TYPE, ONE_PD_TYPE, TWO_VAR_TYPE, TWO_PD_TYPE, THREE_VAR_TYPE, THREE_PD_TYPE, FOUR_VAR_TYPE, FOUR_PD_TYPE) \
-DEF_CALLB(NEW_CLASS)     \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo, THREE_VAR_TYPE argthree, FOUR_VAR_TYPE argfour) \
 {     	    	    	    	    	    	    	    	\
@@ -470,40 +460,45 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 }
 
 
-#ifndef PROXYIN
-
 ///////////////////////////////////////////////////////////
 // These should be the used in the class definition
 /////////////////////////////////////////////////////////
 
+#if defined(MAXMSP) 
+// determine if it is the default inlet
+#define ISDEFIN(o) (((flext_hdr *)o->x_obj)->curinlet) != 0)
+#else
+#define ISDEFIN(o) true
+#endif
+
 #define FLEXT_CALLBACK(M_FUN) \
-static void cb_ ## M_FUN(t_class *c) { thisObject(c)->M_FUN(); }
+static void cb_ ## M_FUN(t_class *c) { thisType *o = thisObject(c); if(ISDEFIN(o)) o->M_FUN(); }
 
 #define FLEXT_CALLBACK_G(M_FUN) \
-static void cb_ ## M_FUN(t_class *c,t_symbol *,int argc,t_atom *argv) { thisObject(c)->M_FUN(argc,argv); }
+static void cb_ ## M_FUN(t_class *c,t_symbol *,int argc,t_atom *argv) { thisType *o = thisObject(c); if(ISDEFIN(o)) o->M_FUN(argc,argv); }
 
 // converting t_flint to bool
 #define FLEXT_CALLBACK_B(M_FUN) \
-static void cb_ ## M_FUN(t_class *c,t_flint arg1) { thisObject(c)->M_FUN(arg1 != 0); }
+static void cb_ ## M_FUN(t_class *c,t_flint arg1) { thisType *o = thisObject(c); if(ISDEFIN(o)) o->M_FUN(arg1 != 0); }
 
 // converting t_flint to enum
 #define FLEXT_CALLBACK_E(M_FUN,TPE) \
-static void cb_ ## M_FUN(t_class *c,t_flint arg1) { thisObject(c)->M_FUN((TPE)(int)arg1); }
+static void cb_ ## M_FUN(t_class *c,t_flint arg1) { thisType *o = thisObject(c); if(ISDEFIN(o)) o->M_FUN((TPE)(int)arg1); }
 
 #define FLEXT_CALLBACK_1(M_FUN,TP1) \
-static void cb_ ## M_FUN(t_class *c,TP1 arg1) { thisObject(c)->M_FUN(arg1); }
+static void cb_ ## M_FUN(t_class *c,TP1 arg1) { thisType *o = thisObject(c); if(ISDEFIN(o)) o->M_FUN(arg1); }
 
 #define FLEXT_CALLBACK_2(M_FUN,TP1,TP2) \
-static void cb_ ## M_FUN(t_class *c,TP1 arg1,TP2 arg2) { thisObject(c)->M_FUN(arg1,arg2); }
+static void cb_ ## M_FUN(t_class *c,TP1 arg1,TP2 arg2) { thisType *o = thisObject(c); if(ISDEFIN(o)) o->M_FUN(arg1,arg2); }
 
 #define FLEXT_CALLBACK_3(M_FUN,TP1,TP2,TP3) \
-static void cb_ ## M_FUN(t_class *c,TP1 arg1,TP2 arg2,TP3 arg3) { thisObject(c)->M_FUN(arg1,arg2,arg3); }
+static void cb_ ## M_FUN(t_class *c,TP1 arg1,TP2 arg2,TP3 arg3) { thisType *o = thisObject(c); if(ISDEFIN(o)) o->M_FUN(arg1,arg2,arg3); }
 
 #define FLEXT_CALLBACK_4(M_FUN,TP1,TP2,TP3,TP4) \
-static void cb_ ## M_FUN(t_class *c,TP1 arg1,TP2 arg2,TP3 arg3.TP4 arg4) { thisObject(c)->M_FUN(arg1,arg2,arg3,arg4); }
+static void cb_ ## M_FUN(t_class *c,TP1 arg1,TP2 arg2,TP3 arg3.TP4 arg4) { thisType *o = thisObject(c); if(ISDEFIN(o)) o->M_FUN(arg1,arg2,arg3,arg4); }
 
 #define FLEXT_CALLBACK_5(M_FUN,TP1,TP2,TP3,TP4,TP5) \
-static void cb_ ## M_FUN(t_class *c,TP1 arg1,TP2 arg2,TP3 arg3.TP4 arg4,TP5 arg5) { thisObject(c)->M_FUN(arg1,arg2,arg3,arg4,arg5); }
+static void cb_ ## M_FUN(t_class *c,TP1 arg1,TP2 arg2,TP3 arg3.TP4 arg4,TP5 arg5) { thisType *o = thisObject(c); if(ISDEFIN(o)) o->M_FUN(arg1,arg2,arg3,arg4,arg5); }
 
 
 ///////////////////////////////////////////////////////////
@@ -565,8 +560,6 @@ add_method4(CLASS,cb_ ## M_FUN,M_NAME,FLEXTTP(TP1),FLEXTTP(TP2),FLEXTTP(TP3),FLE
 // add handler for method with 5 args
 #define FLEXT_ADDMETHOD_5(CLASS,M_NAME,M_FUN,TP1,TP2,TP3,TP4,TP5) \
 add_method5(CLASS,cb_ ## M_FUN,M_NAME,FLEXTTP(TP1),FLEXTTP(TP2),FLEXTTP(TP3),FLEXTTP(TP4),FLEXTTP(TP5))
-
-#endif // PROXYIN
 
 
 #endif

@@ -15,7 +15,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <flbase.h> 
 
+#include <list> // C++ standard lists 
 
+ 
 // a few type definitions for the lazy
 
 #define F float 
@@ -175,10 +177,29 @@ protected:
 	V AddInlet(xlet::type tp,I mult) { AddXlet(tp,mult,inlist); }
 	V AddOutlet(xlet::type tp,I mult) { AddXlet(tp,mult,outlist); }
 
-#ifdef PROXYIN
-	// this is temporary!!
-	virtual V m_methodmain(I inlet,t_symbol *s,I argc,t_atom *argv);
+#if 0
+/*
+	class method { 
+	public:
+		method(t_symbol *t): tag(t),argc(0),args(NULL) {}
+		~method() { if(args) delete[] args; }
+
+		t_symbol *tag;
+		I argc;
+		t_symbol *args;
+	};
+
+	std::list<method> mlst;
+
+	V add_meth(const C *tag,V (*m)());
+	V add_meth(const C *tag,V (*m)(I argc,t_atom *argv));
+	V add_meth(const C *tag,V (*m)(F));
+	V add_meth(const C *tag,V (*m)(F,F));
+*/
+
 #endif
+
+	virtual V m_methodmain(I inlet,t_symbol *s,I argc,t_atom *argv);
 
 private:
 
@@ -188,7 +209,6 @@ private:
 
 	V AddXlet(xlet::type tp,I mult,xlet *&root);	
 
-#ifdef PROXYIN
 #ifdef PD
 	// proxy object (for additional inlets) stuff
 	struct px_object;
@@ -201,9 +221,7 @@ private:
 	static V cb_px_float(V *c,F f);
 	static V cb_px_bang(V *c);
 #endif
-
 	px_object **inlets;
-#endif
 
 	// callback functions
 

@@ -1,6 +1,6 @@
 /* 
 
-max-pd - C++ compatibility layer for Max/MSP and pd (pure data) externals
+flext - C++ compatibility layer for Max/MSP and pd (pure data) externals
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -14,7 +14,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __CPP_H
 #define __CPP_H
 
-#include <max-pd.h>
+#include <flext.h>
 
 #ifdef __GNUC__
 #include <typeinfo>

@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
+# ADD CPP /nologo /W3 /GR /GX /O2 /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /YX /FD /c
 # ADD BASE RSC /l 0xc07 /d "NDEBUG"
 # ADD RSC /l 0xc07 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -49,7 +49,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo
+# ADD LIB32 /nologo /out:"release/flext-pdwin.lib"
 
 !ELSEIF  "$(CFG)" == "flext - Win32 Debug"
 
@@ -64,7 +64,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ  /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ  /c
+# ADD CPP /nologo /W3 /Gm /GR /GX /ZI /Od /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /YX /FD /GZ  /c
 # ADD BASE RSC /l 0xc07 /d "_DEBUG"
 # ADD RSC /l 0xc07 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -72,7 +72,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo
+# ADD LIB32 /nologo /out:"Debug\flext-pdwin.lib"
 
 !ENDIF 
 
@@ -80,5 +80,33 @@ LIB32=link.exe -lib
 
 # Name "flext - Win32 Release"
 # Name "flext - Win32 Debug"
+# Begin Source File
+
+SOURCE=.\_cpp.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\_cpp.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\_cppext.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\_cppext.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\buffer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=".\cw-max.h"
+# End Source File
+# Begin Source File
+
+SOURCE=.\flext.h
+# End Source File
 # End Target
 # End Project

@@ -1,6 +1,6 @@
 /* 
 
-max-pd - C++ compatibility layer for Max/MSP and pd (pure data) externals
+flext - C++ compatibility layer for Max/MSP and pd (pure data) externals
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -13,8 +13,8 @@ this file contains a few definitions to unite a few of the notions that
 once drifted apart in Max and PD. It is not elegant but helps.
 */
 
-#ifndef __MAX_PD_H
-#define __MAX_PD_H
+#ifndef __FLEXT_H
+#define __FLEXT_H
 
 #define F float 
 #define D double

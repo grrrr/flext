@@ -399,13 +399,14 @@ V flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 {
 
 
-#if 0 // future
-	std::list<method>::const_iterator it(mlst.begin());
+#if 1
+	std::list<method *>::const_iterator it(mlst.begin());
 	for(;;) {
-		const method &m = *it;
-		if(m.tag == s) {
+		const method *m = *it;
+		if(!m) break;
+		if(m->tag == s) {
 			// tag fits
-			post("found method tag %s",m.tag->s_name);
+			post("found method tag %s",m->tag->s_name);
 		} 
 		if(it == mlst.end()) break;
 		else ++it;
@@ -414,14 +415,44 @@ V flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 }
 
 
-#if 0 // future
-V flext_base::add_meth(const C *tag,V (flext_base::*m)())
+#if 1
+flext_base::method::method(I in,t_symbol *t,I a): 
+	inlet(in),tag(t),fun(NULL) 
+{ 
+	if(a > 0) {
+		argc = a;
+		args = new I[a];
+		for(I i = 0; i < a; ++i) A_NULL;
+	}
+	else {
+		argc = 0;
+		args = NULL;
+	}
+}
+
+flext_base::method::~method() { if(args) delete[] args; }
+
+V flext_base::add_meth_def(I inlet)
 {
-	method meth(gensym(const_cast<C *>(tag)));
+	mlst.push_back(new method(inlet,NULL));
+}
+
+V flext_base::add_meth_def(I inlet,const C *tag)
+{
+	mlst.push_back(new method(inlet,gensym(const_cast<C *>(tag))));
+}
+
+V flext_base::add_meth_n(I inlet,const C *tag,methfun fun,I tp,...)
+{
+	method *meth = new method(inlet,gensym(const_cast<C *>(tag)));
+
+	// add args here !!!!!
+
+	meth->fun = (methfun)fun;
 	mlst.push_back(meth);
 }
-#endif
 
+#endif
 
 // === flext_dsp ==============================================
 

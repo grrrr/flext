@@ -177,26 +177,34 @@ protected:
 	V AddInlet(xlet::type tp,I mult) { AddXlet(tp,mult,inlist); }
 	V AddOutlet(xlet::type tp,I mult) { AddXlet(tp,mult,outlist); }
 
-#if 0
-/*
+#if 1
+	typedef V (*methfun)();
+
 	class method { 
 	public:
-		method(t_symbol *t): tag(t),argc(0),args(NULL) {}
-		~method() { if(args) delete[] args; }
+		method(I inlet,t_symbol *t,I a = 0);
+		~method();
 
 		t_symbol *tag;
-		I argc;
-		t_symbol *args;
+		I inlet;
+		I argc,*args;
+
+		methfun fun;
 	};
 
-	std::list<method> mlst;
+	std::list<method *> mlst;
 
-	V add_meth(const C *tag,V (*m)());
-	V add_meth(const C *tag,V (*m)(I argc,t_atom *argv));
-	V add_meth(const C *tag,V (*m)(F));
-	V add_meth(const C *tag,V (*m)(F,F));
-*/
+	V add_meth_def(I inlet); // call virtual function for inlet
+	V add_meth_def(I inlet,const C *tag); // call virtual function for tag && inlet
+	V add_meth_n(I inlet,const C *tag,methfun fun,I tp,...); 
 
+	V add_meth(I inlet,const C *tag,V (*m)()) { add_meth_n(inlet,tag,(methfun)m,A_NULL); }
+	V add_meth(I inlet,const C *tag,V (*m)(I argc,t_atom *argv)) { add_meth_n(inlet,tag,(methfun)m,A_GIMME,A_NULL); } // list
+	V add_meth(I inlet,const C *tag,V (*m)(t_symbol *s,I argc,t_atom *argv)) { add_meth_n(inlet,tag,(methfun)m,A_SYMBOL,A_GIMME,A_NULL); } // anything
+	V add_meth(I inlet,const C *tag,V (*m)(t_symbol *s)) { add_meth_n(inlet,tag,(methfun)m,A_SYMBOL,A_NULL); } // symbol
+	V add_meth(I inlet,const C *tag,V (*m)(F)) { add_meth_n(inlet,tag,(methfun)m,A_FLOAT,A_NULL); }  // float
+	V add_meth(I inlet,const C *tag,V (*m)(F,F)) { add_meth_n(inlet,tag,(methfun)m,A_FLOAT,A_FLOAT,A_NULL); } // list of 2 floats
+	V add_meth(I inlet,const C *tag,V (*m)(F,F,F)) { add_meth_n(inlet,tag,(methfun)m,A_FLOAT,A_FLOAT,A_NULL); } // list of 3 floats
 #endif
 
 	virtual V m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv);

@@ -130,8 +130,8 @@ void flext::GetAString(const t_atom &a,char *buf,int szbuf)
 
 unsigned long flext::AtomHash(const t_atom &a)
 {
-#if FLEXT_SYS == FLEXT_SYS_MAX
-	return ((unsigned long)a.a_type<<28)^(unsigned long)a.a_w.w_long;
+#if FLEXT_SYS == FLEXT_SYS_MAX || FLEXT_SYS == FLEXT_SYS_PD
+	return ((unsigned long)a.a_type<<28)^*(unsigned long *)&a.a_w;
 #else
 #error Not implemented
 #endif
@@ -143,7 +143,7 @@ unsigned int flext::FoldBits(unsigned long h,int bits)
 	const int hmax = (1<<bits)-1;
 	unsigned int ret = 0;
 	for(unsigned int i = 0; i < sizeof(h)*8; i += bits)
-		ret = ret^((h>>i)&hmax);
+		ret ^= (h>>i)&hmax;
 	return ret;
 }
 

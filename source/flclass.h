@@ -193,10 +193,10 @@ public:
 	const t_symbol *thisTag() const { return curtag; }
 
 	//! Get pointer to outlet (not in the constructor!)
-	outlet *GetOut(int ix) { return (outlets && ix < outcnt)?outlets[ix]:NULL; }
+	outlet *GetOut(int ix) const { return (outlets && ix < outcnt)?outlets[ix]:NULL; }
 
 	//! Get pointer to attribute outlet 
-	outlet *GetOutAttr() { return outattr; }
+	outlet *GetOutAttr() const { return outattr; }
 
 	//! @} FLEXT_C_IO_MISC
 
@@ -207,42 +207,42 @@ public:
 	// output messages 
 
 	//! Output bang (to appointed outlet)
-	void ToOutBang(outlet *o);
+	void ToOutBang(outlet *o) const;
 	//! Output bang (index n starts with 0)
-	void ToOutBang(int n) { outlet *o = GetOut(n); if(o) ToOutBang(o); }
+	void ToOutBang(int n) const { outlet *o = GetOut(n); if(o) ToOutBang(o); }
 
 	//! Output float (to appointed outlet)
-	void ToOutFloat(outlet *o,float f); 
+	void ToOutFloat(outlet *o,float f) const; 
 	//! Output float (index n starts with 0)
-	void ToOutFloat(int n,float f) { outlet *o = GetOut(n); if(o) ToOutFloat(o,f); }
+	void ToOutFloat(int n,float f) const { outlet *o = GetOut(n); if(o) ToOutFloat(o,f); }
 
 	//! Output integer (to appointed outlet)
-	void ToOutInt(outlet *o,int f); 
+	void ToOutInt(outlet *o,int f) const; 
 	//! Output integer (index n starts with 0)
-	void ToOutInt(int n,int f) { outlet *o = GetOut(n); if(o) ToOutInt(o,f); }
+	void ToOutInt(int n,int f) const { outlet *o = GetOut(n); if(o) ToOutInt(o,f); }
 	
 	//! Output symbol (to appointed outlet)
-	void ToOutSymbol(outlet *o,const t_symbol *s); 
+	void ToOutSymbol(outlet *o,const t_symbol *s) const; 
 	//! Output symbol (index n starts with 0)
-	void ToOutSymbol(int n,const t_symbol *s) { outlet *o = GetOut(n); if(o) ToOutSymbol(o,s); }
+	void ToOutSymbol(int n,const t_symbol *s) const { outlet *o = GetOut(n); if(o) ToOutSymbol(o,s); }
 	//! Output string aka symbol (to appointed outlet)
-	void ToOutString(outlet *o,const char *s) { ToOutSymbol(o,MakeSymbol(s)); }
+	void ToOutString(outlet *o,const char *s) const { ToOutSymbol(o,MakeSymbol(s)); }
 	//! Output string aka symbol (index n starts with 0)
-	void ToOutString(int n,const char *s) { outlet *o = GetOut(n); if(o) ToOutString(o,s); }
+	void ToOutString(int n,const char *s) const { outlet *o = GetOut(n); if(o) ToOutString(o,s); }
 
 	//! Output list (to appointed outlet)
-	void ToOutList(outlet *o,int argc,const t_atom *argv); 
+	void ToOutList(outlet *o,int argc,const t_atom *argv) const; 
 	//! Output list (index n starts with 0)
-	void ToOutList(int n,int argc,const t_atom *argv)  { outlet *o = GetOut(n); if(o) ToOutList(o,argc,argv); }
+	void ToOutList(int n,int argc,const t_atom *argv) const { outlet *o = GetOut(n); if(o) ToOutList(o,argc,argv); }
 	//! Output list (index n starts with 0)
-	void ToOutList(int n,const AtomList &list)  { ToOutList(n,list.Count(),list.Atoms()); }
+	void ToOutList(int n,const AtomList &list) const { ToOutList(n,list.Count(),list.Atoms()); }
 	
 	//! Output anything (to appointed outlet)
-	void ToOutAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv); 
+	void ToOutAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) const; 
 	//! Output anything (index n starts with 0)
-	void ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv)  { outlet *o = GetOut(n); if(o) ToOutAnything(o,const_cast<t_symbol *>(s),argc,argv); }
+	void ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const  { outlet *o = GetOut(n); if(o) ToOutAnything(o,const_cast<t_symbol *>(s),argc,argv); }
 	//! Output anything (index n starts with 0)
-	void ToOutAnything(int n,const AtomAnything &any)  { ToOutAnything(n,any.Header(),any.Count(),any.Atoms()); }
+	void ToOutAnything(int n,const AtomAnything &any) const { ToOutAnything(n,any.Header(),any.Count(),any.Atoms()); }
 	
 	//! @} FLEXT_C_IO_OUT
 
@@ -251,46 +251,46 @@ public:
 	*/
 
 	//! Output bang (to appointed outlet)
-	void ToQueueBang(outlet *o); 
+	void ToQueueBang(outlet *o) const; 
 	//! Output bang (index n starts with 0)
-	void ToQueueBang(int n) { outlet *o = GetOut(n); if(o) ToQueueBang(o); }
+	void ToQueueBang(int n) const { outlet *o = GetOut(n); if(o) ToQueueBang(o); }
 
 	//! Output float (to appointed outlet)
-	void ToQueueFloat(outlet *o,float f); 
+	void ToQueueFloat(outlet *o,float f) const; 
 	//! Output float (index n starts with 0)
-	void ToQueueFloat(int n,float f) { outlet *o = GetOut(n); if(o) ToQueueFloat(o,f); }
+	void ToQueueFloat(int n,float f) const { outlet *o = GetOut(n); if(o) ToQueueFloat(o,f); }
 
 	//! Output integer (to appointed outlet)
-	void ToQueueInt(outlet *o,int f); 
+	void ToQueueInt(outlet *o,int f) const; 
 	//! Output integer (index n starts with 0)
-	void ToQueueInt(int n,int f) { outlet *o = GetOut(n); if(o) ToQueueInt(o,f); }
+	void ToQueueInt(int n,int f) const { outlet *o = GetOut(n); if(o) ToQueueInt(o,f); }
 
 	//! Output symbol (to appointed outlet)
-	void ToQueueSymbol(outlet *o,const t_symbol *s); 
+	void ToQueueSymbol(outlet *o,const t_symbol *s) const; 
 	//! Output symbol (index n starts with 0)
-	void ToQueueSymbol(int n,const t_symbol *s) { outlet *o = GetOut(n); if(o) ToQueueSymbol(o,s); }
+	void ToQueueSymbol(int n,const t_symbol *s) const { outlet *o = GetOut(n); if(o) ToQueueSymbol(o,s); }
 	//! Output string aka symbol (to appointed outlet)
-	void ToQueueString(outlet *o,const char *s) { ToQueueSymbol(o,MakeSymbol(s)); }
+	void ToQueueString(outlet *o,const char *s) const { ToQueueSymbol(o,MakeSymbol(s)); }
 	//! Output string aka symbol (to appointed outlet)
-	void ToQueueString(int n,const char *s) { ToQueueSymbol(n,MakeSymbol(s)); }
+	void ToQueueString(int n,const char *s) const { ToQueueSymbol(n,MakeSymbol(s)); }
 
 	//! Output list (to appointed outlet)
-	void ToQueueList(outlet *o,int argc,const t_atom *argv); 
+	void ToQueueList(outlet *o,int argc,const t_atom *argv) const; 
 	//! Output list (to appointed outlet)
-	void ToQueueList(outlet *o,const AtomList &list)  { ToQueueList(o,list.Count(),list.Atoms()); }
+	void ToQueueList(outlet *o,const AtomList &list) const { ToQueueList(o,list.Count(),list.Atoms()); }
 	//! Output list (index n starts with 0)
-	void ToQueueList(int n,int argc,const t_atom *argv) { outlet *o = GetOut(n); if(o) ToQueueList(o,argc,argv); }
+	void ToQueueList(int n,int argc,const t_atom *argv) const { outlet *o = GetOut(n); if(o) ToQueueList(o,argc,argv); }
 	//! Output list (index n starts with 0)
-	void ToQueueList(int n,const AtomList &list)  { ToQueueList(n,list.Count(),list.Atoms()); }
+	void ToQueueList(int n,const AtomList &list) const  { ToQueueList(n,list.Count(),list.Atoms()); }
 
 	//! Output anything (to appointed outlet)
-	void ToQueueAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv); 
+	void ToQueueAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) const; 
 	//! Output anything (to appointed outlet)
-	void ToQueueAnything(outlet *o,const AtomAnything &any)  { ToQueueAnything(o,any.Header(),any.Count(),any.Atoms()); }
+	void ToQueueAnything(outlet *o,const AtomAnything &any) const  { ToQueueAnything(o,any.Header(),any.Count(),any.Atoms()); }
 	//! Output anything (index n starts with 0)
-	void ToQueueAnything(int n,const t_symbol *s,int argc,const t_atom *argv) { outlet *o = GetOut(n); if(o) ToQueueAnything(o,s,argc,argv); }
+	void ToQueueAnything(int n,const t_symbol *s,int argc,const t_atom *argv)  const { outlet *o = GetOut(n); if(o) ToQueueAnything(o,s,argc,argv); }
 	//! Output anything (index n starts with 0)
-	void ToQueueAnything(int n,const AtomAnything &any)  { ToQueueAnything(n,any.Header(),any.Count(),any.Atoms()); }
+	void ToQueueAnything(int n,const AtomAnything &any) const  { ToQueueAnything(n,any.Header(),any.Count(),any.Atoms()); }
 
 //!		@} FLEXT_C_IO_QUEUE
 

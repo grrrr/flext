@@ -25,19 +25,19 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 #ifndef FLEXT_THREADS
-void flext_base::ToOutBang(outlet *o) { CRITON(); outlet_bang((t_outlet *)o); CRITOFF(); }
-void flext_base::ToOutFloat(outlet *o,float f) { CRITON(); outlet_float((t_outlet *)o,f); CRITOFF(); }
-void flext_base::ToOutInt(outlet *o,int f) { CRITON(); outlet_flint((t_outlet *)o,f); CRITOFF(); }
-void flext_base::ToOutSymbol(outlet *o,const t_symbol *s) { CRITON(); outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); CRITOFF(); }
-void flext_base::ToOutList(outlet *o,int argc,const t_atom *argv) { CRITON(); outlet_list((t_outlet *)o,gensym("list"),argc,(t_atom *)argv); CRITOFF(); }
-void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,(t_atom *)argv); CRITOFF(); }
+void flext_base::ToOutBang(outlet *o) const { CRITON(); outlet_bang((t_outlet *)o); CRITOFF(); }
+void flext_base::ToOutFloat(outlet *o,float f) const { CRITON(); outlet_float((t_outlet *)o,f); CRITOFF(); }
+void flext_base::ToOutInt(outlet *o,int f) const { CRITON(); outlet_flint((t_outlet *)o,f); CRITOFF(); }
+void flext_base::ToOutSymbol(outlet *o,const t_symbol *s) const { CRITON(); outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); CRITOFF(); }
+void flext_base::ToOutList(outlet *o,int argc,const t_atom *argv) const { CRITON(); outlet_list((t_outlet *)o,gensym("list"),argc,(t_atom *)argv); CRITOFF(); }
+void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) const { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,(t_atom *)argv); CRITOFF(); }
 #else
-void flext_base::ToOutBang(outlet *o) { if(IsSystemThread()) { CRITON(); outlet_bang((t_outlet *)o); CRITOFF(); } else ToQueueBang(o); }
-void flext_base::ToOutFloat(outlet *o,float f) { if(IsSystemThread()) { CRITON(); outlet_float((t_outlet *)o,f); CRITOFF(); } else ToQueueFloat(o,f); }
-void flext_base::ToOutInt(outlet *o,int f) { if(IsSystemThread()) { CRITON(); outlet_flint((t_outlet *)o,f); CRITOFF(); } else ToQueueInt(o,f); }
-void flext_base::ToOutSymbol(outlet *o,const t_symbol *s) { if(IsSystemThread()) { CRITON(); outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); CRITOFF(); } else ToQueueSymbol(o,s); }
-void flext_base::ToOutList(outlet *o,int argc,const t_atom *argv) { if(IsSystemThread()) { CRITON(); outlet_list((t_outlet *)o,gensym("list"),argc,(t_atom *)argv); CRITOFF(); } else ToQueueList(o,argc,(t_atom *)argv); }
-void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) { if(IsSystemThread()) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,(t_atom *)argv); CRITOFF(); } else ToQueueAnything(o,s,argc,(t_atom *)argv); }
+void flext_base::ToOutBang(outlet *o) const { if(IsSystemThread()) { CRITON(); outlet_bang((t_outlet *)o); CRITOFF(); } else ToQueueBang(o); }
+void flext_base::ToOutFloat(outlet *o,float f) const { if(IsSystemThread()) { CRITON(); outlet_float((t_outlet *)o,f); CRITOFF(); } else ToQueueFloat(o,f); }
+void flext_base::ToOutInt(outlet *o,int f) const { if(IsSystemThread()) { CRITON(); outlet_flint((t_outlet *)o,f); CRITOFF(); } else ToQueueInt(o,f); }
+void flext_base::ToOutSymbol(outlet *o,const t_symbol *s) const { if(IsSystemThread()) { CRITON(); outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); CRITOFF(); } else ToQueueSymbol(o,s); }
+void flext_base::ToOutList(outlet *o,int argc,const t_atom *argv) const { if(IsSystemThread()) { CRITON(); outlet_list((t_outlet *)o,gensym("list"),argc,(t_atom *)argv); CRITOFF(); } else ToQueueList(o,argc,(t_atom *)argv); }
+void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) const { if(IsSystemThread()) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,(t_atom *)argv); CRITOFF(); } else ToQueueAnything(o,s,argc,(t_atom *)argv); }
 #endif
 
 
@@ -168,45 +168,45 @@ void flext_base::Queue(qmsg *m)
 #endif
 }
 
-void flext_base::ToQueueBang(outlet *o) 
+void flext_base::ToQueueBang(outlet *o) const 
 {
 	qmsg *m = new qmsg(); 
 	m->SetBang(o);
-	Queue(m);
+	const_cast<flext_base &>(*this).Queue(m);
 }
 
-void flext_base::ToQueueFloat(outlet *o,float f)
+void flext_base::ToQueueFloat(outlet *o,float f) const
 {
 	qmsg *m = new qmsg; 
 	m->SetFloat(o,f);
-	Queue(m);
+	const_cast<flext_base &>(*this).Queue(m);
 }
 
-void flext_base::ToQueueInt(outlet *o,int f)
+void flext_base::ToQueueInt(outlet *o,int f) const
 {
 	qmsg *m = new qmsg; 
 	m->SetInt(o,f);
-	Queue(m);
+	const_cast<flext_base &>(*this).Queue(m);
 }
 
-void flext_base::ToQueueSymbol(outlet *o,const t_symbol *s)
+void flext_base::ToQueueSymbol(outlet *o,const t_symbol *s) const
 {
 	qmsg *m = new qmsg; 
 	m->SetSymbol(o,s);
-	Queue(m);
+	const_cast<flext_base &>(*this).Queue(m);
 }
 
-void flext_base::ToQueueList(outlet *o,int argc,const t_atom *argv)
+void flext_base::ToQueueList(outlet *o,int argc,const t_atom *argv) const
 {
 	qmsg *m = new qmsg; 
 	m->SetList(o,argc,argv);
-	Queue(m);
+	const_cast<flext_base &>(*this).Queue(m);
 }
 
-void flext_base::ToQueueAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv)
+void flext_base::ToQueueAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) const
 {
 	qmsg *m = new qmsg; 
 	m->SetAny(o,s,argc,argv);
-	Queue(m);
+	const_cast<flext_base &>(*this).Queue(m);
 }
 

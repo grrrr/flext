@@ -148,11 +148,11 @@ SOURCE=.\readme.txt
 # End Group
 # Begin Source File
 
-SOURCE=".\source\flatom-pr.cpp"
+SOURCE=.\source\flatom.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\source\flatom.cpp
+SOURCE=.\source\flatom_pr.cpp
 # End Source File
 # Begin Source File
 

@@ -51,11 +51,19 @@ pd - linux:
 -----------
 o GCC: edit "config-pd-linux.txt" & run "sh build-pd-linux.sh" 
 
+pd - MacOSX:
+-----------
+o GCC: edit "config-pd-darwin.txt" & run "sh build-pd-darwin.sh" 
+
 Max/MSP - MacOS 9:
 ------------------
 o Metrowerks CodeWarrior V6: edit & use the "flext.cw" project file
 
 o Apple MPW-PR: edit & use the "flext.mpw" makefile
+
+Max/MSP - MacOSX:
+------------------
+... sorry, not yet... would someone please donate me a CodeWarrior V8 ?
 
 ----------------------------------------------------------------------------
 
@@ -247,7 +255,7 @@ general:
 - check that SetupInOut is only called once
 - feed assist function with in/outlet description
 - MaxMSP: how to call separate help files for objects in a library?
-- MaxMSP for OSX: add support (maybe someone donates a CodeWarrior 8?)
+- MaxMSP for OSX: add support 
 
 bugs:
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)

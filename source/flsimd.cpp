@@ -246,6 +246,36 @@ notamd:
 
     return feature;
 }
+
+inline bool IsVectorAligned(const void *where) 
+{
+    return (reinterpret_cast<size_t>(where)&(__alignof(__m128)-1)) == 0;
+}
+
+inline bool VectorsAligned(const void *v1,const void *v2) 
+{
+    return (
+        (reinterpret_cast<size_t>(v1)|reinterpret_cast<size_t>(v2))
+        &(__alignof(__m128)-1)
+    ) == 0; 
+}
+
+inline bool VectorsAligned(const void *v1,const void *v2,const void *v3) 
+{
+    return (
+        (reinterpret_cast<size_t>(v1)|reinterpret_cast<size_t>(v2)|reinterpret_cast<size_t>(v3))
+        &(__alignof(__m128)-1)
+    ) == 0; 
+}
+
+inline bool VectorsAligned(const void *v1,const void *v2,const void *v3,const void *v4)
+{
+    return (
+        (reinterpret_cast<size_t>(v1)|reinterpret_cast<size_t>(v2)|reinterpret_cast<size_t>(v3)|reinterpret_cast<size_t>(v4))
+        &(__alignof(__m128)-1)
+    ) == 0; 
+}
+
 #else
 // not MSVC
 static int _cpuid (_p_info *pinfo)
@@ -347,6 +377,30 @@ inline bool IsVectorAligned(const void *where)
     return (reinterpret_cast<size_t>(where)&(sizeof(vector float)-1)) == 0; 
 }
 
+inline bool VectorsAligned(const void *v1,const void *v2) 
+{
+    return (
+        (reinterpret_cast<size_t>(v1)|reinterpret_cast<size_t>(v2))
+        &(sizeof(vector float)-1)
+    ) == 0; 
+}
+
+inline bool VectorsAligned(const void *v1,const void *v2,const void *v3) 
+{
+    return (
+        (reinterpret_cast<size_t>(v1)|reinterpret_cast<size_t>(v2)|reinterpret_cast<size_t>(v3))
+        &(sizeof(vector float)-1)
+    ) == 0; 
+}
+
+inline bool VectorsAligned(const void *v1,const void *v2,const void *v3,const void *v4)
+{
+    return (
+        (reinterpret_cast<size_t>(v1)|reinterpret_cast<size_t>(v2)|reinterpret_cast<size_t>(v3)|reinterpret_cast<size_t>(v4))
+        &(sizeof(vector float)-1)
+    ) == 0; 
+}
+
 inline vector float LoadValue(const float &f)
 {
     return IsVectorAligned(&f)?vec_splat(vec_ld(0,(vector float *)&f),0):LoadUnaligned(&f);
@@ -385,8 +439,8 @@ void flext::CopySamples(t_sample *dst,const t_sample *src,int cnt)
             prefetcht0 [eax+32]
         }
 
-        if((reinterpret_cast<size_t>(src)&(__alignof(__m128)-1)) == 0) {
-            if((reinterpret_cast<size_t>(dst)&(__alignof(__m128)-1)) == 0) {
+        if(IsVectorAligned(src)) {
+            if(IsVectorAligned(dst)) {
                 // aligned src, aligned dst
                 __asm {
                     mov     eax,dword ptr [src]
@@ -434,7 +488,7 @@ loopau:
             }
         }
         else {
-            if((reinterpret_cast<size_t>(dst)&(__alignof(__m128)-1)) == 0) {
+            if(IsVectorAligned(dst)) {
                 // unaligned src, aligned dst
                 __asm {
                     mov     eax,dword ptr [src]
@@ -638,23 +692,44 @@ static void ScaleAltivec(t_sample *dst,const t_sample *src,t_sample opmul,t_samp
     cnt -= n<<4;
 
     for(; n--; src += 16,dst += 16) {
-        vector float a1 = vec_ld( 0,src);
-        vector float a2 = vec_ld(16,src);
-        vector float a3 = vec_ld(32,src);
-        vector float a4 = vec_ld(48,src);
-        
-        a1 = vec_madd(a1,argmul,argadd);
-        a2 = vec_madd(a2,argmul,argadd);
-        a3 = vec_madd(a3,argmul,argadd);
-        a4 = vec_madd(a4,argmul,argadd);
-
-        vec_st(a1, 0,dst);
-        vec_st(a2,16,dst);
-        vec_st(a3,32,dst);
-        vec_st(a4,48,dst);
+        vec_st(vec_madd(vec_ld( 0,src),argmul,argadd), 0,dst);
+        vec_st(vec_madd(vec_ld(16,src),argmul,argadd),16,dst);
+        vec_st(vec_madd(vec_ld(32,src),argmul,argadd),32,dst);
+        vec_st(vec_madd(vec_ld(48,src),argmul,argadd),48,dst);
     }
 
     while(cnt--) *(dst++) = *(src++)*opmul+opadd; 
+}
+
+static void ScaleAltivec(t_sample *dst,const t_sample *src,t_sample opmul,const t_sample *add,int cnt) 
+{
+    const vector float argmul = LoadValue(opmul);
+    int n = cnt>>4;
+    cnt -= n<<4;
+
+    for(; n--; src += 16,dst += 16,add += 16) {
+        vec_st(vec_madd(vec_ld( 0,src),argmul,vec_ld( 0,add)), 0,dst);
+        vec_st(vec_madd(vec_ld(16,src),argmul,vec_ld(16,add)),16,dst);
+        vec_st(vec_madd(vec_ld(32,src),argmul,vec_ld(32,add)),32,dst);
+        vec_st(vec_madd(vec_ld(48,src),argmul,vec_ld(48,add)),48,dst);
+    }
+
+    while(cnt--) *(dst++) = *(src++) * opmul + *(add++); 
+}
+
+static void ScaleAltivec(t_sample *dst,const t_sample *src,const t_sample *mul,const t_sample *add,int cnt) 
+{
+    int n = cnt>>4;
+    cnt -= n<<4;
+
+    for(; n--; src += 16,dst += 16,mul += 16,add += 16) {
+        vec_st(vec_madd(vec_ld( 0,src),vec_ld( 0,mul),vec_ld( 0,add)), 0,dst);
+        vec_st(vec_madd(vec_ld(16,src),vec_ld(16,mul),vec_ld(16,add)),16,dst);
+        vec_st(vec_madd(vec_ld(32,src),vec_ld(32,mul),vec_ld(32,add)),32,dst);
+        vec_st(vec_madd(vec_ld(48,src),vec_ld(48,mul),vec_ld(48,add)),48,dst);
+    }
+
+    while(cnt--) *(dst++) = *(src++) * *(mul++) + *(add++); 
 }
 #endif
 
@@ -682,7 +757,7 @@ void flext::SetSamples(t_sample *dst,int cnt,t_sample s)
             shufps  xmm0,xmm0,0
         }
 
-        if((reinterpret_cast<size_t>(dst)&(__alignof(__m128)-1)) == 0) {
+        if(IsVectorAligned(dst)) {
             // aligned version
             __asm {
                 mov     ecx,[n]
@@ -768,9 +843,7 @@ void flext::MulSamples(t_sample *dst,const t_sample *src,t_sample op,int cnt)
             shufps  xmm0,xmm0,0
         }
 
-        if((reinterpret_cast<size_t>(src)&(__alignof(__m128)-1)) == 0
-            && (reinterpret_cast<size_t>(dst)&(__alignof(__m128)-1)) == 0
-        ) {
+        if(VectorsAligned(src,dst)) {
             // aligned version
             __asm {
                 mov     ecx,[n]
@@ -842,7 +915,7 @@ zero:
     }
     else
 #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
-    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(dst)) 
+    if(GetSIMDCapabilities()&simd_altivec && VectorsAligned(src,dst)) 
         MulAltivec(dst,src,op,cnt);
     else
 #endif // _MSC_VER
@@ -904,10 +977,8 @@ void flext::MulSamples(t_sample *dst,const t_sample *src,const t_sample *op,int 
             prefetcht0 [ebx+32]
         }
 
-        if((reinterpret_cast<size_t>(src)&(__alignof(__m128)-1)) == 0
-            && (reinterpret_cast<size_t>(dst)&(__alignof(__m128)-1)) == 0
-        ) {
-            if((reinterpret_cast<size_t>(op)&(__alignof(__m128)-1)) == 0) {
+        if(VectorsAligned(src,dst)) {
+            if(IsVectorAligned(op)) {
                 __asm {
                     mov     ecx,[n]
                     mov     eax,dword ptr [src]
@@ -985,7 +1056,7 @@ void flext::MulSamples(t_sample *dst,const t_sample *src,const t_sample *op,int 
             }
         }
         else {
-            if((reinterpret_cast<size_t>(op)&(__alignof(__m128)-1)) == 0) {
+            if(IsVectorAligned(op)) {
                 __asm {
                     mov     ecx,[n]
                     mov     eax,dword ptr [src]
@@ -1072,7 +1143,7 @@ zero:
     }
     else
 #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
-    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(op) && IsVectorAligned(dst)) 
+    if(GetSIMDCapabilities()&simd_altivec && VectorsAligned(src,op,dst)) 
         MulAltivec(dst,src,op,cnt);
     else
 #endif // _MSC_VER
@@ -1134,9 +1205,7 @@ void flext::AddSamples(t_sample *dst,const t_sample *src,t_sample op,int cnt)
             shufps  xmm0,xmm0,0
         }
 
-        if((reinterpret_cast<size_t>(src)&(__alignof(__m128)-1)) == 0
-            && (reinterpret_cast<size_t>(dst)&(__alignof(__m128)-1)) == 0
-        ) {
+        if(VectorsAligned(src,dst)) {
             // aligned version
                 __asm {
                 mov     ecx,[n]
@@ -1202,7 +1271,7 @@ loopu:
     }
     else
 #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
-    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(dst)) 
+    if(GetSIMDCapabilities()&simd_altivec && VectorsAligned(src,dst)) 
         AddAltivec(dst,src,op,cnt);
     else
 #endif // _MSC_VER
@@ -1263,10 +1332,8 @@ void flext::AddSamples(t_sample *dst,const t_sample *src,const t_sample *op,int 
         int n = cnt>>4;
         cnt -= n<<4;
 
-        if((reinterpret_cast<size_t>(src)&(__alignof(__m128)-1)) == 0
-            && (reinterpret_cast<size_t>(dst)&(__alignof(__m128)-1)) == 0
-        ) {
-            if((reinterpret_cast<size_t>(op)&(__alignof(__m128)-1)) == 0) {
+        if(VectorsAligned(src,dst)) {
+            if(IsVectorAligned(op)) {
                 __asm {
                     mov     ecx,dword ptr [n]
                     mov     eax,dword ptr [src]
@@ -1344,7 +1411,7 @@ void flext::AddSamples(t_sample *dst,const t_sample *src,const t_sample *op,int 
             }
         }
         else {
-            if((reinterpret_cast<size_t>(op)&(__alignof(__m128)-1)) == 0) {
+            if(IsVectorAligned(op)) {
                 __asm {
                     mov     ecx,dword ptr [n]
                     mov     eax,dword ptr [src]
@@ -1430,7 +1497,7 @@ void flext::AddSamples(t_sample *dst,const t_sample *src,const t_sample *op,int 
     }
     else
 #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
-    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(op) && IsVectorAligned(dst))
+    if(GetSIMDCapabilities()&simd_altivec && VectorsAligned(src,op,dst))
         AddAltivec(dst,src,op,cnt);
     else
 #endif // _MSC_VER
@@ -1496,9 +1563,7 @@ void flext::ScaleSamples(t_sample *dst,const t_sample *src,t_sample opmul,t_samp
             shufps  xmm1,xmm1,0
         }
 
-        if((reinterpret_cast<size_t>(src)&(__alignof(__m128)-1)) == 0
-            && (reinterpret_cast<size_t>(dst)&(__alignof(__m128)-1)) == 0
-        ) {
+        if(VectorsAligned(src,dst)) {
             // aligned version
             __asm {
                 mov     ecx,dword ptr [n]
@@ -1572,7 +1637,7 @@ loopu:
     }
     else
 #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
-    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(dst)) 
+    if(GetSIMDCapabilities()&simd_altivec && VectorsAligned(src,dst)) 
         ScaleAltivec(dst,src,opmul,opadd,cnt);
     else
 #endif // _MSC_VER
@@ -1592,12 +1657,135 @@ loopu:
 #endif
 }
 
-void flext::ScaleSamples(t_sample *dst,const t_sample *src,t_sample opmul,const t_sample *add,int cnt) 
+void flext::ScaleSamples(t_sample *dst,const t_sample *src,t_sample opmul,const t_sample *opadd,int cnt) 
 {
+#ifdef FLEXT_USE_IPP
+    if(sizeof(t_sample) == 4) {
+        ippsMulC_32f((const float *)src,(float)opmul,(float *)dst,cnt); 
+        ippsAdd_32f_I((float *)opadd,(float *)dst,cnt); 
+    }
+    else if(sizeof(t_sample) == 8) {
+        ippsMulC_64f((const double *)src,(double)opmul,(double *)dst,cnt); 
+        ippsAdd_64f_I((double *)opadd,(double *)dst,cnt); 
+    }
+    else
+        ERRINTERNAL();
+#else
+#ifdef FLEXT_USE_SIMD
+#ifdef _MSC_VER
+    if(GetSIMDCapabilities()&simd_sse) {
+        // single precision
+        int n = cnt>>4;
+        cnt -= n<<4;
+
+        __asm {
+            mov     eax,dword ptr [src]
+            prefetcht0 [eax+0]
+            prefetcht0 [eax+32]
+
+            movss   xmm0,xmmword ptr [opmul]
+            shufps  xmm0,xmm0,0
+        }
+
+        if(VectorsAligned(src,dst,opadd)) {
+            // aligned version
+            __asm {
+                mov     ecx,dword ptr [n]
+                mov     eax,dword ptr [src]
+                mov     edx,dword ptr [dst]
+                mov     ebx,dword ptr [opadd]
+loopa:
+                prefetcht0 [eax+64]
+                prefetcht0 [ebx+64]
+                prefetcht0 [eax+96]
+                prefetcht0 [ebx+96]
+
+                movaps  xmm2,xmmword ptr[eax]
+                movaps  xmm1,xmmword ptr[ebx]
+                mulps   xmm2,xmm0
+                addps   xmm2,xmm1
+                movaps  xmmword ptr[edx],xmm2
+
+                movaps  xmm3,xmmword ptr[eax+4*4]
+                movaps  xmm1,xmmword ptr[ebx+4*4]
+                mulps   xmm3,xmm0
+                addps   xmm3,xmm1
+                movaps  xmmword ptr[edx+4*4],xmm3
+
+                movaps  xmm4,xmmword ptr[eax+8*4]
+                movaps  xmm1,xmmword ptr[ebx+8*4]
+                mulps   xmm4,xmm0
+                addps   xmm4,xmm1
+                movaps  xmmword ptr[edx+8*4],xmm4
+
+                movaps  xmm5,xmmword ptr[eax+12*4]
+                movaps  xmm1,xmmword ptr[ebx+12*4]
+                mulps   xmm5,xmm0
+                addps   xmm5,xmm1
+                movaps  xmmword ptr[edx+12*4],xmm5
+
+                add     eax,16*4
+                add     edx,16*4
+                add     ebx,16*4
+                loop    loopa
+            }
+        }
+        else {
+            // unaligned version
+            __asm {
+                mov     ecx,dword ptr [n]
+                mov     eax,dword ptr [src]
+                mov     edx,dword ptr [dst]
+                mov     ebx,dword ptr [opadd]
+loopu:
+                prefetcht0 [eax+64]
+                prefetcht0 [ebx+64]
+                prefetcht0 [eax+96]
+                prefetcht0 [ebx+96]
+
+                movups  xmm2,xmmword ptr[eax]
+                movups  xmm1,xmmword ptr[ebx]
+                mulps   xmm2,xmm0
+                addps   xmm2,xmm1
+                movups  xmmword ptr[edx],xmm2
+
+                movups  xmm3,xmmword ptr[eax+4*4]
+                movups  xmm1,xmmword ptr[ebx+4*4]
+                mulps   xmm3,xmm0
+                addps   xmm3,xmm1
+                movups  xmmword ptr[edx+4*4],xmm3
+
+                movups  xmm4,xmmword ptr[eax+8*4]
+                movups  xmm1,xmmword ptr[ebx+8*4]
+                mulps   xmm4,xmm0
+                addps   xmm4,xmm1
+                movups  xmmword ptr[edx+8*4],xmm4
+
+                movups  xmm5,xmmword ptr[eax+12*4]
+                movups  xmm1,xmmword ptr[ebx+12*4]
+                mulps   xmm5,xmm0
+                addps   xmm5,xmm1
+                movups  xmmword ptr[edx+12*4],xmm5
+
+                add     eax,16*4
+                add     edx,16*4
+                add     ebx,16*4
+                loop    loopu
+            }
+        }
+        while(cnt--) *(dst++) = *(src++) * opmul + *(opadd++); 
+    }
+    else
+#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
+    if(GetSIMDCapabilities()&simd_altivec && VectorsAligned(src,dst,add)) 
+        ScaleAltivec(dst,src,opmul,opadd,cnt);
+    else
+#endif // _MSC_VER
+#endif // FLEXT_USE_SIMD
     {
         int n = cnt>>3;
         cnt -= n<<3;
-        if(dst == add) {
+        if(dst == opadd) {
             while(n--) {
                 dst[0] += src[0]*opmul; dst[1] += src[1]*opmul; 
                 dst[2] += src[2]*opmul; dst[3] += src[3]*opmul; 
@@ -1609,41 +1797,179 @@ void flext::ScaleSamples(t_sample *dst,const t_sample *src,t_sample opmul,const 
         }
         else {
             while(n--) {
-                dst[0] = src[0]*opmul+add[0]; dst[1] = src[1]*opmul+add[1]; 
-                dst[2] = src[2]*opmul+add[2]; dst[3] = src[3]*opmul+add[3]; 
-                dst[4] = src[4]*opmul+add[4]; dst[5] = src[5]*opmul+add[5]; 
-                dst[6] = src[6]*opmul+add[6]; dst[7] = src[7]*opmul+add[7]; 
-                src += 8,dst += 8,add += 8;
+                dst[0] = src[0]*opmul+opadd[0]; dst[1] = src[1]*opmul+opadd[1]; 
+                dst[2] = src[2]*opmul+opadd[2]; dst[3] = src[3]*opmul+opadd[3]; 
+                dst[4] = src[4]*opmul+opadd[4]; dst[5] = src[5]*opmul+opadd[5]; 
+                dst[6] = src[6]*opmul+opadd[6]; dst[7] = src[7]*opmul+opadd[7]; 
+                src += 8,dst += 8,opadd += 8;
             }
-            while(cnt--) *(dst++) = *(src++)*opmul+*(add++); 
+            while(cnt--) *(dst++) = *(src++)*opmul+*(opadd++); 
         }
     }
+#endif
 }
 
-void flext::ScaleSamples(t_sample *dst,const t_sample *src,const t_sample *mul,const t_sample *add,int cnt) 
+void flext::ScaleSamples(t_sample *dst,const t_sample *src,const t_sample *opmul,const t_sample *opadd,int cnt) 
 {
+#ifdef FLEXT_USE_IPP
+    if(sizeof(t_sample) == 4) {
+        ippsMul_32f((const float *)src,(const float *)opmul,(float *)dst,cnt); 
+        ippsAdd_32f_I((const float *)opadd,(float *)dst,cnt); 
+    }
+    else if(sizeof(t_sample) == 8) {
+        ippsMul_64f((const double *)src,(const double *)opmul,(double *)dst,cnt); 
+        ippsAdd_64f_I((const double *)opadd,(double *)dst,cnt); 
+    }
+    else
+        ERRINTERNAL();
+#else
+#ifdef FLEXT_USE_SIMD
+#ifdef _MSC_VER
+    if(GetSIMDCapabilities()&simd_sse) {
+        // single precision
+        int n = cnt>>4;
+        cnt -= n<<4;
+
+        __asm {
+            mov     eax,dword ptr [src]
+            prefetcht0 [eax+0]
+            prefetcht0 [eax+32]
+        }
+
+        if(VectorsAligned(src,dst,opmul,opadd)) {
+            // aligned version
+            __asm {
+                mov     ecx,dword ptr [n]
+                mov     eax,dword ptr [src]
+                mov     edx,dword ptr [dst]
+                mov     esi,dword ptr [opmul]
+                mov     ebx,dword ptr [opadd]
+loopa:
+                prefetcht0 [eax+64]
+                prefetcht0 [ebx+64]
+                prefetcht0 [esi+64]
+                prefetcht0 [eax+96]
+                prefetcht0 [ebx+96]
+                prefetcht0 [esi+96]
+
+                movaps  xmm2,xmmword ptr[eax]
+                movaps  xmm0,xmmword ptr[esi]
+                movaps  xmm1,xmmword ptr[ebx]
+                mulps   xmm2,xmm0
+                addps   xmm2,xmm1
+                movaps  xmmword ptr[edx],xmm2
+
+                movaps  xmm3,xmmword ptr[eax+4*4]
+                movaps  xmm0,xmmword ptr[esi+4*4]
+                movaps  xmm1,xmmword ptr[ebx+4*4]
+                mulps   xmm3,xmm0
+                addps   xmm3,xmm1
+                movaps  xmmword ptr[edx+4*4],xmm3
+
+                movaps  xmm4,xmmword ptr[eax+8*4]
+                movaps  xmm0,xmmword ptr[esi+8*4]
+                movaps  xmm1,xmmword ptr[ebx+8*4]
+                mulps   xmm4,xmm0
+                addps   xmm4,xmm1
+                movaps  xmmword ptr[edx+8*4],xmm4
+
+                movaps  xmm5,xmmword ptr[eax+12*4]
+                movaps  xmm0,xmmword ptr[esi+12*4]
+                movaps  xmm1,xmmword ptr[ebx+12*4]
+                mulps   xmm5,xmm0
+                addps   xmm5,xmm1
+                movaps  xmmword ptr[edx+12*4],xmm5
+
+                add     eax,16*4
+                add     edx,16*4
+                add     ebx,16*4
+                add     esi,16*4
+                loop    loopa
+            }
+        }
+        else {
+            // unaligned version
+            __asm {
+                mov     ecx,dword ptr [n]
+                mov     eax,dword ptr [src]
+                mov     edx,dword ptr [dst]
+                mov     esi,dword ptr [opmul]
+                mov     ebx,dword ptr [opadd]
+loopu:
+                prefetcht0 [eax+64]
+                prefetcht0 [ebx+64]
+                prefetcht0 [esi+64]
+                prefetcht0 [eax+96]
+                prefetcht0 [ebx+96]
+                prefetcht0 [esi+96]
+
+                movups  xmm2,xmmword ptr[eax]
+                movups  xmm0,xmmword ptr[esi]
+                movups  xmm1,xmmword ptr[ebx]
+                mulps   xmm2,xmm0
+                addps   xmm2,xmm1
+                movups  xmmword ptr[edx],xmm2
+
+                movups  xmm3,xmmword ptr[eax+4*4]
+                movups  xmm0,xmmword ptr[esi+4*4]
+                movups  xmm1,xmmword ptr[ebx+4*4]
+                mulps   xmm3,xmm0
+                addps   xmm3,xmm1
+                movups  xmmword ptr[edx+4*4],xmm3
+
+                movups  xmm4,xmmword ptr[eax+8*4]
+                movups  xmm0,xmmword ptr[esi+8*4]
+                movups  xmm1,xmmword ptr[ebx+8*4]
+                mulps   xmm4,xmm0
+                addps   xmm4,xmm1
+                movups  xmmword ptr[edx+8*4],xmm4
+
+                movups  xmm5,xmmword ptr[eax+12*4]
+                movups  xmm0,xmmword ptr[esi+12*4]
+                movups  xmm1,xmmword ptr[ebx+12*4]
+                mulps   xmm5,xmm0
+                addps   xmm5,xmm1
+                movups  xmmword ptr[edx+12*4],xmm5
+
+                add     eax,16*4
+                add     edx,16*4
+                add     ebx,16*4
+                add     esi,16*4
+                loop    loopu
+            }
+        }
+        while(cnt--) *(dst++) = *(src++) * *(opmul++) + *(opadd++); 
+    }
+    else
+#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
+    if(GetSIMDCapabilities()&simd_altivec && VectorsAligned(src,dst,opmul,opadd)) 
+        ScaleAltivec(dst,src,opmul,opadd,cnt);
+    else
+#endif // _MSC_VER
+#endif // FLEXT_USE_SIMD
     {
         int n = cnt>>3;
         cnt -= n<<3;
-        if(dst == add) {
+        if(dst == opadd) {
             while(n--) {
-                dst[0] += src[0]*mul[0]; dst[1] += src[1]*mul[1]; 
-                dst[2] += src[2]*mul[2]; dst[3] += src[3]*mul[3]; 
-                dst[4] += src[4]*mul[4]; dst[5] += src[5]*mul[5]; 
-                dst[6] += src[6]*mul[6]; dst[7] += src[7]*mul[7]; 
-                src += 8,dst += 8,mul += 8;
+                dst[0] += src[0]*opmul[0]; dst[1] += src[1]*opmul[1]; 
+                dst[2] += src[2]*opmul[2]; dst[3] += src[3]*opmul[3]; 
+                dst[4] += src[4]*opmul[4]; dst[5] += src[5]*opmul[5]; 
+                dst[6] += src[6]*opmul[6]; dst[7] += src[7]*opmul[7]; 
+                src += 8,dst += 8,opmul += 8;
             }
-            while(cnt--) *(dst++) += *(src++) * *(mul++); 
+            while(cnt--) *(dst++) += *(src++) * *(opmul++); 
         }
         else {
             while(n--) {
-                dst[0] = src[0]*mul[0]+add[0]; dst[1] = src[1]*mul[1]+add[1]; 
-                dst[2] = src[2]*mul[2]+add[2]; dst[3] = src[3]*mul[3]+add[3]; 
-                dst[4] = src[4]*mul[4]+add[4]; dst[5] = src[5]*mul[5]+add[5]; 
-                dst[6] = src[6]*mul[6]+add[6]; dst[7] = src[7]*mul[7]+add[7]; 
-                src += 8,dst += 8,mul += 8,add += 8;
+                dst[0] = src[0]*opmul[0]+opadd[0]; dst[1] = src[1]*opmul[1]+opadd[1]; 
+                dst[2] = src[2]*opmul[2]+opadd[2]; dst[3] = src[3]*opmul[3]+opadd[3]; 
+                dst[4] = src[4]*opmul[4]+opadd[4]; dst[5] = src[5]*opmul[5]+opadd[5]; 
+                dst[6] = src[6]*opmul[6]+opadd[6]; dst[7] = src[7]*opmul[7]+opadd[7]; 
+                src += 8,dst += 8,opmul += 8,opadd += 8;
             }
-            while(cnt--) *(dst++) = *(src++)* *(mul++) + *(add++); 
+            while(cnt--) *(dst++) = *(src++)* *(opmul++) + *(opadd++); 
         }
     }
+#endif
 }

@@ -12,6 +12,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\brief Lock-free container classes
    
 	This code has been adapted from the MidiShare project (c)Grame
+    http://midishare.sourceforge.net
 */
 
 #ifndef __FLCONTAINERS_H
@@ -21,12 +22,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flprefix.h"
 
 
-#if 1 //def __Pentium__
-#define VTYPE volatile
-#else
-#define VTYPE
-#endif
-
+// define that precautiously...
+// it's faster without that but we can't really know...
 #define __SMP__
 
 
@@ -47,7 +44,7 @@ public:
 
     inline Cell *Avail() { return (Cell *)top; }
 
-#if defined(_WIN32) && defined(_MSC_VER)
+#if defined(_MSC_VER) && (defined(_WIN32))
     #ifdef __SMP__
     #define LOCK lock
     #else
@@ -112,7 +109,7 @@ public:
     }
 
     inline size_t Size() const { return ic-oc; }
-#elif defined(__GNUC__) && (defined(_X86_) || defined(__i386__) || defined(__i586__) || defined(__i686__))
+#elif defined(__GNUC__) && (defined(_X86_) || defined(__i386__))
     #ifndef SMPLOCK
     # ifdef __SMP__
     #  define SMPLOCK "lock ; "
@@ -183,6 +180,10 @@ public:
 		    :"memory", "edx");
 	    return n;
     }
+#elif defined(__GNUC__) && defined(__x86_64__)
+
+#error x86-64 architecture not supported yet
+
 #elif defined(__GNUC__) && defined(__POWERPC__)
     inline void Push(register Cell *cl) 
     {
@@ -244,13 +245,15 @@ public:
     }
 
     inline size_t Size() const { return oc; }
+#else
+#error Platform not supported
 #endif
 
 private:
     // don't change order!
-    VTYPE size_t ic;		// input (push) count
-	VTYPE Cell *top;	    // top of the stack
-	VTYPE size_t oc;		// output (pop) count
+    volatile size_t ic;		// input (push) count
+	volatile Cell *top;	    // top of the stack
+	volatile size_t oc;		// output (pop) count
 #ifdef __POWERPC__
 	size_t unused[5];		// lifo size must be at least 32 bytes
 							// to avoid livelock in multiprocessor

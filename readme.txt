@@ -27,16 +27,16 @@ o Microsoft Visual C++ 6: no makefile yet
 o GCC: no makefile yet
 
 - Max/MSP - MacOS:
-o Metrowerks CodeWarrior V6: works just perfectly
+o Metrowerks CodeWarrior V6: ok
 
 ----------------------------------------------------------------------------
 
 TODO list:
 - Documentation
-- Exchange preprocessor definitions for C++ base class code
+- Trade preprocessor definitions for C++ base class code
 - cleaner makefiles
 - better function names
 - abstraction for parsing GIMME args
 - abstraction for creating lists
-- clarify: what is Max/MSP behavior for floats into signal inlets?
++ clarify: what is Max/MSP behavior for floats into signal inlets? -> SEEMS TO ACT LIKE PD
 

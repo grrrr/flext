@@ -740,6 +740,8 @@ private:
 
 	static void cb_loadbang(t_class *c);
 #if FLEXT_SYS == FLEXT_SYS_MAX
+	char **indesc,**outdesc;
+
 	static void cb_assist(t_class *c,void *b,long msg,long arg,char *s);
 #endif
 };

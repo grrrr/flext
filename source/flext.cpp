@@ -14,7 +14,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
  
 #include "flext.h"
 #include "flinternal.h"
-
+#include <string.h>
 
 // === flext_base ============================================
 
@@ -30,6 +30,9 @@ flext_base::flext_base():
 	methhead(new itemarr),attrhead(new itemarr), //attrcnt(0),
 	clmethhead(ClMeths(thisClass())),clattrhead(ClAttrs(thisClass())), 
 	inlets(NULL)
+#if FLEXT_SYS == FLEXT_SYS_MAX
+	,indesc(NULL),outdesc(NULL)
+#endif
 {
 	LOG1("%s - flext logging is on",thisName());
 
@@ -71,6 +74,15 @@ flext_base::~flext_base()
 	}
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
+	if(indesc) {
+		for(int i = 0; i < incnt; ++i) if(indesc[i]) delete[] indesc[i];
+		delete[] indesc;
+	}
+	if(outdesc) {
+		for(int i = 0; i < outcnt; ++i) if(outdesc[i]) delete[] outdesc[i];
+		delete[] outdesc;
+	}
+
 //	if(insigs) dsp_free(thisHdr());
 	if(insigs) dsp_freebox(thisHdr());
 #endif
@@ -81,7 +93,7 @@ flext_base::~flext_base()
 	It creates the inlets and outlets and the message and attribute lists.
 	\note You can override it in your own class, but be sure to call it, 
 	\note otherwise no inlets/outlets will be created
-	\mote All inlet, outlets, method and attribute declarations must be made before a call to Init!
+	\note All inlet, outlets, method and attribute declarations must be made before a call to Init!
 	\remark Creation of inlets/outlets can't be done upon declaration, as Max/MSP needs creation
 	\remark in reverse.
 */
@@ -147,6 +159,14 @@ void flext_base::m_help()
 
 void flext_base::m_loadbang() {}
 
-void flext_base::m_assist(long /*msg*/,long /*arg*/,char * /*s*/) {}
-
-
+void flext_base::m_assist(long msg,long arg,char *s) 
+{
+	switch(msg) {
+	case 1: //ASSIST_INLET:
+		strcpy(s,arg < incnt && indesc[arg]?indesc[arg]:""); 
+		break;
+	case 2: //ASSIST_OUTLET:
+		strcpy(s,arg < outcnt && outdesc[arg]?outdesc[arg]:""); 
+		break;
+	}
+}

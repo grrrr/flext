@@ -103,6 +103,8 @@ Version history:
 - full port for Max@OSX
 - completely redesigned message and attribute handling: now hashed and much more efficient
 - added some prerequisites for usage of flext as a shared library
+- completed Max/MSPs inlet/outlet assist description functionality
+- Max/MSP signal objects: fixed bug of reporting wrong number of inlets
 - put overloaded new/delete into flext support class
 - introduced "Finalize" virtual method, called after all "Init" methods
 - fixed crash issue in flext_dsp when there are NO signal inlets or outlets defined

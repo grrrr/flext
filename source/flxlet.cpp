@@ -23,8 +23,9 @@ flext_base::xlet::xlet(type t,const char *d):
 { 
 	if(d) {
 		int ln = strlen(d);
-		desc = new char[ln];
-		strncpy(desc,d,ln);
+		desc = new char[ln+1];
+		memcpy(desc,d,ln);
+		desc[ln] = 0;
 	}
 	else desc = NULL;
 }
@@ -45,9 +46,18 @@ void flext_base::AddXlet(xlet::type tp,int mult,const char *desc,xlet *&root)
 	}
 }
 
-void flext_base::DescXlet(int ix,const char *desc,xlet *&root)
+void flext_base::DescXlet(int ix,const char *d,xlet *&root)
 {
-	post("%s - sorry, not implemented",thisName());
+	xlet *xi = root; 
+	for(int i = 0; xi && i < ix; xi = xi->nxt,++i) {}
+
+	if(xi) {
+		if(xi->desc) delete[] xi->desc;
+		int ln = strlen(d);
+		xi->desc = new char[ln+1];
+		memcpy(xi->desc,d,ln);
+		xi->desc[ln] = 0;
+	}
 }
 
 unsigned long flext_base::XletCode(xlet::type tp,...)

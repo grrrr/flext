@@ -14,7 +14,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "flext.h"
 #include "flinternal.h"
-
+#include <string.h>
  
 #ifndef FLEXT_THREADS
 void flext_base::ToOutBang(outlet *o) const { CRITON(); outlet_bang((t_outlet *)o); CRITOFF(); }
@@ -50,6 +50,22 @@ bool flext_base::InitInlets()
 		xlet::type *list = new xlet::type[incnt];
 		int i;
 		for(xi = inlist,i = 0; xi; xi = xi->nxt,++i) list[i] = xi->tp;
+		
+#if FLEXT_SYS == FLEXT_SYS_MAX		
+		// copy inlet descriptions
+		indesc = new char *[incnt];
+		for(xi = inlist,i = 0; xi; xi = xi->nxt,++i) {
+			int l = xi->desc?strlen(xi->desc):0;
+			if(l) {
+				indesc[i] = new char[l+1];
+				memcpy(indesc[i],xi->desc,l);
+				indesc[i][l] = 0;
+			}
+			else
+				indesc[i] = NULL;
+		}
+#endif
+
 		delete inlist; inlist = NULL;
 		
 		inlets = new px_object *[incnt];
@@ -174,7 +190,7 @@ bool flext_base::InitInlets()
 				}
 			}
 
-			incnt = cnt;
+//			incnt = cnt;
 	
 			if(insigs) 
 //				dsp_setup(thisHdr(),insigs); // signal inlets	
@@ -216,6 +232,22 @@ bool flext_base::InitOutlets()
 		xlet::type *list = new xlet::type[outcnt];
 		int i;
 		for(xi = outlist,i = 0; xi; xi = xi->nxt,++i) list[i] = xi->tp;
+
+#if FLEXT_SYS == FLEXT_SYS_MAX		
+		// copy outlet descriptions
+		outdesc = new char *[outcnt];
+		for(xi = outlist,i = 0; xi; xi = xi->nxt,++i) {
+			int l = xi->desc?strlen(xi->desc):0;
+			if(l) {
+				outdesc[i] = new char[l+1];
+				memcpy(outdesc[i],xi->desc,l);
+				outdesc[i][l] = 0;
+			}
+			else
+				outdesc[i] = NULL;
+		}
+#endif
+
 		delete outlist; outlist = NULL;
 		
 		outlets = new outlet *[outcnt];
@@ -256,7 +288,7 @@ bool flext_base::InitOutlets()
 #endif
 			} 
 		}
-		
+
 		delete[] list;
 	}
 

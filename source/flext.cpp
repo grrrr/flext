@@ -10,6 +10,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <_cppext.h>
 
+// -- ext_obj --------------------------
+
 V ext_obj::cb_setup(t_class *c)
 {
 	add_method0(c,cb_help,"help");
@@ -32,7 +34,7 @@ V ext_obj::m_help()
 	post("Loaded object '%s' - compiled on %s %s",thisName(),__DATE__,__TIME__);
 }
 
-// ----------------------------
+// -- dsp_obj --------------------------
 
 V dsp_obj::cb_setup(t_class *c)
 {

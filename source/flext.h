@@ -52,7 +52,7 @@ public:
 	buffer(t_symbol *s = NULL);
 	~buffer();
 	
-	BL Set(t_symbol *s = NULL);
+	I Set(t_symbol *s = NULL);
 	V Dirty();
 	
 	t_symbol *Symbol() { return sym; }

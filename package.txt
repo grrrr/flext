@@ -20,6 +20,8 @@ BUILDCLASS=flext
 BUILDMODE=all
 BUILDTYPE=all
 
+BUILDDIR=build
+
 SRCDIR=source
 
 PRECOMPILE=flext.h

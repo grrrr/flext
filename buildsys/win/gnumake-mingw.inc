@@ -6,9 +6,12 @@ TARGET=$(TARGETPATH)\$(OUTNAME).$(EXT)
 
 ##############################################
 
-LDFLAGS += -shared
+CFLAGS += -pthread
+LDFLAGS += -pthread -shared
 
 ##############################################
+
+CFLAGS += $(UFLAGS)
 
 ifdef DEBUG
 CFLAGS += -g -D_DEBUG

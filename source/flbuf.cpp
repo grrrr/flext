@@ -28,8 +28,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
-static const t_symbol *sym_buffer = flext::MakeSymbol("buffer~");
-static const t_symbol *sym_size = flext::MakeSymbol("size");
+static const t_symbol *sym_buffer = NULL;
+static const t_symbol *sym_size = NULL;
 #endif
 
 flext::buffer::buffer(const t_symbol *bn,bool delayed):
@@ -42,6 +42,9 @@ flext::buffer::buffer(const t_symbol *bn,bool delayed):
     isdirty = false;
     ticking = false;
     tick = clock_new(this,(t_method)cb_tick);
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+	if(!sym_buffer) sym_buffer = flext::MakeSymbol("buffer~");
+	if(!sym_size) sym_size = flext::MakeSymbol("size");
 #endif
 
     if(bn) Set(bn,delayed);
@@ -106,7 +109,7 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
             FLEXT_ASSERT(!NOGOOD(p));
             
             if(ob_sym(p) != sym_buffer) {
-                post("buffer: object '%s' not valid",GetString(sym)); 
+                post("buffer: object '%s' not valid (type %s)",GetString(sym),GetString(ob_sym(p))); 
                 if(valid) ret = -2;
             }
             else {

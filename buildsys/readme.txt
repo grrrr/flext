@@ -167,6 +167,9 @@ Macro names
 
 PKGINFO - filename for package information (must reside in project folder)
 
+UFLAGS - user defined compiler flags
+OFLAGS - user defined optimization flags (not used in debug builds)
+
 CFLAGS - compiler flags
 LDFLAGS - linker flags
 

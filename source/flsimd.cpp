@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -47,7 +47,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
         #include <altivec.h>
         #include <vectorOps.h>
-    #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__GNUG__) && defined(__VEC__)
+    #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__GNUC__) && defined(__VEC__)
         #include <sys/sysctl.h> 
         #include <vecLib/vecLib.h>
     #endif
@@ -344,7 +344,7 @@ inline void StoreUnaligned( vector float v,float *where)
 
 inline bool IsVectorAligned(const void *where) 
 {
-    return reinterpret_cast<unsigned long>(where)&(sizeof(vector float)-1) == 0; 
+    return (reinterpret_cast<size_t>(where)&(sizeof(vector float)-1)) == 0; 
 }
 
 inline vector float LoadValue(const float &f)

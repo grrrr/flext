@@ -1,4 +1,6 @@
-all: build-default-default
+all: build
+
+build: build-default-default
 
 clean: clean-default-default
 

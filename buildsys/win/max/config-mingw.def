@@ -31,8 +31,12 @@ HELPPATH="%ProgramFiles%/MaxMSP 4.5/max-help/flext"
 
 ###############################################################
 
-# some user-definable flags
+# user defined compiler flags
 # (check if they match your system!)
-OFLAGS=-O2 
+UFLAGS=-msse
+
+# user defined optimization flags
+# (check if they match your system!)
+OFLAGS=-O3
 # optimizations for Pentium 4
-#OFLAGS += -march=pentium4 -msse
+OFLAGS+=-march=pentium4 

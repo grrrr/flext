@@ -31,6 +31,10 @@ HELPPATH=/Applications/MaxMSP\ 4.5/max-help/flext
 
 # user defined compiler flags
 # (check if they match your system!)
-OFLAGS=-O2
+UFLAGS=-maltivec -faltivec
+
+# user defined optimization flags
+# (check if they match your system!)
+OFLAGS=-O3
 # optimizations for G4
-#OFLAGS += -mcpu=G4 -malign-natural -maltivec -faltivec
+OFLAGS+=-mcpu=G4

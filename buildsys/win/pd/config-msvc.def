@@ -29,9 +29,13 @@ INSTPATH=$(PDPATH)\extra
 
 # user defined compiler flags
 # (check if they match your system!)
+UFLAGS=
+
+# user defined optimization flags
+# (check if they match your system!)
 OFLAGS=/Ox
 # optimizations for Pentium 4
-#OFLAGS=$(OFLAGS) /G6 /arch:SSE
+OFLAGS=$(OFLAGS) /G6 /arch:SSE
 
 # uncomment to link against dynamic C runtime libraries
 # (don't use this if you want to distribute the built product)

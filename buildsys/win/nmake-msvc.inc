@@ -30,6 +30,8 @@ LDFLAGS=$(LDFLAGS) /nologo
 
 ##############################################
 
+CFLAGS=$(CFLAGS) $(UFLAGS)
+
 !ifdef DEBUG
 
 CFLAGS=$(CFLAGS) /D_DEBUG

@@ -82,6 +82,7 @@ extern "C"
 }
 
 typedef t_pxobject t_sigobj;
+typedef t_patcher t_canvas;
 
 typedef t_int t_flint;
 

@@ -94,11 +94,9 @@ class EXT_EXTERN CPPExtern
     	// Destructor
     	virtual ~CPPExtern() = 0;
     	
-#ifdef PD
         //////////
         // Get the object's canvas
         t_canvas            *getCanvas()        { return(m_canvas); }
-#endif
 
         //////////
         // This is a holder - don't touch it
@@ -122,11 +120,9 @@ class EXT_EXTERN CPPExtern
 
     private:
 
-#ifdef PD
         //////////
-        // The canvas that the object is in
+        // The canvas (patcher) that the object is in
         t_canvas            *m_canvas;
-#endif
 };
 
 // This has a dummy arg so that NT won't complain
@@ -135,6 +131,12 @@ EXT_EXTERN void *operator new(size_t, void *location, void *dummy);
 ////////////////////////////////////////
 // This should be used in the header
 ////////////////////////////////////////
+
+#ifdef PD
+#define CPPEXTERN_GETCLASS(obj) ((t_class *)((t_object *)(obj))->te_g.g_pd)
+#elif defined(MAXMSP)
+#define CPPEXTERN_GETCLASS(obj) ((t_class *)(((t_tinyobject *)obj)->t_messlist-1))
+#endif
 
 #define CPPEXTERN_HEADER(NEW_CLASS, PARENT_CLASS)    	    	\
 public:     	    	    \
@@ -146,7 +148,7 @@ static void callb_setup(t_class *classPtr)  	    	\
 { PARENT_CLASS::callb_setup(classPtr);    	    	\
   NEW_CLASS::cb_setup(classPtr); }  	    	    	\
 private:    \
-inline t_class *thisClass() { return x_obj->te_g.g_pd; } \
+inline t_class *thisClass() { return CPPEXTERN_GETCLASS(x_obj); } \
 static NEW_CLASS *thisObject(V *c) { return (NEW_CLASS *)((Obj_header *)c)->data; }	    	   \
 static void cb_setup(t_class *classPtr);
 

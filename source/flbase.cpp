@@ -14,11 +14,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 EXT_EXTERN void *operator new(size_t, void *location, void *) {return(location);}
 
-#ifdef PD
-t_object *CPPExtern::m_holder;
-#elif defined(MAXMSP)
-t_pxobject *CPPExtern::m_holder;
-#endif
+t_sigobj *CPPExtern::m_holder;
 
 /////////////////////////////////////////////////////////
 //
@@ -33,6 +29,8 @@ CPPExtern :: CPPExtern()
 {
 #ifdef PD
     m_canvas = canvas_getcurrent();
+#elif defined(MAXMSP)
+    m_canvas = (t_patcher *)gensym("#P")->s_thing;
 #endif
 }
 

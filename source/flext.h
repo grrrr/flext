@@ -20,6 +20,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #pragma warning(disable: 4786)
 #endif
 
+#ifdef __BORLANDC__
+#pragma warn -8008 // Condition is always false
+#pragma warn -8057 // Parameter is never used
+#pragma warn -8066 // Unreachable code
+#endif
+
 #include <list> // C++ STL lists 
 
  

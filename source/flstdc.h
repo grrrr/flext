@@ -25,8 +25,11 @@ once drifted apart in Max and PD. It is not elegant but helps.
 #endif
 
 #ifdef PD
+
+#ifdef _MSC_VER
 #pragma warning (push)
 #pragma warning (disable:4091)
+#endif
 
 #ifdef __cplusplus
 extern "C" {	    	    	    	    	    	    	
@@ -41,7 +44,10 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#ifdef _MSC_VER
 #pragma warning (pop)
+#endif
 
 typedef t_object t_sigobj;
 typedef t_gpointer *t_ptrtype;

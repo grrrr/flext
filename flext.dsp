@@ -273,6 +273,10 @@ SOURCE=.\source\flattr.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\source\flbind.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\source\flitem.cpp
 # End Source File
 # Begin Source File

@@ -237,6 +237,9 @@ static void jmax_class_inst(t_class *cl)
 
 void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const char *names,void setupfun(t_classid),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...)
 {
+    // set up bind proxy
+	SetupBindProxy();
+	
 	// get first possible object name
 	const t_symbol *nsym = MakeSymbol(extract(names));
 	
@@ -261,8 +264,6 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
      	sizeof(flext_hdr),CLASS_DEFAULT,A_GIMME,A_NULL);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	if(!lib) {
-		SetupBindProxy();
-	
 		::setup(
 			(t_messlist **)cl,
     		(t_newmethod)obj_new,(t_method)obj_free,

@@ -85,8 +85,8 @@ LIB32=link.exe -lib
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "flext___Win32_Threads_Debug"
-# PROP Intermediate_Dir "flext___Win32_Threads_Debug"
+# PROP Output_Dir "msvc-t-debug"
+# PROP Intermediate_Dir "msvc-t-debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GR /ZI /Od /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /D "FLEXT_THREADS" /FR /YX /FD /GZ /c
 # ADD CPP /nologo /MTd /W3 /Gm /GR /ZI /Od /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /D "FLEXT_THREADS" /FR /YX /FD /GZ /c
@@ -97,7 +97,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo /out:"msvc-debug\flext-pdwin.lib"
-# ADD LIB32 /nologo /out:"msvc-debug\flext_t-pdwin.lib"
+# ADD LIB32 /nologo /out:"msvc-t-debug\flext_t-pdwin.lib"
 
 !ELSEIF  "$(CFG)" == "flext - Win32 Threads Release"
 
@@ -108,8 +108,8 @@ LIB32=link.exe -lib
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "flext___Win32_Threads_Release"
-# PROP Intermediate_Dir "flext___Win32_Threads_Release"
+# PROP Output_Dir "msvc-t"
+# PROP Intermediate_Dir "msvc-t"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GR /O2 /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /D "FLEXT_THREADS" /YX /FD /c
 # ADD CPP /nologo /MT /W3 /GR /O2 /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /D "FLEXT_THREADS" /YX /FD /c
@@ -120,7 +120,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo /out:"msvc/flext-pdwin.lib"
-# ADD LIB32 /nologo /out:"msvc/flext_t-pdwin.lib"
+# ADD LIB32 /nologo /out:"msvc-t/flext_t-pdwin.lib"
 
 !ENDIF 
 

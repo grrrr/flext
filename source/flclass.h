@@ -367,10 +367,9 @@ public:
 	;
 #endif
 
-	int GetPriority();
-	void SetPriority(int p);
-	void RaisePriority() { SetPriority(GetPriority()+1); }
-	void LowerPriority() { SetPriority(GetPriority()-1); }
+	void NormalPriority();
+	void LowerPriority();
+	void LowestPriority();
 
 	class ThrMutex 
 	{

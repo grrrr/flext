@@ -93,29 +93,47 @@ void flext_base::YTick(flext_base *th) {
 #endif
 
 
-int flext_base::GetPriority()
+void flext_base::NormalPriority()
 {
 #ifdef NT
 	HANDLE thr = GetCurrentThread();
-	return GetThreadPriority(thr);
-#else
-	int policy;
-	sched_param parm;
-	pthread_getschedparam(pthread_self(),&policy,&parm);
-
-	return parm.sched_priority;
-#endif
-}
-
-void flext_base::SetPriority(int p)
-{
-#ifdef NT
-	HANDLE thr = GetCurrentThread();
-	SetThreadPriority(thr,p);
+	SetThreadPriority(thr,THREAD_PRIORITY_NORMAL);
 #else
 	int policy = 0;
 	sched_param parm;
 	parm.sched_priority = 0;
+	if(pthread_setschedparam(pthread_self(),policy,&parm)) {
+		post("%s - failed to change priority",thisName());
+	}
+#endif
+}
+
+
+void flext_base::LowerPriority()
+{
+#ifdef NT
+	HANDLE thr = GetCurrentThread();
+	SetThreadPriority(thr,THREAD_PRIORITY_BELOW_NORMAL);
+#else
+	int policy = 0;
+	sched_param parm;
+	parm.sched_priority = -1;
+	if(pthread_setschedparam(pthread_self(),policy,&parm)) {
+		post("%s - failed to change priority",thisName());
+	}
+#endif
+}
+
+
+void flext_base::LowestPriority()
+{
+#ifdef NT
+	HANDLE thr = GetCurrentThread();
+	SetThreadPriority(thr,THREAD_PRIORITY_LOWEST);
+#else
+	int policy = 0;
+	sched_param parm;
+	parm.sched_priority = -2;
 	if(pthread_setschedparam(pthread_self(),policy,&parm)) {
 		post("%s - failed to change priority",thisName());
 	}

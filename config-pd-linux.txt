@@ -4,7 +4,6 @@
 
 # your c++ compiler (define only if it's different than g++)
 # CXX=g++
-CXX=icc
 
 # where are the PD header files? (m_pd.h, m_imp.h, g_canvas.h)
 # if it is a system include path (like /usr/local/include) 
@@ -31,6 +30,3 @@ INSTDIR=/usr/local/lib/pd/flext
 # UFLAGS=-mcpu=pentiumpro # gcc 2.95
 # UFLAGS=-mcpu=pentium3 -msse  # gcc 3.2
 
-# define to use old library naming for backwards compatibility (to externals depending on flext versions < 0.5) 
-# ("flext.a" instead of new "libflext.a" etc.)
-V4_NAMING=1

@@ -67,26 +67,21 @@ else
 DYNAMIC=-Wl,-Bdynamic
 endif
 
-#ifdef V4_NAMING
-#TARGET=${TARGDIR}/${NAME}.a 
-#TARGET_D=${TARGDIR}/${NAME}_d.a
-#TARGET_T=${TARGDIR}/${NAME}_t.a
-#TARGET_TD=${TARGDIR}/${NAME}_td.a
-#else
+
 TARGET=${TARGDIR}/lib${NAME}.a 
 TARGET_D=${TARGDIR}/lib${NAME}_d.a
 TARGET_T=${TARGDIR}/lib${NAME}_t.a
 TARGET_TD=${TARGDIR}/lib${NAME}_td.a
-#endif
 TARGET_S=${TARGDIR}/lib${NAME}.so
 TARGET_SD=${TARGDIR}/lib${NAME}_d.so
+
 
 all: $(TARGDIR) $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD) $(TARGET_S) $(TARGET_SD)
 
 $(TARGDIR):
 	mkdir $(TARGDIR)
 
-$(patsubst %,$(SRCDIR)/%,$(SRCS)): $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(patsubst %,$(SRCDIR)/%,$(IHDRS)) # $(MAKEFILE) $(CONFIG)
+$(patsubst %,$(SRCDIR)/%,$(SRCS)): $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(patsubst %,$(SRCDIR)/%,$(IHDRS)) $(MAKEFILE) $(CONFIG)
 	touch $@
 
 $(TARGDIR)/%.ro : $(SRCDIR)/%.cpp

@@ -132,7 +132,15 @@ public:
 			\param refr: if true forces immediate graphics refresh
 		*/
 		void Dirty(bool refr = false);
-		
+
+		//! Clear the dirty flag.
+		void ClearDirty();
+
+		/*! Query whether the buffer content has been changed since the last ClearDirty()
+			\note With mainstream versions of PD this will always return true, since the dirtiness can't be judged
+		*/
+		bool IsDirty() const;
+
 		//! Get symbol of buffer 
 		t_symbol *Symbol() const { return const_cast<t_symbol *>(sym); }
 
@@ -174,10 +182,15 @@ public:
         bool ticking;
         //! update clock
 		t_clock *tick;
+		//! last time the dirty flag was cleared (using the clock_getlogicaltime function)
+		double cleantime;
 
 	private:
         //! update clock callback
 		static void cb_tick(buffer *b);
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+		//! last time the dirty flag was cleared (using the gettime function)
+		long cleantime;
 #endif
 	};
 

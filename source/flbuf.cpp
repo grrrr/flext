@@ -24,7 +24,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define DIRTY_INTERVAL 0   // buffer dirty check in msec
 #endif
 
-
+// check if PD API supports buffer dirty time
+#if defined(PD_VERSION_DEVEL) && defined(PD_MAJOR_VERSION) && defined(PD_MINOR_VERSION)
+#if PD_MINOR_VERSION >= 36
+	#define FLEXT_PDBUFDIRTYTIME
+#endif
+#endif
 
 flext::buffer::buffer(const t_symbol *bn,bool delayed):
 	sym(NULL),data(NULL),
@@ -39,6 +44,8 @@ flext::buffer::buffer(const t_symbol *bn,bool delayed):
 #endif
 
 	if(bn) Set(bn,delayed);
+
+	ClearDirty();
 }
 
 flext::buffer::~buffer()
@@ -142,6 +149,8 @@ bool flext::buffer::Update()
 {
 	if(!Ok()) return false;
 
+	bool ok = false;
+
 #if FLEXT_SYS == FLEXT_SYS_PD
 	int frames1;
 	t_sample *data1;
@@ -149,32 +158,27 @@ bool flext::buffer::Update()
 		frames = 0;
 		data = NULL;
 		chns = 0;
-		return true;
+		ok = true;
 	}
 	else if(data != data1 || frames != frames1) {
 		frames = frames1;
 		data = data1;
-		return true;
+		ok = true;
 	}
-	else
-		return false;
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	if(!sym->s_thing) 
-		return false;
-	else {
+	if(sym->s_thing) {
 		const _buffer *p = (const _buffer *)sym->s_thing;
 		if(data != p->b_samples || chns != p->b_nchans || frames != p->b_frames) {
 			data = p->b_samples;
 			chns = p->b_nchans;
 			frames = p->b_frames;
-			return true;
+			ok = true;
 		}
-		else
-			return false;
 	}
 #else
 #error not implemented
 #endif
+	return ok;
 }
 
 void flext::buffer::Frames(int fr,bool keep,bool zero)
@@ -265,7 +269,7 @@ void flext::buffer::Dirty(bool force)
     		FLEXT_LOG1("buffer: symbol '%s' not defined",sym->s_name);
 		}
 #else
-#error
+#error Not implemented
 #endif 
 	}
 }
@@ -288,5 +292,43 @@ void flext::buffer::cb_tick(buffer *b)
 }
 #endif
 
+void flext::buffer::ClearDirty()
+{
+#if FLEXT_SYS == FLEXT_SYS_PD
+	cleantime = clock_getlogicaltime();
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+	cleantime = gettime();
+#else
+#error Not implemented
+#endif
+}
+
+bool flext::buffer::IsDirty() const
+{
+#if FLEXT_SYS == FLEXT_SYS_PD
+	if(!arr) return false;
+	#ifdef FLEXT_PDBUFDIRTYTIME
+	return isdirty || garray_updatetime(arr) > cleantime;
+	#else
+	// Don't know.... (no method in PD judging whether buffer has been changed from outside flext...)
+	return true; 
+	#endif
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+	if(!sym->s_thing) return false;
+
+	_buffer *p = (_buffer *)sym->s_thing;
+#ifdef FLEXT_DEBUG
+	if(NOGOOD(p)) {
+		post("buffer: buffer object '%s' no good",sym->s_name);
+		return false;
+	}
+#endif
+	return p->b_modtime > cleantime;
+#else
+#error Not implemented
+#endif
+}
 
 #endif // Jmax
+
+

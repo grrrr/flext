@@ -412,7 +412,7 @@
 				InlineFunctionExpansion="2"
 				OmitFramePointers="FALSE"
 				AdditionalIncludeDirectories="f:\prog\pd\pd-cvs\src,f:\prog\packs\pthreads,f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_PD;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_SHARED;FLEXT_EXPORTS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_PD;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_SHARED;FLEXT_EXPORTS;FLEXT_PDLOCK"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="TRUE"

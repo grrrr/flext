@@ -248,6 +248,10 @@ void QWorker(flext::thr_params *)
 
 void flext_base::StartQueue()
 {
+	static bool started = false;
+	if(started) return;
+	else started = true;
+
 	// message queue ticker
 	qhead = qtail = NULL;
 	qcnt = 0;

@@ -73,13 +73,13 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
 		arr = (t_garray *)pd_findbyclass(const_cast<t_symbol *>(sym), garray_class);
 		if(!arr)
 		{
-    		if (*sym->s_name) error("buffer: no such array '%s'",sym->s_name);
+    		if (*GetString(sym)) error("buffer: no such array '%s'",GetString(sym));
     		sym = NULL;
 			if(valid) ret = -1;
 		}
 		else if(!garray_getfloatarray(arr, &frames1, &data1))
 		{
-    		error("buffer: bad template '%s'", sym->s_name); 
+    		error("buffer: bad template '%s'",GetString(sym)); 
     		data = NULL;
 			frames = 0;
 			if(valid) ret = -1;
@@ -95,12 +95,12 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
 			const _buffer *p = (const _buffer *)sym->s_thing;
 			
 			if(NOGOOD(p)) {
-				post("buffer: buffer object '%s' no good",sym->s_name); 
+				post("buffer: buffer object '%s' no good",GetString(sym)); 
 				if(valid) ret = -1;
 			}
 			else {
 #ifdef FLEXT_DEBUG
-				post("%s: buffer object '%s' - valid:%i samples:%i channels:%i frames:%i",thisName(),bufname->s_name,p->b_valid,p->b_frames,p->b_nchans,p->b_frames);
+				post("flext: buffer object '%s' - valid:%i samples:%i channels:%i frames:%i",GetString(sym),p->b_valid,p->b_frames,p->b_nchans,p->b_frames);
 #endif
 				if(data != p->b_samples) { data = p->b_samples; if(!ret) ret = 1; }
 				if(chns != p->b_nchans) { chns = p->b_nchans; if(!ret) ret = 1; }
@@ -108,7 +108,7 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
 			}
 		}
 		else {
-    		error("buffer: symbol '%s' not defined", sym->s_name); 
+    		error("buffer: symbol '%s' not defined", GetString(sym)); 
     		if(valid) ret = -1;
 		}
 #else

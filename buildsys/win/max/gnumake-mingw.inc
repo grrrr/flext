@@ -4,7 +4,5 @@ CFLAGS += -fpack-struct=2
 INCPATH += -I$(MAXSDKPATH)/max-includes -I$(MAXSDKPATH)/msp-includes
 LIBPATH += -L$(MAXSDKPATH)/max-includes -L$(MAXSDKPATH)/msp-includes
 
-# these are both in PDPATH
+# these are both in MAXSDKPATH
 LIBS += -lmaxapi -lmaxaudio
-
-EXT=mxe

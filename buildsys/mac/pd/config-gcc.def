@@ -1,17 +1,29 @@
 # where is the PD installation including source code?
-PDPATH=/Applications/Pd-0.38-0test10.app/Contents/Resources
+PDPATH=/Applications/audio/Pd-0.38-0test13.app/Contents/Resources
 
 # where is the PD executable?
-PDBIN=/usr/local/bin/pd
+PDBIN=$(PDPATH)/bin/pd
+
+###############################################################
+
+# where do/should the flext headers reside/be built?
+FLEXTINC=/usr/local/include/flext
+
+# where do/should the flext static libraries reside/be built?
+FLEXTLIB=/usr/local/lib
+
+# where do/should the flext shared libraries reside/be built?
+FLEXTSHLIB=$(FLEXTLIB)
+
+###############################################################
+
+# where should the external be built?
+OUTPATH=pd-darwin
 
 # where should the external be installed?
 INSTPATH=$(PDPATH)/extra
 
-# where do the flext headers and libraries reside?
-FLEXTPATH=$(PDPATH)/flext
-
-# where should the external be built?
-OUTPATH=pd-darwin
+###############################################################
 
 # user defined compiler flags
 # (check if they match your system!)

@@ -1,5 +1,6 @@
 ifdef SHARED
 EXT=dll
 else
-EXT=a
+EXT=LIB
 endif
+

@@ -4,4 +4,9 @@ INCPATH += -I$(MAXSDKPATH)/max-includes -I$(MAXSDKPATH)/msp-includes
 
 LDFLAGS += -framework MaxAPI -framework MaxAudioAPI
 
-EXT=mxo
+##############################################
+
+OBJPATH=$(OUTPATH)/$(OUTSUB)
+
+TARGETPATH=$(OBJPATH)/$(OUTNAME).$(EXT)/Contents/MacOS
+TARGET=$(TARGETPATH)/$(OUTNAME)

@@ -1,5 +1,5 @@
 ifdef SHARED
-EXT=dll
+EXT=dylib
 else
 EXT=a
 endif

@@ -42,20 +42,20 @@ endif
 ##############################
 # flext-specific definitions
 
-include $(BUILDPATH)gnumake.inc
-
 include $(BUILDPATH)gnumake-$(BUILDCLASS).inc
+
+include $(BUILDPATH)gnumake.inc
 
 ##############################
 # platform-specific make stuff
 
-include $(BUILDPATH)$(PLATFORM)/$(RTSYS)/gnumake-$(COMPILER).inc
-
 include $(BUILDPATH)$(PLATFORM)/$(RTSYS)/gnumake-$(COMPILER)-$(BUILDCLASS).inc
+
+include $(BUILDPATH)$(PLATFORM)/$(RTSYS)/gnumake-$(COMPILER).inc
 
 ##############################
 # general make stuff
 
-include $(BUILDPATH)$(PLATFORM)/gnumake-$(COMPILER).inc
-
 include $(BUILDPATH)$(PLATFORM)/gnumake-$(COMPILER)-$(BUILDCLASS).inc
+
+include $(BUILDPATH)$(PLATFORM)/gnumake-$(COMPILER).inc

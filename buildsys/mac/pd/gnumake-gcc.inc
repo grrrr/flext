@@ -5,6 +5,9 @@ LIBPATH += -L$(PDPATH)/bin
 
 LDFLAGS += -bundle -bundle_loader $(PDBIN)
 
-LIBS +=
+##############################################
 
-EXT=pd_darwin
+OBJPATH=$(OUTPATH)/$(OUTSUB)
+
+TARGETPATH=$(OBJPATH)/$(OUTNAME).$(EXT)/Contents/MacOS
+TARGET=$(TARGETPATH)/$(OUTNAME)

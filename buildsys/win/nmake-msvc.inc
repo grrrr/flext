@@ -22,10 +22,14 @@ CFLAGS=$(CFLAGS) /Fp$(TARGETPATH)\precompiled.pch
 ##############################################
 
 # create code for DLL
-CFLAGS=$(CFLAGS) /LD
+CFLAGS=$(CFLAGS) /LD /GD
 
 # enable exception handling
 CFLAGS=$(CFLAGS) /GX
+
+# no banner
+CFLAGS=$(CFLAGS) /nologo
+LDFLAGS=$(LDFLAGS) /nologo
 
 ##############################################
 

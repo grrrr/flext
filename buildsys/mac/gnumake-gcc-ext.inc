@@ -6,25 +6,32 @@ LIBS += -l$(FLEXTNAME)
 
 ##############################################
 
+CSRCS=$(patsubst %.c,$(SRCDIR)/%.c,$(filter %.c,$(SRCS)))
+CPPSRCS=$(patsubst %.cpp,$(SRCDIR)/%.cpp,$(filter %.cpp,$(SRCS)))
+COBJS=$(patsubst %.c,$(OBJPATH)/%.o,$(filter %.c,$(SRCS))) 
+CPPOBJS=$(patsubst %.cpp,$(OBJPATH)/%.opp,$(filter %.cpp,$(SRCS))) 
+
+##############################################
+
 # default target
 _build_: $(TARGET)
 
 $(CSRCS) $(CPPSRCS): $(patsubst %,$(SRCDIR)/%,$(HDRS))
 	touch $@
 
-$(OUTPATH):
+$(OBJPATH):
 	-mkdir -p $@
 
-$(TARGETPATH): $(OUTPATH)
+$(TARGETPATH):
 	-mkdir -p $@
 
-$(TARGETPATH)/%.opp : $(SRCDIR)/%.cpp
+$(OBJPATH)/%.opp : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
 
-$(TARGETPATH)/%.o : $(SRCDIR)/%.c
+$(OBJPATH)/%.o : $(SRCDIR)/%.c
 	$(CC) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
 
-$(TARGET) :: $(TARGETPATH) 
+$(TARGET) :: $(OBJPATH) $(TARGETPATH)
 
 $(TARGET) :: $(COBJS) $(CPPOBJS)
 	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
@@ -40,5 +47,5 @@ _clean_:
 $(INSTPATH):
 	-mkdir -p $@
 
-_install_: $(INSTPATH)
+_install_:: $(INSTPATH)
 	install $(TARGET) $(INSTPATH)

@@ -2,14 +2,26 @@
 # you should have the latest version!
 MAXSDKPATH=/Volumes/Daten/Prog/MaxMSP-SDK/4.5\ headers/c74support
 
-# where should the external be installed?
-INSTPATH=/Library/Application\ Support/Cycling\ \'74/externals
+###############################################################
 
-# where do the flext headers and libraries reside?
-FLEXTPATH=/Library/Application\ Support/Cycling\ \'74/flext
+# where do/should the flext headers reside/be built?
+FLEXTINC=/usr/local/include/flext
+
+# where do/should the flext static libraries reside/be built?
+FLEXTLIB=/usr/local/lib
+
+# where do/should the flext shared libraries reside/be built?
+FLEXTSHLIB=$(FLEXTLIB)
+
+###############################################################
 
 # where should the external be built?
 OUTPATH=max-darwin
+
+# where should the external be installed?
+INSTPATH=/Library/Application\ Support/Cycling\ \'74/externals
+
+###############################################################
 
 # user defined compiler flags
 # (check if they match your system!)

@@ -664,7 +664,7 @@ protected:
     /*! This class holds hashed item entries
 		\note not thread-safe!
 	*/
-    class ItemCont
+    class FLEXT_SHARE ItemCont
     {
 	public:
         ItemCont();
@@ -821,7 +821,7 @@ public:
 	
 //!		@} FLEXT_CLASS
 
-	ItemCont *ThMeths() { return methhead; }
+	ItemCont *ThMeths() { return &methhead; }
 	static ItemCont *ClMeths(t_classid c) { return GetClassArr(c,0); }
 
 	static void AddMethod(ItemCont *ma,int inlet,const t_symbol *tag,methfun fun,metharg tp,...); 
@@ -870,7 +870,7 @@ private:
 
 	static ItemCont *GetClassArr(t_classid,int ix);
 
-	mutable ItemCont *methhead,*clmethhead;
+	mutable ItemCont methhead,*clmethhead;
 	mutable ItemCont *bindhead;
 	
 	bool CallMeth(const MethItem &m,int argc,const t_atom *argv);

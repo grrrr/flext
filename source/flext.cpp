@@ -38,7 +38,6 @@ flext_base::FLEXT_CLASSDEF(flext_base)():
 
     t_classid clid = thisClassId();
     clmethhead = ClMeths(clid);
-    methhead = new ItemCont;
     bindhead = NULL;
 
     if(procattr) {
@@ -62,7 +61,7 @@ flext_base::~FLEXT_CLASSDEF(flext_base)()
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
     // according to David Z. one should do that first...
-  if(insigs) dsp_free(thisHdr());
+    if(insigs) dsp_free(thisHdr());
 //    if(insigs) dsp_freebox(thisHdr());
 #endif
 
@@ -74,7 +73,6 @@ flext_base::~FLEXT_CLASSDEF(flext_base)()
     QFlush(this);
 
     // delete message lists
-    if(methhead) delete methhead;
     if(bindhead) delete bindhead;  // ATTENTION: the object must free all memory associated to bindings itself
     if(attrhead) delete attrhead;
     if(attrdata) delete attrdata;

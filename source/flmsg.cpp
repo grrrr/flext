@@ -140,17 +140,17 @@ bool flext_base::FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *arg
     Item *lst;
 
     // search for exactly matching tag
-    if((lst = methhead->FindList(s,inlet)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
+    if((lst = methhead.FindList(s,inlet)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
     if((lst = clmethhead->FindList(s,inlet)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
     
     // if no list args, then search for pure symbol 
     if(!argc) {
-        if((lst = methhead->FindList(sym_symbol,inlet)) != NULL && TryMethSym(lst,s)) return true;
+        if((lst = methhead.FindList(sym_symbol,inlet)) != NULL && TryMethSym(lst,s)) return true;
         if((lst = clmethhead->FindList(sym_symbol,inlet)) != NULL && TryMethSym(lst,s)) return true;
     }
     
     // otherwise search for anything
-    if((lst = methhead->FindList(sym_anything,inlet)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
+    if((lst = methhead.FindList(sym_anything,inlet)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
     if((lst = clmethhead->FindList(sym_anything,inlet)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
 
     // if nothing found try any inlet

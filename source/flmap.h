@@ -15,6 +15,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __FLMAP_H
 #define __FLMAP_H
 
+#include "flprefix.h"
+
 /*!	\defgroup FLEXT_SUPPORT Flext support classes
 	@{
 */
@@ -78,7 +80,7 @@ public:
 
 #endif
 
-class TableAnyMap
+class FLEXT_SHARE TableAnyMap
 {
 protected:
     virtual TableAnyMap *New(TableAnyMap *parent) = 0;
@@ -101,18 +103,18 @@ protected:
 
     int size() const;
 
-    inline void insert(size_t k,void *t)
+    void insert(size_t k,void *t)
     {
         FLEXT_ASSERT(t);
         if(n) _set(k,t);
         else data[n++](k,t);
     }
 
-    inline void *find(size_t k) { return n?_find(k):NULL; }
+    void *find(size_t k) { return n?_find(k):NULL; }
 
     void clear();
 
-    inline void _toleft(size_t k,void *t)
+    void _toleft(size_t k,void *t)
     {
         if(left)
             left->_set(k,t);
@@ -123,7 +125,7 @@ protected:
         }
     }
 
-    inline void _toright(size_t k,void *t)
+    void _toright(size_t k,void *t)
     {
         if(right) 
             right->_set(k,t);
@@ -134,8 +136,8 @@ protected:
         }
     }
 
-    inline void _toleft(Data &v) { _toleft(v.key,v.value); }
-    inline void _toright(Data &v) { _toright(v.key,v.value); }
+    void _toleft(Data &v) { _toleft(v.key,v.value); }
+    void _toright(Data &v) { _toright(v.key,v.value); }
 
     void _set(size_t k,void *t);
     void *_find(size_t k);
@@ -150,9 +152,9 @@ protected:
     class iterator
     {
     public:
-        inline iterator(): map(NULL) {}
-        inline iterator(TableAnyMap &m): map(&m),ix(0) { leftmost(); }
-        inline iterator(iterator &it): map(it.map),ix(it.ix) {}
+        iterator(): map(NULL) {}
+        iterator(TableAnyMap &m): map(&m),ix(0) { leftmost(); }
+        iterator(iterator &it): map(it.map),ix(it.ix) {}
     
         iterator &operator =(const iterator &it) { map = it.map,ix = it.ix; return *this; }
 
@@ -181,7 +183,7 @@ protected:
 
 
 template <typename K,typename T,int N = 8,bool O = false>
-class TableMap
+class FLEXT_SHARE TableMap
     : TableAnyMap
 {
 public:
@@ -200,9 +202,9 @@ public:
         : TableAnyMap::iterator
     {
     public:
-        inline iterator() {}
-        inline iterator(TableMap &m): TableAnyMap::iterator(m) {}
-        inline iterator(iterator &it): TableAnyMap::iterator(it) {}
+        iterator() {}
+        iterator(TableMap &m): TableAnyMap::iterator(m) {}
+        iterator(iterator &it): TableAnyMap::iterator(it) {}
 
         inline iterator &operator =(const iterator &it) { TableAnyMap::operator =(it); return *this; }
 
@@ -215,7 +217,7 @@ public:
     };
 
 protected:
-    inline TableMap(TableAnyMap *p): TableAnyMap(p,N,slots,O) {}
+    TableMap(TableAnyMap *p): TableAnyMap(p,N,slots,O) {}
 
     virtual TableAnyMap *New(TableAnyMap *parent) { return new TableMap(parent); }
     virtual void Free(void *ptr) { delete (T *)ptr; }

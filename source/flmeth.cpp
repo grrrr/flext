@@ -17,9 +17,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <stdarg.h>
 #include "flinternal.h"
 
-#include <set>
-
-
 flext_base::MethItem::MethItem(AttrItem *conn): 
     Item(conn),index(0),
     argc(0),args(NULL)
@@ -41,7 +38,7 @@ void flext_base::MethItem::SetArgs(methfun _fun,int _argc,metharg *_args)
 
 void flext_base::AddMethodDef(int inlet,const t_symbol *tag)
 {
-    methhead->Add(new MethItem,tag,inlet);
+    methhead.Add(new MethItem,tag,inlet);
 }
 
 /*! \brief Add a method to the queue
@@ -97,7 +94,7 @@ void flext_base::ListMethods(AtomList &la,int inlet) const
 
     int i;
     for(i = 0; i <= 1; ++i) {
-        ItemCont *a = i?methhead:clmethhead;
+        ItemCont *a = i?&methhead:clmethhead;
         if(a && a->Contained(inlet)) {
             ItemSet &ai = a->GetInlet(inlet);
             for(ItemSet::iterator as(ai); as; ++as) {

@@ -3,13 +3,6 @@
 OBJPATH=$(OUTPATH)/$(OUTSUB)
 TARGETPATH=$(OBJPATH)
 
-ifdef SHARED
-SONAME=$(TARGETPATH)/$(OUTNAME).$(EXT)
-TARGET=$(TARGETPATH)/$(OUTNAME)-$(PKGVERSION).$(EXT)
-else
-TARGET=$(TARGETPATH)/$(OUTNAME).$(EXT)
-endif
-
 ##############################################
 
 CFLAGS += -pthread -fPIC

@@ -1,5 +1,7 @@
 # build class specific settings
 
+TARGET=$(TARGETPATH)/$(OUTNAME).$(EXT)
+
 INCPATH += -I$(FLEXTINC)
 LIBPATH += -L$(FLEXTLIB) -L$(FLEXTSHLIB)
 LIBS += -l$(FLEXTNAME)

@@ -71,6 +71,7 @@ Version history:
 - improved behavior for invalid/undefined buffers/arrays
 - 128-bit aligned memory allocation with new[] 
 - method/argument parsing is done by flext
+- integrated more system functions into flext_base & eliminated superfluous #defines
 
 0.1.1:
 - documentation for flext.h

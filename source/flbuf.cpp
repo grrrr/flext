@@ -25,7 +25,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 // check if PD API supports buffer dirty time
-#if defined(PD_VERSION_DEVEL) && defined(PD_MAJOR_VERSION) && defined(PD_MINOR_VERSION)
+#if defined(PD_DEVEL_VERSION) && defined(PD_MAJOR_VERSION) && defined(PD_MINOR_VERSION)
 #if PD_MINOR_VERSION >= 36
 	#define FLEXT_PDBUFDIRTYTIME
 #endif

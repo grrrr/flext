@@ -16,35 +16,54 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #if FLEXT_SYS == FLEXT_SYS_PD && !defined(FLEXT_NOATTREDIT)
 
+#ifdef PD_DEVEL_VERSION
+#define FLEXT_CLONEWIDGET
+#endif
+
 #ifdef _MSC_VER
 #pragma warning( disable : 4091 ) 
 #endif
 
+#ifndef FLEXT_CLONEWIDGET
 // This is problematic... non-public headers!
-// compilation may be specific for one version of PD!!
+// compilation is specific for a compiled version!!
 #include <m_imp.h>
+#endif
+
 #include <g_canvas.h>
 
 #include <string.h>
 #include <stdio.h>
 
 static t_widgetbehavior widgetbehavior; 
+
+#ifndef FLEXT_CLONEWIDGET
 static void (*ori_vis)(t_gobj *c, t_glist *, int vis) = NULL;
+#endif
 
 void flext_base::SetAttrEditor(t_classid c)
 {
 	// widgetbehavior struct MUST be resident... (static is just ok here)
 
-    widgetbehavior.w_getrectfn =    c->c_wb->w_getrectfn; 
+#ifndef FLEXT_CLONEWIDGET
+	ori_vis = c->c_wb->w_visfn; 
+	widgetbehavior.w_getrectfn =    c->c_wb->w_getrectfn; 
     widgetbehavior.w_displacefn =   c->c_wb->w_displacefn; 
     widgetbehavior.w_selectfn =     c->c_wb->w_selectfn; 
     widgetbehavior.w_activatefn =   c->c_wb->w_activatefn; 
     widgetbehavior.w_deletefn =     c->c_wb->w_deletefn; 
-	ori_vis = c->c_wb->w_visfn; 
-    widgetbehavior.w_visfn =        cb_GfxVis;
     widgetbehavior.w_clickfn =      c->c_wb->w_clickfn;
+#else
+	widgetbehavior.w_getrectfn =    text_widgetbehavior.w_getrectfn; 
+    widgetbehavior.w_displacefn =   text_widgetbehavior.w_displacefn; 
+    widgetbehavior.w_selectfn =     text_widgetbehavior.w_selectfn; 
+    widgetbehavior.w_activatefn =   text_widgetbehavior.w_activatefn; 
+    widgetbehavior.w_deletefn =     text_widgetbehavior.w_deletefn; 
+    widgetbehavior.w_clickfn =      text_widgetbehavior.w_clickfn;
+#endif
     widgetbehavior.w_propertiesfn = cb_GfxProperties;
     widgetbehavior.w_savefn =       cb_GfxSave;
+    widgetbehavior.w_visfn =        cb_GfxVis;
     class_setwidget(c, &widgetbehavior);
 
 
@@ -397,8 +416,8 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 //! Strip the attributes off the object command line
 void flext_base::cb_GfxVis(t_gobj *c, t_glist *gl, int vis)
 {
-	flext_base *th = thisObject(c);
-	t_text *x = (t_text *)th->thisHdr();
+	t_text *x = (t_text *)c;
+
 	FLEXT_ASSERT(x->te_binbuf);
 
 	int argc = binbuf_getnatom(x->te_binbuf);
@@ -412,7 +431,14 @@ void flext_base::cb_GfxVis(t_gobj *c, t_glist *gl, int vis)
 		x->te_binbuf = nb;
 	}
 
+	t_rtext *rt = glist_findrtext(gl,x);
+	rtext_retext(rt);
+
+#ifdef FLEXT_CLONEWIDGET
+	text_widgetbehavior.w_visfn(c,gl,vis);
+#else
 	ori_vis(c,gl,vis);
+#endif
 }
 
 static void BinbufAdd(t_binbuf *b,const t_atom &at)

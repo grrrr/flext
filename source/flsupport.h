@@ -148,6 +148,15 @@ public:
         public flext_root
 	{
 	public:
+    
+#if FLEXT_SYS == FLEXT_SYS_PD
+        typedef bool lock_t;
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+        typedef long lock_t;
+#else
+#error Not implemented
+#endif
+    
 		/*! \brief Construct buffer.
 			\param s: symbol name, can be NULL
 			\param delayed = true: only sets name, needs another Set(NULL) to really initialize the buffer 
@@ -158,17 +167,43 @@ public:
 		//! Destroy buffer
 		~buffer();
 
-		/*! \brief Check if the data is valid
+		/*! \brief Check if the buffer is valid for use
+            \note This must be true to use any of the other functions except set
 		*/
-		bool Ok() const { return sym != NULL && data != NULL; }
+		bool Ok() const { return sym && data; }
 		
-		/*! \brief Check if buffer is valid
+		/*! \brief Check if buffer content is valid (not in state of content change)
+            \note buffer must be Ok()
 		*/
-		bool Valid() const;
+		bool Valid() const
+        {
+            FLEXT_ASSERT(sym);
+#if FLEXT_SYS == FLEXT_SYS_PD
+            return true;
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+            const t_buffer *p = (const t_buffer *)sym->s_thing;
+            return p && p->b_valid;
+#else
+#error not implemented
+#endif
+        }
 		
 		/*! \brief Check and update if the buffer has been changed (e.g. resized)
+            \note buffer must be Ok()
 		*/
 		bool Update();
+        
+		/*! \brief Lock buffer
+            \return previous state (needed for Unlock)
+            \note buffer must be Ok()
+		*/
+        lock_t Lock();
+        
+		/*! \brief Unlock buffer
+            \param prv: Previous state is returned by Lock()
+            \note buffer must be Ok()
+		*/
+        void Unlock(lock_t prv);
 		
 		/*! \brief Set to specified buffer.
 			\param nameonly: if true sets name only, but doesn't look at buffer actually

@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -16,10 +16,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #if FLEXT_SYS != FLEXT_SYS_JMAX
 
-#if FLEXT_SYS == FLEXT_SYS_MAX
-#include "flmspbuffer.h" // include inofficial buffer.h
-#endif
-
 #if FLEXT_SYS == FLEXT_SYS_PD
 #define DIRTY_INTERVAL 0   // buffer dirty check in msec
 #endif
@@ -29,6 +25,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #if PD_MINOR_VERSION >= 36
     #define FLEXT_PDBUFDIRTYTIME
 #endif
+#endif
+
+#if FLEXT_SYS == FLEXT_SYS_MAX
+static const t_symbol *sym_buffer = flext::MakeSymbol("buffer~");
+static const t_symbol *sym_size = flext::MakeSymbol("size");
 #endif
 
 flext::buffer::buffer(const t_symbol *bn,bool delayed):
@@ -100,10 +101,12 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
         }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
         if(sym->s_thing) {
-            const _buffer *p = (const _buffer *)sym->s_thing;
+            const t_buffer *p = (const t_buffer *)sym->s_thing;
             
-            if(NOGOOD(p) || !p->b_valid) {
-                post("buffer: buffer object '%s' no good",GetString(sym)); 
+            FLEXT_ASSERT(!NOGOOD(p));
+            
+            if(ob_sym(p) != sym_buffer) {
+                post("buffer: object '%s' not valid",GetString(sym)); 
                 if(valid) ret = -2;
             }
             else {
@@ -127,66 +130,101 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
     return ret;
 }
 
-bool flext::buffer::Valid() const
-{
-    if(sym) {
-#if FLEXT_SYS == FLEXT_SYS_PD
-        int frames1;
-        t_sample *data1;
-        return arr && garray_getfloatarray(arr, &frames1, &data1) != 0;
-#elif FLEXT_SYS == FLEXT_SYS_MAX
-        const _buffer *p = (const _buffer *)sym->s_thing;
-        return p && p->b_valid;
-#else
-#error
-#endif 
-    }
-    else return false;
-}
-
-
 bool flext::buffer::Update()
 {
-//    if(!Ok()) return false;
+    FLEXT_ASSERT(sym);
 
-    bool ok = false;
+    bool upd = false;
 
 #if FLEXT_SYS == FLEXT_SYS_PD
-    if(!sym || !arr) return data == NULL;
+    if(!arr) return data == NULL;
 
     int frames1;
     t_sample *data1;
     if(!garray_getfloatarray(arr, &frames1, &data1)) {
-        frames = 0;
         data = NULL;
         chns = 0;
-        ok = true;
+        frames = 0;
+        upd = true;
     }
     else if(data != data1 || frames != frames1) {
-        frames = frames1;
         data = data1;
-        ok = true;
+        frames = frames1;
+        upd = true;
     }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-    if(!sym) return data == NULL;
-
-    if(sym->s_thing) {
-        const _buffer *p = (const _buffer *)sym->s_thing;
+    const t_buffer *p = (const t_buffer *)sym->s_thing;
+    if(p) {
+        FLEXT_ASSERT(!NOGOOD(p) && ob_sym(p) == sym_buffer);
+    
         if(data != p->b_samples || chns != p->b_nchans || frames != p->b_frames) {
             data = p->b_samples;
             chns = p->b_nchans;
             frames = p->b_frames;
-            ok = true;
+            upd = true;
         }
+    }
+    else {
+        // buffer~ has e.g. been renamed
+        data = NULL;
+        chns = 0;
+        frames = 0;
+        upd = true;
     }
 #else
 #error not implemented
 #endif
-    return ok;
+    return upd;
+}
+
+flext::buffer::lock_t flext::buffer::Lock()
+{
+    FLEXT_ASSERT(sym);
+#if FLEXT_SYS == FLEXT_SYS_PD
+    FLEXT_ASSERT(arr);
+#if PD_MINOR_VERSION >= 38 && defined(PD_DEVEL_VERSION)
+    garray_lock(arr);
+#endif
+    return false;
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+    t_buffer *p = (t_buffer *)sym->s_thing;
+    FLEXT_ASSERT(p);
+#if defined(MAC_VERSION) || defined(WIN_VERSION) 
+    long old = p->b_inuse;
+    p->b_inuse = 1;
+    return old;
+#else
+    // undefined for OS9
+    return 0;
+#endif
+#else
+#error not implemented
+#endif
+}
+
+void flext::buffer::Unlock(flext::buffer::lock_t prv)
+{
+    FLEXT_ASSERT(sym);
+#if FLEXT_SYS == FLEXT_SYS_PD
+    FLEXT_ASSERT(arr);
+#if PD_MINOR_VERSION >= 38 && defined(PD_DEVEL_VERSION)
+    garray_unlock(arr);
+#endif
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+    t_buffer *p = (t_buffer *)sym->s_thing;
+    FLEXT_ASSERT(p);
+#if defined(MAC_VERSION) || defined(WIN_VERSION) 
+    // not for OS9
+    p->b_inuse = prv;
+#endif
+#else
+#error not implemented
+#endif
 }
 
 void flext::buffer::Frames(int fr,bool keep,bool zero)
 {
+    FLEXT_ASSERT(sym);
 #if FLEXT_SYS == FLEXT_SYS_PD
     // is this function guaranteed to keep memory and set rest to zero?
     ::garray_resize(arr,(float)fr);
@@ -199,20 +237,18 @@ void flext::buffer::Frames(int fr,bool keep,bool zero)
     if(keep) {
         // copy buffer data to tmp storage
         tmp = (t_sample *)NewAligned(sz*sizeof(t_sample));
-        if(tmp)
-            CopySamples(tmp,data,sz);
-        else
-            error("flext::buffer - not enough memory for keeping buffer~ contents");
+        FLEXT_ASSERT(tmp);
+        CopySamples(tmp,data,sz);
     }
     
     t_atom msg;
-    _buffer *buf = (_buffer *)sym->s_thing;
+    t_buffer *buf = (t_buffer *)sym->s_thing;
     // b_msr reflects buffer sample rate... is this what we want?
     // Max bug: adding half a sample to prevent roundoff errors....
     float ms = (fr+0.5)/buf->b_msr;
     
     SetFloat(msg,ms); 
-    ::typedmess((object *)buf,gensym("size"),1,&msg);
+    ::typedmess((object *)buf,(t_symbol *)sym_size,1,&msg);
     
     Update();
 
@@ -248,34 +284,23 @@ void flext::buffer::SetRefrIntv(float) {}
 
 void flext::buffer::Dirty(bool force)
 {
-    if(sym) {
+    FLEXT_ASSERT(sym);
 #if FLEXT_SYS == FLEXT_SYS_PD
-        if((!ticking) && (interval || force)) {
-            ticking = true;
-            cb_tick(this); // immediately redraw
-        }
-        else {
-            if(force) clock_delay(tick,0);
-            isdirty = true;
-        }
+    if((!ticking) && (interval || force)) {
+        ticking = true;
+        cb_tick(this); // immediately redraw
+    }
+    else {
+        if(force) clock_delay(tick,0);
+        isdirty = true;
+    }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-        if(sym->s_thing) {
-            _buffer *p = (_buffer *)sym->s_thing;
-            
-            if(NOGOOD(p)) {
-                post("buffer: buffer object '%s' no good",sym->s_name);
-            }
-            else {
-                p->b_modtime = gettime();
-            }
-        }
-        else {
-            FLEXT_LOG1("buffer: symbol '%s' not defined",sym->s_name);
-        }
+    t_buffer *p = (t_buffer *)sym->s_thing;
+    FLEXT_ASSERT(p && !NOGOOD(p));
+    p->b_modtime = gettime();
 #else
 #error Not implemented
 #endif 
-    }
 }
 
 #if FLEXT_SYS == FLEXT_SYS_PD
@@ -309,8 +334,9 @@ void flext::buffer::ClearDirty()
 
 bool flext::buffer::IsDirty() const
 {
+    FLEXT_ASSERT(sym);
 #if FLEXT_SYS == FLEXT_SYS_PD
-    if(!arr) return false;
+    FLEXT_ASSERT(arr);
     #ifdef FLEXT_PDBUFDIRTYTIME
     return isdirty || garray_updatetime(arr) > cleantime;
     #else
@@ -318,15 +344,8 @@ bool flext::buffer::IsDirty() const
     return true; 
     #endif
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-    if(!sym->s_thing) return false;
-
-    _buffer *p = (_buffer *)sym->s_thing;
-#ifdef FLEXT_DEBUG
-    if(NOGOOD(p)) {
-        post("buffer: buffer object '%s' no good",sym->s_name);
-        return false;
-    }
-#endif
+    t_buffer *p = (t_buffer *)sym->s_thing;
+    FLEXT_ASSERT(p && !NOGOOD(p));
     return p->b_modtime > cleantime;
 #else
 #error Not implemented

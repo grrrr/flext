@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -121,6 +121,10 @@ extern "C" {
 #if FLEXT_OS != FLEXT_OS_MAC || defined(MAC_VERSION)
 // doesn't exist for OS9
 #include "ext_critical.h"
+#include "buffer.h"
+#else
+// for OS9 include "inofficial" header file
+#include "flmspbuffer.h"
 #endif
 #include "z_dsp.h"
 

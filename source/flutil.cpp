@@ -14,6 +14,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <windows.h>
 #endif
 
+#ifdef MAXMSP
+#include <Timer.h>
+#include <Threads.h>
+#endif
+
 t_atom *flext_base::CopyList(int argc,const t_atom *argv)
 {
 	int i;
@@ -26,7 +31,14 @@ void flext_base::Sleep(float s)
 {
 #ifdef NT
 	::Sleep((long)(s*1000));
-#else
-	Delay(s*1000,NULL);
+#elif defined MAXMSP
+	UnsignedWide tick;
+	Microseconds(&tick);
+	double target = tick.hi*((double)(1<<16)*(double)(1<<16))+tick.lo+s*1.e6; 
+	for(;;) {
+		Microseconds(&tick);
+		if(target <= tick.hi*((double)(1<<16)*(double)(1<<16))+tick.lo) break;
+		YieldToAnyThread();
+	}
 #endif
 }

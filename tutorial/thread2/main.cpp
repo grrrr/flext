@@ -41,6 +41,8 @@ private:
 	t_symbol *bliptxt;
 
 	ThrCond cond;
+
+	int flag;
 };
 
 FLEXT_NEW_2("thread2",thread2,int,t_symptr)
@@ -52,6 +54,8 @@ thread2::thread2(int del,t_symptr txt):
 	stopit(false),
 	running(false),blipping(false)
 { 
+	flag = 0;
+
 	AddInAnything();  
 	AddOutInt(); 
 	SetupInOut();  // set up inlets and outlets
@@ -62,6 +66,8 @@ thread2::thread2(int del,t_symptr txt):
 
 void thread2::m_start(int st)
 {
+	++flag;
+
 	post("start 1");
 
 	if(running) { count = st; return; }
@@ -90,6 +96,7 @@ void thread2::m_start(int st)
 void thread2::m_stop()
 {
 	post("stop 1");
+	post("flag = %i",flag);
 
 	cond.Lock();
 	stopit = true;

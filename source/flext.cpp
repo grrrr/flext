@@ -143,6 +143,9 @@ flext_base::flext_base():
 	qhead = qtail = NULL;
 	qclk = (t_clock *)(clock_new(this,(t_method)QTick));
 	thrhead = thrtail = NULL;
+#ifdef MAXMSP
+	yclk = (t_clock *)(clock_new(this,(t_method)QTick));
+#endif
 #endif
 }
 
@@ -172,6 +175,9 @@ flext_base::~flext_base()
 	// send remaining pending messages
 	while(qhead) QTick(this);
 	clock_free((object *)qclk);
+#ifdef MAXMSP
+	clock_free((object *)yclk);
+#endif
 #endif
 
 	if(inlist) delete inlist;

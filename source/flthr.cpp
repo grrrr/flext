@@ -12,6 +12,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <flext.h>
 
+#ifdef MAXMSP
+#define SCHEDTICK 1
+#include <sched.h>
+#endif
+
 bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *methname)
 {
 #ifdef _DEBUG
@@ -27,8 +32,12 @@ bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *me
 		delete p; 
 		return false;
 	}
-	else
+	else {
+#ifdef MAXMSP
+		sched_yield();
+#endif
 		return true;
+	}
 }
 
 void flext_base::PushThread()
@@ -39,6 +48,10 @@ void flext_base::PushThread()
 	else thrhead = nt;
 	thrtail = nt;
 	tlmutex.Unlock();
+	
+#ifdef MAXMSP
+	if(thrhead) clock_delay(yclk,SCHEDTICK);
+#endif
 }
 
 void flext_base::PopThread()
@@ -60,8 +73,15 @@ void flext_base::PopThread()
 	}
 	
 	tlmutex.Unlock();
+
+#ifdef MAXMSP
+	if(!thrhead) clock_unset(&yclk);
+#endif
 }
 
+#ifdef MAXMSP
+void flext_base::Yield() { sched_yield(); }
+#endif
 
 class flext_base::qmsg
 {
@@ -123,6 +143,8 @@ void flext_base::QTick(flext_base *th)
 	}
 #endif
 
+	th->Yield();
+
 	th->qmutex.Lock();
 	while(th->qhead) {
 		qmsg *m = th->qhead;
@@ -145,6 +167,10 @@ void flext_base::QTick(flext_base *th)
 		delete m;
 	}
 	th->qmutex.Unlock();
+
+#ifdef MAXMSP
+	if(th->thrhead) clock_delay(th->yclk,SCHEDTICK);
+#endif
 }
 
 void flext_base::Queue(qmsg *m)

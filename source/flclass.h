@@ -353,6 +353,13 @@ public:
 
 	bool ShouldExit() const { return shouldexit; }
 
+	void Yield() // yield to other threads (for cooperative multitasking)
+#ifndef MAXMSP
+	{}
+#else
+	;
+#endif
+
 	class ThrMutex 
 	{
 	public:
@@ -524,6 +531,9 @@ private:
 	qmsg *qhead,*qtail;
 	t_clock *qclk;
 	ThrMutex qmutex;
+#ifdef MAXMSP
+	t_clock *yclk;
+#endif
 
 	static void QTick(flext_base *th);
 	void Queue(qmsg *m);

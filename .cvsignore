@@ -1,0 +1,9 @@
+max-os9
+max-osx
+pd-darwin
+pd-msvc
+doc
+build
+flext Data
+.DS_Store
+

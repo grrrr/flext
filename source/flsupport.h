@@ -17,6 +17,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "flstdc.h"
 
+class FLEXT_EXT flext_base;
+
 class FLEXT_EXT flext {
 
 	/*!	\defgroup FLEXT_SUPPORT Flext support class
@@ -392,29 +394,128 @@ public:
 	*/
 
 	//! thread type
+#if FLEXT_THREADS == FLEXT_THR_MP
+	typedef MPTaskID thrid_t;
+#elif FLEXT_THREADS == FLEXT_THR_POSIX
 	typedef pthread_t thrid_t;
+#else
+#error
+#endif
+
+	/*! \brief Get current thread id
+	*/
+	static thrid_t GetThreadId() { 
+#if FLEXT_THREADS == FLEXT_THR_POSIX
+		return pthread_self(); 
+#elif FLEXT_THREADS == FLEXT_THR_MP
+		return MPCurrentTaskID();
+#else
+#error
+#endif
+	}
+
+	/*! \brief Get system thread id
+	*/
+	static thrid_t GetSysThreadId() { return thrid; }
+	
+	//! Check if current thread is the realtime system's thread
+	static bool IsThread(thrid_t t,thrid_t ref = GetThreadId()) { 
+#if FLEXT_THREADS == FLEXT_THR_POSIX
+		return pthread_equal(ref,t) != 0; 
+#else
+		return ref == t;
+#endif
+	}
+
+	//! Check if current thread is the realtime system's thread
+	static bool IsSystemThread() { return IsThread(GetSysThreadId()); }
 
 protected:
+
+	/*! \brief Thread parameters
+		\internal
+	*/
+	class thr_params
+	{
+	public:
+		thr_params(int n = 1);
+		~thr_params();
+
+		void set_any(const t_symbol *s,int argc,const t_atom *argv);
+		void set_list(int argc,const t_atom *argv);
+
+		flext_base *cl;
+		union _data {
+			bool _bool;
+			float _float;
+			int _int;
+			t_symptr _t_symptr;
+			struct { AtomAnything *args; } _any;
+			struct { AtomList *args; } _list;
+			struct { void *data; } _ext;
+		} *var;
+	};
+
+	/*! \brief This represents an entry to the list of active method threads
+		\internal
+	*/
+	class thr_entry 
+	{
+	public:
+		thr_entry(void (*m)(thr_params *),thr_params *p,thrid_t id = GetThreadId());
+
+		//! \brief Check if this class represents the current thread
+		bool Is(thrid_t id = GetThreadId()) const { return IsThread(thrid,id); }
+
+		flext_base *This() const { return th; }
+		thrid_t Id() const { return thrid; }
+
+		flext_base *th;
+		void (*meth)(thr_params *);
+		thr_params *params;
+		thrid_t thrid;
+		bool active,shouldexit;
+#if FLEXT_THREADS == FLEXT_THR_MP
+		int weight;
+#endif
+		thr_entry *nxt;
+	};
+
+	static thrid_t thrhelpid;
+	static bool StartHelper();
+	static bool StopHelper();
+	static void ThrHelper(void *);
+
 	//! system's thread id
 	static thrid_t thrid;  // the system thread
 
 public:
 
-	//! Check if current thread is the realtime system's thread
-	static bool IsSystemThread() { pthread_t cur = pthread_self(); return pthread_equal(cur,thrid) != 0; }
-
 	/*! \brief Yield to other threads
 		\remark A call to this is only needed for systems with cooperative multitasking like MacOS<=9
 	*/
-	static void ThrYield() { sched_yield(); }
+	static void ThrYield() { 
+#if FLEXT_THREADS == FLEXT_THR_POSIX
+		sched_yield(); 
+#elif FLEXT_THREADS == FLEXT_THR_MP
+		MPYield();
+#else
+#error
+#endif
+	}
 
-	/*! \brief Get current thread id
+	/*! \brief Query whether task is preemptive
 	*/
-	static thrid_t GetThreadId() { return pthread_self(); }
-
-	/*! \brief Get current thread id
-	*/
-	static thrid_t GetSysThreadId() { return thrid; }
+	static bool IsThreadPreemptive(thrid_t t = GetThreadId()) {
+#if FLEXT_THREADS == FLEXT_THR_POSIX || FLEXT_THREADS == FLEXT_THR_WIN32
+		return true;
+#elif FLEXT_THREADS == FLEXT_THR_MP
+		return MPTaskIsPreemptive(t);
+#else
+#error
+#endif
+	}
+	
 
 	/*! \brief Increase/Decrease priority of a thread
 	*/
@@ -432,34 +533,62 @@ public:
 		\sa pthreads documentation
 	*/
 	class ThrMutex 
+#if FLEXT_THREADS == FLEXT_THR_POSIX
 	{
 	public:
 		//! Construct thread mutex
-		ThrMutex(): cnt(0) { pthread_mutex_init(&mutex,NULL); }
+		ThrMutex() /*: cnt(0)*/ { pthread_mutex_init(&mutex,NULL); }
 		//! Destroy thread mutex
 		~ThrMutex() { pthread_mutex_destroy(&mutex); }
 
 		//! Lock thread mutex
-		int Lock() { cnt = 1; return pthread_mutex_lock(&mutex); }
+		bool Lock() { /*cnt = 1;*/ return pthread_mutex_lock(&mutex) == 0; }
+		//! Lock thread mutex
+		bool WaitForLock(float tm) { /*cnt = 1;*/ return pthread_mutex_lock(&mutex) == 0; }
 		//! Try to lock, but don't wait
-		int TryLock() { return pthread_mutex_trylock(&mutex); }
+		bool TryLock() { return pthread_mutex_trylock(&mutex) == 0; }
 		//! Unlock thread mutex
-		int Unlock() { cnt = 0; return pthread_mutex_unlock(&mutex); }
-
+		bool Unlock() { /*cnt = 0;*/ return pthread_mutex_unlock(&mutex) == 0; }
+/*
 		//! Lock thread mutex (increase lock count by one)
 		void Push() { if(!cnt++) Lock(); }
 		//! Unlock thread mutex if lock count reaches zero
 		void Pop() { if(!--cnt) Unlock(); }
+*/		
 	protected:
 		pthread_mutex_t mutex;
-		int cnt;
+//		int cnt;
 	};
+#elif FLEXT_THREADS == FLEXT_THR_MP
+	{
+	public:
+		//! Construct thread mutex
+		ThrMutex() /*: cnt(0)*/ { MPCreateCriticalRegion(&crit); }
+		//! Destroy thread mutex
+		~ThrMutex() { MPDeleteCriticalRegion(crit); }
+
+		//! Lock thread mutex
+		bool Lock() { /*cnt = 1;*/ return MPEnterCriticalRegion(crit,kDurationForever) == noErr; }
+		//! Wait to lock thread mutex
+		bool WaitForLock(float tm) { /*cnt = 1;*/ return MPEnterCriticalRegion(crit,tm*kDurationMicrosecond*1.e6) == noErr; }
+		//! Try to lock, but don't wait
+		bool TryLock() { return MPEnterCriticalRegion(crit,kDurationImmediate) == noErr; }
+		//! Unlock thread mutex
+		bool Unlock() { /*cnt = 0;*/ return MPExitCriticalRegion(crit) == noErr; }
+		
+	protected:
+		MPCriticalRegionID crit;
+	};
+#else
+#error "Not implemented"
+#endif
 
 	/*! \brief Thread conditional
 		\sa pthreads documentation
 	*/
-	class ThrCond:
-		public ThrMutex
+	class ThrCond
+#if FLEXT_THREADS == FLEXT_THR_POSIX
+		:public ThrMutex
 	{
 	public:
 		//! Construct thread conditional
@@ -468,24 +597,74 @@ public:
 		~ThrCond() { pthread_cond_destroy(&cond); }
 
 		//! Wait for condition 
-		int Wait() { return pthread_cond_wait(&cond,&mutex); }
+		bool Wait() { return pthread_cond_wait(&cond,&mutex) == 0; }
 
 		/*! \brief Wait for condition (for a certain time)
 			\param time Wait time in seconds
 		*/
-		int TimedWait(float time) 
+		bool TimedWait(float time) 
 		{ 
 			timespec tm; tm.tv_sec = (long)time; tm.tv_nsec = (long)((time-(long)time)*1.e9);
-			return pthread_cond_timedwait(&cond,&mutex,&tm); 
+			return pthread_cond_timedwait(&cond,&mutex,&tm) == 0; 
 		}
 
 		//! Signal condition
-		int Signal() { return pthread_cond_signal(&cond); }
+		bool Signal() { return pthread_cond_signal(&cond) == 0; }
 		//! Broadcast condition
-		int Broadcast() { return pthread_cond_broadcast(&cond); }
+//		int Broadcast() { return pthread_cond_broadcast(&cond); }
 	protected:
 		pthread_cond_t cond;
 	};
+#elif FLEXT_THREADS == FLEXT_THR_MP
+	{
+	public:
+		//! Construct thread conditional
+		ThrCond() { MPCreateEvent(&ev); }
+		//! Destroy thread conditional
+		~ThrCond() { MPDeleteEvent(ev); }
+
+		//! Wait for condition 
+		bool Wait() { return MPWaitForEvent(ev,NULL,kDurationForever) == noErr; }
+
+		/*! \brief Wait for condition (for a certain time)
+			\param time Wait time in seconds
+		*/
+		bool TimedWait(float tm) { return MPWaitForEvent(ev,NULL,tm*kDurationMicrosecond*1.e6) == noErr; }
+
+		//! Signal condition
+		bool Signal() { return MPSetEvent(ev,1) == noErr; } // one bit needs to be set at least
+		//! Broadcast condition
+//		int Broadcast() { return pthread_cond_broadcast(&cond); }
+	protected:
+		MPEventID ev;
+	};
+#else
+#error "Not implemented"
+#endif
+
+	/*! \brief Add current thread to list of active threads
+		\return true on success
+		\internal
+	*/
+	bool PushThread();
+
+	/*! \brief Remove current thread from list of active threads
+		\internal
+	*/
+	void PopThread();
+
+	/*! \brief Start a method thread
+		\internal
+	*/
+	bool LaunchThread(void (*meth)(thr_params *p),thr_params *p);
+
+protected:
+
+	static thr_entry *thrhead,*thrtail;
+	static ThrMutex tlmutex;
+
+public:
+
 //!		@} FLEXT_S_THREAD
 
 #endif // FLEXT_THREADS

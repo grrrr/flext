@@ -50,6 +50,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define FLEXT_CPU_MIPS	3
 #define FLEXT_CPU_ALPHA	4
 
+// --- definitions for FLEXT_THREADS -----------------
+#define FLEXT_THR_POSIX 1 // pthreads
+#define FLEXT_THR_WIN32	2 // Win32 native
+#define FLEXT_THR_MP	3 // MacOS MPThreads
+
 // ---------------------------------------------------
 // support old definitions
 
@@ -231,6 +236,17 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 //	#pragma message("Compiling for Max/MSP")
 #elif FLEXT_SYS == FLEXT_SYS_PD
 //	#pragma message("Compiling for PD")
+#endif
+
+// set threading model
+#ifdef FLEXT_THREADS
+	#undef FLEXT_THREADS
+	#if FLEXT_OS == FLEXT_OS_MACOS && FLEXT_SYS == FLEXT_SYS_MAX
+		// Max crashes with posix threads (but don't know why...)
+		#define FLEXT_THREADS FLEXT_THR_MP		
+	#else
+		#define FLEXT_THREADS FLEXT_THR_POSIX
+	#endif
 #endif
 
 #endif

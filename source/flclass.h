@@ -392,6 +392,12 @@ public:
 		@{ 
 	*/
 
+	//! Start a thread for this object
+	bool StartThread(void (*meth)(thr_params *p),thr_params *p,const char *) { p->cl = this; return flext::LaunchThread(meth,p); }
+
+	//! Terminate all threads of this object
+	bool TermThreads();
+
 	//! Check if current thread should terminate
 	bool ShouldExit() const;
 
@@ -400,75 +406,6 @@ public:
 //!		@}  FLEXT_C_THREAD
 
 // xxx internal stuff xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-protected:
-
-// --- thread stuff -----------------------------------------------
-
-#ifdef FLEXT_THREADS
-
-	/*! \brief Thread parameters
-		\internal
-	*/
-	class thr_params:
-		public flext 
-	{
-	public:
-		thr_params(flext_base *c,int n = 1);
-		~thr_params();
-
-		void set_any(const t_symbol *s,int argc,const t_atom *argv);
-		void set_list(int argc,const t_atom *argv);
-
-		flext_base *cl;
-		union _data {
-			bool _bool;
-			float _float;
-			int _int;
-			t_symptr _t_symptr;
-			struct { AtomAnything *args; } _any;
-			struct { AtomList *args; } _list;
-			struct { void *data; } _ext;
-		} *var;
-	};
-
-	/*! \brief This represents an entry to the list of active method threads
-		\internal
-	*/
-	class thr_entry 
-	{
-	public:
-		thr_entry(flext_base *t,void *(*m)(thr_params *),thr_params *p,pthread_t id = pthread_self());
-
-		//! \brief Check if this class represents the current thread
-		bool Is(pthread_t id = pthread_self()) const { return pthread_equal(thrid,id) != 0; }
-
-		flext_base *th;
-		void *(*meth)(thr_params *);
-		thr_params *params;
-		pthread_t thrid;
-		bool active,shouldexit;
-		thr_entry *nxt;
-	};
-
-	/*! \brief Add current thread to list of active threads
-		\return true on success
-		\internal
-	*/
-	bool PushThread();
-
-	/*! \brief Remove current thread from list of active threads
-		\internal
-	*/
-	void PopThread();
-
-public:
-	/*! \brief Start a method thread
-		\internal
-	*/
-	bool StartThread(void *(*meth)(thr_params *p),thr_params *p,char *methname);
-
-#endif
 
 protected:
 
@@ -632,16 +569,6 @@ private:
 
 #ifdef FLEXT_THREADS
 	ThrMutex qmutex;
-
-	static thr_entry *thrhead,*thrtail;
-	static ThrMutex tlmutex;
-
-	static pthread_t thrhelpid;
-	static bool StartHelper();
-	static bool StopHelper();
-	static void ThrHelper(void *);
-
-	void TermThreads();
 #endif
 
 	class qmsg;

@@ -34,11 +34,20 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // determine System/OS/CPU
 #include "flprefix.h"
 
+// include headers necessary for multi-threading
 #ifdef FLEXT_THREADS
-extern "C" {
-	#include <pthread.h>
-	#include <sched.h>
-}
+	#if FLEXT_THREADS == FLEXT_THR_POSIX
+		extern "C" {
+			#include <pthread.h>
+			#include <sched.h>
+		}
+	#elif FLEXT_THREADS == FLEXT_THR_MP
+		#include <multiprocessing.h>
+	#elif FLEXT_THREADS == FLEXT_THR_WIN32
+		#include <windows.h>
+	#else
+		#error "Thread model not supported"
+	#endif
 #endif
 
 // include all the flext interface definitions

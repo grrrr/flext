@@ -98,7 +98,7 @@ void flext_base::YTick(flext_base *th)
 	clock_delay(th->yclk,0); 
 	qelem_set(th->qclk); 
 #ifdef FLEXT_THREADS
-	sched_yield();
+	ThrYield();
 #endif
 }
 #endif

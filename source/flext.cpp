@@ -464,7 +464,7 @@ void flext_base::Setup(t_class *c)
 	ADD_IN_FT(9);
 
 #ifdef FLEXT_THREADS
-	thrid = pthread_self();
+	thrid = GetThreadId();
 
 	StartHelper();
 #endif

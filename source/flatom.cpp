@@ -14,6 +14,32 @@ WARRANTIES, see the file, "license.txt," in this distribution.
  
 #include "flext.h"
 
+#if FLEXT_SYS != FLEXT_SYS_JMAX
+int flext::CmpAtom(const t_atom &a,const t_atom &b)
+{
+	if(GetType(a) == GetType(b)) {
+		switch(GetType(a)) {
+			case A_FLOAT: return GetFloat(a) == GetFloat(b)?0:(GetFloat(a) < GetFloat(b)?-1:1);
+#if FLEXT_SYS == FLEXT_SYS_MAX
+			case A_INT: return GetInt(a) == GetInt(b)?0:(GetInt(a) < GetInt(b)?-1:1);
+#endif
+			case A_SYMBOL: return GetSymbol(a) == GetSymbol(b)?0:(GetSymbol(a) < GetSymbol(b)?-1:1);
+#if FLEXT_SYS == FLEXT_SYS_PD
+			case A_POINTER: return GetPointer(a) == GetPointer(b)?0:(GetPointer(a) < GetPointer(b)?-1:1);
+#endif
+			default:
+				// can't be compared.....
+				FLEXT_ASSERT(false);
+				return 0;
+		}
+	}
+	else
+		return GetType(a) < GetType(b)?-1:1;
+}
+#else
+#error Not implemented
+#endif
+
 t_atom *flext::CopyList(int argc,const t_atom *argv)
 {
 	int i;
@@ -50,6 +76,19 @@ flext::AtomList &flext::AtomList::Set(int argc,const t_atom *argv,int offs,bool 
 		}
 	}
 	return *this;
+}
+
+int flext::AtomList::Compare(const AtomList &a) const
+{
+	if(Count() == a.Count()) {
+		for(int i = 0; i < Count(); ++i) {
+			int cmp = CmpAtom((*this)[i],a[i]);
+			if(cmp) return cmp;
+		}
+		return 0;
+	}
+	else 
+		return Count() < a.Count()?-1:1;
 }
 
 

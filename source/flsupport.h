@@ -293,6 +293,15 @@ public:
 		
 	//! Set atom from another atom
 	static void SetAtom(t_atom &a,const t_atom &b) { CopyAtom(&a,&b); }
+	//! Compare two atoms
+	static int CmpAtom(const t_atom &a,const t_atom &b);
+
+	static bool operator ==(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) == 0; }
+	static bool operator !=(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) != 0; }
+	static bool operator <(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) < 0; }
+	static bool operator <=(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) <= 0; }
+	static bool operator >(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) > 0; }
+	static bool operator >=(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) >= 0; }
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
 	//! Set atom from another atom
@@ -478,6 +487,16 @@ public:
 		AtomList &operator()(int argc = 0,const t_atom *argv = NULL) { return Set(argc,argv,0,true); }
 		//! Set list by another AtomList
 		AtomList &operator =(const AtomList &a) { return operator()(a.Count(),a.Atoms()); }
+
+		//! Compare list to another AtomList ( -1..< , 0..==, 1...> )
+		int Compare(const AtomList &a) const;
+
+		bool operator <(const AtomList &a) const { return Compare(a) < 0; }
+		bool operator <=(const AtomList &a) const { return Compare(a) <= 0; }
+		bool operator >(const AtomList &a) const { return Compare(a) > 0; }
+		bool operator >=(const AtomList &a) const { return Compare(a) >= 0; }
+		bool operator ==(const AtomList &a) const { return Compare(a) == 0; }
+		bool operator !=(const AtomList &a) const { return Compare(a) != 0; }
 
 		//! Get number of atoms in the list
 		int Count() const { return cnt; }

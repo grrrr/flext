@@ -409,7 +409,7 @@ protected:
 	/*! \brief Start a method thread
 		\internal
 	*/
-	static bool StartThread(void *(*)(thr_params *p) meth,thr_params *p,char *methname);
+	static bool StartThread(void *(*meth)(thr_params *p),thr_params *p,char *methname);
 
 	/*! \brief Add current thread to list of active threads
 		\return true on success

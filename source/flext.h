@@ -93,6 +93,7 @@ public:
 		const char *Name() const { return sym?sym->s_name:""; }
 		
 		// get pointer to buffer, channel and frame count
+		// Channels are interleaved
 		float *Data() { return data; }
 		int Channels() const { return chns; }
 		int Frames() const { return frames; }

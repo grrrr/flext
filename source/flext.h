@@ -60,14 +60,14 @@ public:
 		t_symbol *sym;
 		F *data;
 		I chns,frames;
-	#ifdef PD
+#ifdef PD
 		F interval;
 		BL isdirty,ticking;
 		t_clock *tick;
-	#endif
 
 	private:
 		static V cb_tick(buffer *b);
+#endif
 	};
 
 protected:

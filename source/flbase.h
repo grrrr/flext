@@ -276,6 +276,10 @@ class flext_obj:
 #define FLEXT_ATTRIBUTES \
 \
 0
+
+
+#elif FLEXT_ATTRIBUTES != 0 && FLEXT_ATTRIBUTES != 1
+#error "FLEXT_ATTRIBUTES must be 0 or 1"
 #endif
 
 // ----------------------------------------

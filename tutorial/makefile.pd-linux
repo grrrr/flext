@@ -24,7 +24,7 @@ INCLUDES=$(PDPATH)
 LIBPATH=
 FLAGS=-DPD -DFLEXT_THREADS
 CFLAGS=-O6 -mcpu=pentiumpro
-LIBS=m pd
+LIBS=m
 
 
 # the rest can stay untouched

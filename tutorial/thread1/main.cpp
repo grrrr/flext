@@ -11,7 +11,9 @@ This shows an example of a method running as a thread
 */
 
 // define FLEXT_THREADS for thread usage. Flext must also have been compiled with that defined!
+#ifndef FLEXT_THREADS
 #define FLEXT_THREADS
+#endif
 
 #include <flext.h>
 

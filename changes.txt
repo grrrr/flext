@@ -17,7 +17,8 @@ Version history:
 - fixes for 64 bit builds (size_t is integer type of pointer size)
 - finally added a autoconf system (many many thanks to Tim Blechmann)
 - more character escapes for attribute editor
-- fixed the attribute editor for 0.38, filtered redundancies
+- fixed the attribute editor for 0.38, stopped redundant transfer of script code
+- show saveable attributes on object select
 
 0.4.7:
 - added flext::GetBool (just because flext::GetInt has been there for a while)

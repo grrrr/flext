@@ -41,6 +41,7 @@ static t_widgetbehavior widgetbehavior;
 
 #ifndef FLEXT_CLONEWIDGET
 static void (*ori_vis)(t_gobj *c, t_glist *, int vis) = NULL;
+static void (*ori_select)(t_gobj *c, t_glist *, int state) = NULL;
 #endif
 
 //! generate the script for the property dialog
@@ -413,19 +414,20 @@ void flext_base::SetAttrEditor(t_classid c)
 
 #ifndef FLEXT_CLONEWIDGET
     ori_vis = c->c_wb->w_visfn; 
+    ori_select = c->c_wb->w_selectfn; 
     widgetbehavior.w_getrectfn =    c->c_wb->w_getrectfn; 
     widgetbehavior.w_displacefn =   c->c_wb->w_displacefn; 
-    widgetbehavior.w_selectfn =     c->c_wb->w_selectfn; 
     widgetbehavior.w_activatefn =   c->c_wb->w_activatefn; 
     widgetbehavior.w_deletefn =     c->c_wb->w_deletefn; 
     widgetbehavior.w_clickfn =      c->c_wb->w_clickfn;
+    widgetbehavior.w_selectfn =     c->c_wb->w_selectfn;
 #else
     widgetbehavior.w_getrectfn =    text_widgetbehavior.w_getrectfn; 
     widgetbehavior.w_displacefn =   text_widgetbehavior.w_displacefn; 
-    widgetbehavior.w_selectfn =     text_widgetbehavior.w_selectfn; 
     widgetbehavior.w_activatefn =   text_widgetbehavior.w_activatefn; 
     widgetbehavior.w_deletefn =     text_widgetbehavior.w_deletefn; 
     widgetbehavior.w_clickfn =      text_widgetbehavior.w_clickfn;
+    widgetbehavior.w_selectfn =     text_widgetbehavior.w_selectfn;
 #endif
 
 #if PD_MINOR_VERSION >= 37
@@ -437,6 +439,7 @@ void flext_base::SetAttrEditor(t_classid c)
 #endif
 
     widgetbehavior.w_visfn =        cb_GfxVis;
+    widgetbehavior.w_selectfn =     cb_GfxSelect; 
     class_setwidget(c, &widgetbehavior);
 
     tclscript();
@@ -566,20 +569,17 @@ void flext_base::cb_GfxVis(t_gobj *c, t_glist *gl, int vis)
 {
     // show object if it's not a GOP
     if(!gl->gl_isgraph || gl->gl_havewindow) {
-
+        flext_base *th = thisObject(c);
         t_text *x = (t_text *)c;
         FLEXT_ASSERT(x->te_binbuf);
 
-        int argc = binbuf_getnatom(x->te_binbuf);
-        t_atom *argv = binbuf_getvec(x->te_binbuf);
-        int cnt = CheckAttrib(argc,argv);
+        t_binbuf *b = binbuf_new();
+        th->BinbufArgs(b,x->te_binbuf,true);
 
-        if(cnt) {
-            t_binbuf *nb = binbuf_new();
-            binbuf_restore(nb,cnt,argv);
-            binbuf_free(x->te_binbuf);
-            x->te_binbuf = nb;
-        }
+        // delete old object box text
+        binbuf_free(x->te_binbuf);
+        // set new one
+        x->te_binbuf = b;
 
         t_rtext *rt = glist_findrtext(gl,x);
         rtext_retext(rt);
@@ -593,25 +593,40 @@ void flext_base::cb_GfxVis(t_gobj *c, t_glist *gl, int vis)
    }
 }
 
-static void BinbufAdd(t_binbuf *b,const t_atom &at)
+void flext_base::cb_GfxSelect(t_gobj *c, struct _glist *gl, int state)
 {
-    char tbuf[MAXPDSTRING];
-    if(flext::IsString(at))
-        binbuf_addv(b,"s",flext::GetSymbol(at));
-    else if(flext::IsFloat(at))
-        binbuf_addv(b,"f",flext::GetFloat(at));
-    else if(flext::IsInt(at))
-        binbuf_addv(b,"i",flext::GetInt(at));
-    else if(at.a_type == A_DOLLAR) {
-        sprintf(tbuf, "$%d", at.a_w.w_index);
-        binbuf_addv(b,"s",flext::MakeSymbol(tbuf));
+    // show object if it's not a GOP
+    if(!gl->gl_isgraph || gl->gl_havewindow) {
+        if(state || !gl->gl_editor->e_textdirty) {
+            // change text only on selection
+            // OR if text has _not_ been changed 
+            // ->  since object will not be recreated we have to get rid
+            //     of the attribute text
+
+            flext_base *th = thisObject(c);
+            t_text *x = (t_text *)c;
+            FLEXT_ASSERT(x->te_binbuf);
+
+            t_binbuf *b = binbuf_new();
+            th->BinbufArgs(b,x->te_binbuf,true);
+            if(state) th->BinbufAttr(b);
+
+            // delete old object box text
+            binbuf_free(x->te_binbuf);
+            // set new one
+            x->te_binbuf = b;
+
+            t_rtext *rt = glist_findrtext(gl,x);
+            rtext_retext(rt);
+        }
+
+        // call original function
+        #ifdef FLEXT_CLONEWIDGET
+            text_widgetbehavior.w_selectfn(c,gl,state);
+        #else
+            ori_select(c,gl,state);
+        #endif
     }
-    else if(at.a_type == A_DOLLSYM) {
-        sprintf(tbuf, "$%s", at.a_w.w_symbol->s_name);
-        binbuf_addv(b,"s",flext::MakeSymbol(tbuf));
-    }
-    else
-        FLEXT_ASSERT(false);
 }
 
 void flext_base::cb_GfxSave(t_gobj *c, t_binbuf *b)
@@ -620,68 +635,11 @@ void flext_base::cb_GfxSave(t_gobj *c, t_binbuf *b)
     t_text *t = (t_text *)c;
     binbuf_addv(b, "ssiis", gensym("#X"),gensym("obj"), t->te_xpix, t->te_ypix,MakeSymbol(th->thisName()));
 
-    int argc = binbuf_getnatom(t->te_binbuf);
-    t_atom *argv = binbuf_getvec(t->te_binbuf);
-    int i,cnt = CheckAttrib(argc,argv);
-
-    // process the creation arguments
-    for(i = 1; i < cnt; ++i) BinbufAdd(b,argv[i]);
-
+    // process the object arguments
+    th->BinbufArgs(b,t->te_binbuf,false);
     // process the attributes
-    AtomList la;
-    th->ListAttrib(la);
-    cnt = la.Count();
-
-    for(i = 0; i < cnt; ++i) {
-        const t_symbol *sym = GetSymbol(la[i]);
-        AtomList lv;
-        const AtomList *lref = NULL;
-        AttrDataCont::iterator it = th->attrdata->find(sym);
-
-        if(it != th->attrdata->end()) {
-            const AttrData &a = *it.data();
-            if(a.IsInit() && a.IsInitValue()) {
-                lref = &a.GetInitValue();
-/*
-                // check for $-parameters
-                lv = lref->Count();
-                for(int j = 0; j < lref->Count(); ++j) {
-                    const char *s = IsSymbol((*lref)[j])?GetString((*lref)[j]):NULL;
-                    if(s && s[0] == '$') { // TODO: More refined checking?
-                        // prepend a "\"
-                        char tmp[256]; *tmp = '\\';
-                        strcpy(tmp+1,s);
-                        SetString(lv[j],tmp);
-                    }
-                    else
-                        lv[i] = (*lref)[j];
-                }
-
-                lref = &lv;
-*/
-            }
-            else if(a.IsSaved()) {
-                AttrItem *attr = th->FindAttrib(sym,true);
-
-                // attribute must be gettable (so that the data can be retrieved) and puttable (so that the data can be inited)
-                if(attr && attr->BothExist()) {
-                    th->GetAttrib(sym,attr,lv); 
-                    lref = &lv;
-                }
-            }
-        }
-
-        if(lref) {
-            char attrname[256]; *attrname= '@';
-            // store name
-            strcpy(attrname+1,GetString(sym));
-            binbuf_addv(b,"s",MakeSymbol(attrname));
-
-            // store value
-            for(int j = 0; j < lref->Count(); ++j) BinbufAdd(b,(*lref)[j]);
-        }
-    }
-
+    th->BinbufAttr(b);
+    // add end sign
     binbuf_addv(b, ";");
 }
 
@@ -752,4 +710,94 @@ bool flext_base::cb_AttrDialog(flext_base *th,int argc,const t_atom *argv)
     return true;
 }
 
+
+static void BinbufAdd(t_binbuf *b,const t_atom &at)
+{
+    char tbuf[MAXPDSTRING];
+    if(flext::IsString(at))
+        binbuf_addv(b,"s",flext::GetSymbol(at));
+    else if(flext::IsFloat(at))
+        binbuf_addv(b,"f",flext::GetFloat(at));
+    else if(flext::IsInt(at))
+        binbuf_addv(b,"i",flext::GetInt(at));
+    else if(at.a_type == A_DOLLAR) {
+        sprintf(tbuf, "$%d", at.a_w.w_index);
+        binbuf_addv(b,"s",flext::MakeSymbol(tbuf));
+    }
+    else if(at.a_type == A_DOLLSYM) {
+        sprintf(tbuf, "$%s", at.a_w.w_symbol->s_name);
+        binbuf_addv(b,"s",flext::MakeSymbol(tbuf));
+    }
+    else
+        FLEXT_ASSERT(false);
+}
+
+void flext_base::BinbufArgs(t_binbuf *b,t_binbuf *args,bool withname)
+{
+    int argc = binbuf_getnatom(args);
+    t_atom *argv = binbuf_getvec(args);
+    int i,cnt = CheckAttrib(argc,argv);
+    // process the creation arguments
+    for(i = withname?0:1; i < cnt; ++i) BinbufAdd(b,argv[i]);
+}
+
+void flext_base::BinbufAttr(t_binbuf *b)
+{
+    // process the attributes
+    AtomList la;
+    ListAttrib(la);
+    int i,cnt = la.Count();
+
+    for(i = 0; i < cnt; ++i) {
+        const t_symbol *sym = GetSymbol(la[i]);
+        AtomList lv;
+        const AtomList *lref = NULL;
+        AttrDataCont::iterator it = attrdata->find(sym);
+
+        if(it != attrdata->end()) {
+            const AttrData &a = *it.data();
+            if(a.IsInit() && a.IsInitValue()) {
+                lref = &a.GetInitValue();
+/*
+                // check for $-parameters
+                lv = lref->Count();
+                for(int j = 0; j < lref->Count(); ++j) {
+                    const char *s = IsSymbol((*lref)[j])?GetString((*lref)[j]):NULL;
+                    if(s && s[0] == '$') { // TODO: More refined checking?
+                        // prepend a "\"
+                        char tmp[256]; *tmp = '\\';
+                        strcpy(tmp+1,s);
+                        SetString(lv[j],tmp);
+                    }
+                    else
+                        lv[i] = (*lref)[j];
+                }
+
+                lref = &lv;
+*/
+            }
+            else if(a.IsSaved()) {
+                AttrItem *attr = FindAttrib(sym,true);
+
+                // attribute must be gettable (so that the data can be retrieved) and puttable (so that the data can be inited)
+                if(attr && attr->BothExist()) {
+                    GetAttrib(sym,attr,lv); 
+                    lref = &lv;
+                }
+            }
+        }
+
+        if(lref) {
+            char attrname[256]; *attrname= '@';
+            // store name
+            strcpy(attrname+1,GetString(sym));
+            binbuf_addv(b,"s",MakeSymbol(attrname));
+
+            // store value
+            for(int j = 0; j < lref->Count(); ++j) BinbufAdd(b,(*lref)[j]);
+        }
+    }
+}
+
 #endif // FLEXT_SYS_PD
+

@@ -12,7 +12,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     \brief flext SIMD support functions
 
     If FLEXT_USE_SIMD is defined at compilation, SIMD instructions are used wherever feasible.
-    If used with MSVC++ the "Processor Pack" must be installed.
+    If used with MSVC++ 6 the "Processor Pack" must be installed.
 
     If FLEXT_USE_IPP is defined the Intel Performance Package is used.
 */

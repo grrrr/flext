@@ -710,16 +710,16 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 		int i = incnt;
 		if(i > argc) i = argc;
 		for(--i; i >= 0; --i) { // right to left distribution
-			const t_symbol *s = NULL;
-			if(IsFloat(argv[i])) s = sym_float;
-			else if(IsInt(argv[i])) s = sym_int;
-			else if(IsSymbol(argv[i])) s = sym_symbol;
+			const t_symbol *sym = NULL;
+			if(IsFloat(argv[i])) sym = sym_float;
+			else if(IsInt(argv[i])) sym = sym_int;
+			else if(IsSymbol(argv[i])) sym = sym_symbol;
 #ifdef PD
-			else if(IsPointer(argv[i])) s = sym_pointer;  // can pointer atoms occur here?
+			else if(IsPointer(argv[i])) sym = sym_pointer;  // can pointer atoms occur here?
 #endif
-			if(s) {
+			if(sym) {
 				trap = true;
-				m_methodmain(i,s,1,argv+i);			
+				m_methodmain(i,sym,1,argv+i);			
 				trap = false;
 			}
 		}

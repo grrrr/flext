@@ -173,7 +173,7 @@ public:
 	/*! \brief Fold value to a number of bits
 		\remark Good for hash generation
 	*/
-	static int FoldBits(unsigned long h,int bits);
+	static unsigned int FoldBits(unsigned long h,int bits);
 	
 	//! \brief How many bits are necessary to represent n
 	static int Int2Bits(unsigned long n);

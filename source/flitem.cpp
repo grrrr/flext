@@ -17,7 +17,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 
 flext_base::item::item(const t_symbol *t,int inl,attritem *a): 
- inlet(inl),tag(t),attr(a),nxt(NULL) 
+ tag(t),inlet(inl),attr(a),nxt(NULL) 
 {}
 
 flext_base::item::~item()

@@ -119,12 +119,12 @@ void flext::GetAString(const t_atom &a,char *buf,int szbuf)
 #endif
 }  
 
-int flext::FoldBits(unsigned long h,int bits)
+unsigned int flext::FoldBits(unsigned long h,int bits)
 {
 	if(!bits) return 0;
 	const int hmax = (1<<bits)-1;
-	int ret = 0;
-	for(int i = 0; i < sizeof(h)*8; i += bits)
+	unsigned int ret = 0;
+	for(unsigned int i = 0; i < sizeof(h)*8; i += bits)
 		ret = ret^((h>>i)&hmax);
 	return ret;
 }

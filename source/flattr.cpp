@@ -22,8 +22,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 flext_base::attritem::attritem(const t_symbol *t,metharg tp,methfun f,int fl):
-	item(t,0,NULL),argtp(tp),
-	fun(f),flags(fl)
+	item(t,0,NULL),
+	flags(fl),argtp(tp),fun(f)
 {}
 
 flext_base::attritem::~attritem()

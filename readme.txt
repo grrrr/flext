@@ -93,6 +93,7 @@ Version history:
 - introduced a flext static class for general flext functions (to clean up the flext_base class)
 - creation argument handling is now done by flext
 	no more weird PD re-ordering of arguments 
+- no more support for the Apple MPW compiler - MacOS9 is dying anyway...
 - calling SetupInOut() has become obsolete 
 	- flext creates all inlets/outlets by itself after the constructor has finished
 	- this implies that CntIn(),CntOut() and the outlet pointers are not valid in the constructor

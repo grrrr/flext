@@ -31,11 +31,11 @@ flext::AtomList::~AtomList() {	Clear(); }
 
 flext::AtomList &flext::AtomList::Set(int argc,const t_atom *argv,int offs)
 {
-	if(lst && cnt != argc) { delete[] lst; lst = NULL; cnt = 0; }
+	int ncnt = argc+offs;
+	if(lst && cnt != ncnt) { delete[] lst; lst = NULL; cnt = 0; }
 
-	if(argc) {
-		cnt = argc;
-		lst = new t_atom[cnt];
+	if(ncnt) {
+		if(!lst) lst = new t_atom[cnt = ncnt];
 
 		if(argv) {
 			for(int i = 0; i < argc; ++i) SetAtom(lst[offs+i],argv[i]);
@@ -123,4 +123,5 @@ flext::AtomList flext::AtomList::GetPart(int offs,int len) const
 
 	return AtomList(len,Atoms()+offs);
 }
+
 

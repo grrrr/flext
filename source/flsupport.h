@@ -155,6 +155,11 @@ public:
 	//! Copy an atom
 	static void CopyAtom(t_atom *dst,const t_atom *src) { *dst = *src; }
 
+	//! Print an atom
+	static void PrintAtom(const t_atom &a,char *buf);
+	//! Scan an atom
+	static bool ScanAtom(t_atom &a,const char *buf);
+
 	//! Copy a list of atoms
 	static t_atom *CopyList(int argc,const t_atom *argv);
 	//! Copy a memory region
@@ -204,6 +209,8 @@ public:
 	//! Check whether the atom can be represented as an integer
 	static bool CanbeInt(const t_atom &a) { return IsFloat(a) || IsInt(a); }
 
+	//! Set the atom to represent a boolean
+	static void SetBool(t_atom &a,bool v) { SetInt(a,v?1:0); }
 	//! Check whether the atom can be represented as a boolean
 	static bool CanbeBool(const t_atom &a) { return CanbeInt(a); }
 	//! Check for an boolean and get its value 

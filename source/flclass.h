@@ -170,8 +170,11 @@ public:
 	//! Retrieve currently processed message tag (NULL if no message processing)
 	const t_symbol *thisTag() const { return curtag; }
 
-	//! Get pointer to outlet (_after_ calling setup_inout()!)
+	//! Get pointer to outlet (not in the constructor!)
 	outlet *GetOut(int ix) { return (outlets && ix < outcnt)?outlets[ix]:NULL; }
+
+	//! Get pointer to attribute outlet 
+	outlet *GetOutAttr() { return outattr; }
 
 	// output messages 
 

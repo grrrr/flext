@@ -34,6 +34,8 @@ normal:
 	nmake /f make-sub.pd-msvc NAME=signal1~ DIR=signal1
 	nmake /f make-sub.pd-msvc NAME=signal2~ DIR=signal2
 	nmake /f make-sub.pd-msvc NAME=lib1 DIR=lib1
+	nmake /f make-sub.pd-msvc NAME=buffer1 DIR=buffer1
+	nmake /f make-sub.pd-msvc NAME=bind1 DIR=bind1
 
 threads:
 	nmake /f make-sub.pd-msvc NAME=thread1  DIR=thread1 

@@ -228,6 +228,11 @@ public:
 	static t_symbol *geta_symbol(const t_atom &a) { return is_symbol(a)?get_symbol(a):NULL; }  // NULL or empty symbol?
 	static V set_symbol(t_atom &a,const t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_symbol = const_cast<t_symbol *>(s); }
 
+	static BL is_string(const t_atom &a) { return is_symbol(a); }
+	static const C *get_string(const t_atom &a) { t_symbol *s = get_symbol(a); return s?s->s_name:NULL; }  
+	static const C *geta_string(const t_atom &a) { t_symbol *s = geta_symbol(a); return s?s->s_name:""; }  
+	static V set_string(t_atom &a,const C *c) { set_symbol(a,gensym(const_cast<C *>(c))); }
+
 #ifdef PD
 	static BL is_pointer(const t_atom &a) { return a.a_type == A_POINTER; }
 	static t_gpointer *get_pointer(const t_atom &a) { return a.a_w.w_gpointer; }

@@ -84,11 +84,11 @@ I ext_obj::buffer::Set(t_symbol *s)
 			}
 			else {
 #ifdef DEBUG
-				post("%s: buffer object '%s' - valid:%i samples:%i channels:%i buflen:%i",thisName(),bufname->s_name,p->b_valid,p->b_frames,p->b_nchans,p->b_size);
+				post("%s: buffer object '%s' - valid:%i samples:%i channels:%i frames:%i",thisName(),bufname->s_name,p->b_valid,p->b_frames,p->b_nchans,p->b_frames);
 #endif
 				if(data != p->b_samples) { data = p->b_samples; ret = 1; }
 				if(chns != p->b_nchans) { chns = p->b_nchans; ret = 1; }
-				if(frames != p->b_size) { frames = p->b_size; ret = 1; }
+				if(frames != p->b_frames) { frames = p->b_frames; ret = 1; }
 			}
 		}
 		else {

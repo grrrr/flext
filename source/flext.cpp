@@ -192,6 +192,7 @@ V ext_obj::cb_assist(V *c,V *b,L msg,L arg,C *s) { thisObject(c)->m_assist(msg,a
 
 V ext_obj::m_help()
 {
+	// This should better be overloaded
 	post("Loaded object '%s' - compiled on %s %s",thisName(),__DATE__,__TIME__);
 }
 

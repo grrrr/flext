@@ -11,6 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // Code for handling of object creation functions
 
 #include "flext.h"
+#include "flinternal.h"
 
 #include <stdarg.h>
 #include <string.h>
@@ -189,10 +190,33 @@ flext_obj::t_classid flext_obj::thisClassId() const { return libname::Find(thisN
 t_class *flext_obj::getClass(t_classid id) { return reinterpret_cast<libobject *>(id)->clss; }
 #endif
 
+/*! \brief Set up the proxy class for symbol-bound methods
+	\note This has to take place before the main class is set up because
+	\note Max does not know which class is the current one afterwards (when methods are added)
+*/
+void flext_obj::SetupBindProxy()
+{
+	// already initialized?
+	if(!flext_base::pxbnd_class) {
+#if FLEXT_SYS == FLEXT_SYS_PD
+    	flext_base::pxbnd_class = class_new(gensym("flext_base bind proxy"),NULL,NULL,sizeof(flext_base::pxbnd_object),CLASS_PD|CLASS_NOINLET, A_NULL);
+		add_anything(flext_base::pxbnd_class,flext_base::pxbnd_object::px_method); // for symbol-bound methods
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+		::setup((t_messlist **)&flext_base::pxbnd_class,NULL,NULL,sizeof(flext_base::pxbnd_object),NULL,A_NULL);
+		add_anything(flext_base::pxbnd_class,flext_base::pxbnd_object::px_method); // for symbol-bound methods
+#else
+#pragma warning("Not implemented!")
+#endif
+	}
+}
+
+
 void flext_obj::lib_init(const char *name,void setupfun(),bool attr)
 {
     flext::Setup();
 
+	SetupBindProxy();
+	
 #if FLEXT_SYS == FLEXT_SYS_MAX
 	lib_name = MakeSymbol(name);
 	::setup(
@@ -237,6 +261,8 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
      	sizeof(flext_hdr),CLASS_DEFAULT,A_GIMME,A_NULL);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	if(!lib) {
+		SetupBindProxy();
+	
 		::setup(
 			(t_messlist **)cl,
     		(t_newmethod)obj_new,(t_method)obj_free,

@@ -218,6 +218,10 @@ class FLEXT_SHARE flext_obj:
         //! Flag for successful object construction
         bool				init_ok;
 
+	    // --- proxy stuff for symbol-bound methods ----
+	    
+		static void SetupBindProxy();
+
 	public:
 
     	//! Creation callback
@@ -251,6 +255,7 @@ class FLEXT_SHARE flext_obj:
 		static flext_hdr *obj_new(const t_symbol *s,int argc,t_atom *argv);
 		static void obj_free(flext_hdr *o);
 #endif
+
 	//!	@} FLEXT_O_INTERNAL
 
 	//!	@} FLEXT_OBJCLASS   	

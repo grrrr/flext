@@ -600,7 +600,7 @@ protected:
 	};
 
 private:
-    class pxbnd_object;
+	class pxbnd_object;
 public:
 
 	//! \brief This represents an item of the method list
@@ -753,10 +753,8 @@ private:
 	static void jmax_proxy(fts_object_t *c, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at);
 #endif
 
+	// --------- symbol-bound proxy
 
-
-    // --- proxy stuff for symbol-bound methods ----
-    
 	static t_class *pxbnd_class;
 
 	class pxbnd_object  // no virtual table!
@@ -769,7 +767,7 @@ private:
 		void init(flext_base *b,binditem *it) { base = b; item = it; }
 		static void px_method(pxbnd_object *c,const t_symbol *s,int argc,t_atom *argv);
 	};
-
+		
 	// ---------
 
 	static void SetProxies(t_class *c);

@@ -16,6 +16,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flinternal.h"
 
 
+t_class *flext_base::pxbnd_class = NULL;
+
 flext_base::binditem::binditem(int in,const t_symbol *sym,bool (*f)(flext_base *,t_symbol *s,int,t_atom *),pxbnd_object *p):
 	item(sym,0,NULL),fun(f),px(p)
 {}
@@ -35,8 +37,7 @@ bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbo
 
     FLEXT_ASSERT(pxbnd_class); 
 
-    pxbnd_object *px = NULL;
-    px = (pxbnd_object *)object_new(pxbnd_class);
+    pxbnd_object *px = (pxbnd_object *)object_new(pxbnd_class);
 
     if(px) {
 	    binditem *mi = new binditem(0,sym,fun,px);

@@ -84,7 +84,7 @@ void flext_base::SetAttrEditor(t_classid c)
                 "set a [regsub {\\$} $a \\\\$]\n"  // replace $ with \$
                 "set a [regsub {,} $a \\\\,]\n"  // replace , with \,
                 "set a [regsub {;} $a \\\\\\;]\n"  // replace ; with \;
-                "set a [regsub {%} $a %%]\n"  // replace % with \%
+//                "set a [regsub {%} $a %%]\n"  // replace % with \%
                 "lappend tmp $a\n"
             "}\n"
             "return $tmp\n"
@@ -424,6 +424,19 @@ void flext_base::SetAttrEditor(t_classid c)
     );
 }
 
+static size_t escapeit(char *dst,size_t maxlen,const char *src)
+{
+    int ret = 0;
+    for(char *d = dst; *src && (d-dst) < (int)maxlen; ++src) {
+        if(*src == '%')
+            *(d++) = '%',*(d++) = '%';
+        else
+            *(d++) = *src;
+    }
+    *d = 0;
+    return d-dst;
+}
+
 void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 {
     flext_base *th = thisObject(c);
@@ -492,7 +505,12 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
             // Retrieve attribute value
             th->GetAttrib(sym,gattr,lv);
 
-            PrintList(lv.Count(),lv.Atoms(),b,sizeof(buf)+buf-b); b += strlen(b);
+            for(int i = 0; i < lv.Count(); ++i) {
+                char tmp[100];
+                PrintAtom(lv[i],tmp,sizeof tmp);
+                b += escapeit(b,sizeof(buf)+buf-b,tmp);
+                if(i < lv.Count()-1) { *(b++) = ' '; *(b++) = 0; }
+            }
         }
         else {
             strcpy(b,"{}"); b += strlen(b);
@@ -504,7 +522,12 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
             // if there is initialization data take this, otherwise take the current data
             const AtomList &lp = initdata?*initdata:lv;
 
-            PrintList(lp.Count(),lp.Atoms(),b,sizeof(buf)+buf-b); b += strlen(b);
+            for(int i = 0; i < lp.Count(); ++i) {
+                char tmp[100];
+                PrintAtom(lp[i],tmp,sizeof(tmp)); 
+                b += escapeit(b,sizeof(buf)+buf-b,tmp);
+                if(i < lp.Count()-1) { *(b++) = ' '; *(b++) = 0; }
+            }
         }
         else {
             strcpy(b,"{}"); b += strlen(b);

@@ -655,7 +655,7 @@ V flext_base::geta_string(const t_atom &a,C *buf,I szbuf)
 #ifdef PD
 	atom_string(const_cast<t_atom *>(&a),buf,szbuf);
 #else
-	if(is_symbol(a)) sprintf(buf,"%s",get_string(a));
+	if(is_symbol(a)) sprintf(buf,get_string(a));
 	else if(is_float(a)) sprintf(buf,"%f",get_float(a));
 	else if(is_int(a)) sprintf(buf,"%i",get_int(a));
 #endif

@@ -35,8 +35,8 @@ o Microsoft Visual C++ 6: use the "flext.dsp" project file  - you have to edit t
 o GCC: edit & run "make -f makefile.pd-linux"
 
 - Max/MSP - MacOS:
-o Metrowerks CodeWarrior V6: use the "flext" project file
-o Apple MPW-PR with STLPort: edit & use the "flext.make" makefile
+o Metrowerks CodeWarrior V6: use the "flext.cw" project file
+o Apple MPW-PR with STLPort: edit & use the "flext.mpw" makefile
 
 
 for Max/MSP you will also need the Max/MSP SDK
@@ -102,7 +102,8 @@ Notes:
 - no support for default object arguments (A_DEFFLOAT, A_DEFSYMBOL) -> use GIMME instead
 
 Platform specific:
-- Max does not allow external libraries -> only one FLEXT_NEW* or FLEXT_TILDE_NEW* in a project 
+- Max does not support external libraries -> only one FLEXT_NEW* or FLEXT_TILDE_NEW* in a project 
+- PD does not allow signal and message to go into the same inlet
 
 Restrictions in compatibility mode:
 - Max allows only 9 float/int inlets
@@ -117,9 +118,7 @@ general:
 - documentation
 - add log messages for debugging version
 - exchange more preprocessor definitions for C++ base class code (esp. pd and max calls)
-- makefile for MS VC++ 6
 - should we use a namespace?
-- Apple MPW project
 - where to put flext source/lib in linux: /usr/local/lib,/usr/local/include ?
 
 bugs:

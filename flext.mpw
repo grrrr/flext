@@ -3,7 +3,7 @@
 #   Created:    Thursday, March 21, 2002 11:19:05 PM
 
 
-MAKEFILE        = flext.make
+MAKEFILE        = flext.mpw
 €MondoBuild€    = {MAKEFILE}  # Make blank to avoid rebuilds when makefile is modified
 
 OutDir          = :MPW:
@@ -13,7 +13,7 @@ Includes        = -i :,"{MaxSDK}:Max Includes","{MaxSDK}:MSP Includes","{STLPort
 Defines			= -d MAXMSP
 
 Sym-PPC         = -sym off
-Flags			= -includes unix
+Flags			= -includes unix -opt speed 
 
 PPCCPlusOptions = {Includes} {Sym-PPC} {Defines} {Flags}
 

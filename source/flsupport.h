@@ -21,7 +21,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <pthread.h>
 #endif
 
-namespace flext {
+class flext {
+public:
 // --- buffer/array stuff -----------------------------------------	
 
 	/*!	\defgroup FLEXT_N_BUFFER Flext buffer handling
@@ -106,41 +107,41 @@ namespace flext {
 	*/
 
 	//! Symbol constant for "float"
-	extern const t_symbol *sym_float;
+	static const t_symbol *sym_float;
 	//! Symbol constant for "symbol"
-	extern const t_symbol *sym_symbol;
+	static const t_symbol *sym_symbol;
 	//! Symbol constant for "bang"
-	extern const t_symbol *sym_bang;
+	static const t_symbol *sym_bang;
 	//! Symbol constant for "list"
-	extern const t_symbol *sym_list;
+	static const t_symbol *sym_list;
 	//! Symbol constant for "anything"
-	extern const t_symbol *sym_anything;
+	static const t_symbol *sym_anything;
 
 	/*! \brief Symbol constant for "int"
 		\note Only the Max/MSP system has this defined as an internal type
 	*/
-	extern const t_symbol *sym_int;
+	static const t_symbol *sym_int;
 
 	/*! Symbol constant for "pointer" 
 		\note Only PD has this defined as an internal type
 	*/
-	extern const t_symbol *sym_pointer;
+	static const t_symbol *sym_pointer;
 
 #ifdef PD
 
 	/*! \brief Symbol constant for "signal"
 		\note PD only
 	*/
-	extern const t_symbol *sym_signal;
+	static const t_symbol *sym_signal;
 #endif
 
 	//! Make a symbol from a string
-	inline const t_symbol *MakeSymbol(const char *s) { return gensym(const_cast<char *>(s)); }
+	static const t_symbol *MakeSymbol(const char *s) { return gensym(const_cast<char *>(s)); }
 
 	//! Get symbol string
-	inline const char *GetString(const t_symbol *s) { return s->s_name; }  
+	static const char *GetString(const t_symbol *s) { return s->s_name; }  
 	//! Check for symbol and get string
-	inline const char *GetAString(const t_symbol *s) { return s?s->s_name:""; }  
+	static const char *GetAString(const t_symbol *s) { return s?s->s_name:""; }  
 
 //!		@} 
 
@@ -152,107 +153,103 @@ namespace flext {
 	*/
 
 	//! Copy an atom
-	inline void CopyAtom(t_atom *dst,const t_atom *src) { *dst = *src; }
+	static void CopyAtom(t_atom *dst,const t_atom *src) { *dst = *src; }
 
 	//! Copy a list of atoms
-	t_atom *CopyList(int argc,const t_atom *argv);
+	static t_atom *CopyList(int argc,const t_atom *argv);
 	//! Copy a memory region
-	void CopyMem(void *dst,const void *src,int bytes);
+	static void CopyMem(void *dst,const void *src,int bytes);
 	//! Sleep for an amount of time
-	void Sleep(float s);
+	static void Sleep(float s);
 
 //!		@} 
 
 // --- atom stuff ----------------------------------------
 		
 	//! Set atom from another atom
-	inline void SetAtom(t_atom &a,const t_atom &b) { CopyAtom(&a,&b); }
+	static void SetAtom(t_atom &a,const t_atom &b) { CopyAtom(&a,&b); }
 
 	//! Check whether the atom is nothing
-	inline bool IsNothing(const t_atom &a) { return a.a_type == A_NULL; }
+	static bool IsNothing(const t_atom &a) { return a.a_type == A_NULL; }
 	//! Set the atom to represent nothing
-	inline void SetNothing(t_atom &a) { a.a_type = A_NULL; }
-
-	bool IsInt(const t_atom &);
-	int GetInt(const t_atom &a);
-	int GetAInt(const t_atom &a);
+	static void SetNothing(t_atom &a) { a.a_type = A_NULL; }
 
 	//! Check whether the atom is a float
-	inline bool IsFloat(const t_atom &a) { return a.a_type == A_FLOAT; }
+	static bool IsFloat(const t_atom &a) { return a.a_type == A_FLOAT; }
 	//! Check whether the atom can be represented as a float
-	inline bool CanbeFloat(const t_atom &a) { return IsFloat(a) || IsInt(a); }
+	static bool CanbeFloat(const t_atom &a) { return IsFloat(a) || IsInt(a); }
 	//! Access the float value (without type check)
-	inline float GetFloat(const t_atom &a) { return a.a_w.w_float; }
+	static float GetFloat(const t_atom &a) { return a.a_w.w_float; }
 	//! Set the atom to represent a float 
-	inline void SetFloat(t_atom &a,float v) { a.a_type = A_FLOAT; a.a_w.w_float = v; }
+	static void SetFloat(t_atom &a,float v) { a.a_type = A_FLOAT; a.a_w.w_float = v; }
 
 	//! Check whether the atom is a symbol
-	inline bool IsSymbol(const t_atom &a) { return a.a_type == A_SYMBOL; }
+	static bool IsSymbol(const t_atom &a) { return a.a_type == A_SYMBOL; }
 	//! Access the symbol value (without type check)
-	inline t_symbol *GetSymbol(const t_atom &a) { return a.a_w.w_symbol; }
+	static t_symbol *GetSymbol(const t_atom &a) { return a.a_w.w_symbol; }
 	//! Check for a symbol and get its value 
-	inline t_symbol *GetASymbol(const t_atom &a) { return IsSymbol(a)?GetSymbol(a):NULL; }  // NULL or empty symbol?
+	static t_symbol *GetASymbol(const t_atom &a) { return IsSymbol(a)?GetSymbol(a):NULL; }  // NULL or empty symbol?
 	//! Set the atom to represent a symbol
-	inline void SetSymbol(t_atom &a,const t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_symbol = const_cast<t_symbol *>(s); }
+	static void SetSymbol(t_atom &a,const t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_symbol = const_cast<t_symbol *>(s); }
 
 	//! Check whether the atom is a string
-	inline bool IsString(const t_atom &a) { return IsSymbol(a); }
+	static bool IsString(const t_atom &a) { return IsSymbol(a); }
 	//! Access the string value (without type check)
-	inline const char *GetString(const t_atom &a) { t_symbol *s = GetSymbol(a); return s?GetString(s):NULL; }  
+	static const char *GetString(const t_atom &a) { t_symbol *s = GetSymbol(a); return s?GetString(s):NULL; }  
 	//! Check for a string and get its value 
-	void GetAString(const t_atom &a,char *buf,int szbuf);
+	static void GetAString(const t_atom &a,char *buf,int szbuf);
 	//! Set the atom to represent a string
-	inline void SetString(t_atom &a,const char *c) { SetSymbol(a,gensym(const_cast<char *>(c))); }
+	static void SetString(t_atom &a,const char *c) { SetSymbol(a,gensym(const_cast<char *>(c))); }
 
 	//! Check whether the atom can be represented as an integer
-	inline bool CanbeInt(const t_atom &a) { return IsFloat(a) || IsInt(a); }
+	static bool CanbeInt(const t_atom &a) { return IsFloat(a) || IsInt(a); }
 
 	//! Check whether the atom can be represented as a boolean
-	inline bool CanbeBool(const t_atom &a) { return CanbeInt(a); }
+	static bool CanbeBool(const t_atom &a) { return CanbeInt(a); }
 	//! Check for an boolean and get its value 
-	inline bool GetABool(const t_atom &a) { return GetAInt(a) != 0; }
+	static bool GetABool(const t_atom &a) { return GetAInt(a) != 0; }
 
 #ifdef PD
 	//! Check for a float and get its value 
-	inline float GetAFloat(const t_atom &a) { return IsFloat(a)?GetFloat(a):0; }
+	static float GetAFloat(const t_atom &a) { return IsFloat(a)?GetFloat(a):0; }
 
 	//! Check whether the atom is an integer
-	inline bool IsInt(const t_atom &) { return false; }
+	static bool IsInt(const t_atom &) { return false; }
 	//! Access the integer value (without type check)
-	inline int GetInt(const t_atom &a) { return (int)GetFloat(a); }
+	static int GetInt(const t_atom &a) { return (int)GetFloat(a); }
 	//! Check for an integer and get its value 
-	inline int GetAInt(const t_atom &a) { return (int)GetAFloat(a); }
+	static int GetAInt(const t_atom &a) { return (int)GetAFloat(a); }
 	//! Set the atom to represent a integer (depending on the system)
-	inline void SetInt(t_atom &a,int v) { a.a_type = A_FLOAT; a.a_w.w_float = (float)v; }
+	static void SetInt(t_atom &a,int v) { a.a_type = A_FLOAT; a.a_w.w_float = (float)v; }
 
 	//! Check whether the atom is a pointer
-	inline bool IsPointer(const t_atom &a) { return a.a_type == A_POINTER; }
+	static bool IsPointer(const t_atom &a) { return a.a_type == A_POINTER; }
 	//! Access the pointer value (without type check)
-	inline t_gpointer *GetPointer(const t_atom &a) { return a.a_w.w_gpointer; }
+	static t_gpointer *GetPointer(const t_atom &a) { return a.a_w.w_gpointer; }
 	//! Check for a pointer and get its value 
-	inline t_gpointer *GetAPointer(const t_atom &a) { return IsPointer(a)?GetPointer(a):NULL; }
+	static t_gpointer *GetAPointer(const t_atom &a) { return IsPointer(a)?GetPointer(a):NULL; }
 	//! Set the atom to represent a pointer
-	inline void SetPointer(t_atom &a,t_gpointer *p) { a.a_type = A_POINTER; a.a_w.w_gpointer = p; }
+	static void SetPointer(t_atom &a,t_gpointer *p) { a.a_type = A_POINTER; a.a_w.w_gpointer = p; }
 
 #elif defined(MAXMSP)
 	//! Check for a float and get its value 
-	inline float GetAFloat(const t_atom &a) { return IsFloat(a)?GetFloat(a):(IsInt(a)?GetInt(a):0); }
+	static float GetAFloat(const t_atom &a) { return IsFloat(a)?GetFloat(a):(IsInt(a)?GetInt(a):0); }
 
 	//! Check whether the atom is an int
-	inline bool IsInt(const t_atom &a) { return a.a_type == A_INT; }
+	static bool IsInt(const t_atom &a) { return a.a_type == A_INT; }
 	//! Access the integer value (without type check)
-	inline int GetInt(const t_atom &a) { return a.a_w.w_long; }
+	static int GetInt(const t_atom &a) { return a.a_w.w_long; }
 	//! Check for an integer and get its value 
-	inline int GetAInt(const t_atom &a) { return IsInt(a)?GetInt(a):(IsFloat(a)?GetFloat(a):0); }
+	static int GetAInt(const t_atom &a) { return IsInt(a)?GetInt(a):(IsFloat(a)?GetFloat(a):0); }
 	//! Set the atom to represent an integer
-	inline void SetInt(t_atom &a,int v) { a.a_type = A_INT; a.a_w.w_long = v; }
+	static void SetInt(t_atom &a,int v) { a.a_type = A_INT; a.a_w.w_long = v; }
 
 	//! Check whether the atom is a pointer
-	inline bool IsPointer(const t_atom &) { return false; }
+	static bool IsPointer(const t_atom &) { return false; }
 	//! Access the pointer value (without type check)
-	inline void *GetPointer(const t_atom &) { return NULL; }
+	static void *GetPointer(const t_atom &) { return NULL; }
 	//! Check for a pointer and get its value 
-	inline void *GetAPointer(const t_atom &) { return NULL; }
+	static void *GetAPointer(const t_atom &) { return NULL; }
 //	void SetPointer(t_atom &,void *) {}
 #endif
 
@@ -431,10 +428,9 @@ namespace flext {
 	protected:
 		pthread_cond_t cond;
 	};
-
 //!		@} 
 #endif // FLEXT_THREADS
 
-} // namespace flext
+};
 
 #endif

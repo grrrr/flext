@@ -12,7 +12,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flext.h"
 #include <SndObj/AudioDefs.h>
 
-namespace flext {
+//namespace flext {
 
 class flext_sndobj:
 	public flext_dsp
@@ -78,6 +78,6 @@ private:
 	int blsz;
 };
 
-} // namespace flext
+//} // namespace flext
 
 #endif

@@ -26,7 +26,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 #include <errno.h>
 
-namespace flext {
+//namespace flext {
 
 bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *methname)
 {
@@ -390,6 +390,6 @@ flext_base::thr_params::~thr_params() { if(var) delete[] var; }
 void flext_base::thr_params::set_any(const t_symbol *s,int argc,t_atom *argv) { var[0]._any.args = new AtomAnything(s,argc,argv); }
 void flext_base::thr_params::set_list(int argc,t_atom *argv) { var[0]._list.args = new AtomList(argc,argv); }
 
-} // namespace flext
+//} // namespace flext
 
 #endif // FLEXT_THREADS

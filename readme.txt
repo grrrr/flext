@@ -20,6 +20,7 @@ Package files:
 - flclass.h,flext.cpp: actual base classes for message (flext_base) and dsp (flext_dsp) processing
 - fldsp.h,fldsp.cpp: code for signal externals
 - flthr.h,flthr.cpp: code for threaded methods
+- flsupport.h: various flext support functions and classes
 - flatom.cpp: code for functions dealing with lists of atoms
 - flutil.cpp: additional utility functions
 - flxlet.cpp: code for variable inlet/outlet stuff
@@ -66,6 +67,7 @@ pros:
 - any input to any inlet (with the exception of signal streams)
 - transparent use of threads for methods
 - libraries of externals in MaxMSP
+- more than 3 typed creation arguments possible for MaxMSP
 
 cons:
 - introduces a small overhead to speed of message handling 
@@ -80,6 +82,7 @@ Version history:
 
 0.4.0:
 - introduced a flext namespace instead of using numerous static class functions (better isolation of functions, easier usage of flext functions outside inherited flext classes)
+- completely redesigned class and object setup -> all argument checking is now handled by flext
 - added OSX/darwin support (originally done by Adam T. Lindsay)
 - SndObj interface now also available for cygwin and BCC 
 - added prepend and append functions to AtomList class

@@ -14,23 +14,23 @@ WARRANTIES, see the file, "license.txt," in this distribution.
  
 #include "flext.h"
 
-namespace flext {
+//namespace flext {
 
-AtomList::AtomList(int argc,const t_atom *argv):
+flext::AtomList::AtomList(int argc,const t_atom *argv):
 	lst(NULL),cnt(0)
 {
 	operator()(argc,argv);
 }
 
-AtomList::AtomList(const AtomList &a):
+flext::AtomList::AtomList(const AtomList &a):
 	lst(NULL),cnt(0)
 {
 	operator =(a);
 }
 
-AtomList::~AtomList() {	Clear(); }
+flext::AtomList::~AtomList() {	Clear(); }
 
-AtomList &AtomList::operator()(int argc,const t_atom *argv)
+flext::AtomList &flext::AtomList::operator()(int argc,const t_atom *argv)
 {
 	if(lst && cnt != argc) { delete[] lst; lst = NULL; cnt = 0; }
 
@@ -72,7 +72,7 @@ AtomList &AtomList::operator()(int argc,const t_atom *argv)
 }
 
 
-AtomList &AtomList::Append(const t_atom &a)
+flext::AtomList &flext::AtomList::Append(const t_atom &a)
 {
 	t_atom *nlst = new t_atom[cnt+1];
 	for(int i = 0; i < cnt; ++i) SetAtom(nlst[i],lst[i]);
@@ -85,7 +85,7 @@ AtomList &AtomList::Append(const t_atom &a)
 	return *this;
 }
 
-AtomList &AtomList::Append(int argc,const t_atom *argv)
+flext::AtomList &flext::AtomList::Append(int argc,const t_atom *argv)
 {
 	t_atom *nlst = new t_atom[cnt+argc];
 	int i;
@@ -99,7 +99,7 @@ AtomList &AtomList::Append(int argc,const t_atom *argv)
 	return *this;
 }
 
-AtomList &AtomList::Prepend(const t_atom &a)
+flext::AtomList &flext::AtomList::Prepend(const t_atom &a)
 {
 	t_atom *nlst = new t_atom[cnt+1];
 	for(int i = 0; i < cnt; ++i) SetAtom(nlst[i+1],lst[i]);
@@ -112,7 +112,7 @@ AtomList &AtomList::Prepend(const t_atom &a)
 	return *this;
 }
 
-AtomList &AtomList::Prepend(int argc,const t_atom *argv)
+flext::AtomList &flext::AtomList::Prepend(int argc,const t_atom *argv)
 {
 	t_atom *nlst = new t_atom[cnt+argc];
 	int i;
@@ -126,7 +126,7 @@ AtomList &AtomList::Prepend(int argc,const t_atom *argv)
 	return *this;
 }
 
-AtomList AtomList::GetPart(int offs,int len) const
+flext::AtomList flext::AtomList::GetPart(int offs,int len) const
 {
 	if(offs+len > Count()) {
 		len = Count()-offs;
@@ -136,4 +136,4 @@ AtomList AtomList::GetPart(int offs,int len) const
 	return AtomList(len,Atoms()+offs);
 }
 
-} // namespace flext
+//} // namespace flext

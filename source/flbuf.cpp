@@ -22,9 +22,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define DIRTY_INTERVAL 0   // buffer dirty check in msec
 #endif
 
-namespace flext {
 
-buffer::buffer(const t_symbol *bn,bool delayed):
+
+flext::buffer::buffer(const t_symbol *bn,bool delayed):
 	sym(NULL),data(NULL),
 	chns(0),frames(0)
 {
@@ -39,14 +39,14 @@ buffer::buffer(const t_symbol *bn,bool delayed):
 	if(bn) Set(bn,delayed);
 }
 
-buffer::~buffer()
+flext::buffer::~buffer()
 {
 #ifdef PD
     clock_free(tick);
 #endif
 }
 
-int buffer::Set(const t_symbol *s,bool nameonly)
+int flext::buffer::Set(const t_symbol *s,bool nameonly)
 {
 	int ret = 0;
 	bool valid = data != NULL; // valid now? (before change)
@@ -115,7 +115,7 @@ int buffer::Set(const t_symbol *s,bool nameonly)
 	return ret;
 }
 
-bool buffer::Update()
+bool flext::buffer::Update()
 {
 	if(!Ok()) return false;
 
@@ -152,7 +152,7 @@ bool buffer::Update()
 #endif
 }
 
-void buffer::Frames(int fr,bool keep)
+void flext::buffer::Frames(int fr,bool keep)
 {
 #ifdef PD
 	::garray_resize(arr,(float)fr);
@@ -192,7 +192,7 @@ void buffer::Frames(int fr,bool keep)
 
 
 #ifdef PD
-void buffer::SetRefrIntv(float intv) 
+void flext::buffer::SetRefrIntv(float intv) 
 { 
 	interval = intv; 
 	if(interval == 0 && ticking) {
@@ -201,11 +201,11 @@ void buffer::SetRefrIntv(float intv)
 	}
 }
 #else
-void buffer::SetRefrIntv(float) {}
+void flext::buffer::SetRefrIntv(float) {}
 #endif
 
 
-void buffer::Dirty(bool force)
+void flext::buffer::Dirty(bool force)
 {
 	if(sym) {
 #ifdef PD
@@ -236,7 +236,7 @@ void buffer::Dirty(bool force)
 }
 
 #ifdef PD
-void buffer::cb_tick(buffer *b)
+void flext::buffer::cb_tick(buffer *b)
 {
 	if(b->arr) garray_redraw(b->arr);
 #ifdef _DEBUG
@@ -252,6 +252,4 @@ void buffer::cb_tick(buffer *b)
 		b->ticking = false;
 }
 #endif
-
-} // namespace flext
 

@@ -17,7 +17,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <string.h>
 #include <stdarg.h>
 
-namespace flext {
+
 
 // === proxy class for flext_base ============================
 
@@ -117,20 +117,8 @@ DEF_IN_FT(9)
 
 bool flext_base::compatibility = true;
 
-const t_symbol *sym_float = NULL;
-const t_symbol *sym_symbol = NULL;
-const t_symbol *sym_bang = NULL;
-const t_symbol *sym_list = NULL;
-const t_symbol *sym_anything = NULL;
-const t_symbol *sym_pointer = NULL;
-const t_symbol *sym_int = NULL;
 
-#ifdef PD
-const t_symbol *sym_signal = NULL;
-#endif
-
-//flext_base::flext_base():
-CBase::CBase():
+flext_base::flext_base():
 	inlist(NULL),outlist(NULL),
 	incnt(0),outcnt(0),
 	insigs(0),outsigs(0),
@@ -153,8 +141,7 @@ CBase::CBase():
 #endif
 }
 
-//flext_base::~flext_base()
-CBase::~CBase()
+flext_base::~flext_base()
 {
 #ifdef FLEXT_THREAD
 	// wait for thread termination
@@ -209,22 +196,6 @@ CBase::~CBase()
 	if(mlst) delete mlst;
 }
 
-
-void flext_base::DefineHelp(const char *ref,const char *dir)
-{
-#ifdef PD
-	char tmp[256];
-	if(dir) { 
-		strcpy(tmp,dir); 
-		strcat(tmp,"/"); 
-		strcat(tmp,ref); 
-	}
-	else 
-		strcpy(tmp,ref);
-    class_sethelpsymbol(thisClass(),gensym(const_cast<char *>(tmp)));
-#else
-#endif
-}
 
 #ifdef MAXMSP
 #define CRITON() short state = lockout_set(1)
@@ -827,17 +798,5 @@ void flext_base::AddMethod(int inlet,const char *tag,methfun fun,metharg tp,...)
 
 
 
-void GetAString(const t_atom &a,char *buf,int szbuf)
-{ 
-#ifdef PD
-	atom_string(const_cast<t_atom *>(&a),buf,szbuf);
-#else
-	if(IsSymbol(a)) sprintf(buf,GetString(a));
-	else if(IsFloat(a)) sprintf(buf,"%f",GetFloat(a));
-	else if(IsInt(a)) sprintf(buf,"%i",GetInt(a));
-#endif
-}  
-
-} // namespace flext
 
 

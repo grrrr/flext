@@ -17,7 +17,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <string.h>
 #include <stdarg.h>
 
-namespace flext {
+//namespace flext {
 
 flext_base::xlet::xlet(type t,const char *d): 
 	tp(t),nxt(NULL)
@@ -85,4 +85,4 @@ void flext_base::AddOutlets(unsigned long code)
 	for(; code; code /= 10) AddOutlet((xlet::type)(code%10));
 }
 
-} // namespace flext
+//} // namespace flext

@@ -16,6 +16,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
  
 #include "flbase.h"
 #include "flinternal.h"
+#include <string.h>
 
 /////////////////////////////////////////////////////////
 //
@@ -33,7 +34,7 @@ const char *flext_obj::m_holdname;
 /////////////////////////////////////////////////////////
 flext_obj :: flext_obj()
            : x_obj(m_holder)
-		   , m_name(flext::strdup(m_holdname))
+		   , m_name(flext_util::strdup(m_holdname))
 		   , init_ok(true)
 {
 #ifdef PD
@@ -54,6 +55,22 @@ flext_obj :: ~flext_obj()
 }
 
 
+void flext_obj::DefineHelp(t_class *c,const char *ref,const char *dir,bool addtilde)
+{
+#ifdef PD
+	char tmp[256];
+	if(dir) { 
+		strcpy(tmp,dir); 
+		strcat(tmp,"/"); 
+		strcat(tmp,ref); 
+		if(addtilde) strcat(tmp,"~"); 
+	}
+	else 
+		strcpy(tmp,ref);
+    ::class_sethelpsymbol(c,gensym(const_cast<char *>(tmp)));
+#else
+#endif
+}
 
 
 /////////////////////////////////////////////////////////

@@ -16,9 +16,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __FLEXT_DEFS_H
 #define __FLEXT_DEFS_H
 
-#define flext_base flext::CBase
-#define flext_dsp flext::CDsp
-
 #ifdef FLEXT_GUI
 #define FLEXT_CAST dynamic_cast
 #else
@@ -64,23 +61,19 @@ FLEXT_REALHDR_S(NEW_CLASS, PARENT_CLASS, SETUPFUN)
 
 /*!	\defgroup FLEXT_NEW Flext class instantiation
 	Makes an actual instance of a class.
-	\note Max/MSP is not able to handle more than 3 creation arguments -> use variable argument lists
 */
 
 /*!	\defgroup FLEXT_NEW_DSP Flext dsp class instantiation
 	Makes an actual instance of a dsp (aka "tilde") class (with signal processing).
-	\note Max/MSP is not able to handle more than 3 creation arguments -> use variable argument lists
 */
 
 /*!	\defgroup FLEXT_LIB Flext library class instantiation
 	Makes an actual instance of a class	which is part of an object library (and not stand-alone).
-	\note Max/MSP is not able to handle more than 3 creation arguments -> use variable argument lists
 */
 
 /*!	\defgroup FLEXT_LIB_DSP Flext dsp library class instantiation
 	Makes an actual instance of a dsp (aka "tilde") class with signal processing
 	which is part of an object library (and not stand-alone).
-	\note Max/MSP is not able to handle more than 3 creation arguments -> use variable argument lists
 */
 
 
@@ -93,21 +86,21 @@ FLEXT_REALHDR_S(NEW_CLASS, PARENT_CLASS, SETUPFUN)
 	\param NEW_CLASS the object's C++ class name 
 */
 #define FLEXT_NEW(NAME,NEW_CLASS)		\
-REAL_NEW(NAME,NEW_CLASS,0)  \
+REAL_NEW(NAME,NEW_CLASS,0,0)  \
 REAL_EXT(NEW_CLASS,0)
 
 /*! Implementation of a flext dsp class with no arguments
 	\ingroup FLEXT_NEW_DSP
 */
 #define FLEXT_NEW_DSP(NAME,NEW_CLASS)	\
-REAL_NEW(NAME,NEW_CLASS,1) \
+REAL_NEW(NAME,NEW_CLASS,1,0) \
 REAL_EXT(NEW_CLASS,1)
 
 /*! Implementation of a flext GUI class with no arguments
 	\ingroup FLEXT_NEW_GUI
 */
 #define FLEXT_NEW_GUI(NAME,NEW_CLASS)	\
-REAL_NEW(NAME,NEW_CLASS,2) \
+REAL_NEW(NAME,NEW_CLASS,2,0) \
 REAL_EXT(NEW_CLASS, 2)
 
 /*! Implementation of a flext class (part of a library) with no arguments
@@ -115,14 +108,14 @@ REAL_EXT(NEW_CLASS, 2)
 */
 #define FLEXT_LIB(NAME,NEW_CLASS) \
 \
-REAL_LIB(NAME,NEW_CLASS,0) 
+REAL_NEW(NAME,NEW_CLASS,0,1) 
 
 /*! Implementation of a flext dsp class (part of a library) with no arguments
 	\ingroup FLEXT_LIB_DSP
 */
 #define FLEXT_LIB_DSP(NAME,NEW_CLASS)	\
 \
-REAL_LIB(NAME,NEW_CLASS,1) 
+REAL_NEW(NAME,NEW_CLASS,1,1) 
 
 
 // VARIABLE ARGUMENT LIST
@@ -132,21 +125,21 @@ REAL_LIB(NAME,NEW_CLASS,1)
 	\ingroup FLEXT_NEW
 */
 #define FLEXT_NEW_V(NAME,NEW_CLASS)			\
-REAL_NEW_V(NAME,NEW_CLASS,0) \
+REAL_NEW_V(NAME,NEW_CLASS,0,0) \
 REAL_EXT(NEW_CLASS,0)
 
 /*! Implementation of a flext tilde class with a variable argument list
 	\ingroup FLEXT_NEW_DSP
 */
 #define FLEXT_NEW_DSP_V(NAME,NEW_CLASS)	\
-REAL_NEW_V(NAME,NEW_CLASS,1) \
+REAL_NEW_V(NAME,NEW_CLASS,1,0) \
 REAL_EXT(NEW_CLASS, 1)
 
 /*! Implementation of a flext GUI class with a variable argument list
 	\ingroup FLEXT_NEW_GUI
 */
 #define FLEXT_NEW_GUI_V(NAME,NEW_CLASS)	\
-REAL_NEW_V(NAME,NEW_CLASS,2) \
+REAL_NEW_V(NAME,NEW_CLASS,2,0) \
 REAL_EXT(NEW_CLASS, 2)
 
 /*! Implementation of a flext class (part of a library) with a variable argument list
@@ -154,14 +147,14 @@ REAL_EXT(NEW_CLASS, 2)
 */
 #define FLEXT_LIB_V(NAME,NEW_CLASS)			\
 \
-REAL_LIB_V(NAME,NEW_CLASS, 0) 
+REAL_NEW_V(NAME,NEW_CLASS, 0,1) 
 
 /*! Implementation of a flext tilde class (part of a library) with a variable argument list
 	\ingroup FLEXT_LIB_DSP
 */
 #define FLEXT_LIB_DSP_V(NAME,NEW_CLASS)	\
 \
-REAL_LIB_V(NAME,NEW_CLASS, 1) 
+REAL_NEW_V(NAME,NEW_CLASS, 1,1) 
 
 
 // ONE ARGUMENT
@@ -171,14 +164,14 @@ REAL_LIB_V(NAME,NEW_CLASS, 1)
 	\ingroup FLEXT_NEW
 */
 #define FLEXT_NEW_1(NAME,NEW_CLASS, TYPE)		\
-REAL_NEW_1(NAME,NEW_CLASS, 0, TYPE) \
+REAL_NEW_1(NAME,NEW_CLASS, 0, 0,TYPE) \
 REAL_EXT(NEW_CLASS, 0)
 
 /*! Implementation of a flext tilde class with one argument
 	\ingroup FLEXT_NEW_DSP
 */
 #define FLEXT_NEW_DSP_1(NAME,NEW_CLASS, TYPE)	\
-REAL_NEW_1(NAME,NEW_CLASS, 1, TYPE) \
+REAL_NEW_1(NAME,NEW_CLASS, 1, 0,TYPE) \
 REAL_EXT(NEW_CLASS, 1)
 
 /*! Implementation of a flext class (part of a library) with one argument
@@ -186,14 +179,14 @@ REAL_EXT(NEW_CLASS, 1)
 */
 #define FLEXT_LIB_1(NAME,NEW_CLASS, TYPE) \
 \
-REAL_LIB_1(NAME,NEW_CLASS, 0,TYPE)
+REAL_NEW_1(NAME,NEW_CLASS, 0,1,TYPE)
 
 /*! Implementation of a flext tilde class (part of a library) with one argument
 	\ingroup FLEXT_LIB_DSP
 */
 #define FLEXT_LIB_DSP_1(NAME,NEW_CLASS, TYPE)	\
 \
-REAL_LIB_1(NAME,NEW_CLASS, 1, TYPE)
+REAL_NEW_1(NAME,NEW_CLASS, 1,1, TYPE)
 
 
 // TWO ARGUMENTS
@@ -203,14 +196,14 @@ REAL_LIB_1(NAME,NEW_CLASS, 1, TYPE)
 	\ingroup FLEXT_NEW
 */
 #define FLEXT_NEW_2(NAME,NEW_CLASS, TYPE1, TYPE2)			\
-REAL_NEW_2(NAME,NEW_CLASS, 0, TYPE1, TYPE2) \
+REAL_NEW_2(NAME,NEW_CLASS, 0,0, TYPE1, TYPE2) \
 REAL_EXT(NEW_CLASS, 0)
 
 /*! Implementation of a flext tilde class with 2 arguments
 	\ingroup FLEXT_NEW_DSP
 */
 #define FLEXT_NEW_DSP_2(NAME,NEW_CLASS, TYPE1, TYPE2)	\
-REAL_NEW_2(NAME,NEW_CLASS, 1, TYPE1, TYPE2) \
+REAL_NEW_2(NAME,NEW_CLASS, 1,0, TYPE1, TYPE2) \
 REAL_EXT(NEW_CLASS, 1)
 
 /*! Implementation of a flext class (part of a library) with 2 arguments
@@ -218,14 +211,14 @@ REAL_EXT(NEW_CLASS, 1)
 */
 #define FLEXT_LIB_2(NAME,NEW_CLASS, TYPE1, TYPE2)		\
 \
-REAL_LIB_2(NAME,NEW_CLASS, 0, TYPE1, TYPE2)
+REAL_NEW_2(NAME,NEW_CLASS, 0,1, TYPE1, TYPE2)
 
 /*! Implementation of a flext tilde class (part of a library) with 2 arguments
 	\ingroup FLEXT_LIB_DSP
 */
 #define FLEXT_LIB_DSP_2(NAME,NEW_CLASS, TYPE1, TYPE2)	\
 \
-REAL_LIB_2(NAME,NEW_CLASS, 1, TYPE1, TYPE2)
+REAL_NEW_2(NAME,NEW_CLASS, 1,1, TYPE1, TYPE2)
 
 
 // THREE ARGUMENTS
@@ -235,14 +228,14 @@ REAL_LIB_2(NAME,NEW_CLASS, 1, TYPE1, TYPE2)
 	\ingroup FLEXT_NEW
 */
 #define FLEXT_NEW_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3) \
-REAL_NEW_3(NAME,NEW_CLASS, 0, TYPE1, TYPE2, TYPE3)  \
+REAL_NEW_3(NAME,NEW_CLASS, 0,0, TYPE1, TYPE2, TYPE3)  \
 REAL_EXT(NEW_CLASS, 0)
 
 /*! Implementation of a flext tilde class with 3 arguments
 	\ingroup FLEXT_NEW_DSP
 */
 #define FLEXT_NEW_DSP_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3)	\
-REAL_NEW_3(NAME,NEW_CLASS, 1, TYPE1, TYPE2, TYPE3) \
+REAL_NEW_3(NAME,NEW_CLASS, 1,0, TYPE1, TYPE2, TYPE3) \
 REAL_EXT(NEW_CLASS, 1)
 
 /*! Implementation of a flext class (part of a library) with 3 arguments
@@ -250,14 +243,14 @@ REAL_EXT(NEW_CLASS, 1)
 */
 #define FLEXT_LIB_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3)		\
 \
-REAL_LIB_3(NAME,NEW_CLASS, 0,TYPE1, TYPE2, TYPE3)
+REAL_NEW_3(NAME,NEW_CLASS, 0,1,TYPE1, TYPE2, TYPE3)
 
 /*! Implementation of a flext tilde class (part of a library) with 3 arguments
 	\ingroup FLEXT_LIB_DSP
 */
 #define FLEXT_LIB_DSP_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3)	\
 \
-REAL_LIB_3(NAME,NEW_CLASS, 1, TYPE1, TYPE2, TYPE3)
+REAL_NEW_3(NAME,NEW_CLASS, 1,1, TYPE1, TYPE2, TYPE3)
 
 
 // deprecated stuff

@@ -31,8 +31,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 
-namespace flext {
-
 // === flext_base ==================================================
 
 //class qmsg;
@@ -42,7 +40,7 @@ namespace flext {
 */
 
 
-class CBase: //flext_base:
+class flext_base: 
 	public flext_obj
 {
 	FLEXT_HEADER_S(flext_base,flext_obj,Setup)
@@ -89,18 +87,6 @@ public:
 
 	//! called for every unhandled message (by m_methodmain)
 	virtual bool m_method_(int inlet,const t_symbol *s,int argc,t_atom *argv);
-
-//!		@} 
-
-
-// --- help -------------------------------------------------------	
-
-	/*!	\defgroup FLEXT_C_HELP Flext help/assistance functionality
-
-		@{ 
-	*/
-
-	void DefineHelp(const char *ref,const char *dir = NULL);
 
 //!		@} 
 
@@ -353,11 +339,8 @@ public:
 
 protected:
 
-//	flext_base();
-//	virtual ~flext_base();
-
-	CBase();
-	virtual ~CBase();
+	flext_base();
+	virtual ~flext_base();
 
 // inlets and outlets
 		
@@ -502,7 +485,5 @@ private:
 	static void cb_assist(t_class *c,void *b,long msg,long arg,char *s);
 #endif
 };
-
-} // namespace flext
 
 #endif

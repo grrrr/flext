@@ -28,7 +28,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 //! C++ strdup function
-char *flext::strdup(const char *t)
+char *flext_util::strdup(const char *t)
 {
 	if(!t) return NULL;
 	int len = strlen(t);
@@ -38,7 +38,7 @@ char *flext::strdup(const char *t)
 }
 
 //! Extract space-delimited words from a string
-const char *flext::extract(const char *name,int ix)
+const char *flext_util::extract(const char *name,int ix)
 {
 	static char tmp[1024];
 	const char *n = name;
@@ -82,24 +82,22 @@ const char *flext::extract(const char *name,int ix)
 }
 
 
-#ifdef _DEBUG
 //! Check if object's name ends with a tilde
-bool flext::chktilde(const char *objname)
+bool flext_util::chktilde(const char *objname)
 {
 //	int stplen = strlen(setupfun);
 	bool tilde = true; //!strncmp(setupfun,"_tilde",6);
 
 	if((objname[strlen(objname)-1] == '~'?1:0)^(tilde?1:0)) {
 		if(tilde) 
-			error("flext_obj::check_tilde: %s (no trailing ~) is defined as a tilde object",objname);
+			error("flext: %s (no trailing ~) is defined as a tilde object",objname);
 		else
-			error("flext_obj::check_tilde: %s is no tilde object",objname);
+			error("flext::check_tilde: %s is no tilde object",objname);
 		return true;
 	} 
 	else
 		return false;
 }
-#endif
 
 
 

@@ -175,9 +175,9 @@ REAL_LIB_3(NAME,NEW_CLASS, 1, TYPE1, TYPE2, TYPE3)
 
 // deprecated
 #define FLEXT_NEW_G FLEXT_NEW_V
-#define FLEXT_NEW_DSP_G FLEXT_NEW_DSP_V
+#define FLEXT_NEW_TILDE_G FLEXT_NEW_DSP_V
 #define FLEXT_LIB_G FLEXT_LIB_V
-#define FLEXT_LIB_DSP_G FLEXT_LIB_DSP_V
+#define FLEXT_LIB_TILDE_G FLEXT_LIB_DSP_V
 
 // MaxMSP doesn't seem to be able to handle more than 3 creation arguments! -> USE GIMME
 
@@ -323,7 +323,7 @@ static void cb_ ## M_FUN(flext_base *c,int &arg1) {  \
 static void *thr_ ## M_FUN(thr_params *p) {  \
 	thisType *th = static_cast<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
-	bool b = p->var[0]; \
+	bool b = p->var[0]._bool; \
 	delete p; \
 	if(ok) { \
 		th->M_FUN(b); \

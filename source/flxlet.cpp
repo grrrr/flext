@@ -40,6 +40,11 @@ void flext_base::AddXlet(xlet::type tp,int mult,const char *desc,xlet *&root)
 	}
 }
 
+void flext_base::DescXlet(int ix,const char *desc,xlet *&root)
+{
+	post("flext - sorry, not implemented");
+}
+
 unsigned long flext_base::XletCode(xlet::type tp,...)
 {
 	unsigned long code = 0;

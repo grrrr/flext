@@ -12,7 +12,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <flinternal.h>
 #include <string.h>
 #include <stdarg.h>
-#include <typeinfo.h>
 
 // === proxy class for flext_base ============================
 

@@ -73,8 +73,9 @@ Version history:
 
 0.3.0:
 - added threaded methods along with a message queue for ToOut* functions (very unstable for MaxMSP!)
+  to use threads compile flext with FLEXT_THREADS definition
 - check/update function for buffer change (resize etc.)
-- description text for inlets/outlets (e.g. for MaxMSPs assist function)
+- description text for inlets/outlets (e.g. for MaxMSPs assist function) - not fully implemented
 - added buffer resize functions flext_base::buffer::Frames(int,bool)
 - added some utility functions: Sleep, CopyAtom, CopyList
 - added List manipulation classes: AtomList, AtomAnything
@@ -155,15 +156,16 @@ Version history:
 ----------------------------------------------------------------------------
 
 Notes:
-- no support for default object arguments (A_DEFFLOAT, A_DEFSYMBOL) -> use GIMME instead
+- no support for default object arguments (A_DEFFLOAT, A_DEFSYMBOL) -> use variable argument lists instead
 
 Platform specific:
 - PD does not allow signal and message to go into the same inlet
 - PD doesn't allow a signal object to receive float messages in the leftmost inlet... these are converted to a static signal
+- PD needs all t_symbol or pointer args before float args -> you have to use variable argument lists in that case
 
 Restrictions in compatibility mode:
 - Max allows only 9 float/int inlets
-- Max allows only 3 typed creation arguments -> use GIMME for more
+- Max allows only 3 type-checked creation arguments -> use variable argument lists for more
 
 Porting to new platforms:
 - enums must be int-sized
@@ -181,6 +183,8 @@ general:
 - where to put flext source/lib in linux: /usr/local/lib,/usr/local/include ?
 - clean up headers (eliminate flstdc.h?)
 - check that SetupInOut is only called once
+- feed assist function with in/outlet description
+- MaxMSP: how to call separate help files for objects in a library?
 
 bugs:
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)
@@ -190,19 +194,19 @@ bugs:
 tests:
 - PD: figure out what "pointer" messages do and where they occur
 - some more mutexes needed for thread safety?
-- test alias names with MaxMSP
 - buffer resize: flext_base::buffer::Frames(): should we use buffer or system sample rate?
+- PD: test argument order (t_symbol, pointers before floats)
 
 features:
 - abstraction for parsing argument lists
 - abstraction for clock functions
 - sending messages to own inlet (passing computation to other patch objects - message queue?)
+- manage running threads individually (stop, isrunning? etc.)
 
 premature thoughts:
 - explore jMax interface style
 - interface for scripting language modules? (python?)
-
-
+- GUI objects
 
 
 

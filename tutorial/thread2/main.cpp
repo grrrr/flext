@@ -10,12 +10,16 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 This shows an example of multiple threads and syncing with a thread conditional
 */
 
+// define FLEXT_THREADS for thread usage. Flext must also have been compiled with that defined!
 #define FLEXT_THREADS
+
 #include <flext.h>
 
 #if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 300)
 #error You need at least flext version 0.3.0
 #endif
+
+
 
 class thread2:
 	public flext_base
@@ -23,106 +27,104 @@ class thread2:
 	FLEXT_HEADER(thread2,flext_base)
  
 public:
-	thread2(int del,t_symptr txt);
+	thread2(int del); 
 
 protected:
 	void m_start(int st);
 	void m_stop();
-	void m_blip();
+	void m_text();
+
+	void m_textout();
 
 private:
 	FLEXT_THREAD_I(m_start); // define threaded callback for method m_start
 	FLEXT_CALLBACK(m_stop);  // normal callback for m_stop
-	FLEXT_THREAD(m_blip); // define threaded callback for method m_blip
+	FLEXT_CALLBACK(m_text);  // turn on console output
+
+	FLEXT_THREAD(m_textout); // text output
 
 	float delay;
-	volatile bool stopit,running,blipping;
-	int count;
-	t_symbol *bliptxt;
+	volatile int count;
 
+	// caution: CodeWarrior seems to ignore volatile modifier!!
+	volatile bool stopit,running,blipping;  // flags for running and stopping
+
+	// thread conditional for stop signal
 	ThrCond cond;
-
-	volatile int flag;
 };
 
-FLEXT_NEW_2("thread2",thread2,int,t_symptr)
+FLEXT_NEW_1("thread2",thread2,int)
 
 
-thread2::thread2(int del,t_symptr txt):
+
+thread2::thread2(int del):
 	delay(del/1000.f),
-	bliptxt(txt),
 	stopit(false),
 	running(false),blipping(false)
 { 
-	flag = 0;
-
 	AddInAnything();  
-	AddOutInt(); 
+	AddOutInt(2); 
 	SetupInOut();  // set up inlets and outlets
 
-	FLEXT_ADDMETHOD(0,m_start);
-	FLEXT_ADDMETHOD_(0,"stop",m_stop);
+	FLEXT_ADDMETHOD(0,m_start); // register start for integer numbers (floats in PD)
+	FLEXT_ADDMETHOD_(0,"text",m_text); // register m_text method for "text" tag
+	FLEXT_ADDMETHOD_(0,"stop",m_stop); // register m_text method for "stop" tag
 } 
 
 void thread2::m_start(int st)
 {
-	++flag;
-
-	post("start 1 - thr = %x",this);
-
+	// if already running, just set back the counter
 	if(running) { count = st; return; }
+
 	running = true;
 	blipping = false;
 
-//	FLEXT_CALLMETHOD(m_blip);
-
-	post("start 2");
-
+	// loop until either the system exit flag or the "stopit" flag is set 
 	for(count = st; !ShouldExit() && !stopit; ++count) 
 	{
 		Sleep(delay);
-		ToOutInt(0,count);
+		ToOutInt(0,count); // output loop count
 	}
 
-	post("start 3");
-
-	cond.Lock();
-	running = false;
-	cond.Signal();
-	cond.Unlock();
-
-	post("start 4 - r = %i, b = %i",running?1:0,blipping?1:0);
+	cond.Lock(); // lock conditional
+	running = false; // change state flag
+	cond.Signal(); // signal changed flag to watiting "stop" method
+	cond.Unlock(); // unlock conditional
 }
 
 void thread2::m_stop()
 {
-	post("stop 1 - thr = %x",this);
-	post("flag = %i",flag);
+	cond.Lock(); // lock conditional
+	stopit = true; // set termination flag
 
-//	cond.Lock();
-	stopit = true;
-	while(*(&running) || *(&blipping)) {
-//		cond.Wait();
-		Sleep(1.f);
-		post("stop 2 - r = %i, b = %i",*(&running)?1:0,*(&blipping)?1:0);
+	while(*(&running) || *(&blipping)) // workaround for CodeWarrior!
+	{
+		cond.Wait(); // wait for signal by running threads
 	}
-	stopit = false;
-//	cond.Unlock();
 
-	post("stop 3");
+	// --- Here, the threads should have stopped ---
+
+	stopit = false; // reset flag
+	cond.Unlock(); // unlock conditional
 }
 
-void thread2::m_blip()
+
+void thread2::m_text()
+{
+	FLEXT_CALLMETHOD(m_textout);
+}
+
+void thread2::m_textout()
 {
 	blipping = true;
 
 	while(!ShouldExit() && !stopit) {
-		post(const_cast<char *>(GetString(bliptxt)));
-		Sleep(0.1f);
+		post("%i",count);
+		Sleep(1.f);
 	}
 
-	cond.Lock();
-	blipping = false;
-	cond.Signal();
-	cond.Unlock();
+	cond.Lock(); // lock conditional
+	blipping = false; // change state flag
+	cond.Signal(); // signal changed flag to watiting "stop" method
+	cond.Unlock(); // unlock conditional
 }

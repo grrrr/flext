@@ -143,7 +143,7 @@ void *flext_root::operator new(size_t bytes)
 
     char *blk;
     if(bytes >= LARGEALLOC) {
-#if FLEXT_SYS == FLEXT_SYS_MAX
+#if FLEXT_SYS == FLEXT_SYS_MAX && defined(_SYSMEM_H_)
         blk = (char *)::sysmem_newptr(bytes);
 #else
         // use C library function for large memory blocks
@@ -176,7 +176,7 @@ void flext_root::operator delete(void *blk)
 	size_t bytes = *(size_t *)ori;
 
     if(bytes >= LARGEALLOC) {
-#if FLEXT_SYS == FLEXT_SYS_MAX
+#if FLEXT_SYS == FLEXT_SYS_MAX && defined(_SYSMEM_H_)
         ::sysmem_freeptr(ori);
 #else
         // use C library function for large memory blocks
@@ -204,7 +204,7 @@ void *flext_root::NewAligned(size_t bytes,int bitalign)
 
     char *blk;
     if(bytes >= LARGEALLOC) {
-#if FLEXT_SYS == FLEXT_SYS_MAX
+#if FLEXT_SYS == FLEXT_SYS_MAX && defined(_SYSMEM_H_)
         blk = (char *)::sysmem_newptr(bytes);
 #else
         // use C library function for large memory blocks
@@ -238,7 +238,7 @@ void flext_root::FreeAligned(void *blk)
 	size_t bytes = *(size_t *)((char *)blk-sizeof(size_t));
 
     if(bytes >= LARGEALLOC) {
-#if FLEXT_SYS == FLEXT_SYS_MAX
+#if FLEXT_SYS == FLEXT_SYS_MAX && defined(_SYSMEM_H_)
         ::sysmem_freeptr(ori);
 #else
         // use C library function for large memory blocks
@@ -303,7 +303,7 @@ void flext_root::error(const char *fmt,...)
     va_start(ap, fmt);
 
 	char buf[1024];
-    strcpy(buf,"error: ");
+    STD::strcpy(buf,"error: ");
     vsnprintf(buf+7,sizeof buf-7,fmt, ap);
 	buf[sizeof buf-1] = 0; // in case of full buffer
 	::post(buf);

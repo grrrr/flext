@@ -133,7 +133,7 @@ flext::Timer::~Timer()
 	clock_free(clk);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	clock_free(clk);
-	if(queued) qelem_free(qelem);
+	if(queued) ::qelem_free(qelem);
 #else
 	#error Not implemented
 #endif
@@ -145,7 +145,7 @@ bool flext::Timer::Reset()
 	clock_unset(clk);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	clock_unset(clk);
-	if(queued) qelem_unset(qelem);
+	if(queued) ::qelem_unset(qelem);
 #else
 	#error Not implemented
 #endif

@@ -21,7 +21,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	old CodeWarrior version (<= 6) don't have sigset_t defined which
 	is needed for pthreads
 */
-#if defined(__MWERKS__) && (__MWERKS__ <= 0x6000)
+#if defined(__MWERKS__) && (__MWERKS__ == 1)  // read __MWERKS__ numbering starts with CW7
 	typedef unsigned int sigset_t;
 	#define _CW_NOPRECOMP // no precompiled headers
 #endif

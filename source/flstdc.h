@@ -97,6 +97,7 @@ typedef t_clock t_qelem;
 	#define WIN_VERSION 1
 #endif
 
+
 #include "ext.h"
 #include "ext_user.h"
 #include "z_dsp.h"
@@ -111,7 +112,11 @@ typedef t_int t_flint;
 typedef t_symbol *t_symtype;
 typedef t_object *t_thing;
 
-typedef void *t_qelem;
+#if FLEXT_OS == FLEXT_OS_WIN
+typedef void *t_qelem;  // qelem not defined in Windows SDK 
+#else
+typedef qelem t_qelem;
+#endif
 
 typedef method t_method;
 typedef method t_newmethod;

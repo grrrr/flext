@@ -189,9 +189,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	
 	#ifndef FLEXT_OSAPI
 		#if TARGET_API_MAC_MACH
+			// this is for Mach-O
 			// this has the precedence (MACH also supports Carbon, of course)
 			#define FLEXT_OSAPI FLEXT_OSAPI_MAC_MACH
 		#elif TARGET_API_MAC_CARBON
+			// this is for CFM
 			#define FLEXT_OSAPI FLEXT_OSAPI_MAC_CARBON
 		#else
 			#define FLEXT_OSAPI FLEXT_OSAPI_UNKNOWN

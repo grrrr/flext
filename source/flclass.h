@@ -186,15 +186,13 @@ public:
 	//! Retrieve currently processed message tag (NULL if no message processing)
 	const t_symbol *thisTag() const { return curtag; }
 
-#if FLEXT_SYS == FLEXT_PD || FLEXT_SYS == FLEXT_MAX
+#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
 	class outlet;
 
 	//! Get pointer to outlet (not in the constructor!)
 	outlet *GetOut(int ix) const { return (outlets && ix < outcnt)?outlets[ix]:NULL; }
-
-	//! Get pointer to attribute outlet 
-	outlet *GetOutAttr() const { return outattr; }
 #endif
+	int GetOutAttr() const { return procattr?CntOut():0; }
 
 	//! @} FLEXT_C_IO_MISC
 
@@ -226,7 +224,7 @@ public:
 	//! Output string aka symbol (to appointed outlet)
 //	void ToOutString(outlet *o,const char *s) const { ToOutSymbol(o,MakeSymbol(s)); }
 	//! Output string aka symbol (index n starts with 0)
-	void ToOutString(int n,const char *s) const; // { outlet *o = GetOut(n); if(o) ToOutString(o,s); }
+	void ToOutString(int n,const char *s) const { ToOutSymbol(n,MakeSymbol(s)); }
 
 	//! Output list (to appointed outlet)
 //	void ToOutList(outlet *o,int argc,const t_atom *argv) const; 
@@ -236,7 +234,7 @@ public:
 	void ToOutList(int n,const AtomList &list) const { ToOutList(n,list.Count(),list.Atoms()); }
 	
 	//! Output anything (to appointed outlet)
-//	void ToOutAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) const; 
+	void ToOutAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) const; 
 	//! Output anything (index n starts with 0)
 	void ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const; //  { outlet *o = GetOut(n); if(o) ToOutAnything(o,const_cast<t_symbol *>(s),argc,argv); }
 	//! Output anything (index n starts with 0)
@@ -631,9 +629,7 @@ private:
 	int incnt,outcnt,insigs,outsigs;
 	bool distmsgs;
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
-	outlet **outlets,*outattr;
-#elif FLEXT_SYS == FLEXT_SYS_JMAX
-	int outattr;
+	outlet **outlets;
 #endif
 
 	void AddXlet(xlet::type tp,int mult,const char *desc,xlet *&root);	

@@ -78,16 +78,16 @@ static const char *extract(const char *name,int ix = 0)
 
 
 //! Check if object's name ends with a tilde
-static bool chktilde(const char *objname)
+bool flext::chktilde(const char *objname)
 {
 //	int stplen = strlen(setupfun);
 	bool tilde = true; //!strncmp(setupfun,"_tilde",6);
 
 	if((objname[strlen(objname)-1] == '~'?1:0)^(tilde?1:0)) {
 		if(tilde) 
-			flext::error("flext: %s (no trailing ~) is defined as a tilde object",objname);
+			error("flext: %s (no trailing ~) is defined as a tilde object",objname);
 		else
-			flext::error("flext::check_tilde: %s is no tilde object",objname);
+			error("flext::check_tilde: %s is no tilde object",objname);
 		return true;
 	} 
 	else

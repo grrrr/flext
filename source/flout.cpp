@@ -23,14 +23,14 @@ void flext_base::ToOutBang(int n) const { outlet *o = GetOut(n); if(o) { CRITON(
 void flext_base::ToOutFloat(int n,float f) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_float((t_outlet *)o,f); CRITOFF(); } }
 void flext_base::ToOutInt(int n,int f) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_flint((t_outlet *)o,f); CRITOFF(); } }
 void flext_base::ToOutSymbol(int n,const t_symbol *s) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); CRITOFF(); } }
-void flext_base::ToOutList(int n,int argc,const t_atom *argv) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_list((t_outlet *)o,sym_list,argc,(t_atom *)argv); CRITOFF(); } }
+void flext_base::ToOutList(int n,int argc,const t_atom *argv) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_list((t_outlet *)o,const_cast<t_symbol *>(sym_list),argc,(t_atom *)argv); CRITOFF(); } }
 void flext_base::ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,(t_atom *)argv); CRITOFF(); } }
 #else
 void flext_base::ToOutBang(int n) const { if(IsSystemThread()) { outlet *o = GetOut(n); if(o) { CRITON(); outlet_bang((t_outlet *)o); CRITOFF(); } } else ToQueueBang(n); }
 void flext_base::ToOutFloat(int n,float f) const { if(IsSystemThread()) { outlet *o = GetOut(n); if(o) { CRITON(); outlet_float((t_outlet *)o,f); CRITOFF(); } } else ToQueueFloat(n,f); }
 void flext_base::ToOutInt(int n,int f) const { if(IsSystemThread()) { outlet *o = GetOut(n); if(o) { CRITON(); outlet_flint((t_outlet *)o,f); CRITOFF(); } } else ToQueueInt(n,f); }
 void flext_base::ToOutSymbol(int n,const t_symbol *s) const { if(IsSystemThread()) { outlet *o = GetOut(n); if(o) { CRITON(); outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); CRITOFF(); } } else ToQueueSymbol(n,s); }
-void flext_base::ToOutList(int n,int argc,const t_atom *argv) const { if(IsSystemThread()) { outlet *o = GetOut(n); if(o) { CRITON(); outlet_list((t_outlet *)o,sym_list,argc,(t_atom *)argv); CRITOFF(); } } else ToQueueList(n,argc,(t_atom *)argv); }
+void flext_base::ToOutList(int n,int argc,const t_atom *argv) const { if(IsSystemThread()) { outlet *o = GetOut(n); if(o) { CRITON(); outlet_list((t_outlet *)o,const_cast<t_symbol *>(sym_list),argc,(t_atom *)argv); CRITOFF(); } } else ToQueueList(n,argc,(t_atom *)argv); }
 void flext_base::ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { if(IsSystemThread()) { outlet *o = GetOut(n); if(o) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,(t_atom *)argv); CRITOFF(); } } else ToQueueAnything(n,s,argc,(t_atom *)argv); }
 #endif
 
@@ -310,7 +310,7 @@ bool flext_base::InitOutlets()
 		delete outlist; outlist = NULL;
 		
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
-		outlets = new outlet *[outcnt];
+		outlets = new outlet *[outcnt+(procattr?1:0)];
 
 		// type info is now in list array
 #if FLEXT_SYS == FLEXT_SYS_PD
@@ -384,7 +384,7 @@ bool flext_base::InitOutlets()
 	if(procattr) {
 #if FLEXT_SYS == FLEXT_SYS_PD
 		// attribute dump outlet is the last one
-		outattr = (outlet *)newout_anything(&x_obj->obj);
+		outlets[outcnt] = (outlet *)newout_anything(&x_obj->obj);
 #endif
 
 	}

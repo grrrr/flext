@@ -141,10 +141,10 @@ bool flext_base::InitAttrib(int argc,const t_atom *argv)
 
 bool flext_base::ListAttrib()
 {
-	if(outattr) {
+	if(procattr) {
 		AtomList la;
 		int c = ListAttr(la);
-		ToOutAnything(outattr,MakeSymbol("attributes"),c,la.Atoms());
+		ToOutAnything(GetOutAttr(),MakeSymbol("attributes"),c,la.Atoms());
 		return true;
 	}
 	else
@@ -274,7 +274,7 @@ bool flext_base::GetAttrib(attritem *a)
 			default:
 				ERRINTERNAL();
 			}
-			ToOutAnything(outattr,a->tag,la.Count(),la.Atoms());
+			ToOutAnything(GetOutAttr(),a->tag,la.Count(),la.Atoms());
 		}
 		else 
 			post("%s - attribute %s has no set method",thisName(),GetString(a->tag));

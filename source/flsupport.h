@@ -35,7 +35,7 @@ public:
 
 // --- console output -----------------------------------------------	
 
-#ifdef FLEXT_SYS == FLEXT_SYS_JMAX
+#if FLEXT_SYS == FLEXT_SYS_JMAX
 		//! post message to console
 		static void post(const char *s,...);
 		//! post error message to console
@@ -807,6 +807,8 @@ protected:
 	friend class flext_obj;
 #endif
 	static void Setup();
+
+	static bool chktilde(const char *objname);
 };
 
 #endif

@@ -27,10 +27,7 @@ flext_base::flext_base():
 	insigs(0),outsigs(0),
 	distmsgs(false)
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
-	,outlets(NULL),outattr(NULL),
-	,inlets(NULL)
-#elif FLEXT_SYS == FLEXT_SYS_JMAX
-	,outattr(0)
+	,outlets(NULL),inlets(NULL)
 #endif
 #if FLEXT_SYS == FLEXT_SYS_MAX
 	,indesc(NULL),outdesc(NULL)

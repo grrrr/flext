@@ -54,6 +54,31 @@ clean install:
 	$(MAKE) $(OPTIONS) $@
 
 
+flext: flext-release flext-debug
+
+flext-release: flext-single-release flext-threaded-release flext-shared-release
+
+flext-debug: flext-single-debug flext-threaded-debug flext-shared-debug
+
+flext-single-release: config
+	$(MAKE) $(OPTIONS) FLEXTBUILD=1 all
+
+flext-single-debug: config
+	$(MAKE) $(OPTIONS) FLEXTBUILD=1 DEBUG=1 all
+
+flext-threaded-release: config
+	$(MAKE) $(OPTIONS) FLEXTBUILD=1 THREADED=1 all
+
+flext-threaded-debug: config
+	$(MAKE) $(OPTIONS) FLEXTBUILD=1 THREADED=1 DEBUG=1 all
+
+flext-shared-release: config
+	$(MAKE) $(OPTIONS) FLEXTBUILD=1 SHARED=1 all
+
+flext-shared-release: config
+	$(MAKE) $(OPTIONS) FLEXTBUILD=1 SHARED=1 DEBUG=1 all
+
+
 config: $(USRMAKE) $(SYSCONFIG) $(USRCONFIG) 
 
 

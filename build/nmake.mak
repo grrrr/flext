@@ -22,28 +22,89 @@ OPTIONS=-f $(BUILDPATH)nmake-sub.mak \
 
 !ifdef BUILDDIR
 USRCONFIG=config.txt
-USRDEFAULT=build\config-$(PLATFORM).def
+USRDEFAULT=$(BUILDDIR)\config-$(PLATFORM).def
 
-USRMAKE=build\makefile-$(PLATFORM)-$(COMPILER).inc
+USRMAKE=$(BUILDDIR)\makefile-$(PLATFORM)-$(COMPILER).inc
 
 OPTIONS=$(OPTIONS) USRCONFIG=$(USRCONFIG) USRMAKE=$(USRMAKE)
 !endif
 
 
-all: config
-	$(MAKE) $(OPTIONS) all
+!ifdef FLEXTBUILD
+all: flext
+!else
+all: build-sr
 
-all-debug: config
-	$(MAKE) $(OPTIONS) DEBUG=1 $@
+shared: build-tr
+!endif
 
-all-shared: config
-	$(MAKE) $(OPTIONS) SHARED=1 $@
+flext: flext-release flext-debug
 
-all-shared-debug: config
-	$(MAKE) $(OPTIONS) SHARED=1 DEBUG=1 $@
+flext-release: build-dr build-tr build-sr
 
-clean install:
-	$(MAKE) $(OPTIONS) $@
+flext-debug: build-dd build-td build-sd
+
+install: install-dr install-tr install-sr install-dd install-td install-sd
+
+clean: clean-dr clean-tr clean-sr clean-dd clean-td clean-sd
+
+
+build-dr: config
+	$(MAKE) $(OPTIONS) _all_
+
+build-dd: config
+	$(MAKE) $(OPTIONS) DEBUG=1 _all_
+
+build-tr: config
+	$(MAKE) $(OPTIONS) THREADED=1 _all_
+
+build-td: config
+	$(MAKE) $(OPTIONS) THREADED=1 DEBUG=1 _all_
+
+build-sr: config
+	$(MAKE) $(OPTIONS) SHARED=1 _all_
+
+build-sd: config
+	$(MAKE) $(OPTIONS) SHARED=1 DEBUG=1 _all_
+
+
+install-dr:
+	$(MAKE) $(OPTIONS) _install_
+
+install-dd:
+	$(MAKE) $(OPTIONS) DEBUG=1 _install_
+
+install-tr:
+	$(MAKE) $(OPTIONS) THREADED=1 _install_
+
+install-td:
+	$(MAKE) $(OPTIONS) THREADED=1 DEBUG=1 _install_
+
+install-sr:
+	$(MAKE) $(OPTIONS) SHARED=1 _install_
+
+install-sd:
+	$(MAKE) $(OPTIONS) SHARED=1 DEBUG=1 _install_
+
+
+clean-dr:
+	$(MAKE) $(OPTIONS) _clean_
+
+clean-dd:
+	$(MAKE) $(OPTIONS) DEBUG=1 _clean_
+
+clean-tr:
+	$(MAKE) $(OPTIONS) THREADED=1 _clean_
+
+clean-td:
+	$(MAKE) $(OPTIONS) THREADED=1 DEBUG=1 _clean_
+
+clean-sr:
+	$(MAKE) $(OPTIONS) SHARED=1 _clean_
+
+clean-sd:
+	$(MAKE) $(OPTIONS) SHARED=1 DEBUG=1 _clean_
+
 
 
 config: $(USRMAKE) $(SYSCONFIG) $(USRCONFIG) 

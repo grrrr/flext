@@ -8,28 +8,3 @@ LIBPATH += -L$(MAXSDKPATH)/max-includes -L$(MAXSDKPATH)/msp-includes
 LIBS += -lmaxapi -lmaxaudio
 
 EXT=mxe
-
-#########################################
-
-ifdef SHARED
-# --- shared ---
-
-elseifdef THREADED
-# --- static multi-threaded ---
-
-ifdef DEBUG
-LIBS += -lflext_td-maxwin
-else
-LIBS += -lflext_t-maxwin
-endif
-
-else 
-# --- static single-threaded ---
-
-ifdef DEBUG
-LIBS += -lflext_d-maxwin
-else
-LIBS += -lflext-maxwin
-endif
-
-endif

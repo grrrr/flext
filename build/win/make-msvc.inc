@@ -1,5 +1,8 @@
+!ifndef FLEXTBUILD
 INCPATH=$(INCPATH) /I$(FLEXTPATH)
 LIBPATH=$(LIBPATH) /LIBPATH:$(FLEXTPATH)
+LIBS=$(LIBS) $(FLEXTNAME).lib
+!endif
 
 !ifdef MSVCPATH
 INCPATH=$(INCPATH) /I$(MSVCPATH)\include 
@@ -13,7 +16,6 @@ CFLAGS=$(CFLAGS) /EHsc
 
 ##############################################
 
-# use multithreaded static libraries
 !ifdef DEBUG
 CFLAGS=$(CFLAGS) /D_DEBUG /DMTd
 LDFLAGS=$(LDFLAGS) /DEBUG
@@ -22,49 +24,74 @@ CFLAGS=$(CFLAGS) $(OFLAGS) /DNDEBUG /DMT
 LDFLAGS=$(LDFLAGS) /INCREMENTAL:NO 
 !endif
 
+##############################################
+
+!ifdef FLEXTBUILD
+OUTNAME=$(FLEXTNAME)
+
 !ifdef SHARED
-# --- shared ---
-DEFS=$(DEFS) /DFLEXT_SHARED
+EXT=dll
+!else
+EXT=lib
+BUILDLIB=1
+!endif
 
-!elseifdef THREADED
-# --- static multi-threaded ---
-DEFS=$(DEFS) /DFLEXT_THREADS
-
-!else 
-# --- static single-threaded ---
-
+!else
+OUTNAME=$(NAME)
 !endif
 
 ##############################################
 
+TARGETPATH=$(OUTPATH)\$(OUTSUB)
+TARGET=$(TARGETPATH)\$(OUTNAME).$(EXT)
+
+##############################################
+
 # default target
-all: $(OUTPATH) $(OUTPATH)\$(NAME).$(EXT)
+_all_: $(TARGETPATH) $(TARGET)
 
 OBJS= $(SRCS:.c=.obj)
 OBJS= $(OBJS:.objpp=.obj)
 
-$(OUTPATH):
+$(TARGETPATH):
 	-mkdir $(OUTPATH) > nul
+	-mkdir $@ > nul
 
 {$(SRCDIR)}.cpp{}.obj:
-	cl /c /LD $(CFLAGS) $(DEFS) $(INCPATH) $** /Fo$(OUTPATH)\$@
+	cl /c /LD $(CFLAGS) $(DEFS) $(INCPATH) $** /Fo$(TARGETPATH)\$@
 
 {$(SRCDIR)}.c{}.obj:
-	cl /c /LD $(CFLAGS) $(DEFS) $(INCPATH) $** /Fo$(OUTPATH)\$@
+	cl /c /LD $(CFLAGS) $(DEFS) $(INCPATH) $** /Fo$(TARGETPATH)\$@
 
-$(OUTPATH)\$(NAME).$(EXT): $(OBJS)
-	cd $(OUTPATH)
-	link /DLL $(LDFLAGS) /out:$(NAME).$(EXT) $** $(LIBS) $(LIBPATH)
-	@-del *.exp
-	@-del *.lib
-	cd ..
+$(TARGET): $(OBJS)
+	@cd $(TARGETPATH)
+!ifdef BUILDLIB
+	lib /OUT:$(@F) $**
+!else
+	link /DLL $(LDFLAGS) $(LIBPATH) $** $(LIBS) /out:$(@F)
+!endif
+
+##############################################
 
 # remove build
-clean:
-	-del /q $(OUTPATH) > nul
-	-rmdir $(OUTPATH) > nul
+_clean_:
+	pushd $(TARGETPATH)
+	-del /q $(OBJS) > nul
+	-popd
+	-del /q $(TARGET) > nul
+
+$(INSTPATH):
+	-mkdir $(INSTPATH) > nul
+
+$(FLEXTPATH):
+	-mkdir $(FLEXTPATH) > nul
 
 # install build
-install:
-	@-if not exist $(INSTPATH) mkdir $(INSTPATH)
-	copy $(OUTPATH)\$(NAME).$(EXT) $(INSTPATH) > nul
+_install_: $(INSTPATH) $(FLEXTPATH)
+!ifdef FLEXTBUILD
+	-copy $(TARGET) $(FLEXTPATH) > nul
+	@cd $(SRCDIR)
+	-for %%i in ($(HDRS)) do @copy %%i $(FLEXTPATH) > nul	
+!else
+	copy $(TARGET) $(INSTPATH) > nul
+!endif

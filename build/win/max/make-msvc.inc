@@ -8,28 +8,3 @@ LIBPATH=$(LIBPATH) /LIBPATH:$(MAXSDKPATH)\max-includes /LIBPATH:$(MAXSDKPATH)\ms
 LIBS=$(LIBS) maxapi.lib maxaudio.lib
 
 EXT=mxe
-
-#########################################
-
-!ifdef SHARED
-# --- shared ---
-
-!elseifdef THREADED
-# --- static multi-threaded ---
-
-!ifdef DEBUG
-LIBS=$(LIBS) flext_td-maxwin.lib 
-!else
-LIBS=$(LIBS) flext_t-maxwin.lib 
-!endif
-
-!else 
-# --- static single-threaded ---
-
-!ifdef DEBUG
-LIBS=$(LIBS) flext_d-maxwin.lib 
-!else
-LIBS=$(LIBS) flext-maxwin.lib 
-!endif
-
-!endif

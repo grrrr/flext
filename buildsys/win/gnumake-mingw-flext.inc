@@ -9,10 +9,10 @@ _build_: $(TARGET)
 #	touch $@
 
 $(OUTPATH):
-	-mkdir $(subst /,\,$@)
+	-cmd /c "mkdir $(subst /,\,$@)"
 
 $(TARGETPATH): $(OUTPATH)
-	-mkdir $(subst /,\,$@)
+	-cmd /c "mkdir $(subst /,\,$@)"
 
 $(TARGETPATH)/%.opp : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
@@ -32,8 +32,8 @@ endif
 ##############################################
 
 _clean_:
-	-del /q $(subst /,\,$(TARGETPATH)/*.*) > nul
-	-rmdir /q $(subst /,\,$(TARGETPATH)) > nul
+	-cmd /c "del /q $(subst /,\,$(TARGETPATH)/*.*)" > nul
+	-cmd /c "rmdir /q $(subst /,\,$(TARGETPATH))" > nul
 
 ##############################################
 
@@ -44,13 +44,13 @@ FLEXTLIBINST=$(FLEXTLIB)
 endif
 
 $(FLEXTINC):
-	-mkdir $(subst /,\,$@)
+	-cmd /c "mkdir $(subst /,\,$@)"
 
 $(FLEXTLIBINST):
-	-mkdir $(subst /,\,$@)
+	-cmd /c "mkdir $(subst /,\,$@)"
 
 _install_:: $(FLEXTINC) $(FLEXTLIBINST)
 
 _install_::
-	copy $(subst /,\,$(TARGET) $(FLEXTLIBINST))
-	-for %%i in ($(HDRS)) do @copy $(SRCDIR)\%%i $(subst /,\,$(FLEXTPATH)) > nul
+	cmd /c "copy $(subst /,\,$(TARGET) $(FLEXTLIBINST))"
+	-cmd /c "for %i in ($(HDRS)) do @cmd /c copy $(SRCDIR)\%i $(subst /,\,$(FLEXTPATH))" > nul

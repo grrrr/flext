@@ -13,10 +13,10 @@ _build_: $(TARGET)
 #	touch $@
 
 $(OUTPATH):
-	-mkdir $(subst /,\,$@)
+	-cmd /c "mkdir $(subst /,\,$@)"
 
 $(TARGETPATH): $(OUTPATH)
-	-mkdir $(subst /,\,$@)
+	-cmd /c "mkdir $(subst /,\,$@)"
 
 $(TARGETPATH)/%.opp : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
@@ -32,13 +32,13 @@ $(TARGET) :: $(COBJS) $(CPPOBJS)
 ##############################################
 
 _clean_:
-	-del /q $(subst /,\,$(TARGETPATH)/*.*) > nul
-	-rmdir /q $(subst /,\,$(TARGETPATH)) > nul
+	-cmd /c "del /q $(subst /,\,$(TARGETPATH)/*.*)" > nul
+	-cmd /c "rmdir /q $(subst /,\,$(TARGETPATH))" > nul
 
 ##############################################
 
 $(INSTPATH):
-	-mkdir $(subst /,\,$@)
+	-cmd /c "mkdir $(subst /,\,$@)"
 
 _install_: $(INSTPATH)
-	copy $(subst /,\,$(TARGET) $(INSTPATH))
+	cmd /c "copy $(subst /,\,$(TARGET) $(INSTPATH))"

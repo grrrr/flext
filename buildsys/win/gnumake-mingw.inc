@@ -6,7 +6,7 @@ TARGET=$(TARGETPATH)\$(OUTNAME).$(EXT)
 
 ##############################################
 
-LDFLAGS += -shared -Wl,-x 
+LDFLAGS += -shared
 
 ##############################################
 

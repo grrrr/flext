@@ -1,10 +1,10 @@
 # where is PD?
-PDPATH=c:/programme/audio/pd
+PDPATH=c:\programme\audio\pd
 
 ###############################################################
 
 # where do/should the flext headers reside/be built?
-FLEXTINC=$(PDPATH)/flext
+FLEXTINC=$(PDPATH)\flext
 
 # where do/should the flext static libraries reside/be built?
 FLEXTLIB=$(FLEXTINC)
@@ -18,7 +18,7 @@ FLEXTSHLIB=$(FLEXTINC)
 OUTPATH=pd-mingw
 
 # where should the external be installed?
-INSTPATH=$(PDPATH)/extra
+INSTPATH=$(PDPATH)\extra
 
 ###############################################################
 

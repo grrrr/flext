@@ -45,6 +45,11 @@ void flext::CopyMem(void *dst,const void *src,int bytes)
 #endif
 }
 
+void flext::ZeroMem(void *dst,int bytes) 
+{
+	memset(dst,0,bytes);
+}
+
 void flext::Sleep(float s)
 {
 #ifdef NT

@@ -55,7 +55,7 @@ bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *me
 		pthread_setschedparam(id,policy,&parm);
 	}
 	
-	post("Create thread");
+//	post("Create thread");
 
 	pthread_t thrid; 
 	int ret = pthread_create (&thrid,&attr,(void *(*)(void *))meth,p);
@@ -77,7 +77,7 @@ bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *me
 #ifdef MAXMSP
 		sched_yield();
 #endif
-		post("Create thread: OK");
+//		post("Create thread: OK");
 
 		return true;
 	}
@@ -87,7 +87,7 @@ bool flext_base::PushThread()
 {
 	tlmutex.Lock();
 
-	post("Push thread");
+//	post("Push thread");
 
 	// make an entry into thread list
 	thr_entry *nt = new thr_entry;
@@ -138,7 +138,7 @@ void flext_base::PopThread()
 {
 	tlmutex.Lock();
 
-	post("Pop thread");
+//	post("Pop thread");
 
 	pthread_t id = pthread_self();
 

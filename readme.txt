@@ -98,6 +98,7 @@ Version history:
 - fixed crash issue in flext_dsp when there are NO signal inlets or outlets defined
 	(this is possibly only a problem for the signal2 tutorial example)
 - added flext::GetType(t_atom &)
+- added flext::ZeroMem
 
 0.4.0:
 - the use of the const keyword is enforced (e.g. the preferred type for symbols is now "const t_symbol *")

@@ -121,6 +121,8 @@ public:
 	static t_atom *CopyList(int argc,const t_atom *argv);
 	//! Copy a memory region
 	static void CopyMem(void *dst,const void *src,int bytes);
+	//! Zero a memory region
+	static void ZeroMem(void *dst,int bytes);
 	//! Sleep for an amount of time
 	static void Sleep(float s);
 

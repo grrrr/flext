@@ -87,6 +87,7 @@ Version history:
 - ThrMutex: added lock count functions Push() and Pop()
 - eliminated potentiallly dangerous SetThing,GetThing and introduced DoBind,DoUnbind,GetBound instead
 - fixed severe bug with the current threads list
+- add path specification possibility for help symbols (in FLEXT_NEW*)
 
 0.3.1:
 - added some more functionality to the AtomList class

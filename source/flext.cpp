@@ -205,10 +205,18 @@ flext_base::~flext_base()
 }
 
 
-void flext_base::DefineHelp(const char *ref)
+void flext_base::DefineHelp(const char *ref,const char *dir)
 {
 #ifdef PD
-    class_sethelpsymbol(thisClass(),gensym(const_cast<char *>(ref)));
+	char tmp[256];
+	if(dir) { 
+		strcpy(tmp,dir); 
+		strcat(tmp,"/"); 
+		strcat(tmp,ref); 
+	}
+	else 
+		strcpy(tmp,ref);
+    class_sethelpsymbol(thisClass(),gensym(const_cast<char *>(tmp)));
 #else
 #endif
 }

@@ -380,9 +380,9 @@ return 0; \
 #define FLEXT_HELPSTR_DSP(NAME) #NAME "~"
 
 #ifdef PD
-#define FLEXT_DEFHELP(THIS,NEW_CLASS,DSP) ((NEW_CLASS *)THIS)->DefineHelp(DSP?FLEXT_HELPSTR_DSP(NEW_CLASS):FLEXT_HELPSTR(NEW_CLASS))
+#define FLEXT_DEFHELP(THIS,NAME,NEW_CLASS,DSP) ((NEW_CLASS *)THIS)->DefineHelp(DSP?FLEXT_HELPSTR_DSP(NEW_CLASS):FLEXT_HELPSTR(NEW_CLASS),flext::extract(NAME,-1))
 #else
-#define FLEXT_DEFHELP(THIS,NEW_CLASS,DSP)
+#define FLEXT_DEFHELP(THIS,NAME,NEW_CLASS,DSP)
 #endif
 
 // ----------------------------------------------------
@@ -405,7 +405,7 @@ flext_hdr* class_ ## NEW_CLASS () \
     obj->data = new NEW_CLASS;                     \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
-	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
+	else FLEXT_DEFHELP(obj->data,NAME,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
@@ -433,7 +433,7 @@ flext_hdr* class_ ## NEW_CLASS ()    \
     obj->data = new NEW_CLASS;      \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
-	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
+	else FLEXT_DEFHELP(obj->data,NAME,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 void FLEXT_STPF(NEW_CLASS,DSP)()   	\
@@ -458,7 +458,7 @@ flext_hdr* class_ ## NEW_CLASS (t_symbol *,int argc,t_atom *argv) \
     obj->data = new NEW_CLASS(argc,argv);                     \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
-	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
+	else FLEXT_DEFHELP(obj->data,NAME,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
@@ -487,7 +487,7 @@ flext_hdr* class_ ## NEW_CLASS (t_symbol *,int argc,t_atom *argv)    \
     obj->data = new NEW_CLASS(argc,argv);      \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
-	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
+	else FLEXT_DEFHELP(obj->data,NAME,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 void FLEXT_STPF(NEW_CLASS,DSP)()   	\
@@ -512,7 +512,7 @@ flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1) \
     obj->data = new NEW_CLASS((TYPE1)arg1);                     \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
-	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
+	else FLEXT_DEFHELP(obj->data,NAME,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
@@ -541,7 +541,7 @@ flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1)    \
     obj->data = new NEW_CLASS(ARGCAST(arg1,TYPE1));      \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
-	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
+	else FLEXT_DEFHELP(obj->data,NAME,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 void FLEXT_STPF(NEW_CLASS,DSP)()   	\
@@ -566,7 +566,7 @@ flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1, CALLBTP(TYPE2) arg2) \
     obj->data = new NEW_CLASS((TYPE1)arg1, (TYPE2)arg2);                     \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
-	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
+	else FLEXT_DEFHELP(obj->data,NAME,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
@@ -595,7 +595,7 @@ flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1,const flext_obj::
     obj->data = new NEW_CLASS(ARGCAST(arg1,TYPE1),ARGCAST(arg2,TYPE2));      \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
-	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
+	else FLEXT_DEFHELP(obj->data,NAME,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 void FLEXT_STPF(NEW_CLASS,DSP)()   	\
@@ -620,7 +620,7 @@ flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1,CALLBTP(TYPE2) arg2,CALLBTP(
     obj->data = new NEW_CLASS((TYPE1)arg1,(TYPE2)arg2,(TYPE3)arg3);                     \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
-	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
+	else FLEXT_DEFHELP(obj->data,NAME,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
@@ -649,7 +649,7 @@ flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1,const flext_obj::
     obj->data = new NEW_CLASS(ARGCAST(arg1,TYPE1),ARGCAST(arg2,TYPE2),ARGCAST(arg3,TYPE3));      \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
-	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
+	else FLEXT_DEFHELP(obj->data,NAME,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 void FLEXT_STPF(NEW_CLASS,DSP)()   	\
@@ -673,7 +673,7 @@ flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1,CALLBTP(TYPE2) arg2,CALLBTP(
     obj->data = new NEW_CLASS((TYPE1)arg1,(TYPE2)arg2,(TYPE3)arg3,(TYPE4)arg4);                     \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
-	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
+	else FLEXT_DEFHELP(obj->data,NAME,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
@@ -702,7 +702,7 @@ flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1,const flext_obj::
     obj->data = new NEW_CLASS(ARGCAST(arg1,TYPE1),ARGCAST(arg2,TYPE2),ARGCAST(arg3,TYPE3),ARGCAST(arg4,TYPE4));      \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
-	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
+	else FLEXT_DEFHELP(obj->data,NAME,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 void FLEXT_STPF(NEW_CLASS,DSP)()   	\

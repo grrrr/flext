@@ -170,7 +170,7 @@ public:
 		@{ 
 	*/
 
-	void DefineHelp(const char *ref);
+	void DefineHelp(const char *ref,const char *dir = NULL);
 
 //!		@} 
 
@@ -491,26 +491,13 @@ public:
 	;
 #endif
 
-#if 0
-	/*! \brief Set current thread to normal priority
-		\bug Not working under all platforms
-	*/
-	void NormalPriority();
-	/*! \brief Set current thread to background priority
-		\bug Not working under all platforms
-	*/
-	void LowerPriority();
-	/*! \brief Set current thread to idle priority
-		\bug Not working under all platforms
-	*/
-	void LowestPriority();
-	static int GetPriority();
-#else
 	/*! \brief Increase/Decrease priority of the current thread
 	*/
-	static void ChangePriority(int dp);
-#endif
+	static void ChangePriority(int dp,pthread_t thr = pthread_self());
 
+	/*! \brief Get current thread id
+	*/
+	static pthread_t GetThreadId() { return pthread_self(); }
 
 	/*! \brief Thread mutex
 		\sa pthreads documentation

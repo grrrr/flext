@@ -18,6 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #define ALIASDEL ','
 
+#define ALIASSLASHES ":/\\"
 #ifdef MAXMSP
 	#define ALIASSLASH ':'
 #elif defined(NT)
@@ -43,20 +44,30 @@ const char *flext::extract(const char *name,int ix)
 	const char *n = name;
 	
 	const char *del = strchr(name,ALIASDEL);
+
 	if(del) {
-		char *t;
-		for(t = tmp; *n && n < del && !isspace(*n); ++t,++n) *t = *n;
-		*(t++) = ALIASSLASH;
+		if(ix < 0) {
+			char *t = tmp;
+			while(n < del && (isspace(*n) || strchr(ALIASSLASHES,*n))) ++n;
+			while(n < del && !isspace(*n)) {
+				char c = *(n++);
+				*(t++) = strchr(ALIASSLASHES,c)?ALIASSLASH:c;
+			}
+			while(*t == ALIASSLASH && t > tmp) --t;
+			*t = 0;
+
+			return tmp;
+		}
 
 		n = del+1;
 	}
 	
 	for(int i = 0; n && *n; ++i) {
 		if(i == ix) {
-			char *t;
-			for(t = tmp; *n && !isspace(*n); ++t,++n) *t = *n;
+			char *t = tmp;
+
+			for(; *n && !isspace(*n); ++t,++n) *t = *n;
 			*t = 0;
-//			return *tmp?flext::strdup(tmp):NULL;
 			return *tmp?tmp:NULL;
 		}
 		else {

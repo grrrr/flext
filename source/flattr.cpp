@@ -31,23 +31,6 @@ flext_base::attritem::~attritem()
 //	if(nxt) delete nxt;
 }
 
-/*
-void flext_base::AddAttrItem(attritem *m)
-{
-	int ix = m->Hash();
-	post("attr index %x",ix);
-	attritem *&aix = attrhead[ix];
-
-	if(aix) {
-		attritem *mi;
-		for(mi = aix; mi->nxt; mi = mi->nxt) {}
-		mi->nxt = m;
-	}
-	else 
-		aix = m;
-//	m->th->attrcnt++;
-}
-*/
 
 //! Add get and set attributes
 void flext_base::AddAttrib(itemarr *aa,itemarr *ma,const char *attr,metharg tp,methfun gfun,methfun sfun)
@@ -153,8 +136,11 @@ bool flext_base::ListAttrib()
 
 flext_base::attritem *flext_base::FindAttr(const t_symbol *tag,bool get) const
 {
+    // first search within object scope
 	attritem *a = (attritem *)attrhead->Find(tag);
 	while(a && (a->tag != tag || a->inlet != 0 || (get?a->IsSet():a->IsGet()))) a = (attritem *)a->nxt;
+
+    // then (if nothing found) search within class scope
 	if(!a) {
 		a = (attritem *)clattrhead->Find(tag);	
 		while(a && (a->tag != tag || a->inlet != 0 || (get?a->IsSet():a->IsGet()))) a = (attritem *)a->nxt;
@@ -218,27 +204,6 @@ bool flext_base::SetAttrib(attritem *a,int argc,const t_atom *argv)
 		post("%s - attribute %s has no get method",thisName(),GetString(a->tag));
 	return true;
 }
-
-/*
-bool flext_base::GetAttrib(const t_symbol *tag)
-{
-	if(argc)
-		post("%s - %s: arguments ignored",thisName(),GetString(tag));
-
-#ifdef FLEXT_DEBUG
-	if(strncmp(GetString(tag),"get",3)) {
-		post("%s - %s: tag has no 'get' prefix",thisName(),GetString(tag));
-		return false;
-	}
-#endif
-
-	const t_symbol *mtag = MakeSymbol(GetString(a->tag)+3);
-
-	// search for attribute
-	attritem *a = (attritem *)attrhead->Find(mtag);
-	if(!a) a = (attritem *)clattrhead->Find(mtag);	
-}
-*/
 
 bool flext_base::GetAttrib(attritem *a)
 {

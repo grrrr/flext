@@ -34,38 +34,6 @@ void flext_base::methitem::SetArgs(methfun _fun,int _argc,metharg *_args)
 	argc = _argc,args = _args;
 }
 
-/*
-void flext_base::AddMethItem(methitem *m)
-{
-	int ix = m->Hash();
-	post("method index %x",ix);
-	methitem *&mix = methhead[ix];
-
-	if(mix) {
-		methitem *mi;
-		for(mi = mix; mi->nxt; mi = mi->nxt) {}
-		mi->nxt = m;
-	}
-	else 
-		mix = m;
-}
-*/
-/*
-const flext_base::methitem *flext_base::FindMethItem(int inlet,const t_symbol *tag,const methitem *st)
-{
-	const methitem *mi = st?st:mlst;
-	if(inlet < 0) {
-		for(; mi; mi = mi->nxt) 
-			if(mi->tag == tag) break;
-	}
-	else {
-		for(; mi; mi = mi->nxt) 
-			if(mi->inlet == inlet && mi->tag == tag) break;
-	}
-	return mi;
-}
-*/
-
 void flext_base::AddMethodDef(int inlet,const char *tag)
 {
 	methhead->Add(new methitem(inlet,tag?MakeSymbol(tag):NULL));

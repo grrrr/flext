@@ -23,7 +23,7 @@ INCPATH=$(INCPATH) /I$(STK)
 # compiler definitions and flags
 DEFS=/DFLEXT_SYS=2 
 
-CFLAGS=/GR- /GX- /GD /G6
+CFLAGS=/GX- /GD /G6
 OFLAGS=/Ox
 DFLAGS=/Od /Zi
 

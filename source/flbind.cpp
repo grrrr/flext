@@ -35,7 +35,7 @@ void flext_base::SetupBindProxy()
 #elif FLEXT_SYS == FLEXT_SYS_MAX
         pxbnd_class = new t_class;
 
-        pxbnd_class->c_sym = gensym("");
+        pxbnd_class->c_sym = sym__;
         pxbnd_class->c_freelist = &px_freelist;
         pxbnd_class->c_freefun = NULL;
         pxbnd_class->c_size = sizeof(pxbnd_object);
@@ -43,7 +43,7 @@ void flext_base::SetupBindProxy()
         pxbnd_class->c_noinlet = 1;
         px_messlist[0].m_sym = (t_symbol *)pxbnd_class;
 
-        px_messlist[1].m_sym = gensym("anything");
+        px_messlist[1].m_sym = sym_anything;
         px_messlist[1].m_fun = (method)pxbnd_object::px_method;
         px_messlist[1].m_type[0] = A_GIMME;
         px_messlist[1].m_type[1] = 0;

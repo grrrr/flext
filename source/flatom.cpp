@@ -42,9 +42,8 @@ int flext::CmpAtom(const t_atom &a,const t_atom &b)
 
 t_atom *flext::CopyList(int argc,const t_atom *argv)
 {
-	int i;
 	t_atom *dst = new t_atom[argc];
-	for(i = 0; i < argc; ++i) CopyAtom(dst+i,argv+i);
+    memcpy(dst,argv,argc*sizeof(t_atom));
 	return dst;
 }
 

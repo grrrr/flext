@@ -276,29 +276,29 @@ public:
 
 
 	//! Send bang to self (inlet n)
-	void ToSelfBang(int n) const; 
+    void ToSelfBang(int n) const { ToQueueBang(-1-n); }
 
 	//! Send float to self (inlet n)
-	void ToSelfFloat(int n,float f) const; 
+    void ToSelfFloat(int n,float f) const { ToQueueFloat(-1-n,f); }
 
 	//! Send integer to self (inlet n)
-	void ToSelfInt(int n,int f) const; 
+    void ToSelfInt(int n,int f) const { ToQueueInt(-1-n,f); }
 
 	//! Send boolean to self (inlet n)
 	void ToSelfBool(int n,bool f) const { ToSelfInt(n,f?1:0); }
 
 	//! Send symbol to self (inlet n)
-	void ToSelfSymbol(int n,const t_symbol *s) const; 
+    void ToSelfSymbol(int n,const t_symbol *s) const { ToQueueSymbol(-1-n,s); }
 	//! Send string aka symbol to self (inlet 0)
 	void ToSelfString(int n,const char *s) const { ToSelfSymbol(n,MakeSymbol(s)); }
 
 	//! Send list to self (inlet n)
-	void ToSelfList(int n,int argc,const t_atom *argv) const; 
+    void ToSelfList(int n,int argc,const t_atom *argv) const { ToQueueList(-1-n,argc,argv); }
 	//! Send list to self (inlet n)
 	void ToSelfList(int n,const AtomList &list) const  { ToSelfList(n,list.Count(),list.Atoms()); }
 
 	//! Send anything to self (inlet n)
-	void ToSelfAnything(int n,const t_symbol *s,int argc,const t_atom *argv)  const; 
+    void ToSelfAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { ToQueueAnything(-1-n,s,argc,argv); }
 	//! Send anything to self (inlet n)
 	void ToSelfAnything(int n,const AtomAnything &any) const { ToSelfAnything(n,any.Header(),any.Count(),any.Atoms()); }
 

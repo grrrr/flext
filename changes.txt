@@ -28,6 +28,7 @@ Version history:
 - attribute editor: zoomed editor accepts , as newline separator
 - attribute editor: close editor window on object destruction
 - fixed $0-arguments in attribute saving
+- introducing ring buffer for message queue (thanks to Tom Schouten)
 
 0.4.6:
 - added a text edit window for list attributes

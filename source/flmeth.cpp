@@ -125,10 +125,12 @@ void flext_base::ListMethods(AtomList &la,int inlet) const
 
 bool flext_base::ListMethods(int inlet) const
 {
+    static const t_symbol *sym_methods = MakeSymbol("methods");
+
     if(procattr) {
         AtomList la;
         ListMethods(la,inlet);
-        ToOutAnything(GetOutAttr(),MakeSymbol("methods"),la.Count(),la.Atoms());
+        ToOutAnything(GetOutAttr(),sym_methods,la.Count(),la.Atoms());
         return true;
     }
     else

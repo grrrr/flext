@@ -58,7 +58,7 @@ private:
     const t_atom *argv;
 };
 
-/* \TODO This is only thread-safe if called fro one thread which need NOT be the case.
+/* \TODO This is only thread-safe if called from one thread which need NOT be the case.
          Reimplement in a thread-safe manner!!!
 */
 class Queue:
@@ -176,17 +176,18 @@ protected:
     // must return contiguous region
     t_atom *GetAtoms(int argc)
     {
+        t_atom *ret;
         if(atail+argc >= QUEUE_ATOMS) {
             FLEXT_ASSERT(ahead > argc);
+            ret = atoms;
             atail = argc;
-            return atoms;
         }
         else {
             FLEXT_ASSERT(ahead <= atail || ahead > atail+argc);
-            t_atom *at = atoms+atail;
+            ret = atoms+atail;
             atail += argc;
-            return at;
         }
+        return ret;
     }
 
     void PopAtoms(int argc) 

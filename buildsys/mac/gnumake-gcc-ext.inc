@@ -31,11 +31,13 @@ _build_: $(TARGET)
 $(CSRCS) $(CPPSRCS): $(patsubst %,$(SRCDIR)/%,$(HDRS))
 	touch $@
 
+# Attention: $@ doesn't work for paths with spaces....
 $(OBJPATH):
-	-mkdir -p $@
+	-mkdir -p $(OBJPATH)
 
+# Attention: $@ doesn't work for paths with spaces....
 $(TARGETPATH):
-	-mkdir -p $@
+	-mkdir -p $(TARGETPATH)
 
 $(PRECOMDST) : $(PRECOMSRC)
 	$(CXX) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
@@ -60,8 +62,9 @@ _clean_:
 
 ##############################################
 
+# Attention: $@ doesn't work for paths with spaces....
 $(INSTPATH):
-	-mkdir -p $@
+	-mkdir -p $(INSTPATH)
 
 _install_:: $(INSTPATH)
 	cp -R $(INSTTARGET) $(INSTPATH)

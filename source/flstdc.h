@@ -118,7 +118,10 @@ extern "C" {
 
 #include "ext.h"
 #include "ext_user.h"
+#if FLEXT_OS == FLEXT_OS_MAC && defined(MAC_VERSION)
+// doesn't exist for OS9
 #include "ext_critical.h"
+#endif
 #include "z_dsp.h"
 
 } // extern "C"
@@ -133,10 +136,9 @@ typedef t_int t_flint;
 typedef t_symbol *t_symtype;
 typedef t_object *t_thing;
 
-// for the following to work for Max for OSX you should have the latest SDK
-#if FLEXT_OS == FLEXT_OS_MAC && !defined(MAC_VERSION)
-// Max for OS9 SDK
-typedef qelem t_qelem;
+// for the following to work you should have the latest SDK
+#if FLEXT_OS == FLEXT_OS_MAC //&& !defined(MAC_VERSION)
+typedef struct qelem t_qelem;
 #else
 typedef void *t_qelem;
 #endif
@@ -170,6 +172,11 @@ typedef void t_binbuf;
 #define A_DEFSYMBOL A_DEFSYM
 #endif
 
+#if FLEXT_OS == FLEXT_OS_MAC && !defined(MAC_VERSION)
+// simulate non-existing functions for OS9
+#define critical_enter(N)
+#define critical_exit(N)
+#endif
 
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
 

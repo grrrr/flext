@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="flext"
-	ProjectGUID="{817F8B42-38B6-401B-9D36-E3C77429A9F2}"
+	ProjectGUID="{B94DB81C-B5FB-4984-99DC-5063C3793BFE}"
 	Keyword="Win32Proj">
 	<Platforms>
 		<Platform

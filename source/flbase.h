@@ -298,18 +298,21 @@ REAL_EXT(NEW_CLASS, _tilde_setup)
 //////////////////////////////////////////////////////
 
 #define FLEXT_SETUP(cl) \
-	FLEXT_EXT V cl##_setup();  \
-	cl##_setup()  
+extern void cl##_setup(); \
+cl##_setup()  
 
 #define FLEXT_TILDE_SETUP(cl) \
-	FLEXT_EXT V cl##_tilde_setup();  \
-	cl##_tilde_setup()  
+extern void cl##_tilde_setup(); \
+cl##_tilde_setup()  
 
 #ifdef PD
-#define FLEXT_LIB_SETUP(LIBNAME) ((void)0)
+#define FLEXT_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT void NAME##_setup( SETUPFUN(); )
 #else // MAXMSP
-#define FLEXT_LIB_SETUP(LIBNAME) \
-::setup((t_messlist **)&flext_obj::lib_class,(t_newmethod)&flext_obj::libfun_new,(t_method)flext_obj::libfun_free,sizeof(flext_hdr), 0,A_GIMME,A_NULL)
+#define FLEXT_LIB_SETUP(NAME,SETUPFUN) \
+extern "C" FLEXT_EXT void main() { \
+SETUPFUN(); \
+::setup((t_messlist **)&flext_obj::lib_class,(t_newmethod)&flext_obj::libfun_new,(t_method)flext_obj::libfun_free,sizeof(flext_hdr), 0,A_GIMME,A_NULL); \
+}
 #endif
 
 ////////////////////////////////////////
@@ -352,6 +355,10 @@ REAL_EXT(NEW_CLASS, _tilde_setup)
 
 #endif
 
+#define EXTPROTO_0  extern "C" FLEXT_EXT
+#define EXTPROTO_1
+#define EXTPROTO(LIB) EXTPROTO_ ## LIB
+
 #ifdef _DEBUG
 #define CHECK_TILDE(OBJNAME,SETUPFUN) flext_obj::check_tilde(OBJNAME,SETUPFUN)
 #else
@@ -380,10 +387,9 @@ flext_hdr* class_ ## NEW_CLASS ()                              \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-extern "C" FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	\
+EXTPROTO(LIB) void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	\
 {					\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
-//    if(LIB && IS_MAXMSP) { LIB_INIT(NAME,class_ ## NEW_CLASS,&NEW_CLASS::callb_free,A_NULL,A_NULL,A_NULL,A_NULL); } \
     if(LIB && IS_MAXMSP) { LIB_INIT(NAME,class_ ## NEW_CLASS,&NEW_CLASS::callb_free,0); } \
     else { \
     	NEW_CLASS ## _class = FLEXT_NEWFN(                       \
@@ -410,10 +416,9 @@ flext_hdr* class_ ## NEW_CLASS (TYPE arg)                  \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-extern "C" FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()   	\
+EXTPROTO(LIB) void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()   	\
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
-//    if(LIB && IS_MAXMSP) { LIB_INIT(NAME,class_ ## NEW_CLASS,&NEW_CLASS::callb_free,FLEXTTP(TYPE),A_NULL,A_NULL,A_NULL); } \
     if(LIB && IS_MAXMSP) { LIB_INIT(NAME,class_ ## NEW_CLASS,&NEW_CLASS::callb_free,1); } \
     else { \
 	    NEW_CLASS ## _class = FLEXT_NEWFN(                       \
@@ -441,7 +446,7 @@ flext_hdr* class_ ## NEW_CLASS (t_symbol *, int argc, t_atom *argv) \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-extern "C" FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
+EXTPROTO(LIB) void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
     if(LIB && IS_MAXMSP) { LIB_INIT(NAME,class_ ## NEW_CLASS,&NEW_CLASS::callb_free,-1); } \
@@ -471,10 +476,9 @@ flext_hdr* class_ ## NEW_CLASS (ONE_TYPE arg, TWO_TYPE argtwo) \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-extern "C" FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
+EXTPROTO(LIB) void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
-//    if(LIB && IS_MAXMSP) { LIB_INIT(NAME,class_ ## NEW_CLASS,&NEW_CLASS::callb_free,FLEXTTP(ONE_TYPE),FLEXTTP(TWO_TYPE),A_NULL,A_NULL,A_NULL); } \
     if(LIB && IS_MAXMSP) { LIB_INIT(NAME,class_ ## NEW_CLASS,&NEW_CLASS::callb_free,2); } \
     else { \
 	    NEW_CLASS ## _class = FLEXT_NEWFN(                       \
@@ -502,10 +506,9 @@ flext_hdr* class_ ## NEW_CLASS (ONE_TYPE arg, TWO_TYPE argtwo, THREE_TYPE argthr
     flext_obj::m_holder = NULL;                                 \
 	return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-extern "C" FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
+EXTPROTO(LIB) void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
-//    if(LIB && IS_MAXMSP) { LIB_INIT(NAME,class_ ## NEW_CLASS,&NEW_CLASS::callb_free,FLEXTTP(ONE_TYPE),FLEXTTP(TWO_TYPE),FLEXTTP(THREE_TYPE),A_NULL,A_NULL); } \
     if(LIB && IS_MAXMSP) { LIB_INIT(NAME,class_ ## NEW_CLASS,&NEW_CLASS::callb_free,3); } \
     else { \
     NEW_CLASS ## _class = FLEXT_NEWFN(                       \
@@ -533,10 +536,9 @@ flext_hdr* class_ ## NEW_CLASS (ONE_TYPE arg, TWO_TYPE argtwo, THREE_TYPE argthr
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-extern "C" FLEXT_EXT void FLEXT_MAIN(class_ ## SETUP_FUNCTION)()    	    	    	    	\
+EXTPROTO(LIB) void FLEXT_MAIN(class_ ## SETUP_FUNCTION)()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
-//    if(LIB && IS_MAXMSP) { LIB_INIT(NAME,class_ ## NEW_CLASS,&NEW_CLASS::callb_free,FLEXTTP(ONE_TYPE),FLEXTTP(TWO_TYPE),FLEXTTP(THREE_TYPE),FLEXTTP(FOUR_TYPE),A_NULL); } \
     if(LIB && IS_MAXMSP) { LIB_INIT(NAME,class_ ## NEW_CLASS,&NEW_CLASS::callb_free,4); } \
     else { \
 	    NEW_CLASS ## _class = FLEXT_NEWFN(                       \

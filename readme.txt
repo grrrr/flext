@@ -19,6 +19,7 @@ Package files:
 - flbase.h,flbase.cpp: GEM-like C++ interface
 - flext.h,flext.cpp: actual base classes for message (flext_base) and dsp (flext_dsp) processing
 - flbuf.cpp: buffer object handling for base classes
+- fllib.cpp: code for handling external libraries in MaxMSP
 - fldefs.h: definitions for internal flext use
 - flcwmax.h: trivial prefix header file for Max/MSP CodeWarrior projects
 
@@ -32,7 +33,7 @@ o Borland C++ 5.5 (free): edit & run "make -f makefile.bcc"
 o Microsoft Visual C++ 6: use the "flext.dsp" project file  - you have to edit the pd path in the project properties/C-C++/preprocessor tab!
 
 - pd - linux:
-o GCC: edit & run "make -f makefile.pd-linux"
+o GCC: edit & run "make -f makefile.pd-linux" and as root "make -f makefile.pd-linux install"
 
 - Max/MSP - MacOS:
 o Metrowerks CodeWarrior V6: edit & use the "flext.cw" project file
@@ -51,6 +52,7 @@ pros:
 - faster development, more robust coding
 - sharing of common methods and data by using base classes
 - any input to any inlet (with the exception of signal streams)
+- libraries of externals in MaxMSP
 
 cons:
 - introduces a small overhead to speed of message handling 
@@ -65,11 +67,11 @@ Version history:
 
 0.2.2:
 - added xgimme argument type (supplies method handlers with symbol+gimme)
-- more information on DSP system with flext_dsp object (block size,number of inputs and outputs)
+- more information on DSP system with flext_dsp object (block size,number of audio inputs and outputs)
 - cleaner gcc makefile
-- added IsDirty question for buffers
 - made NewAligned/FreeAligned static functions
 - introduced FLEXT(_TILDE)_SETUP for class setup in a library setup function
+- introduced external libraries for MaxMSP, changed library setup behavior (now via FLEXT_LIB_SETUP)
 
 0.2.1:
 - fixed bug in message parsing code (anything messages were not correctly mapped to inlets)
@@ -119,7 +121,6 @@ Notes:
 - no support for default object arguments (A_DEFFLOAT, A_DEFSYMBOL) -> use GIMME instead
 
 Platform specific:
-- Max does not support external libraries -> only one FLEXT_NEW* or FLEXT_TILDE_NEW* in a project 
 - PD does not allow signal and message to go into the same inlet
 
 Restrictions in compatibility mode:

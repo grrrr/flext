@@ -26,16 +26,21 @@ void flext::ZeroMem(void *dst,int bytes)
 }
 
 
-bool flext::Forward(const t_symbol *recv,int argc,const t_atom *argv)
+bool flext::Forward(const t_symbol *recv,const t_symbol *s,int argc,const t_atom *argv)
 {
 	t_class **cl = (t_class **)recv->s_thing;
 	if(!cl) return false;
     
 #if FLEXT_SYS == FLEXT_SYS_PD
 	pd_forwardmess(cl,argc,(t_atom *)argv);
+    return true;
 #else
-    #error Not implemented
+	if(recv->s_thing) {
+		typedmess(recv->s_thing,(t_symbol *)s,argc,(t_atom *)argv);
+		return true;
+	}
+	else
+		return false;
 #endif
 
-    return true;
 }

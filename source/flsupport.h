@@ -516,10 +516,10 @@ public:
 	*/
 
     //! Send a message to a symbol (bound to an object)
-    static bool Forward(const t_symbol *s,int argc,const t_atom *argv);
+    static bool Forward(const t_symbol *sym,const t_symbol *s,int argc,const t_atom *argv);
 
-    static bool Forward(const t_symbol *s,AtomList &args) { return Forward(s,args.Count(),args.Atoms()); }
-    static bool Forward(const char *s,AtomList &args) { return Forward(MakeSymbol(s),args.Count(),args.Atoms()); }
+    static bool Forward(const t_symbol *sym,AtomAnything &args) { return Forward(sym,args.Header(),args.Count(),args.Atoms()); }
+    static bool Forward(const char *sym,AtomAnything &args) { return Forward(MakeSymbol(sym),args.Header(),args.Count(),args.Atoms()); }
 
 //!		@} FLEXT_S_MSG
 

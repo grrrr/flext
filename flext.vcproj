@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="flext"
+	ProjectGUID="{817F8B42-38B6-401B-9D36-E3C77429A9F2}"
 	SccProjectName="max/flext"
 	SccAuxPath=""
 	SccLocalPath="."

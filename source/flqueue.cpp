@@ -168,6 +168,13 @@ static void QTick(flext_base *c)
 	}
 #endif
 	QWork(true,true);
+
+/*
+#if !defined(FLEXT_QTHR) && (FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX)
+	// Reclocking for safety
+    clock_delay(qclk,10);
+#endif
+*/
 }
 
 /*
@@ -221,7 +228,7 @@ static void Queue(qmsg *m)
 void QWorker(flext::thr_params *)
 {
 	for(;;) {
-		qthrcond.Wait();
+		qthrcond.TimedWait(0.01);
 		QWork(true,true);
 	}
 }

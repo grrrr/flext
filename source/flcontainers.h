@@ -276,7 +276,7 @@ class PooledLifo
 {
 public:
     inline T *New() { T *n = reuse.Pop(); return n?n:new T; }
-    inline Free(T *p) { if(reuse.Size() < Size()) reuse.Push(p); else delete p; }
+    inline void Free(T *p) { if(reuse.Size() < Size()) reuse.Push(p); else delete p; }
 private:
     TypedLifo<T> reuse;
 };
@@ -353,7 +353,7 @@ class PooledFifo
 {
 public:
     inline T *New() { T *n = reuse.Pop(); return n?n:new T; }
-    inline Free(T *p) { if(reuse.Size() < Size()) reuse.Push(p); else delete p; }
+    inline void Free(T *p) { if(reuse.Size() < Size()) reuse.Push(p); else delete p; }
 private:
     TypedLifo<T> reuse;
 };

@@ -20,7 +20,7 @@ Package files:
 - flclass.h,flext.cpp: actual base classes for message (flext_base) and dsp (flext_dsp) processing
 - fldsp.h,fldsp.cpp: code for signal externals
 - flthr.h,flthr.cpp: code for threaded methods
-- flatom.cpp: code fpr functions dealing with lists of atoms
+- flatom.cpp: code for functions dealing with lists of atoms
 - flutil.cpp: additional utility functions
 - flxlet.cpp: code for variable inlet/outlet stuff
 - flinternals.h: internal definitions for flext library

@@ -7,6 +7,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 -------------------------------------------------------------------------
 
+This is an example of an object digesting several "tagged" messages
+
 */
 
 // include flext header
@@ -25,29 +27,29 @@ class simple3:
  
 public:
 	// constructor with variable argument list
-	simple3(int argc,t_atom *argv);
+	simple3();
 
 protected:
 	void m_tag();   
+	void m_tag_and_int(int i);   
 	void m_sym(t_symbol *s);   
 	
 private:
 
 	FLEXT_CALLBACK(m_tag);  // callback for method "m_tag" (no arguments)
+	FLEXT_CALLBACK_I(m_tag_and_int);  // callback for method "m_tag" (int arguments)
 	FLEXT_CALLBACK_S(m_sym);  // callback for method "m_sym" (with one symbol argument)
 };
 
 // instantiate the class (constructor has a variable argument list)
-FLEXT_NEW_V("simple3",simple3)
+FLEXT_NEW("simple3",simple3)
 
 
-simple3::simple3(int argc,t_atom *argv)
+simple3::simple3()
 { 
-	post("%i creation arguments",argc);
-
 	// define inlets
-	AddInAnything();  // first inlet of type anything (index 0)
-	
+	AddInAnything();  // add inlet of type anything (index 0)
+
 	 // set up inlets and outlets 
 	SetupInOut(); 
 
@@ -55,12 +57,19 @@ simple3::simple3(int argc,t_atom *argv)
 	FLEXT_ADDMETHOD_(0,"born",m_tag);  // register method for tag "born"
 	FLEXT_ADDMETHOD_(0,"to",m_tag);  // register method for tag "to"
 	FLEXT_ADDMETHOD_(0,"hula",m_tag);  // register method for tag "hula"
-	FLEXT_ADDMETHOD(0,m_sym);  // register method for all other symbol
+	FLEXT_ADDMETHOD_I(0,"hula",m_tag_and_int);  // register method for tag "hula" and int argument
+
+	FLEXT_ADDMETHOD(0,m_sym);  // register method for all other symbols
 } 
 
 void simple3::m_tag()
 {
-	post("tag used");
+	post("tag recognized");
+}
+
+void simple3::m_tag_and_int(int i)
+{
+	post("tag recognized (has int arg: %i)",i);
 }
 
 void simple3::m_sym(t_symbol *s)

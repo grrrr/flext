@@ -174,7 +174,7 @@ bool flext_base::ListAttrib() const
         // defined in flsupport.cpp
         extern const t_symbol *sym_attributes;
 
-		AtomList la;
+		AtomListStatic<32> la;
 		ListAttrib(la);
 		ToOutAnything(GetOutAttr(),sym_attributes,la.Count(),la.Atoms());
 		return true;
@@ -257,7 +257,7 @@ bool flext_base::SetAttrib(const t_symbol *tag,AttrItem *a,int argc,const t_atom
 			else ok = false;
 			break;
 		case a_LIST: {
-			AtomList la(argc);
+			AtomListStatic<16> la(argc);
 			for(int i = 0; i < argc; ++i)
 				if(IsSymbol(argv[i])) 
 					GetParamSym(la[i],GetSymbol(argv[i]),thisCanvas());
@@ -344,7 +344,7 @@ bool flext_base::GetAttrib(const t_symbol *s,AtomList &a) const
 //! \param tag symbol "get[attribute]"
 bool flext_base::DumpAttrib(const t_symbol *tag,AttrItem *a) const
 {
-	AtomList la;
+	AtomListStatic<16> la;
 	bool ret = GetAttrib(tag,a,la);
 	if(ret) {
 		ToOutAnything(GetOutAttr(),a->tag,la.Count(),la.Atoms());
@@ -360,7 +360,7 @@ bool flext_base::DumpAttrib(const t_symbol *attr) const
 
 bool flext_base::BangAttrib(const t_symbol *attr,AttrItem *item)
 {
-	AtomList val;
+	AtomListStatic<16> val;
 	AttrItem *item2;
 	if(!item->IsGet()) 
 		item = item->Counterpart();

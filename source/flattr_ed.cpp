@@ -494,7 +494,7 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
     PrintList(argc,argv,buf,sizeof(buf));
     sys_vgui("%s } {\n",buf);
 
-    AtomList la;
+    AtomListStatic<32> la;
     th->ListAttrib(la);
     int cnt = la.Count();
 
@@ -540,7 +540,7 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 
         sys_vgui(const_cast<char *>(list?"%s {":"%s "),GetString(sym));
 
-        AtomList lv;
+        AtomListStatic<32> lv;
         if(gattr) { // gettable attribute is present
             // Retrieve attribute value
             th->GetAttrib(sym,gattr,lv);
@@ -765,13 +765,12 @@ void flext_base::BinbufArgs(t_binbuf *b,t_binbuf *args,bool withname,bool transd
 void flext_base::BinbufAttr(t_binbuf *b,bool transdoll)
 {
     // process the attributes
-    AtomList la;
+    AtomListStatic<32> la,lv;
     ListAttrib(la);
     int i,cnt = la.Count();
 
     for(i = 0; i < cnt; ++i) {
         const t_symbol *sym = GetSymbol(la[i]);
-        AtomList lv;
         const AtomList *lref = NULL;
         AttrDataCont::iterator it = attrdata->find(sym);
 

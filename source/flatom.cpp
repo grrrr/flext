@@ -48,33 +48,39 @@ t_atom *flext::CopyList(int argc,const t_atom *argv)
 	return dst;
 }
 
-flext::AtomList::AtomList(int argc,const t_atom *argv):
-	cnt(0),lst(NULL)
+void flext::AtomList::Alloc(int sz)
 {
-	operator()(argc,argv);
+    if(lst) {
+        if(cnt == sz) return; // no change
+        delete[] lst;
+    }
+    else
+        FLEXT_ASSERT(cnt == 0);
+    lst = new t_atom[cnt = sz];
 }
 
-flext::AtomList::AtomList(const AtomList &a):
-	cnt(0),lst(NULL)
+flext::AtomList::~AtomList() { Free(); }
+
+void flext::AtomList::Free()
 {
-	operator =(a);
+    if(lst) { 
+        delete[] lst; lst = NULL; 
+        cnt = 0;
+    }
+    else
+        FLEXT_ASSERT(cnt == 0);
 }
-
-flext::AtomList::~AtomList() {	Clear(); }
-
 
 flext::AtomList &flext::AtomList::Set(int argc,const t_atom *argv,int offs,bool resize)
 {
 	int ncnt = argc+offs;
-	if(resize && lst && cnt != ncnt) { delete[] lst; lst = NULL; cnt = 0; }
+	if(resize) Alloc(ncnt);
 
-	if(ncnt) {
-		if(!lst) lst = new t_atom[cnt = ncnt];
+    // argv can be NULL indepently from argc
+    if(argv)
+        for(int i = 0; i < argc; ++i) 
+            SetAtom(lst[offs+i],argv[i]);
 
-		if(argv) {
-			for(int i = 0; i < argc; ++i) SetAtom(lst[offs+i],argv[i]);
-		}
-	}
 	return *this;
 }
 
@@ -91,20 +97,16 @@ int flext::AtomList::Compare(const AtomList &a) const
 		return Count() < a.Count()?-1:1;
 }
 
+flext::AtomListStaticBase::~AtomListStaticBase() { Free(); }
 
-#if FLEXT_SYS != FLEXT_SYS_JMAX 
-// not for jmax as long as t_symbol * == char *
-flext::AtomAnything::AtomAnything(const t_symbol *h,int argc,const t_atom *argv): 
-	AtomList(argc,argv),hdr(h?h:MakeSymbol("")) 
-{}
-#endif
+void flext::AtomListStaticBase::Alloc(int sz) 
+{ 
+    if(sz < precnt) lst = predata,cnt = sz;
+    else AtomList::Alloc(sz);
+}
 
-flext::AtomAnything::AtomAnything(const char *h,int argc,const t_atom *argv): 
-	AtomList(argc,argv),hdr(MakeSymbol(h)) 
-{}
-
-flext::AtomAnything::AtomAnything(const AtomAnything &a): 
-	AtomList(a),hdr(a.hdr) 
-{}
-
-
+void flext::AtomListStaticBase::Free() 
+{
+    if(lst != predata) AtomList::Free();
+    else lst = NULL,cnt = 0;
+}

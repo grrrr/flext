@@ -545,18 +545,18 @@ public:
 // --- atom list stuff -------------------------------------------
 
 	//! Class representing a list of atoms
-    class FLEXT_SHARE AtomList:
-        public flext_root
+    class FLEXT_SHARE AtomList
+        : public flext_root
 	{
 	public:
 		//! Construct list
         AtomList(): cnt(0),lst(NULL) {}
 		//! Construct list
-		AtomList(int argc,const t_atom *argv = NULL);
+		AtomList(int argc,const t_atom *argv = NULL): cnt(0),lst(NULL) { operator()(argc,argv); }
 		//! Construct list
-		AtomList(const AtomList &a);
+        AtomList(const AtomList &a): cnt(0),lst(NULL) { operator =(a); }
 		//! Destroy list
-		~AtomList();
+        virtual ~AtomList();
 
 		//! Clear list
 		AtomList &Clear() { return operator()(); }
@@ -615,10 +615,40 @@ public:
 		bool Print(char *buffer,int buflen) const { return flext::PrintList(Count(),Atoms(),buffer,buflen); }
 
 	protected:
+        virtual void Alloc(int sz);
+        virtual void Free();
+
 		int cnt;
 		t_atom *lst;
 	};
 
+    class FLEXT_SHARE AtomListStaticBase
+        : public AtomList
+    {
+    protected:
+        AtomListStaticBase(int pc,t_atom *dt): precnt(pc),predata(dt) {}
+        virtual ~AtomListStaticBase();
+        virtual void Alloc(int sz);
+        virtual void Free();
+
+        const int precnt;
+        t_atom *const predata;
+    };
+
+    template<int PRE>
+    class FLEXT_SHARE AtomListStatic
+        : public AtomListStaticBase
+    {
+    public:
+		//! Construct list
+        AtomListStatic(): AtomListStaticBase(PRE,pre) {}
+		//! Construct list
+		AtomListStatic(int argc,const t_atom *argv = NULL): AtomListStaticBase(PRE,pre) { operator()(argc,argv); }
+		//! Construct list
+        AtomListStatic(const AtomList &a): AtomListStaticBase(PRE,pre) { operator =(a); }
+    protected:
+        t_atom pre[PRE];
+    };
 
 	//! Class representing an "anything"
 	class FLEXT_SHARE AtomAnything: 
@@ -628,12 +658,19 @@ public:
         AtomAnything(): hdr(NULL) {}
 #if FLEXT_SYS != FLEXT_SYS_JMAX
 		//! Construct anything
-		AtomAnything(const t_symbol *h,int argc = 0,const t_atom *argv = NULL);
+		AtomAnything(const t_symbol *h,int argc = 0,const t_atom *argv = NULL)
+            : AtomList(argc,argv),hdr(h?h:sym__) 
+        {}
 #endif
 		//! Construct anything
-		AtomAnything(const char *h,int argc = 0,const t_atom *argv = NULL);
+		AtomAnything(const char *h,int argc = 0,const t_atom *argv = NULL)
+            : AtomList(argc,argv),hdr(MakeSymbol(h)) 
+        {}
+
 		//! Construct anything
-		AtomAnything(const AtomAnything &a);
+		AtomAnything(const AtomAnything &a)
+            : AtomList(a),hdr(a.hdr) 
+        {}
 
 		//! Clear anything
 		AtomAnything &Clear() { return operator()(); }

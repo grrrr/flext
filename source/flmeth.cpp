@@ -129,7 +129,7 @@ bool flext_base::cb_ListMethods(flext_base *c,int argc,const t_atom *argv)
         extern const t_symbol *sym_methods;
 
         int inlet = argc?GetAInt(argv[0]):0;
-        AtomList la;
+        AtomListStatic<32> la;
         c->ListMethods(la,inlet);
         c->ToOutAnything(c->GetOutAttr(),sym_methods,la.Count(),la.Atoms());
         return true;

@@ -55,15 +55,12 @@ static unsigned long setsimdcaps()
 void flext::CopySamples(t_sample *dst,const t_sample *src,int cnt) 
 {
 #ifdef FLEXT_USE_IPP
-//    #if sizeof(t_sample) == 4
-        ippsCopy_32f(src,dst,cnt); 
-/*
-    #if sizeof(t_sample) == 8
-        ippsCopy_64f(src,dst,cnt); 
-    #else
-        #error not implemented
-    #endif
-*/
+    if(sizeof(t_sample) == 4)
+        ippsCopy_32f((const float *)src,(float *)dst,cnt); 
+    else if(sizeof(t_sample) == 8)
+        ippsCopy_64f((const double *)src,(double *)dst,cnt); 
+    else
+        ERRINTERNAL();
 #else
 	int n = cnt>>3;
 	cnt -= n<<3;
@@ -82,15 +79,12 @@ void flext::CopySamples(t_sample *dst,const t_sample *src,int cnt)
 void flext::SetSamples(t_sample *dst,int cnt,t_sample s) 
 {
 #ifdef FLEXT_USE_IPP
-//    #if sizeof(t_sample) == 4
-        ippsSet_32f(s,dst,cnt); 
-/*
-    #if sizeof(t_sample) == 8
-        ippsSet_64f(s,dst,cnt); 
-    #else
-        #error not implemented
-    #endif
-*/
+    if(sizeof(t_sample) == 4)
+        ippsSet_32f((float)s,(float *)dst,cnt); 
+    else if(sizeof(t_sample) == 8)
+        ippsSet_64f((double)s,(double *)dst,cnt); 
+    else
+        ERRINTERNAL();
 #else
 	int n = cnt>>3;
 	cnt -= n<<3;

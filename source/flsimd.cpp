@@ -35,15 +35,24 @@ WARRANTIES, see the file, "license.txt," in this distribution.
         #include <xmmintrin.h> // SSE
         #include <emmintrin.h> // SSE2
         #include <mm3dnow.h> // 3DNow!
-//    #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__MWERKS__)
-//        #include <Altivec.h>
-    #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__MWERKS__)
-		#include <vBasicOps.h>
+    #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__MWERKS__) && defined(__ALTIVEC__)
+   		#if FLEXT_OSAPI == FLEXT_OSAPI_MAC_MACH
+			 #include <sys/sysctl.h> 
+    	#else
+			 #include <Gestalt.h> 
+   		#endif
+    
+		#pragma altivec_model on
+
+    	#include <altivec.h>
+//		#include <vBasicOps.h>
 		#include <vectorOps.h>
-    #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__GNUG__)
-		#include <vecLib/vBasicOps.h>
+    #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__GNUG__) && defined(__ALTIVEC__)
+		#include <sys/sysctl.h> 
+//		#include <vecLib/vBasicOps.h>
 		#include <vecLib/vectorOps.h>
     #endif
+
 #endif // FLEXT_USE_SIMD
 
 static unsigned long setsimdcaps();
@@ -263,9 +272,84 @@ static unsigned long setsimdcaps()
     if(cpuinfo.os_support&_CPU_FEATURE_3DNOW) simdflags += flext::simd_3dnow;
     if(cpuinfo.os_support&_CPU_FEATURE_SSE) simdflags += flext::simd_sse;
     if(cpuinfo.os_support&_CPU_FEATURE_SSE2) simdflags += flext::simd_sse2;
+#elif FLEXT_CPU == FLEXT_CPU_PPC 
+
+    #if FLEXT_OSAPI == FLEXT_OSAPI_MAC_MACH
+
+	int selectors[2] = { CTL_HW, HW_VECTORUNIT }; 
+	int hasVectorUnit = 0; 
+	size_t length = sizeof(hasVectorUnit); 
+	int error = sysctl(selectors, 2, &hasVectorUnit, &length, NULL, 0); 
+
+	if(!error && hasVectorUnit != 0) simdflags += flext::simd_altivec; 
+		
+	#else
+
+	long cpuAttributes; 
+	Boolean hasAltiVec = false; 
+	OSErr err = Gestalt( gestaltPowerPCProcessorFeatures, &cpuAttributes ); 
+
+	if( noErr == err ) 
+	if(( 1 << gestaltPowerPCHasVectorInstructions) & cpuAttributes) simdflags += flext::simd_altivec; 
+
+	#endif
 #endif
     return simdflags;
 }
+
+
+#if FLEXT_CPU == FLEXT_CPU_PPC && defined(__ALTIVEC__)
+
+/* functions for misaligned vector data - taken from the Altivec tutorial of Ian Ollmann, Ph.D. */
+
+//! Load a vector from an unaligned location in memory
+inline vector unsigned char LoadUnaligned( vector unsigned char *v )
+{
+	vector unsigned char permuteVector = vec_lvsl( 0, (int*) v );
+	vector unsigned char low = vec_ld( 0, v );
+	vector unsigned char high = vec_ld( 16, v );
+	return vec_perm( low, high, permuteVector );
+}
+
+//! Store a vector to an unaligned location in memory
+inline void StoreUnaligned( vector unsigned char v, vector unsigned char *where)
+{
+	// Load the surrounding area
+	vector unsigned char low = vec_ld( 0, where );
+	vector unsigned char high = vec_ld( 16, where );
+	// Prepare the constants that we need
+	vector unsigned char permuteVector = vec_lvsr( 0, (int*) where );
+
+	vector unsigned char oxFF = (vector unsigned char)vec_splat_s8( -1 );
+	vector unsigned char ox00 = (vector unsigned char)vec_splat_s8( 0 );
+	// Make a mask for which parts of the vectors to swap out
+	vector unsigned char mask = vec_perm( ox00, oxFF, permuteVector );
+	// Right rotate our input data
+	v = vec_perm( v, v, permuteVector );
+	// Insert our data into the low and high vectors
+	low = vec_sel( v, low, mask );
+	high = vec_sel( high, v, mask );
+	// Store the two aligned result vectors
+	vec_st( low, 0, where );
+	vec_st( high, 16, where );
+}
+
+inline vector float LoadUnaligned(float *v )
+{
+	return (vector float)LoadUnaligned((vector unsigned char *)v);
+}
+
+inline void StoreUnaligned( vector float v,float *where)
+{
+	return StoreUnaligned((vector unsigned char)v,(vector unsigned char *)where);
+}
+
+inline bool IsVectorAligned(const void *where) 
+{
+	return reinterpret_cast<unsigned long>(where)&(sizeof(vector float)-1) == 0; 
+}
+#endif
+
 
 #else // FLEXT_USE_SIMD
 static unsigned long setsimdcaps() { return 0; }
@@ -395,11 +479,11 @@ loopuu:
        	while(cnt--) *(dst++) = *(src++); 
     }
     else
-#elif FLEXT_OS == FLEXT_OS_MAC && defined(__VEC__) && defined(__VECTOROPS__)
-	{
+#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__) && defined(__VECTOROPS__)
+    {
    	    int n = cnt>>2,n4 = n<<2;
         cnt -= n4;
-		vScopy(n4,src,dst);
+		vScopy(n4,(vector float *)src,(vector float *)dst);
 		src += n4,dst += n4;
        	while(cnt--) *(dst++) = *(src++); 
 	}
@@ -474,7 +558,24 @@ loopu:
       	while(cnt--) *(dst++) = s; 
     }
     else
-#endif // _MSC_VER
+#elif 0 //FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
+    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(dst)) {
+		vector float svec = IsVectorAligned(&s)?vec_splat(vec_ld(0,(vector float *)&s),0):LoadUnaligned(&s);
+   	    int n = cnt>>4,n4 = n<<4;
+        cnt -= n4;
+
+		while(n--) {
+			vec_st(svec,0,dst);
+			vec_st(svec,16,dst);
+			vec_st(svec,32,dst);
+			vec_st(svec,48,dst);
+			dst += 64;
+		}
+
+       	while(cnt--) *(dst++) = s; 
+	}
+	else
+#endif
 #endif // FLEXT_USE_SIMD
     {
 	    int n = cnt>>3;
@@ -587,10 +688,24 @@ loopu:
 	    while(cnt--) *(dst++) = *(src++)*op; 
     }
     else
-#elif FLEXT_OS == FLEXT_OS_MAC && defined(__VEC__) && defined(__VECTOROPS__)
-	{
-		vsmul(src,1,&op,dst,1,cnt);
+#elif 0 //FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
+    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(dst)) {
+		vector float opvec = IsVectorAligned(&op)?vec_splat(vec_ld(0,(vector float *)&op),0):LoadUnaligned(&op);
+		vector float addvec = (vector float)vec_splat_u32(0);
+   	    int n = cnt>>4,n4 = n<<4;
+        cnt -= n4;
+
+		while(n--) {
+			vec_st(vec_madd(vec_ld( 0,src),opvec,addvec), 0,dst);
+			vec_st(vec_madd(vec_ld(16,src),opvec,addvec),16,dst);
+			vec_st(vec_madd(vec_ld(32,src),opvec,addvec),32,dst);
+			vec_st(vec_madd(vec_ld(48,src),opvec,addvec),48,dst);
+			src += 64,dst += 64;
+		}
+
+       	while(cnt--) *(dst++) = *(src++)*op; 
 	}
+	else
 #endif // _MSC_VER
 #endif // FLEXT_USE_SIMD
     {
@@ -809,10 +924,10 @@ loopuu:
 	    while(cnt--) *(dst++) = *(src++) * *(op++); 
     }
     else
-#elif FLEXT_OS == FLEXT_OS_MAC && defined(__VEC__) && defined(__VECTOROPS__)
-	{
-		vsmul(src,1,&op,dst,1,cnt);
+#elif 0 // FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
+    if(GetSIMDCapabilities()&simd_sse) {
 	}
+	else
 #endif // _MSC_VER
 #endif // FLEXT_USE_SIMD
     {
@@ -939,16 +1054,10 @@ loopu:
 	    while(cnt--) *(dst++) = *(src++)+op; 
     }
     else
-/*
-#elif FLEXT_OS == FLEXT_OS_MAC && defined(__VEC__) && defined(__VECTOROPS__)
-	{
-   	    int n = cnt>>2,n4 = n<<2;
-        cnt -= n4;
-		vScopy(n4,src,dst);
-		src += n4,dst += n4;
-       	while(cnt--) *(dst++) = *(src++); 
+#elif 0 //FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
+    if(GetSIMDCapabilities()&simd_altivec) {
 	}
-*/
+	else
 #endif // _MSC_VER
 #endif // FLEXT_USE_SIMD
     {
@@ -1168,16 +1277,9 @@ void flext::AddSamples(t_sample *dst,const t_sample *src,const t_sample *op,int 
 	    while(cnt--) *(dst++) = *(src++) + *(op++); 
     }
     else
-/*
-#elif FLEXT_OS == FLEXT_OS_MAC && defined(__VEC__) && defined(__VECTOROPS__)
-	{
-   	    int n = cnt>>2,n4 = n<<2;
-        cnt -= n4;
-		vScopy(n4,src,dst);
-		src += n4,dst += n4;
-       	while(cnt--) *(dst++) = *(src++); 
+#elif 0 //FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
+    {
 	}
-*/
 #endif // _MSC_VER
 #endif // FLEXT_USE_SIMD
     {
@@ -1316,16 +1418,10 @@ loopu:
 	    while(cnt--) *(dst++) = *(src++)*opmul+opadd; 
     }
     else
-/*
-#elif FLEXT_OS == FLEXT_OS_MAC && defined(__VEC__) && defined(__VECTOROPS__)
-	{
-   	    int n = cnt>>2,n4 = n<<2;
-        cnt -= n4;
-		vScopy(n4,src,dst);
-		src += n4,dst += n4;
-       	while(cnt--) *(dst++) = *(src++); 
+#elif 0 //FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
+    if(GetSIMDCapabilities()&simd_altivec) {
 	}
-*/
+	else
 #endif // _MSC_VER
 #endif // FLEXT_USE_SIMD
     {

@@ -18,7 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #if FLEXT_OS == FLEXT_OS_WIN
 #include <windows.h>
 #elif FLEXT_OS == FLEXT_OS_MAC
-	#if FLEXT_OSAPI != FLEXT_OSAPI_MAC_OSX
+	#if FLEXT_OSAPI != FLEXT_OSAPI_MAC_MACH
 		#include <MacMemory.h>
 	#else
 		#include <Carbon/Carbon.h>

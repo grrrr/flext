@@ -25,7 +25,7 @@ INSTDIR=/usr/local/pd/flext
 
 # additional compiler flags
 # (check if they fit for your system!)
-UFLAGS=-DFLEXT_USE_SIMD -malign-power -maltivec 
+UFLAGS=-DFLEXT_USE_SIMD -malign-power -maltivec -faltivec
 
 # define to use old library naming for backwards compatibility
 # ("flext.a" instead of new "libflext.a" etc.)

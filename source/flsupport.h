@@ -969,6 +969,7 @@ public:
 			simd_altivec = 0x10
 		};
 		
+		/*! Check for SIMD capabilities of the CPU */
 		static unsigned long GetSIMDCapabilities();
 
 

@@ -16,7 +16,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #if FLEXT_OS == FLEXT_OS_WIN
 #include <windows.h>
-#elif FLEXT_OS == FLEXT_OS_LINUX || FLEXT_OS == FLEXT_OS_IRIX || FLEXT_OSAPI == FLEXT_OSAPI_MAC_OSX
+#elif FLEXT_OS == FLEXT_OS_LINUX || FLEXT_OS == FLEXT_OS_IRIX || FLEXT_OSAPI == FLEXT_OSAPI_MAC_MACH
 #include <unistd.h>
 #include <sys/time.h>
 #elif FLEXT_OS == FLEXT_OS_MAC
@@ -74,7 +74,7 @@ double flext::GetOSTime()
         SystemTimeToFileTime(&systm,&fltm);
         tm = (double)((LARGE_INTEGER *)&fltm)->QuadPart*0.001;
     }
-#elif FLEXT_OS == FLEXT_OS_LINUX || FLEXT_OS == FLEXT_OS_IRIX || FLEXT_OSAPI == FLEXT_OSAPI_MAC_OSX // POSIX
+#elif FLEXT_OS == FLEXT_OS_LINUX || FLEXT_OS == FLEXT_OS_IRIX || FLEXT_OSAPI == FLEXT_OSAPI_MAC_MACH // POSIX
 	timeval tmv;
 	gettimeofday(&tmv,NULL);
 	tm = tmv.tv_sec+tmv.tv_usec*1.e-6;
@@ -92,7 +92,7 @@ void flext::Sleep(double s)
 {
 #if FLEXT_OS == FLEXT_OS_WIN
 	::Sleep((long)(s*1000.));
-#elif FLEXT_OS == FLEXT_OS_LINUX || FLEXT_OS == FLEXT_OS_IRIX || FLEXT_OSAPI == FLEXT_OSAPI_MAC_OSX // POSIX
+#elif FLEXT_OS == FLEXT_OS_LINUX || FLEXT_OS == FLEXT_OS_IRIX || FLEXT_OSAPI == FLEXT_OSAPI_MAC_MACH // POSIX
 	usleep((long)(s*1000000.));
 #elif FLEXT_OS == FLEXT_OS_MAC // that's just for OS9 & Carbon!
 	UnsignedWide tick;

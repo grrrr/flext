@@ -59,7 +59,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #define FLEXT_OSAPI_MAC_CLASSIC 2
 #define FLEXT_OSAPI_MAC_CARBON 3
-#define FLEXT_OSAPI_MAC_OSX 4
+#define FLEXT_OSAPI_MAC_MACH 4
 
 #define FLEXT_OSAPI_WIN_NATIVE 5  // WIN32 Platform
 #define FLEXT_OSAPI_WIN_POSIX 6	   // POSIX API (e.g. cygwin)
@@ -188,9 +188,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	#endif
 	
 	#ifndef FLEXT_OSAPI
-		#if TARGET_API_MAC_OSX
-			// this has the precedence (OSX can also be Carbon, of course)
-			#define FLEXT_OSAPI FLEXT_OSAPI_MAC_OSX
+		#if TARGET_API_MAC_MACH
+			// this has the precedence (MACH also supports Carbon, of course)
+			#define FLEXT_OSAPI FLEXT_OSAPI_MAC_MACH
 		#elif TARGET_API_MAC_CARBON
 			#define FLEXT_OSAPI FLEXT_OSAPI_MAC_CARBON
 		#else
@@ -235,7 +235,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 	#ifndef FLEXT_OSAPI
 		#if FLEXT_OS == FLEXT_OS_MAC
-			#define FLEXT_OSAPI FLEXT_OSAPI_MAC_OSX
+			#define FLEXT_OSAPI FLEXT_OSAPI_MAC_MACH
 		#elif FLEXT_OS == FLEXT_OS_WIN
 			#define FLEXT_OSAPI FLEXT_OSAPI_WIN_POSIX
 		#elif FLEXT_OS == FLEXT_OS_LINUX || FLEXT_OS == FLEXT_OS_IRIX

@@ -10,16 +10,16 @@
 
 CONFIG=config-pd-linux.txt
 
-include $(CONFIG)
+include ${CONFIG}
 
 # compiler+linker stuff 
-INCLUDES=$(PDPATH)
+INCLUDES=${PDPATH}
 
 # general compiler flags
-FLAGS=-DFLEXT_SYS=2 -fno-exceptions $(UFLAGS)
+FLAGS=-DFLEXT_SYS=2 -fno-exceptions ${UFLAGS}
 
 # compiler flags for optimized build
-CFLAGS= -O6 
+CFLAGS=-O6 
 
 # compiler flags for debug build
 CFLAGS_D=-g      
@@ -41,22 +41,22 @@ SRCDIR=source
 include make-files.txt
 
 ifdef SNDOBJ
-INCLUDES+=$(SNDOBJ)
-SRCS+=$(SRCS_SNDOBJ)
-HDRS+=$(HDRS_SNDOBJ)
+INCLUDES+=${SNDOBJ}
+SRCS+=${SRCS_SNDOBJ}
+HDRS+=${HDRS_SNDOBJ}
 endif
 
 ifdef STK
-INCLUDES+=$(STK)
-SRCS+=$(SRCS_STK)
-HDRS+=$(HDRS_STK)
+INCLUDES+=${STK}
+SRCS+=${SRCS_STK}
+HDRS+=${HDRS_STK}
 endif
 
 MAKEFILE=makefile.pd-linux
-TARGET=$(TARGDIR)/$(NAME).a 
-TARGET_D=$(TARGDIR)/$(NAME)_d.a
-TARGET_T=$(TARGDIR)/$(NAME)_t.a
-TARGET_TD=$(TARGDIR)/$(NAME)_td.a
+TARGET=${TARGDIR}/${NAME}.a 
+TARGET_D=${TARGDIR}/${NAME}_d.a
+TARGET_T=${TARGDIR}/${NAME}_t.a
+TARGET_TD=${TARGDIR}/${NAME}_td.a
 
 all: $(TARGDIR) $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
 

@@ -270,6 +270,17 @@ public:
     inline T *Pop() { return static_cast<T *>(Lifo::Pop()); }
 };
 
+template <typename T>
+class PooledLifo
+    : public TypedLifo<T>
+{
+public:
+    inline T *New() { T *n = reuse.Pop(); return n?n:new T; }
+    inline Free(T *p) { if(reuse.Size() < Size()) reuse.Push(p); else delete p; }
+private:
+    TypedLifo<T> reuse;
+};
+
 
 class FLEXT_SHARE Fifo 
 {
@@ -336,5 +347,15 @@ public:
     inline T *Clear() { return static_cast<T *>(Fifo::Clear()); }
 };
 
+template <typename T>
+class PooledFifo
+    : public TypedFifo<T>
+{
+public:
+    inline T *New() { T *n = reuse.Pop(); return n?n:new T; }
+    inline Free(T *p) { if(reuse.Size() < Size()) reuse.Push(p); else delete p; }
+private:
+    TypedLifo<T> reuse;
+};
 
 #endif

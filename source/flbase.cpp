@@ -119,7 +119,7 @@ bool flext_obj::GetParamSym(t_atom &dst,const t_symbol *sym,t_canvas *c)
 		while(*c && (isdigit(*c) || *c == '.')) ++c;
 
 		if(!*c) 
-			SetFloat(dst,atof(GetString(res)));
+			SetFloat(dst,(float)atof(GetString(res)));
 		else
 			SetSymbol(dst,res);
 		return true;

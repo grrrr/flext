@@ -398,7 +398,7 @@ public:
 		@{ 
 	*/
 
-#if FLEXT_SYS == FLEXT_SYS_PD
+#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX 
 	//! Bind object to a symbol
 	bool Bind(const t_symbol *sym);
 	//! Unbind object from a symbol

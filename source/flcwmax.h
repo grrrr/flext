@@ -20,6 +20,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 #define FLEXT_SYS 1
+#define FLEXT_USE_SIMD
  
 #ifndef _CW_NOPRECOMP
 	#include <MacHeaders.h>

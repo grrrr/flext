@@ -35,8 +35,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
         #include <xmmintrin.h> // SSE
         #include <emmintrin.h> // SSE2
         #include <mm3dnow.h> // 3DNow!
+//    #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__MWERKS__)
+//        #include <Altivec.h>
     #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__MWERKS__)
-        #include "Altivec.h"
+		#include <vBasicOps.h>
+		#include <vectorOps.h>
+    #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__GNUG__)
+		#include <vecLib/vBasicOps.h>
+		#include <vecLib/vectorOps.h>
     #endif
 #endif // FLEXT_USE_SIMD
 
@@ -345,6 +351,14 @@ void flext::CopySamples(t_sample *dst,const t_sample *src,int cnt)
 #else
     #error t_sample data type has illegal size
 #endif
+#elif FLEXT_OS == FLEXT_OS_MAC && defined(__VEC__) && defined(__VECTOROPS__)
+	{
+   	    int n = cnt>>2,n4 = n<<2;
+        cnt -= n4;
+		vScopy(n4,src,dst);
+		src += n4,dst += n4;
+       	while(cnt--) *(dst++) = *(src++); 
+	}
 #endif // _MSC_VER
 #endif // FLEXT_USE_SIMD
     {

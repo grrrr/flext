@@ -140,7 +140,6 @@ bool flext_base::UnbindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_sym
     bool ok = false;
     
     if(bindhead) {
-        void *d = NULL;
         binditem *it = NULL;
         if(sym) {
             it = (binditem *)bindhead->Find(sym,0);

@@ -44,13 +44,18 @@ SRCS+=$(SRCS_STK)
 HDRS+=$(HDRS_STK)
 endif
 
+# for FLEXT_USE_SIMD
+CFLAGS+=-framework veclib -Fveclib
+
 MAKEFILE=makefile.pd-darwin
 TARGET=$(TARGDIR)/$(NAME).a
 TARGET_D=$(TARGDIR)/$(NAME)_d.a
 TARGET_T=$(TARGDIR)/$(NAME)_t.a
 TARGET_TD=$(TARGDIR)/$(NAME)_td.a
+TARGET_S=$(TARGDIR)/$(NAME).dylib
+TARGET_SD=$(TARGDIR)/$(NAME)_d.dylib
 
-all: $(TARGDIR) $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
+all: $(TARGDIR) $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD) # $(TARGET_S) $(TARGET_SD)
 
 $(TARGDIR):
 	mkdir $(TARGDIR)
@@ -70,6 +75,12 @@ $(TARGDIR)/%.to : $(SRCDIR)/%.cpp
 $(TARGDIR)/%.tdo : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS_D) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
+$(TARGDIR)/%.so : $(SRCDIR)/%.cpp
+	$(CXX) -c -dynamic $(CFLAGS) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
+
+$(TARGDIR)/%.sdo : $(SRCDIR)/%.cpp
+	$(CXX) -c -dyanmic $(CFLAGS_D) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
+
 $(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS)) 
 	libtool -static -o $@ $^
 
@@ -82,10 +93,16 @@ $(TARGET_T) : $(patsubst %.cpp,$(TARGDIR)/%.to,$(SRCS))
 $(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(SRCS))
 	libtool -static -o $@ $^
 
+$(TARGET_S) : $(patsubst %.cpp,$(TARGDIR)/%.so,$(SRCS))
+	libtool -dynamic -flat_namespace -undefined suppress -o $@ $^
+
+$(TARGET_SD) : $(patsubst %.cpp,$(TARGDIR)/%.sdo,$(SRCS))
+	libtool -dynamic -flat_namespace -undefined suppress -o $@ $^
+
 .PHONY: clean install
 
 clean:
-	rm -f $(TARGDIR)/*.{o,do,to,tdo} $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
+	rm -f $(TARGDIR)/*.{o,do,to,tdo,so,sdo} $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD) $(TARGET_S) $(TARGET_SD)
 	
 ifdef INSTDIR
 $(INSTDIR):
@@ -94,7 +111,7 @@ $(INSTDIR):
 install:: $(INSTDIR)
 endif
 
-install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)  $(patsubst %,$(SRCDIR)/%,$(HDRS))
+install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD) $(patsubst %,$(SRCDIR)/%,$(HDRS)) # $(TARGET_S) $(TARGET_SD)
 	cp $^ $(INSTDIR)
 	ranlib $(INSTDIR)/*.a  # have to rerun ranlib at install dir ?!
 #	chmod 755 $(patsubst %,$(INSTDIR)/%,$(notdir $^))

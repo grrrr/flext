@@ -18,6 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 #define FLEXT_SYS 2
+#define FLEXT_USE_SIMD
  
 #define TARGET_API_MAC_CARBON 1
 #define _POSIX_C_SOURCE

@@ -37,7 +37,7 @@ BUILDING & INSTALLING:
 
 pd - Windows:
 -------------
-o Microsoft Visual C++ 6: edit "config-pd-msvc.txt" & run "build-pd-msvc.bat" 
+o Microsoft Visual C++ 6 or 7: edit "config-pd-msvc.txt" & run "build-pd-msvc.bat" 
 
 o Borland C++ 5.5 (free): edit "config-pd-bcc.txt" & run "build-pd-bcc.bat" 
 
@@ -64,6 +64,13 @@ o GCC: edit "config-pd-darwin.txt" & run "sh build-pd-darwin.sh"
 	additional settings (e.g. target processor, compiler flags) can be made in makefile.pd-darwin
 
 With your project using flext, be sure to define "FLEXT_SYS=2".
+
+
+Max/MSP - Windows:
+------------------
+o Microsoft Visual C++ 6 or 7: edit "config-max-msvc.txt" & run "build-max-msvc.bat" 
+
+With your project using flext, be sure to define "FLEXT_SYS=1".
 
 
 Max/MSP - MacOS 9:

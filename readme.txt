@@ -69,6 +69,7 @@ Version history:
 - changed "enable" message for DSP objects to "dspon" ("enable" is reserved in Max/MSP)
 - proxy objects for any non-leftmost inlets
 - improved behavior for invalid/undefined buffers/arrays
+- 128-bit aligned memory allocation with new[] 
 
 0.1.1:
 - documentation for flext.h

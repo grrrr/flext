@@ -8,7 +8,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-// This is all borrowed from GEM by Mark Danks
+// This is all derived from GEM by Mark Danks
  
 #include "flbase.h"
 
@@ -30,6 +30,28 @@ void operator delete(void *blk)
 	size_t bytes = *(size_t *)ori;
 	freebytes(ori,bytes);
 }
+
+#define ALIGN 128 // bit alignment
+
+void *operator new[](size_t bytes)
+{
+	const size_t ovh = sizeof(size_t)+sizeof(char *);
+	bytes += ovh+(ALIGN/8-1);
+	char *blk = (char *)getbytes(bytes);
+	char *ablk = reinterpret_cast<char *>((reinterpret_cast<unsigned long>(blk)+ovh+(ALIGN/8-1)) & ~(unsigned long)(ALIGN/8-1));
+	*(char **)(ablk-sizeof(size_t)-sizeof(char *)) = blk;
+	*(size_t *)(ablk-sizeof(size_t)) = bytes;
+	return ablk;
+}
+
+void operator delete[](void *blk)
+{
+	char *ori = *(char **)((char *)blk-sizeof(size_t)-sizeof(char *));
+	size_t bytes = *(size_t *)((char *)blk-sizeof(size_t));
+	freebytes(ori,bytes);
+}
+
+
 
 
 /////////////////////////////////////////////////////////

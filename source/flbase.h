@@ -21,8 +21,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 void *operator new(size_t bytes);
 void operator delete(void *blk);
-inline void *operator new[](size_t bytes) { return operator new(bytes); }
-inline void operator delete[](void *blk) { operator delete(blk); }
+
+// this are aligned (with some overhead)
+void *operator new[](size_t bytes); 
+inline void operator delete[](void *blk);
 
 
 

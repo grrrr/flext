@@ -75,6 +75,7 @@ Version history:
 - found that there was no means to output a bang?! Ugh! -> corrected
 - eliminated awful t_flint type and all other schizophrenic flint functions (float and int exist now equally)
 - now (finally) using type t_sample for sample values (should just be identical to float)
+- added AddInBang/AddOutBang (same as Add*Symbol - unchecked)
 
 0.2.2:
 - added xgimme argument type (supplies method handlers with symbol+gimme)

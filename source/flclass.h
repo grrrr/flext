@@ -143,10 +143,10 @@ public:
 	void AddInFloat(int m = 1) { AddInlet(xlet::tp_float,m); }
 	//! add inlet(s) for ints
 	void AddInInt(int m = 1) { AddInlet(xlet::tp_int,m); }
-	//! add inlet(s) for flints
-//	void AddInFlint(int m = 1) { AddInlet(xlet::tp_flint,m); }
 	//! add inlet(s) for symbols
 	void AddInSymbol(int m = 1) { AddInlet(xlet::tp_sym,m); }
+	//! add inlet(s) for bang
+	void AddInBang(int m = 1) { AddInlet(xlet::tp_sym,m); }
 	//! add inlet(s) for lists
 	void AddInList(int m = 1) { AddInlet(xlet::tp_list,m); }  // via proxy
 	
@@ -156,10 +156,10 @@ public:
 	void AddOutFloat(int m = 1) { AddOutlet(xlet::tp_float,m); }
 	//! add outlet(s) for ints
 	void AddOutInt(int m = 1) { AddOutlet(xlet::tp_int,m); }
-	//! add outlet(s) for flints
-//	void AddOutFlint(int m = 1) { AddOutlet(xlet::tp_flint,m); }
 	//! add outlet(s) for symbols
 	void AddOutSymbol(int m = 1) { AddOutlet(xlet::tp_sym,m); }
+	//! add outlet(s) for bangs
+	void AddOutBang(int m = 1) { AddOutlet(xlet::tp_sym,m); }
 	//! add outlet(s) for lists
 	void AddOutList(int m = 1) { AddOutlet(xlet::tp_list,m); }
 	

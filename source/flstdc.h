@@ -29,9 +29,9 @@ once drifted apart in Max and PD. It is not elegant but helps.
 #pragma warning (disable:4091)
 extern "C" {	    	    	    	    	    	    	
 #ifdef _DEBUG
-#include <m_pd.h>
-#else
 #include <m_imp.h>  // for easier debugging
+#else
+#include <m_pd.h>
 #endif
 }
 #pragma warning (pop)

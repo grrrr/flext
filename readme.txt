@@ -97,6 +97,7 @@ bugs:
 none reported
 
 features:
+- static class methods for definition of object methods
 - abstraction for parsing argument lists
 - abstraction for creating lists and anythings
 

@@ -8,7 +8,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-// This is all borrowed from GEM by Mark Danks
+// This is all derived from GEM by Mark Danks
 
 
 #ifndef _FLBASE_H

@@ -33,7 +33,7 @@ CFLAGS_S=-DFLEXT_SHARED -DFLEXT_EXPORTS
 LSHFLAGS= -dylib -dynamic -flat_namespace -undefined suppress
 
 # frameworks
-FRAMEWORKS=MaxAPI MaxAudio
+FRAMEWORKS=MaxAPI MaxAudioAPI
 
 
 # ----------------------------------------------
@@ -70,7 +70,7 @@ TARGET_S=$(TARGDIR)/lib$(NAME).dylib
 TARGET_SD=$(TARGDIR)/lib$(NAME)_d.dylib
 
 
-all: $(TARGDIR) $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)   $(TARGET_S) $(TARGET_SD)
+all: $(TARGDIR) $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD) #  $(TARGET_S) $(TARGET_SD)
 
 $(TARGDIR):
 	mkdir $(TARGDIR)

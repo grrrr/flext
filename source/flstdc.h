@@ -96,7 +96,7 @@ typedef t_clock t_qelem;
 // Include the relevant Max/MSP header files
 
 #if FLEXT_OS == FLEXT_OS_MAC
-	#if FLEXT_OS_API == FLEXT_OS_API_MACH
+	#if FLEXT_OSAPI == FLEXT_OSAPI_MAC_MACH
 		// MachO version - must insert prefix header
 		#include <ext_carbon_prefix.h>
 	#else

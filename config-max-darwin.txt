@@ -21,7 +21,7 @@ TARGDIR=./max-darwin
 
 # where should flext libraries be installed?
 # (leave blank to omit installation)
-#INSTDIR="/Library/Application Support/Cycling '74/flext"
+INSTDIR="/Library/Application Support/Cycling '74/flext"
 
 # additional compiler flags
 # (check if they fit for your system!)

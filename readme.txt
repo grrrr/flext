@@ -107,11 +107,10 @@ Version history:
 - SndObj interface now also available for cygwin and BCC 
 - added prepend and append functions to AtomList class
 - added IsNothing, SetNothing, CanbeBool and GetABool functions
-- deprecated the remaining Get*Flint and Set*Flint functions 
+- eliminated the remaining Get*Flint and Set*Flint functions 
 - added/completed Is/Canbe/Get/Set for pointer atoms
 - added print/scan functions for atoms
 - fixed anything outlets for Max/MSP... for some strange reason this severe bug has not had severe consequences....
-- eliminated the t_class * argument for class setup functions (use static thisClass instead)
 
 0.3.3:
 - PD: fixed bug for DSP objects having no signal inlets

@@ -8,7 +8,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-/*! \file flatom-pr.cpp
+/*! \file flatom_pr.cpp
     \brief Definitions for printing and scanning the t_atom type.
 */
  

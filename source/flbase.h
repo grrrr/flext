@@ -273,7 +273,13 @@ class flext_obj:
 
 
 #ifndef FLEXT_ATTRIBUTES
-#define FLEXT_ATTRIBUTES 0
+/*! \brief Switch for global attribute processing
+	\note Should be set to 1 or 0 (or not be defined)
+	\ingroup FLEXT_DEFS
+*/
+#define FLEXT_ATTRIBUTES \
+\
+0
 #endif
 
 // ----------------------------------------

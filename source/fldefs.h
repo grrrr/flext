@@ -303,4 +303,4 @@ AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(
 //@} FLEXT_ADDMETHODS
 
 
-#endif __FLEXT_DEFS_H
+#endif // __FLEXT_DEFS_H

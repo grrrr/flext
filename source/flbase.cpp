@@ -62,7 +62,7 @@ bool flext_obj::Init() { return true; }
 bool flext_obj::Finalize() { return true; }
 void flext_obj::Exit() {}
 
-void flext_obj::DefineHelp(t_class *c,const char *ref,const char *dir,bool addtilde)
+void flext_obj::DefineHelp(t_classid c,const char *ref,const char *dir,bool addtilde)
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
 	char tmp[256];
@@ -74,7 +74,7 @@ void flext_obj::DefineHelp(t_class *c,const char *ref,const char *dir,bool addti
 	}
 	else 
 		strcpy(tmp,ref);
-    ::class_sethelpsymbol(c,gensym(const_cast<char *>(tmp)));
+    ::class_sethelpsymbol(getClass(c),gensym(const_cast<char *>(tmp)));
 #else
 	// no solution for Max/MSP yet
 #endif

@@ -270,8 +270,16 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 		va_end(marker);
 	}
 
+	// get unique class id
+#if FLEXT_SYS == FLEXT_SYS_PD
+	t_classid clid = lo->clss;
+#else
+	// in Max/MSP the t_class *value can't be used because it's possible that's it's not yet set!!
+	t_classid clid = lo;
+#endif
+
 	// make help reference
-	flext_obj::DefineHelp(lo->clss,idname,extract(names,-1),dsp);
+	flext_obj::DefineHelp(clid,idname,extract(names,-1),dsp);
 
 	for(int ix = 0; ; ++ix) {
 		// in this loop register all the possible aliases of the object
@@ -295,14 +303,6 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 #error
 #endif	
 	}
-
-	// get unique class id
-#if FLEXT_SYS == FLEXT_SYS_PD
-	t_classid clid = lo->clss;
-#else
-	// in Max/MSP the t_class *value can't be used because it's possible that's it's not yet set!!
-	t_classid clid = lo;
-#endif
 
 	// call class setup function
     setupfun(clid);

@@ -180,10 +180,10 @@ class FLEXT_SHARE flext_obj:
 		/*! Define the help reference symbol for a class
 			\internal
 		*/
-		static void DefineHelp(t_class *c,const char *ref,const char *dir = NULL,bool addtilde = false);
+		static void DefineHelp(t_classid c,const char *ref,const char *dir = NULL,bool addtilde = false);
 
 		//! Define the help reference symbol for a class
-		void DefineHelp(const char *ref,const char *dir = NULL,bool addtilde = false) { DefineHelp(thisClass(),ref,dir,addtilde); }
+		void DefineHelp(const char *ref,const char *dir = NULL,bool addtilde = false) { DefineHelp(thisClassId(),ref,dir,addtilde); }
 
 	//!	@} 
 

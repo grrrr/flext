@@ -118,13 +118,6 @@ bool flext_base::SetAttrib(const t_symbol *tag,int argc,const t_atom *argv)
 				}
 				else ok = false;
 				break;
-			case a_bool:
-				if(argc == 1 && CanbeBool(argv[0])) {
-					any.bt = GetABool(argv[0]);
-					((methfun_1)a->sfun)(this,any);				
-				}
-				else ok = false;
-				break;
 			case a_symbol:
 				if(argc == 1 && IsSymbol(argv[0])) {
 					any.st = GetSymbol(argv[0]);
@@ -174,12 +167,6 @@ bool flext_base::GetAttrib(const t_symbol *tag,int argc,const t_atom *argv)
 				((methfun_1)a->gfun)(this,any);				
 				la(1);
 				SetInt(la[0],any.it);
-				break;
-			}
-			case a_bool: {
-				((methfun_1)a->gfun)(this,any);				
-				la(1);
-				SetInt(la[0],any.bt);
 				break;
 			}
 			case a_symbol: {

@@ -301,7 +301,7 @@ public:
 
 	enum metharg {
 		a_null = 0,
-		a_float,a_int,a_bool,
+		a_float,a_int,
 		a_symbol,a_pointer,
 		a_list,a_any,
 		a_LIST,a_ANY
@@ -509,7 +509,7 @@ protected:
 	struct xlet {	
 		enum type {
 			tp_none = 0,
-			tp_float,tp_int,tp_bool,tp_sym,tp_list,tp_any,
+			tp_float,tp_int,tp_sym,tp_list,tp_any,
 			tp_LIST,tp_ANY, // use AtomList and AtomAnything
 			tp_sig
 		};
@@ -528,7 +528,6 @@ protected:
 
 	void AddAttrib(const char *attr,bool (*get)(flext_base *,float &),bool (*set)(flext_base *,float &)) { AddAttrib(attr,a_float,(methfun)get,(methfun)set); }
 	void AddAttrib(const char *attr,bool (*get)(flext_base *,int &),bool (*set)(flext_base *,int &)) { AddAttrib(attr,a_int,(methfun)get,(methfun)set); }
-	void AddAttrib(const char *attr,bool (*get)(flext_base *,bool &),bool (*set)(flext_base *,bool &)) { AddAttrib(attr,a_bool,(methfun)get,(methfun)set); }
 	void AddAttrib(const char *attr,bool (*get)(flext_base *,const t_symbol *&),bool (*set)(flext_base *,const t_symbol *&)) { AddAttrib(attr,a_symbol,(methfun)get,(methfun)set); }
 	void AddAttrib(const char *attr,bool (*get)(flext_base *,t_symbol *&),bool (*set)(flext_base *,t_symbol *&)) { AddAttrib(attr,a_symbol,(methfun)get,(methfun)set); }
 	void AddAttrib(const char *attr,bool (*get)(flext_base *,AtomList *&),bool (*set)(flext_base *,AtomList *&)) { AddAttrib(attr,a_LIST,(methfun)get,(methfun)set); }
@@ -617,7 +616,6 @@ private:
 	union t_any {
 		float ft;
 		int it;
-		bool bt;
 		t_symbol *st;
 	#ifdef PD
 		t_gpointer *pt;

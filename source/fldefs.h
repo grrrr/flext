@@ -884,9 +884,9 @@ FLEXT_CALLSET_(SFUN,float)
 FLEXT_CALLSET_(SFUN,int)
 
 //! Declare a set function for a boolean attribute
-#define FLEXT_CALLSET_B(SFUN) \
-\
-FLEXT_CALLSET_(SFUN,bool)
+#define FLEXT_CALLSET_B(FUN) \
+static bool FLEXT_SET_PRE(FUN)(flext_base *c,int &arg) \
+{ bool b = arg != 0; FLEXT_CAST<thisType *>(c)->FUN(b); return true; }
 
 //! Declare a set function for an enum attribute
 #define FLEXT_CALLSET_E(SFUN,TP) \
@@ -920,9 +920,9 @@ FLEXT_CALLGET_(GFUN,float)
 FLEXT_CALLGET_(GFUN,int)
 
 //! Declare a get function for a boolean attribute
-#define FLEXT_CALLGET_B(GFUN) \
-\
-FLEXT_CALLGET_(GFUN,bool)
+#define FLEXT_CALLGET_B(FUN) \
+static bool FLEXT_GET_PRE(FUN)(flext_base *c,int &arg) \
+{ bool b; FLEXT_CAST<thisType *>(c)->FUN(b); arg = b?1:0; return true; }
 
 //! Declare a get function for an enum attribute
 #define FLEXT_CALLGET_E(GFUN,TP) \
@@ -1000,8 +1000,8 @@ FLEXT_ATTRSET_(VAR,t_symptr)
 
 //! Declare an implicite set function for a boolean attribute
 #define FLEXT_ATTRSET_B(VAR) \
-\
-FLEXT_ATTRSET_(VAR,bool)
+static bool FLEXT_SET_PRE(VAR)(flext_base *c,int &arg) \
+{ FLEXT_CAST<thisType *>(c)->VAR = arg != 0; return true; }
 
 //! Declare an implicite set function for an enum attribute
 #define FLEXT_ATTRSET_E(VAR,TP) \
@@ -1036,8 +1036,8 @@ FLEXT_ATTRGET_(VAR,t_symptr)
 
 //! Declare an implicite get function for a boolean attribute
 #define FLEXT_ATTRGET_B(VAR) \
-\
-FLEXT_ATTRGET_(VAR,bool)
+static bool FLEXT_GET_PRE(VAR)(flext_base *c,int &arg) \
+{ arg = FLEXT_CAST<thisType *>(c)->VAR?1:0; return true; }
 
 //! Declare an implicite get function for an enum attribute
 #define FLEXT_ATTRGET_E(VAR,TP) \

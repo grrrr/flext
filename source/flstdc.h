@@ -102,6 +102,9 @@ typedef int t_atomtype;
 
 typedef struct clock t_clock;
 
+#undef clock_free
+#define clock_free(tick) freeobject((object *)tick)
+
 #define A_NULL A_NOTHING
 #define A_FLINT A_INT
 #define A_DEFFLINT A_DEFLONG

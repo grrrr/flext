@@ -2,7 +2,12 @@
 
 INCPATH += -I$(FLEXTINC)
 LIBPATH += -L$(FLEXTLIB) -L$(FLEXTSHLIB)
+
+ifdef SHARED
+LIBS += $(FLEXTSHLIB)/lib$(FLEXTNAME).dll
+else
 LIBS += -l$(FLEXTNAME)
+endif
 
 ##############################################
 

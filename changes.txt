@@ -25,6 +25,7 @@ Version history:
 - added functions for version number and string (flext::Version and flext::VerStr, mainly for usage of a shared flext library)
 - flext_base::UnbindMethod returns user data
 - fixed compilation problem with t_symbol-type attributes
+- added methods for sending boolean values (ToOutBool, ToQueueBool, ToSelfBool)
 
 0.4.3:
 - added forgotten flext_base::ToQueueString method

@@ -11,6 +11,7 @@ SOURCE=source
 
 # includes
 INCPATH=/I$(MSVCPATH)\include /I$(PDPATH)\src /I$(SOURCE)
+LDFLAGS=/LIBPATH:$(MSVCPATH)\lib
 
 !ifdef SNDOBJ
 INCPATH=$(INCPATH) /I$(SNDOBJ) 
@@ -21,14 +22,32 @@ INCPATH=$(INCPATH) /I$(STK)
 !endif
 
 # compiler definitions and flags
-DEFS=/DFLEXT_SYS=2 
+DEFS=/DFLEXT_SYS=2 $(UFLAGS)
 
-CFLAGS=/GD /G6
+CFLAGS=/GX /GD /G6 
 OFLAGS=/Ox
 DFLAGS=/Od /Zi
 
 TARGET=pdwin  # appendix to lib name
 
+
+
+!ifdef FLEXT_SHARED
+DEFS=$(DEFS) /DFLEXT_SHARED /DFLEXT_DLL 
+
+EXT=dll
+
+!ifndef _DEBUG
+CFLAGS=$(CFLAGS) $(OFLAGS) /MT /LD
+OBJPATH=l
+!else
+CFLAGS=$(CFLAGS) $(DFLAGS) /MTd /LDd
+OBJPATH=ld
+!endif
+
+!else
+
+EXT=lib
 
 !ifdef FLEXT_THREADS
 DEFS=$(DEFS) /DFLEXT_THREADS
@@ -51,8 +70,9 @@ CFLAGS=$(CFLAGS) $(DFLAGS) /MLd
 OBJPATH=sd
 !endif
 
-!endif
+!endif # FLEXT_THREADS
 
+!endif # FLEXT_SHARED
 
 
 # the rest can stay untouched
@@ -72,7 +92,7 @@ HDRS=$(HDRS) $(HDRS_STK)
 !endif
 
 #default target
-all: $(OUTPATH)\$(NAME)-$(TARGET).lib
+all: $(OUTPATH)\$(NAME)-$(TARGET).$(EXT)
 
 # remove build
 clean:
@@ -80,7 +100,7 @@ clean:
 	-del /s /q $(OBJPATH) > nul
 	-rmdir $(OBJPATH)
 	-cd ..
-	-del /q $(OUTPATH)\$(NAME)-$(TARGET).lib > nul
+	-del /q $(OUTPATH)\$(NAME)-$(TARGET).$(EXT) > nul
 	-rmdir $(OUTPATH)
 
 # -----------------------------------------------
@@ -94,13 +114,26 @@ OBJS= $(SRCS:.cpp=.obj)
 	@cd ..
 	cl /c $(CFLAGS) $(DEFS) $(INCPATH) /Fo$(OUTPATH)\$(OBJPATH)\$@ $<
 
+
+
 $(OUTPATH)\$(NAME)-$(TARGET).lib: $(OBJS)
 	@cd $(OUTPATH)\$(OBJPATH)
-	lib /OUT:..\$(NAME)-$(TARGET).lib $**
+	lib /OUT:..\$(NAME)-$(TARGET).lib $(OBJS)
 	@cd ..\..
 !ifdef INSTDIR
 	@-if not exist $(OBJPATH) mkdir $(INSTDIR)
 	copy $(OUTPATH)\$(NAME)-$(TARGET).lib $(INSTDIR) > nul
+	copy $(SOURCE)\*.h $(INSTDIR) > nul
+!endif
+
+
+$(OUTPATH)\$(NAME)-$(TARGET).dll: $(OBJS)
+	@cd $(OUTPATH)\$(OBJPATH)
+	link /DLL /NOLOGO $(LDFLAGS) /OUT:..\$(NAME)-$(TARGET).dll $(PDPATH)\bin\pd.lib $(OBJS)
+	@cd ..\..
+!ifdef INSTDIR
+	@-if not exist $(OBJPATH) mkdir $(INSTDIR)
+	copy $(OUTPATH)\$(NAME)-$(TARGET).dll $(INSTDIR) > nul
 	copy $(SOURCE)\*.h $(INSTDIR) > nul
 !endif
 

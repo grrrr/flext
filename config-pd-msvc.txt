@@ -24,4 +24,6 @@ OUTPATH=".\pd-msvc"
 # (leave blank to omit installation)
 INSTDIR=$(PDPATH)\flext
 
-
+# user-definable compiler flags
+# e.g. FLEXT_USE_SIMD enables SIMD support for capable CPUs
+UFLAGS=-DFLEXT_USE_SIMD

@@ -220,6 +220,9 @@ public:
 	//! Output integer (index n starts with 0)
 	void ToOutInt(int n,int f) const;
 	
+	//! Output boolean (index n starts with 0)
+    void ToOutBool(int n,bool f) const { ToOutInt(n,f?1:0); }
+	
 	//! Output symbol (index n starts with 0)
 	void ToOutSymbol(int n,const t_symbol *s) const;
 	//! Output string aka symbol (index n starts with 0)
@@ -250,6 +253,9 @@ public:
 	//! Output integer (index n starts with 0)
 	void ToQueueInt(int n,int f) const;
 
+	//! Output boolean (index n starts with 0)
+	void ToQueueBool(int n,bool f) const { ToQueueInt(n,f?1:0); }
+
 	//! Output symbol (index n starts with 0)
 	void ToQueueSymbol(int n,const t_symbol *s) const;
 	//! Output string aka symbol (to appointed outlet)
@@ -274,6 +280,9 @@ public:
 
 	//! Send integer to self (inlet n)
 	void ToSelfInt(int n,int f) const; 
+
+	//! Send boolean to self (inlet n)
+	void ToSelfBool(int n,bool f) const { ToSelfInt(n,f?1:0); }
 
 	//! Send symbol to self (inlet n)
 	void ToSelfSymbol(int n,const t_symbol *s) const; 

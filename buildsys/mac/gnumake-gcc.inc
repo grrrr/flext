@@ -4,7 +4,7 @@ LDFLAGS += -dynamic -Wl,-x -framework ApplicationServices -framework vecLib
 
 ##############################################
 
-ifndef DEBUG
+ifdef DEBUG
 CFLAGS += -g -D_DEBUG
 else
 CFLAGS += $(OFLAGS) -DNDEBUG

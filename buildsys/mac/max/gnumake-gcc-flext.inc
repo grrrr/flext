@@ -7,6 +7,8 @@ endif
 ##############################################
 
 OBJPATH=$(OUTPATH)/$(OUTSUB)
+
 TARGETPATH=$(OBJPATH)
 TARGET=$(TARGETPATH)/$(OUTNAME).$(EXT)
+INSTTARGET=$(TARGET)
 

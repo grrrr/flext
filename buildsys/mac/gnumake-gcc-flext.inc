@@ -1,6 +1,8 @@
 # build class specific settings
 
-#LDFLAGS += -dylib_install_name $(FLEXTSHLIB)
+ifdef SHARED
+#LDFLAGS += -dylib_install_name $(FLEXTSHLIB)/$(OUTNAME).$(EXT)
+endif
 
 ##############################################
 
@@ -21,15 +23,24 @@ $(OBJPATH):
 $(TARGETPATH):
 	-mkdir -p $@
 
-$(OBJPATH)/%.opp : $(SRCDIR)/%.cpp
+ifdef PRECOMPILE
+PRECOMSRC=$(SRCDIR)/$(PRECOMPILE)
+PRECOMDST=$(OBJPATH)/$(notdir $(PRECOMSRC)).gch
+PRECOMINC = -include $(OBJPATH)/$(notdir $(PRECOMSRC))
+endif
+
+$(PRECOMDST): $(PRECOMSRC)
 	$(CXX) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
+
+$(OBJPATH)/%.opp : $(SRCDIR)/%.cpp
+	$(CXX) -c $(CFLAGS) $(DEFS) $(PRECOMINC) $(INCPATH) $< -o $@
 
 $(OBJPATH)/%.o : $(SRCDIR)/%.c
 	$(CC) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
 
 $(TARGET) :: $(OBJPATH) $(TARGETPATH)
 
-$(TARGET) :: $(COBJS) $(CPPOBJS)
+$(TARGET) :: $(PRECOMDST) $(COBJS) $(CPPOBJS)
 ifdef SHARED
 	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
 	chmod 755 $@
@@ -40,7 +51,8 @@ endif
 ##############################################
 
 _clean_:
-	rm $(COBJS) $(CPPOBJS) $(TARGET)
+	-rm -r $(TARGETPATH)
+	-rm -r $(OBJPATH)
 
 ##############################################
 
@@ -59,6 +71,7 @@ $(FLEXTLIBINST):
 _install_: $(FLEXTINC) $(FLEXTLIBINST)
 	install $(TARGET) $(FLEXTLIBINST)
 ifndef SHARED
-	ranlib $(FLEXTLIBINST)/$(OUTNAME).$(EXT)  # have to rerun ranlib at install dir ?!
+# have to rerun ranlib at install dir ?!
+	ranlib $(FLEXTLIBINST)/$(notdir $(TARGET))  
 endif
 	install $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTINC)

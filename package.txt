@@ -6,6 +6,8 @@ BUILDTYPE=all
 
 SRCDIR=source
 
+PRECOMPILE=flext.h
+
 SRCS= \
 	flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp \
 	flxlet.cpp flattr.cpp flattr_ed.cpp flsupport.cpp \

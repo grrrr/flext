@@ -19,7 +19,7 @@ FLEXTSHLIB=$(FLEXTLIB)
 OUTPATH=max-darwin
 
 # where should the external be installed?
-INSTPATH=/Library/Application\ Support/Cycling\ \'74/externals
+INSTPATH=/Library/Application\ Support/Cycling\ \'74/externals/flext
 
 ###############################################################
 

@@ -27,7 +27,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	#define ALIASSLASH '/'
 #endif
 
-//! C++ strcup function
+//! C++ strdup function
 char *flext::strdup(const char *t)
 {
 	if(!t) return NULL;

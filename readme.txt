@@ -114,6 +114,9 @@ see flext.h, fldefs.h and flclass.h for the documented base definitions and clas
 
 Version history:
 
+0.4.4:
+- some fixes for CodeWarrior Mach-O compilation 
+
 0.4.3:
 - added forgotten flext_base::ToQueueString method
 - added timer functions and flext::Timer class

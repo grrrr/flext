@@ -28,6 +28,7 @@ Version history:
 - make use of new PD thread locking (PD functions sys_lock() and sys_unlock())
 - better FLEXT_OSAPI resolution
 - ListAttributes (or the getattributes message) now lists attributes in the order they were created (first class, then object scope)
+- enforcing usage of STL
 
 0.4.4:
 - fixed deadly bug for Max/MSP method-to-symbol-binding proxies
@@ -257,6 +258,7 @@ Restrictions in compatibility mode:
 Porting to new compilers/platforms:
 - enums must be int-sized!!!
 - compiler must support bool type
+- an STL implementation must exist
 - no need of C++ exceptions or RTTI (RTTI only for GUI objects)
 	BUT: some libraries could use RTTI and then need run-time type information from the library! (this is known for gcc compiles)
 

@@ -25,7 +25,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	#include <MacHeaders.h>
 #endif
 
-#if __option(sym) || !__option(opt_dead_code)
+#if /*__option(sym) ||*/ !__option(opt_dead_code)
+	#pragma message("Optimization disabled -> Compiling a debug version (with FLEXT_DEBUG)")
 	#define FLEXT_DEBUG
 #endif
 

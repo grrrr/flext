@@ -69,7 +69,7 @@ flext_base::binditem::~binditem()
         if(tag->s_thing == (t_object *)px) 
             const_cast<t_symbol *>(tag)->s_thing = NULL; 
         else
-            error("%s - Binding not found",thisName());
+            error("flext - Binding to symbol %s not found",tag->s_name);
 #else
 #           pragma warning("Not implemented")
 #endif

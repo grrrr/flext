@@ -56,7 +56,10 @@ thread1::thread1()
 void thread1::m_start()
 {
 	// Please note that this functions needs about 10 seconds to complete
-	// Without threads it would block PD
+	// Without threads it would block the real-time system
+
+	// Okay, that functionality would be more elegant with timers
+	// ... but hey, it's a demo!
 
 	for(int i = 0; i < 20; ++i) {
 		ToOutInt(0,i); // output loop count

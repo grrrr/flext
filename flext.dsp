@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "msvc"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /W3 /GR /O2 /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /YX /FD /c
+# ADD CPP /nologo /W3 /GR /O2 /I "c:\programme\audio\pd\src" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /YX /FD /c
 # ADD BASE RSC /l 0xc07 /d "NDEBUG"
 # ADD RSC /l 0xc07 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -66,7 +66,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "msvc-debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GR /ZI /Od /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GR /ZI /Od /I "c:\programme\audio\pd\src" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0xc07 /d "_DEBUG"
 # ADD RSC /l 0xc07 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -89,7 +89,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "msvc-t-debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GR /ZI /Od /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /D "FLEXT_THREADS" /FR /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GR /ZI /Od /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /D "FLEXT_THREADS" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GR /ZI /Od /I "c:\programme\audio\pd\src" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /D "FLEXT_THREADS" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0xc07 /d "_DEBUG"
 # ADD RSC /l 0xc07 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -112,7 +112,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "msvc-t"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GR /O2 /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /D "FLEXT_THREADS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GR /O2 /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /D "FLEXT_THREADS" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GR /O2 /I "c:\programme\audio\pd\src" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /D "FLEXT_THREADS" /YX /FD /c
 # ADD BASE RSC /l 0xc07 /d "NDEBUG"
 # ADD RSC /l 0xc07 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -140,71 +140,75 @@ SOURCE=.\readme.txt
 # End Group
 # Begin Source File
 
-SOURCE=.\flatom.cpp
+SOURCE=.\source\flatom.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\flbase.cpp
+SOURCE=.\source\flbase.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\flbase.h
+SOURCE=.\source\flbase.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\flbuf.cpp
+SOURCE=.\source\flbuf.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\flclass.h
+SOURCE=.\source\flclass.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\fldefs.h
+SOURCE=.\source\fldefs.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\fldsp.cpp
+SOURCE=.\source\fldsp.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\fldsp.h
+SOURCE=.\source\fldsp.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\flext.cpp
+SOURCE=.\source\flext.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\flext.h
+SOURCE=.\source\flext.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\flinternal.h
+SOURCE=.\source\flinternal.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\flsetup.cpp
+SOURCE=.\source\flmspbuffer.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\flstdc.h
+SOURCE=.\source\flsetup.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\flthr.cpp
+SOURCE=.\source\flstdc.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\flthr.h
+SOURCE=.\source\flthr.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\flutil.cpp
+SOURCE=.\source\flthr.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\flxlet.cpp
+SOURCE=.\source\flutil.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\source\flxlet.cpp
 # End Source File
 # End Target
 # End Project

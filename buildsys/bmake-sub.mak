@@ -49,13 +49,13 @@ TARGETTYPE=single
 ##############################
 # platform-specific make stuff
 
-!include $(BUILDPATH)$(PLATFORM)\$(RTSYS)\make-$(COMPILER).inc
+!include $(BUILDPATH)$(PLATFORM)\$(RTSYS)\bmake-$(COMPILER).inc
 
-!include $(BUILDPATH)$(PLATFORM)\$(RTSYS)\make-$(COMPILER)-$(BUILDCLASS).inc
+!include $(BUILDPATH)$(PLATFORM)\$(RTSYS)\bmake-$(COMPILER)-$(BUILDCLASS).inc
 
 ##############################
 # general make stuff
 
-!include $(BUILDPATH)$(PLATFORM)\make-$(COMPILER).inc
+!include $(BUILDPATH)$(PLATFORM)\bmake-$(COMPILER).inc
 
-!include $(BUILDPATH)$(PLATFORM)\make-$(COMPILER)-$(BUILDCLASS).inc
+!include $(BUILDPATH)$(PLATFORM)\bmake-$(COMPILER)-$(BUILDCLASS).inc

@@ -3,7 +3,6 @@
 INCPATH=$(INCPATH) -I$(FLEXTINC)
 LIBPATH=$(LIBPATH) -L$(FLEXTLIB)
 LIBS=$(LIBS) $(FLEXTNAME).lib
-!endif
 
 ##############################################
 
@@ -18,10 +17,10 @@ $(TARGETPATH): $(OUTPATH)
 
 SETUPFUNCTION=$(NAME)_setup
 
-$(TARGETPATH)\$(NAME).def:
-	@echo EXPORTS $(SETUPFUNCTION) = _$(SETUPFUNCTION) > $<
+$(TARGETPATH)\$(NAME).def: $(TARGETPATH)
+	@echo EXPORTS $(SETUPFUNCTION) = _$(SETUPFUNCTION) > $@
 # this next line fixes a strange problem with implib - lacking underscore?!
-	@echo IMPORTS _rtext_retext=PD.rtext_retext >> $<
+	@echo IMPORTS _rtext_retext=PD.rtext_retext >> $@
 
 $(TARGET) :: $(TARGETPATH)\$(NAME).def
 

@@ -24,7 +24,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <pthread.h>
 #endif
 
-class FLEXT_EXT flext_obj;
+class flext_obj;
 
 // ----------------------------------------------------------------------------
 /*! \brief The obligatory PD or Max/MSP object header
@@ -89,7 +89,7 @@ struct FLEXT_EXT flext_hdr
 */
 // ----------------------------------------------------------------------------
 
-class FLEXT_EXT flext_obj:
+class flext_obj:
 	public flext
 {
     public:
@@ -302,8 +302,8 @@ static void __free__(flext_hdr *hdr)    	    	    	\
 static void __setup__(t_class *classPtr)  	    	\
 { PARENT_CLASS::__setup__(classPtr);    	    	\
 	NEW_CLASS::SETUPFUN(classPtr); 	}    	    	\
-protected:    \
-static inline NEW_CLASS *thisObject(void *c) { return FLEXT_CAST<NEW_CLASS *>(((flext_hdr *)c)->data); } 
+protected: \
+static inline NEW_CLASS *thisObject(void *c) { return FLEXT_CAST<NEW_CLASS *>(((flext_hdr *)c)->data); }
 
 
 // generate name of dsp/non-dsp setup function

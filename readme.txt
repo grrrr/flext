@@ -36,7 +36,7 @@ o GCC: edit & run "make -f makefile.pd-linux"
 
 - Max/MSP - MacOS:
 o Metrowerks CodeWarrior V6: use the "flext.cw" project file
-o Apple MPW-PR with STLPort: edit & use the "flext.mpw" makefile
+o Apple MPW-PR: edit & use the "flext.mpw" makefile
 
 
 for Max/MSP you will also need the Max/MSP SDK
@@ -120,6 +120,7 @@ general:
 - exchange more preprocessor definitions for C++ base class code (esp. pd and max calls)
 - should we use a namespace?
 - where to put flext source/lib in linux: /usr/local/lib,/usr/local/include ?
+- clean up headers (eliminate flstdc.h)
 
 bugs:
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)

@@ -91,7 +91,7 @@ class FLEXT_EXT flext_obj
 		void *operator new(size_t bytes);
 		void operator delete(void *blk);
 
-		#ifndef __MRC__ // doesn't handle new[] overload?!
+		#ifndef __MRC__ // doesn't allow new[] overloading?!
 		// this are aligned (with some overhead)
 		void *operator new[](size_t bytes); 
 		void operator delete[](void *blk);

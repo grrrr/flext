@@ -126,7 +126,8 @@ flext_base::flext_base():
 	inlist(NULL),outlist(NULL),
 	incnt(0),outcnt(0),
 	insigs(0),outsigs(0),
-	outlets(NULL),inlets(NULL)
+	outlets(NULL),inlets(NULL),
+	mlst(NULL)
 {
 	LOG("Logging is on");
 }
@@ -149,11 +150,7 @@ flext_base::~flext_base()
 		delete[] inlets;
 	}
 
-	// delete method list elements
-	while(!mlst.empty()) {
-		delete mlst.back();
-		mlst.pop_back();
-	}
+	if(mlst) delete mlst;
 }
 
 flext_base::xlet::~xlet() { if(nxt) delete nxt; }
@@ -486,10 +483,7 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 	
 	LOG3("methodmain inlet:%i args:%i symbol:%s",inlet,argc,s?s->s_name:"");
 	
-	std::list<methitem *>::const_iterator it(mlst.begin());
-	while(!ret) {
-		const methitem *m = *it;
-		if(!m) break;
+	for(const methitem *m = mlst; m && !ret; m = m->nxt) {
 		if(m->tag == sym_anything && m->argc == 1 && m->args[0] == a_gimme) {
 			// any
 			LOG4("found any method for %s: inlet=%i, symbol=%s, argc=%i",m->tag->s_name,inlet,s->s_name,argc);
@@ -555,8 +549,6 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 				}
 			}
 		} 
-		if(it == mlst.end()) break;
-		else ++it;
 	}
 	
 	if(!ret && inlet == 0 && s == sym_list && insigs <= 1) {
@@ -588,13 +580,15 @@ V flext_base::m_method_(I inlet,const t_symbol *s,I argc,t_atom *argv) {}
 flext_base::methitem::methitem(I in,t_symbol *t): 
 	inlet(in),tag(t),
 	fun(NULL), 
-	argc(0),args(NULL)
+	argc(0),args(NULL),
+	nxt(NULL)
 {}
 
 flext_base::methitem::methitem(I in,t_symbol *t,metharg &argl,methfun f): 
 	inlet(in),tag(t),
 	fun(f),
-	argc(0),args(NULL)
+	argc(0),args(NULL),
+	nxt(NULL)
 { 
 	va_list marker;
 	va_start(marker,argl);
@@ -629,23 +623,38 @@ flext_base::methitem::methitem(I in,t_symbol *t,metharg &argl,methfun f):
 	}
 }
 
-flext_base::methitem::~methitem() { if(args) delete[] args; }
+flext_base::methitem::~methitem() 
+{ 
+	if(nxt) delete nxt;
+	if(args) delete[] args; 
+}
+
+V flext_base::AddMethItem(methitem *m)
+{
+	if(mlst) {
+		methitem *mi;
+		for(mi = mlst; mi->nxt; mi = mi->nxt) (V)0;
+		mi->nxt = m;
+	}
+	else 
+		mlst = m;
+}
 
 V flext_base::add_meth_def(I inlet)
 {
-	mlst.push_back(new methitem(inlet,NULL));
+	AddMethItem(new methitem(inlet,NULL));
 }
 
 V flext_base::add_meth_def(I inlet,const C *tag)
 {
-	mlst.push_back(new methitem(inlet,gensym(const_cast<C *>(tag))));
+	AddMethItem(new methitem(inlet,gensym(const_cast<C *>(tag))));
 }
 
 
 
 V flext_base::add_meth_one(I inlet,const C *tag,methfun fun,metharg tp,...)
 {
-	mlst.push_back(new methitem(inlet,gensym(const_cast<C *>(tag)),tp,fun));
+	AddMethItem(new methitem(inlet,gensym(const_cast<C *>(tag)),tp,fun));
 }
 
 
@@ -660,73 +669,3 @@ V flext_base::geta_string(const t_atom &a,C *buf,I szbuf)
 	else if(is_int(a)) sprintf(buf,"%i",get_int(a));
 #endif
 }  
-
-
-// === flext_dsp ==============================================
-
-V flext_dsp::cb_setup(t_class *c)
-{
-#ifdef PD
-	CLASS_MAINSIGNALIN(c,flext_hdr,defsig);
-#elif defined(MAXMSP)
-	dsp_initclass();
-#endif
-	
-	add_dsp(c,cb_dsp);
-	add_method1(c,cb_dspon,"dspon",A_FLINT);
-}
-
-flext_dsp::flext_dsp(): 
-	dspon(true),
-	srate(sys_getsr()),
-	invecs(NULL),outvecs(NULL)
-{}
-
-
-flext_dsp::~flext_dsp()
-{
-	if(invecs) delete[] invecs;
-	if(outvecs) delete[] outvecs;
-}
-
-
-t_int *flext_dsp::dspmeth(t_int *w) 
-{ 
-	flext_dsp *obj = (flext_dsp *)w[1];
-	if(obj->dspon) 
-		obj->m_signal((I)w[2],obj->invecs,obj->outvecs); 
-	return w+3;
-}
-
-V flext_dsp::m_dsp(I /*n*/,F *const * /*insigs*/,F *const * /*outsigs*/) {}
-
-V flext_dsp::cb_dsp(t_class *c,t_signal **sp) 
-{ 
-	flext_dsp *obj = thisObject(c); 
-
-	// store current sample rate
-	obj->srate = sp[0]->s_sr;
-
-	// store in and out signal vectors
-	I i,in = obj->cnt_insig(),out = obj->cnt_outsig();
-	if(obj->invecs) delete[] obj->invecs;
-	obj->invecs = new F *[in];
-	for(i = 0; i < in; ++i) obj->invecs[i] = sp[i]->s_vec;
-
-	if(obj->outvecs) delete[] obj->outvecs;
-	obj->outvecs = new F *[out];
-	for(i = 0; i < out; ++i) obj->outvecs[i] = sp[in+i]->s_vec;
-
-	// with the following call derived classes can do their eventual DSP setup
-	obj->m_dsp(sp[0]->s_n,obj->invecs,obj->outvecs);
-
-	// set the DSP function
-	dsp_add((t_dspmethod)dspmeth,2,obj,sp[0]->s_n);  
-}
-
-V flext_dsp::cb_dspon(t_class *c,FI on) { thisObject(c)->m_dspon(on != 0); }
-
-V flext_dsp::m_dspon(BL en) { dspon = en; }
-
-
-

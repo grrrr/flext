@@ -26,9 +26,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #pragma warn -8066 // Unreachable code
 #endif
 
-#include <list> // C++ STL lists 
 
- 
 // a few type definitions for the lazy
 
 #define F float 
@@ -314,10 +312,12 @@ protected:
 		metharg *args;
 
 		methfun fun;
+		
+		methitem *nxt;
 	};
 	
-	std::list<methitem *> mlst;
-
+	V AddMethItem(methitem *m);
+	
 private:
 
 	xlet *inlist,*outlist;
@@ -325,6 +325,8 @@ private:
 	outlet **outlets;
 
 	V AddXlet(xlet::type tp,I mult,xlet *&root);	
+
+	methitem *mlst;
 
 #ifdef PD
 	// proxy object (for additional inlets) stuff

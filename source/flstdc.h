@@ -28,6 +28,7 @@ once drifted apart in Max and PD. It is not elegant but helps.
 #error Apples MPW MrCpp v.5.0.0 or better compiler required
 #endif
 
+
 #if 0
 // host namespace
 namespace flhost {

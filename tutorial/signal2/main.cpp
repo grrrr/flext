@@ -36,9 +36,6 @@ public:
 protected:
 	void m_bang();  // method for bang
 
-	// this virtual function is obligatory for objects derived from flext_dsp
-//	virtual void m_signal(int n, float *const *in, float *const *out);
-
 private:
 	FLEXT_CALLBACK(m_bang);  // callback for method "m_bang" 
 };
@@ -70,8 +67,3 @@ void signal2::m_bang()
 	ToOutInt(3,ChannelsOut()); 
 }
 
-/*
-void signal2::m_signal(int, float *const *, float *const *)
-{
-}
-*/

@@ -12,8 +12,8 @@ This is an example of a simplified prepend object
 
 #include <flext.h>
 
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 400)
-#error You need at least flext version 0.4.0
+#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 401)
+#error You need at least flext version 0.4.1
 #endif
 
 
@@ -85,7 +85,7 @@ void adv1::m_any(const t_symbol *s,int argc,t_atom *argv)
 
 	// if anything is no "list" or "float" then append it to result list
 	if(s != sym_list && s != sym_float
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 		 && s != sym_int  // in Max integers are system data types
 #endif
 	)

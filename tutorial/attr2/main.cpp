@@ -21,8 +21,8 @@ This is an example of an object doing various float operations
 #include <flext.h>
 
 // check for appropriate flext version
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 400)
-#error You need at least flext version 0.4.0
+#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 401)
+#error You need at least flext version 0.4.1
 #endif
 
 #include <math.h>
@@ -137,7 +137,7 @@ void attr2::m_trigger(float f)
 		}
 		break;
 	case op_pow: res = (float)pow(f,arg); break;
-#ifdef _DEBUG
+#ifdef FLEXT_DEBUG
 	default: ERRINTERNAL();  // operation not defined
 #endif
 	}
@@ -158,7 +158,7 @@ void attr2::opget(const t_symbol *&s) const
 	case op_mul: s = sym_mul; break;
 	case op_div: s = sym_div; break;
 	case op_pow: s = sym_pow; break;
-#ifdef _DEBUG
+#ifdef FLEXT_DEBUG
 	default: ERRINTERNAL();  // operation not defined
 #endif
 	}

@@ -106,19 +106,19 @@ $(TARGDIR)/%.sdo : $(SRCDIR)/%.cpp
 
 
 $(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.ro,$(SRCS)) 
-	ar rc $@ $^
+	$(AR) rc $@ $^
 	chmod 644 $@
 
 $(TARGET_D) : $(patsubst %.cpp,$(TARGDIR)/%.do,$(SRCS)) 
-	ar rc $@ $^ 
+	$(AR) rc $@ $^ 
 	chmod 644 $@
 
 $(TARGET_T) : $(patsubst %.cpp,$(TARGDIR)/%.tro,$(SRCS))
-	ar rc $@ $^
+	$(AR) rc $@ $^
 	chmod 644 $@
 
 $(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(SRCS))
-	ar rc $@ $^
+	$(AR) rc $@ $^
 	chmod 644 $@
 
 $(TARGET_S) : $(patsubst %.cpp,$(TARGDIR)/%.sro,$(SRCS))

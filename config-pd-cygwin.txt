@@ -1,5 +1,5 @@
 # flext - C++ layer for Max/MSP and pd (pure data) externals
-# Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+# Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
 #
 
 # your c++ compiler (define only if it's different than g++)
@@ -10,11 +10,14 @@ PDPATH=/cygdrive/c/programme/audio/pd
 
 # where is the SndObj include directory? 
 # (leave blank or comment out to disable SndObj support)
-SNDOBJ=/cygdrive/f/prog/audio/sndobj/include
+# SNDOBJ=/cygdrive/f/prog/audio/sndobj/include
 
 # where is the STK include directory?
 # (leave blank or comment out to disable STK support)
-STK=/cygdrive/f/prog/audio/stk/include
+# STK=/cygdrive/f/prog/audio/stk/include
+
+# for shared builds the pthread libraries are necessary
+PTHREADS=/cygdrive/f/prog/packs/pthreads
 
 # where should flext libraries be built?
 TARGDIR=./pd-cygwin

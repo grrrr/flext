@@ -237,7 +237,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 		#if FLEXT_OS == FLEXT_OS_MAC
 			#define FLEXT_OSAPI FLEXT_OSAPI_MAC_MACH
 		#elif FLEXT_OS == FLEXT_OS_WIN
-			#define FLEXT_OSAPI FLEXT_OSAPI_WIN_POSIX
+            #if defined(__MINGW32__)
+			    #define FLEXT_OSAPI FLEXT_OSAPI_WIN_NATIVE
+            #else
+			    #define FLEXT_OSAPI FLEXT_OSAPI_WIN_POSIX
+            #endif
 		#elif FLEXT_OS == FLEXT_OS_LINUX || FLEXT_OS == FLEXT_OS_IRIX
 			#define FLEXT_OSAPI FLEXT_OSAPI_UNIX_POSIX
 		#else
@@ -249,7 +253,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	// Apple MPW MrCpp
 
 	#if __MRC__ < 0x500
-		#error Apple MPW MrCpp v.5.0.0 or better compiler required
+		#error Apple MPW MrCpp v.5.0.0 or later compiler required
 	#endif
 
 	#ifndef FLEXT_CPU

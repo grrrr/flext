@@ -17,14 +17,16 @@ include $(CONFIG)
 
 
 # compiler+linker stuff
-INCLUDES=$(PDPATH)/src  # /usr/include 
+INCLUDES=$(PDPATH)/src  
 
 FLAGS=-DFLEXT_SYS=2 $(UFLAGS)
 CFLAGS=-O2
 CFLAGS_D=-DFLEXT_DEBUG -g
 CFLAGS_T=-DFLEXT_THREADS
 CFLAGS_S=-DFLEXT_SHARED
-LIBS=
+LIBS=$(PDPATH)/bin/pd.lib $(PTHREADS)/pthreadVC.lib
+
+DYNAMIC=-Wl,-Bdynamic
 
 INSTDIR=$(PDPATH)/flext
 
@@ -55,8 +57,10 @@ TARGET=$(TARGDIR)/$(NAME)-pdwin.lib
 TARGET_D=$(TARGDIR)/$(NAME)_d-pdwin.lib
 TARGET_T=$(TARGDIR)/$(NAME)_t-pdwin.lib
 TARGET_TD=$(TARGDIR)/$(NAME)_td-pdwin.lib
+TARGET_S=$(TARGDIR)/$(NAME).dll
+TARGET_SD=$(TARGDIR)/$(NAME)_d.dll
 
-TARGETS=$(TARGET) $(TARGET_D) # $(TARGET_T) $(TARGET_TD) $(TARGET_S) $(TARGET_SD)
+TARGETS=$(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD) $(TARGET_S) $(TARGET_SD)
 
 
 all: $(TARGDIR) $(TARGETS)
@@ -67,47 +71,47 @@ $(SRCS): $(HDRS) $(IHDRS) $(MAKEFILE) $(CONFIG)
 	touch $@
 
 
-$(TARGDIR)/%.o : $(SRCDIR)/%.cpp
+$(TARGDIR)/%.ro : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
 $(TARGDIR)/%.do : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
-$(TARGDIR)/%.to : $(SRCDIR)/%.cpp
+$(TARGDIR)/%.tro : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
 $(TARGDIR)/%.tdo : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS_D) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
-$(TARGDIR)/%.so : $(SRCDIR)/%.cpp
-	$(CXX) -c $(CFLAGS) $(CFLAGS_S) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
+$(TARGDIR)/%.sro : $(SRCDIR)/%.cpp
+	$(CXX) -shared -c $(CFLAGS) $(CFLAGS_S) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
 $(TARGDIR)/%.sdo : $(SRCDIR)/%.cpp
-	$(CXX) -c $(CFLAGS_D) $(CFLAGS_S) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
+	$(CXX) -shared -c $(CFLAGS_D) $(CFLAGS_S) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
 
-$(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS))
+$(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.ro,$(SRCS))
 	$(AR) rc $@ $^
-	chmod 755 $@
+	chmod 644 $@
 
 $(TARGET_D) : $(patsubst %.cpp,$(TARGDIR)/%.do,$(SRCS))
 	$(AR) rc $@ $^
-	chmod 755 $@
+	chmod 644 $@
 
-$(TARGET_T) : $(patsubst %.cpp,$(TARGDIR)/%.to,$(SRCS))
+$(TARGET_T) : $(patsubst %.cpp,$(TARGDIR)/%.tro,$(SRCS))
 	$(AR) rc $@ $^
-	chmod 755 $@
+	chmod 644 $@
 
 $(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(SRCS))
 	$(AR) rc $@ $^
-	chmod 755 $@
+	chmod 644 $@
 
-$(TARGET_S) : $(patsubst %.cpp,$(TARGDIR)/%.so,$(SRCS))
-	$(CXX) -o $@ $^
+$(TARGET_S) : $(patsubst %.cpp,$(TARGDIR)/%.sro,$(SRCS))
+	$(CXX) -shared $(DYNAMIC) -Wl,--strip-debug $(patsubst %,-L%,$(LIBPATH)) -o $@ $^ $(LIBS) # $(patsubst %,-l%,$(LIBS)) 
 	chmod 755 $@
 
 $(TARGET_SD) : $(patsubst %.cpp,$(TARGDIR)/%.sdo,$(SRCS))
-	$(CXX) -o $@ $^
+	$(CXX) -shared $(DYNAMIC) -Wl,--strip-debug $(patsubst %,-L%,$(LIBPATH)) -o $@ $^ $(LIBS) # $(patsubst %,-l%,$(LIBS)) 
 	chmod 755 $@
 
 

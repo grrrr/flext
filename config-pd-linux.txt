@@ -12,11 +12,11 @@ PDPATH=/usr/src/pd-0.37-0/src
 
 # where is the SndObj include directory?
 # (leave blank or comment out to disable SndObj support)
-SNDOBJ=/usr/local/include #/SndObj
+#SNDOBJ=/usr/local/include
 
 # where is the STK include directory?
 # (leave blank or comment out to disable STK support)
-STK=/usr/src/stk-4.1.1/include
+#STK=/usr/src/stk-4.1.1/include
 
 # where should flext libraries be built?
 TARGDIR=./pd-linux

@@ -34,6 +34,7 @@ Version history:
 - flext_dsp reported wrong inlet/outlet count (CntInSig, CntOutSig functions)
 - added support for patcher arguments for attributes (use # instead of $ to save them with a patch)
 - moved memory functions and console output from flext to super-base-class flext_root and derived all helper classes from that
+- changed FLEXT_THREAD_X: wrappers doesn't delete the passed data pointer anymore -> the called method is responsible for that (and it knows the type....)
 
 0.4.4:
 - fixed deadly bug for Max/MSP method-to-symbol-binding proxies

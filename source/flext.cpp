@@ -32,14 +32,14 @@ V flext_base::px_object::px_method(px_object *obj,const t_symbol *s,I argc,t_ato
 	obj->base->m_methodmain(obj->index,s,argc,argv);
 }
 
-V flext_base::cb_px_anything(V *c,const t_symbol *s,I argc,t_atom *argv)
+V flext_base::cb_px_anything(t_class *c,const t_symbol *s,I argc,t_atom *argv)
 {
 	thisObject(c)->m_methodmain(0,s,argc,argv);
 }
 
 #elif defined(MAXMSP)
 
-V flext_base::cb_px_anything(V *c,const t_symbol *s,I argc,t_atom *argv)
+V flext_base::cb_px_anything(t_class *c,const t_symbol *s,I argc,t_atom *argv)
 {
 	// check if inlet allows anything (or list)
 	flext_base *o = thisObject(c);
@@ -47,7 +47,7 @@ V flext_base::cb_px_anything(V *c,const t_symbol *s,I argc,t_atom *argv)
 	o->m_methodmain(ci,s,argc,argv);
 }
 
-V flext_base::cb_px_int(V *c,I v)
+V flext_base::cb_px_int(t_class *c,I v)
 {
 	static const t_symbol *sym_int = gensym("int");
 
@@ -57,7 +57,7 @@ V flext_base::cb_px_int(V *c,I v)
 	cb_px_anything(c,sym_int,1,&atom);
 }
 
-V flext_base::cb_px_float(V *c,F v)
+V flext_base::cb_px_float(t_class *c,F v)
 {
 	static const t_symbol *sym_float = gensym("float");
 
@@ -68,8 +68,8 @@ V flext_base::cb_px_float(V *c,F v)
 }
 
 #define DEF_IN_FT(IX) \
-V flext_base::cb_px_in ## IX(V *c,I v) { L &ci = ((flext_hdr *)thisObject(c)->x_obj)->curinlet; ci = IX; cb_px_int(c,v); ci = 0; } \
-V flext_base::cb_px_ft ## IX(V *c,F v) { L &ci = ((flext_hdr *)thisObject(c)->x_obj)->curinlet; ci = IX; cb_px_float(c,v); ci = 0; }
+V flext_base::cb_px_in ## IX(t_class *c,I v) { L &ci = ((flext_hdr *)thisObject(c)->x_obj)->curinlet; ci = IX; cb_px_int(c,v); ci = 0; } \
+V flext_base::cb_px_ft ## IX(t_class *c,F v) { L &ci = ((flext_hdr *)thisObject(c)->x_obj)->curinlet; ci = IX; cb_px_float(c,v); ci = 0; }
 
 DEF_IN_FT(1)
 DEF_IN_FT(2)
@@ -81,7 +81,7 @@ DEF_IN_FT(7)
 DEF_IN_FT(8)
 DEF_IN_FT(9)
 
-V flext_base::cb_px_bang(V *c)
+V flext_base::cb_px_bang(t_class *c)
 {
 	static const t_symbol *sym_bang = gensym("bang");
 
@@ -89,7 +89,7 @@ V flext_base::cb_px_bang(V *c)
 	cb_px_anything(c,sym_bang,0,NULL);
 }
 
-#endif
+#endif // MAXMSP
 
 
 
@@ -103,7 +103,9 @@ flext_base::flext_base():
 	incnt(0),outcnt(0),
 	insigs(0),outsigs(0),
 	outlets(NULL),inlets(NULL)
-{}
+{
+	add_meth(0,"help",cb_help);
+}
 
 flext_base::~flext_base()
 {
@@ -342,7 +344,7 @@ BL flext_base::setup_inout()
 
 V flext_base::cb_setup(t_class *c)
 {
-	add_method(c,cb_help,"help");
+//	add_method(c,cb_help,"help");
 	
 	add_loadbang(c,cb_loadbang);
 #ifdef MAXMSP
@@ -351,7 +353,7 @@ V flext_base::cb_setup(t_class *c)
 
 	// proxy for extra inlets
 #ifdef PD
-//	add_anything(c,cb_px_anything); // for leftmost inlet
+	add_anything(c,cb_px_anything); // for leftmost inlet
     px_class = class_new(gensym("flext_base proxy"),NULL,NULL,sizeof(px_object),CLASS_PD|CLASS_NOINLET, A_NULL);
 	add_anything(px_class,px_object::px_method); // for other inlets
 #elif defined(MAXMSP) 
@@ -382,11 +384,11 @@ V flext_base::cb_setup(t_class *c)
 #endif
 }
 
-V flext_base::cb_help(V *c) { thisObject(c)->m_help(); }	
+V flext_base::cb_help(t_class *c) { thisObject(c)->m_help(); }	
 
-V flext_base::cb_loadbang(V *c) { thisObject(c)->m_loadbang(); }	
+V flext_base::cb_loadbang(t_class *c) { thisObject(c)->m_loadbang(); }	
 #ifdef MAXMSP
-V flext_base::cb_assist(V *c,V * /*b*/,L msg,L arg,C *s) { thisObject(c)->m_assist(msg,arg,s); }
+V flext_base::cb_assist(t_class *c,V * /*b*/,L msg,L arg,C *s) { thisObject(c)->m_assist(msg,arg,s); }
 #endif
 
 V flext_base::m_help()
@@ -406,7 +408,7 @@ V flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 		if(!m) break;
 		if(m->tag == s) {
 			// tag fits
-			post("found method tag %s",m->tag->s_name);
+			post("found method tag %s: inlet=%i, symbol=%s, argc=%i",m->tag->s_name,inlet,s->s_name,argc);
 		} 
 		if(it == mlst.end()) break;
 		else ++it;
@@ -442,7 +444,7 @@ V flext_base::add_meth_def(I inlet,const C *tag)
 	mlst.push_back(new method(inlet,gensym(const_cast<C *>(tag))));
 }
 
-V flext_base::add_meth_n(I inlet,const C *tag,methfun fun,I tp,...)
+V flext_base::add_meth_n(I inlet,const C *tag,methfun fun,t_atomtype tp,...)
 {
 	method *meth = new method(inlet,gensym(const_cast<C *>(tag)));
 

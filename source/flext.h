@@ -178,7 +178,7 @@ protected:
 	V AddOutlet(xlet::type tp,I mult) { AddXlet(tp,mult,outlist); }
 
 #if 1
-	typedef V (*methfun)();
+	typedef V (*methfun)(t_class *c);
 
 	class method { 
 	public:
@@ -196,15 +196,15 @@ protected:
 
 	V add_meth_def(I inlet); // call virtual function for inlet
 	V add_meth_def(I inlet,const C *tag); // call virtual function for tag && inlet
-	V add_meth_n(I inlet,const C *tag,methfun fun,I tp,...); 
+	V add_meth_n(I inlet,const C *tag,methfun fun,t_atomtype tp,...); 
 
-	V add_meth(I inlet,const C *tag,V (*m)()) { add_meth_n(inlet,tag,(methfun)m,A_NULL); }
-	V add_meth(I inlet,const C *tag,V (*m)(I argc,t_atom *argv)) { add_meth_n(inlet,tag,(methfun)m,A_GIMME,A_NULL); } // list
-	V add_meth(I inlet,const C *tag,V (*m)(t_symbol *s,I argc,t_atom *argv)) { add_meth_n(inlet,tag,(methfun)m,A_SYMBOL,A_GIMME,A_NULL); } // anything
-	V add_meth(I inlet,const C *tag,V (*m)(t_symbol *s)) { add_meth_n(inlet,tag,(methfun)m,A_SYMBOL,A_NULL); } // symbol
-	V add_meth(I inlet,const C *tag,V (*m)(F)) { add_meth_n(inlet,tag,(methfun)m,A_FLOAT,A_NULL); }  // float
-	V add_meth(I inlet,const C *tag,V (*m)(F,F)) { add_meth_n(inlet,tag,(methfun)m,A_FLOAT,A_FLOAT,A_NULL); } // list of 2 floats
-	V add_meth(I inlet,const C *tag,V (*m)(F,F,F)) { add_meth_n(inlet,tag,(methfun)m,A_FLOAT,A_FLOAT,A_NULL); } // list of 3 floats
+	V add_meth(I inlet,const C *tag,V (*m)(t_class *)) { add_meth_n(inlet,tag,(methfun)m,A_NULL); }
+	V add_meth(I inlet,const C *tag,V (*m)(t_class *,I argc,t_atom *argv)) { add_meth_n(inlet,tag,(methfun)m,A_GIMME,A_NULL); } // list
+	V add_meth(I inlet,const C *tag,V (*m)(t_class *,t_symbol *s,I argc,t_atom *argv)) { add_meth_n(inlet,tag,(methfun)m,A_SYMBOL,A_GIMME,A_NULL); } // anything
+	V add_meth(I inlet,const C *tag,V (*m)(t_class *,t_symbol *s)) { add_meth_n(inlet,tag,(methfun)m,A_SYMBOL,A_NULL); } // symbol
+	V add_meth(I inlet,const C *tag,V (*m)(t_class *,F)) { add_meth_n(inlet,tag,(methfun)m,A_FLOAT,A_NULL); }  // float
+	V add_meth(I inlet,const C *tag,V (*m)(t_class *,F,F)) { add_meth_n(inlet,tag,(methfun)m,A_FLOAT,A_FLOAT,A_NULL); } // list of 2 floats
+	V add_meth(I inlet,const C *tag,V (*m)(t_class *,F,F,F)) { add_meth_n(inlet,tag,(methfun)m,A_FLOAT,A_FLOAT,A_NULL); } // list of 3 floats
 #endif
 
 	virtual V m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv);
@@ -221,43 +221,43 @@ private:
 	// proxy object (for additional inlets) stuff
 	struct px_object;
 	friend struct px_object;
-	static V cb_px_anything(V *c,const t_symbol *s,I argc,t_atom *argv);
+	static V cb_px_anything(t_class *c,const t_symbol *s,I argc,t_atom *argv);
 #elif defined(MAXMSP)
 	typedef object px_object;
-	static V cb_px_anything(V *c,const t_symbol *s,I argc,t_atom *argv);
-	static V cb_px_int(V *c,I v);
-	static V cb_px_float(V *c,F f);
+	static V cb_px_anything(t_class *c,const t_symbol *s,I argc,t_atom *argv);
+	static V cb_px_int(t_class *c,I v);
+	static V cb_px_float(t_class *c,F f);
 
-	static V cb_px_in1(V *c,I v);
-	static V cb_px_in2(V *c,I v);
-	static V cb_px_in3(V *c,I v);
-	static V cb_px_in4(V *c,I v);
-	static V cb_px_in5(V *c,I v);
-	static V cb_px_in6(V *c,I v);
-	static V cb_px_in7(V *c,I v);
-	static V cb_px_in8(V *c,I v);
-	static V cb_px_in9(V *c,I v);
-	static V cb_px_ft1(V *c,F f);
-	static V cb_px_ft2(V *c,F f);
-	static V cb_px_ft3(V *c,F f);
-	static V cb_px_ft4(V *c,F f);
-	static V cb_px_ft5(V *c,F f);
-	static V cb_px_ft6(V *c,F f);
-	static V cb_px_ft7(V *c,F f);
-	static V cb_px_ft8(V *c,F f);
-	static V cb_px_ft9(V *c,F f);
+	static V cb_px_in1(t_class *c,I v);
+	static V cb_px_in2(t_class *c,I v);
+	static V cb_px_in3(t_class *c,I v);
+	static V cb_px_in4(t_class *c,I v);
+	static V cb_px_in5(t_class *c,I v);
+	static V cb_px_in6(t_class *c,I v);
+	static V cb_px_in7(t_class *c,I v);
+	static V cb_px_in8(t_class *c,I v);
+	static V cb_px_in9(t_class *c,I v);
+	static V cb_px_ft1(t_class *c,F f);
+	static V cb_px_ft2(t_class *c,F f);
+	static V cb_px_ft3(t_class *c,F f);
+	static V cb_px_ft4(t_class *c,F f);
+	static V cb_px_ft5(t_class *c,F f);
+	static V cb_px_ft6(t_class *c,F f);
+	static V cb_px_ft7(t_class *c,F f);
+	static V cb_px_ft8(t_class *c,F f);
+	static V cb_px_ft9(t_class *c,F f);
 
-	static V cb_px_bang(V *c);
+	static V cb_px_bang(t_class *c);
 #endif
 	px_object **inlets;
 
 	// callback functions
 
-	static V cb_help(V *c);
+	static V cb_help(t_class *c);
 
-	static V cb_loadbang(V *c);
+	static V cb_loadbang(t_class *c);
 #ifdef MAXMSP
-	static V cb_assist(V *c,V *b,L msg,L arg,C *s);
+	static V cb_assist(t_class *c,V *b,L msg,L arg,C *s);
 #endif
 };
 

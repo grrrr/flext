@@ -12,6 +12,8 @@ flext_sndobj::~flext_sndobj()
 
 void flext_sndobj::ClearObjs()
 {
+	FreeObjs();
+
 	if(inobj) {
 		for(int i = 0; i < inobjs; ++i) { delete inobj[i]; delete tmpobj[i]; }
 		delete[] inobj; inobj = NULL; 
@@ -22,7 +24,6 @@ void flext_sndobj::ClearObjs()
 		for(int i = 0; i < outobjs; ++i) delete outobj[i];
 		delete[] outobj; outobj = NULL; outobjs = 0;
 	}
-	FreeObjs();
 }
 
 void flext_sndobj::m_dsp(int n,t_sample *const *in,t_sample *const *out)

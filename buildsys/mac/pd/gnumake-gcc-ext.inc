@@ -1,3 +1,3 @@
 EXT=pd_darwin
 
-LDFLAGS += -bundle -bundle_loader $(PDBIN)
+LDFLAGS += -bundle -bundle_loader $(PDBIN) -flat_namespace

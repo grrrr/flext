@@ -1777,7 +1777,7 @@ loopu:
     }
     else
 #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
-    if(GetSIMDCapabilities()&simd_altivec && VectorsAligned(src,dst,add)) 
+    if(GetSIMDCapabilities()&simd_altivec && VectorsAligned(src,dst,opadd)) 
         ScaleAltivec(dst,src,opmul,opadd,cnt);
     else
 #endif // _MSC_VER

@@ -280,7 +280,7 @@ public:
 		AtomList &Clear() { return operator()(); }
 
 		//! Set list
-		AtomList &Set(int argc,const t_atom *argv);
+		AtomList &Set(int argc,const t_atom *argv,int offs = 0);
 		//! Get list
 		int Get(t_atom *argv,int mxsz = -1) const;
 

@@ -28,14 +28,14 @@ Package files:
 The package should at least compile (and is tested) with the following compilers:
 
 - pd - Windows:
-o Borland C++ 5.5 (free): makefile.bcc - makefile is no real make but works (you have to edit the pd path!)
-o Microsoft Visual C++ 6: flext.dsp - project file (you have to edit the pd path in the project properties/C-C++/preprocessor tab!)
+o Borland C++ 5.5 (free): run "make -f makefile.bcc" - makefile is no real make but works (you have to edit the pd path!)
+o Microsoft Visual C++ 6: use the "flext.dsp" project file  - you have to edit the pd path in the project properties/C-C++/preprocessor tab!
 
 - pd - linux:
-o GCC: makefile.pd-linux - you have to edit the pd path!
+o GCC: run "make -f makefile.pd-linux" - you have to edit the pd path!
 
 - Max/MSP - MacOS:
-o Metrowerks CodeWarrior V6: flext project - CodeWarrior project file
+o Metrowerks CodeWarrior V6: use the "flext" project file
 
 
 
@@ -65,7 +65,7 @@ Version history:
 
 0.2.0:
 - internal proxy objects for any non-leftmost inlets
-- MaxMSP: all signal inlets can receive messages 
+- Max/MSP: all signal inlets can receive messages 
 - method/argument parsing is done by flext
 - integrated more system functions into flext_base & eliminated superfluous #defines
 - distribute list (into inlet 0) elements over inlets (right to left, only if no explicit list handler defined)

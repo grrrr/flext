@@ -79,8 +79,18 @@ flext_dsp::~flext_dsp()
 #if FLEXT_SYS == FLEXT_SYS_JMAX
 	fts_dsp_object_delete(thisHdr());
 #endif
+
+/*
+#if FLEXT_SYS == FLEXT_SYS_MAX
+	// switch off dsp as the dsp function might get called afterwards (?!)
+	thisHdr()->z_disabled = true;
+	
 	if(invecs) delete[] invecs;
 	if(outvecs) delete[] outvecs;
+#elif FLEXT_SYS == FLEXT_SYS_PD
+	dspon = false;
+#endif
+*/
 }
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
@@ -91,6 +101,7 @@ void flext_dsp::dspmeth(fts_word_t *w)
 t_int *flext_dsp::dspmeth(t_int *w) 
 { 
 	flext_dsp *obj = (flext_dsp *)w[1];
+/*
 #ifdef FLEXT_DEBUG
 	if(!obj->thisHdr()) {
 		// object is already deleted!
@@ -98,6 +109,7 @@ t_int *flext_dsp::dspmeth(t_int *w)
 		return w+3;
 	}
 #endif
+*/
 #if FLEXT_SYS == FLEXT_SYS_MAX
 	if(!obj->thisHdr()->z_disabled) 
 #else

@@ -18,6 +18,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <sched.h>
 #endif
 
+#ifdef NT
+#include <windows.h>
+#endif
+
 bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *methname)
 {
 #ifdef _DEBUG
@@ -87,6 +91,37 @@ void flext_base::YTick(flext_base *th) {
 	sched_yield();
 }
 #endif
+
+
+int flext_base::GetPriority()
+{
+#ifdef NT
+	HANDLE thr = GetCurrentThread();
+	return GetThreadPriority(thr);
+#else
+	int policy;
+	sched_param parm;
+	pthread_getschedparam(pthread_self(),&policy,&parm);
+
+	return parm.sched_priority;
+#endif
+}
+
+void flext_base::SetPriority(int p)
+{
+#ifdef NT
+	HANDLE thr = GetCurrentThread();
+	SetThreadPriority(thr,p);
+#else
+	int policy = 0;
+	sched_param parm;
+	parm.sched_priority = 0;
+	if(pthread_setschedparam(pthread_self(),policy,&parm)) {
+		post("%s - failed to change priority",thisName());
+	}
+#endif
+}
+
 
 class flext_base::qmsg
 {

@@ -291,7 +291,7 @@ void flext_root::post(const char *fmt, ...)
 
 	char buf[1024];
     vsnprintf(buf,sizeof buf,fmt, ap);
-	buf[sizeof buf-1] = 0; // in case of overrun
+	buf[sizeof buf-1] = 0; // in case of full buffer
 	::post(buf);
 
     va_end(ap);
@@ -305,7 +305,7 @@ void flext_root::error(const char *fmt,...)
 	char buf[1024];
     strcpy(buf,"error: ");
     vsnprintf(buf+7,sizeof buf-7,fmt, ap);
-	buf[sizeof buf-1] = 0; // in case of overrun
+	buf[sizeof buf-1] = 0; // in case of full buffer
 	::post(buf);
 
     va_end(ap);

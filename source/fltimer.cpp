@@ -64,7 +64,16 @@ double flext::GetOSTime()
 	double tm;
 
 #if FLEXT_OS == FLEXT_OS_WIN
-	#error Not implemented
+    LARGE_INTEGER frq,cnt;
+    if(QueryPerformanceFrequency(&frq) && QueryPerformanceCounter(&cnt))
+        tm = (double)(cnt.QuadPart)/frq.QuadPart;
+    else {
+        SYSTEMTIME systm;
+        FILETIME fltm;
+        GetSystemTime(&systm);
+        SystemTimeToFileTime(&systm,&fltm);
+        tm = (double)((LARGE_INTEGER *)&fltm)->QuadPart*0.001;
+    }
 #elif FLEXT_OS == FLEXT_OS_LINUX || FLEXT_OS == FLEXT_OS_IRIX || FLEXT_OSAPI == FLEXT_OSAPI_MAC_OSX // POSIX
 	timeval tmv;
 	gettimeofday(&tmv,NULL);

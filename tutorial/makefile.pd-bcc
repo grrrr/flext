@@ -18,8 +18,8 @@ BCCPATH=c:\programme\prog\bcc55		### EDIT! ###
 PDPATH=c:\programme\audio\pd		### EDIT! ###
 
 # includes, libs
-INCPATH=-I$(BCCPATH)\include -I$(PDPATH)\src -I$(FLEXTPATH)
-LIBPATH=-L$(BCCPATH)\lib -L$(PDPATH)\lib -L$(FLEXTPATH)
+INCPATH=-I$(BCCPATH)\include -I$(PDPATH)\src -I$(FLEXTPATH)\source
+LIBPATH=-L$(BCCPATH)\lib -L$(PDPATH)\lib -L$(FLEXTPATH)\bcc
 LIBS=cw32.lib import32.lib C0D32.OBJ
 
 # compiler definitions and flags
@@ -68,12 +68,12 @@ $(OUTPATH)\$(NAME)~.dll : $(OUTPATH)\$(NAME).dll
 $(OUTPATH)\$(NAME).dll :: $(OUTPATH) $(OUTPATH)\$(NAME).def $(OUTPATH)\pd.lib 
 
 $(OUTPATH)\$(NAME).dll :: $(OBJS) 
-	ilink32 -C -Tpd $(LIBPATH) $** ,$<,,$(LIBS) $(OUTPATH)\pd.lib $(FLEXTPATH)\bcc\flext-$(TARGET).lib ,$(OUTPATH)\$(NAME).def
-	@del $**
-	@del $(OUTPATH)\*.i*
-	@del $(OUTPATH)\*.map
-	@del $(OUTPATH)\*.def
-	@del $(OUTPATH)\*.tds
+	ilink32 -C -Tpd $(LIBPATH) $** ,$<,,$(LIBS) $(OUTPATH)\pd.lib $(FLEXTPATH)\flext-$(TARGET).lib ,$(OUTPATH)\$(NAME).def
+	-@del $**
+	-@del $(OUTPATH)\*.i*
+	-@del $(OUTPATH)\*.map
+	-@del $(OUTPATH)\*.def
+	-@del $(OUTPATH)\*.tds
 
 
 

@@ -66,8 +66,8 @@ Version history:
 - flext now uses PD's or Max's memory allocation functions (for safety in Max's overdrive)
 - added outlets for anythings
 - better graphics update behavior for PD
-- proxy object for any non-leftmost inlets (still lacking consistency!)
 - changed "enable" message for DSP objects to "dspon" (enable is reserved in Max/MSP)
+- proxy objects for any non-leftmost inlets
 
 0.1.1:
 - documentation for flext.h

@@ -4,18 +4,28 @@
 # Makefile for MSVC++
 #
 #
-# IMPORTANT: Adjust all paths in makefile-inc.msvc
+# IMPORTANT: Adjust some of the paths also in makefile-inc.msvc
 #
-# usage: make -f makefile.msvc
+# usage: make -f makefile.pd-msvc
 #
-# ---------------------------------------------
+# ---------------------------------------------------------------
 
-all: flext flext_t
+!include config-pd-msvc.txt
+
+all: flext flext_t flext_d flext_td
 
 flext:
-	nmake /f makefile-inc.msvc  NAME=$* OUTPATH=".\msvc"
+	nmake /f make-inc.pd-msvc  NAME=$* 
+
+flext_d:
+	nmake /f make-inc.pd-msvc  NAME=$* _DEBUG=1
 
 flext_t:
-	nmake /f makefile-inc.msvc  NAME=$* OUTPATH=".\msvc-t" FLEXT_THREADS=
+	nmake /f make-inc.pd-msvc  NAME=$* FLEXT_THREADS=1
+
+flext_td:
+	nmake /f make-inc.pd-msvc  NAME=$* FLEXT_THREADS=1 _DEBUG=1
 
 
+clean:
+	nmake /f make-inc.pd-msvc  clean

@@ -8,18 +8,7 @@
 # to install (as root), do "make -f makefile.pd-linux install"
 #
 
-## EDIT ZONE ##################################
-
-# pd path 
-PDPATH=/usr/local/include
-
-# where to install 
-INSTDIR=/usr/local/lib/pd/flext
-
-###############################################
-
-# where to build (temporary)
-TARGDIR=./pd-linux
+include config-pd-linux.txt
 
 # compiler+linker stuff 
 INCLUDES=$(PDPATH)
@@ -63,10 +52,10 @@ $(TARGDIR)/%.do : source/%.cpp
 	$(CXX) -c $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
 
 $(TARGDIR)/%.to : source/%.cpp
-	$(CXX) -c $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
+	$(CXX) -c $(CFLAGS) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
 
 $(TARGDIR)/%.tdo : source/%.cpp
-	$(CXX) -c $(CFLAGS_T) $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
+	$(CXX) -c $(CFLAGS_D) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
 
 $(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS)) 
 	ar rc $@ $^ 
@@ -84,6 +73,11 @@ $(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(SRCS))
 	ar rc $@ $^
 	chmod 755 $@
 
+.PHONY: clean install
+
+clean:
+	rm -f $(TARGDIR)/*.o $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
+	
 $(INSTDIR):
 	mkdir $(INSTDIR)
 
@@ -94,10 +88,6 @@ install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)  $(patsubst %,source/%,
 	chmod 755 $(patsubst %,$(INSTDIR)/%,$(notdir $^))
 	chown root.users $(patsubst %,$(INSTDIR)/%,$(notdir $^))
 
-.PHONY: clean
-clean:
-	rm -f $(TARGDIR)/*.o $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
-	
 
 
 

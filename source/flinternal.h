@@ -18,7 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __FLEXT_INTERNALS_H
 #define __FLEXT_INTERNALS_H
 
-#include <flstdc.h>
+#include "flstdc.h"
 
 
 #ifdef PD

@@ -23,17 +23,17 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define FLEXT_VERSTR "0.3.1"
 
 // include all the flext interface definitions
-#include <fldefs.h>
+#include "fldefs.h"
 
 // include the basic flext object classes
-#include <flclass.h>
+#include "flclass.h"
 
 // include the flext dsp class
-#include <fldsp.h>
+#include "fldsp.h"
 
 // include pthreads if threading is enabled
 #ifdef FLEXT_THREADS
-#include <flthr.h>
+#include "flthr.h"
 #endif
 
 #endif // FLEXT_H

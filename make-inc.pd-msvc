@@ -4,34 +4,56 @@
 # ----- for internal use ----------------------
 #
 
-# paths to adjust
-MSVCPATH="c:\programme\prog\microsoft visual studio\VC98"		### EDIT! ##
-PDPATH=c:\programme\audio\pd		### EDIT! ##
+!include config-pd-msvc.txt
 
+# source files
+SOURCE=source
 
 # includes
-INCPATH=/I$(MSVCPATH)\include /I$(PDPATH)\src /Isource
+INCPATH=/I$(MSVCPATH)\include /I$(PDPATH)\src /I$(SOURCE)
 
 # compiler definitions and flags
-DEFS=-DPD -DNT 
+DEFS=/DPD /DNT 
 
-CFLAGS= /G6 /GD /GR /Ox
+CFLAGS=/GR /GD /G6
+OFLAGS=/Ox
+DFLAGS=/Od /Zi
 
 TARGET=pdwin  # appendix to lib name
+
+
+!ifdef FLEXT_THREADS
+DEFS=$(DEFS) /DFLEXT_THREADS
+
+!ifndef _DEBUG
+CFLAGS=$(CFLAGS) $(OFLAGS) /MT
+OBJPATH=t
+!else
+CFLAGS=$(CFLAGS) $(DFLAGS) /MTd
+OBJPATH=td
+!endif
+
+!else
+
+!ifndef _DEBUG
+CFLAGS=$(CFLAGS) $(OFLAGS) /ML
+OBJPATH=s
+!else
+CFLAGS=$(CFLAGS) $(DFLAGS) /MLd
+OBJPATH=sd
+!endif
+
+!endif
+
 
 
 # the rest can stay untouched
 # ----------------------------------------------
 
 # all the source files from the package
-SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flsetup.cpp flutil.cpp flatom.cpp
-HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h
+SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flsetup.cpp flutil.cpp flatom.cpp flthr.cpp
+HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h flthr.h fldsp.h
 IHDRS=flinternal.h
-
-
-!ifdef FLEXT_THREADS
-DEFS=$(DEFS) -DFLEXT_THREADS
-!endif
 
 
 #default target
@@ -39,26 +61,33 @@ all: $(OUTPATH)\$(NAME)-$(TARGET).lib
 
 # remove build
 clean:
-	-del /s /q $(OUTPATH) > nul
-	rmdir $(OUTPATH)
+	-cd $(OUTPATH)
+	-del /s /q $(OBJPATH) > nul
+	-rmdir $(OBJPATH)
+	-cd ..
+	-del /q $(OUTPATH)\$(NAME)-$(TARGET).lib > nul
+	-rmdir $(OUTPATH)
 
 # -----------------------------------------------
 
 OBJS= $(SRCS:.cpp=.obj)
 
-{source\}.cpp.obj:
+{$(SOURCE)\}.cpp.obj:
 	@-if not exist $(OUTPATH) mkdir $(OUTPATH)
-	cl /c $(CFLAGS) $(DEFS) $(INCPATH) /Fo$(OUTPATH)\$@ $<
-
-$(OUTPATH)\$(NAME)-$(TARGET).lib: $(OBJS) 
 	@cd $(OUTPATH)
-	lib /OUT:$(@F) $**
+	@-if not exist $(OBJPATH) mkdir $(OBJPATH)
 	@cd ..
+	cl /c $(CFLAGS) $(DEFS) $(INCPATH) /Fo$(OUTPATH)\$(OBJPATH)\$@ $<
 
-
-
-
-
-
-
+$(OUTPATH)\$(NAME)-$(TARGET).lib: $(OBJS)
+	@cd $(OUTPATH)\$(OBJPATH)
+	lib /OUT:..\$(NAME)-$(TARGET).lib $**
+	@cd ..\..
+!ifdef INSTALL
+!if "$(INSTALL)" == "yes"
+	@-if not exist $(OBJPATH) mkdir $(INSTDIR)
+	copy $(OUTPATH)\$(NAME)-$(TARGET).lib $(INSTDIR) > nul
+	copy $(SOURCE)\*.h $(INSTDIR) > nul
+!endif
+!endif
 

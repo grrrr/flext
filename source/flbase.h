@@ -19,7 +19,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __FLEXT_BASE_H
 #define __FLEXT_BASE_H
 
-#include <flstdc.h>
+#include "flstdc.h"
 
 #ifdef FLEXT_THREADS
 #include <pthread.h>

@@ -11,24 +11,18 @@
 # compiling for threaded usage is not supported
 #
 
-## EDIT ZONE ##################################
+include config-pd-cygwin.txt
 
-# pd path
-PDPATH=c:/programme/audio/pd/src
-
-###############################################
-
-# where to build (temporary)
-TARGDIR=./pd-cygwin
 
 # compiler+linker stuff
-INCLUDES=$(PDPATH) 
+INCLUDES=$(PDPATH)/src
 FLAGS=-DPD -DNT
 CFLAGS=-O6 -mcpu=pentiumpro
 CFLAGS_D=-mcpu=pentiumpro -g
 CFLAGS_T=-DFLEXT_THREADS
 LIBS=
 
+INSTDIR=$(PDPATH)/flext
 
 # ----------------------------------------------
 # the rest can stay untouched
@@ -37,20 +31,20 @@ LIBS=
 NAME=flext
 
 # all the source files from the package
-SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flsetup.cpp flutil.cpp flatom.cpp
-HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h
+SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flsetup.cpp flutil.cpp flatom.cpp flthr.cpp
+HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h fldsp.h flthr.h
 IHDRS=flinternal.h
 
 MAKEFILE=makefile.pd-cygwin
-TARGET=$(TARGDIR)/$(NAME).lib
-TARGET_D=$(TARGDIR)/$(NAME)_d.lib
-TARGET_T=$(TARGDIR)/$(NAME)_t.lib
-TARGET_TD=$(TARGDIR)/$(NAME)_td.lib
+TARGET=$(TARGDIR)/$(NAME)-pdwin.lib
+TARGET_D=$(TARGDIR)/$(NAME)_d-pdwin.lib
+TARGET_T=$(TARGDIR)/$(NAME)_t-pdwin.lib
+TARGET_TD=$(TARGDIR)/$(NAME)_td-pdwin.lib
 
 all: $(TARGDIR) $(TARGET) $(TARGET_D) # $(TARGET_T) $(TARGET_TD)
 
 $(TARGDIR):
-	mkdir $(TARGDIR)
+	-mkdir $(TARGDIR)
 
 $(SRCS): $(HDRS) $(IHDRS) $(MAKEFILE)
 	touch $@
@@ -62,10 +56,10 @@ $(TARGDIR)/%.do : source/%.cpp
 	$(CXX) -c $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
 
 $(TARGDIR)/%.to : source/%.cpp
-	$(CXX) -c $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
+	$(CXX) -c $(CFLAGS) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
 
 $(TARGDIR)/%.tdo : source/%.cpp
-	$(CXX) -c $(CFLAGS_T) $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
+	$(CXX) -c $(CFLAGS_D) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
 
 $(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS))
 	ar rc $@ $^
@@ -83,10 +77,18 @@ $(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(SRCS))
 	ar rc $@ $^
 	chmod 755 $@
 
-.PHONY: clean
+.PHONY: clean install
 clean:
 	rm -f $(TARGDIR)/*.o $(TARGET) $(TARGET_D)
 	
+$(INSTDIR):
+	-mkdir $(INSTDIR)
+
+install:: $(INSTDIR)
+
+install:: $(TARGET) $(TARGET_D) $(patsubst %,source/%,$(HDRS)) # $(TARGET_T) $(TARGET_TD)  
+	cp $^ $(INSTDIR)
+
 
 
 

@@ -39,16 +39,15 @@ The package should at least compile (and is tested) with the following compilers
 
 pd - Windows:
 -------------
-o Borland C++ 5.5 (free): edit & run "make -f makefile.bcc" 
+o Borland C++ 5.5 (free): edit "paths-pd-bcc.txt" & run "build-pd-bcc.bat" 
 
-o Microsoft Visual C++ 6: use the "flext.dsp" project file  
-> you have to edit the pd path in the project properties/C-C++/preprocessor tab!
+o Microsoft Visual C++ 6: edit "paths-pd-msvc.txt" & run "build-pd-msvc.bat" 
 
-o Cygwin: edit "makefile.pd-cygwin" & run "sh build-pd-cygwin.sh" 
+o Cygwin: edit "paths-pd-cygwin.txt" & run "sh build-pd-cygwin.sh" 
 
 pd - linux:
 -----------
-o GCC: edit "makefile.pd-linux" & run "sh build-pd-linux.sh" 
+o GCC: edit "paths-pd-linux.txt" & run "sh build-pd-linux.sh" 
 
 Max/MSP - MacOS:
 ----------------
@@ -82,6 +81,7 @@ Version history:
 0.3.1:
 - added some more functionality to the AtomList class
 - fixed forgotten Sleep implementation in pd@unix
+- reorganized file structure and make procedures
 
 0.3.0:
 - added CYGWIN support

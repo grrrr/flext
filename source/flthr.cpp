@@ -10,8 +10,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #ifdef FLEXT_THREADS
 
-#include <flext.h>
-#include <flinternal.h>
+#include "flext.h"
+#include "flinternal.h"
 
 #ifdef MAXMSP
 #define SCHEDTICK 1

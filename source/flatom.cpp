@@ -12,7 +12,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     \brief Definitions for handling the t_atom type and lists thereof.
 */
 
-#include <flext.h>
+#include "flext.h"
 
 flext_base::AtomList::AtomList(int argc,const t_atom *argv):
 	lst(NULL),cnt(0)

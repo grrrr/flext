@@ -1,0 +1,16 @@
+# flext - C++ layer for Max/MSP and pd (pure data) externals
+# Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
+#
+
+# where is PD?
+PDPATH=/cygdrive/c/programme/audio/pd
+
+# where should flext libraries be built?
+TARGDIR=./pd-cygwin
+
+# should the flext stuff be installed? (yes/no)
+INSTALL=yes
+
+# where should flext libraries be installed?
+INSTDIR=${PDPATH}/flext
+

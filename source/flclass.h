@@ -18,7 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __FLCLASS_H
 
 //! include the header file declaring the base classes
-#include <flbase.h>
+#include "flbase.h"
 
 #ifdef _MSC_VER
 #pragma warning(disable: 4786)

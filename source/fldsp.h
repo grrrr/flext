@@ -18,7 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __FLDSP_H
 
 //! include the header file declaring the base classes
-#include <flext.h>
+#include "flext.h"
 
 
 // === flext_dsp ==================================================

@@ -8,7 +8,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-#include <flext.h>
+#include "flext.h"
 
 #ifdef MAXMSP
 #include "flmspbuffer.h" // include inofficial buffer.h

@@ -1,0 +1,21 @@
+# flext - C++ layer for Max/MSP and pd (pure data) externals
+# Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
+#
+
+# where is PD?
+PDPATH=c:\programme\audio\pd		
+
+# where is BorlandC++?
+BCCPATH=c:\programme\prog\bcc55		
+
+# build directory for flext libraries?
+OUTPATH=.\pd-bcc
+
+# should the flext stuff be installed? (yes/no)
+INSTALL=yes
+
+# where should flext libraries be installed?
+INSTDIR=$(PDPATH)\flext
+
+
+

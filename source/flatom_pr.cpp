@@ -25,95 +25,95 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // \TODO take bufsz into account!
 bool flext::PrintAtom(const t_atom &a,char *buf,int bufsz)
 {
-	bool ok = true;
-	if(IsFloat(a)) {
-		STD::snprintf(buf,bufsz,"%g",GetFloat(a));
-	}
-	else if(IsInt(a)) {
-		STD::snprintf(buf,bufsz,"%i",GetInt(a));
-	}
-	else if(IsSymbol(a)) {
+    bool ok = true;
+    if(IsFloat(a)) {
+        STD::snprintf(buf,bufsz,"%g",GetFloat(a));
+    }
+    else if(IsInt(a)) {
+        STD::snprintf(buf,bufsz,"%i",GetInt(a));
+    }
+    else if(IsSymbol(a)) {
         if(!FLEXT_ASSERT(GetSymbol(a))) *buf = 0;
         else 
             STD::strncpy(buf,GetString(a),bufsz);
-	}
-	else if(IsPointer(a)) {
-		STD::snprintf(buf,bufsz,"%p",GetPointer(a));
-	}
+    }
+    else if(IsPointer(a)) {
+        STD::snprintf(buf,bufsz,"%p",GetPointer(a));
+    }
 #if FLEXT_SYS == FLEXT_SYS_PD
-	else if(a.a_type == A_DOLLAR) {
-		STD::snprintf(buf,bufsz,"$%d",a.a_w.w_index);
-	}
-	else if(a.a_type == A_DOLLSYM) {
-		STD::snprintf(buf,bufsz,"$%s",GetString(a));
-	}
+    else if(a.a_type == A_DOLLAR) {
+        STD::snprintf(buf,bufsz,"$%d",a.a_w.w_index);
+    }
+    else if(a.a_type == A_DOLLSYM) {
+        STD::snprintf(buf,bufsz,"$%s",GetString(a));
+    }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	else if(a.a_type == A_DOLLAR) {
-		STD::snprintf(buf,bufsz,"$%d",a.a_w.w_long);
-	}
+    else if(a.a_type == A_DOLLAR) {
+        STD::snprintf(buf,bufsz,"$%d",a.a_w.w_long);
+    }
 #else
 //#pragma message("Not implemented")
 #endif
-	else {
+    else {
         error("flext: atom type unknown");
-		ok = false;
-	}
-	return ok;
+        ok = false;
+    }
+    return ok;
 }
 
 bool flext::PrintList(int argc,const t_atom *argv,char *buf,int bufsz)
 {
-	bool ok = true;
+    bool ok = true;
     for(int i = 0; ok && i < argc && bufsz > 0; ++i) {
-		if(i) { *(buf++) = ' '; --bufsz; } // prepend space
+        if(i) { *(buf++) = ' '; --bufsz; } // prepend space
 
-		if(PrintAtom(argv[i],buf,bufsz)) {
-			int len = strlen(buf);
-			buf += len,bufsz -= len;
-		}
-		else
-			ok = false;
+        if(PrintAtom(argv[i],buf,bufsz)) {
+            int len = strlen(buf);
+            buf += len,bufsz -= len;
+        }
+        else
+            ok = false;
     }
-	*buf = 0;
+    *buf = 0;
     return ok;
 }
 
 
 bool flext::ScanAtom(t_atom &a,const char *buf)
 {
-	// skip whitespace
-	while(*buf && isspace(*buf)) ++buf;
-	if(!*buf) return false;
+    // skip whitespace
+    while(*buf && isspace(*buf)) ++buf;
+    if(!*buf) return false;
 
-	char tmp[1024];
-	strcpy(tmp,buf);
-	char *c = tmp;
+    char tmp[1024];
+    strcpy(tmp,buf);
+    char *c = tmp;
 
-	// check for word type (s = 0,1,2 ... int,float,symbol)
-	int s = 0;
-	for(; *c && !isspace(*c); ++c) {
-		if(!isdigit(*c)) 
-			s = (*c != '.' || s == 1)?2:1;
-	}
+    // check for word type (s = 0,1,2 ... int,float,symbol)
+    int s = 0;
+    for(; *c && !isspace(*c); ++c) {
+        if(!isdigit(*c)) 
+            s = (*c != '.' || s == 1)?2:1;
+    }
 
-	switch(s) {
-	case 0: // integer
+    switch(s) {
+    case 0: // integer
 #if FLEXT_SYS == FLEXT_SYS_MAX
-		SetInt(a,atol(tmp));
-		break;
+        SetInt(a,atol(tmp));
+        break;
 #endif
-	case 1: // float
-		SetFloat(a,(float)atof(tmp));
-		break;
-	default: { // anything else is a symbol
-		char t = *c; *c = 0;
-		SetString(a,tmp);
-		*c = t;
-		break;
-	}
-	}
+    case 1: // float
+        SetFloat(a,(float)atof(tmp));
+        break;
+    default: { // anything else is a symbol
+        char t = *c; *c = 0;
+        SetString(a,tmp);
+        *c = t;
+        break;
+    }
+    }
 
-	return true;
+    return true;
 }
 
 

@@ -14,7 +14,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define _FLEXT_CW_PD_X_H
 
 #ifndef __MWERKS__
-	#error "This header file is for CodeWarrior only."
+    #error "This header file is for CodeWarrior only."
 #endif
 
 #define FLEXT_SYS 2
@@ -24,12 +24,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define _POSIX_C_SOURCE
 
 #ifndef _CW_NOPRECOMP
-//	#include <MacHeadersMach-O.h> 
-//	#include <MSL MacHeadersMach-O.h> 
+//  #include <MacHeadersMach-O.h> 
+//  #include <MSL MacHeadersMach-O.h> 
 #endif
 
 #if __option(sym) || !__option(opt_dead_code)
-	#define FLEXT_DEBUG
+    #define FLEXT_DEBUG
 #endif
 
 /* #define _LOG */

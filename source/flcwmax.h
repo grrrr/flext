@@ -16,19 +16,19 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define _FLEXT_CW_MAX_H
 
 #ifndef __MWERKS__
-	#error "This header file is for CodeWarrior only."
+    #error "This header file is for CodeWarrior only."
 #endif
 
 #define FLEXT_SYS 1
 #define FLEXT_USE_SIMD
  
 #ifndef _CW_NOPRECOMP
-	#include <MacHeaders.h>
+    #include <MacHeaders.h>
 #endif
 
 #if /*__option(sym) ||*/ !__option(opt_dead_code)
-	#pragma message("Optimization disabled -> Compiling a debug version (with FLEXT_DEBUG)")
-	#define FLEXT_DEBUG
+    #pragma message("Optimization disabled -> Compiling a debug version (with FLEXT_DEBUG)")
+    #define FLEXT_DEBUG
 #endif
 
 /* #define _LOG */

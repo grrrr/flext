@@ -2,8 +2,8 @@
 #define __FLEXT_DOXYGEN_H
 
 /*! \file fldoxygen.h
-	\brief Doxygen definitions
-	\remark There is no code in here, just documentation stuff.
+    \brief Doxygen definitions
+    \remark There is no code in here, just documentation stuff.
 */
 
 /*! 
@@ -110,9 +110,9 @@ With these lines, all the necessary definitions from the flext package have been
 
 \verbatim
 class attr1:
-	public flext_base
+    public flext_base
 {
-	FLEXT_HEADER(attr1,flext_base)
+    FLEXT_HEADER(attr1,flext_base)
 \endverbatim
 
 A flext class is simply defined by inheriting from the flext_base (see also \ref FLEXT_CLASS) 
@@ -121,18 +121,18 @@ Additionally some information has to be added using FLEXT_HEADER (see \ref FLEXT
 
 \verbatim
 public:
-	// constructor 
-	attr1();
+    // constructor 
+    attr1();
 \endverbatim
 
 Normally the constructor takes the creation arguments of an object. Here there are none.
 
 \verbatim
 protected:
-	void m_trigger(float f);   
-	
-	// stored argument
-	float arg; 
+    void m_trigger(float f);   
+    
+    // stored argument
+    float arg; 
 \endverbatim
 
 These are methods and data elements for internal class usage. Flext doesn't know about them
@@ -140,11 +140,11 @@ as long as they are not registered.
 
 \verbatim
 private:
-	// callback for method "m_trigger" (with one float argument)
-	FLEXT_CALLBACK_F(m_trigger);  
+    // callback for method "m_trigger" (with one float argument)
+    FLEXT_CALLBACK_F(m_trigger);  
 
-	// define attribute callbacks for variable "arg" (with GET and SET properties)
-	FLEXT_ATTRVAR_F(arg);  
+    // define attribute callbacks for variable "arg" (with GET and SET properties)
+    FLEXT_ATTRVAR_F(arg);  
 };
 \endverbatim
 
@@ -166,23 +166,23 @@ or a DSP object (see \ref FLEXT_D_NEW_DSP) is created and whether it resides in 
 
 \verbatim
 attr1::attr1():
-	arg(0)  // initialize argument 
+    arg(0)  // initialize argument 
 { 
-	// define inlets
-	AddInAnything();  // first inlet of type anything (index 0)
-	
-	// define outlets
-	AddOutFloat();  // one float outlet (has index 0)
+    // define inlets
+    AddInAnything();  // first inlet of type anything (index 0)
+    
+    // define outlets
+    AddOutFloat();  // one float outlet (has index 0)
 \endverbatim
-	
+    
 Every inlet and outlet that the object shall have has to be registered.
 This is done with the functions in \ref FLEXT_C_IO_ADD.
 
 \verbatim
-	// register methods
-	FLEXT_ADDMETHOD(0,m_trigger);  // register method (for floats) "m_trigger" for inlet 0
+    // register methods
+    FLEXT_ADDMETHOD(0,m_trigger);  // register method (for floats) "m_trigger" for inlet 0
 
-	FLEXT_ADDATTR_VAR1("arg",arg);  // register attribute "arg" with variable arg
+    FLEXT_ADDATTR_VAR1("arg",arg);  // register attribute "arg" with variable arg
 } 
 \endverbatim
 
@@ -195,10 +195,10 @@ used are known beforehand (see \ref FLEXT_D_CADDMETHOD and \ref FLEXT_D_CADDATTR
 \verbatim
 void attr1::m_trigger(float f)
 {
-	float res = arg+f;
-	
-	// output value to outlet
-	ToOutFloat(0,res); // (0 stands for the outlet index 0)
+    float res = arg+f;
+    
+    // output value to outlet
+    ToOutFloat(0,res); // (0 stands for the outlet index 0)
 }
 \endverbatim
 

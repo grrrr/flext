@@ -18,12 +18,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define FLEXT_THREADS
 
 /*
-	old CodeWarrior version (<= 6) don't have sigset_t defined which
-	is needed for pthreads
+    old CodeWarrior version (<= 6) don't have sigset_t defined which
+    is needed for pthreads
 */
 #if defined(__MWERKS__) && (__MWERKS__ == 1)  // read __MWERKS__ numbering starts with CW7
-	typedef unsigned int sigset_t;
-	#define _CW_NOPRECOMP // no precompiled headers
+    typedef unsigned int sigset_t;
+    #define _CW_NOPRECOMP // no precompiled headers
 #endif
 
 #include "flcwmax-x.h"

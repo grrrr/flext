@@ -17,9 +17,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __FLEXT_DEFS_METHCALL_H
 
 
-/*!	\defgroup FLEXT_D_CALLMETHOD Call flext methods manually
+/*! \defgroup FLEXT_D_CALLMETHOD Call flext methods manually
     \ingroup FLEXT_D_METHOD
-	@{ 
+    @{ 
 */
 
 //! Call a (already defined) method with no arguments

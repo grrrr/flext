@@ -16,22 +16,22 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 int flext::AtomList::Get(t_atom *argv,int mxsz) const
 {
-	int argc = Count();
-	if(mxsz >= 0 && argc > mxsz) argc = mxsz;
+    int argc = Count();
+    if(mxsz >= 0 && argc > mxsz) argc = mxsz;
 
-	for(int i = 0; i < argc; ++i) SetAtom(argv[i],lst[i]);
+    for(int i = 0; i < argc; ++i) SetAtom(argv[i],lst[i]);
 
-	return argc;
+    return argc;
 }
 
 
 flext::AtomList flext::AtomList::GetPart(int offs,int len) const
 {
-	if(offs+len > Count()) {
-		len = Count()-offs;
-		if(len < 0) len = 0;
-	}
+    if(offs+len > Count()) {
+        len = Count()-offs;
+        if(len < 0) len = 0;
+    }
 
-	return AtomList(len,Atoms()+offs);
+    return AtomList(len,Atoms()+offs);
 }
 

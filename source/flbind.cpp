@@ -27,37 +27,37 @@ t_messlist px_messlist[3];
 */
 void flext_base::SetupBindProxy()
 {
-	// already initialized?
-	if(!pxbnd_class) {
+    // already initialized?
+    if(!pxbnd_class) {
 #if FLEXT_SYS == FLEXT_SYS_PD
-    	pxbnd_class = class_new(gensym("flext_base bind proxy"),NULL,NULL,sizeof(pxbnd_object),CLASS_PD|CLASS_NOINLET, A_NULL);
-		add_anything(pxbnd_class,pxbnd_object::px_method); // for symbol-bound methods
+        pxbnd_class = class_new(gensym("flext_base bind proxy"),NULL,NULL,sizeof(pxbnd_object),CLASS_PD|CLASS_NOINLET, A_NULL);
+        add_anything(pxbnd_class,pxbnd_object::px_method); // for symbol-bound methods
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-		pxbnd_class = new t_class;
+        pxbnd_class = new t_class;
 
-		pxbnd_class->c_sym = gensym("");
-		pxbnd_class->c_freelist = &px_freelist;
-		pxbnd_class->c_freefun = NULL;
-		pxbnd_class->c_size = sizeof(pxbnd_object);
-		pxbnd_class->c_tiny = 0;
-		pxbnd_class->c_noinlet = 1;
-		px_messlist[0].m_sym = (t_symbol *)pxbnd_class;
+        pxbnd_class->c_sym = gensym("");
+        pxbnd_class->c_freelist = &px_freelist;
+        pxbnd_class->c_freefun = NULL;
+        pxbnd_class->c_size = sizeof(pxbnd_object);
+        pxbnd_class->c_tiny = 0;
+        pxbnd_class->c_noinlet = 1;
+        px_messlist[0].m_sym = (t_symbol *)pxbnd_class;
 
-		px_messlist[1].m_sym = gensym("anything");
-		px_messlist[1].m_fun = (method)pxbnd_object::px_method;
-		px_messlist[1].m_type[0] = A_GIMME;
-		px_messlist[1].m_type[1] = 0;
+        px_messlist[1].m_sym = gensym("anything");
+        px_messlist[1].m_fun = (method)pxbnd_object::px_method;
+        px_messlist[1].m_type[0] = A_GIMME;
+        px_messlist[1].m_type[1] = 0;
 
-		px_messlist[2].m_sym = 0;
+        px_messlist[2].m_sym = 0;
 #else
 #pragma warning("Not implemented!")
 #endif
-	}
+    }
 }
 
 
 flext_base::BindItem::BindItem(bool (*f)(flext_base *,t_symbol *s,int,t_atom *,void *data),pxbnd_object *p):
-	Item(NULL),fun(f),px(p)
+    Item(NULL),fun(f),px(p)
 {}
 
 flext_base::BindItem::~BindItem()
@@ -122,13 +122,13 @@ bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbo
 #endif
 
     if(px) {
-	    BindItem *mi = new BindItem(fun,px);
-	    bindhead->Add(mi,sym);
+        BindItem *mi = new BindItem(fun,px);
+        bindhead->Add(mi,sym);
 
         px->init(this,mi,data);
 
 #if FLEXT_SYS == FLEXT_SYS_PD
-    	pd_bind(&px->obj.ob_pd,const_cast<t_symbol *>(sym)); 
+        pd_bind(&px->obj.ob_pd,const_cast<t_symbol *>(sym)); 
 #elif FLEXT_SYS == FLEXT_SYS_MAX
         if(!sym->s_thing) 
             const_cast<t_symbol *>(sym)->s_thing = (t_object *)px;
@@ -205,16 +205,16 @@ bool flext_base::UnbindAll()
         for(ItemSet::iterator si = set.begin(); si != set.end(); ++si) {
             Item *lst = si.data();
             while(lst) {
-				Item *nxt = lst->nxt;
+                Item *nxt = lst->nxt;
                 BindItem *it = (BindItem *)lst;
                 it->Unbind(si.key());
                 delete it;
-				lst = nxt;
+                lst = nxt;
             }
         }
         set.clear();
     }
-	return true;
+    return true;
 }
 
 void flext_base::pxbnd_object::px_method(pxbnd_object *c,const t_symbol *s,int argc,t_atom *argv)

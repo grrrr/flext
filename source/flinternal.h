@@ -10,10 +10,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 /*! \file flinternal.h
     \brief Definitions for internal flext usage
-	\internal
+    \internal
     
     Here, a few shortcuts for common Max/MSP or PD library calls and type definitions 
-	are declared
+    are declared
 */
 
 #ifndef __FLEXT_INTERNALS_H
@@ -26,7 +26,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #define object_new(clss) pd_new(clss)
 #define object_free(obj) pd_free(&(obj)->ob_pd)
-				
+                
 
 
 #define add_dsp(clss,meth) class_addmethod(clss, (t_method)meth,gensym("dsp"),A_NULL)

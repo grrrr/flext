@@ -11,7 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 /*! \file flbase.cpp
     \brief Implementation of the internal flext base classes.
 
-	\remark This is all derived from GEM by Mark Danks
+    \remark This is all derived from GEM by Mark Danks
 */
  
 #include "flext.h"
@@ -21,12 +21,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 #ifdef _MSC_VER
-	#pragma warning (push)
-	#pragma warning (disable:4091)
+    #pragma warning (push)
+    #pragma warning (disable:4091)
 #endif
 #include <g_canvas.h>
 #ifdef _MSC_VER
-	#pragma warning (pop)
+    #pragma warning (pop)
 #endif
 #endif
 
@@ -52,9 +52,9 @@ void flext_obj::ProcessAttributes(bool attr) { process_attributes = attr; }
 /////////////////////////////////////////////////////////
 flext_obj :: FLEXT_CLASSDEF(flext_obj)()
            : x_obj(m_holder)
-		   , procattr(m_holdattr)
-		   , init_ok(true)
-		   , m_name(m_holdname)
+           , procattr(m_holdattr)
+           , init_ok(true)
+           , m_name(m_holdname)
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
     m_canvas = canvas_getcurrent();
@@ -69,7 +69,7 @@ flext_obj :: FLEXT_CLASSDEF(flext_obj)()
 //
 /////////////////////////////////////////////////////////
 flext_obj :: ~FLEXT_CLASSDEF(flext_obj)() {
-	x_obj = NULL;
+    x_obj = NULL;
 }
 
 
@@ -80,56 +80,56 @@ void flext_obj::Exit() {}
 void flext_obj::DefineHelp(t_classid c,const char *ref,const char *dir,bool addtilde)
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
-	char tmp[256];
-	if(dir) { 
-		strcpy(tmp,dir); 
-		strcat(tmp,"/"); 
-		strcat(tmp,ref); 
-	}
-	else 
-		strcpy(tmp,ref);
-	if(addtilde) strcat(tmp,"~"); 
+    char tmp[256];
+    if(dir) { 
+        strcpy(tmp,dir); 
+        strcat(tmp,"/"); 
+        strcat(tmp,ref); 
+    }
+    else 
+        strcpy(tmp,ref);
+    if(addtilde) strcat(tmp,"~"); 
 
     ::class_sethelpsymbol(getClass(c),gensym(const_cast<char *>(tmp)));
 #else
-	// no solution for Max/MSP yet
+    // no solution for Max/MSP yet
 #endif
 }
 
 bool flext_obj::GetParamSym(t_atom &dst,const t_symbol *sym,t_canvas *c)
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
-	if(!c) c = canvas_getcurrent();
+    if(!c) c = canvas_getcurrent();
 
-	const char *s = GetString(sym);
-	if((s[0] == '$' || s[0] == '#') && isdigit(s[1])) {
-		const t_symbol *res;
-		// patcher parameter detected... get value!
-		if(s[0] != '$') {
-			char tmp[MAXPDSTRING];
-			strcpy(tmp,s);
-			tmp[0] = '$';
-			res = canvas_realizedollar(c,const_cast<t_symbol *>(MakeSymbol(tmp)));
-		}
-		else
-			res = canvas_realizedollar(c,const_cast<t_symbol *>(sym));
+    const char *s = GetString(sym);
+    if((s[0] == '$' || s[0] == '#') && isdigit(s[1])) {
+        const t_symbol *res;
+        // patcher parameter detected... get value!
+        if(s[0] != '$') {
+            char tmp[MAXPDSTRING];
+            strcpy(tmp,s);
+            tmp[0] = '$';
+            res = canvas_realizedollar(c,const_cast<t_symbol *>(MakeSymbol(tmp)));
+        }
+        else
+            res = canvas_realizedollar(c,const_cast<t_symbol *>(sym));
 
-		// check for number
-		const char *c = GetString(res);
-		while(*c && (isdigit(*c) || *c == '.')) ++c;
+        // check for number
+        const char *c = GetString(res);
+        while(*c && (isdigit(*c) || *c == '.')) ++c;
 
-		if(!*c) 
-			SetFloat(dst,(float)atof(GetString(res)));
-		else
-			SetSymbol(dst,res);
-		return true;
-	}
-	else
+        if(!*c) 
+            SetFloat(dst,(float)atof(GetString(res)));
+        else
+            SetSymbol(dst,res);
+        return true;
+    }
+    else
 #else
-	#pragma message("Not implemented")
+    #pragma message("Not implemented")
 #endif
-	SetSymbol(dst,sym);
-	return true;
+    SetSymbol(dst,sym);
+    return true;
 }
 
 
@@ -142,13 +142,13 @@ extern "C" void canvas_getargs(int *argcp, t_atom **argvp);
 void flext_obj::CanvasArgs(AtomList &args) const
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
-	int argc;
-	t_atom *argv;
-	canvas_getargs(&argc,&argv);
-	args(argc);
-	for(int i = 0; i < argc; ++i) args[i] = argv[i];
+    int argc;
+    t_atom *argv;
+    canvas_getargs(&argc,&argv);
+    args(argc);
+    for(int i = 0; i < argc; ++i) args[i] = argv[i];
 #else
-	#pragma message("Not implemented")
-	args(0);
+    #pragma message("Not implemented")
+    args(0);
 #endif
 }

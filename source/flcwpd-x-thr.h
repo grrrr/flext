@@ -17,12 +17,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #if 0
 /*
-	old CodeWarrior version (<= 6) don't have sigset_t defined which
-	is needed for pthreads
+    old CodeWarrior version (<= 6) don't have sigset_t defined which
+    is needed for pthreads
 */
 #if defined(__MWERKS__) && (__MWERKS__ <= 0x6000)
-	typedef unsigned int sigset_t;
-	#define _CW_NOPRECOMP // no precompiled headers
+    typedef unsigned int sigset_t;
+    #define _CW_NOPRECOMP // no precompiled headers
 #endif
 #endif
 

@@ -15,81 +15,81 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <Stk.h>
 
 class FLEXT_SHARE flext_stk:
-	public flext_dsp
+    public flext_dsp
 { 
-	FLEXT_HEADER(flext_stk,flext_dsp)
+    FLEXT_HEADER(flext_stk,flext_dsp)
  
 public:
-	flext_stk();
+    flext_stk();
 
-	// these have to be overridden in child classes
-	virtual bool NewObjs() { return true; }
-	virtual void FreeObjs() {}
-	virtual void ProcessObjs(int blocksize) {}
+    // these have to be overridden in child classes
+    virtual bool NewObjs() { return true; }
+    virtual void FreeObjs() {}
+    virtual void ProcessObjs(int blocksize) {}
 
 protected:
-	virtual bool Init();
-	virtual void Exit();
+    virtual bool Init();
+    virtual void Exit();
 
-	//! STK object for reading from inlet buffer
-	class Input:
-		public Stk
-	{
-	public:
-		Input(const t_sample *b,int vecsz);
+    //! STK object for reading from inlet buffer
+    class Input:
+        public Stk
+    {
+    public:
+        Input(const t_sample *b,int vecsz);
 
-		inline MY_FLOAT lastOut() const { return (MY_FLOAT)buf[index]; }
+        inline MY_FLOAT lastOut() const { return (MY_FLOAT)buf[index]; }
 
-		inline MY_FLOAT tick() { 
-	        if(++index >= vecsz) index = 0; 
-	        return lastOut(); 
+        inline MY_FLOAT tick() { 
+            if(++index >= vecsz) index = 0; 
+            return lastOut(); 
         }
 
-		MY_FLOAT *tick(MY_FLOAT *vector,unsigned int vectorSize);
+        MY_FLOAT *tick(MY_FLOAT *vector,unsigned int vectorSize);
 
-		inline void SetBuf(const t_sample *b) { buf = b; }
+        inline void SetBuf(const t_sample *b) { buf = b; }
 
-	private:
-		const t_sample *buf;
-		int vecsz,index;
-	};
+    private:
+        const t_sample *buf;
+        int vecsz,index;
+    };
 
-	//! STK object for writing to outlet buffer
-	class Output:
-		public Stk
-	{
-	public:
-		Output(t_sample *b,int vecsz);
+    //! STK object for writing to outlet buffer
+    class Output:
+        public Stk
+    {
+    public:
+        Output(t_sample *b,int vecsz);
 
         inline void tick(MY_FLOAT s) { 
             buf[index] = (t_sample)s; 
             if(++index >= vecsz) index = 0; 
         }
 
-		void tick(const MY_FLOAT *vector,unsigned int vectorSize);
+        void tick(const MY_FLOAT *vector,unsigned int vectorSize);
 
-		inline void SetBuf(t_sample *b) { buf = b; }
+        inline void SetBuf(t_sample *b) { buf = b; }
 
-	private:
-		t_sample *buf;
-		int vecsz,index;
-	};
+    private:
+        t_sample *buf;
+        int vecsz,index;
+    };
 
-	Input &Inlet(int ix) { return *inobj[ix]; }
-	Output &Outlet(int ix) { return *outobj[ix]; }
+    Input &Inlet(int ix) { return *inobj[ix]; }
+    Output &Outlet(int ix) { return *outobj[ix]; }
 
 private:
-	virtual void m_dsp(int n,t_sample *const *in,t_sample *const *out); 
-	virtual void m_signal(int n,t_sample *const *in,t_sample *const *out); 
+    virtual void m_dsp(int n,t_sample *const *in,t_sample *const *out); 
+    virtual void m_signal(int n,t_sample *const *in,t_sample *const *out); 
 
-	void ClearObjs();
+    void ClearObjs();
 
-	int inobjs,outobjs;
-	Input **inobj;
-	Output **outobj;
+    int inobjs,outobjs;
+    Input **inobj;
+    Output **outobj;
 
-	float smprt;
-	int blsz;
+    float smprt;
+    int blsz;
 };
 
 #endif

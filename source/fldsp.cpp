@@ -24,50 +24,50 @@ const t_symbol *flext_dsp::dspsym = MakeSymbol("__flext_dspfun__");
 
 void flext_dsp::Setup(t_classid id)
 {
-	t_class *c = getClass(id);
+    t_class *c = getClass(id);
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
-//	dsp_initclass();
-	dsp_initboxclass();
-	add_dsp(c,cb_dsp);
+//  dsp_initclass();
+    dsp_initboxclass();
+    add_dsp(c,cb_dsp);
 #elif FLEXT_SYS == FLEXT_SYS_PD
-	CLASS_MAINSIGNALIN(c,flext_hdr,defsig); // float messages going into the left inlet are converted to signal
-	add_dsp(c,cb_dsp);
-	add_method1(c,cb_enable,"enable",A_FLOAT);
+    CLASS_MAINSIGNALIN(c,flext_hdr,defsig); // float messages going into the left inlet are converted to signal
+    add_dsp(c,cb_dsp);
+    add_method1(c,cb_enable,"enable",A_FLOAT);
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
-	fts_dsp_declare_function(dspsym,dspmeth);	
-	fts_class_message_varargs(c, fts_s_put, cb_dsp);
-	fts_class_message_varargs(c, MakeSymbol("enable"), cb_enable);
+    fts_dsp_declare_function(dspsym,dspmeth);   
+    fts_class_message_varargs(c, fts_s_put, cb_dsp);
+    fts_class_message_varargs(c, MakeSymbol("enable"), cb_enable);
 #endif
 }
 
 flext_dsp::FLEXT_CLASSDEF(flext_dsp)(): 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-	srate(fts_dsp_get_sample_rate()),  // should we set it?
-	blksz(fts_dsp_get_tick_size()),
+    srate(fts_dsp_get_sample_rate()),  // should we set it?
+    blksz(fts_dsp_get_tick_size()),
 #else
-	srate(sys_getsr()),  // should we set it?
-	blksz(sys_getblksize()),
+    srate(sys_getsr()),  // should we set it?
+    blksz(sys_getblksize()),
 #endif
 #if FLEXT_SYS == FLEXT_SYS_PD
-	chnsin(sys_get_inchannels()),
-	chnsout(sys_get_outchannels()),
+    chnsin(sys_get_inchannels()),
+    chnsout(sys_get_outchannels()),
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	chnsin(sys_getch()),
-	chnsout(sys_getch()),
+    chnsin(sys_getch()),
+    chnsout(sys_getch()),
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
-	#pragma message("not implemented")
-	chnsin(0),chnsout(0),
+    #pragma message("not implemented")
+    chnsin(0),chnsout(0),
 #else
 #error
 #endif
 #if FLEXT_SYS != FLEXT_SYS_MAX
-	dspon(true),
+    dspon(true),
 #endif
-	invecs(NULL),outvecs(NULL)
+    invecs(NULL),outvecs(NULL)
 {
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-	fts_dsp_object_init(thisHdr());
+    fts_dsp_object_init(thisHdr());
 #endif
 }
 
@@ -75,18 +75,18 @@ flext_dsp::FLEXT_CLASSDEF(flext_dsp)():
 flext_dsp::~FLEXT_CLASSDEF(flext_dsp)()
 {
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-	fts_dsp_object_delete(thisHdr());
+    fts_dsp_object_delete(thisHdr());
 #endif
 
 /*
 #if FLEXT_SYS == FLEXT_SYS_MAX
-	// switch off dsp as the dsp function might get called afterwards (?!)
-	thisHdr()->z_disabled = true;
-	
-	if(invecs) delete[] invecs;
-	if(outvecs) delete[] outvecs;
+    // switch off dsp as the dsp function might get called afterwards (?!)
+    thisHdr()->z_disabled = true;
+    
+    if(invecs) delete[] invecs;
+    if(outvecs) delete[] outvecs;
 #elif FLEXT_SYS == FLEXT_SYS_PD
-	dspon = false;
+    dspon = false;
 #endif
 */
 }
@@ -98,23 +98,23 @@ void flext_dsp::dspmeth(fts_word_t *w)
 #else
 t_int *flext_dsp::dspmeth(t_int *w) 
 { 
-	flext_dsp *obj = (flext_dsp *)w[1];
+    flext_dsp *obj = (flext_dsp *)w[1];
 /*
 #ifdef FLEXT_DEBUG
-	if(!obj->thisHdr()) {
-		// object is already deleted!
-		ERRINTERNAL();
-		return w+3;
-	}
+    if(!obj->thisHdr()) {
+        // object is already deleted!
+        ERRINTERNAL();
+        return w+3;
+    }
 #endif
 */
 #if FLEXT_SYS == FLEXT_SYS_MAX
-	if(!obj->thisHdr()->z_disabled) 
+    if(!obj->thisHdr()->z_disabled) 
 #else
-	if(obj->dspon) 
+    if(obj->dspon) 
 #endif
-		obj->m_signal(obj->blksz,obj->invecs,obj->outvecs); 
-	return w+2;
+        obj->m_signal(obj->blksz,obj->invecs,obj->outvecs); 
+    return w+2;
 }
 #endif
 
@@ -126,72 +126,72 @@ void flext_dsp::cb_dsp(t_class *c,t_signal **sp,short *count)
 void flext_dsp::cb_dsp(t_class *c,t_signal **sp) 
 #endif
 { 
-	flext_dsp *obj = thisObject(c); 
+    flext_dsp *obj = thisObject(c); 
 
-	if(obj->CntInSig()+obj->CntOutSig() == 0) return;
+    if(obj->CntInSig()+obj->CntOutSig() == 0) return;
 
-	// store current dsp parameters
+    // store current dsp parameters
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-	fts_dsp_descr_t *dsp = (fts_dsp_descr_t *)fts_get_pointer(at+0);
-	obj->srate = fts_dsp_get_input_srate(dsp,0);
-	obj->blksz = fts_dsp_get_input_size(dsp,0);  // is this guaranteed to be the same as sys_getblksize() ?
+    fts_dsp_descr_t *dsp = (fts_dsp_descr_t *)fts_get_pointer(at+0);
+    obj->srate = fts_dsp_get_input_srate(dsp,0);
+    obj->blksz = fts_dsp_get_input_size(dsp,0);  // is this guaranteed to be the same as sys_getblksize() ?
 #else
-	obj->srate = sp[0]->s_sr;
-	obj->blksz = sp[0]->s_n;  // is this guaranteed to be the same as sys_getblksize() ?
+    obj->srate = sp[0]->s_sr;
+    obj->blksz = sp[0]->s_n;  // is this guaranteed to be the same as sys_getblksize() ?
 #endif
 
 /*
 #if FLEXT_SYS == FLEXT_SYS_PD
-	obj->chnsin = sys_get_inchannels();
-	obj->chnsout = sys_get_outchannels();
+    obj->chnsin = sys_get_inchannels();
+    obj->chnsout = sys_get_outchannels();
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	obj->chnsin = obj->chnsout = sys_getch();
+    obj->chnsin = obj->chnsout = sys_getch();
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
-	#pragma message ("How to query the channels?")
+    #pragma message ("How to query the channels?")
 #else
 #error
 #endif
 */
-	// store in and out signal vectors
-	int i;
-	int in = obj->chnsin = obj->CntInSig();
-	int out = obj->chnsout = obj->CntOutSig();
+    // store in and out signal vectors
+    int i;
+    int in = obj->chnsin = obj->CntInSig();
+    int out = obj->chnsout = obj->CntOutSig();
 
 #if FLEXT_SYS == FLEXT_SYS_PD
-	// min. 1 input channel! (CLASS_MAININLET in pd...)
-	if(!in) { obj->chnsin = in = 1; }
+    // min. 1 input channel! (CLASS_MAININLET in pd...)
+    if(!in) { obj->chnsin = in = 1; }
 #endif
 
-	if(obj->invecs) delete[] obj->invecs;
-	obj->invecs = new t_signalvec[in];
-	for(i = 0; i < in; ++i) 
-		obj->invecs[i] = 
+    if(obj->invecs) delete[] obj->invecs;
+    obj->invecs = new t_signalvec[in];
+    for(i = 0; i < in; ++i) 
+        obj->invecs[i] = 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-		fts_dsp_get_input_name(dsp,i);
+        fts_dsp_get_input_name(dsp,i);
 #else
-		sp[i]->s_vec;
+        sp[i]->s_vec;
 #endif
 
-	if(obj->outvecs) delete[] obj->outvecs;
-	obj->outvecs = new t_signalvec[out];
-	for(i = 0; i < out; ++i) 
-		obj->outvecs[i] = 
+    if(obj->outvecs) delete[] obj->outvecs;
+    obj->outvecs = new t_signalvec[out];
+    for(i = 0; i < out; ++i) 
+        obj->outvecs[i] = 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-		fts_dsp_get_output_name(dsp,i);
+        fts_dsp_get_output_name(dsp,i);
 #else
-		sp[in+i]->s_vec;
+        sp[in+i]->s_vec;
 #endif
 
-	// with the following call derived classes can do their eventual DSP setup
-	obj->m_dsp(obj->blksz,obj->invecs,obj->outvecs);
+    // with the following call derived classes can do their eventual DSP setup
+    obj->m_dsp(obj->blksz,obj->invecs,obj->outvecs);
 
-	// set the DSP function
+    // set the DSP function
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-	fts_atom_t args;
-	fts_set_pointer(args,obj);
-	fts_dsp_add_function(dspsym,1,args);
+    fts_atom_t args;
+    fts_set_pointer(args,obj);
+    fts_dsp_add_function(dspsym,1,args);
 #else
-	dsp_add((t_dspmethod)dspmeth,1,obj);  
+    dsp_add((t_dspmethod)dspmeth,1,obj);  
 #endif
 }
 
@@ -199,12 +199,12 @@ void flext_dsp::cb_dsp(t_class *c,t_signal **sp)
 #if FLEXT_SYS == FLEXT_SYS_JMAX
 void flext_dsp::cb_dsp_init(fts_object_t *c, int winlet, fts_symbol_t *s, int ac, const fts_atom_t *at)
 {
-	fts_dsp_add_object(c);
+    fts_dsp_add_object(c);
 }
 
 void flext_dsp::cb_dsp_delete(fts_object_t *c, int winlet, fts_symbol_t *s, int ac, const fts_atom_t *at)
 {
-	fts_dsp_remove_object(c);
+    fts_dsp_remove_object(c);
 }
 #endif
 */
@@ -213,7 +213,7 @@ void flext_dsp::m_dsp(int /*n*/,t_signalvec const * /*insigs*/,t_signalvec const
 
 void flext_dsp::m_signal(int n,t_sample *const * /*insigs*/,t_sample *const *outs) 
 {
-	for(int i = 0; i < CntOutSig(); ++i) ZeroSamples(outs[i],n);
+    for(int i = 0; i < CntOutSig(); ++i) ZeroSamples(outs[i],n);
 }
 
 #if FLEXT_SYS != FLEXT_SYS_MAX

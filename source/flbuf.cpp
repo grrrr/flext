@@ -27,25 +27,25 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // check if PD API supports buffer dirty time
 #if defined(PD_DEVEL_VERSION) && defined(PD_MAJOR_VERSION) && defined(PD_MINOR_VERSION)
 #if PD_MINOR_VERSION >= 36
-	#define FLEXT_PDBUFDIRTYTIME
+    #define FLEXT_PDBUFDIRTYTIME
 #endif
 #endif
 
 flext::buffer::buffer(const t_symbol *bn,bool delayed):
-	sym(NULL),data(NULL),
-	chns(0),frames(0)
+    sym(NULL),data(NULL),
+    chns(0),frames(0)
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
-	arr = NULL;
-	interval = DIRTY_INTERVAL;
-	isdirty = false;
-	ticking = false;
+    arr = NULL;
+    interval = DIRTY_INTERVAL;
+    isdirty = false;
+    ticking = false;
     tick = clock_new(this,(t_method)cb_tick);
 #endif
 
-	if(bn) Set(bn,delayed);
+    if(bn) Set(bn,delayed);
 
-	ClearDirty();
+    ClearDirty();
 }
 
 flext::buffer::~buffer()
@@ -57,167 +57,167 @@ flext::buffer::~buffer()
 
 int flext::buffer::Set(const t_symbol *s,bool nameonly)
 {
-	int ret = 0;
-	bool valid = data != NULL; // valid now? (before change)
+    int ret = 0;
+    bool valid = data != NULL; // valid now? (before change)
 
-	if(s && sym != s) {
-		ret = 1;
-		data = NULL; 
-		frames = 0;
-		chns = 0; 
-	}
+    if(s && sym != s) {
+        ret = 1;
+        data = NULL; 
+        frames = 0;
+        chns = 0; 
+    }
 
-	if(s && *GetString(s))	sym = s;
+    if(s && *GetString(s))  sym = s;
 
-	if(!sym) {
-		if(valid) ret = -1;
-	}	
-	else if(!nameonly) {
+    if(!sym) {
+        if(valid) ret = -1;
+    }   
+    else if(!nameonly) {
 #if FLEXT_SYS == FLEXT_SYS_PD
-		int frames1;
-		t_sample *data1;
+        int frames1;
+        t_sample *data1;
     
-		arr = (t_garray *)pd_findbyclass(const_cast<t_symbol *>(sym), garray_class);
-		if(!arr)
-		{
-    		if (*GetString(sym)) FLEXT_LOG1("buffer: no such array '%s'",GetString(sym));
-    		sym = NULL;
-			if(valid) ret = -1;
-		}
-		else if(!garray_getfloatarray(arr, &frames1, &data1))
-		{
-    		error("buffer: bad template '%s'",GetString(sym)); 
-    		data = NULL;
-			frames = 0;
-			if(valid) ret = -1;
-		}
-		else {
+        arr = (t_garray *)pd_findbyclass(const_cast<t_symbol *>(sym), garray_class);
+        if(!arr)
+        {
+            if (*GetString(sym)) FLEXT_LOG1("buffer: no such array '%s'",GetString(sym));
+            sym = NULL;
+            if(valid) ret = -1;
+        }
+        else if(!garray_getfloatarray(arr, &frames1, &data1))
+        {
+            error("buffer: bad template '%s'",GetString(sym)); 
+            data = NULL;
+            frames = 0;
+            if(valid) ret = -1;
+        }
+        else {
             ret = 0;
-			garray_usedindsp(arr);
-			if(frames != frames1) { frames = frames1; if(!ret) ret = 1; }
-			if(data != data1) { data = data1; if(!ret) ret = 1; }
-			chns = 1;
-		}
+            garray_usedindsp(arr);
+            if(frames != frames1) { frames = frames1; if(!ret) ret = 1; }
+            if(data != data1) { data = data1; if(!ret) ret = 1; }
+            chns = 1;
+        }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-		if(sym->s_thing) {
-			const _buffer *p = (const _buffer *)sym->s_thing;
-			
-			if(NOGOOD(p) || !p->b_valid) {
-				post("buffer: buffer object '%s' no good",GetString(sym)); 
-				if(valid) ret = -2;
-			}
-			else {
+        if(sym->s_thing) {
+            const _buffer *p = (const _buffer *)sym->s_thing;
+            
+            if(NOGOOD(p) || !p->b_valid) {
+                post("buffer: buffer object '%s' no good",GetString(sym)); 
+                if(valid) ret = -2;
+            }
+            else {
 #ifdef FLEXT_DEBUG
-//				post("flext: buffer object '%s' - valid:%i samples:%i channels:%i frames:%i",GetString(sym),p->b_valid,p->b_frames,p->b_nchans,p->b_frames);
+//              post("flext: buffer object '%s' - valid:%i samples:%i channels:%i frames:%i",GetString(sym),p->b_valid,p->b_frames,p->b_nchans,p->b_frames);
 #endif
-				if(data != p->b_samples) { data = p->b_samples; if(!ret) ret = 1; }
-				if(chns != p->b_nchans) { chns = p->b_nchans; if(!ret) ret = 1; }
-				if(frames != p->b_frames) { frames = p->b_frames; if(!ret) ret = 1; }
-			}
-		}
-		else {
-    		FLEXT_LOG1("buffer: symbol '%s' not defined", GetString(sym)); 
-    		/*if(valid)*/ ret = -1;
-		}
+                if(data != p->b_samples) { data = p->b_samples; if(!ret) ret = 1; }
+                if(chns != p->b_nchans) { chns = p->b_nchans; if(!ret) ret = 1; }
+                if(frames != p->b_frames) { frames = p->b_frames; if(!ret) ret = 1; }
+            }
+        }
+        else {
+            FLEXT_LOG1("buffer: symbol '%s' not defined", GetString(sym)); 
+            /*if(valid)*/ ret = -1;
+        }
 #else
 #error not implemented
 #endif
-	}
+    }
 
-	return ret;
+    return ret;
 }
 
 bool flext::buffer::Valid() const
 {
-	if(sym) {
+    if(sym) {
 #if FLEXT_SYS == FLEXT_SYS_PD
-		int frames1;
-		t_sample *data1;
-		return arr && garray_getfloatarray(arr, &frames1, &data1) != 0;
+        int frames1;
+        t_sample *data1;
+        return arr && garray_getfloatarray(arr, &frames1, &data1) != 0;
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-		const _buffer *p = (const _buffer *)sym->s_thing;
-		return p && p->b_valid;
+        const _buffer *p = (const _buffer *)sym->s_thing;
+        return p && p->b_valid;
 #else
 #error
 #endif 
-	}
-	else return false;
+    }
+    else return false;
 }
 
 
 bool flext::buffer::Update()
 {
-	if(!Ok()) return false;
+    if(!Ok()) return false;
 
-	bool ok = false;
+    bool ok = false;
 
 #if FLEXT_SYS == FLEXT_SYS_PD
-	int frames1;
-	t_sample *data1;
-	if(!garray_getfloatarray(arr, &frames1, &data1)) {
-		frames = 0;
-		data = NULL;
-		chns = 0;
-		ok = true;
-	}
-	else if(data != data1 || frames != frames1) {
-		frames = frames1;
-		data = data1;
-		ok = true;
-	}
+    int frames1;
+    t_sample *data1;
+    if(!garray_getfloatarray(arr, &frames1, &data1)) {
+        frames = 0;
+        data = NULL;
+        chns = 0;
+        ok = true;
+    }
+    else if(data != data1 || frames != frames1) {
+        frames = frames1;
+        data = data1;
+        ok = true;
+    }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	if(sym->s_thing) {
-		const _buffer *p = (const _buffer *)sym->s_thing;
-		if(data != p->b_samples || chns != p->b_nchans || frames != p->b_frames) {
-			data = p->b_samples;
-			chns = p->b_nchans;
-			frames = p->b_frames;
-			ok = true;
-		}
-	}
+    if(sym->s_thing) {
+        const _buffer *p = (const _buffer *)sym->s_thing;
+        if(data != p->b_samples || chns != p->b_nchans || frames != p->b_frames) {
+            data = p->b_samples;
+            chns = p->b_nchans;
+            frames = p->b_frames;
+            ok = true;
+        }
+    }
 #else
 #error not implemented
 #endif
-	return ok;
+    return ok;
 }
 
 void flext::buffer::Frames(int fr,bool keep,bool zero)
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
     // is this function guaranteed to keep memory and set rest to zero?
-	::garray_resize(arr,(float)fr);
-	Update();
+    ::garray_resize(arr,(float)fr);
+    Update();
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	t_sample *tmp = NULL;
-	int sz = frames;  
-	if(fr < sz) sz = fr;
+    t_sample *tmp = NULL;
+    int sz = frames;  
+    if(fr < sz) sz = fr;
 
-	if(keep) {
-		// copy buffer data to tmp storage
+    if(keep) {
+        // copy buffer data to tmp storage
         tmp = (t_sample *)NewAligned(sz*sizeof(t_sample));
         if(tmp)
-			CopySamples(tmp,data,sz);
-		else
-			error("flext::buffer - not enough memory for keeping buffer~ contents");
-	}
-	
-	t_atom msg;
-	_buffer *buf = (_buffer *)sym->s_thing;
-	// b_msr reflects buffer sample rate... is this what we want?
-	// Max bug: adding half a sample to prevent roundoff errors....
-	float ms = (fr+0.5)/buf->b_msr;
-	
-	SetFloat(msg,ms); 
-	::typedmess((object *)buf,gensym("size"),1,&msg);
-	
-	Update();
+            CopySamples(tmp,data,sz);
+        else
+            error("flext::buffer - not enough memory for keeping buffer~ contents");
+    }
+    
+    t_atom msg;
+    _buffer *buf = (_buffer *)sym->s_thing;
+    // b_msr reflects buffer sample rate... is this what we want?
+    // Max bug: adding half a sample to prevent roundoff errors....
+    float ms = (fr+0.5)/buf->b_msr;
+    
+    SetFloat(msg,ms); 
+    ::typedmess((object *)buf,gensym("size"),1,&msg);
+    
+    Update();
 
-	if(tmp) {
-		// copy data back
-		CopySamples(data,tmp,sz);
-		FreeAligned(tmp);
+    if(tmp) {
+        // copy data back
+        CopySamples(data,tmp,sz);
+        FreeAligned(tmp);
         if(zero && sz < fr) ZeroSamples(data+sz,fr-sz);
-	}
+    }
     else
         if(zero) ZeroSamples(data,fr);
 #else
@@ -229,11 +229,11 @@ void flext::buffer::Frames(int fr,bool keep,bool zero)
 #if FLEXT_SYS == FLEXT_SYS_PD
 void flext::buffer::SetRefrIntv(float intv) 
 { 
-	interval = intv; 
-	if(interval == 0 && ticking) {
-		clock_unset(tick);
-		ticking = false;
-	}
+    interval = intv; 
+    if(interval == 0 && ticking) {
+        clock_unset(tick);
+        ticking = false;
+    }
 }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 void flext::buffer::SetRefrIntv(float) {}
@@ -244,60 +244,60 @@ void flext::buffer::SetRefrIntv(float) {}
 
 void flext::buffer::Dirty(bool force)
 {
-	if(sym) {
+    if(sym) {
 #if FLEXT_SYS == FLEXT_SYS_PD
-		if((!ticking) && (interval || force)) {
-			ticking = true;
-			cb_tick(this); // immediately redraw
-		}
-		else {
-			if(force) clock_delay(tick,0);
-			isdirty = true;
-		}
+        if((!ticking) && (interval || force)) {
+            ticking = true;
+            cb_tick(this); // immediately redraw
+        }
+        else {
+            if(force) clock_delay(tick,0);
+            isdirty = true;
+        }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-		if(sym->s_thing) {
-			_buffer *p = (_buffer *)sym->s_thing;
-			
-			if(NOGOOD(p)) {
-				post("buffer: buffer object '%s' no good",sym->s_name);
-			}
-			else {
-				p->b_modtime = gettime();
-			}
-		}
-		else {
-    		FLEXT_LOG1("buffer: symbol '%s' not defined",sym->s_name);
-		}
+        if(sym->s_thing) {
+            _buffer *p = (_buffer *)sym->s_thing;
+            
+            if(NOGOOD(p)) {
+                post("buffer: buffer object '%s' no good",sym->s_name);
+            }
+            else {
+                p->b_modtime = gettime();
+            }
+        }
+        else {
+            FLEXT_LOG1("buffer: symbol '%s' not defined",sym->s_name);
+        }
 #else
 #error Not implemented
 #endif 
-	}
+    }
 }
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 void flext::buffer::cb_tick(buffer *b)
 {
-	if(b->arr) garray_redraw(b->arr);
+    if(b->arr) garray_redraw(b->arr);
 #ifdef FLEXT_DEBUG
-	else error("buffer: array is NULL");
+    else error("buffer: array is NULL");
 #endif
 
-	if(b->isdirty && b->interval) {
-			b->isdirty = false;
-			b->ticking = true;
-			clock_delay(b->tick,b->interval);
-	}
-	else 
-		b->ticking = false;
+    if(b->isdirty && b->interval) {
+            b->isdirty = false;
+            b->ticking = true;
+            clock_delay(b->tick,b->interval);
+    }
+    else 
+        b->ticking = false;
 }
 #endif
 
 void flext::buffer::ClearDirty()
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
-	cleantime = clock_getlogicaltime();
+    cleantime = clock_getlogicaltime();
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	cleantime = gettime();
+    cleantime = gettime();
 #else
 #error Not implemented
 #endif
@@ -306,24 +306,24 @@ void flext::buffer::ClearDirty()
 bool flext::buffer::IsDirty() const
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
-	if(!arr) return false;
-	#ifdef FLEXT_PDBUFDIRTYTIME
-	return isdirty || garray_updatetime(arr) > cleantime;
-	#else
-	// Don't know.... (no method in PD judging whether buffer has been changed from outside flext...)
-	return true; 
-	#endif
+    if(!arr) return false;
+    #ifdef FLEXT_PDBUFDIRTYTIME
+    return isdirty || garray_updatetime(arr) > cleantime;
+    #else
+    // Don't know.... (no method in PD judging whether buffer has been changed from outside flext...)
+    return true; 
+    #endif
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	if(!sym->s_thing) return false;
+    if(!sym->s_thing) return false;
 
-	_buffer *p = (_buffer *)sym->s_thing;
+    _buffer *p = (_buffer *)sym->s_thing;
 #ifdef FLEXT_DEBUG
-	if(NOGOOD(p)) {
-		post("buffer: buffer object '%s' no good",sym->s_name);
-		return false;
-	}
+    if(NOGOOD(p)) {
+        post("buffer: buffer object '%s' no good",sym->s_name);
+        return false;
+    }
 #endif
-	return p->b_modtime > cleantime;
+    return p->b_modtime > cleantime;
 #else
 #error Not implemented
 #endif

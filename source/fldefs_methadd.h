@@ -17,25 +17,25 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __FLEXT_DEFS_METHADD_H
 
 
-/*!	\defgroup FLEXT_D_CADDMETHOD Add flext methods within class scope
+/*! \defgroup FLEXT_D_CADDMETHOD Add flext methods within class scope
     \ingroup FLEXT_D_METHOD
-	\note These can only be used at class construction time
-	@{ 
+    \note These can only be used at class construction time
+    @{ 
 */
 
 //! Add a method handler for bang 
 #define FLEXT_CADDBANG(CL,IX,M_FUN) \
 \
-AddMethod(CL,IX,"bang",FLEXT_CALL_PRE(M_FUN))	
+AddMethod(CL,IX,"bang",FLEXT_CALL_PRE(M_FUN))   
 
 //! Add a handler for a method with either no, list or anything arguments
 #define FLEXT_CADDMETHOD(CL,IX,M_FUN) \
-AddMethod(CL,IX,FLEXT_CALL_PRE(M_FUN))	
+AddMethod(CL,IX,FLEXT_CALL_PRE(M_FUN))  
 
 //! Add a a handler for a method with implicit arguments
 #define FLEXT_CADDMETHOD_(CL,IX,M_TAG,M_FUN) \
 \
-AddMethod(CL,IX,M_TAG,FLEXT_CALL_PRE(M_FUN))	
+AddMethod(CL,IX,M_TAG,FLEXT_CALL_PRE(M_FUN))    
 
 //! Add a handler for a method with 1 enum type argument
 #define FLEXT_CADDMETHOD_E(CL,IX,M_TAG,M_FUN) \
@@ -45,7 +45,7 @@ AddMethod(ClMeths(CL),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),a_int,a_null)
 //! Add a handler for a method with 1 argument
 #define FLEXT_CADDMETHOD_1(CL,IX,M_TAG,M_FUN,TP1) \
 \
-AddMethod(ClMeths(CL),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),a_null)	
+AddMethod(ClMeths(CL),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),a_null)   
 
 //! Add a handler for a method with 2 arguments
 #define FLEXT_CADDMETHOD_2(CL,IX,M_TAG,M_FUN,TP1,TP2) \
@@ -68,7 +68,7 @@ AddMethod(ClMeths(CL),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FL
 AddMethod(ClMeths(CL),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),FLEXTARG(TP5),a_null)
 
 
-//	Shortcuts
+//  Shortcuts
 
 //! Add a handler for a method with a boolean argument
 #define FLEXT_CADDMETHOD_B(CL,IX,M_TAG,M_FUN) \
@@ -108,11 +108,11 @@ FLEXT_CADDMETHOD_3(CL,IX,M_TAG,M_FUN,int,int,int)
 //! @} FLEXT_D_CADDMETHOD
 
 
-/*!	\defgroup FLEXT_D_ADDMETHOD Add flext methods
+/*! \defgroup FLEXT_D_ADDMETHOD Add flext methods
     \ingroup FLEXT_D_METHOD
-	\note These can only be used at object construction time 
-	\note (in constructor or in Init() function before call to parent's Init())
-	@{ 
+    \note These can only be used at object construction time 
+    \note (in constructor or in Init() function before call to parent's Init())
+    @{ 
 */
 
 //! Set timer callback
@@ -123,37 +123,37 @@ TMR.SetCallback(*this,FLEXT_CALL_PRE(M_FUN))
 //! Enable list element distribution over inlets (if no better handler found)
 #define FLEXT_ADDDIST() \
 \
-SetDist(true)	
+SetDist(true)   
 
 //! Add a method handler for bang 
 #define FLEXT_ADDBANG(IX,M_FUN) \
 \
-AddMethod(IX,"bang",FLEXT_CALL_PRE(M_FUN))	
+AddMethod(IX,"bang",FLEXT_CALL_PRE(M_FUN))  
 
 //! Add a handler for a method with either no, list or anything arguments
 #define FLEXT_ADDMETHOD(IX,M_FUN) \
-AddMethod(IX,FLEXT_CALL_PRE(M_FUN))	
+AddMethod(IX,FLEXT_CALL_PRE(M_FUN)) 
 
 /*! \brief Add a handler for a method with a (variable argument) list
-	\deprecated This definition obscures that _ indicates the usage of a message tag - use FLEXT_ADDMETHOD instead
-	\note This is already covered by FLEXT_ADDMETHOD, but here for the sake of clarity
+    \deprecated This definition obscures that _ indicates the usage of a message tag - use FLEXT_ADDMETHOD instead
+    \note This is already covered by FLEXT_ADDMETHOD, but here for the sake of clarity
 */
 #define FLEXT_ADDMETHOD_V(IX,M_FUN) \
 \
-AddMethod(IX,FLEXT_CALL_PRE(M_FUN))	
+AddMethod(IX,FLEXT_CALL_PRE(M_FUN)) 
 
 /*! \brief Add a handler for a method with an anything argument
-	\deprecated This definition obscures that _ indicates the usage of a message tag - use FLEXT_ADDMETHOD instead
-	\note This is already covered by FLEXT_ADDMETHOD, but here for the sake of clarity
+    \deprecated This definition obscures that _ indicates the usage of a message tag - use FLEXT_ADDMETHOD instead
+    \note This is already covered by FLEXT_ADDMETHOD, but here for the sake of clarity
 */
 #define FLEXT_ADDMETHOD_A(IX,M_FUN) \
 \
-AddMethod(IX,FLEXT_CALL_PRE(M_FUN))	
+AddMethod(IX,FLEXT_CALL_PRE(M_FUN)) 
 
 //! Add a a handler for a tagged method with implicit arguments
 #define FLEXT_ADDMETHOD_(IX,M_TAG,M_FUN) \
 \
-AddMethod(IX,M_TAG,FLEXT_CALL_PRE(M_FUN))	
+AddMethod(IX,M_TAG,FLEXT_CALL_PRE(M_FUN))   
 
 //! Add a handler for a method with 1 enum type argument
 #define FLEXT_ADDMETHOD_E(IX,M_TAG,M_FUN) \
@@ -163,7 +163,7 @@ AddMethod(ThMeths(),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),a_int,a_null)
 //! Add a handler for a method with 1 argument
 #define FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,TP1) \
 \
-AddMethod(ThMeths(),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),a_null)	
+AddMethod(ThMeths(),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),a_null) 
 
 //! Add a handler for a method with 2 arguments
 #define FLEXT_ADDMETHOD_2(IX,M_TAG,M_FUN,TP1,TP2) \
@@ -186,7 +186,7 @@ AddMethod(ThMeths(),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEX
 AddMethod(ThMeths(),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),FLEXTARG(TP5),a_null)
 
 
-//	Shortcuts
+//  Shortcuts
 
 //! Add a handler for a method with a boolean argument
 #define FLEXT_ADDMETHOD_B(IX,M_TAG,M_FUN) \

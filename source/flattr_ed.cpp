@@ -45,18 +45,18 @@ static void (*ori_vis)(t_gobj *c, t_glist *, int vis) = NULL;
 
 void flext_base::SetAttrEditor(t_classid c)
 {
-	// widgetbehavior struct MUST be resident... (static is just ok here)
+    // widgetbehavior struct MUST be resident... (static is just ok here)
 
 #ifndef FLEXT_CLONEWIDGET
-	ori_vis = c->c_wb->w_visfn; 
-	widgetbehavior.w_getrectfn =    c->c_wb->w_getrectfn; 
+    ori_vis = c->c_wb->w_visfn; 
+    widgetbehavior.w_getrectfn =    c->c_wb->w_getrectfn; 
     widgetbehavior.w_displacefn =   c->c_wb->w_displacefn; 
     widgetbehavior.w_selectfn =     c->c_wb->w_selectfn; 
     widgetbehavior.w_activatefn =   c->c_wb->w_activatefn; 
     widgetbehavior.w_deletefn =     c->c_wb->w_deletefn; 
     widgetbehavior.w_clickfn =      c->c_wb->w_clickfn;
 #else
-	widgetbehavior.w_getrectfn =    text_widgetbehavior.w_getrectfn; 
+    widgetbehavior.w_getrectfn =    text_widgetbehavior.w_getrectfn; 
     widgetbehavior.w_displacefn =   text_widgetbehavior.w_displacefn; 
     widgetbehavior.w_selectfn =     text_widgetbehavior.w_selectfn; 
     widgetbehavior.w_activatefn =   text_widgetbehavior.w_activatefn; 
@@ -75,80 +75,80 @@ void flext_base::SetAttrEditor(t_classid c)
     widgetbehavior.w_visfn =        cb_GfxVis;
     class_setwidget(c, &widgetbehavior);
 
-	// generate the script for the property dialog
+    // generate the script for the property dialog
 
-	sys_gui(
-		"proc flext_apply {id alen} {\n"
-			// strip "." from the TK id to make a variable name suffix
-			"set vid [string trimleft $id .]\n"
+    sys_gui(
+        "proc flext_apply {id alen} {\n"
+            // strip "." from the TK id to make a variable name suffix
+            "set vid [string trimleft $id .]\n"
 
-			// make a list of the attribute values (including save flags)
+            // make a list of the attribute values (including save flags)
 
-			"set lst {}\n"
-			"for {set ix 1} {$ix <= $alen} {incr ix} {\n"
-				"set var_attr_name [concat [concat var_name_$ix]_$vid ]\n"
-				"set var_attr_init [concat [concat var_init_$ix]_$vid ]\n"
-				"set var_attr_val [concat [concat var_val_$ix]_$vid ]\n"
-				"set var_attr_save [concat [concat var_save_$ix]_$vid ]\n"
-				"set var_attr_type [concat [concat var_type_$ix]_$vid ]\n"
+            "set lst {}\n"
+            "for {set ix 1} {$ix <= $alen} {incr ix} {\n"
+                "set var_attr_name [concat [concat var_name_$ix]_$vid ]\n"
+                "set var_attr_init [concat [concat var_init_$ix]_$vid ]\n"
+                "set var_attr_val [concat [concat var_val_$ix]_$vid ]\n"
+                "set var_attr_save [concat [concat var_save_$ix]_$vid ]\n"
+                "set var_attr_type [concat [concat var_type_$ix]_$vid ]\n"
 
-				"global $var_attr_name $var_attr_init $var_attr_val $var_attr_save $var_attr_type\n"
-		
-				"if { [expr $$var_attr_type] != 0 } {\n"
-					// attribute is puttable
+                "global $var_attr_name $var_attr_init $var_attr_val $var_attr_save $var_attr_type\n"
+        
+                "if { [expr $$var_attr_type] != 0 } {\n"
+                    // attribute is puttable
 
-					"lappend lst [eval concat $$var_attr_name]\n" 
+                    "lappend lst [eval concat $$var_attr_name]\n" 
 
-					// process current value
+                    // process current value
                     "set tmp [eval concat $$var_attr_val]\n"
-					"set len [llength $tmp]\n"
-					"if { $len == 1 } {\n"
-						// it's an atom
+                    "set len [llength $tmp]\n"
+                    "if { $len == 1 } {\n"
+                        // it's an atom
                         // if atom starts with $, replace it by # ($ can't be passed by TCL)
                         "if { [string index $tmp 0] == \"$\" } {\n"
                             "set tmp [string replace $tmp 0 0 #]\n" 
                         "}\n"
                         "lappend lst $tmp\n" 
-					"} else {\n"
-						// it's a list
-						"set lst [concat $lst {list} $len $tmp]\n" 
-					"}\n"
+                    "} else {\n"
+                        // it's a list
+                        "set lst [concat $lst {list} $len $tmp]\n" 
+                    "}\n"
 
-					// process init value
-					"set tmp [eval concat $$var_attr_init]\n"
-					"set len [llength $tmp]\n"
-					"if { $len == 1 } {\n"
-						// it's an atom
+                    // process init value
+                    "set tmp [eval concat $$var_attr_init]\n"
+                    "set len [llength $tmp]\n"
+                    "if { $len == 1 } {\n"
+                        // it's an atom
                         // if atom starts with $, replace it by # ($ can't be passed by TCL)
                         "if { [string index $tmp 0] == \"$\" } {\n"
                             "set tmp [string replace $tmp 0 0 #]\n" 
                         "}\n"
                         "lappend lst $tmp\n" 
-					"} else {\n"
-						// it's a list
-						"set lst [concat $lst {list} $len $tmp]\n" 
-					"}\n"
+                    "} else {\n"
+                        // it's a list
+                        "set lst [concat $lst {list} $len $tmp]\n" 
+                    "}\n"
 
-					"lappend lst [eval concat $$var_attr_save]\n" 
-				"}\n"
-			"}\n"
+                    "lappend lst [eval concat $$var_attr_save]\n" 
+                "}\n"
+            "}\n"
 
-			"set cmd [concat $id attributedialog $lst \\;]\n"
-			"pd $cmd\n"
-		"}\n"
+            "set cmd [concat $id attributedialog $lst \\;]\n"
+            "pd $cmd\n"
+        "}\n"
 
-		"proc flext_cancel {id} {\n"
-			"set cmd [concat $id cancel \\;]\n"
-			"pd $cmd\n"
-		"}\n"
+        "proc flext_cancel {id} {\n"
+            "set cmd [concat $id cancel \\;]\n"
+            "pd $cmd\n"
+        "}\n"
 
-		"proc flext_ok {id alen} {\n"
-			"flext_apply $id $alen\n"
-			"flext_cancel $id\n"
-		"}\n"
+        "proc flext_ok {id alen} {\n"
+            "flext_apply $id $alen\n"
+            "flext_cancel $id\n"
+        "}\n"
 
         "proc flext_help {id} {\n"
-        	"toplevel $id.hw\n"
+            "toplevel $id.hw\n"
             "wm title $id.hw \"Flext attribute editor help\"\n"
 
             "frame $id.hw.buttons\n"
@@ -161,7 +161,7 @@ void flext_base::SetAttrEditor(t_classid c)
 
             "button $id.hw.buttons.ok -text OK -command \"destroy $id.hw\"\n"
             "pack $id.hw.buttons.ok -side left -expand 1\n"
-			"bind $id.hw {<KeyPress-Escape>} \"destroy $id.hw\"\n"
+            "bind $id.hw {<KeyPress-Escape>} \"destroy $id.hw\"\n"
 
             "$id.hw.text tag configure big -font {Arial 10 bold}\n"
             "$id.hw.text configure -font {Arial 8 bold}\n"
@@ -172,22 +172,22 @@ void flext_base::SetAttrEditor(t_classid c)
                 "Ctrl-Button on a text field will open an editor window where text can be entered more comfortably.\n"
             "\"\n"
             "$id.hw.text configure -state disabled\n"
-		"}\n"
+        "}\n"
 
-		"proc flext_copyval {dst src} {\n"
-			"global $src $dst\n"
-			"set $dst [expr $$src]\n"
-		"}\n"
+        "proc flext_copyval {dst src} {\n"
+            "global $src $dst\n"
+            "set $dst [expr $$src]\n"
+        "}\n"
 
-		"proc flext_textcopy {id idtxt var} {\n"
-			"global $var\n"
+        "proc flext_textcopy {id idtxt var} {\n"
+            "global $var\n"
             "set $var [eval $idtxt get 0.0 end]\n"
             "destroy $id\n"
-		"}\n"
+        "}\n"
 
-		"proc flext_textzoom {id var title attr edit} {\n"
-			"global $var\n"
-        	"toplevel $id.w\n"
+        "proc flext_textzoom {id var title attr edit} {\n"
+            "global $var\n"
+            "toplevel $id.w\n"
             "wm title $id.w [concat $title \" @\" $attr]\n"
 //            "wm iconname $w \"text\"\n"
 //            "positionWindow $id.w\n"
@@ -203,27 +203,27 @@ void flext_base::SetAttrEditor(t_classid c)
             "$id.w.text insert 0.0 [expr $$var]\n"
             "$id.w.text mark set insert 0.0\n"
 
-			"if { $edit != 0 } then {\n"
+            "if { $edit != 0 } then {\n"
                 "button $id.w.buttons.ok -text OK -command \"flext_textcopy $id.w $id.w.text $var\"\n"
                 "pack $id.w.buttons.ok -side left -expand 1\n"
-//    			"bind $id.w {<Shift-KeyPress-Return>} \"flext_textcopy $id.w $id.w.text $var\"\n"
+//              "bind $id.w {<Shift-KeyPress-Return>} \"flext_textcopy $id.w $id.w.text $var\"\n"
             "} "
             "else { $id.w.text configure -state disabled }\n"
 
             "button $id.w.buttons.cancel -text Cancel -command \"destroy $id.w\"\n"
             "pack $id.w.buttons.cancel -side left -expand 1\n"
-			"bind $id.w {<KeyPress-Escape>} \"destroy $id.w\"\n"
+            "bind $id.w {<KeyPress-Escape>} \"destroy $id.w\"\n"
         "}\n"
 
-		"proc pdtk_flext_dialog {id title attrlist} {\n"
-				"set vid [string trimleft $id .]\n"
-				"set alen [expr [llength $attrlist] / 6 ]\n"
+        "proc pdtk_flext_dialog {id title attrlist} {\n"
+                "set vid [string trimleft $id .]\n"
+                "set alen [expr [llength $attrlist] / 6 ]\n"
 
-				"toplevel $id\n"
-				"wm title $id $title\n" 
-				"wm protocol $id WM_DELETE_WINDOW [concat flext_cancel $id]\n"
+                "toplevel $id\n"
+                "wm title $id $title\n" 
+                "wm protocol $id WM_DELETE_WINDOW [concat flext_cancel $id]\n"
 
-				"set row 0\n"
+                "set row 0\n"
 
                 // set grow parameters
                 "grid columnconfigure $id 0 -weight 1\n"  // label
@@ -233,266 +233,266 @@ void flext_base::SetAttrEditor(t_classid c)
 
 //                "grid rowconfigure $id {0 1 2} -weight 0\n"
 
-				// set column labels
-				"label $id.label -text {attribute} -height 2 -font {Helvetica 9 bold}\n"
-				"label $id.init  -text {initial value} -height 2 -font {Helvetica 9 bold}\n"
-				"label $id.copy  -text {copy} -height 2 -font {Helvetica 9 bold}\n"
-				"label $id.val   -text {current value} -height 2 -font {Helvetica 9 bold}\n"
-				"foreach {i txt} {0 {don't\rsave} 1 {do\rinit} 2 {always\rsave} } {\n"
-					"label $id.b$i -text $txt -height 2 -font {Helvetica 9 bold}\n"
-				"}\n"
-//				"label $id.options -text {options} -height 2\n"
+                // set column labels
+                "label $id.label -text {attribute} -height 2 -font {Helvetica 9 bold}\n"
+                "label $id.init  -text {initial value} -height 2 -font {Helvetica 9 bold}\n"
+                "label $id.copy  -text {copy} -height 2 -font {Helvetica 9 bold}\n"
+                "label $id.val   -text {current value} -height 2 -font {Helvetica 9 bold}\n"
+                "foreach {i txt} {0 {don't\rsave} 1 {do\rinit} 2 {always\rsave} } {\n"
+                    "label $id.b$i -text $txt -height 2 -font {Helvetica 9 bold}\n"
+                "}\n"
+//              "label $id.options -text {options} -height 2\n"
 
-				"grid config $id.label -column 0 -row $row \n"
-				"grid config $id.init  -column 1 -row $row \n"
-				"grid config $id.copy  -column 2 -columnspan 2 -row $row \n"
-				"grid config $id.val   -column 4 -row $row \n"
-				"foreach i {0 1 2} { grid config $id.b$i -column [expr $i + 5] -row $row }\n"
-//				"grid config $id.options -column 3 -row 0 \n"
-				"incr row\n"
+                "grid config $id.label -column 0 -row $row \n"
+                "grid config $id.init  -column 1 -row $row \n"
+                "grid config $id.copy  -column 2 -columnspan 2 -row $row \n"
+                "grid config $id.val   -column 4 -row $row \n"
+                "foreach i {0 1 2} { grid config $id.b$i -column [expr $i + 5] -row $row }\n"
+//              "grid config $id.options -column 3 -row 0 \n"
+                "incr row\n"
 
-				// Separator
-				"frame $id.sep -relief ridge -bd 1 -height 2\n"
-				"grid config $id.sep -column 0 -columnspan 8 -row $row -pady 2 -sticky {snew}\n"
-				"incr row\n"
+                // Separator
+                "frame $id.sep -relief ridge -bd 1 -height 2\n"
+                "grid config $id.sep -column 0 -columnspan 8 -row $row -pady 2 -sticky {snew}\n"
+                "incr row\n"
 
-				"set ix 1\n"
-				"foreach {an av ai atp asv afl} $attrlist {\n"
+                "set ix 1\n"
+                "foreach {an av ai atp asv afl} $attrlist {\n"
                     "grid rowconfigure $id $row -weight 0\n"
 
                     // get attribute name
-					"set var_attr_name [concat [concat var_name_$ix]_$vid ]\n"
-					"global $var_attr_name\n"
-					"set $var_attr_name $an\n"
+                    "set var_attr_name [concat [concat var_name_$ix]_$vid ]\n"
+                    "global $var_attr_name\n"
+                    "set $var_attr_name $an\n"
 
-					// get attribute init value (list)
-					"set var_attr_init [concat [concat var_init_$ix]_$vid ]\n"
-					"global $var_attr_init\n"
-					"set $var_attr_init $ai\n"
+                    // get attribute init value (list)
+                    "set var_attr_init [concat [concat var_init_$ix]_$vid ]\n"
+                    "global $var_attr_init\n"
+                    "set $var_attr_init $ai\n"
 
-					// get attribute value (list)
-					"set var_attr_val [concat [concat var_val_$ix]_$vid ]\n"
-					"global $var_attr_val\n"
-					"set $var_attr_val $av\n"
+                    // get attribute value (list)
+                    "set var_attr_val [concat [concat var_val_$ix]_$vid ]\n"
+                    "global $var_attr_val\n"
+                    "set $var_attr_val $av\n"
 
-					// get save flag
-					"set var_attr_save [concat [concat var_save_$ix]_$vid ]\n"
-					"global $var_attr_save\n"
-					"set $var_attr_save $asv\n"
+                    // get save flag
+                    "set var_attr_save [concat [concat var_save_$ix]_$vid ]\n"
+                    "global $var_attr_save\n"
+                    "set $var_attr_save $asv\n"
 
-					// get type flag
-					"set var_attr_type [concat [concat var_type_$ix]_$vid ]\n"
-					"global $var_attr_type\n"
-					"set $var_attr_type $afl\n"
+                    // get type flag
+                    "set var_attr_type [concat [concat var_type_$ix]_$vid ]\n"
+                    "global $var_attr_type\n"
+                    "set $var_attr_type $afl\n"
 
-					// add dialog elements to window
+                    // add dialog elements to window
 
-					// attribute label
-					"label $id.label-$ix -text \"$an :\" -font {Helvetica 8 bold}\n"
-					"grid config $id.label-$ix -column 0 -row $row -padx 5 -sticky {e}\n"
+                    // attribute label
+                    "label $id.label-$ix -text \"$an :\" -font {Helvetica 8 bold}\n"
+                    "grid config $id.label-$ix -column 0 -row $row -padx 5 -sticky {e}\n"
 
-					"if { $afl != 0 } {\n"
-						// attribute is puttable
+                    "if { $afl != 0 } {\n"
+                        // attribute is puttable
 
-						// entry field for initial value
-						// entry field for current value
+                        // entry field for initial value
+                        // entry field for current value
 
-						// choose entry field type
-						"switch $atp {\n"
-							"0 - 1 {\n"  // int or float
-								"entry $id.init-$ix -textvariable $var_attr_init\n"
-								"entry $id.val-$ix -textvariable $var_attr_val\n"
-							"}\n"
-							"2 {\n"  // boolean
-								"checkbutton $id.init-$ix -variable $var_attr_init\n"
-								"checkbutton $id.val-$ix -variable $var_attr_val\n"
-							"}\n"
-							"3 {\n"  // symbol
-								"entry $id.init-$ix -textvariable $var_attr_init\n"
-								"entry $id.val-$ix -textvariable $var_attr_val\n"
-							"}\n"
-							"4 - 5 {\n"  // list or unknown
-								"entry $id.init-$ix -textvariable $var_attr_init\n"
+                        // choose entry field type
+                        "switch $atp {\n"
+                            "0 - 1 {\n"  // int or float
+                                "entry $id.init-$ix -textvariable $var_attr_init\n"
+                                "entry $id.val-$ix -textvariable $var_attr_val\n"
+                            "}\n"
+                            "2 {\n"  // boolean
+                                "checkbutton $id.init-$ix -variable $var_attr_init\n"
+                                "checkbutton $id.val-$ix -variable $var_attr_val\n"
+                            "}\n"
+                            "3 {\n"  // symbol
+                                "entry $id.init-$ix -textvariable $var_attr_init\n"
+                                "entry $id.val-$ix -textvariable $var_attr_val\n"
+                            "}\n"
+                            "4 - 5 {\n"  // list or unknown
+                                "entry $id.init-$ix -textvariable $var_attr_init\n"
                                 "bind $id.init-$ix {<Control-Button-1>} \" flext_textzoom $id.init-$ix $var_attr_init { $title } $an 1\"\n"
-								"entry $id.val-$ix -textvariable $var_attr_val\n"
+                                "entry $id.val-$ix -textvariable $var_attr_val\n"
                                 "bind $id.val-$ix {<Control-Button-1>} \" flext_textzoom $id.val-$ix $var_attr_val { $title } $an 1\"\n"
-							"}\n"
-						"}\n"
+                            "}\n"
+                        "}\n"
 
-						"grid config $id.init-$ix  -column 1 -row $row -padx 5 -sticky {ew}\n"
-						"grid config $id.val-$ix   -column 4 -row $row -padx 5 -sticky {ew}\n"
+                        "grid config $id.init-$ix  -column 1 -row $row -padx 5 -sticky {ew}\n"
+                        "grid config $id.val-$ix   -column 4 -row $row -padx 5 -sticky {ew}\n"
 
-						"button $id.b2i-$ix -text {<-} -height 1 -command \" flext_copyval $var_attr_init $var_attr_val \"\n"
-						"grid config $id.b2i-$ix  -column 2 -row $row  -sticky {ew}\n"
-						"button $id.b2c-$ix -text {->} -height 1 -command \" flext_copyval $var_attr_val $var_attr_init \"\n"
-						"grid config $id.b2c-$ix  -column 3 -row $row  -sticky {ew}\n"
+                        "button $id.b2i-$ix -text {<-} -height 1 -command \" flext_copyval $var_attr_init $var_attr_val \"\n"
+                        "grid config $id.b2i-$ix  -column 2 -row $row  -sticky {ew}\n"
+                        "button $id.b2c-$ix -text {->} -height 1 -command \" flext_copyval $var_attr_val $var_attr_init \"\n"
+                        "grid config $id.b2c-$ix  -column 3 -row $row  -sticky {ew}\n"
 
-	//					"tk_optionMenu $id.opt-$ix $var_attr_save {don't save} {initialize} {always save}\n"
-	//					"grid config $id.opt-$ix -column 5 -row $ix \n"
+    //                  "tk_optionMenu $id.opt-$ix $var_attr_save {don't save} {initialize} {always save}\n"
+    //                  "grid config $id.opt-$ix -column 5 -row $ix \n"
 
-						// radiobuttons
-						"foreach {i c} {0 black 1 blue 2 red} {\n"
-							"radiobutton $id.b$i-$ix -value $i -foreground $c -variable $var_attr_save \n"
-							"grid config $id.b$i-$ix -column [expr $i + 5] -row $row  \n"
-						"}\n"
-					"} else {\n"
-						// attribute is gettable only
+                        // radiobuttons
+                        "foreach {i c} {0 black 1 blue 2 red} {\n"
+                            "radiobutton $id.b$i-$ix -value $i -foreground $c -variable $var_attr_save \n"
+                            "grid config $id.b$i-$ix -column [expr $i + 5] -row $row  \n"
+                        "}\n"
+                    "} else {\n"
+                        // attribute is gettable only
 
-						// entry field for current value (read-only)
+                        // entry field for current value (read-only)
 
-						// choose display field type
-						"switch $atp {\n"
-							"0 - 1 {\n"  // int or float
-								"entry $id.val-$ix -textvariable $var_attr_val -state disabled\n"
-							"}\n"
-							"2 {\n"  // boolean
-								"checkbutton $id.val-$ix -variable $var_attr_val -state disabled\n"
-							"}\n"
-							"3 {\n"  // symbol
-								"entry $id.val-$ix -textvariable $var_attr_val -state disabled\n"
-							"}\n"
-							"4 - 5 {\n"  // list or unknown
-								"entry $id.val-$ix -textvariable $var_attr_val -state disabled\n"
+                        // choose display field type
+                        "switch $atp {\n"
+                            "0 - 1 {\n"  // int or float
+                                "entry $id.val-$ix -textvariable $var_attr_val -state disabled\n"
+                            "}\n"
+                            "2 {\n"  // boolean
+                                "checkbutton $id.val-$ix -variable $var_attr_val -state disabled\n"
+                            "}\n"
+                            "3 {\n"  // symbol
+                                "entry $id.val-$ix -textvariable $var_attr_val -state disabled\n"
+                            "}\n"
+                            "4 - 5 {\n"  // list or unknown
+                                "entry $id.val-$ix -textvariable $var_attr_val -state disabled\n"
                                 "bind $id.val-$ix {<Control-Button-1>} \" flext_textzoom $id.val-$ix $var_attr_val { $title } $an 0\"\n"
-							"}\n"
-						"}\n"
+                            "}\n"
+                        "}\n"
 
-//						"entry $id.val-$ix -textvariable $var_attr_val -state disabled\n"
-						"grid config $id.val-$ix -column 4 -row $row -padx 5 -sticky {ew}\n"
+//                      "entry $id.val-$ix -textvariable $var_attr_val -state disabled\n"
+                        "grid config $id.val-$ix -column 4 -row $row -padx 5 -sticky {ew}\n"
 
-						"label $id.readonly-$ix -text \"read-only\"\n"
-						"grid config $id.readonly-$ix -column 5 -columnspan 3 -row $row -padx 5 -sticky {ew}\n"
-					"}\n"
+                        "label $id.readonly-$ix -text \"read-only\"\n"
+                        "grid config $id.readonly-$ix -column 5 -columnspan 3 -row $row -padx 5 -sticky {ew}\n"
+                    "}\n"
 
-					// increase counter
-					"incr ix\n"
-					"incr row\n"
-				"}\n"
+                    // increase counter
+                    "incr ix\n"
+                    "incr row\n"
+                "}\n"
 
-				// Separator
-				"frame $id.sep2 -relief ridge -bd 1 -height 2\n"
+                // Separator
+                "frame $id.sep2 -relief ridge -bd 1 -height 2\n"
 //                "grid rowconfigure $id $row -weight 0\n"
-				"grid config $id.sep2 -column 0 -columnspan 8 -row $row -pady 5 -sticky {snew}\n"
-				"incr row\n"
+                "grid config $id.sep2 -column 0 -columnspan 8 -row $row -pady 5 -sticky {snew}\n"
+                "incr row\n"
 
-				// Buttons
-				"frame $id.buttonframe\n"
-				"pack $id.buttonframe -side bottom -fill x\n"
+                // Buttons
+                "frame $id.buttonframe\n"
+                "pack $id.buttonframe -side bottom -fill x\n"
 
-				"button $id.buttonframe.cancel -text {Cancel} -width 20 -command \" flext_cancel $id \"\n"
-				"button $id.buttonframe.apply -text {Apply} -width 20 -command \" flext_apply $id $alen \"\n"
-				"button $id.buttonframe.ok -text {OK} -width 20 -command \" flext_ok $id $alen \"\n"
-				"button $id.buttonframe.help -text {Help} -width 10 -command \" flext_help $id \"\n"
+                "button $id.buttonframe.cancel -text {Cancel} -width 20 -command \" flext_cancel $id \"\n"
+                "button $id.buttonframe.apply -text {Apply} -width 20 -command \" flext_apply $id $alen \"\n"
+                "button $id.buttonframe.ok -text {OK} -width 20 -command \" flext_ok $id $alen \"\n"
+                "button $id.buttonframe.help -text {Help} -width 10 -command \" flext_help $id \"\n"
 
-				"pack $id.buttonframe.cancel -side left -expand 1\n"
-				"pack $id.buttonframe.apply -side left -expand 1\n"
-				"pack $id.buttonframe.ok -side left -expand 1\n"
-				"pack $id.buttonframe.help -side left -expand 1\n"
+                "pack $id.buttonframe.cancel -side left -expand 1\n"
+                "pack $id.buttonframe.apply -side left -expand 1\n"
+                "pack $id.buttonframe.ok -side left -expand 1\n"
+                "pack $id.buttonframe.help -side left -expand 1\n"
 
 //                "grid rowconfigure $id $row -weight 0\n"
-				"grid config $id.buttonframe -column 0 -columnspan 8 -row $row -pady 5 -sticky {ew}\n"
+                "grid config $id.buttonframe -column 0 -columnspan 8 -row $row -pady 5 -sticky {ew}\n"
 
-				// Key bindings
-				"bind $id {<KeyPress-Escape>} \" flext_cancel $id \"\n"
-				"bind $id {<KeyPress-Return>} \" flext_ok $id $alen \"\n"
-				"bind $id {<Shift-KeyPress-Return>} \" flext_apply $id $alen \"\n"
-		"}\n"
-	);
+                // Key bindings
+                "bind $id {<KeyPress-Escape>} \" flext_cancel $id \"\n"
+                "bind $id {<KeyPress-Return>} \" flext_ok $id $alen \"\n"
+                "bind $id {<Shift-KeyPress-Return>} \" flext_apply $id $alen \"\n"
+        "}\n"
+    );
 }
 
 void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 {
-	flext_base *th = thisObject(c);
-	char buf[10000],*b = buf;
+    flext_base *th = thisObject(c);
+    char buf[10000],*b = buf;
 
-	STD::sprintf(b, "pdtk_flext_dialog %%s { "); b += strlen(b);
+    STD::sprintf(b, "pdtk_flext_dialog %%s { "); b += strlen(b);
 
-	t_text *x = (t_text *)c;
-	FLEXT_ASSERT(x->te_binbuf);
+    t_text *x = (t_text *)c;
+    FLEXT_ASSERT(x->te_binbuf);
 
-	int argc = binbuf_getnatom(x->te_binbuf);
-	t_atom *argv = binbuf_getvec(x->te_binbuf);
+    int argc = binbuf_getnatom(x->te_binbuf);
+    t_atom *argv = binbuf_getvec(x->te_binbuf);
 
-	PrintList(argc,argv,b,sizeof(buf)+buf-b);	b += strlen(b);
+    PrintList(argc,argv,b,sizeof(buf)+buf-b);   b += strlen(b);
 
-	STD::sprintf(b, " } { "); b += strlen(b);
+    STD::sprintf(b, " } { "); b += strlen(b);
 
-	AtomList la;
-	th->ListAttrib(la);
-	int cnt = la.Count();
+    AtomList la;
+    th->ListAttrib(la);
+    int cnt = la.Count();
 
-	for(int i = 0; i < cnt; ++i) {
-		const t_symbol *sym = GetSymbol(la[i]); 
+    for(int i = 0; i < cnt; ++i) {
+        const t_symbol *sym = GetSymbol(la[i]); 
 
-		// get attribute
-		AttrItem *gattr = th->FindAttrib(sym,true);
-		// get puttable attribute
-		AttrItem *pattr = gattr?gattr->Counterpart():th->FindAttrib(sym,false);
+        // get attribute
+        AttrItem *gattr = th->FindAttrib(sym,true);
+        // get puttable attribute
+        AttrItem *pattr = gattr?gattr->Counterpart():th->FindAttrib(sym,false);
 
-		// get flags
-		int sv;
-		const AtomList *initdata;
-		AttrDataCont::iterator it = th->attrdata->find(sym);
-		if(it == th->attrdata->end())
-			sv = 0,initdata = NULL;
-		else {
-			const AttrData &a = *it.data();
-			if(a.IsSaved())
-				sv = 2;
-			else if(a.IsInit())
-				sv = 1;
-			else 
-				sv = 0;
-			initdata = a.IsInitValue()?&a.GetInitValue():NULL;
-		}
+        // get flags
+        int sv;
+        const AtomList *initdata;
+        AttrDataCont::iterator it = th->attrdata->find(sym);
+        if(it == th->attrdata->end())
+            sv = 0,initdata = NULL;
+        else {
+            const AttrData &a = *it.data();
+            if(a.IsSaved())
+                sv = 2;
+            else if(a.IsInit())
+                sv = 1;
+            else 
+                sv = 0;
+            initdata = a.IsInitValue()?&a.GetInitValue():NULL;
+        }
 
-		// get attribute type
-		int tp;
-		bool list;
-		switch((gattr?gattr:pattr)->argtp) {
-			case a_int: tp = 0; list = false; break;
-			case a_float: tp = 1; list = false; break;
-			case a_bool: tp = 2; list = false; break;
-			case a_symbol: tp = 3; list = true; break;
-			case a_list: 
-			case a_LIST: tp = 4; list = true; break;
-			default: 
-				tp = 5;	list = true; 
-				FLEXT_ASSERT(false);
-		}
+        // get attribute type
+        int tp;
+        bool list;
+        switch((gattr?gattr:pattr)->argtp) {
+            case a_int: tp = 0; list = false; break;
+            case a_float: tp = 1; list = false; break;
+            case a_bool: tp = 2; list = false; break;
+            case a_symbol: tp = 3; list = true; break;
+            case a_list: 
+            case a_LIST: tp = 4; list = true; break;
+            default: 
+                tp = 5; list = true; 
+                FLEXT_ASSERT(false);
+        }
 
-		STD::sprintf(b,list?"%s {":"%s ",GetString(sym)); b += strlen(b);
+        STD::sprintf(b,list?"%s {":"%s ",GetString(sym)); b += strlen(b);
 
-		AtomList lv;
-		if(gattr) { // gettable attribute is present
-			// Retrieve attribute value
-			th->GetAttrib(sym,gattr,lv);
+        AtomList lv;
+        if(gattr) { // gettable attribute is present
+            // Retrieve attribute value
+            th->GetAttrib(sym,gattr,lv);
 
-			PrintList(lv.Count(),lv.Atoms(),b,sizeof(buf)+buf-b); b += strlen(b);
-		}
-		else {
-			strcpy(b,"{}"); b += strlen(b);
-		}
+            PrintList(lv.Count(),lv.Atoms(),b,sizeof(buf)+buf-b); b += strlen(b);
+        }
+        else {
+            strcpy(b,"{}"); b += strlen(b);
+        }
 
-		strcpy(b, list?"} {":" "); b += strlen(b);
+        strcpy(b, list?"} {":" "); b += strlen(b);
 
-		if(pattr) {
-			// if there is initialization data take this, otherwise take the current data
-			const AtomList &lp = initdata?*initdata:lv;
+        if(pattr) {
+            // if there is initialization data take this, otherwise take the current data
+            const AtomList &lp = initdata?*initdata:lv;
 
-			PrintList(lp.Count(),lp.Atoms(),b,sizeof(buf)+buf-b); b += strlen(b);
-		}
-		else {
-			strcpy(b,"{}"); b += strlen(b);
-		}
+            PrintList(lp.Count(),lp.Atoms(),b,sizeof(buf)+buf-b); b += strlen(b);
+        }
+        else {
+            strcpy(b,"{}"); b += strlen(b);
+        }
 
 
-		STD::sprintf(b, list?"} %i %i %i ":" %i %i %i ",tp,sv,pattr?(pattr->BothExist()?2:1):0); b += strlen(b);
-	}
+        STD::sprintf(b, list?"} %i %i %i ":" %i %i %i ",tp,sv,pattr?(pattr->BothExist()?2:1):0); b += strlen(b);
+    }
 
-	strcpy(b, " }\n");
+    strcpy(b, " }\n");
 
-	gfxstub_new((t_pd *)th->thisHdr(), th->thisHdr(), buf);
+    gfxstub_new((t_pd *)th->thisHdr(), th->thisHdr(), buf);
 }
 
 //! Strip the attributes off the object command line
@@ -501,202 +501,202 @@ void flext_base::cb_GfxVis(t_gobj *c, t_glist *gl, int vis)
     // show object if it's not a GOP
     if(!gl->gl_isgraph || gl->gl_havewindow) {
 
-	    t_text *x = (t_text *)c;
-	    FLEXT_ASSERT(x->te_binbuf);
+        t_text *x = (t_text *)c;
+        FLEXT_ASSERT(x->te_binbuf);
 
-	    int argc = binbuf_getnatom(x->te_binbuf);
-	    t_atom *argv = binbuf_getvec(x->te_binbuf);
-	    int cnt = CheckAttrib(argc,argv);
+        int argc = binbuf_getnatom(x->te_binbuf);
+        t_atom *argv = binbuf_getvec(x->te_binbuf);
+        int cnt = CheckAttrib(argc,argv);
 
-	    if(cnt)	{
-		    t_binbuf *nb = binbuf_new();
-		    binbuf_restore(nb,cnt,argv);
-		    binbuf_free(x->te_binbuf);
-		    x->te_binbuf = nb;
-	    }
+        if(cnt) {
+            t_binbuf *nb = binbuf_new();
+            binbuf_restore(nb,cnt,argv);
+            binbuf_free(x->te_binbuf);
+            x->te_binbuf = nb;
+        }
 
-	    t_rtext *rt = glist_findrtext(gl,x);
-	    rtext_retext(rt);
+        t_rtext *rt = glist_findrtext(gl,x);
+        rtext_retext(rt);
 
         // now display the changed text with the normal drawing function
     #ifdef FLEXT_CLONEWIDGET
-	    text_widgetbehavior.w_visfn(c,gl,vis);
+        text_widgetbehavior.w_visfn(c,gl,vis);
     #else
-	    ori_vis(c,gl,vis);
+        ori_vis(c,gl,vis);
     #endif
    }
 }
 
 static void BinbufAdd(t_binbuf *b,const t_atom &at)
 {
-   	char tbuf[MAXPDSTRING];
-	if(flext::IsString(at))
-		binbuf_addv(b,"s",flext::GetSymbol(at));
-	else if(flext::IsFloat(at))
-		binbuf_addv(b,"f",flext::GetFloat(at));
-	else if(flext::IsInt(at))
-		binbuf_addv(b,"i",flext::GetInt(at));
-	else if(at.a_type == A_DOLLAR) {
-    	sprintf(tbuf, "$%d", at.a_w.w_index);
-		binbuf_addv(b,"s",flext::MakeSymbol(tbuf));
-	}
-	else if(at.a_type == A_DOLLSYM) {
-    	sprintf(tbuf, "$%s", at.a_w.w_symbol->s_name);
-		binbuf_addv(b,"s",flext::MakeSymbol(tbuf));
-	}
-	else
-		FLEXT_ASSERT(false);
+    char tbuf[MAXPDSTRING];
+    if(flext::IsString(at))
+        binbuf_addv(b,"s",flext::GetSymbol(at));
+    else if(flext::IsFloat(at))
+        binbuf_addv(b,"f",flext::GetFloat(at));
+    else if(flext::IsInt(at))
+        binbuf_addv(b,"i",flext::GetInt(at));
+    else if(at.a_type == A_DOLLAR) {
+        sprintf(tbuf, "$%d", at.a_w.w_index);
+        binbuf_addv(b,"s",flext::MakeSymbol(tbuf));
+    }
+    else if(at.a_type == A_DOLLSYM) {
+        sprintf(tbuf, "$%s", at.a_w.w_symbol->s_name);
+        binbuf_addv(b,"s",flext::MakeSymbol(tbuf));
+    }
+    else
+        FLEXT_ASSERT(false);
 }
 
 void flext_base::cb_GfxSave(t_gobj *c, t_binbuf *b)
 {
-	flext_base *th = thisObject(c);
-	t_text *t = (t_text *)c;
-	binbuf_addv(b, "ssiis", gensym("#X"),gensym("obj"),	t->te_xpix, t->te_ypix,MakeSymbol(th->thisName()));
+    flext_base *th = thisObject(c);
+    t_text *t = (t_text *)c;
+    binbuf_addv(b, "ssiis", gensym("#X"),gensym("obj"), t->te_xpix, t->te_ypix,MakeSymbol(th->thisName()));
 
-	int argc = binbuf_getnatom(t->te_binbuf);
-	t_atom *argv = binbuf_getvec(t->te_binbuf);
-	int i,cnt = CheckAttrib(argc,argv);
+    int argc = binbuf_getnatom(t->te_binbuf);
+    t_atom *argv = binbuf_getvec(t->te_binbuf);
+    int i,cnt = CheckAttrib(argc,argv);
 
-	// process the creation arguments
-	for(i = 1; i < cnt; ++i) BinbufAdd(b,argv[i]);
+    // process the creation arguments
+    for(i = 1; i < cnt; ++i) BinbufAdd(b,argv[i]);
 
-	// process the attributes
-	AtomList la;
-	th->ListAttrib(la);
-	cnt = la.Count();
+    // process the attributes
+    AtomList la;
+    th->ListAttrib(la);
+    cnt = la.Count();
 
-	for(i = 0; i < cnt; ++i) {
-		const t_symbol *sym = GetSymbol(la[i]);
-		AtomList lv;
-		const AtomList *lref = NULL;
-		AttrDataCont::iterator it = th->attrdata->find(sym);
+    for(i = 0; i < cnt; ++i) {
+        const t_symbol *sym = GetSymbol(la[i]);
+        AtomList lv;
+        const AtomList *lref = NULL;
+        AttrDataCont::iterator it = th->attrdata->find(sym);
 
-		if(it != th->attrdata->end()) {
-			const AttrData &a = *it.data();
-			if(a.IsInit() && a.IsInitValue()) {
-				lref = &a.GetInitValue();
+        if(it != th->attrdata->end()) {
+            const AttrData &a = *it.data();
+            if(a.IsInit() && a.IsInitValue()) {
+                lref = &a.GetInitValue();
 /*
-				// check for $-parameters
-				lv = lref->Count();
-				for(int j = 0; j < lref->Count(); ++j) {
-					const char *s = IsSymbol((*lref)[j])?GetString((*lref)[j]):NULL;
-					if(s && s[0] == '$') { // TODO: More refined checking?
-						// prepend a "\"
-						char tmp[256]; *tmp = '\\';
-						strcpy(tmp+1,s);
-						SetString(lv[j],tmp);
-					}
-					else
-						lv[i] = (*lref)[j];
-				}
+                // check for $-parameters
+                lv = lref->Count();
+                for(int j = 0; j < lref->Count(); ++j) {
+                    const char *s = IsSymbol((*lref)[j])?GetString((*lref)[j]):NULL;
+                    if(s && s[0] == '$') { // TODO: More refined checking?
+                        // prepend a "\"
+                        char tmp[256]; *tmp = '\\';
+                        strcpy(tmp+1,s);
+                        SetString(lv[j],tmp);
+                    }
+                    else
+                        lv[i] = (*lref)[j];
+                }
 
-				lref = &lv;
+                lref = &lv;
 */
-			}
-			else if(a.IsSaved()) {
-				AttrItem *attr = th->FindAttrib(sym,true);
+            }
+            else if(a.IsSaved()) {
+                AttrItem *attr = th->FindAttrib(sym,true);
 
-				// attribute must be gettable (so that the data can be retrieved) and puttable (so that the data can be inited)
-				if(attr && attr->BothExist()) {
-					th->GetAttrib(sym,attr,lv); 
-					lref = &lv;
-				}
-			}
-		}
+                // attribute must be gettable (so that the data can be retrieved) and puttable (so that the data can be inited)
+                if(attr && attr->BothExist()) {
+                    th->GetAttrib(sym,attr,lv); 
+                    lref = &lv;
+                }
+            }
+        }
 
-		if(lref) {
-			char attrname[256]; *attrname= '@';
-			// store name
-			strcpy(attrname+1,GetString(sym));
-			binbuf_addv(b,"s",MakeSymbol(attrname));
+        if(lref) {
+            char attrname[256]; *attrname= '@';
+            // store name
+            strcpy(attrname+1,GetString(sym));
+            binbuf_addv(b,"s",MakeSymbol(attrname));
 
-			// store value
-			for(int j = 0; j < lref->Count(); ++j) BinbufAdd(b,(*lref)[j]);
-		}
-	}
+            // store value
+            for(int j = 0; j < lref->Count(); ++j) BinbufAdd(b,(*lref)[j]);
+        }
+    }
 
-	binbuf_addv(b, ";");
+    binbuf_addv(b, ";");
 }
 
 bool flext_base::cb_AttrDialog(flext_base *th,int argc,const t_atom *argv)
 {
-	int i = 0;
-	if(IsSymbol(argv[i]) && GetSymbol(argv[i]) == sym_list) ++i;
+    int i = 0;
+    if(IsSymbol(argv[i]) && GetSymbol(argv[i]) == sym_list) ++i;
 
-	for(; i < argc; ) {
-		FLEXT_ASSERT(IsSymbol(argv[i]));
+    for(; i < argc; ) {
+        FLEXT_ASSERT(IsSymbol(argv[i]));
 
-		// get name
-		const t_symbol *aname = GetSymbol(argv[i]);
-		i++;
+        // get name
+        const t_symbol *aname = GetSymbol(argv[i]);
+        i++;
 
-		// get current value
-		int ccnt,coffs;
-		if(IsSymbol(argv[i]) && GetSymbol(argv[i]) == sym_list) {
-			i++;
-			FLEXT_ASSERT(CanbeInt(argv[i]));
-			ccnt = GetAInt(argv[i]);
-			coffs = ++i;
-		}
-		else
-			coffs = i,ccnt = 1;
-		i += ccnt;
+        // get current value
+        int ccnt,coffs;
+        if(IsSymbol(argv[i]) && GetSymbol(argv[i]) == sym_list) {
+            i++;
+            FLEXT_ASSERT(CanbeInt(argv[i]));
+            ccnt = GetAInt(argv[i]);
+            coffs = ++i;
+        }
+        else
+            coffs = i,ccnt = 1;
+        i += ccnt;
 
-		// get init value
-		int icnt,ioffs;
-		if(IsSymbol(argv[i]) && GetSymbol(argv[i]) == sym_list) {
-			i++;
-			FLEXT_ASSERT(CanbeInt(argv[i]));
-			icnt = GetAInt(argv[i]);
-			ioffs = ++i;
-		}
-		else
-			ioffs = i,icnt = 1;
-		i += icnt;
+        // get init value
+        int icnt,ioffs;
+        if(IsSymbol(argv[i]) && GetSymbol(argv[i]) == sym_list) {
+            i++;
+            FLEXT_ASSERT(CanbeInt(argv[i]));
+            icnt = GetAInt(argv[i]);
+            ioffs = ++i;
+        }
+        else
+            ioffs = i,icnt = 1;
+        i += icnt;
 
-		FLEXT_ASSERT(i < argc);
-		int sv = GetAInt(argv[i]);
-		++i;
+        FLEXT_ASSERT(i < argc);
+        int sv = GetAInt(argv[i]);
+        ++i;
 
-		// find puttable attribute
-		AttrItem *attr = th->FindAttrib(aname,false);
-		if(attr) {
-			bool ret = th->SetAttrib(aname,attr,ccnt,argv+coffs);
-			FLEXT_ASSERT(ret);
+        // find puttable attribute
+        AttrItem *attr = th->FindAttrib(aname,false);
+        if(attr) {
+            bool ret = th->SetAttrib(aname,attr,ccnt,argv+coffs);
+            FLEXT_ASSERT(ret);
 
-			AttrDataCont::iterator it = th->attrdata->find(aname);
+            AttrDataCont::iterator it = th->attrdata->find(aname);
 
-			if(sv >= 1) {
-				// if data not present create it
-				if(it == th->attrdata->end()) {
-					AttrDataCont::pair pair; 
-					pair.key() = aname;
-					pair.data() = new AttrData;
-					it = th->attrdata->insert(th->attrdata->begin(),pair);
-				}
+            if(sv >= 1) {
+                // if data not present create it
+                if(it == th->attrdata->end()) {
+                    AttrDataCont::pair pair; 
+                    pair.key() = aname;
+                    pair.data() = new AttrData;
+                    it = th->attrdata->insert(th->attrdata->begin(),pair);
+                }
 
-				AttrData &a = *it.data();
-				a.SetSave(sv == 2);
-				a.SetInit(true);
-				a.SetInitValue(icnt,argv+ioffs);
-			}
-			else {
-				if(it != th->attrdata->end()) {
-					AttrData &a = *it.data();
-					// if data is present reset flags
-					a.SetSave(false);
-					a.SetInit(false);
+                AttrData &a = *it.data();
+                a.SetSave(sv == 2);
+                a.SetInit(true);
+                a.SetInitValue(icnt,argv+ioffs);
+            }
+            else {
+                if(it != th->attrdata->end()) {
+                    AttrData &a = *it.data();
+                    // if data is present reset flags
+                    a.SetSave(false);
+                    a.SetInit(false);
 
-					// let init data as is
-				}
-			}
-		}
-		else {
-			post("%s - Attribute %s can't be set",th->thisName(),GetString(aname));
-		}
-	}
-	return true;
+                    // let init data as is
+                }
+            }
+        }
+        else {
+            post("%s - Attribute %s can't be set",th->thisName(),GetString(aname));
+        }
+    }
+    return true;
 }
 
 #endif // FLEXT_SYS_PD

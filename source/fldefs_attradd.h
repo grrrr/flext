@@ -17,101 +17,101 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __FLEXT_DEFS_ATTRADD_H
 
 
-/*!	\defgroup FLEXT_D_CADDATTR Announce object attributes at class scope
+/*! \defgroup FLEXT_D_CADDATTR Announce object attributes at class scope
     \ingroup FLEXT_D_ATTRIB
-	\note These can only be used at class construction time
-	@{ 
+    \note These can only be used at class construction time
+    @{ 
 */
 
 //! Add handler for a gettable attribute
-#define	FLEXT_CADDATTR_GET(CL,NAME,GFUN) \
+#define FLEXT_CADDATTR_GET(CL,NAME,GFUN) \
 \
 AddAttrib(CL,NAME,(FLEXT_GET_PRE(GFUN)),NULL)
 
 //! Add handler for a settable attribute
-#define	FLEXT_CADDATTR_SET(CL,NAME,SFUN) \
+#define FLEXT_CADDATTR_SET(CL,NAME,SFUN) \
 \
 AddAttrib(CL,NAME,NULL,(FLEXT_SET_PRE(SFUN)))
 
 //! Add handlers for a both get- and settable attribute
-#define	FLEXT_CADDATTR_VAR(CL,NAME,GFUN,SFUN) \
+#define FLEXT_CADDATTR_VAR(CL,NAME,GFUN,SFUN) \
 \
 AddAttrib(CL,NAME,(FLEXT_GET_PRE(GFUN)),(FLEXT_SET_PRE(SFUN)))
 
 //! Add handlers for a both get- and settable attribute
-#define	FLEXT_CADDATTR_VAR1(CL,NAME,FUN) \
+#define FLEXT_CADDATTR_VAR1(CL,NAME,FUN) \
 \
 AddAttrib(CL,NAME,(FLEXT_GET_PRE(FUN)),(FLEXT_SET_PRE(FUN)))
 
 
 //! Add handler for a gettable enum attribute
-#define	FLEXT_CADDATTR_GET_E(CL,NAME,GFUN) \
+#define FLEXT_CADDATTR_GET_E(CL,NAME,GFUN) \
 \
 AddAttrib(CL,NAME,(bool (*)(flext_base *,int &))(FLEXT_GET_PRE(GFUN)),NULL)
 
 //! Add handler for a settable enum attribute
-#define	FLEXT_CADDATTR_SET_E(CL,NAME,SFUN) \
+#define FLEXT_CADDATTR_SET_E(CL,NAME,SFUN) \
 \
 AddAttrib(CL,NAME,NULL,(bool (*)(flext_base *,int &))(FLEXT_SET_PRE(SFUN)))
 
 //! Add handlers for a both get- and settable enum attribute
-#define	FLEXT_CADDATTR_VAR_E(CL,NAME,GFUN,SFUN) \
+#define FLEXT_CADDATTR_VAR_E(CL,NAME,GFUN,SFUN) \
 \
 AddAttrib(CL,NAME,(bool (*)(flext_base *,int &))(FLEXT_GET_PRE(GFUN)),(bool (*)(flext_base *,int &))(FLEXT_SET_PRE(SFUN)))
 
 //! Add handlers for a both get- and settable enum attribute
-#define	FLEXT_CADDATTR_VAR1_E(CL,NAME,FUN) \
+#define FLEXT_CADDATTR_VAR1_E(CL,NAME,FUN) \
 \
 AddAttrib(CL,NAME,(bool (*)(flext_base *,int &))(FLEXT_GET_PRE(FUN)),(bool (*)(flext_base *,int &))(FLEXT_SET_PRE(FUN)))
 
 //! @} FLEXT_D_CADDATTR
 
 
-/*!	\defgroup FLEXT_D_ADDATTR Announce object attributes 
+/*! \defgroup FLEXT_D_ADDATTR Announce object attributes 
     \ingroup FLEXT_D_ATTRIB
-	\note These can only be used at object construction time
-	\note (in constructor or in Init() function before call to parent's Init())
-	@{ 
+    \note These can only be used at object construction time
+    \note (in constructor or in Init() function before call to parent's Init())
+    @{ 
 */
 
 //! Add handler for a gettable attribute
-#define	FLEXT_ADDATTR_GET(NAME,GFUN) \
+#define FLEXT_ADDATTR_GET(NAME,GFUN) \
 \
 AddAttrib(NAME,(FLEXT_GET_PRE(GFUN)),NULL)
 
 //! Add handler for a settable attribute
-#define	FLEXT_ADDATTR_SET(NAME,SFUN) \
+#define FLEXT_ADDATTR_SET(NAME,SFUN) \
 \
 AddAttrib(NAME,NULL,(FLEXT_SET_PRE(SFUN)))
 
 //! Add handlers for a both get- and settable attribute
-#define	FLEXT_ADDATTR_VAR(NAME,GFUN,SFUN) \
+#define FLEXT_ADDATTR_VAR(NAME,GFUN,SFUN) \
 \
 AddAttrib(NAME,(FLEXT_GET_PRE(GFUN)),(FLEXT_SET_PRE(SFUN)))
 
 //! Add handlers for a both get- and settable attribute
-#define	FLEXT_ADDATTR_VAR1(NAME,FUN) \
+#define FLEXT_ADDATTR_VAR1(NAME,FUN) \
 \
 AddAttrib(NAME,(FLEXT_GET_PRE(FUN)),(FLEXT_SET_PRE(FUN)))
 
 
 //! Add handler for a gettable enum attribute
-#define	FLEXT_ADDATTR_GET_E(NAME,GFUN) \
+#define FLEXT_ADDATTR_GET_E(NAME,GFUN) \
 \
 AddAttrib(NAME,(bool (*)(flext_base *,int &))(FLEXT_GET_PRE(GFUN)),NULL)
 
 //! Add handler for a settable enum attribute
-#define	FLEXT_ADDATTR_SET_E(NAME,SFUN) \
+#define FLEXT_ADDATTR_SET_E(NAME,SFUN) \
 \
 AddAttrib(NAME,NULL,(bool (*)(flext_base *,int &))(FLEXT_SET_PRE(SFUN)))
 
 //! Add handlers for a both get- and settable enum attribute
-#define	FLEXT_ADDATTR_VAR_E(NAME,GFUN,SFUN) \
+#define FLEXT_ADDATTR_VAR_E(NAME,GFUN,SFUN) \
 \
 AddAttrib(NAME,(bool (*)(flext_base *,int &))(FLEXT_GET_PRE(GFUN)),(bool (*)(flext_base *,int &))(FLEXT_SET_PRE(SFUN)))
 
 //! Add handlers for a both get- and settable enum attribute
-#define	FLEXT_ADDATTR_VAR1_E(NAME,FUN) \
+#define FLEXT_ADDATTR_VAR1_E(NAME,FUN) \
 \
 AddAttrib(NAME,(bool (*)(flext_base *,int &))(FLEXT_GET_PRE(FUN)),(bool (*)(flext_base *,int &))(FLEXT_SET_PRE(FUN)))
 

@@ -18,14 +18,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 
 /*! \brief Declare an implicit attribute set function
-	\internal
+    \internal
 */
 #define FLEXT_ATTRSET_(VAR,TP) \
 static bool FLEXT_SET_PRE(VAR)(flext_base *c,TP &arg) \
 { FLEXT_CAST<thisType *>(c)->VAR = arg; return true; }
 
 /*! \brief Declare an implicit attribute get function
-	\internal
+    \internal
 */
 #define FLEXT_ATTRGET_(VAR,TP) \
 static bool FLEXT_GET_PRE(VAR)(flext_base *c,TP &arg) \
@@ -33,9 +33,9 @@ static bool FLEXT_GET_PRE(VAR)(flext_base *c,TP &arg) \
 
 
 
-/*!	\defgroup FLEXT_DA_ATTRSET Definition of implicit attribute set handlers
+/*! \defgroup FLEXT_DA_ATTRSET Definition of implicit attribute set handlers
     \ingroup FLEXT_D_ATTRIB
-	@{ 
+    @{ 
 */
 
 //! Declare an implicit set function for a float attribute
@@ -74,9 +74,9 @@ static bool FLEXT_SET_PRE(VAR)(flext_base *c,AtomList *&arg) \
 
 //! @} FLEXT_DA_ATTRSET
 
-/*!	\defgroup FLEXT_DA_ATTRGET Definition of implicit attribute get handlers
+/*! \defgroup FLEXT_DA_ATTRGET Definition of implicit attribute get handlers
     \ingroup FLEXT_D_ATTRIB
-	@{ 
+    @{ 
 */
 
 //! Declare an implicit get function for a float attribute
@@ -116,9 +116,9 @@ static bool FLEXT_GET_PRE(VAR)(flext_base *c,AtomList *&arg) \
 //! @} FLEXT_DA_ATTRGET
 
 
-/*!	\defgroup FLEXT_DA_ATTRVAR Definition of implicit attribute transfer handlers (both get and set)
+/*! \defgroup FLEXT_DA_ATTRVAR Definition of implicit attribute transfer handlers (both get and set)
     \ingroup FLEXT_D_ATTRIB
-	@{ 
+    @{ 
 */
 
 //! Declare both implicit get and set functions for a float attribute

@@ -17,9 +17,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __FLEXT_DEFS_METHCB_H
 
 
-/*!	\defgroup FLEXT_D_CALLBACK Declare callbacks for class methods
+/*! \defgroup FLEXT_D_CALLBACK Declare callbacks for class methods
     \ingroup FLEXT_D_METHOD
-	@{ 
+    @{ 
 */
 
 //! Set up a method callback with no arguments
@@ -83,7 +83,7 @@ static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP
 { FLEXT_CAST<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4,arg5); return true; }
 
 
-//	Shortcuts
+//  Shortcuts
 
 //! Set up a method callback for 1 float argument
 #define FLEXT_CALLBACK_F(M_FUN) \

@@ -19,14 +19,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 
 /*! \brief Declare a attribute set function
-	\internal
+    \internal
 */
 #define FLEXT_CALLSET_(FUN,TP) \
 static bool FLEXT_SET_PRE(FUN)(flext_base *c,TP &arg) \
 { FLEXT_CAST<thisType *>(c)->FUN(arg); return true; }
 
 /*! \brief Declare a attribute get function
-	\internal
+    \internal
 */
 #define FLEXT_CALLGET_(FUN,TP) \
 static bool FLEXT_GET_PRE(FUN)(flext_base *c,TP &arg) \
@@ -34,9 +34,9 @@ static bool FLEXT_GET_PRE(FUN)(flext_base *c,TP &arg) \
 
 
 
-/*!	\defgroup FLEXT_DA_CALLSET Definition of attribute set handlers
+/*! \defgroup FLEXT_DA_CALLSET Definition of attribute set handlers
     \ingroup FLEXT_D_ATTRIB
-	@{ 
+    @{ 
 */
 
 //! Declare a set function for a float attribute
@@ -75,9 +75,9 @@ static bool FLEXT_SET_PRE(FUN)(flext_base *c,AtomList *&arg) \
 
 //! @} FLEXT_DA_CALLSET
 
-/*!	\defgroup FLEXT_DA_CALLGET Definition of attribute get handlers
+/*! \defgroup FLEXT_DA_CALLGET Definition of attribute get handlers
     \ingroup FLEXT_D_ATTRIB
-	@{ 
+    @{ 
 */
 
 //! Declare a get function for a float attribute
@@ -117,9 +117,9 @@ static bool FLEXT_GET_PRE(FUN)(flext_base *c,AtomList *&arg) \
 //! @} FLEXT_DA_CALLGET
 
 
-/*!	\defgroup FLEXT_DA_CALLVAR Definition of attribute transfer handlers (both get and set)
+/*! \defgroup FLEXT_DA_CALLVAR Definition of attribute transfer handlers (both get and set)
     \ingroup FLEXT_D_ATTRIB
-	@{ 
+    @{ 
 */
 
 //! Declare both get and set functions for a float attribute

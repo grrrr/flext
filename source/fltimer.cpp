@@ -9,7 +9,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 /*! \file fltimer.cpp
-	\brief flext timer functions and classes   
+    \brief flext timer functions and classes   
 */
 
 #include "flext.h"
@@ -29,24 +29,24 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 double flext::GetTime()
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
-	return clock_gettimesince(0)*0.001;
+    return clock_gettimesince(0)*0.001;
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	double tm;
-	clock_getftime(&tm);
-	return tm*0.001;
+    double tm;
+    clock_getftime(&tm);
+    return tm*0.001;
 #else
-	#error Not implemented
+    #error Not implemented
 #endif
 }
 
 double flext::GetTimeGrain()
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
-	return 0;
+    return 0;
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	return 0.001;
+    return 0.001;
 #else
-	#error Not implemented
+    #error Not implemented
 #endif
 }
 
@@ -55,13 +55,13 @@ static double starttime = getstarttime();
 
 static double getstarttime()
 {
-	starttime = 0;
-	return flext::GetOSTime();
+    starttime = 0;
+    return flext::GetOSTime();
 }
 
 double flext::GetOSTime()
 {
-	double tm;
+    double tm;
 
 #if FLEXT_OS == FLEXT_OS_WIN
     LARGE_INTEGER frq,cnt;
@@ -75,37 +75,37 @@ double flext::GetOSTime()
         tm = (double)((LARGE_INTEGER *)&fltm)->QuadPart*0.001;
     }
 #elif FLEXT_OS == FLEXT_OS_LINUX || FLEXT_OS == FLEXT_OS_IRIX || FLEXT_OSAPI == FLEXT_OSAPI_MAC_MACH // POSIX
-	timeval tmv;
-	gettimeofday(&tmv,NULL);
-	tm = tmv.tv_sec+tmv.tv_usec*1.e-6;
+    timeval tmv;
+    gettimeofday(&tmv,NULL);
+    tm = tmv.tv_sec+tmv.tv_usec*1.e-6;
 #elif FLEXT_OS == FLEXT_OS_MAC // that's just for OS9 & Carbon!
-	UnsignedWide tick;
-	Microseconds(&tick);
-	tm = (tick.hi*((double)(1L<<((sizeof tick.lo)*4))*(double)(1L<<((sizeof tick.lo)*4)))+tick.lo)*1.e-6; 
+    UnsignedWide tick;
+    Microseconds(&tick);
+    tm = (tick.hi*((double)(1L<<((sizeof tick.lo)*4))*(double)(1L<<((sizeof tick.lo)*4)))+tick.lo)*1.e-6; 
 #else
-	#error Not implemented
+    #error Not implemented
 #endif
-	return tm-starttime;
+    return tm-starttime;
 }
 
 void flext::Sleep(double s)
 {
 #if FLEXT_OS == FLEXT_OS_WIN
-	::Sleep((long)(s*1000.));
+    ::Sleep((long)(s*1000.));
 #elif FLEXT_OS == FLEXT_OS_LINUX || FLEXT_OS == FLEXT_OS_IRIX || FLEXT_OSAPI == FLEXT_OSAPI_MAC_MACH // POSIX
-	usleep((long)(s*1000000.));
+    usleep((long)(s*1000000.));
 #elif FLEXT_OS == FLEXT_OS_MAC // that's just for OS9 & Carbon!
-	UnsignedWide tick;
-	Microseconds(&tick);
-	double target = tick.hi*((double)(1L<<((sizeof tick.lo)*4))*(double)(1L<<((sizeof tick.lo)*4)))+tick.lo+s*1.e6; 
-	for(;;) {
-		// this is just a loop running until the time has passed - stone age (but we yield at least)
-		Microseconds(&tick);
-		if(target <= tick.hi*((double)(1L<<((sizeof tick.lo)*4))*(double)(1L<<((sizeof tick.lo)*4)))+tick.lo) break;
-		YieldToAnyThread(); // yielding surely reduces the timing precision (but we're civilized)
-	}
+    UnsignedWide tick;
+    Microseconds(&tick);
+    double target = tick.hi*((double)(1L<<((sizeof tick.lo)*4))*(double)(1L<<((sizeof tick.lo)*4)))+tick.lo+s*1.e6; 
+    for(;;) {
+        // this is just a loop running until the time has passed - stone age (but we yield at least)
+        Microseconds(&tick);
+        if(target <= tick.hi*((double)(1L<<((sizeof tick.lo)*4))*(double)(1L<<((sizeof tick.lo)*4)))+tick.lo) break;
+        YieldToAnyThread(); // yielding surely reduces the timing precision (but we're civilized)
+    }
 #else
-	#error Not implemented
+    #error Not implemented
 #endif
 }
 
@@ -113,134 +113,134 @@ void flext::Sleep(double s)
 /* \param qu determines whether timed messages should be queued (low priority - only when supported by the system).
 */
 flext::Timer::Timer(bool qu):
-	queued(qu),
-	clss(NULL),userdata(NULL),
-	period(0)
+    queued(qu),
+    clss(NULL),userdata(NULL),
+    period(0)
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
-	clk = (t_clock *)clock_new(this,(t_method)callback);
+    clk = (t_clock *)clock_new(this,(t_method)callback);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	clk = (t_clock *)clock_new(this,(t_method)callback);
-	if(queued) qelem = (t_qelem *)qelem_new(this,(method)queuefun);
+    clk = (t_clock *)clock_new(this,(t_method)callback);
+    if(queued) qelem = (t_qelem *)qelem_new(this,(method)queuefun);
 #else
-	#error Not implemented
+    #error Not implemented
 #endif
 }
 
 flext::Timer::~Timer()
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
-	clock_free(clk);
+    clock_free(clk);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	clock_free(clk);
-	if(queued) ::qelem_free(qelem);
+    clock_free(clk);
+    if(queued) ::qelem_free(qelem);
 #else
-	#error Not implemented
+    #error Not implemented
 #endif
 }
 
 bool flext::Timer::Reset()
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
-	clock_unset(clk);
+    clock_unset(clk);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	clock_unset(clk);
-	if(queued) ::qelem_unset(qelem);
+    clock_unset(clk);
+    if(queued) ::qelem_unset(qelem);
 #else
-	#error Not implemented
+    #error Not implemented
 #endif
-	return true;
+    return true;
 }
 
 /*! \param tm absolute time (in seconds)
-	\param data user data
-	\param dopast if set events with times lying in the past will be triggered immediately, if not set they are ignored
-	\return true on success
+    \param data user data
+    \param dopast if set events with times lying in the past will be triggered immediately, if not set they are ignored
+    \return true on success
 */
 bool flext::Timer::At(double tm,void *data,bool dopast)
 {
-	userdata = data;
-	period = 0;
+    userdata = data;
+    period = 0;
 #if FLEXT_SYS == FLEXT_SYS_PD 
-	const double ms = tm*1000.;
-	if(dopast || clock_gettimesince(ms) <= 0)
-		clock_set(clk,ms);
+    const double ms = tm*1000.;
+    if(dopast || clock_gettimesince(ms) <= 0)
+        clock_set(clk,ms);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	const double ms = tm*1000.;
-	double cur;
-	clock_getftime(&cur);
-	if(cur <= ms)
-		clock_fdelay(clk,ms-cur);
-	else if(dopast) // trigger timer is past
-		clock_fdelay(clk,0);
+    const double ms = tm*1000.;
+    double cur;
+    clock_getftime(&cur);
+    if(cur <= ms)
+        clock_fdelay(clk,ms-cur);
+    else if(dopast) // trigger timer is past
+        clock_fdelay(clk,0);
 #else
-	#error Not implemented
+    #error Not implemented
 #endif
-	return true;
+    return true;
 }
 
 /*! \param tm relative time (in seconds)
-	\param data user data
-	\return true on success
+    \param data user data
+    \return true on success
 */
 bool flext::Timer::Delay(double tm,void *data)
 {
-	userdata = data;
-	period = 0;
+    userdata = data;
+    period = 0;
 #if FLEXT_SYS == FLEXT_SYS_PD 
-	clock_delay(clk,tm*1000);
+    clock_delay(clk,tm*1000);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	clock_fdelay(clk,tm*1000.);
+    clock_fdelay(clk,tm*1000.);
 #else
-	#error Not implemented
+    #error Not implemented
 #endif
-	return true;
+    return true;
 }
 
 /*! \param tm relative time between periodic events (in seconds)
-	\param data user data
-	\return true on success
-	\note the first event will be delayed by tm
+    \param data user data
+    \return true on success
+    \note the first event will be delayed by tm
 */
 bool flext::Timer::Periodic(double tm,void *data) 
 {
-	userdata = data;
-	period = tm;
+    userdata = data;
+    period = tm;
 #if FLEXT_SYS == FLEXT_SYS_PD 
-	clock_delay(clk,tm*1000);
+    clock_delay(clk,tm*1000);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	clock_fdelay(clk,tm*1000.);
+    clock_fdelay(clk,tm*1000.);
 #else
-	#error Not implemented
+    #error Not implemented
 #endif
-	return true;
+    return true;
 }
 
 /*! \brief Callback function for system clock.
-	\todo Make periodic events scheduled as such.
+    \todo Make periodic events scheduled as such.
 */
 void flext::Timer::callback(Timer *tmr)
 {
-	if(tmr->period) {
-		// clearly it would be more precise if the periodic event is scheduled as such
-		// and not retriggered every time
+    if(tmr->period) {
+        // clearly it would be more precise if the periodic event is scheduled as such
+        // and not retriggered every time
 #if FLEXT_SYS == FLEXT_SYS_PD 
-		clock_delay(tmr->clk,tmr->period*1000);
+        clock_delay(tmr->clk,tmr->period*1000);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-		clock_fdelay(tmr->clk,tmr->period*1000.);
+        clock_fdelay(tmr->clk,tmr->period*1000.);
 #else
-	#error Not implemented
+    #error Not implemented
 #endif
-	}
+    }
 
-	if(tmr->cback) {
+    if(tmr->cback) {
 #if FLEXT_SYS == FLEXT_SYS_MAX
-		if(tmr->queued) 
-			qelem_set(tmr->qelem);
-		else
+        if(tmr->queued) 
+            qelem_set(tmr->qelem);
+        else
 #endif
-			tmr->Work();
-	}
+            tmr->Work();
+    }
 }
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
@@ -250,13 +250,13 @@ void flext::Timer::queuefun(Timer *tmr) { tmr->Work(); }
 #endif
 
 /*! \brief Virtual worker function - by default it calls the user callback function.
-	\remark The respective callback parameter format is chosen depending on whether clss is defined or not.
+    \remark The respective callback parameter format is chosen depending on whether clss is defined or not.
 */
 void flext::Timer::Work()
 {
-	if(clss) 
-		((bool (*)(flext_base *,void *))cback)(clss,userdata);
-	else
-		cback(userdata);
+    if(clss) 
+        ((bool (*)(flext_base *,void *))cback)(clss,userdata);
+    else
+        cback(userdata);
 }
 

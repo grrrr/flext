@@ -13,84 +13,84 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 
 flext_sndobj::flext_sndobj():
-	inobjs(0),outobjs(0),
-	inobj(NULL),tmpobj(NULL),outobj(NULL),
-	smprt(0),blsz(0)
+    inobjs(0),outobjs(0),
+    inobj(NULL),tmpobj(NULL),outobj(NULL),
+    smprt(0),blsz(0)
 {}
 
 bool flext_sndobj::Init()
 {
-	bool ret = flext_dsp::Init();
-	inobjs = CntInSig();
-	outobjs = CntOutSig();
-	return ret;
+    bool ret = flext_dsp::Init();
+    inobjs = CntInSig();
+    outobjs = CntOutSig();
+    return ret;
 }
 
 void flext_sndobj::Exit()
 {
-	ClearObjs();
-	flext_dsp::Exit();
+    ClearObjs();
+    flext_dsp::Exit();
 }
 
 void flext_sndobj::ClearObjs()
 {
-	FreeObjs();
+    FreeObjs();
 
-	if(inobj) {
-		for(int i = 0; i < inobjs; ++i) delete inobj[i]; 
-		delete[] inobj; inobj = NULL; 
-	}
-	if(tmpobj) {
-		for(int i = 0; i < inobjs; ++i) delete tmpobj[i];
-		delete[] tmpobj; tmpobj = NULL;
-	}
-	if(outobj) {
-		for(int i = 0; i < outobjs; ++i) delete outobj[i];
-		delete[] outobj; outobj = NULL; 
-	}
+    if(inobj) {
+        for(int i = 0; i < inobjs; ++i) delete inobj[i]; 
+        delete[] inobj; inobj = NULL; 
+    }
+    if(tmpobj) {
+        for(int i = 0; i < inobjs; ++i) delete tmpobj[i];
+        delete[] tmpobj; tmpobj = NULL;
+    }
+    if(outobj) {
+        for(int i = 0; i < outobjs; ++i) delete outobj[i];
+        delete[] outobj; outobj = NULL; 
+    }
 }
 
 void flext_sndobj::m_dsp(int n,t_sample *const *in,t_sample *const *out)
 {
-	// called on every rebuild of the dsp chain
-	
-	int i;
-	if(Blocksize() != blsz || Samplerate() != smprt) {
-		// block size or sample rate has changed... rebuild all objects
+    // called on every rebuild of the dsp chain
+    
+    int i;
+    if(Blocksize() != blsz || Samplerate() != smprt) {
+        // block size or sample rate has changed... rebuild all objects
 
-		ClearObjs();
+        ClearObjs();
 
-		blsz = Blocksize();
-		smprt = Samplerate();
+        blsz = Blocksize();
+        smprt = Samplerate();
 
-		// set up sndobjs for inlets and outlets
-		if(inobjs) {
-			inobj = new Inlet *[inobjs];
-			tmpobj = new SndObj *[inobjs];
-			for(i = 0; i < inobjs; ++i) {
-				inobj[i] = new Inlet(in[i],blsz,smprt);
-				tmpobj[i] = new SndObj(NULL,blsz,smprt);
-			}
-		}
-		if(outobjs) {
-			outobj = new Outlet *[outobjs];
-			for(i = 0; i < outobjs; ++i) outobj[i] = new Outlet(out[i],blsz,smprt);
-		}
+        // set up sndobjs for inlets and outlets
+        if(inobjs) {
+            inobj = new Inlet *[inobjs];
+            tmpobj = new SndObj *[inobjs];
+            for(i = 0; i < inobjs; ++i) {
+                inobj[i] = new Inlet(in[i],blsz,smprt);
+                tmpobj[i] = new SndObj(NULL,blsz,smprt);
+            }
+        }
+        if(outobjs) {
+            outobj = new Outlet *[outobjs];
+            for(i = 0; i < outobjs; ++i) outobj[i] = new Outlet(out[i],blsz,smprt);
+        }
 
-		if(!NewObjs()) ClearObjs();
-	}
-	else {
-		// assign changed input/output vectors
+        if(!NewObjs()) ClearObjs();
+    }
+    else {
+        // assign changed input/output vectors
 
-		for(i = 0; i < inobjs; ++i) inobj[i]->SetBuf(in[i]);
-		for(i = 0; i < outobjs; ++i) outobj[i]->SetBuf(out[i]);
-	}
+        for(i = 0; i < inobjs; ++i) inobj[i]->SetBuf(in[i]);
+        for(i = 0; i < outobjs; ++i) outobj[i]->SetBuf(out[i]);
+    }
 }
 
 void flext_sndobj::m_signal(int n,t_sample *const *in,t_sample *const *out)
 {
-	for(int i = 0; i < inobjs; ++i) *tmpobj[i] << *inobj[i];
-	ProcessObjs();
+    for(int i = 0; i < inobjs; ++i) *tmpobj[i] << *inobj[i];
+    ProcessObjs();
 }
 
 
@@ -100,12 +100,12 @@ flext_sndobj::Inlet::Inlet(const t_sample *b,int vecsz,float sr):
 
 short flext_sndobj::Inlet::Read() 
 { 
-	if(!m_error) { 
-		for(m_vecpos = 0; m_vecpos < m_samples; m_vecpos++)
-			m_output[m_vecpos] = buf[m_vecpos];
-		return 1; 
-	} 
-	else return 0; 
+    if(!m_error) { 
+        for(m_vecpos = 0; m_vecpos < m_samples; m_vecpos++)
+            m_output[m_vecpos] = buf[m_vecpos];
+        return 1; 
+    } 
+    else return 0; 
 }
 
 short flext_sndobj::Inlet::Write() { return 0; }
@@ -119,13 +119,13 @@ short flext_sndobj::Outlet::Read() { return 0; }
 
 short flext_sndobj::Outlet::Write() 
 { 
-	if(!m_error) { 
-		if(m_IOobjs[0])
-			for(m_vecpos = 0; m_vecpos < m_samples; m_vecpos++)
-				buf[m_vecpos] = m_IOobjs[0]->Output(m_vecpos);
-		return 1; 
-	} 
-	else return 0; 
+    if(!m_error) { 
+        if(m_IOobjs[0])
+            for(m_vecpos = 0; m_vecpos < m_samples; m_vecpos++)
+                buf[m_vecpos] = m_IOobjs[0]->Output(m_vecpos);
+        return 1; 
+    } 
+    else return 0; 
 }
 
 

@@ -18,11 +18,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #if FLEXT_OS == FLEXT_OS_WIN
 #include <windows.h>
 #elif FLEXT_OS == FLEXT_OS_MAC
-	#if FLEXT_OSAPI != FLEXT_OSAPI_MAC_MACH
-		#include <MacMemory.h>
-	#else
-		#include <Carbon/Carbon.h>
-	#endif
+    #if FLEXT_OSAPI != FLEXT_OSAPI_MAC_MACH
+        #include <MacMemory.h>
+    #else
+        #include <Carbon/Carbon.h>
+    #endif
 #endif
 
 void flext::CopyMem(void *dst,const void *src,int bytes) 
@@ -30,9 +30,9 @@ void flext::CopyMem(void *dst,const void *src,int bytes)
 #if FLEXT_OS == FLEXT_OS_WIN
     MoveMemory(dst,src,bytes);
 #elif FLEXT_OS == FLEXT_OS_MAC
-	BlockMoveData(src,dst,bytes);
+    BlockMoveData(src,dst,bytes);
 #else
-	memcpy(dst,src,bytes);
+    memcpy(dst,src,bytes);
 #endif
 }
 
@@ -43,22 +43,22 @@ void flext::ZeroMem(void *dst,int bytes)
 #elif FLEXT_OS == FLEXT_OS_MAC
     BlockZero(dst,bytes);
 #else
-	memset(dst,0,bytes);
+    memset(dst,0,bytes);
 #endif
 }
 
 
 bool flext::Forward(const t_symbol *recv,const t_symbol *s,int argc,const t_atom *argv)
 {
-	void *cl = recv->s_thing;
-	if(!cl) return false;
+    void *cl = recv->s_thing;
+    if(!cl) return false;
     
 #if FLEXT_SYS == FLEXT_SYS_PD
-	pd_typedmess((t_class **)cl,(t_symbol *)s,argc,(t_atom *)argv);
+    pd_typedmess((t_class **)cl,(t_symbol *)s,argc,(t_atom *)argv);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	typedmess(recv->s_thing,(t_symbol *)s,argc,(t_atom *)argv);
+    typedmess(recv->s_thing,(t_symbol *)s,argc,(t_atom *)argv);
 #else
 #error Not implemented
 #endif
-	return true;
+    return true;
 }

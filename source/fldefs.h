@@ -15,13 +15,13 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __FLEXT_DEFS_H
 #define __FLEXT_DEFS_H
 
-/*!	\defgroup FLEXT_DEFS Definitions for basic flext functionality
-	@{ 
+/*! \defgroup FLEXT_DEFS Definitions for basic flext functionality
+    @{ 
 */
 
 /*! \brief Switch for compilation of derived virtual classes
-	\remark These need dynamic type casts (and RTTI, naturally)
-	\ingroup FLEXT_GLOBALS
+    \remark These need dynamic type casts (and RTTI, naturally)
+    \ingroup FLEXT_GLOBALS
 */
 #ifdef FLEXT_VIRT
 #define FLEXT_CAST dynamic_cast
@@ -29,7 +29,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define FLEXT_CAST static_cast
 #endif
 
-//!	@}  FLEXT_DEFS
+//! @}  FLEXT_DEFS
 
 #include "fldefs_hdr.h"
 
@@ -38,8 +38,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // ====================================================================================
 
-/*!	\defgroup FLEXT_D_METHOD Declarations for flext methods
-	@{ 
+/*! \defgroup FLEXT_D_METHOD Declarations for flext methods
+    @{ 
 */
 
 #include "fldefs_methcb.h"
@@ -54,9 +54,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #ifdef FLEXT_ATTRIBUTES 
 
-/*!	\defgroup FLEXT_D_ATTRIB Attribute definition
-	\note These have to reside inside the class declaration
-	@{ 
+/*! \defgroup FLEXT_D_ATTRIB Attribute definition
+    \note These have to reside inside the class declaration
+    @{ 
 */
 
 #include "fldefs_attrcb.h"

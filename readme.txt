@@ -122,6 +122,8 @@ Version history:
 - added flext::Forward function to send messages to bound symbols
 - added "zero" flag to flext::buffer resize operation
 - fixed bug for Max/MSP buffer resize with preservation of contents
+- fixed bug with thread initialization (caused PD@OSX to crash on startup)
+- flext::setup is only run once now
 
 0.4.2:
 - started port for jMax

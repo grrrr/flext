@@ -31,6 +31,11 @@ const t_symbol *flext::sym_signal = NULL;
 
 void flext::Setup()
 {
+	static bool issetup = false;
+	if(issetup) 
+		return;
+	else issetup = true;
+
 #if FLEXT_SYS == FLEXT_SYS_PD
 	sym_anything = &s_anything;
 	sym_pointer = &s_pointer;
@@ -57,6 +62,7 @@ void flext::Setup()
 #endif
 
 #ifdef FLEXT_THREADS
+	thrid = GetThreadId();
     StartHelper();
 #endif
 }

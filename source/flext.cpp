@@ -169,10 +169,6 @@ void flext_base::Setup(t_classid id)
 		AddMethod(id,0,"getattributes",(methfun)cb_ListAttrib);
 
 	SetProxies(c);
-
-#ifdef FLEXT_THREADS
-	thrid = GetThreadId();
-#endif
 }
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX

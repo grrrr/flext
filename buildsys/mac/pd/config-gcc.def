@@ -1,5 +1,5 @@
 # where is the PD installation including source code?
-PDPATH=/Applications/audio/Pd-0.38-0test13.app/Contents/Resources
+PDPATH=/Applications/audio/Pd-0.38-0.app/Contents/Resources
 
 # where is the PD executable?
 PDBIN=$(PDPATH)/bin/pd

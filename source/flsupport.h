@@ -157,6 +157,15 @@ public:
 	//! Sleep for an amount of time
 	static void Sleep(double s);
 
+
+	/*! \brief Fold value to a number of bits
+		\remark Good for hash generation
+	*/
+	static int FoldBits(unsigned long h,int bits);
+	
+	//! \brief How many bits are necessary to represent n
+	static int Int2Bits(unsigned long n);
+
 //!		@} FLEXT_S_UTIL
 
 // --- various symbols --------------------------------------------
@@ -405,23 +414,6 @@ public:
 	};
 
 //!		@} FLEXT_S_ATOM
-
-
-// --- utilities ------------------------------------------------
-
-	/*!	\defgroup FLEXT_S_UTIL Flext utility functions
-		@{ 
-	*/
-
-	/*! \brief Fold value to a number of bits
-		\remark Good for hash generation
-	*/
-	static int FoldBits(unsigned long h,int bits);
-	
-	//! \brief How many bits are necessary to represent n
-	static int Int2Bits(unsigned long n);
-
-//!		@} FLEXT_S_UTIL
 
 
 // --- clock stuff ------------------------------------------------

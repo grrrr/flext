@@ -252,7 +252,9 @@ REAL_NEW_3(NAME,NEW_CLASS, 1,1, TYPE1, TYPE2, TYPE3)
 // deprecated stuff
 
 /*!	\defgroup FLEXT_D_DEPRECATED Deprecated definitions 
+	\deprecated
 	@{ 
+*/
 
 #define FLEXT_NEW_G FLEXT_NEW_V
 
@@ -269,7 +271,6 @@ REAL_NEW_3(NAME,NEW_CLASS, 1,1, TYPE1, TYPE2, TYPE3)
 #define FLEXT_LIB_TILDE_1 FLEXT_LIB_DSP_1
 #define FLEXT_LIB_TILDE_2 FLEXT_LIB_DSP_2
 #define FLEXT_LIB_TILDE_3 FLEXT_LIB_DSP_3
-
 
 #define FLEXT_TILDE_SETUP FLEXT_DSP_SETUP
 
@@ -771,10 +772,8 @@ AddMethod(IX,"bang",FLEXT_CALL_PRE(M_FUN))
 #define FLEXT_ADDMETHOD(IX,M_FUN) \
 AddMethod(IX,FLEXT_CALL_PRE(M_FUN))	
 
-#if 0
-// FLEXT_ADDMETHOD_V and FLEXT_ADDMETHOD_A definitions obscure that _ indicates the usage of a message tag
-
 /*! \brief Add a handler for a method with a (variable argument) list
+	\deprecated This definition obscures that _ indicates the usage of a message tag - use FLEXT_ADDMETHOD instead
 	\note This is already covered by FLEXT_ADDMETHOD, but here for the sake of clarity
 */
 #define FLEXT_ADDMETHOD_V(IX,M_FUN) \
@@ -782,12 +781,12 @@ AddMethod(IX,FLEXT_CALL_PRE(M_FUN))
 AddMethod(IX,FLEXT_CALL_PRE(M_FUN))	
 
 /*! \brief Add a handler for a method with an anything argument
+	\deprecated This definition obscures that _ indicates the usage of a message tag - use FLEXT_ADDMETHOD instead
 	\note This is already covered by FLEXT_ADDMETHOD, but here for the sake of clarity
 */
 #define FLEXT_ADDMETHOD_A(IX,M_FUN) \
 \
 AddMethod(IX,FLEXT_CALL_PRE(M_FUN))	
-#endif
 
 //! Add a a handler for a tagged method with implicit arguments
 #define FLEXT_ADDMETHOD_(IX,M_TAG,M_FUN) \

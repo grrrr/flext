@@ -163,7 +163,8 @@ PREDEFINED             = FLEXT_THREADS \
                          MAXMSP \
                          NT \
                          PD \
-                         unix
+                         unix \
+                         FLEXT_ATTRIBUTES
 EXPAND_AS_DEFINED      = 
 SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------

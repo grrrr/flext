@@ -198,7 +198,7 @@ that functionality.
 
 Be sure to work through the examples provided with the flext tutorial. These should give you
 an overview about the possibilities of flext.
-The "\ref modules" link at the top of the page leads to a complete reference
+The "modules" link at the top of the page leads to a complete reference
 of flext functions and classes.
 
 */

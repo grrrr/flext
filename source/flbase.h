@@ -136,7 +136,7 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 	*/
 
         //! Get the object's canvas
-        t_canvas *thisCanvas() { return m_canvas; }
+        t_canvas *thisCanvas() const { return m_canvas; }
 
         //! Get the PD or Max/MSP object
 		t_sigobj *thisHdr() { return &x_obj->obj; }
@@ -205,7 +205,7 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
     protected:    	
 		
         //! The object header
-        flext_hdr          *x_obj;        	
+        mutable flext_hdr          *x_obj;        	
 
         //! Flag for attribute procession
         bool				procattr;
@@ -215,7 +215,7 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
     private:
 
         //! The canvas (patcher) that the object is in
-        t_canvas            *m_canvas;
+        mutable t_canvas            *m_canvas;
         
         //! Flag for successful object construction
         bool				init_ok;
@@ -257,6 +257,9 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 #endif
 		static void obj_free(flext_hdr *o);
 #endif
+
+		//! Convert $0 or #0 symbol into appropriate value
+		static const t_symbol *GetParamSym(const t_symbol *s,t_canvas *c);
 
 	//!	@} FLEXT_O_INTERNAL
 

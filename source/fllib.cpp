@@ -363,18 +363,18 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 					switch(lo->argv[i]) {
 #if FLEXT_SYS != FLEXT_SYS_PD
 					case FLEXTTPN_INT:
-						if(flext::IsInt(argv[i])) args[i] = argv[i];
+						if(IsInt(argv[i])) args[i] = argv[i];
 						else if(flext::IsFloat(argv[i])) flext::SetInt(args[i],(int)flext::GetFloat(argv[i]));
 						else ok = false;
 						break;
 #endif
 					case FLEXTTPN_FLOAT:
-						if(flext::IsInt(argv[i])) flext::SetFloat(args[i],(float)flext::GetInt(argv[i]));
+						if(IsInt(argv[i])) flext::SetFloat(args[i],(float)flext::GetInt(argv[i]));
 						else if(flext::IsFloat(argv[i])) args[i] = argv[i];
 						else ok = false;
 						break;
 					case FLEXTTPN_SYM:
-						if(flext::IsSymbol(argv[i])) args[i] = argv[i];
+						if(IsSymbol(argv[i])) SetSymbol(args[i],GetParamSym(GetSymbol(argv[i]),NULL));
 						else ok = false;
 						break;
 					}
@@ -411,10 +411,18 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 
 			// get actual flext object (newfun calls "new flext_obj()")
 			if(lo->argc >= 0)
-				// for interpreted arguments
+				// for interpreted arguments (patcher parameters have already been converted)
 				obj->data = lo->newfun(lo->argc,args); 
-			else
-				obj->data = lo->newfun(argc,(t_atom *)argv); 
+			else {
+				// convert eventual patcher parameters
+				for(int i = 0; i < argc; ++i)
+					if(IsSymbol(argv[i])) 
+						SetSymbol(args[i],GetParamSym(GetSymbol(argv[i]),NULL));
+					else
+						args[i] = argv[i];
+
+				obj->data = lo->newfun(argc,args); 
+			}
 	
 			flext_obj::m_holder = NULL;
 			flext_obj::m_holdname = NULL;
@@ -450,7 +458,7 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 #ifdef FLEXT_DEBUG
 	else
 #if FLEXT_SYS == FLEXT_SYS_MAX
-		// in Max/MSP an object with the name of the library exists, even if not explicitely declared!
+		// in Max/MSP an object with the name of the library exists, even if not explicitly declared!
 		if(s != lib_name) 
 #endif
 		error("Class %s not found in library!",s->s_name);

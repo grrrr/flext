@@ -32,6 +32,7 @@ Version history:
 - explicit boolean attributes (great for attribute editor layout!)
 - added flext::NewLarge and flext::FreeLarge memory allocation functions which use the C-Library heap and should mainly be used in secondary threads
 - flext_dsp reported wrong inlet/outlet count (CntInSig, CntOutSig functions)
+- added support for patcher arguments for attributes (use # instead of $ to save them with a patch)
 
 0.4.4:
 - fixed deadly bug for Max/MSP method-to-symbol-binding proxies

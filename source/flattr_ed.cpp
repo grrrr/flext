@@ -467,9 +467,6 @@ void flext_base::cb_GfxSave(t_gobj *c, t_binbuf *b)
 	AtomList la;
 	th->ListAttrib(la);
 	cnt = la.Count();
-	char attrname[100];
-	*attrname= '@';
-
 
 	for(int i = 0; i < cnt; ++i) {
 		const t_symbol *sym = GetSymbol(la[i]);
@@ -479,8 +476,26 @@ void flext_base::cb_GfxSave(t_gobj *c, t_binbuf *b)
 
 		if(it != th->attrdata->end()) {
 			const AttrData &a = it->second;
-			if(a.IsInit() && a.IsInitValue()) 
+			if(a.IsInit() && a.IsInitValue()) {
 				lref = &a.GetInitValue();
+/*
+				// check for $-parameters
+				lv = lref->Count();
+				for(int j = 0; j < lref->Count(); ++j) {
+					const char *s = IsSymbol((*lref)[j])?GetString((*lref)[j]):NULL;
+					if(s && s[0] == '$') { // TODO: More refined checking?
+						// prepend a "\"
+						char tmp[256]; *tmp = '\\';
+						strcpy(tmp+1,s);
+						SetString(lv[j],tmp);
+					}
+					else
+						lv[i] = (*lref)[j];
+				}
+
+				lref = &lv;
+*/
+			}
 			else if(a.IsSaved()) {
 				AttrItem *attr = th->FindAttrib(sym,true);
 
@@ -493,6 +508,7 @@ void flext_base::cb_GfxSave(t_gobj *c, t_binbuf *b)
 		}
 
 		if(lref) {
+			char attrname[256]; *attrname= '@';
 			// store name
 			strcpy(attrname+1,GetString(sym));
 			binbuf_addv(b,"s",MakeSymbol(attrname));

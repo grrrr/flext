@@ -450,7 +450,7 @@ public:
 
 //!		@} FLEXT_C_BIND
 
-// --- thread stuff -----------------------------------------------
+	// --- thread stuff -----------------------------------------------
 
 #ifdef FLEXT_THREADS
 	/*!	\defgroup FLEXT_C_THREAD Thread handling 

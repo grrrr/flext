@@ -17,6 +17,19 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flext.h"
 #include "flinternal.h"
 #include <string.h>
+#include <ctype.h>
+
+#if FLEXT_SYS == FLEXT_SYS_PD
+#ifdef _MSC_VER
+	#pragma warning (push)
+	#pragma warning (disable:4091)
+#endif
+#include <g_canvas.h>
+#ifdef _MSC_VER
+	#pragma warning (pop)
+#endif
+#endif
+
 
 /////////////////////////////////////////////////////////
 //
@@ -82,7 +95,27 @@ void flext_obj::DefineHelp(t_classid c,const char *ref,const char *dir,bool addt
 #endif
 }
 
+const t_symbol *flext_obj::GetParamSym(const t_symbol *sym,t_canvas *c)
+{
+	if(!c) c = canvas_getcurrent();
 
-
-
+#if FLEXT_SYS == FLEXT_SYS_PD
+	const char *s = GetString(sym);
+	if((s[0] == '$' || s[0] == '#') && isdigit(s[1])) {
+		// patcher parameter detected... get value!
+		if(s[0] != '$') {
+			char tmp[MAXPDSTRING];
+			strcpy(tmp,s);
+			tmp[0] = '$';
+			return canvas_realizedollar(c,const_cast<t_symbol *>(MakeSymbol(tmp)));
+		}
+		else
+			return canvas_realizedollar(c,const_cast<t_symbol *>(sym));
+	}
+	else
+#else
+	#pragma warning("Not implemented")
+#endif
+	return sym;
+}
 

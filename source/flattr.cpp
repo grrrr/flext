@@ -14,6 +14,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
  
 #include "flext.h"
 #include <string.h>
+#include <ctype.h>
 
 #include <set>
 
@@ -223,7 +224,6 @@ bool flext_base::SetAttrib(AttrItem *a,int argc,const t_atom *argv)
 	if(a->fun) {
 		bool ok = true;
 
-		AtomList la;
 		t_any any;
 		switch(a->argtp) {
 		case a_float:
@@ -242,7 +242,7 @@ bool flext_base::SetAttrib(AttrItem *a,int argc,const t_atom *argv)
 			break;
 		case a_symbol:
 			if(argc == 1 && IsSymbol(argv[0])) {
-				any.st = GetSymbol(argv[0]);
+				any.st = const_cast<t_symbol *>(GetParamSym(GetSymbol(argv[0]),thisCanvas()));
 				((methfun_1)a->fun)(this,any);				
 			}
 			else ok = false;
@@ -254,10 +254,18 @@ bool flext_base::SetAttrib(AttrItem *a,int argc,const t_atom *argv)
 			}
 			else ok = false;
 			break;
-		case a_LIST:
-			any.vt = &(la(argc,argv));
+		case a_LIST: {
+			AtomList la(argc);
+			for(int i = 0; i < argc; ++i)
+				if(IsSymbol(argv[i])) 
+					SetSymbol(la[i],GetParamSym(GetSymbol(argv[i]),thisCanvas()));
+				else
+					la[i] = argv[i];
+
+			any.vt = &la;
 			((methfun_1)a->fun)(this,any);				
 			break;
+		}
 		default:
 			ERRINTERNAL();
 		}

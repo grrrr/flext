@@ -646,6 +646,9 @@ public:
 		AtomListStatic(int argc,const t_atom *argv = NULL): AtomListStaticBase(PRE,pre) { operator()(argc,argv); }
 		//! Construct list
         AtomListStatic(const AtomList &a): AtomListStaticBase(PRE,pre) { operator =(a); }
+
+		//! Set list by another AtomList
+        AtomListStatic &operator =(const AtomList &a) { AtomListStaticBase::operator =(a); return *this; }
     protected:
         t_atom pre[PRE];
     };

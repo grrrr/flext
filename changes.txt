@@ -30,6 +30,7 @@ Version history:
 - ListAttributes (or the getattributes message) now lists attributes in the order they were created (first class, then object scope)
 - enforcing usage of STL
 - explicit boolean attributes (great for attribute editor layout!)
+- added flext::NewLarge and flext::FreeLarge memory allocation functions which use the C-Library heap and should mainly be used in secondary threads
 
 0.4.4:
 - fixed deadly bug for Max/MSP method-to-symbol-binding proxies

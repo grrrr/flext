@@ -82,11 +82,18 @@ void flext::Setup()
 void *flext::operator new(size_t bytes)
 {
 	bytes += sizeof(size_t);
+
+#ifdef FLEXT_DEBUG
+	if(bytes > 32000)
+		post("flext - warning: excessive memory allocation of %i bytes",bytes);
+#endif
+
 #if FLEXT_SYS == FLEXT_SYS_JMAX
 	char *blk = (char *)::fts_malloc(bytes);
 #else
 	char *blk = (char *)::getbytes(bytes);
 #endif
+
 	*(size_t *)blk = bytes;
 	return blk+sizeof(size_t);
 }

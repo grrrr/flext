@@ -69,7 +69,8 @@ public:
 	*/
 
 		/*! Overloaded new memory allocation method
-			\warning Max/MSP (or MacOS) allows only 16K in overdrive mode!
+			\note this uses a fast allocation method of the real-time system
+			\warning Max/MSP (or MacOS) allows only 32K in overdrive mode!
 		*/
 		void *operator new(size_t bytes);
 		//! Overloaded delete method
@@ -79,6 +80,13 @@ public:
 		void *operator new[](size_t bytes) { return operator new(bytes); }
 		void operator delete[](void *blk) { operator delete(blk); }
 		#endif
+
+		/*! Get a large memory block
+			the normal C library function is used here
+		*/
+		static void *NewLarge(size_t bytes) { return ::operator new(bytes); }
+		//! Free a large memory block
+		static void FreeLarge(void *blk) { return ::operator delete(blk); }
 
 		//! Get an aligned memory block
 		static void *NewAligned(size_t bytes,int bitalign = 128);

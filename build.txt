@@ -42,13 +42,18 @@ flext provides a universal build system which supports
 
 Useful combinations of the above are
 
-win pd msvc, using nmake
-win pd cygwin, using gnumake
-win pd mingw, using gnumake
-win max msvc, using nmake
-win pd bcc, using bmake
-mac pd gcc, using gnumake
-mac max gcc, using gnumake - Mach-O externals only (Max 4.5 upwards)
+under Windows:
+pd msvc, using nmake
+pd cygwin, using gnumake
+pd mingw, using gnumake
+max msvc, using nmake
+pd bcc, using bmake
+
+under Linux or MacOSX:
+pd gcc, using gnumake
+
+under MacOSX:
+max gcc, using gnumake - Mach-O externals only (Max 4.5 upwards)
 
 
 There are two central scripts in the flext folder which invoke the building process:
@@ -79,18 +84,18 @@ Flext can build itself using the build system.
 From the flext main directory, run the build script
 
 e.g. under Windows
-	build win pd msvc
+	build pd msvc
 or under unix with
-	bash build.sh lnx pd gcc
+	bash build.sh pd gcc
 
 When you run it for the first time, one or more configuration files will be created 
 from templates - you will get a message on the console. 
 You should edit the files to adapt it to your system.
 
 Then install flext with (under Windows)
-	build win pd msvc install
+	build pd msvc install
 or (under unix)
-	bash build.sh lnx pd gcc install
+	bash build.sh pd gcc install
 
 
 1.2) Building externals
@@ -103,18 +108,18 @@ In the shell, change to the project folder.
 Then, simply run the flext build script, 
 
 e.g. under Windows
-	..\flext\build win pd msvc
+	..\flext\build pd msvc
 Then install your newly built external with
-	..\flext\build win pd msvc install
+	..\flext\build pd msvc install
 You can clean up the intermediate build folders with
-	..\flext\build win pd msvc clean
+	..\flext\build pd msvc clean
 
 or under unix with
-	bash ../flext/build.sh lnx pd gcc
+	bash ../flext/build.sh pd gcc
 Then install your external with
-	bash ../flext/build.sh lnx pd gcc install
+	bash ../flext/build.sh pd gcc install
 You can clean up the intermediate build folders with
-	bash ../flext/build.sh lnx pd gcc clean
+	bash ../flext/build.sh pd gcc clean
 
 
 1.3) Building externals

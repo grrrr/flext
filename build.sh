@@ -18,15 +18,24 @@ flext=${0%/*}/
 if [ "$flext" = "$0"/ ]; then flext=./ ; fi
 
 # Arguments:
-# $1 - platform (win/lnx/mac)
-# $2 - system (pd/max)
-# $3 - compiler (msvc/gcc/mingw/cygwin/bcc/icc)
-# $4 - target (build/clean/install)
+# $1 - system (pd/max)
+# $2 - compiler (msvc/gcc/mingw/cygwin/bcc/icc)
+# $3 - target (build/clean/install)
 
-platform=$1
-rtsys=$2
-compiler=$3
-target=$4
+unamesys=$(uname -s)
+
+case $unamesys in
+	Linux) platform=lnx;;
+	Darwin) platform=mac;;
+	CYGWIN*) platform=win;;
+	*) echo Platform $unamesys not supported; exit;;
+esac
+
+echo Building for $platform
+
+rtsys=$1
+compiler=$2
+target=$3
 
 # --- The subbatch knowns which make utility to use ---
 subbatch=${flext}buildsys/build-${compiler}.sh
@@ -34,11 +43,10 @@ subbatch=${flext}buildsys/build-${compiler}.sh
 if 
 	[ -n "$platform" -a -n "$rtsys" -a -n "$compiler" -a -f $subbatch ]
 then 
-	bash $subbatch $platform $rtsys $target $5 $6 $7 $8 $9
+	bash $subbatch $platform $rtsys $target $4 $5 $6 $7 $8 $9
 else
 	echo 
-	echo SYNTAX: build.sh [platform] [system] [compiler] {target}
-	echo platform ... win / lnx / mac
+	echo SYNTAX: build.sh [system] [compiler] {target}
 	echo system ..... pd / max
 	echo compiler ... msvc / gcc / mingw / cygwin / bcc / icc
 	echo target ..... build \(default\) / clean / install

@@ -93,6 +93,7 @@ Version history:
 	- there is a virtual bool Init() function that may be used for such initialization
 - completely redesigned FLEXT_NEW macros, usage of dynamic classes (in fllib.cpp)
 - added ToQueue* functions - like ToOut* but messages or not directly sent (well suited for deadlock situations)
+- introduced additional per-class methods and attributes (just like it ever was in Max and PD)
 - fixed potentially dangerous typo in flext.cpp - (was: FLEXT_THREAD instead of FLEXT_THREADS)
 - added OSX/darwin support (originally done by Adam T. Lindsay)
 - SndObj interface now also available for cygwin and BCC 
@@ -102,6 +103,7 @@ Version history:
 - added/completed Is/Canbe/Get/Set for pointer atoms
 - added print/scan functions for atoms
 - fixed anything outlets for Max/MSP... for some strange reason this severe bug has not had severe consequences....
+- eliminated the t_class * argument for class setup functions (use static thisClass instead)
 
 0.3.3:
 - PD: fixed bug for DSP objects having no signal inlets

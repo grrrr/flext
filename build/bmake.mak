@@ -6,7 +6,10 @@
 # BUILDPATH including trailing \
 
 # package info
-!include build\package.txt
+USRINFO=package.txt
+
+!include $(USRINFO)
+
 
 SYSCONFIG=$(BUILDPATH)config-$(PLATFORM)-$(RTSYS)-$(COMPILER).txt
 SYSDEFAULT=$(BUILDPATH)$(PLATFORM)\$(RTSYS)\config-$(COMPILER).def
@@ -14,17 +17,15 @@ SYSDEFAULT=$(BUILDPATH)$(PLATFORM)\$(RTSYS)\config-$(COMPILER).def
 
 OPTIONS=-f $(BUILDPATH)bmake-sub.mak -N \
 	PLATFORM=$(PLATFORM) RTSYS=$(RTSYS) COMPILER=$(COMPILER) \
-	BUILDPATH=$(BUILDPATH)
+	BUILDPATH=$(BUILDPATH) USRINFO=$(USRINFO)
 
-!ifdef HAVECONFIG
+!ifdef BUILDDIR
 USRCONFIG=config.txt
-USRDEFAULT=build\config-$(PLATFORM).def
-OPTIONS=$(OPTIONS) USRCONFIG=$(USRCONFIG)
-!endif
+USRDEFAULT=$(BUILDDIR)\config-$(PLATFORM).def
 
-!ifdef HAVEMAKE
-USRMAKE=build\makefile-$(PLATFORM)-$(COMPILER).inc
-OPTIONS=$(OPTIONS) USRMAKE=$(USRMAKE)
+USRMAKE=$(BUILDDIR)\makefile-$(PLATFORM)-$(COMPILER).inc
+
+OPTIONS=$(OPTIONS) USRCONFIG=$(USRCONFIG) USRMAKE=$(USRMAKE)
 !endif
 
 
@@ -58,7 +59,7 @@ $(SYSCONFIG): $(SYSDEFAULT)
 	@echo -------------------------------------------------------------------------
 	@exit 1
 
-!ifdef HAVECONFIG	
+!ifdef BUILDDIR
 $(USRCONFIG): $(USRDEFAULT)
 	@copy $** $@
 	@echo -------------------------------------------------------------------------
@@ -66,13 +67,14 @@ $(USRCONFIG): $(USRDEFAULT)
 	@echo Please edit $(USRCONFIG) and start again.
 	@echo -------------------------------------------------------------------------
 	@exit 1
-!endif
 
-!ifdef HAVEMAKE
-$(USRMAKE):
+$(USRDEFAULT) $(USRMAKE):
 	@echo -------------------------------------------------------------------------
 	@echo Your combination of platform, system and compiler is not supported yet.
-	@echo Required file: $(USRMAKE)
+	@echo Required files: 
+	@echo $(USRDEFAULT)
+	@echo and
+	@echo $(USRMAKE)
 	@echo -------------------------------------------------------------------------
 	@exit 1
 !endif

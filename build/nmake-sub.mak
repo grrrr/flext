@@ -4,7 +4,7 @@
 ##############################
 
 # package info
-!include build/package.txt
+!include $(USRINFO)
 
 # special package settings
 !ifdef USRCONFIG

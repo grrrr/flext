@@ -52,10 +52,10 @@ HDRS+=$(HDRS_STK)
 endif
 
 
-TARGET=$(TARGDIR)/$(NAME)-pdwin.lib
-TARGET_D=$(TARGDIR)/$(NAME)_d-pdwin.lib
-TARGET_T=$(TARGDIR)/$(NAME)_t-pdwin.lib
-TARGET_TD=$(TARGDIR)/$(NAME)_td-pdwin.lib
+TARGET=$(TARGDIR)/$(NAME)-pdwin.a
+TARGET_D=$(TARGDIR)/$(NAME)_d-pdwin.a
+TARGET_T=$(TARGDIR)/$(NAME)_t-pdwin.a
+TARGET_TD=$(TARGDIR)/$(NAME)_td-pdwin.a
 TARGET_S=$(TARGDIR)/$(NAME).dll
 TARGET_SD=$(TARGDIR)/$(NAME)_d.dll
 

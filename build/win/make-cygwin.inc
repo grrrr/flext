@@ -1,5 +1,7 @@
 LDFLAGS += -shared -Wl,-x
 
+LIBS += -luser32 -lkernel32
+
 ifdef DEBUG
 CFLAGS += -g -D_DEBUG
 else

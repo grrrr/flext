@@ -6,6 +6,8 @@ INCPATH=$(INCPATH) /I$(MSVCPATH)\include
 LIBPATH=$(LIBPATH) /LIBPATH:$(MSVCPATH)\lib
 !endif
 
+LIBS=$(LIBS) user32.lib kernel32.lib
+
 # for VC7 - enable exception handling
 CFLAGS=$(CFLAGS) /EHsc 
 

@@ -1,11 +1,12 @@
 DEFS += -DFLEXT_SYS=2
 
 INCPATH += -I$(PDPATH)/src
-LIBPATH += -L$(PDPATH)/bin
 
-LDFLAGS +=
+# trick PD in a way that only the cygwin pthread headers are used
+CFLAGS += -include /usr/include/pthread.h -DPTHREAD_H
 
-LIBS +=
+LIBS += $(PDPATH)/bin/pd.dll 
+#LIBS += $(PDPATH)/bin/pthreadVC.dll
 
 EXT=dll
 
@@ -25,18 +26,18 @@ ifdef THREADED
 # --- static multi-threaded ---
 
 ifdef DEBUG
-LIBS += $(FLEXTPATH)/libflext_td.a
+LIBS += $(FLEXTPATH)/flext_td-pdwin.a
 else
-LIBS += $(FLEXTPATH)/libflext_t.a
+LIBS += $(FLEXTPATH)/flext_t-pdwin.a
 endif
 
 else 
 # --- static single-threaded ---
 
 ifdef DEBUG
-LIBS += $(FLEXTPATH)/libflext_d.a
+LIBS += $(FLEXTPATH)/flext_d-pdwin.a
 else
-LIBS += $(FLEXTPATH)/libflext.a
+LIBS += $(FLEXTPATH)/flext-pdwin.a
 endif
 
 endif

@@ -90,11 +90,11 @@ $(TARGDIR)/%.sdo : $(SRCDIR)/%.cpp
 
 $(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.ro,$(SRCS))
 	$(AR) rc $@ $^
-	chmod 644 $@
+#	chmod 644 $@
 
 $(TARGET_D) : $(patsubst %.cpp,$(TARGDIR)/%.do,$(SRCS))
 	$(AR) rc $@ $^
-	chmod 644 $@
+#	chmod 644 $@
 
 $(TARGET_T) : $(patsubst %.cpp,$(TARGDIR)/%.tro,$(SRCS))
 	$(AR) rc $@ $^
@@ -102,21 +102,21 @@ $(TARGET_T) : $(patsubst %.cpp,$(TARGDIR)/%.tro,$(SRCS))
 
 $(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(SRCS))
 	$(AR) rc $@ $^
-	chmod 644 $@
+#	chmod 644 $@
 
 $(TARGET_S) : $(patsubst %.cpp,$(TARGDIR)/%.sro,$(SRCS))
 	$(CXX) -shared $(patsubst %,-L%,$(LIBPATH)) -o $@ $^ $(PDLIBS)
 	strip --strip-unneeded $@
-	chmod 755 $@
+#	chmod 755 $@
 
 $(TARGET_SD) : $(patsubst %.cpp,$(TARGDIR)/%.sdo,$(SRCS))
 	$(CXX) -g -shared $(patsubst %,-L%,$(LIBPATH)) -o $@ $^ $(PDLIBS)
-	chmod 755 $@
+#	chmod 755 $@
 
 
 .PHONY: clean install
 clean:
-	rm -f $(TARGDIR)/*.o $(TARGETS)
+	del -f $(TARGDIR)\*.o $(TARGETS)
 	
 ifdef INSTDIR
 $(INSTDIR):
@@ -126,14 +126,5 @@ install:: $(INSTDIR)
 endif
 
 install:: $(TARGETS) $(patsubst %,$(SRCDIR)/%,$(HDRS)) 
-	cp $^ $(INSTDIR)
-
-
-
-
-
-
-
-
-
+	for %%i in ($(subst /,\,$^)) do copy %%i $(subst /,\,$(INSTDIR)) > nul
 

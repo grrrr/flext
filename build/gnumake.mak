@@ -6,7 +6,9 @@
 # BUILDPATH including trailing /
 
 # package info
-include build/package.txt
+USRINFO=package.txt
+
+include $(USRINFO)
 
 
 ifeq ($(PLATFORM),win)
@@ -23,18 +25,16 @@ SYSDEFAULT=$(UBUILDPATH)$(PLATFORM)/$(RTSYS)/config-$(COMPILER).def
 
 OPTIONS=-f $(UBUILDPATH)gnumake-sub.mak \
 	PLATFORM=$(PLATFORM) RTSYS=$(RTSYS) COMPILER=$(COMPILER) \
-	BUILDPATH=$(UBUILDPATH)
+	BUILDPATH=$(UBUILDPATH) USRINFO=$(USRINFO)
 
 
-ifdef HAVECONFIG
+ifdef BUILDDIR
 USRCONFIG=config.txt
-USRDEFAULT=build/config-$(PLATFORM).def
-OPTIONS+=USRCONFIG=$(USRCONFIG)
-endif
+USRDEFAULT=$(BUILDDIR)/config-$(PLATFORM).def
 
-ifdef HAVEMAKE
-USRMAKE=build/makefile-$(PLATFORM)-$(COMPILER).inc
-OPTIONS+=USRMAKE=$(USRMAKE)
+USRMAKE=$(BUILDDIR)/makefile-$(PLATFORM)-$(COMPILER).inc
+
+OPTIONS+=USRCONFIG=$(USRCONFIG) USRMAKE=$(USRMAKE)
 endif
 
 
@@ -64,26 +64,26 @@ $(SYSCONFIG): $(SYSDEFAULT)
 	@echo -------------------------------------------------------------------------
 	@echo A default system configuration file has been created.
 	@echo Please edit $(SYSCONFIG) 
-	@echo to match your platform and start again.
+	@echo to match your platform, then start again.
 	@echo -------------------------------------------------------------------------
 	@false
 
-ifdef HAVECONFIG	
+ifdef BUILDDIR	
 $(USRCONFIG): $(USRDEFAULT)
 	@cp $< $@
 	@echo -------------------------------------------------------------------------
 	@echo A default package configuration file has been created.
-	@echo Please edit $(USRCONFIG) and start again.
+	@echo Please edit $(USRCONFIG), then start again.
 	@echo -------------------------------------------------------------------------
 	@false
-endif
 
-ifdef HAVEMAKE
-$(USRMAKE):
+$(USRDEFAULT) $(USRMAKE):
 	@echo -------------------------------------------------------------------------
 	@echo Your combination of platform, system and compiler is not supported yet.
-	@echo Required file: $(USRMAKE)
+	@echo Required files: 
+	@echo $(USRDEFAULT)
+	@echo and
+	@echo $(USRMAKE)
 	@echo -------------------------------------------------------------------------
 	@false
 endif
-

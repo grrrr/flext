@@ -6,7 +6,7 @@ include $(BUILDPATH)config-$(PLATFORM)-$(RTSYS)-$(COMPILER).txt
 # these are project specific
 
 # package info
-include build/package.txt
+include $(USRINFO)
 
 # special settings
 ifdef USRCONFIG

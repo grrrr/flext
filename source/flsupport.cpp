@@ -29,6 +29,9 @@ const t_symbol *flext::sym_anything = NULL;
 const t_symbol *flext::sym_signal = NULL;
 #endif
 
+int flext::Version() { return FLEXT_VERSION; }
+const char *flext::VersionStr() { return FLEXT_VERSTR; }
+
 void flext::Setup()
 {
 	static bool issetup = false;

@@ -38,6 +38,19 @@ class FLEXT_SHARE flext {
 	*/
 public:
 
+// --- version -----------------------------------------------	
+
+    /*! \brief Flext version number 
+
+        Return the version number of the flext library.
+        For statically linked flext this is identical to the header definition FLEXT_VERSION,
+        otherwise it reflects the version number of the shared flext library.
+    */
+    static int Version();    
+
+    //! Flext version string
+    static const char *VersionStr();    
+
 // --- console output -----------------------------------------------	
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX

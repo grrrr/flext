@@ -53,9 +53,15 @@ public:
 		//! Overloaded delete method
 		void operator delete(void *blk);
 
+		inline void *operator new(size_t,void *p) { return p; }
+		inline void operator delete(void *,void *) {}
+
 		#ifndef __MRC__ // doesn't allow new[] overloading?!
-		void *operator new[](size_t bytes) { return operator new(bytes); }
-		void operator delete[](void *blk) { operator delete(blk); }
+		inline void *operator new[](size_t bytes) { return operator new(bytes); }
+		inline void operator delete[](void *blk) { operator delete(blk); }
+
+		inline void *operator new[](size_t,void *p) { return p; }
+		inline void operator delete[](void *,void *) {}
 		#endif
 
 		//! Get an aligned memory block

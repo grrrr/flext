@@ -106,15 +106,15 @@ SOURCE=.\flcwmax.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\fldefs.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\flext.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\flext.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\flstdc.c
 # End Source File
 # Begin Source File
 

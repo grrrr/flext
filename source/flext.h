@@ -191,9 +191,9 @@ public:
 	V add_meth(I inlet,V (*m)(flext_base *,I,I,I)) { add_meth_one(inlet,"list",(methfun)m,a_int,a_int,a_int,a_null); } // list of 3 floats
 	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,I argc,t_atom *argv)) { add_meth_one(inlet,tag,(methfun)m,a_gimme,a_null); } // method+gimme
 //	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,BL b)) { add_meth_one(inlet,tag,(methfun)m,a_bool,a_gimme,a_null); } // method+boolean
-	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,I i)) { add_meth_one(inlet,tag,(methfun)m,a_int,a_gimme,a_null); } // method+int
 	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,t_symbol *s)) { add_meth_one(inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
 	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,F)) { add_meth_one(inlet,tag,(methfun)m,a_float,a_null); }  // method+float
+	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,I)) { add_meth_one(inlet,tag,(methfun)m,a_int,a_null); } // method+int
 
 
 // --- various symbols --------------------------------------------

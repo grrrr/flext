@@ -449,6 +449,7 @@ public:
 
 	static void CopyAtom(t_atom *dst,const t_atom *src) { *dst = *src; }
 	static t_atom *CopyList(int argc,const t_atom *argv);
+	static void CopyMem(void *dst,const void *src,int bytes);
 	static void Sleep(float s);
 
 // xxx internal stuff xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx

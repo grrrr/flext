@@ -27,6 +27,15 @@ t_atom *flext_base::CopyList(int argc,const t_atom *argv)
 	return dst;
 }
 
+void flext_base::CopyMem(void *dst,const void *src,int bytes) 
+{
+#ifdef macintosh
+	BlockMoveData(src,dst,bytes);
+#else
+	memcpy(dst,src,bytes);
+#endif
+}
+
 void flext_base::Sleep(float s)
 {
 #ifdef NT

@@ -31,6 +31,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "signal1"=.\signal1\signal1.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "simple1"=.\simple1\simple1.dsp - Package Owner=<4>
 
 Package=<5>

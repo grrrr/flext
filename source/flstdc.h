@@ -97,20 +97,11 @@ typedef _outlet t_outlet;
 #define add_method4(clss,meth,text,a1,a2,a3,a4) addmess((method)meth, text, a1,a2,a3,a4,A_NOTHING)
 #define add_method5(clss,meth,text,a1,a2,a3,a5) addmess((method)meth, text, a1,a2,a3,a4,a5,A_NOTHING)
 
+#define add_assist(clss,meth) addmess((method)meth, "assist", A_CANT, A_NULL)
+#define add_loadbang(clss,meth) addmess((method)meth, "loadbang", A_CANT, A_NULL)
+
 #endif
 
-template<class T>
-inline T min(T a,T b) { return a < b?a:b; }
-
-template<class T>
-inline T max(T a,T b) { return a > b?a:b; }
-
-
-#ifdef _WINDOWS
-#define EXT_EXTERN __declspec(dllexport)
-#else                   // other OS's
-#define EXT_EXTERN
-#endif
 
 #ifdef _LOG
 #define LOG(s) post(s)
@@ -126,6 +117,13 @@ inline T max(T a,T b) { return a > b?a:b; }
 #define LOG3(s,v1,v2,v3) ((V)0)
 #define LOG4(s,v1,v2,v3,v4) ((V)0)
 #define LOG5(s,v1,v2,v3,v4,v5) ((V)0)
+#endif
+
+
+#ifdef _WINDOWS
+#define EXT_EXTERN __declspec(dllexport)
+#else                   // other OS's
+#define EXT_EXTERN
 #endif
 
 #endif

@@ -848,7 +848,7 @@ static bool FLEXT_SET_PRE(VAR)(flext_base *c,TP &arg) \
 
 #define FLEXT_ATTRGET_(VAR,TP) \
 static bool FLEXT_GET_PRE(VAR)(flext_base *c,TP &arg) \
-{ arg = FLEXT_CAST<thisType *>(c)->VAR; return true; }
+{ arg = (TP)FLEXT_CAST<thisType *>(c)->VAR; return true; }
 
 #define FLEXT_CALLSET_F(SFUN) FLEXT_CALLSET_(SFUN,float)
 #define FLEXT_CALLSET_I(SFUN) FLEXT_CALLSET_(SFUN,int)
@@ -874,6 +874,8 @@ static bool FLEXT_GET_PRE(FUN)(flext_base *c,AtomList *&arg) \
 #define FLEXT_ATTRSET_F(VAR) FLEXT_ATTRSET_(VAR,float)
 #define FLEXT_ATTRSET_I(VAR) FLEXT_ATTRSET_(VAR,int)
 #define FLEXT_ATTRSET_S(VAR) FLEXT_ATTRSET_(VAR,t_symptr)
+#define FLEXT_ATTRSET_B(VAR) FLEXT_ATTRSET_(VAR,bool)
+#define FLEXT_ATTRSET_E(VAR) FLEXT_ATTRSET_(VAR,int)
 
 #define FLEXT_ATTRSET_V(VAR) \
 static bool FLEXT_SET_PRE(VAR)(flext_base *c,AtomList *&arg) \
@@ -882,6 +884,8 @@ static bool FLEXT_SET_PRE(VAR)(flext_base *c,AtomList *&arg) \
 #define FLEXT_ATTRGET_F(VAR) FLEXT_ATTRGET_(VAR,float)
 #define FLEXT_ATTRGET_I(VAR) FLEXT_ATTRGET_(VAR,int)
 #define FLEXT_ATTRGET_S(VAR) FLEXT_ATTRGET_(VAR,t_symptr)
+#define FLEXT_ATTRGET_B(VAR) FLEXT_ATTRGET_(VAR,bool)
+#define FLEXT_ATTRGET_E(VAR) FLEXT_ATTRGET_(VAR,int)
 
 #define FLEXT_ATTRGET_V(VAR) \
 static bool FLEXT_GET_PRE(VAR)(flext_base *c,AtomList *&arg) \
@@ -891,6 +895,8 @@ static bool FLEXT_GET_PRE(VAR)(flext_base *c,AtomList *&arg) \
 #define FLEXT_ATTRXFER_I(VAR) FLEXT_ATTRGET_I(VAR) FLEXT_ATTRSET_I(VAR) 
 #define FLEXT_ATTRXFER_S(VAR) FLEXT_ATTRGET_S(VAR) FLEXT_ATTRSET_S(VAR) 
 #define FLEXT_ATTRXFER_V(VAR) FLEXT_ATTRGET_V(VAR) FLEXT_ATTRSET_V(VAR) 
+#define FLEXT_ATTRXFER_B(VAR) FLEXT_ATTRGET_B(VAR) FLEXT_ATTRSET_B(VAR) 
+#define FLEXT_ATTRXFER_(VAR,TP) FLEXT_ATTRGET_(VAR,TP) FLEXT_ATTRSET_(VAR,TP) 
 
 //! @} 
 
@@ -903,6 +909,11 @@ static bool FLEXT_GET_PRE(VAR)(flext_base *c,AtomList *&arg) \
 #define	FLEXT_ADDATTR_GET(NAME,GFUN) AddAttrib(NAME,(FLEXT_GET_PRE(GFUN)),NULL)
 #define	FLEXT_ADDATTR_SET(NAME,SFUN) AddAttrib(NAME,NULL,(FLEXT_SET_PRE(SFUN)))
 #define	FLEXT_ADDATTRIB(NAME,FUN) AddAttrib(NAME,(FLEXT_GET_PRE(FUN)),(FLEXT_SET_PRE(FUN)))
+
+// for enums
+#define	FLEXT_ADDATTR_GET_(NAME,GFUN) AddAttrib(NAME,(bool (*)(flext_base *,int &))(FLEXT_GET_PRE(GFUN)),NULL)
+#define	FLEXT_ADDATTR_SET_(NAME,SFUN) AddAttrib(NAME,NULL,(bool (*)(flext_base *,int &))(FLEXT_SET_PRE(SFUN)))
+#define	FLEXT_ADDATTRIB_(NAME,FUN) AddAttrib(NAME,(bool (*)(flext_base *,int &))(FLEXT_GET_PRE(FUN)),(bool (*)(flext_base *,int &))(FLEXT_SET_PRE(FUN)))
 
 //! @} 
 

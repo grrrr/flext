@@ -94,6 +94,7 @@ Version history:
 - added prepend and append functions to AtomList class
 - added IsNothing, SetNothing, CanbeBool and GetABool functions
 - deprecated the remaining Get*Flint and Set*Flint functions 
+- added/completed Is/Canbe/Get/Set for pointer atoms
 
 0.3.3:
 - PD: fixed bug for DSP objects having no signal inlets

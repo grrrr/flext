@@ -135,8 +135,16 @@ typedef void t_binbuf;
 #define A_INT A_LONG
 #endif
 
+#ifndef A_DEFINT
+#define A_DEFINT A_DEFLONG
+#endif
+
 #ifndef A_SYMBOL
 #define A_SYMBOL A_SYM
+#endif
+
+#ifndef A_DEFSYMBOL
+#define A_DEFSYMBOL A_DEFSYM
 #endif
 
 

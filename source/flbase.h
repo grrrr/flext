@@ -411,16 +411,22 @@ fts_module_t __##NAME##_module = {#NAME,#NAME,__##NAME##_initfun,0,0};
 		#define FLEXTTPN_PTR A_POINTER
 	#else
 		#define FLEXTTPN_INT A_INT
+		#define FLEXTTPN_DEFINT A_DEFINT
 	#endif
 	#define FLEXTTPN_FLOAT A_FLOAT
+	#define FLEXTTPN_DEFFLOAT A_DEFFLOAT
 	#define FLEXTTPN_SYM A_SYMBOL
+	#define FLEXTTPN_DEFSYM A_DEFSYM
 	#define FLEXTTPN_VAR A_GIMME
 #else
 	#define FLEXTTPN_NULL 0
 	#define FLEXTTPN_PTR 1
 	#define FLEXTTPN_INT 2
+	#define FLEXTTPN_DEFINT 2
 	#define FLEXTTPN_FLOAT 3
+	#define FLEXTTPN_DEFFLOAT 3
 	#define FLEXTTPN_SYM 4
+	#define FLEXTTPN_DEFSYM 4
 	#define FLEXTTPN_VAR 5
 #endif
 
@@ -428,23 +434,28 @@ fts_module_t __##NAME##_module = {#NAME,#NAME,__##NAME##_initfun,0,0};
 #define FLEXTTYPE_void FLEXTTPN_NULL
 #define CALLBTYPE_void void
 #define FLEXTTYPE_float FLEXTTPN_FLOAT
+#define FLEXTTYPE_float0 FLEXTTPN_DEFFLOAT
 #define CALLBTYPE_float float
 #define FLEXTTYPE_t_float FLEXTTPN_FLOAT
 #define CALLBTYPE_t_float t_float
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 #define FLEXTTYPE_int FLEXTTPN_FLOAT
+#define FLEXTTYPE_int0 FLEXTTPN_DEFFLOAT
 #define CALLBTYPE_int float
 #elif FLEXT_SYS == FLEXT_SYS_MAX || FLEXT_SYS == FLEXT_SYS_JMAX
 #define FLEXTTYPE_int FLEXTTPN_INT
+#define FLEXTTYPE_int0 FLEXTTPN_DEFINT
 #define CALLBTYPE_int int
 #else
 #error
 #endif
 
 #define FLEXTTYPE_t_symptr FLEXTTPN_SYM
+#define FLEXTTYPE_t_symptr0 FLEXTTPN_DEFSYM
 #define CALLBTYPE_t_symptr t_symptr
 #define FLEXTTYPE_t_symtype FLEXTTPN_SYM
+#define FLEXTTYPE_t_symtype0 FLEXTTPN_DEFSYM
 #define CALLBTYPE_t_symtype t_symptr
 #define FLEXTTYPE_t_ptrtype FLEXTTPN_PTR
 #define CALLBTYPE_t_ptrtype t_ptrtype

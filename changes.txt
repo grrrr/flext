@@ -27,6 +27,7 @@ Version history:
 - improved handling of patcher arguments
 - also initialize flext::sym_int as MakeSymbol("int") for PD (since the variable is there anyhow)
 - fixed bug with attribute dumping
+- default arguments for object construction (types float0,int0,t_symtype0 for FLEXT_NEW*)
 
 0.4.5:
 - added some more SIMD functions

@@ -35,49 +35,49 @@ protected:
 
 private:
 	//! STK object for reading from inlet buffer
-	class Input:
+	class Inlet:
 		public Stk
 	{
 	public:
-		Input(int chns,const t_sample **b,int vecsz,float sr);
+		Inlet(const t_sample *b,int vecsz);
 
-		int Chns() const { return chns; }
-		void SetBufs(int c,const t_sample **b) { chns = c,buf = b; }
+		const t_sample *lastFrame() const { return buf+index; }
+		t_sample lastOut() const { return buf[index]; }
 
 		t_sample tick();
 		t_sample *tick(t_sample *vector,unsigned int vectorSize);
-		const t_sample *tickFrame();
-		t_sample *tickFrame(t_sample *frameVector,unsigned int frames);
+
+		void SetBuf(const t_sample *b) { buf = b; }
 
 	private:
-		int chns;
-		const t_sample **buf;
+		const t_sample *buf;
+		int vecsz,index;
 	};
 
 	//! STK object for writing to outlet buffer
-	class Output:
+	class Outlet:
 		public Stk
 	{
 	public:
-		Output(int chns,t_sample **b,int vecsz,float sr);
+		Outlet(t_sample *b,int vecsz);
 
-		int Chns() const { return chns; }
-		void SetBufs(int c,t_sample **b) { chns = c,buf = b; }
-
-		void tick(const t_sample sample);
+		void tick(t_sample sample);
 		void tick(const t_sample *vector,unsigned int vectorSize);
-		void tickFrame(const t_sample *frameVector,unsigned int frames = 1);
+
+		void SetBuf(t_sample *b) { buf = b; }
 
 	private:
-		int chns;
-		t_sample **buf;
+		t_sample *buf;
+		int vecsz,index;
 	};
 
 	void ClearObjs();
 
-	Input *inobj;
-	Output *outobj;
+	int inobjs,outobjs;
+	Inlet **inobj;
+	Outlet **outobj;
 
+	float smprt;
 	int blsz;
 };
 

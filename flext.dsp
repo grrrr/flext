@@ -298,5 +298,17 @@ SOURCE=.\source\flsndobj.cpp
 SOURCE=.\source\flsndobj.h
 # End Source File
 # End Group
+# Begin Group "STK"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\flstk.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\flstk.h
+# End Source File
+# End Group
 # End Target
 # End Project

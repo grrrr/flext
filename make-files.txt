@@ -5,3 +5,5 @@ flproxy.cpp flqueue.cpp
 HDRS=flprefix.h flstdc.h flbase.h flclass.h fldefs.h flext.h flsupport.h fldsp.h flinternal.h
 SRCS_SNDOBJ=flsndobj.cpp
 HDRS_SNDOBJ=flsndobj.h
+SRCS_STK=flstk.cpp
+HDRS_STK=flstk.h

@@ -118,6 +118,7 @@ Version history:
 - also FLEXT_DEBUG for debug build
 - SndObjs: virtual FreeObject routine is now called at destruction (by parent class), derived class doesn't need to call it!
 - SndObjs: fixed typo (numbers of output slots was wrong) and init bug
+- STK: added support for STK object classes (flstk.{h,cpp})
 - introduced a helper thread for launching flext threads in the background
 - threads are now handled on class (as opposed to object) level
 - threads can now be terminated separately

@@ -44,7 +44,7 @@ all: $(OUTPATH) $(TARGET)
 #	touch $@
 
 $(OUTPATH):
-	mkdir $(OUTPATH)
+	-mkdir $(subst /,\,$@)
 
 $(OUTPATH)/%.opp : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
@@ -54,16 +54,15 @@ $(OUTPATH)/%.o : $(SRCDIR)/%.c
 
 $(TARGET) : $(COBJS) $(CPPOBJS)
 	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $^ $(LIBS)
-	chmod 755 $@
 
 $(INSTPATH):
-	mkdir $(INSTPATH)
+	-mkdir $(subst /,\,$@)
 
 install:: $(INSTPATH)
 
 install:: $(TARGET)
-	$(CP) $^ $(INSTPATH)
+	copy $(subst /,\,$^ $(INSTPATH))
 
 .PHONY: clean
 clean:
-	$(RM) $(COBJS) $(CPPOBJS) $(TARGET)
+	-del $(subst /,\,$(COBJS) $(CPPOBJS) $(TARGET))

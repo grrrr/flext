@@ -5,24 +5,70 @@
 # COMPILER - msvc/gcc/mingw/cygwin
 # BUILDPATH including trailing /
 
-include $(BUILDPATH)config-$(PLATFORM)-$(RTSYS)-$(COMPILER).txt
 
-###############################
+ifeq ($(PLATFORM),win)
+	# substitute eventual \ by /
+	UBUILDPATH=$(subst \,/,$(BUILDPATH))
+else
+	UBUILDPATH=$(BUILDPATH)
+endif
 
-# these are project specific
 
-# special settings
-include config-$(PLATFORM)-$(COMPILER).txt
+SYSCONFIG=$(UBUILDPATH)config-$(PLATFORM)-$(RTSYS)-$(COMPILER).txt
+SYSDEFAULT=$(UBUILDPATH)$(PLATFORM)/$(RTSYS)/config-$(COMPILER).def
+USRCONFIG=config.txt
+USRDEFAULT=build/config-$(PLATFORM).def
+USRMAKE=build/makefile-$(PLATFORM)-$(COMPILER).inc
 
-# package specific make stuff
-include makefile-$(PLATFORM)-$(COMPILER).txt
+EMPTYMSG=\\\# no settings to adjust \!
 
-# package info
-include make-files.txt
 
-##############################
+OPTIONS=-f $(UBUILDPATH)gnumake-sub.mak \
+	PLATFORM=$(PLATFORM) RTSYS=$(RTSYS) COMPILER=$(COMPILER) \
+	BUILDPATH=$(UBUILDPATH)
 
-# platform-specific make stuff
-include $(BUILDPATH)$(PLATFORM)/$(RTSYS)/make-$(COMPILER).inc
-# general make stuff
-include $(BUILDPATH)$(PLATFORM)/make-$(COMPILER).inc
+
+all: config
+	$(MAKE) $(OPTIONS) all
+
+all-debug: config
+	$(MAKE) $(OPTIONS) DEBUG=1 $@
+
+all-shared: config
+	$(MAKE) $(OPTIONS) SHARED=1 $@
+
+all-shared-debug: config
+	$(MAKE) $(OPTIONS) SHARED=1 DEBUG=1 $@
+
+clean install:
+	$(MAKE) $(OPTIONS) $@
+
+
+config: $(SYSCONFIG) $(USRCONFIG) $(USRMAKE)
+
+
+.precious: $(SYSCONFIG) $(USRCONFIG)
+
+$(SYSCONFIG): $(SYSDEFAULT)
+	@cp $> $@
+	@echo -------------------------------------------------------------------------
+	@echo A default system configuration file has been created.
+	@echo Please edit $(SYSCONFIG) 
+	@echo to match your platform and start again.
+	@echo -------------------------------------------------------------------------
+	@false
+	
+$(USRCONFIG):
+	@if [ -f $(USRDEFAULT) ]; then cp $(USRDEFAULT) $@; else echo ${EMPTYMSG} > $@; fi
+	@echo -------------------------------------------------------------------------
+	@echo A default package configuration file has been created.
+	@echo Please edit $(USRCONFIG) and start again.
+	@echo -------------------------------------------------------------------------
+	@false
+
+$(USRMAKE):
+	@echo -------------------------------------------------------------------------
+	@echo Your combination of platform, system and compiler is not supported yet.
+	@echo Required file: $(USRMAKE)
+	@echo -------------------------------------------------------------------------
+	@false

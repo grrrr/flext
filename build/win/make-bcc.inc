@@ -72,12 +72,14 @@ $(TARGET) :: $(OBJS)
 	ilink32 $(LDFLAGS) $(LIBPATH) $** ,..\$<,,$(LIBS),$(NAME).def
 	cd ..
 
+$(INSTPATH):
+	-mkdir $@
+
 # remove build
 clean:
 	-del /q $(OUTPATH) > nul
 	-rmdir $(OUTPATH) > nul
 
 # install build
-install:
-	@-if not exist $(INSTPATH) mkdir $(INSTPATH)
+install: $(INSTPATH) $(TARGET)
 	copy $(TARGET) $(INSTPATH) > nul

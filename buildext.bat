@@ -11,7 +11,7 @@
 @set compiler=%3
 @set target=%4
 
-@ret --- The subbatch knowns which make utility to use ---
+@rem --- The subbatch knowns which make utility to use ---
 @set subbatch=%flext%build\build-%compiler%.bat
 
 @if "%platform%"=="" goto syntax

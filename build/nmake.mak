@@ -6,9 +6,12 @@
 # BUILDPATH including trailing \
 
 SYSCONFIG=$(BUILDPATH)config-$(PLATFORM)-$(RTSYS)-$(COMPILER).txt
+SYSDEFAULT=$(BUILDPATH)$(PLATFORM)\$(RTSYS)\config-$(COMPILER).def
 USRCONFIG=config.txt
+USRDEFAULT=build\config-$(PLATFORM).def
+USRMAKE=build/makefile-$(PLATFORM)-$(COMPILER).inc
 
-.precious: $(SYSCONFIG) $(USRCONFIG)
+EMPTYMSG=^# Nothing to adjust!
 
 
 OPTIONS=-f $(BUILDPATH)nmake-sub.mak \
@@ -16,24 +19,29 @@ OPTIONS=-f $(BUILDPATH)nmake-sub.mak \
 	BUILDPATH=$(BUILDPATH)
 
 
-all: $(SYSCONFIG) $(USRCONFIG)
+all: config
 	$(MAKE) $(OPTIONS) all
 
-all-debug: $(SYSCONFIG) $(USRCONFIG)
+all-debug: config
 	$(MAKE) $(OPTIONS) DEBUG=1 $@
 
-all-shared: $(SYSCONFIG) $(USRCONFIG)
+all-shared: config
 	$(MAKE) $(OPTIONS) SHARED=1 $@
 
-all-shared-debug: $(SYSCONFIG) $(USRCONFIG)
+all-shared-debug: config
 	$(MAKE) $(OPTIONS) SHARED=1 DEBUG=1 $@
 
 clean install:
 	$(MAKE) $(OPTIONS) $@
 
 
-$(SYSCONFIG): $(BUILDPATH)$(PLATFORM)\$(RTSYS)\config-$(COMPILER).def
-	copy $** $@
+config: $(SYSCONFIG) $(USRCONFIG) $(USRMAKE)
+
+
+.precious: $(SYSCONFIG) $(USRCONFIG)
+
+$(SYSCONFIG): $(SYSDEFAULT)
+	@copy $** $@
 	@echo -------------------------------------------------------------------------
 	@echo A default system configuration file has been created.
 	@echo Please edit $(SYSCONFIG) 
@@ -41,10 +49,17 @@ $(SYSCONFIG): $(BUILDPATH)$(PLATFORM)\$(RTSYS)\config-$(COMPILER).def
 	@echo -------------------------------------------------------------------------
 	@exit 1
 	
-$(USRCONFIG): build\config-$(PLATFORM).def
-	copy $** $@
+$(USRCONFIG):
+	@if exist $(USRDEFAULT) ( copy $(USRDEFAULT) $@ ) else ( echo $(EMPTYMSG) > $@ )
 	@echo -------------------------------------------------------------------------
 	@echo A default package configuration file has been created.
 	@echo Please edit $(USRCONFIG) and start again.
+	@echo -------------------------------------------------------------------------
+	@exit 1
+
+$(USRMAKE):
+	@echo -------------------------------------------------------------------------
+	@echo Your combination of platform, system and compiler is not supported yet.
+	@echo Required file: $(USRMAKE)
 	@echo -------------------------------------------------------------------------
 	@exit 1

@@ -8,6 +8,7 @@ This package seeks to encourage the development of open source software
 for the pd and Max/MSP platforms.
 
 Donations for further development of the package are highly appreciated.
+Visit https://www.paypal.com/xclick/business=t.grill%40gmx.net&item_name=flext&no_note=1&tax=0&currency_code=EUR
 
 ----------------------------------------------------------------------------
 

@@ -174,7 +174,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="c:\programme\audio\pd-0.37\src,f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
+				AdditionalIncludeDirectories="c:\programme\audio\pd\src,f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS=2;FLEXT_USE_SIMD"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="5"
@@ -275,7 +275,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="c:\programme\audio\pd-0.37\src,f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
+				AdditionalIncludeDirectories="c:\programme\audio\pd\src,f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;FLEXT_SYS=2;FLEXT_USE_SIMD"
 				StringPooling="TRUE"
 				RuntimeLibrary="4"

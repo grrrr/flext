@@ -121,6 +121,10 @@ You should changes all of these to
 #endif /* _MOTO_ */
 
 
+o GCC: edit "config-max-darwin.txt" & run "sh build-max-darwin.sh" 
+	additional settings (e.g. target processor, compiler flags) can be made in makefile.max-darwin
+
+
 With your project using flext, be sure to define "FLEXT_SYS=1" 
 - alternatively use the prefix file "flcwmax-x.h" or "flcwmax-x-thr.h" for threading support.
 

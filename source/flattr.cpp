@@ -169,7 +169,7 @@ bool flext_base::InitAttrib(int argc,const t_atom *argv)
 
 bool flext_base::ListAttrib() const
 {
-	if(procattr) {
+    if(procattr) {
 		AtomList la;
 		ListAttrib(la);
 		ToOutAnything(GetOutAttr(),MakeSymbol("attributes"),la.Count(),la.Atoms());

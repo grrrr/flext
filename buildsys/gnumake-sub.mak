@@ -19,15 +19,12 @@ endif
 
 ##############################
 
-ifndef TARGETMODE
 ifdef DEBUG
 	TARGETMODE=debug
 else
 	TARGETMODE=release
 endif
-endif
 
-ifndef TARGETTYPE
 ifdef SHARED
 	TARGETTYPE=shared
 else
@@ -35,7 +32,6 @@ ifdef THREADED
 	TARGETTYPE=multi
 else
 	TARGETTYPE=single
-endif
 endif
 endif
 

@@ -14,7 +14,7 @@
 PDPATH=/usr/local/include
 
 # where to install 
-INSTDIR=/usr/lib/pd/flext
+INSTDIR=/usr/local/lib/pd/flext
 
 ###############################################
 

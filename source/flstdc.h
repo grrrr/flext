@@ -22,6 +22,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define BIGFLOAT 1.e10
 #define BIGLONG 0x7fffffffL
 
+#if !defined(PD) && !defined(MAXMSP)
+#error Either PD or MAXMSP must be defined
+#endif
 
 #ifdef PD
 #pragma warning (push)
@@ -156,4 +159,5 @@ typedef _outlet t_outlet;
 #endif
 
 #endif
+
 

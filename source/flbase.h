@@ -15,7 +15,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __CPP_H
 
 #include <max-pd.h>
+
+#ifdef __GNUC__
+#include <typeinfo>
+#else
 #include <typeinfo.h>
+#endif
 
 class CPPExtern;
 
@@ -374,5 +379,7 @@ void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 }
 
 #endif
+
+
 
 

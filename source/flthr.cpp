@@ -243,7 +243,7 @@ bool flext_base::StopThreads()
 {
 	thr_entry *t;
 
-	// signal termination
+	// signal termination for all object's threads
 	tlmutex.Lock();
 	for(t = thrhead; t; t = t->nxt) {
 		if(t->This() == this) t->shouldexit = true;
@@ -255,12 +255,16 @@ bool flext_base::StopThreads()
 	// wait for thread termination (1 second max.)
 	int cnt;
 	for(int wi = 0; wi < 100; ++wi) {
-		cnt = 0;
+        // lock and count this object's threads
 		tlmutex.Lock();
-		for(t = thrhead; t; t = t->nxt)
+		for(cnt = 0,t = thrhead; t; t = t->nxt)
 			if(t->This() == this) ++cnt;
 		tlmutex.Unlock();
+
+        // if no threads are remaining, we are done
 		if(!cnt) break;
+
+        // Wait
 		Sleep(0.01f);
 	}
 

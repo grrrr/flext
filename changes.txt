@@ -4,11 +4,6 @@ Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
-This package seeks to encourage the development of open source software
-for the pd and Max/MSP platforms.
-
-Donations for further development of the package are highly appreciated.
-
 ----------------------------------------------------------------------------
 
 Version history:
@@ -297,67 +292,6 @@ Version history:
 0.1.0: 
 - max-pd 0.2 becomes flext 0.1.0
 - heavy usage of unchanged GEM code
-
-
-----------------------------------------------------------------------------
-
-Notes:
-- no support for default object arguments (A_DEFFLOAT, A_DEFSYMBOL) -> use variable argument lists instead
-
-Platform specific:
-- PD does not allow signal and message to go into the same inlet (except leftmost inlet)
-
-Restrictions in compatibility mode:
-- Max allows only 9 float/int inlets
-
-Porting to new compilers/platforms:
-- enums must be int-sized!!!
-- compiler must support bool type
-- an STL implementation must exist
-- no need of C++ exceptions or RTTI (RTTI only for GUI objects)
-	BUT: some libraries could use RTTI and then need run-time type information from the library! (this is known for gcc compiles)
-
-----------------------------------------------------------------------------
-
-TODO list:
-
-- optimizations for object initialization and messaging
-- SIMD for gcc
-
-bugs:
-- can't use MFC libraries because of global new and delete overloadings
-
-TEST:
-- PD: problems with timed buffer redrawing (takes a lot of cpu time)
-- hard thread termination upon object destruction doesn't seem to work properly -> crash
-- Max rounding bug ... buffer resize could be one sample less!
-- flext_dsp: Max/MSP doesn't correctly report in/out channel counts
-
-
-general:
-- documentation
-- add log messages for debugging version
-- use PD's t_float and t_int types (or comparable for 32-bit safety)
-
-- add double handlers
-- add signal in/out connection query function
-
-- support for Max qelem style
-
-- PD: with DSP objects all float messages to left input are currently converted to signal
-		there should be a way to avoid this
-
-- flext::post and flext::error should print via a worker thread (and should be unlimited in characters)
-
-tests:
-- PD: figure out what "pointer" messages do and where they occur
-- buffer resize: flext_base::buffer::Frames(): should we use buffer or system sample rate?
-
-- check whether m_dsp gets called upon deletion of a used buffer (PD and MaxMSP may behave differently).
-
-
-features:
-- manage running threads individually (stop, isrunning?, priority etc.)
 
 
 

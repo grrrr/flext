@@ -141,31 +141,34 @@ su -c "make install"
 
 - Windows - Microsoft Visual Studio projects (.vcproj files)
 
-Please have a look at the projects delivered with flext and flext-based externals.
-
+    Please have a look at the projects delivered with flext and flext-based externals.
 
 - MacOSX - Apple Xcode projects (.xcode bundles)
 
-Please have a look at the projects delivered with flext and flext-based externals.
+    Please have a look at the projects delivered with flext and flext-based externals.
 
+    Xcode projects often use some Source Trees (definable in the Xcode Preferences).
+    - Flext - the flext main folder
+    - PD - the PD installation
+    - Max SDK - the Max SDK (path ending with "c74support")
+    - Max Common - Max common files (normally /Library/Application\ Support/Cycling\ \'74 )
 
 - MacOSX - Metrowerks Codewarrior (.mcp files)
 
-You should have the following "Source Trees" (CW preferences, not project specific!) defined:
-"OS X Volume" - Pointing to your OSX boot drive
-"flext" - Pointing to the flext main directory
-"Cycling74 OSX" - Pointing to the SDK for Max/MSP - the path should end with /c74support
+    You should have the following "Source Trees" (CW preferences, not project specific!) defined:
+    "OS X Volume" - Pointing to your OSX boot drive
+    "flext" - Pointing to the flext main directory
+    "Cycling74 OSX" - Pointing to the SDK for Max/MSP - the path should end with /c74support
 
-With your project using flext use the prefix file "flcwmax-x.h" or, 
-alternatively "flcwmax-x-thr.h" for threading support.
-
+    With your project using flext use the prefix file "flcwmax-x.h" or, 
+    alternatively "flcwmax-x-thr.h" for threading support.
 
 - MacOS9 - Metrowerks Codewarrior (.mcp files)
 
-You should have the following "Source Trees" (CW preferences, not project specific!) defined:
-"flext" - Pointing to the flext main directory
-"Cycling74" - Pointing to the Cycling 74 SDK
-"MP SDK" - Pointing to the Multiprocessing SDK (for threading support)
+    You should have the following "Source Trees" (CW preferences, not project specific!) defined:
+    "flext" - Pointing to the flext main directory
+    "Cycling74" - Pointing to the Cycling 74 SDK
+    "MP SDK" - Pointing to the Multiprocessing SDK (for threading support)
 
-With your project using flext use the prefix file "flcwmax.h" or, 
-alternatively "flcwmax-thr.h" for threading support.
+    With your project using flext use the prefix file "flcwmax.h" or, 
+    alternatively "flcwmax-thr.h" for threading support.

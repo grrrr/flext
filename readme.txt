@@ -47,39 +47,45 @@ cons:
 
 Prerequisites:
 
-o --- PD ---
-  You need the pd source code which is most likely part of the distribution.
-  Otherwise download from: http://www-crca.ucsd.edu/~msp/software.html
+--- PD ---
+    You need the pd source code which is most likely part of the distribution.
+    Otherwise download from: http://www-crca.ucsd.edu/~msp/software.html
 
-o --- Max/MSP ---
-  You will need the latest Max/MSP SDK 
-  for Windows (http://synthesisters.com/pluggo3/downloadMaxWinSDK.php)
-  for OSX (http://www.synthesisters.com/sdk/max.php)
-  or for OS9 (ask Cycling'74 where to find that)
+--- Max/MSP ---
+    You will need the latest Max/MSP SDK 
+    for Windows (http://synthesisters.com/pluggo3/downloadMaxWinSDK.php)
+    for OSX (http://www.synthesisters.com/sdk/max.php)
+    or for OS9 (ask Cycling'74 where to find that)
 
-  For OS9 threading support you'll also need the Multiprocessing library 
-  (download at http://developer.apple.com/sdk/)
+    For OS9 threading support you'll also need the Multiprocessing library 
+    (download at http://developer.apple.com/sdk/)
 
-o --- SndObj ---
-  If you choose to compile with SndObj support you will need the respective library
-  download from: http://www.may.ie/academic/music/musictec/SndObj/main.html
+--- SndObj ---
+    If you choose to compile with SndObj support you will need the respective library
+    download from: http://www.may.ie/academic/music/musictec/SndObj/main.html
 
-o --- STK ---
-  If you choose to compile with STK support you will need the respective package 
-  and build a library.
-  download from: http://ccrma-www.stanford.edu/software/stk/
-  For linking it may preferable to use a library of all the STK objects.
-  Under linux you can create one from the STK directory with something like
-  "g++ -c -pipe -I include -D __LINUX_OSS__ src/*.cpp && ar r libstk.a *.o && rm -f *.o"
+--- STK ---
+    If you choose to compile with STK support you will need the respective package 
+    and build a library.
+    download from: http://ccrma-www.stanford.edu/software/stk/
+    For linking it may preferable to use a library of all the STK objects.
+    Under linux you can create one from the STK directory with something like
+    "g++ -c -pipe -I include -D __LINUX_OSS__ src/*.cpp && ar r libstk.a *.o && rm -f *.o"
 
 ----------------------------------------------------------------------------
 
 Building and installing of flext and flext-based externals:
 
-  Read the build.txt document
+    See the build.txt document
 
+----------------------------------------------------------------------------
+
+Various notes / limitations / bug list:
+
+    Read the notes.txt document
+  
 ----------------------------------------------------------------------------
 
 History of changes:
 
-  Read the changes.txt document
+    Read the changes.txt document

@@ -30,11 +30,15 @@ KNOWN BUGS:
     there must be a CFM signal external loaded beforehand!!! (Max will crash otherwise)
 	-> i think this is fixed in Max in the meantime!
 
+- PD: floats into the leftmost inlet of DSP objects can't be used as messages 
+  even if there's no signal inlet at all
+
 ----------------------------------------------------------------------------
 
 TODO LIST:
 
 - optimizations for object initialization and messaging
+- speed up message handling (usage of other containers?)
 - SIMD for gcc
 
 - update documentation

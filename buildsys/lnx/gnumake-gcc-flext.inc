@@ -21,7 +21,7 @@ $(TARGET) :: $(TARGETPATH)
 
 $(TARGET) :: $(COBJS) $(CPPOBJS)
 ifdef SHARED
-	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
+	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ -soname $(SONAME) $(COBJS) $(CPPOBJS) $(LIBS)
 	chmod 755 $@
 ifndef DEBUG
 ifndef PROFILE

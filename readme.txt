@@ -63,6 +63,7 @@ Version history:
 - delayed buffer init (only name is set beforehand)
 - loadbang also in PD
 - introduced "compatibility mode" which denies platform-specific features 
+- fixed severe dsp bug (symptom: "float method overwritten" warning in pd)
 
 0.1.0: 
 - max-pd 0.2 became flext 0.1.0
@@ -93,7 +94,7 @@ general:
 - should we use a namespace?
 
 bugs:
-- "float method overwritten" warning in pd
+none reported
 
 features:
 - abstraction for parsing argument lists

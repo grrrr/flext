@@ -10,11 +10,11 @@ MSVCPATH="c:\programme\prog\microsoft visual studio\VC98"
 
 # where is the SndObj include directory?
 # (leave blank or comment out to disable SndObj support)
-SNDOBJ=f:\prog\packs\sndobj\include
+SNDOBJ=f:\prog\audio\sndobj\include
 
 # where is the STK include directory?
 # (leave blank or comment out to disable STK support)
-STK=f:\prog\packs\stk\include
+STK=f:\prog\audio\stk\include
 
 # where should flext libraries be built?
 # object files will be placed in subfolders

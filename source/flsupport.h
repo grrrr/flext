@@ -1146,6 +1146,40 @@ inline bool operator <=(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF
 inline bool operator >(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(flext)::CmpAtom(a,b) > 0; }
 inline bool operator >=(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(flext)::CmpAtom(a,b) >= 0; }
 
+
+#include <map>
+
+class AnyMap:
+    public std::map<unsigned int,unsigned int>
+{
+    typedef std::map<unsigned int,unsigned int> Parent;
+public:
+    AnyMap();
+    ~AnyMap();
+    iterator find(unsigned int k);
+    unsigned int &operator [](unsigned int k);
+};
+
+template <class K,class T>
+class DataMap:
+    public AnyMap
+{
+public:
+    class iterator:
+        public AnyMap::iterator
+    {
+    public:
+        iterator(AnyMap::iterator it): AnyMap::iterator(it) {}
+
+        T key() const { return reinterpret_cast<K>((*this)->first); }
+        T data() const { return reinterpret_cast<T>((*this)->second); }
+    };
+
+    iterator find(K k) { return AnyMap::find(reinterpret_cast<unsigned int>(k)); }
+    T &operator [](K k) { return *(T *)&(AnyMap::operator [](reinterpret_cast<unsigned int>(k))); }
+};
+
+
 //! @} // FLEXT_SUPPORT
 
 #endif

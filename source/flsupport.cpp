@@ -298,3 +298,9 @@ void flext_root::error(const char *fmt,...)
 
     va_end(ap);
 }
+
+
+AnyMap::AnyMap() {}
+AnyMap::~AnyMap() {}
+AnyMap::iterator AnyMap::find(unsigned int k) { return Parent::find(k); }
+unsigned int &AnyMap::operator [](unsigned int k) { return Parent::operator [](k); }

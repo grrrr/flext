@@ -29,3 +29,7 @@ INSTDIR=/usr/local/lib/pd/flext
 # (check if they fit for your system!)
 # UFLAGS=-mcpu=pentiumpro # gcc 2.95
 # UFLAGS=-mcpu=pentium3 -msse  # gcc 3.2
+
+# define to use old library naming for backwards compatibility (to externals depending on flext versions < 0.5) 
+# ("flext.a" instead of new "libflext.a" etc.)
+V4_NAMING=1

@@ -27,6 +27,9 @@ CFLAGS_D=-g
 # additional flags for threading
 CFLAGS_T=-DFLEXT_THREADS  
 
+# additional flags for shared library
+CFLAGS_S=-DFLEXT_SHARED -DFLEXT_EXPORTS
+
 # libraries
 LIBS=
 
@@ -53,12 +56,22 @@ HDRS+=${HDRS_STK}
 endif
 
 MAKEFILE=makefile.pd-linux
+
+ifdef V4_NAMING
 TARGET=${TARGDIR}/${NAME}.a 
 TARGET_D=${TARGDIR}/${NAME}_d.a
 TARGET_T=${TARGDIR}/${NAME}_t.a
 TARGET_TD=${TARGDIR}/${NAME}_td.a
+else
+TARGET=${TARGDIR}/lib${NAME}.a 
+TARGET_D=${TARGDIR}/lib${NAME}_d.a
+TARGET_T=${TARGDIR}/lib${NAME}_t.a
+TARGET_TD=${TARGDIR}/lib${NAME}_td.a
+endif
+TARGET_S=${TARGDIR}/lib${NAME}.so
+TARGET_SD=${TARGDIR}/lib${NAME}_d.so
 
-all: $(TARGDIR) $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
+all: $(TARGDIR) $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD) $(TARGET_S) $(TARGET_SD)
 
 $(TARGDIR):
 	mkdir $(TARGDIR)
@@ -66,38 +79,56 @@ $(TARGDIR):
 $(patsubst %,$(SRCDIR)/%,$(SRCS)): $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(patsubst %,$(SRCDIR)/%,$(IHDRS)) $(MAKEFILE) $(CONFIG)
 	touch $@
 
-$(TARGDIR)/%.o : $(SRCDIR)/%.cpp
+$(TARGDIR)/%.ro : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
 $(TARGDIR)/%.do : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
-$(TARGDIR)/%.to : $(SRCDIR)/%.cpp
+$(TARGDIR)/%.tro : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
 $(TARGDIR)/%.tdo : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS_D) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
-$(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS)) 
+$(TARGDIR)/%.sro : $(SRCDIR)/%.cpp
+	$(CXX) -c $(CFLAGS) $(CFLAGS_T) $(CFLAGS_S) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
+
+$(TARGDIR)/%.sdo : $(SRCDIR)/%.cpp
+	$(CXX) -c $(CFLAGS_D) $(CFLAGS_T) $(CFLAGS_S) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
+
+
+
+
+$(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.ro,$(SRCS)) 
 	ar rc $@ $^ 
-	chmod 755 $@
+	chmod 644 $@
 
 $(TARGET_D) : $(patsubst %.cpp,$(TARGDIR)/%.do,$(SRCS)) 
 	ar rc $@ $^ 
-	chmod 755 $@
+	chmod 644 $@
 
-$(TARGET_T) : $(patsubst %.cpp,$(TARGDIR)/%.to,$(SRCS))
+$(TARGET_T) : $(patsubst %.cpp,$(TARGDIR)/%.tro,$(SRCS))
 	ar rc $@ $^
-	chmod 755 $@
+	chmod 644 $@
 
 $(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(SRCS))
 	ar rc $@ $^
+	chmod 644 $@
+
+$(TARGET_S) : $(patsubst %.cpp,$(TARGDIR)/%.sro,$(SRCS))
+	ld -shared -Bdynamic --strip-debug -o $@ $^
 	chmod 755 $@
+
+$(TARGET_SD) : $(patsubst %.cpp,$(TARGDIR)/%.sdo,$(SRCS))
+	ld -shared -Bdynamic -o $@ $^
+	chmod 755 $@
+
 
 .PHONY: clean install
 
 clean:
-	rm -f $(TARGDIR)/*.{o,do,to,tdo} $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
+	rm -f $(TARGDIR)/*.{ro,do,tro,tdo,sro,sdo} $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD) $(TARGET_S) $(TARGET_SD)
 	
 ifdef INSTDIR
 $(INSTDIR):
@@ -106,8 +137,8 @@ $(INSTDIR):
 install:: $(INSTDIR)
 endif
 
-install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)  $(patsubst %,$(SRCDIR)/%,$(HDRS))
+install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD) $(TARGET_S) $(TARGET_SD)  $(patsubst %,$(SRCDIR)/%,$(HDRS))
 	cp $^ $(INSTDIR)
-	chmod 755 $(patsubst %,$(INSTDIR)/%,$(notdir $^))
+	chmod a+r $(patsubst %,$(INSTDIR)/%,$(notdir $^))
 	chown root.users $(patsubst %,$(INSTDIR)/%,$(notdir $^))
 

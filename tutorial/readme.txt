@@ -5,14 +5,13 @@ Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
-This package wants to encourage the development of open source software
+This package seeks to encourage the development of open source software
 for the pd and Max/MSP platforms.
-
-Donations for further development of the package are highly appreciated.
 
 ----------------------------------------------------------------------------
 
 These are a few examples to demonstrate some flext features
+Contribution of examples to the package are higly appreciated!
 
 ----------------------------------------------------------------------------
 
@@ -20,19 +19,20 @@ The package should at least compile (and is tested) with the following compilers
 
 pd - Windows:
 -------------
-o Borland C++ 5.5 (free): edit "makefile.pd-bcc" & run "build-pd-bcc.bat"
+o Borland C++ 5.5 (free): edit "config-pd-bcc.txt" & run "build-pd-bcc.bat" 
 
-o Microsoft Visual C++ 6: edit "makefile.pd-msvc" & run "build-pd-msvc.bat"
+o Microsoft Visual C++ 6: edit "config-pd-msvc.txt" & run "build-pd-msvc.bat" 
 
-o Cygwin: edit "makefile.pd-cygwin" & run "sh build-pd-cygwin.sh" 
+o Cygwin: edit "config-pd-cygwin.txt" & run "sh build-pd-cygwin.sh" 
 
 pd - linux:
 -----------
-o GCC: edit "makefile.pd-linux" & run "sh build-pd-linux.sh" 
+o GCC: edit "config-pd-linux.txt" & run "sh build-pd-linux.sh" 
 
-Max/MSP - MacOS:
-----------------
-o Metrowerks CodeWarrior V6: edit & use the "flext-tut.cw" project file
+Max/MSP - MacOS 9:
+------------------
+o Metrowerks CodeWarrior V6: edit & use the several ".cw" project files
 
 o Apple MPW-PR: edit & use the "flext-tut.mpw" makefile
 
+----------------------------------------------------------------------------

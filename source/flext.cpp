@@ -136,7 +136,7 @@ void flext_base::Setup(t_classid id)
 #endif
 
 	if(process_attributes) 
-		AddMethod(c,0,"getattributes",(methfun)cb_ListAttrib);
+		AddMethod(id,0,"getattributes",(methfun)cb_ListAttrib);
 
 	SetProxies(c);
 

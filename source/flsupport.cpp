@@ -16,6 +16,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <new>
 
 const t_symbol *flext::sym_float = NULL;
 const t_symbol *flext::sym_symbol = NULL;
@@ -115,12 +116,13 @@ void flext::Setup()
 }
 
 
-#if defined(FLEXT_THREADED) && defined(FLEXT_PDLOCK)
+#if FLEXT_SYS == FLEXT_SYS_PD && defined(FLEXT_THREADED) && defined(FLEXT_PDLOCK)
+#error
 #define SYSLOCK() sys_lock()
 #define SYSUNLOCK() sys_unlock()
 #else
-#define SYSLOCK(on) (void)0
-#define SYSUNLOCK(on) (void)0
+#define SYSLOCK() (void)0
+#define SYSUNLOCK() (void)0
 #endif
 
 
@@ -136,21 +138,24 @@ void *flext_root::operator new(size_t bytes)
 	bytes += sizeof(size_t);
 
     char *blk;
-#ifdef FLEXT_NOGLOBALNEW
     if(bytes >= LARGEALLOC) {
+#if FLEXT_SYS == FLEXT_SYS_MAX
+        blk = (char *)::sysmem_newptr(bytes);
+#else
         // use C library function for large memory blocks
-        blk = (char *)::operator new(bytes);
-    }
-    else 
+        blk = (char *)::malloc(bytes);
 #endif
-    {
-	//! \todo We need system locking here for secondary threads!
+    }
+    else {
+	//! We need system locking here for secondary threads!
+        SYSLOCK();
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
     	blk = (char *)::fts_malloc(bytes);
 #else
 	    blk = (char *)::getbytes(bytes);
 #endif
+        SYSUNLOCK();
     }
 
 	*(size_t *)blk = bytes;
@@ -162,21 +167,24 @@ void flext_root::operator delete(void *blk)
 	char *ori = (char *)blk-sizeof(size_t);
 	size_t bytes = *(size_t *)ori;
 
-#ifdef FLEXT_NOGLOBALNEW
     if(bytes >= LARGEALLOC) {
+#if FLEXT_SYS == FLEXT_SYS_MAX
+        ::sysmem_freeptr(ori);
+#else
         // use C library function for large memory blocks
-        ::operator delete(ori);
-    }
-    else 
+        ::free(ori);
 #endif
-    {
-	//! \todo We need system locking here for secondary threads!
+    }
+    else {
+	//! We need system locking here for secondary threads!
+        SYSLOCK();
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-    	fts_free(ori);
+        ::fts_free(ori);
 #else
 	    ::freebytes(ori,bytes);
 #endif
+        SYSUNLOCK();
     }
 }
 
@@ -187,21 +195,24 @@ void *flext_root::NewAligned(size_t bytes,int bitalign)
 	bytes += ovh+alignovh;
 
     char *blk;
-#ifdef FLEXT_NOGLOBALNEW
     if(bytes >= LARGEALLOC) {
+#if FLEXT_SYS == FLEXT_SYS_MAX
+        blk = (char *)::sysmem_newptr(bytes);
+#else
         // use C library function for large memory blocks
-        blk = (char *)::operator new(bytes);
-    }
-    else 
+        blk = (char *)::malloc(bytes);
 #endif
-    {
-	//! \todo We need system locking here for secondary threads!
+    }
+    else {
+	//! We need system locking here for secondary threads!
+        SYSLOCK();
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
     	blk = (char *)::fts_malloc(bytes);
 #else
 	    blk = (char *)::getbytes(bytes);
 #endif
+        SYSUNLOCK();
     }
 
 	char *ablk = reinterpret_cast<char *>((reinterpret_cast<unsigned long>(blk)+ovh+alignovh) & ~alignovh);
@@ -215,21 +226,24 @@ void flext_root::FreeAligned(void *blk)
 	char *ori = *(char **)((char *)blk-sizeof(size_t)-sizeof(char *));
 	size_t bytes = *(size_t *)((char *)blk-sizeof(size_t));
 
-#ifdef FLEXT_NOGLOBALNEW
     if(bytes >= LARGEALLOC) {
+#if FLEXT_SYS == FLEXT_SYS_MAX
+        ::sysmem_freeptr(ori);
+#else
         // use C library function for large memory blocks
-        ::operator delete(ori);
-    }
-    else 
+        ::free(ori);
 #endif
-    {
-	//! \todo We need system locking here for secondary threads!
+    }
+    else {
+	//! We need system locking here for secondary threads!
+        SYSLOCK();
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-    	fts_free(ori);
+        ::fts_free(ori);
 #else
 	    ::freebytes(ori,bytes);
 #endif
+        SYSUNLOCK();
     }
 }
 

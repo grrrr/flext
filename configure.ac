@@ -97,7 +97,6 @@ dnl system specific
 
 if test $(uname -s) == Linux; then
 	DYNAMIC_LDFLAGS = "-version-info $API_VERSION -Wl,-Bdynamic"
-	echo flags: $DYNAMIC_LDFLAGS
 fi
 
 if test $(uname -s) == Darwin; then

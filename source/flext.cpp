@@ -70,7 +70,7 @@ void flext_base::cb_px_int(t_class *c,int v)
 {
 	// check if inlet allows int type
 	t_atom atom;
-	SETINT(&atom,v);  
+	SetInt(atom,v);  
 	cb_px_anything(c,sym_int,1,&atom);
 }
 
@@ -78,7 +78,7 @@ void flext_base::cb_px_float(t_class *c,float v)
 {
 	// check if inlet allows float type
 	t_atom atom;
-	SETFLOAT(&atom,v);  
+	SetFloat(atom,v);  
 	cb_px_anything(c,sym_float,1,&atom);
 }
 

@@ -13,7 +13,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef _FLEXT_CW_MAX_H
 #define _FLEXT_CW_MAX_H
 
-#include <MacHeaders.h>
+//#include <MacHeaders.h>
 
 #define MAXMSP
  

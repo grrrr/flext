@@ -18,7 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <string.h>
 #include <stdio.h>
 
-#ifdef MAXMSP
+#ifdef __MWERKS__
 #define STD std
 #else
 #define STD
@@ -32,23 +32,23 @@ void flext::PrintAtom(const t_atom &a,char *buf)
 	case A_FLOAT:
 #ifdef PD
 		if(a.a_w.w_float == (int)a.a_w.w_float)
-			STD::sprintf(buf,"%i",(int)a.a_w.w_float);
+			STD::sprintf(buf,"%i",(int)GetFloat(a));
 		else
 #endif
-		STD::sprintf(buf,"%f",(float)a.a_w.w_float);
+		STD::sprintf(buf,"%f",GetFloat(a));
 		break;
 #ifdef MAXMSP
 	case A_LONG:
-		STD::sprintf(buf,"%i",(int)a.a_w.w_long);
+		STD::sprintf(buf,"%i",GetInt(a));
 		break;
 #endif
 #ifdef PD
 	case A_POINTER:
-		STD::sprintf(buf,"%x",a.a_w.w_gpointer);
+		STD::sprintf(buf,"%x",GetPointer(a));
 		break;
 #endif
 	case A_SYMBOL:
-		strcpy(buf,flext::GetString(a.a_w.w_symbol));
+		strcpy(buf,GetString(a));
 		break;
 #ifdef _DEBUG
 	default:
@@ -77,18 +77,15 @@ bool flext::ScanAtom(t_atom &a,const char *buf)
 	switch(s) {
 	case 0: // integer
 #ifdef MAXMSP
-		a.a_type = A_LONG;
-		a.a_w.w_long = atol(tmp);
+		SetInt(a,atol(tmp));
 		break;
 #endif
 	case 1: // float
-		a.a_type = A_FLOAT;
-		a.a_w.w_float = (float)atof(tmp);
+		SetFloat(a,atof(tmp));
 		break;
 	default: { // anything else is a symbol
 		char t = *c; *c = 0;
-		a.a_type = A_SYMBOL;
-		a.a_w.w_symbol = (t_symbol *)flext::MakeSymbol(tmp);
+		SetString(a,tmp);
 		*c = t;
 		break;
 	}

@@ -190,12 +190,19 @@ public:
 
 	//! Check whether the atom is a symbol
 	static bool IsSymbol(const t_atom &a) { return a.a_type == A_SYMBOL; }
+#ifdef PD
 	//! Access the symbol value (without type check)
 	static t_symbol *GetSymbol(const t_atom &a) { return a.a_w.w_symbol; }
-	//! Check for a symbol and get its value 
-	static t_symbol *GetASymbol(const t_atom &a) { return IsSymbol(a)?GetSymbol(a):NULL; }  // NULL or empty symbol?
 	//! Set the atom to represent a symbol
 	static void SetSymbol(t_atom &a,const t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_symbol = const_cast<t_symbol *>(s); }
+#else
+	//! Access the symbol value (without type check)
+	static t_symbol *GetSymbol(const t_atom &a) { return a.a_w.w_sym; }
+	//! Set the atom to represent a symbol
+	static void SetSymbol(t_atom &a,const t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_sym = const_cast<t_symbol *>(s); }
+#endif
+	//! Check for a symbol and get its value 
+	static t_symbol *GetASymbol(const t_atom &a) { return IsSymbol(a)?GetSymbol(a):NULL; }  // NULL or empty symbol?
 
 	//! Check whether the atom is a string
 	static bool IsString(const t_atom &a) { return IsSymbol(a); }
@@ -249,7 +256,7 @@ public:
 	//! Access the integer value (without type check)
 	static int GetInt(const t_atom &a) { return a.a_w.w_long; }
 	//! Check for an integer and get its value 
-	static int GetAInt(const t_atom &a) { return IsInt(a)?GetInt(a):(IsFloat(a)?GetFloat(a):0); }
+	static int GetAInt(const t_atom &a) { return IsInt(a)?GetInt(a):(IsFloat(a)?(int)GetFloat(a):0); }
 	//! Set the atom to represent an integer
 	static void SetInt(t_atom &a,int v) { a.a_type = A_INT; a.a_w.w_long = v; }
 

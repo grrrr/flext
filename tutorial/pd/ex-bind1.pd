@@ -1,4 +1,4 @@
-#N canvas 405 36 588 396 12;
+#N canvas 405 36 626 400 12;
 #X obj 15 8 cnv 15 550 40 empty empty bind1 10 22 0 24 -260818 -1 0
 ;
 #X text 175 28 http://www.parasitaere-kapazitaeten.net;
@@ -6,20 +6,20 @@
 #X obj 14 330 bind1;
 #X text 48 72 bind object to symbol;
 #X msg 50 94 bind sym1;
-#X msg 154 94 bind sym2;
+#X msg 174 94 bind sym2;
 #X msg 48 126 unbind sym1;
-#X msg 153 125 unbind sym2;
+#X msg 173 125 unbind sym2;
 #X text 43 159 bind object to symbol;
 #X msg 45 181 bindmethod sym1;
 #X msg 47 213 unbindmethod sym1;
-#X msg 194 183 bindmethod sym2;
-#X msg 197 214 unbindmethod sym2;
+#X msg 227 181 bindmethod sym2;
+#X msg 230 212 unbindmethod sym2;
 #X obj 13 359 print OUT;
-#X text 95 361 watch the console!;
-#X obj 351 103 nbx 5 14 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
-10 -262131 -1 -1 0 256;
-#X obj 446 103 nbx 5 14 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
-10 -262131 -1 -1 0 256;
+#X text 109 358 watch the console!;
+#X obj 351 103 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 10
+-262131 -1 -1 0 256;
+#X obj 446 103 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 10
+-262131 -1 -1 0 256;
 #X msg 351 122 test \$1;
 #X msg 446 122 test \$1;
 #X msg 521 100 1 2 3;
@@ -32,9 +32,9 @@
 #X obj 347 299 print MSG;
 #X text 47 258 receive forwarded message;
 #X msg 48 279 sym3 myforward;
-#X obj 191 280 nbx 5 14 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
-10 -262131 -1 -1 0 256;
-#X msg 190 297 sym3 \$1;
+#X obj 202 280 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 10
+-262131 -1 -1 0 256;
+#X msg 201 297 sym3 \$1;
 #X connect 3 0 14 0;
 #X connect 5 0 3 0;
 #X connect 6 0 3 0;

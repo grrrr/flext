@@ -25,7 +25,7 @@ LIBS=m
 
 # all the source files from the package
 
-EXAMPLES=simple1 simple2 simple3 adv1 adv2 adv3 timer1 attr1 attr2 attr3 signal1~ signal2~ lib1 thread1 thread2
+EXAMPLES=simple1 simple2 simple3 adv1 adv2 adv3 timer1 attr1 attr2 attr3 signal1~ signal2~ lib1 thread1 thread2 bind1 buffer1
 
 ifdef SNDOBJ
 INCLUDES+=$(SNDOBJ)

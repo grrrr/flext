@@ -18,14 +18,14 @@ LIBPATH=
 FLAGS=-DFLEXT_SYS=2 -DFLEXT_THREADS -Wno-unused -Wno-parentheses -Wno-switch -Wstrict-prototypes -Wno-long-double
 CFLAGS=${UFLAGS} -O2 -fno-rtti
 LIBS=m
-LDFLAGS=-framework vecLib -bundle -bundle_loader $(PD)
+LDFLAGS=-framework vecLib -framework Carbon -bundle -bundle_loader $(PD)
 
 # the rest can stay untouched
 # ----------------------------------------------
 
 # all the source files from the package
 
-EXAMPLES=simple1 simple2 simple3 timer1 adv1 adv2 adv3 attr1 attr2 attr3 signal1~ signal2~ lib1 thread1 thread2 
+EXAMPLES=simple1 simple2 simple3 timer1 adv1 adv2 adv3 attr1 attr2 attr3 signal1~ signal2~ lib1 thread1 thread2 bind1 buffer1 
 
 ifdef SNDOBJ
 INCLUDES+=$(SNDOBJ)

@@ -397,7 +397,6 @@ cl##_tilde_setup()
 
 
 #define REAL_NEW(NAME,NEW_CLASS,DSP,LIB) \
-FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB) \
 flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     return new NEW_CLASS;                     \
@@ -405,10 +404,10 @@ flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
     flext_obj::obj_add(LIB,DSP,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,&NEW_CLASS::__free__,A_NULL); \
-} 
+} \
+FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
 #define REAL_NEW_V(NAME,NEW_CLASS,DSP,LIB) \
-FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB) \
 flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     return new NEW_CLASS(argc,argv);                     \
@@ -416,10 +415,10 @@ flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
     flext_obj::obj_add(LIB,DSP,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,&NEW_CLASS::__free__,A_GIMME,A_NULL); \
-}
+} \
+FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
 #define REAL_NEW_1(NAME,NEW_CLASS,DSP,LIB, TYPE1) \
-FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB) \
 flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     return new NEW_CLASS(ARGCAST(argv[0],TYPE1));                     \
@@ -427,10 +426,10 @@ flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
     flext_obj::obj_add(LIB,DSP,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,NEW_CLASS::__free__,FLEXTTP(TYPE1),A_NULL); \
-} 
+} \
+FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
 #define REAL_NEW_2(NAME,NEW_CLASS,DSP,LIB, TYPE1,TYPE2) \
-FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB) \
 flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     return new NEW_CLASS(ARGCAST(argv[0],TYPE1),ARGCAST(argv[1],TYPE2));                     \
@@ -438,10 +437,10 @@ flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
     flext_obj::obj_add(LIB,DSP,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,NEW_CLASS::__free__,FLEXTTP(TYPE1),FLEXTTP(TYPE2),A_NULL); \
-} 
+} \
+FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
 #define REAL_NEW_3(NAME,NEW_CLASS,DSP,LIB, TYPE1, TYPE2, TYPE3) \
-FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB) \
 flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     return new NEW_CLASS(ARGCAST(argv[0],TYPE1),ARGCAST(argv[1],TYPE2),ARGCAST(argv[2],TYPE3));                     \
@@ -449,10 +448,10 @@ flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
     flext_obj::obj_add(LIB,DSP,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,NEW_CLASS::__free__,FLEXTTP(TYPE1),FLEXTTP(TYPE2),FLEXTTP(TYPE3),A_NULL); \
-} 
+} \
+FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
 #define REAL_NEW_4(NAME,NEW_CLASS,DSP,LIB, TYPE1,TYPE2, TYPE3, TYPE4) \
-FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB) \
 flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     return new NEW_CLASS(ARGCAST(argv[0],TYPE1),ARGCAST(argv[1],TYPE2),ARGCAST(argv[2],TYPE3),ARGCAST(argv[3],TYPE4));                     \
@@ -460,7 +459,8 @@ flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
     flext_obj::obj_add(LIB,DSP,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,NEW_CLASS::__free__,FLEXTTP(TYPE1),FLEXTTP(TYPE2),FLEXTTP(TYPE3),FLEXTTP(TYPE4),A_NULL); \
-} 
+} \
+FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
 
 // Shortcuts for method arguments:

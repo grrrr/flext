@@ -312,7 +312,7 @@ static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c) \
 
 //! Set up a method callback for an anything argument
 #define FLEXT_CALLBACK_A(M_FUN) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,const t_symbol *s,int argc,t_atom *argv) \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,t_symbol *s,int argc,t_atom *argv) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(s,argc,argv); return true; }
 
 //! Set up a method callback for a variable argument list
@@ -426,7 +426,7 @@ static void *FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 
 //! Set up a threaded method callback for an anything argument
 #define FLEXT_THREAD_A(M_FUN) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,const t_symbol *s,int argc,t_atom *argv) {  \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,t_symbol *s,int argc,t_atom *argv) {  \
 	thr_params *p = new thr_params(c); p->set_any(s,argc,argv); \
 	return StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \

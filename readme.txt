@@ -81,6 +81,8 @@ see flext.h, fldefs.h and flclass.h for the documented base definitions and clas
 Version history:
 
 0.4.0:
+- the use of the const keyword is enforced (e.g. the preferred type for symbols is now "const t_symbol *")
+	- there _might_ be some problems with sensitive compilers
 - introduced Max/Jitter-like attribute functionality ("@value" command line, "getvalue" get and "value" set functions)
 - introduced a flext static class for general flext functions (to clean up the flext_base class)
 - creation argument handling is now done by flext

@@ -26,7 +26,7 @@ flext::thrid_t flext::thrmsgid = 0;
 #endif
 
 
-#define QUEUE_LENGTH 256
+#define QUEUE_LENGTH 512
 #define QUEUE_ATOMS 1024
 
 class qmsg
@@ -146,13 +146,13 @@ protected:
     // must return contiguous region
     t_atom *GetAtoms(int argc)
     {
-        // \todo check for available space
-
         if(atail+argc >= QUEUE_ATOMS) {
+            FLEXT_ASSERT(ahead > argc);
             atail = argc;
             return atoms;
         }
         else {
+            FLEXT_ASSERT(ahead <= atail || ahead > atail+argc);
             t_atom *at = atoms+atail;
             atail += argc;
             return at;

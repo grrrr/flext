@@ -86,6 +86,10 @@ see flext.h, fldefs.h and flclass.h for the documented base definitions and clas
 
 Version history:
 
+0.4.1:
+- fixed crash issue in flext_dsp when there are NO signal inlets or outlets defined
+	(this is possibly only a problem for the signal2 tutorial example)
+
 0.4.0:
 - the use of the const keyword is enforced (e.g. the preferred type for symbols is now "const t_symbol *")
 	- there _might_ be some problems with sensitive compilers

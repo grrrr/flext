@@ -83,6 +83,8 @@ void flext_dsp::cb_dsp(t_class *c,t_signal **sp)
 { 
 	flext_dsp *obj = thisObject(c); 
 
+	if(obj->CntInSig()+obj->CntOutSig() == 0) return;
+
 	// store current dsp parameters
 	obj->srate = sp[0]->s_sr;
 	obj->blksz = sp[0]->s_n;  // is this guaranteed to be the same as sys_getblksize() ?

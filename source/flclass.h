@@ -90,10 +90,13 @@ public:
 	/*!	\brief Called for every incoming message.
 		All method handling is done in there
 		\return True if a handler was found and called
+		\todo Once, there should be a const modifier for argv
 	*/
 	virtual bool m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv);
 
-	//! called for every unhandled message (by m_methodmain)
+	/*! \brief Called for every unhandled message (by m_methodmain)
+		\todo Once, there should be a const modifier for argv
+	*/
 	virtual bool m_method_(int inlet,const t_symbol *s,int argc,t_atom *argv);
 
 //!		@} FLEXT_C_VIRTUAL

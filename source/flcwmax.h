@@ -8,8 +8,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-/* This is the prefix file for CodeWarrior projects  */
-
+/*! \file flcwmax.h
+    \brief Prefix file for CodeWarrior projects - OS 9 version.
+*/
+ 
 #ifndef _FLEXT_CW_MAX_H
 #define _FLEXT_CW_MAX_H
 

@@ -8,7 +8,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-// Code for handling of object creation functions
+/*! \file fllib.cpp
+    \brief Code for handling of object (and library) creation functions.
+*/
 
 #include "flext.h"
 #include "flinternal.h"

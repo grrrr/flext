@@ -701,7 +701,7 @@ public:
 
 		//! Lock thread mutex
 		bool Lock() { return pthread_mutex_lock(&mutex) == 0; }
-		/*! \brief Wait to lock thread mutex
+		/*! \brief Wait to lock thread mutex.
 			\todo Implement!
 		*/
 		bool WaitForLock(double tm) { return pthread_mutex_lock(&mutex) == 0; }
@@ -759,7 +759,7 @@ public:
 			return ret;
 		}
 
-		/*! \brief Wait for condition (for a certain time)
+		/*! \brief Wait for condition (for a certain time).
 			\param ftime Wait time in seconds
 			\ret 0 = signalled, 1 = timed out 
 			\remark Depending on the implementation ftime may not be fractional. 
@@ -808,7 +808,7 @@ public:
 		//! Wait for condition 
 		bool Wait() { return MPWaitForEvent(ev,NULL,kDurationForever) == noErr; }
 
-		/*! \brief Wait for condition (for a certain time)
+		/*! \brief Wait for condition (for a certain time).
 			\param time Wait time in seconds
 		*/
 		bool TimedWait(double tm) { return MPWaitForEvent(ev,NULL,tm*kDurationMicrosecond*1.e6) == noErr; }
@@ -824,19 +824,19 @@ public:
 #error "Not implemented"
 #endif
 
-	/*! \brief Add current thread to list of active threads
+	/*! \brief Add current thread to list of active threads.
 		\return true on success
 		\internal
 	*/
 	static bool PushThread();
 
-	/*! \brief Remove current thread from list of active threads
+	/*! \brief Remove current thread from list of active threads.
 		\internal
 	*/
 	static void PopThread();
 
-	/*! \brief Launch a thread
-		\remark thr_params *p may be NULL if not needed
+	/*! \brief Launch a thread.
+		\remark thr_params *p may be NULL if not needed.
 	*/
 	static bool LaunchThread(void (*meth)(thr_params *p),thr_params *p = NULL);
 
@@ -855,28 +855,28 @@ public:
 	\remark Since this clock can be synchronized to an external clock (or e.g. the audio card) 
 	\remark it may differ from the clock of the operating system
 */
-	/*! \brief Get time since real-time system startup
+	/*! \brief Get time since real-time system startup.
 		\note This is not the time of the operating system but of the real-time system.
 		\note It depends on the time source the system is synchronized to.
 	*/
 	static double GetTime();
 	
-	/*! \brief Get time granularity of the GetTime function
+	/*! \brief Get time granularity of the GetTime function.
 		\note This can be zero if not determined.
 	*/
 	static double GetTimeGrain();
 
-	/*! \brief Get operating system time since flext startup
+	/*! \brief Get operating system time since flext startup.
 	*/
 	static double GetOSTime();
 	
-	/*! \brief Sleep for an amount of time 
-		\remark The OS clock is used for that 
-		\note Clearly in a real-time system this should only be used in a detached thread
+	/*! \brief Sleep for an amount of time.
+		\remark The OS clock is used for that.
+		\note Clearly in a real-time system this should only be used in a detached thread.
 	*/
 	static void Sleep(double s);
 
-	/*! \brief Class encapsulating a timer with callback functionality
+	/*! \brief Class encapsulating a timer with callback functionality.
 		This class can either be used with FLEXT_ADDTIMER or used as a base class with an overloaded virtual Work function.
 	*/ 
 	class FLEXT_SHARE Timer
@@ -885,23 +885,23 @@ public:
 		Timer(bool queued = false);
 		virtual ~Timer();
 
-		//! Set timer callback function
+		//! Set timer callback function.
 		void SetCallback(void (*cb)(void *data)) { clss = NULL,cback = cb; }
-		//! Set timer callback function (with class pointer)
+		//! Set timer callback function (with class pointer).
 		void SetCallback(flext_base &th,bool (*cb)(flext_base *th,void *data)) { clss = &th,cback = (void (*)(void *))cb; }
 
-		//! Clear timer
+		//! Clear timer.
 		bool Reset();
-		//! Trigger a one shot at an absolute time
+		//! Trigger a one shot at an absolute time.
 		bool At(double tm,void *data = NULL,bool dopast = true);
-		//! Trigger a one shot interval
+		//! Trigger a one shot interval.
 		bool Delay(double tm,void *data = NULL);
-		//! Trigger a periodic interval
+		//! Trigger a periodic interval.
 		bool Periodic(double tm,void *data = NULL);
-		//! Trigger immediately
+		//! Trigger immediately.
         bool Now(void *data = NULL) { return Delay(0,data); }
 
-		//! Worker function, called on every timer event
+		//! Worker function, called on every timer event.
 		virtual void Work();
 		
 	protected:

@@ -216,8 +216,8 @@ bool flext::Timer::Periodic(double tm,void *data)
 	return true;
 }
 
-/*! \brief Callback function for system clock
-	\todo Make periodic events scheduled as such
+/*! \brief Callback function for system clock.
+	\todo Make periodic events scheduled as such.
 */
 void flext::Timer::callback(Timer *tmr)
 {
@@ -244,12 +244,12 @@ void flext::Timer::callback(Timer *tmr)
 }
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
-/*! \brief Callback function for low priority clock (for queued messages)
+/*! \brief Callback function for low priority clock (for queued messages).
 */
 void flext::Timer::queuefun(Timer *tmr) { tmr->Work(); }
 #endif
 
-/*! \brief Virtual worker function - by default it calls the user callback function
+/*! \brief Virtual worker function - by default it calls the user callback function.
 	\remark The respective callback parameter format is chosen depending on whether clss is defined or not.
 */
 void flext::Timer::Work()

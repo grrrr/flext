@@ -31,8 +31,11 @@ HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h flthr.h fldsp.h flinternal.h
 IHDRS=
 
 ifdef SNDOBJ
-SRCS=$(SRCS) flsndobj.cpp
-HDRS=$(HDRS) flsndobj.h
+_SRCS=$(SRCS) flsndobj.cpp
+_HDRS=$(HDRS) flsndobj.h
+else
+_SRCS=$(SRCS)
+_HDRS=$(HDRS)
 endif
 
 MAKEFILE=makefile.pd-linux
@@ -46,7 +49,7 @@ all: $(TARGDIR) $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
 $(TARGDIR):
 	mkdir $(TARGDIR)
 
-$(patsubst %,source/%,$(SRCS)): $(patsubst %,source/%,$(HDRS)) $(patsubst %,source/%,$(IHDRS)) $(MAKEFILE)
+$(patsubst %,source/%,$(_SRCS)): $(patsubst %,source/%,$(_HDRS)) $(patsubst %,source/%,$(IHDRS)) $(MAKEFILE)
 	touch $@
 
 $(TARGDIR)/%.o : source/%.cpp
@@ -61,19 +64,19 @@ $(TARGDIR)/%.to : source/%.cpp
 $(TARGDIR)/%.tdo : source/%.cpp
 	$(CXX) -c $(CFLAGS_D) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
 
-$(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS)) 
+$(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(_SRCS)) 
 	ar rc $@ $^ 
 	chmod 755 $@
 
-$(TARGET_D) : $(patsubst %.cpp,$(TARGDIR)/%.do,$(SRCS)) 
+$(TARGET_D) : $(patsubst %.cpp,$(TARGDIR)/%.do,$(_SRCS)) 
 	ar rc $@ $^ 
 	chmod 755 $@
 
-$(TARGET_T) : $(patsubst %.cpp,$(TARGDIR)/%.to,$(SRCS))
+$(TARGET_T) : $(patsubst %.cpp,$(TARGDIR)/%.to,$(_SRCS))
 	ar rc $@ $^
 	chmod 755 $@
 
-$(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(SRCS))
+$(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(_SRCS))
 	ar rc $@ $^
 	chmod 755 $@
 
@@ -87,17 +90,8 @@ $(INSTDIR):
 
 install:: $(INSTDIR)
 
-install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)  $(patsubst %,source/%,$(HDRS))
+install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)  $(patsubst %,source/%,$(_HDRS))
 	cp $^ $(INSTDIR)
 	chmod 755 $(patsubst %,$(INSTDIR)/%,$(notdir $^))
 	chown root.users $(patsubst %,$(INSTDIR)/%,$(notdir $^))
-
-
-
-
-
-
-
-
-
 

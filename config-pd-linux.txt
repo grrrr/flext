@@ -3,7 +3,7 @@
 #
 
 # your c++ compiler (normally g++)
-CXX=g++-3.2
+CXX=g++
 
 # where are the PD header files?
 # if it is a system include path (like /usr/local/include) 
@@ -11,7 +11,7 @@ CXX=g++-3.2
 PDPATH=
 
 # where is the SndObj include directory? (leave blank to disable SndObj support)
-SNDOBJ=/usr/include/sndobj
+SNDOBJ=/usr/src/sndobj/include
 
 # where should flext libraries be built?
 TARGDIR=./pd-linux

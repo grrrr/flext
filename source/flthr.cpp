@@ -236,13 +236,14 @@ bool flext_base::PushThread()
 	// set initial detached thread priority two points below normal
 	sched_param parm;
 	int policy;
-	if(pthread_getschedparam(nt->thrid,&policy,&parm))
+	pthread_t cur = pthread_self();
+	if(pthread_getschedparam(cur,&policy,&parm))
 		post("flext - can't get thread parameters");
 	int prio = parm.sched_priority;
 	int schmin = sched_get_priority_min(policy);
 	if(prio > schmin) {
 		parm.sched_priority = prio-2;
-		if(pthread_setschedparam(nt->thrid,policy,&parm))
+		if(pthread_setschedparam(cur,policy,&parm))
 			post("flext - can't set thread parameters");
 	}
 #endif

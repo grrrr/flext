@@ -55,7 +55,9 @@ V flext_base::cb_px_anything(t_class *c,const t_symbol *s,I argc,t_atom *argv)
 	// check if inlet allows anything (or list)
 	
 	flext_base *o = thisObject(c);
-	I ci = ((flext_hdr *)o->x_obj)->curinlet;
+	I ci = ((flext_hdr *)o->x_obj)->curinlet; // index of (proxy) inlet
+	if(!ci) ci = ((flext_hdr *)o->x_obj)->obj.z_in; // index of signal inlet
+	
 	o->m_methodmain(ci,s,argc,argv);
 }
 

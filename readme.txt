@@ -65,6 +65,7 @@ Version history:
 
 0.2.0:
 - internal proxy objects for any non-leftmost inlets
+- all signal inlets can receive messages
 - method/argument parsing is done by flext
 - integrated more system functions into flext_base & eliminated superfluous #defines
 - distribute list (into inlet 0) elements over inlets (right to left, only if no explicit list handler defined)

@@ -527,9 +527,19 @@ protected:
     //! Dump an attribute to the attribute outlet
 	bool DumpAttrib(const char *attr) const { return DumpAttrib(MakeSymbol(attr)); }
 
-	/*!	\addtogroup FLEXT_C_INOUT 
+	//! List attributes
+	int ListAttrib(AtomList &a) const;
+	//! Get an attribute value
+	bool GetAttrib(const t_symbol *s,AtomList &a) const;
+	//! Set an attribute value
+	bool SetAttrib(const t_symbol *s,const AtomList &a) { return SetAttrib(s,a.Count(),a.Atoms()); }
+
+	//! List methods
+	int ListMethods(AtomList &a,int inlet = 0) const;
+
+/*!		\addtogroup FLEXT_C_INOUT 
 		@{ 
-	*/
+*/
 
 	//! \brief get a code for a list of inlets or outlets
 	unsigned long XletCode(xlet::type tp = xlet::tp_none,...); // end list with 0 (= tp_none) !!
@@ -557,6 +567,7 @@ protected:
 	void DescOutlet(int ix,const char *desc) { DescXlet(ix,desc,outlist); }
 
 //!		@} FLEXT_C_INOUT
+
 
 // method handling
 
@@ -733,8 +744,6 @@ private:
 	itemarr *attrhead,*clattrhead;
 
 	attritem *FindAttr(const t_symbol *tag,bool get) const;
-	int ListAttr(AtomList &a) const;
-	int ListMeth(AtomList &a,int inlet = 0) const;
 
 	static int CheckAttrib(int argc,const t_atom *argv);
 	bool InitAttrib(int argc,const t_atom *argv);
@@ -742,6 +751,7 @@ private:
 	bool ListMethods(int inlet = 0) const;
 	bool ListAttrib() const;
 	bool GetAttrib(attritem *a);
+	bool GetAttrib(attritem *a,AtomList &l) const;
 	bool SetAttrib(const t_symbol *s,int argc,const t_atom *argv);
 	bool SetAttrib(attritem *a,int argc,const t_atom *argv);
 
@@ -750,39 +760,13 @@ private:
 
 	// queue stuff
 
-//	class qmsg;
-//	static qmsg *qhead,*qtail;
-
+	//! Start message queue
+	static void StartQueue();
 	//! Flush messages in the queue
 	static void QFlush(flext_base *th = NULL);
 
-	//! Queue worker function
-//	static void QWork(bool qlock,bool syslock);
-
-	//! Start message queue
-	static void StartQueue();
-#if FLEXT_SYS == FLEXT_SYS_JMAX
-//	static void QTick(int winlet = 0, fts_symbol_t s = NULL, int ac = 0, const fts_atom_t *at = NULL);
-#else // PD or Max
-//	static void QTick();
-#ifndef FLEXT_QTHR
-//	static t_qelem *qclk;
-#else
-	//! Queue worker thread function
-//	static void *QWorker(void *);
-	//! Queue worker thread conditional
-//	static ThrCond qthrcond;
-#endif
-#endif
-
-//	static void Queue(qmsg *m);
-#ifdef FLEXT_THREADS
-//	static ThrMutex qmutex;
-#endif
-
-
 #if FLEXT_SYS == FLEXT_SYS_PD
-	// proxy object (for additional inlets) stuff
+	// proxy object (for additional inlets)
 	static t_class *px_class;
 
 	struct px_object  // no virtual table!

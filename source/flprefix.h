@@ -358,6 +358,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 // ----- macros for class names -----
+/*
+        With linux (flat linker namespace) and more than one flext-based external loaded all calls to static 
+        exported functions refer to the first instance loaded!
+		Therefore different class names are used so that the correct type of flext function is called.
+*/
 #if defined(FLEXT_SHARED)
 	#define FLEXT_CLASSDEF(CL) CL##_shared
 #elif defined(FLEXT_THREADS)

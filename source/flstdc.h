@@ -39,14 +39,21 @@ extern "C" {
         /*  PD header file structure has changed with version 0.37
             from then on m_imp.h needs m_pd.h to be included before
             on the other hand versions < 0.37 don't like that....
-            (they want m_imp.h solely)
+            (they want m_imp.h solely as m_pd.h is included therein)
             So better use the m_pd.h here also for the debug version.
             Change that if really needed for debugging PD internals...
         */
-        #include <m_pd.h>
+
+		#ifndef PD_VERSION
+			// include only if not already included
+			#include <m_pd.h>
+		#endif
 //		#include <m_imp.h>  // for easier debugging
     #else
-		#include <m_pd.h>  // for easier debugging
+		#ifndef PD_VERSION
+			// include only if not already included
+			#include <m_pd.h>
+		#endif
 	#endif
 }
 

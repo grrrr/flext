@@ -1,38 +1,38 @@
-#N canvas 175 139 603 453 12;
-#X obj 16 7 cnv 15 550 40 empty empty attr3 10 22 0 24 -260818 -1 0
-;
+#N canvas 175 139 607 457 12;
+#X obj 16 7 cnv 15 550 40 empty empty attr3 10 22 32 24 -260818 -1
+0;
 #X text 174 28 http://www.parasitaere-kapazitaeten.net;
-#X obj 293 364 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+#X obj 293 364 bng 15 250 50 0 empty empty empty 0 -6 32 8 -262144
+-1 -1;
+#X obj 196 361 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 0 -6 32
+12 -228992 -1 -1 2 256;
+#X msg 296 126 1 10;
+#X msg 419 127 1;
+#X msg 459 127 -1;
+#X msg 498 127 2;
+#X obj 36 128 bng 25 250 50 0 empty empty empty 0 -6 32 8 -258699 -1
 -1;
-#X obj 196 361 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
--228992 -1 -1 0 256;
-#X msg 264 129 1 10;
-#X msg 384 127 1;
-#X msg 419 127 -1;
-#X msg 455 127 2;
-#X obj 36 128 bng 25 250 50 0 empty empty empty 0 -6 0 8 -258699 -1
--1;
-#X msg 308 128 7 2;
-#X obj 159 123 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
--228992 -1 -1 0 256;
-#X msg 160 146 set \$1;
+#X msg 344 126 7 2;
+#X obj 173 119 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 0 -6 32
+12 -228992 -1 -1 17 256;
+#X msg 174 142 set \$1;
 #X text 20 107 trigger;
-#X text 149 104 set counter;
-#X text 259 108 set bounds;
-#X text 385 105 set step size;
-#X msg 87 135 reset;
-#X text 90 115 reset;
-#X text 23 63 with attributes;
+#X text 163 100 set counter;
+#X text 291 105 set bounds;
+#X text 420 105 set step size;
+#X msg 97 135 reset;
+#X text 100 115 reset;
+#X text 21 64 with attributes;
 #X obj 197 327 attr3 @bounds 2 5 @step 1;
 #X msg 32 195 getattributes;
 #X obj 392 363 print;
-#X text 440 362 attributes;
+#X text 447 362 attributes;
 #X msg 32 237 getcount;
 #X msg 388 232 getstep;
-#X text 149 193 list all attributes;
+#X text 167 196 list all attributes;
 #X msg 32 266 count 3;
-#X text 109 238 get count;
-#X text 104 266 set count;
+#X text 117 238 get count;
+#X text 112 266 set count;
 #X msg 387 259 step 3;
 #X text 21 49 this is a port of IOhannes Zmoelnings "counter" example
 ;

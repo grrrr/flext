@@ -106,9 +106,9 @@ int flext_base::ListAttr(AtomList &la) const
 			for(int ai = 0; ai < a->Size(); ++ai) {
 				for(item *l = a->Item(ai); l; l = l->nxt) 
 				{
-					attritem *a = (attritem *)l;
-					if(!a->BothExist() || a->IsGet())
-						SetSymbol(la[ix++],a->tag);
+					attritem *aa = (attritem *)l;
+					if(!aa->BothExist() || aa->IsGet())
+						SetSymbol(la[ix++],aa->tag);
 				}
 			}
 		}

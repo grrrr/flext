@@ -1,22 +1,22 @@
-#N canvas 175 139 597 355 12;
-#X obj 16 7 cnv 15 550 40 empty empty adv3 10 22 0 24 -260818 -1 0
+#N canvas 175 139 601 359 12;
+#X obj 16 7 cnv 15 550 40 empty empty adv3 10 22 32 24 -260818 -1 0
 ;
 #X text 174 28 http://www.parasitaere-kapazitaeten.net;
 #X obj 229 266 adv3 2 5 1;
-#X obj 305 303 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
--1;
-#X obj 223 300 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
--228992 -1 -1 0 256;
+#X obj 305 303 bng 15 250 50 0 empty empty empty 0 -6 32 8 -262144
+-1 -1;
+#X obj 223 300 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 0 -6 32
+12 -228992 -1 -1 5 256;
 #X msg 269 120 1 10;
 #X msg 389 118 1;
-#X msg 424 118 -1;
-#X msg 460 118 2;
-#X obj 88 119 bng 25 250 50 0 empty empty empty 0 -6 0 8 -258699 -1
+#X msg 429 118 -1;
+#X msg 469 118 2;
+#X obj 88 119 bng 25 250 50 0 empty empty empty 0 -6 32 8 -258699 -1
 -1;
-#X msg 313 119 7 2;
+#X msg 317 120 7 2;
 #X text 325 300 end has been reached;
-#X obj 157 117 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
--228992 -1 -1 0 256;
+#X obj 157 117 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 0 -6 32
+12 -228992 -1 -1 0 256;
 #X msg 158 140 set \$1;
 #X text 72 98 trigger;
 #X text 147 98 set counter;

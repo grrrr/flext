@@ -1,32 +1,32 @@
-#N canvas 105 266 702 345 12;
-#X obj 39 91 bng 25 250 50 0 empty empty start 0 -6 0 8 -261681 -1
+#N canvas 105 266 706 349 12;
+#X obj 39 91 bng 25 250 50 0 empty empty start 0 -6 32 8 -261681 -1
 -1;
 #X obj 130 246 thread1;
-#X obj 220 247 thread1;
-#X obj 312 247 thread1;
-#X obj 405 247 thread1;
+#X obj 228 248 thread1;
+#X obj 324 246 thread1;
+#X obj 422 247 thread1;
 #X obj 131 185 delay 200;
-#X obj 220 184 delay 200;
-#X obj 313 186 delay 200;
-#X obj 404 185 delay 200;
+#X obj 228 185 delay 200;
+#X obj 325 185 delay 200;
+#X obj 421 185 delay 200;
 #X text 78 85 click to start;
 #X text 126 103 (if you click twice \, the same thread is started a
 second time);
-#X obj 16 8 cnv 15 550 40 empty empty thread1 10 22 0 24 -260818 -1
+#X obj 16 8 cnv 15 550 40 empty empty thread1 10 22 32 24 -260818 -1
 0;
-#X text 175 28 http://www.parasitaere-kapazitaeten.net;
-#X obj 131 277 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
--228992 -1 -1 0 256;
-#X obj 221 277 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
--228992 -1 -1 0 256;
-#X obj 311 277 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
--228992 -1 -1 0 256;
-#X obj 406 276 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
--228992 -1 -1 0 256;
+#X text 145 29 http://www.parasitaere-kapazitaeten.net;
+#X obj 131 277 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 32
+12 -228992 -1 -1 8 256;
+#X obj 229 278 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 32
+12 -228992 -1 -1 8 256;
+#X obj 323 276 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 32
+12 -228992 -1 -1 7 256;
+#X obj 423 276 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 32
+12 -228992 -1 -1 7 256;
 #X obj 39 244 thread1;
-#X obj 39 277 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
--228992 -1 -1 0 256;
-#X text 175 10 flext tutorial \, (C)2002 \, 2003 Thomas Grill;
+#X obj 39 277 nbx 5 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 32 12
+-228992 -1 -1 8 256;
+#X text 145 11 flext tutorial \, (C)2002 \, 2003 Thomas Grill;
 #X connect 0 0 5 0;
 #X connect 0 0 17 0;
 #X connect 1 0 13 0;

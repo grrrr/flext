@@ -143,7 +143,7 @@ public:
 	enum { HASHBITS=7, HASHSIZE=1<<HASHBITS };
 
 	_itemarr(flext_obj::t_classid c,int i);
-	~_itemarr(); // will never be called
+	~_itemarr();
 
 	static int Hash(flext_obj::t_classid c,int ix);
 
@@ -162,6 +162,12 @@ _itemarr::_itemarr(flext_obj::t_classid c,int i):
 	arr(new flext_base::itemarr),
 	nxt(NULL)
 {}
+
+_itemarr::~_itemarr()
+{
+	delete arr;
+	if(nxt) delete nxt;
+}
 
 void _itemarr::Add(_itemarr *a)
 {

@@ -25,6 +25,7 @@ $(TARGET) :: $(TARGETPATH)
 $(TARGET) :: $(COBJS) $(CPPOBJS)
 ifdef SHARED
 	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
+	-strip --strip-unneeded $@
 else
 	$(AR) rc $@ $(COBJS) $(CPPOBJS)
 endif

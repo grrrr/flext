@@ -25,6 +25,7 @@ $(TARGET) :: $(TARGETPATH)
 
 $(TARGET) :: $(COBJS) $(CPPOBJS)
 	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
+	strip --strip-unneeded $@
 	chmod 755 $@
 
 ##############################################

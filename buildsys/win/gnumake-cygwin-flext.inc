@@ -23,6 +23,7 @@ $(TARGET) :: $(COBJS) $(CPPOBJS)
 ifdef SHARED
 	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
 	chmod 755 $@
+	strip --strip-unneeded $@
 else
 	$(AR) rc $@ $(COBJS) $(CPPOBJS)
 endif

@@ -523,7 +523,7 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
                 FLEXT_ASSERT(false);
         }
 
-        sys_vgui(list?"%s {\n":"%s\n",GetString(sym));
+        sys_vgui(const_cast<char *>(list?"%s {\n":"%s\n",GetString(sym)));
 
         AtomList lv;
         if(gattr) { // gettable attribute is present
@@ -542,7 +542,7 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
         else
             sys_vgui("{}\n");
 
-        sys_vgui(list?"} {\n":" \n");
+        sys_vgui(const_cast<char *>(list?"} {\n":" \n"));
 
         if(pattr) {
             // if there is initialization data take this, otherwise take the current data
@@ -561,7 +561,7 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
             sys_vgui("{}\n");
 
 
-        sys_vgui(list?"} %i %i %i \n":" %i %i %i \n",tp,sv,pattr?(pattr->BothExist()?2:1):0);
+        sys_vgui(const_cast<char *>(list?"} %i %i %i \n":" %i %i %i \n"),tp,sv,pattr?(pattr->BothExist()?2:1):0);
     }
 
     sys_vgui(" } }\n"); // end of proc

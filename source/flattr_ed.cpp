@@ -120,7 +120,7 @@ void flext_base::SetAttrEditor(t_classid c)
 
 		"proc pdtk_flext_dialog {id title attrlist} {\n"
 				"set vid [string trimleft $id .]\n"
-				"set alen [expr [llength $attrlist] / 5 ]\n"
+				"set alen [expr [llength $attrlist] / 6 ]\n"
 
 				"toplevel $id\n"
 				"wm title $id $title\n" 
@@ -152,7 +152,7 @@ void flext_base::SetAttrEditor(t_classid c)
 				"incr row\n"
 
 				"set ix 1\n"
-				"foreach {an av ai asv afl} $attrlist {\n"
+				"foreach {an av ai atp asv afl} $attrlist {\n"
 					// get attribute name
 					"set var_attr_name [concat [concat var_name_$ix]_$vid ]\n"
 					"global $var_attr_name\n"
@@ -187,13 +187,31 @@ void flext_base::SetAttrEditor(t_classid c)
 					"if { $afl != 0 } {\n"
 						// attribute is puttable
 
-						// entry field for current value
-						"entry $id.val-$ix -textvariable $var_attr_val\n"
-						"grid config $id.val-$ix   -column 4 -row $row -padx 5 -sticky {ew}\n"
-
 						// entry field for initial value
-						"entry $id.init-$ix -textvariable $var_attr_init\n"
+						// entry field for current value
+
+						// choose entry field type
+						"switch $atp {\n"
+							"0 - 1 {\n"  // int or float
+								"entry $id.init-$ix -textvariable $var_attr_init\n"
+								"entry $id.val-$ix -textvariable $var_attr_val\n"
+							"}\n"
+							"2 {\n"  // boolean
+								"checkbutton $id.init-$ix -variable $var_attr_init\n"
+								"checkbutton $id.val-$ix -variable $var_attr_val\n"
+							"}\n"
+							"3 {\n"  // symbol
+								"entry $id.init-$ix -textvariable $var_attr_init\n"
+								"entry $id.val-$ix -textvariable $var_attr_val\n"
+							"}\n"
+							"4 - 5 {\n"  // list or unknown
+								"entry $id.init-$ix -textvariable $var_attr_init\n"
+								"entry $id.val-$ix -textvariable $var_attr_val\n"
+							"}\n"
+						"}\n"
+
 						"grid config $id.init-$ix  -column 1 -row $row -padx 5 -sticky {ew}\n"
+						"grid config $id.val-$ix   -column 4 -row $row -padx 5 -sticky {ew}\n"
 
 						"button $id.b2i-$ix -text {<-} -height 1 -command \" flext_copyval $var_attr_init $var_attr_val \"\n"
 						"grid config $id.b2i-$ix  -column 2 -row $row  -sticky {ew}\n"
@@ -212,7 +230,24 @@ void flext_base::SetAttrEditor(t_classid c)
 						// attribute is gettable only
 
 						// entry field for current value (read-only)
-						"entry $id.val-$ix -textvariable $var_attr_val -state disabled\n"
+
+						// choose display field type
+						"switch $atp {\n"
+							"0 - 1 {\n"  // int or float
+								"entry $id.val-$ix -textvariable $var_attr_val -state disabled\n"
+							"}\n"
+							"2 {\n"  // boolean
+								"checkbutton $id.val-$ix -variable $var_attr_val -state disabled\n"
+							"}\n"
+							"3 {\n"  // symbol
+								"entry $id.val-$ix -textvariable $var_attr_val -state disabled\n"
+							"}\n"
+							"4 - 5 {\n"  // list or unknown
+								"entry $id.val-$ix -textvariable $var_attr_val -state disabled\n"
+							"}\n"
+						"}\n"
+
+//						"entry $id.val-$ix -textvariable $var_attr_val -state disabled\n"
 						"grid config $id.val-$ix -column 4 -row $row -padx 5 -sticky {ew}\n"
 
 						"label $id.readonly-$ix -text \"read-only\"\n"
@@ -293,6 +328,12 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 
 	for(int i = 0; i < cnt; ++i) {
 		const t_symbol *sym = GetSymbol(la[i]); 
+		const char *bcur = b;
+
+		// get attribute
+		AttrItem *gattr = th->FindAttrib(sym,true);
+		// get puttable attribute
+		AttrItem *pattr = gattr?gattr->Counterpart():th->FindAttrib(sym,false);
 
 		// get flags
 		int sv;
@@ -308,14 +349,25 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 				sv = 1;
 			else 
 				sv = 0;
-
 			initdata = a.IsInitValue()?&a.GetInitValue():NULL;
 		}
 
-		STD::sprintf(b,"%s {",GetString(sym)); b += strlen(b);
+		// get attribute type
+		int tp;
+		bool list;
+		switch((gattr?gattr:pattr)->argtp) {
+			case a_int: tp = 0; list = false; break;
+			case a_float: tp = 1; list = false; break;
+			case a_bool: tp = 2; list = false; break;
+			case a_symbol: tp = 3; list = true; break;
+			case a_list: 
+			case a_LIST: tp = 4; list = true; break;
+			default: 
+				tp = 5;	list = true; 
+				FLEXT_ASSERT(false);
+		}
 
-		// get attribute
-		AttrItem *gattr = th->FindAttrib(sym,true);
+		STD::sprintf(b,list?"%s {":"%s ",GetString(sym)); b += strlen(b);
 
 		AtomList lv;
 		if(gattr) { // gettable attribute is present
@@ -325,10 +377,7 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 			b += PrintList(b,lv.Count(),lv.Atoms());
 		}
 
-		STD::sprintf(b, "} {"); b += strlen(b);
-
-		// get puttable attribute
-		AttrItem *pattr = gattr->Counterpart();
+		strcpy(b, list?"} {":" "); b += strlen(b);
 
 		if(pattr) {
 			// if there is initialization data take this, otherwise take the current data
@@ -337,7 +386,7 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 			b += PrintList(b,lp.Count(),lp.Atoms());
 		}
 
-		STD::sprintf(b, "} %i %i ", sv,pattr?(pattr->BothExist()?2:1):0); b += strlen(b);
+		STD::sprintf(b, list?"} %i %i %i ":" %i %i %i ",tp,sv,pattr?(pattr->BothExist()?2:1):0); b += strlen(b);
 	}
 
 	strcpy(b, " }\n");

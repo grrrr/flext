@@ -54,8 +54,12 @@ FLEXT_ATTRSET_(VAR,const t_symbol *)
 
 //! Declare an implicite set function for a boolean attribute
 #define FLEXT_ATTRSET_B(VAR) \
+\
+FLEXT_ATTRSET_(VAR,bool)
+/*
 static bool FLEXT_SET_PRE(VAR)(flext_base *c,int &arg) \
 { FLEXT_CAST<thisType *>(c)->VAR = arg != 0; return true; }
+*/
 
 //! Declare an implicite set function for an enum attribute
 #define FLEXT_ATTRSET_E(VAR,TP) \
@@ -90,8 +94,12 @@ FLEXT_ATTRGET_(VAR,const t_symbol *)
 
 //! Declare an implicite get function for a boolean attribute
 #define FLEXT_ATTRGET_B(VAR) \
+\
+FLEXT_ATTRGET_(VAR,bool)
+/*
 static bool FLEXT_GET_PRE(VAR)(flext_base *c,int &arg) \
 { arg = FLEXT_CAST<thisType *>(c)->VAR?1:0; return true; }
+*/
 
 //! Declare an implicite get function for an enum attribute
 #define FLEXT_ATTRGET_E(VAR,TP) \

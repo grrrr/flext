@@ -21,13 +21,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flsupport.h"
 
 
-// ----- disable attribute editor for PD version < devel_0_36 or 0.37
-#ifndef PD_MAJOR_VERSION
-#undef FLEXT_NOATTREDIT
-#define FLEXT_NOATTREDIT
-#endif
-
-
 class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj);
 typedef class FLEXT_CLASSDEF(flext_obj) flext_obj;
 

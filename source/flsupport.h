@@ -17,8 +17,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "flstdc.h"
 
-#include <string>
-
 
 class FLEXT_SHARE FLEXT_CLASSDEF(flext);
 typedef class FLEXT_CLASSDEF(flext) flext;
@@ -212,7 +210,7 @@ public:
 	static void CopyAtom(t_atom *dst,const t_atom *src) { *dst = *src; }
 
 	//! Print an atom
-	static void PrintAtom(const t_atom &a,char *buf,int bufsz = 0);
+	static bool PrintAtom(const t_atom &a,char *buf,int bufsz);
 	//! Scan an atom
 	static bool ScanAtom(t_atom &a,const char *buf);
 
@@ -526,7 +524,7 @@ public:
 		AtomList &Part(int offs,int len) { return (*this = GetPart(offs,len)); }
 
 		//! Represent as a string
-		std::string Print() const;
+		bool Print(char *buffer,int buflen) const;
 
 	protected:
 		int cnt;

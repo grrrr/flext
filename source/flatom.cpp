@@ -91,19 +91,6 @@ int flext::AtomList::Compare(const AtomList &a) const
 		return Count() < a.Count()?-1:1;
 }
 
-std::string flext::AtomList::Print() const
-{
-	char buffer[256];
-    std::string ret;
-    for(int i = 0; i < Count(); ++i) {
-		char *b = buffer;
-		if(i) *(b++) = ' '; // prepend space
-		PrintAtom((*this)[i],b,sizeof buffer-1);
-		ret += buffer;
-    }
-    return ret;
-}
-
 
 #if FLEXT_SYS != FLEXT_SYS_JMAX 
 // not for jmax as long as t_symbol * == char *

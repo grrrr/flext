@@ -229,4 +229,11 @@ typedef t_symbol *t_symptr;
 	#define FLEXT_EXT
 #endif
 
+// ----- disable attribute editor for PD version < devel_0_36 or 0.37
+#ifndef PD_MAJOR_VERSION
+#undef FLEXT_NOATTREDIT
+#define FLEXT_NOATTREDIT
+#endif
+
+
 #endif

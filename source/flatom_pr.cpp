@@ -19,7 +19,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <stdio.h>
 
 // \TODO take bufsz into account!
-void flext::PrintAtom(const t_atom &a,char *buf,int bufsz)
+bool flext::PrintAtom(const t_atom &a,char *buf,int bufsz)
 {
 	if(IsFloat(a)) {
 		sprintf(buf,"%g",GetFloat(a));
@@ -35,7 +35,24 @@ void flext::PrintAtom(const t_atom &a,char *buf,int bufsz)
 	}
     else
 		ERRINTERNAL();
+	return true;
 }
+
+bool flext::AtomList::Print(char *buffer,int buflen) const
+{
+	bool ok = true;
+    for(int i = 0; ok && i < Count(); ++i) {
+		if(i) { *(buffer++) = ' '; --buflen; } // prepend space
+		if(PrintAtom((*this)[i],buffer,buflen)) {
+			int len = strlen(buffer);
+			buffer += len,buflen -= len;
+		}
+		else
+			ok = false;
+    }
+    return ok;
+}
+
 
 bool flext::ScanAtom(t_atom &a,const char *buf)
 {

@@ -6,8 +6,8 @@ TARGET=$(TARGETPATH)/$(OUTNAME).$(EXT)
 
 ##############################################
 
-CFLAGS += -pthread
-LDFLAGS += -pthread -shared
+CFLAGS += 
+LDFLAGS += -shared
 
 ##############################################
 

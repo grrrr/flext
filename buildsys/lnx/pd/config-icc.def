@@ -1,0 +1,34 @@
+# where is the PD source package?
+# (this should point to the main folder, which has a "src" subfolder)
+PDPATH=/usr/local/src/pd
+
+###############################################################
+
+# where do/should the flext headers reside/be built?
+FLEXTINC=/usr/local/include/flext
+
+# where do/should the flext static libraries reside/be built?
+FLEXTLIB=/usr/local/lib
+
+# where do/should the flext shared libraries reside/be built?
+FLEXTSHLIB=$(FLEXTLIB)
+
+###############################################################
+
+# where should the external be built?
+OUTPATH=pd-linux
+
+# where should the external be installed?
+INSTPATH=/usr/local/lib/pd/extra
+
+###############################################################
+
+# user defined compiler flags
+# (check if they match your system!)
+UFLAGS=-msse -mfpmath=sse -ffast-math
+
+# user defined optimization flags
+# (check if they match your system!)
+OFLAGS=-O3 -Ob2 -ip
+# optimizations for Pentium 4
+OFLAGS+=-mcpu=pentium4 -march=pentium4 -xMKW

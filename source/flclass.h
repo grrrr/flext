@@ -382,7 +382,7 @@ public:
 	void Unbind(const t_symbol *s) { pd_unbind(&thisHdr()->ob_pd,const_cast<t_symbol *>(s)); }
 	void Unbind(const char *c) { Unbind(MakeSymbol(c)); }  
 #else
-#pragma message("Bind/Unbind not implemented!);
+//#pragma message("Bind/Unbind not implemented!");
 #endif
 
 

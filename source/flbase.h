@@ -168,6 +168,7 @@ class FLEXT_EXT flext_obj
 		};
 		
 		static t_class *lib_class;
+		static t_symbol *lib_name;
 		static void libfun_add(const char *name,t_method newfun,void (*freefun)(flext_hdr *),int argtp1,...);
 		static flext_hdr *libfun_new(t_symbol *s,int argc,t_atom *argv);
 		static void libfun_free(flext_hdr *o);
@@ -203,7 +204,6 @@ protected:    \
 static inline NEW_CLASS *thisObject(void *c) { return FLEXT_CAST<NEW_CLASS *>(((flext_hdr *)c)->data); } 
 
 
-
 #define FLEXT_REALHDR_S(NEW_CLASS, PARENT_CLASS,SETUPFUN)    	    	\
 public:     	    	    \
 static t_class *__class__; \
@@ -220,9 +220,11 @@ static inline NEW_CLASS *thisObject(void *c) { return FLEXT_CAST<NEW_CLASS *>(((
 
 // generate name of dsp/non-dsp setup function
 #define FLEXT_STPF_0(NAME) NAME##_setup
+#define FLEXT_STPF_2(NAME) NAME##_setup
 #define FLEXT_STPF_1(NAME) NAME##_tilde_setup
-#define FLEXT_STPF_(DSP) FLEXT_STPF_##DSP
-#define FLEXT_STPF(NAME,DSP) FLEXT_STPF_(DSP)(NAME)
+#define FLEXT_STPF_3(NAME) NAME##_tilde_setup
+#define FLEXT_STPF_(OTP) FLEXT_STPF_##OTP
+#define FLEXT_STPF(NAME,OTP) FLEXT_STPF_(OTP)(NAME)
 
 
 #define REAL_NEW(NAME,NEW_CLASS,DSP) REAL_INST(0,NAME,NEW_CLASS,DSP)
@@ -276,6 +278,7 @@ cl##_tilde_setup()
 #define FLEXT_LIB_SETUP(NAME,SETUPFUN) \
 extern "C" FLEXT_EXT int main() { \
 SETUPFUN(); \
+flext_obj::lib_name = gensym(#NAME); \
 ::setup((t_messlist **)&flext_obj::lib_class,(t_newmethod)&flext_obj::libfun_new,(t_method)flext_obj::libfun_free,sizeof(flext_hdr), 0,A_GIMME,A_NULL); \
 return 0; \
 }
@@ -383,9 +386,11 @@ return 0; \
 #define FLEXT_HELPSTR_DSP(NAME) #NAME "~"
 
 #ifdef PD
-#define FLEXT_DEFHELP(THIS,NAME,NEW_CLASS,DSP) FLEXT_CAST<NEW_CLASS *>(THIS)->DefineHelp(DSP?FLEXT_HELPSTR_DSP(NEW_CLASS):FLEXT_HELPSTR(NEW_CLASS),flext::extract(NAME,-1))
+#define FLEXT_DEFHELP(THIS,NAME,NEW_CLASS,OTP) FLEXT_CAST<NEW_CLASS *>(THIS)->DefineHelp((OTP&1)?FLEXT_HELPSTR_DSP(NEW_CLASS):FLEXT_HELPSTR(NEW_CLASS),flext::extract(NAME,-1))
+#define FLEXT_CLOPTS(NEW_CLASS,OTP) CLNEW_OPTIONS
 #else
-#define FLEXT_DEFHELP(THIS,NAME,NEW_CLASS,DSP)
+#define FLEXT_DEFHELP(THIS,NAME,NEW_CLASS,OTP)
+#define FLEXT_CLOPTS(NEW_CLASS,OTP) NULL
 #endif
 
 // ----------------------------------------------------
@@ -418,7 +423,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 		FLEXT_CLREF(flext::extract(NAME),NEW_CLASS::__class__), 	    	    	    	\
     	(t_newmethod)class_ ## NEW_CLASS,	    	\
     	(t_method)&NEW_CLASS::callb_free,         \
-     	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
+     	sizeof(flext_hdr), FLEXT_CLOPTS(NEW_CLASS,DSP),                          \
      	A_NULL);      	    	    	    	    	\
 	for(int ix = 1; ; ++ix) { \
 		const char *c = flext::extract(NAME,ix); if(!c) break; \
@@ -428,6 +433,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 } 
 
 #define REAL_NEWLIB(NAME,NEW_CLASS, DSP) \
+t_class * NEW_CLASS::__class__ = NULL;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS ()    \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = (flext_hdr *)newobject(flext_obj::lib_class); \
@@ -451,7 +457,7 @@ void FLEXT_STPF(NEW_CLASS,DSP)()   	\
 // ----------------------------------------------------
 // variable arg list
 // ----------------------------------------------------
-#define REAL_INST_V(LIB,NAME,NEW_CLASS, DSP) \
+#define REAL_INST_V(LIB,NAME,NEW_CLASS, OTP) \
 t_class * NEW_CLASS::__class__ = NULL;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (t_symbol *,int argc,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
@@ -461,17 +467,17 @@ flext_hdr* class_ ## NEW_CLASS (t_symbol *,int argc,t_atom *argv) \
     obj->data = new NEW_CLASS(argc,argv);                     \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
-	else FLEXT_DEFHELP(obj->data,NAME,NEW_CLASS,DSP); \
+	else FLEXT_DEFHELP(obj->data,NAME,NEW_CLASS,OTP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
+FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,OTP)()   \
 {   	    	    	    	    	    	    	    	\
-	CHECK_TILDE(NAME,DSP); 	\
+	CHECK_TILDE(NAME,OTP&1); 	\
     NEW_CLASS::__class__ = FLEXT_NEWFN(                       \
 		FLEXT_CLREF(flext::extract(NAME),NEW_CLASS::__class__), 	    	    	    	\
     	(t_newmethod)class_ ## NEW_CLASS,	    	\
     	(t_method)&NEW_CLASS::callb_free,         \
-     	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
+     	sizeof(flext_hdr), FLEXT_CLOPTS(NEW_CLASS,OTP),                          \
      	A_GIMME,                       \
      	A_NULL);      	    	    	    	    	\
 	for(int ix = 1; ; ++ix) { \
@@ -481,7 +487,8 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
     NEW_CLASS::callb_setup(NEW_CLASS::__class__); \
 } 
 
-#define REAL_NEWLIB_V(NAME,NEW_CLASS, DSP) \
+#define REAL_NEWLIB_V(NAME,NEW_CLASS, OTP) \
+t_class * NEW_CLASS::__class__ = NULL;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (t_symbol *,int argc,t_atom *argv)    \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = (flext_hdr *)newobject(flext_obj::lib_class); \
@@ -490,12 +497,12 @@ flext_hdr* class_ ## NEW_CLASS (t_symbol *,int argc,t_atom *argv)    \
     obj->data = new NEW_CLASS(argc,argv);      \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
-	else FLEXT_DEFHELP(obj->data,NAME,NEW_CLASS,DSP); \
+	else FLEXT_DEFHELP(obj->data,NAME,NEW_CLASS,OTP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-void FLEXT_STPF(NEW_CLASS,DSP)()   	\
+void FLEXT_STPF(NEW_CLASS,OTP)()   	\
 {   	    	    	    	    	    	    	    	\
-	CHECK_TILDE(NAME,DSP); 	\
+	CHECK_TILDE(NAME,OTP&1); 	\
 	NEW_CLASS::__class__ = flext_obj::lib_class; \
     flext_obj::libfun_add(NAME,(t_method)(class_ ## NEW_CLASS),&NEW_CLASS::callb_free,A_GIMME,A_NULL); \
     NEW_CLASS::callb_setup(flext_obj::lib_class); \
@@ -525,7 +532,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 		FLEXT_CLREF(flext::extract(NAME),NEW_CLASS::__class__), 	    	    	    	\
     	(t_newmethod)class_ ## NEW_CLASS,	    	\
     	(t_method)&NEW_CLASS::callb_free,         \
-     	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
+     	sizeof(flext_hdr), FLEXT_CLOPTS(NEW_CLASS,DSP),                          \
      	FLEXTTP(TYPE1),                       \
      	A_NULL);      	    	    	    	    	\
 	for(int ix = 1; ; ++ix) { \
@@ -536,6 +543,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 } 
 
 #define REAL_NEWLIB_1(NAME,NEW_CLASS, DSP,TYPE1) \
+t_class * NEW_CLASS::__class__ = NULL;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1)    \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = (flext_hdr *)newobject(flext_obj::lib_class); \
@@ -579,7 +587,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 		FLEXT_CLREF(flext::extract(NAME),NEW_CLASS::__class__), 	    	    	    	\
     	(t_newmethod)class_ ## NEW_CLASS,	    	\
     	(t_method)&NEW_CLASS::callb_free,         \
-     	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
+     	sizeof(flext_hdr), FLEXT_CLOPTS(NEW_CLASS,DSP),                          \
      	FLEXTTP(TYPE1), FLEXTTP(TYPE2),                       \
      	A_NULL);      	    	    	    	    	\
 	for(int ix = 1; ; ++ix) { \
@@ -590,6 +598,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 } 
 
 #define REAL_NEWLIB_2(NAME,NEW_CLASS, DSP,TYPE1, TYPE2) \
+t_class * NEW_CLASS::__class__ = NULL;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1,const flext_obj::lib_arg &arg2)    \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = (flext_hdr *)newobject(flext_obj::lib_class); \
@@ -633,7 +642,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 		FLEXT_CLREF(flext::extract(NAME),NEW_CLASS::__class__), 	    	    	    	\
     	(t_newmethod)class_ ## NEW_CLASS,	    	\
     	(t_method)&NEW_CLASS::callb_free,         \
-     	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
+     	sizeof(flext_hdr), FLEXT_CLOPTS(NEW_CLASS,DSP),                          \
      	FLEXTTP(TYPE1), FLEXTTP(TYPE2),FLEXTTP(TYPE3),                       \
      	A_NULL);      	    	    	    	    	\
 	for(int ix = 1; ; ++ix) { \
@@ -644,6 +653,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 } 
 
 #define REAL_NEWLIB_3(NAME,NEW_CLASS, DSP,TYPE1,TYPE2,TYPE3) \
+t_class * NEW_CLASS::__class__ = NULL;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1,const flext_obj::lib_arg &arg2,const flext_obj::lib_arg &arg3)    \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = (flext_hdr *)newobject(flext_obj::lib_class); \
@@ -686,7 +696,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
      	FLEXT_CLREF(flext::extract(NAME),NEW_CLASS::__class__), 	    	    	    	\
     	(t_newmethod)class_ ## NEW_CLASS,	    	\
     	(t_method)&NEW_CLASS::callb_free,         \
-     	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
+     	sizeof(flext_hdr), FLEXT_CLOPTS(NEW_CLASS,DSP),                          \
      	FLEXTTP(TYPE1), FLEXTTP(TYPE2),FLEXTTP(TYPE3),FLEXTTP(TYPE4),                     \
      	A_NULL);      	    	    	    	    	\
 	for(int ix = 1; ; ++ix) { \
@@ -697,6 +707,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 } 
 
 #define REAL_NEWLIB_4(NAME,NEW_CLASS, DSP,TYPE1,TYPE2,TYPE3,TYPE4) \
+t_class * NEW_CLASS::__class__ = NULL;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1,const flext_obj::lib_arg &arg2,const flext_obj::lib_arg &arg3,const flext_obj::lib_arg &arg4)    \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = (flext_hdr *)newobject(flext_obj::lib_class); \

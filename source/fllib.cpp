@@ -33,6 +33,7 @@ public:
 
 static libfunction *libfuncs = NULL;
 t_class *flext_obj::lib_class = NULL;
+t_symbol *flext_obj::lib_name = NULL;
 
 libfunction::libfunction(t_symbol *n,t_newmethod newf,void (*freef)(flext_hdr *)): name(n),newfun(newf),freefun(freef),nxt(NULL),argc(0),argv(NULL) {}
 libfunction::~libfunction() { if(argv) delete[] argv; if(nxt) delete nxt; }
@@ -134,7 +135,7 @@ flext_hdr *flext_obj::libfun_new(t_symbol *s,int argc,t_atom *argv)
 		}
 	}
 	else {
-		error("Class %s not found in library!",s->s_name);
+		if(s != lib_name) error("Class %s not found in library!",s->s_name);
 		return NULL;
 	}
 }
@@ -149,7 +150,7 @@ void flext_obj::libfun_free(flext_hdr *hdr)
 	if(l) 
 		l->freefun(hdr);
 	else 
-		error("Class %s not found in library!",name);
+		if(name != lib_name) error("Class %s not found in library!",name);
 }
 
 #endif

@@ -52,6 +52,7 @@ FLEXT_REALHDR(NEW_CLASS, PARENT_CLASS)
 \
 FLEXT_REALHDR_S(NEW_CLASS, PARENT_CLASS, SETUPFUN)    	    	
 
+
 //! @} 
 
 
@@ -99,6 +100,13 @@ REAL_EXT(NEW_CLASS,0)
 REAL_NEW(NAME,NEW_CLASS,1) \
 REAL_EXT(NEW_CLASS,1)
 
+/*! Implementation of a flext GUI class with no arguments
+	\ingroup FLEXT_NEW_GUI
+*/
+#define FLEXT_NEW_GUI(NAME,NEW_CLASS)	\
+REAL_NEW(NAME,NEW_CLASS,2) \
+REAL_EXT(NEW_CLASS, 2)
+
 /*! Implementation of a flext class (part of a library) with no arguments
 	\ingroup FLEXT_LIB
 */
@@ -130,6 +138,13 @@ REAL_EXT(NEW_CLASS,0)
 #define FLEXT_NEW_DSP_V(NAME,NEW_CLASS)	\
 REAL_NEW_V(NAME,NEW_CLASS,1) \
 REAL_EXT(NEW_CLASS, 1)
+
+/*! Implementation of a flext GUI class with a variable argument list
+	\ingroup FLEXT_NEW_GUI
+*/
+#define FLEXT_NEW_GUI_V(NAME,NEW_CLASS)	\
+REAL_NEW_V(NAME,NEW_CLASS,2) \
+REAL_EXT(NEW_CLASS, 2)
 
 /*! Implementation of a flext class (part of a library) with a variable argument list
 	\ingroup FLEXT_LIB

@@ -33,7 +33,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #ifdef PD
 
-/*! PD definitions start here */
+/* PD definitions start here */
 
 #ifdef _MSC_VER
 #pragma warning (push)
@@ -44,7 +44,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 extern "C" {	    	    	    	    	    	    	
 #endif
 
-//! Include the relevant PD header files
+// Include the relevant PD header files
 #ifdef _DEBUG
 #include <m_imp.h>  // for easier debugging
 #else
@@ -76,9 +76,9 @@ typedef t_clock t_qelem;
 // MAX stuff
 #elif defined(MAXMSP)
 
-/*! MaxMSP definitions start here */
+/* MaxMSP definitions start here */
 
-//! Include the relevant MaxMSP header files
+// Include the relevant MaxMSP header files
 extern "C"
 {
 #include "ext.h"
@@ -88,7 +88,7 @@ extern "C"
 //#include "z_atom.h"
 }
 
-typedef t_pxobject t_sigobj;
+typedef t_pxbox t_sigobj;  // that's the all-in-one object type of MaxMSP (not very memory-efficent, i guess)
 typedef t_patcher t_canvas;
 
 typedef t_int t_flint;
@@ -103,6 +103,7 @@ typedef method t_newmethod;
 typedef int t_atomtype;
 
 typedef struct clock t_clock;
+typedef void t_binbuf;
 
 #undef clock_free
 #define clock_free(tick) freeobject((object *)tick)
@@ -116,7 +117,7 @@ typedef struct clock t_clock;
 
 #ifdef _LOG
 
-/*! If _LOG is defined implement logging */
+/* If _LOG is defined implement logging */
 #define LOG(s) post(s)
 #define LOG1(s,v1) post(s,v1)
 #define LOG2(s,v1,v2) post(s,v1,v2)
@@ -127,7 +128,7 @@ typedef struct clock t_clock;
 
 #else
 
-/*! If _LOG is not defined avoid logging */
+/* If _LOG is not defined avoid logging */
 #define LOG(s) ((void)0)
 #define LOG1(s,v1) ((void)0)
 #define LOG2(s,v1,v2) ((void)0)
@@ -146,7 +147,7 @@ typedef struct clock t_clock;
 #define ERRINTERNAL() error("flext: Internal error in file " __FILE__ ", line %i - please report",(int)__LINE__)
 
 
-/*! Set the right calling convention (and exporting) for the OS */
+/* Set the right calling convention (and exporting) for the OS */
 
 #if defined(NT)
 #define FLEXT_EXT __declspec(dllexport)

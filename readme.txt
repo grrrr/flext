@@ -72,15 +72,20 @@ cons:
 - overhead in object size (due to possibly unneeded code)
 
 
-see flext.h for the documented base classes
+see flext.h, fldefs.h and flclass.h for the documented base definitions and classes
 
 ----------------------------------------------------------------------------
 
 Version history:
 
 0.3.3:
-- Bind/unbind functions for flext classes
+- revisited priority stuff for detached threads
+- Bind/unbind functions for flext classes (how to do in MaxMSP?)
 - Made "t_symtype" another synonym for "t_symbol *"
+- Added forgotten dsp_free function for MaxMSP
+- Fixed forgotten __class__ member for MaxMSP libraries
+- Changed basic MaxMSP object to t_pxbox (ok, a bit more memory is used....)
+- MaxMSP library can now be loaded from startup folder
 
 0.3.2:
 - doxygen generated inline documentation / functional reference

@@ -200,6 +200,11 @@ flext_base::~flext_base()
 			}
 		delete[] inlets;
 	}
+	
+#ifdef MAXMSP
+//	if(insigs) dsp_free(thisHdr());
+	if(insigs) dsp_freebox(thisHdr());
+#endif
 
 	if(mlst) delete mlst;
 }
@@ -412,7 +417,9 @@ bool flext_base::SetupInOut()
 
 			incnt = cnt;
 	
-			if(insigs) dsp_setup(thisHdr(),insigs); // signal inlets	
+			if(insigs) 
+//				dsp_setup(thisHdr(),insigs); // signal inlets	
+				dsp_setupbox(thisHdr(),insigs); // signal inlets	
 		}
 #endif
 

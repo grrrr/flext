@@ -23,7 +23,8 @@ void flext_dsp::Setup(t_class *c)
 #ifdef PD
 	CLASS_MAINSIGNALIN(c,flext_hdr,defsig);
 #elif defined(MAXMSP)
-	dsp_initclass();
+//	dsp_initclass();
+	dsp_initboxclass();
 #endif
 	
 	add_dsp(c,cb_dsp);

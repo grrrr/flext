@@ -27,25 +27,23 @@ flext::thrid_t flext::thrmsgid = 0;
 #endif
 
 
+static void Trigger();
+
 class qmsg:
     public flext,
     public Fifo::Cell
 {
 public:
-    qmsg(flext_base *t,int o,const t_symbol *s,int ac,const t_atom *av)
-        : msg(s,ac,av)
-        , th(t),out(o)
-    {}
-
-    void Set(flext_base *t,int o,const t_symbol *s,int ac,const t_atom *av)
+    inline qmsg &Set(flext_base *t,int o,const t_symbol *s,int ac,const t_atom *av)
     {
         th = t;
         out = o;
         msg(s,ac,av);
+        return *this;
     }
 
     // \note PD sys lock must already be held by caller
-    void Send() const
+    inline void Send() const
     {
         if(out < 0)
             // message to self
@@ -61,28 +59,36 @@ private:
     AtomAnything msg;
 };
 
-/* \TODO This is only thread-safe if called from one thread which need NOT be the case.
-         Reimplement in a thread-safe manner!!!
-*/
+
+
+typedef PooledFifo<qmsg> QueueFifo;
+
 class Queue:
     public flext,
-    public TypedFifo<qmsg>
+    public QueueFifo
 {
 public:
     inline bool Empty() const { return Size() == 0; }
 
-    void New(flext_base *t,int o,const t_symbol *s,int ac,const t_atom *av);
+    inline void Push(flext_base *t,int o,const t_symbol *s,int ac,const t_atom *av)
+    {
+        qmsg *m = QueueFifo::New();
+        FLEXT_ASSERT(m);
+        m->Set(t,o,s,ac,av);
+        Put(m);
+        Trigger();
+    }
 
     inline void Push(flext_base *th,int o) // bang
     { 
-        New(th,o,sym_bang,0,NULL);
+        Push(th,o,sym_bang,0,NULL);
     }
 
     inline void Push(flext_base *th,int o,float dt) 
     { 
         t_atom at; 
         SetFloat(at,dt);
-        New(th,o,sym_float,1,&at);
+        Push(th,o,sym_float,1,&at);
     }
 
     inline void Push(flext_base *th,int o,int dt) 
@@ -97,14 +103,14 @@ public:
 #else
 #error Not implemented!
 #endif
-        New(th,o,sym,1,&at);
+        Push(th,o,sym,1,&at);
     }
 
     inline void Push(flext_base *th,int o,const t_symbol *dt) 
     { 
         t_atom at; 
         SetSymbol(at,dt);
-        New(th,o,sym_symbol,1,&at);
+        Push(th,o,sym_symbol,1,&at);
     }
 
     void Push(flext_base *th,int o,const t_atom &a) 
@@ -126,31 +132,16 @@ public:
             error("atom type not supported");
             return;
         }
-        New(th,o,sym,1,&a);
+        Push(th,o,sym,1,&a);
     }
 
     inline void Push(flext_base *th,int o,int argc,const t_atom *argv) 
     {
-        New(th,o,sym_list,argc,argv);
-    }
-
-    inline void Push(flext_base *th,int o,const t_symbol *sym,int argc,const t_atom *argv) 
-    { 
-        New(th,o,sym,argc,argv);
+        Push(th,o,sym_list,argc,argv);
     }
 };
 
-static Queue queue,requeue;
-
-void Queue::New(flext_base *t,int o,const t_symbol *s,int ac,const t_atom *av)
-{
-    qmsg *m = requeue.Get();
-    if(m)
-        m->Set(t,o,s,ac,av);
-    else
-        m = new qmsg(t,o,s,ac,av);
-    Put(m);
-}
+static Queue queue;
 
 
 #if FLEXT_QMODE == 2
@@ -180,7 +171,7 @@ static void QWork(bool syslock)
         qmsg *q;
         while((q = queue.Get()) != NULL) {
             q->Send();
-            requeue.Put(q);
+            queue.Free(q);
         }
 
     #if FLEXT_QMODE == 2
@@ -305,41 +296,34 @@ void flext_base::StartQueue()
 void flext_base::ToQueueBang(int o) const 
 {
     queue.Push(const_cast<flext_base *>(this),o);
-    Trigger();
 }
 
 void flext_base::ToQueueFloat(int o,float f) const
 {
     queue.Push(const_cast<flext_base *>(this),o,f);
-    Trigger();
 }
 
 void flext_base::ToQueueInt(int o,int f) const
 {
     queue.Push(const_cast<flext_base *>(this),o,f);
-    Trigger();
 }
 
 void flext_base::ToQueueSymbol(int o,const t_symbol *s) const
 {
     queue.Push(const_cast<flext_base *>(this),o,s);
-    Trigger();
 }
 
 void flext_base::ToQueueAtom(int o,const t_atom &at) const
 {
     queue.Push(const_cast<flext_base *>(this),o,at);
-    Trigger();
 }
 
 void flext_base::ToQueueList(int o,int argc,const t_atom *argv) const
 {
     queue.Push(const_cast<flext_base *>(this),o,argc,argv);
-    Trigger();
 }
 
 void flext_base::ToQueueAnything(int o,const t_symbol *s,int argc,const t_atom *argv) const
 {
     queue.Push(const_cast<flext_base *>(this),o,s,argc,argv);
-    Trigger();
 }

@@ -270,13 +270,13 @@ public:
     inline T *Pop() { return static_cast<T *>(Lifo::Pop()); }
 };
 
-template <typename T>
+template <typename T,int M = 2,int O = 1>
 class PooledLifo
     : public TypedLifo<T>
 {
 public:
     inline T *New() { T *n = reuse.Pop(); return n?n:new T; }
-    inline void Free(T *p) { if(reuse.Size() < Size()) reuse.Push(p); else delete p; }
+    inline void Free(T *p) { if(reuse.Size() < Size()*M+O) reuse.Push(p); else delete p; }
 private:
     TypedLifo<T> reuse;
 };
@@ -347,13 +347,13 @@ public:
     inline T *Clear() { return static_cast<T *>(Fifo::Clear()); }
 };
 
-template <typename T>
+template <typename T,int M = 2,int O = 1>
 class PooledFifo
     : public TypedFifo<T>
 {
 public:
     inline T *New() { T *n = reuse.Pop(); return n?n:new T; }
-    inline void Free(T *p) { if(reuse.Size() < Size()) reuse.Push(p); else delete p; }
+    inline void Free(T *p) { if(reuse.Size() < Size()*M+O) reuse.Push(p); else delete p; }
 private:
     TypedLifo<T> reuse;
 };

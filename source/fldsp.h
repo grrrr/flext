@@ -137,7 +137,7 @@ private:
 	int chnsin,chnsout;
 
 	// setup function
-	static void Setup(t_class *c);
+	static void Setup(t_classid c);
 
 	// callback functions
 

@@ -108,7 +108,7 @@ protected:
 
 private:
 
-	static void setup(t_class *c)
+	static void setup(t_classid c)
 	{
 		// --- set up methods (class scope) ---
 

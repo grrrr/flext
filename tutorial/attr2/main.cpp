@@ -59,7 +59,7 @@ protected:
 
 private:
 
-	static void setup(t_class *);
+	static void setup(t_classid);
 
 	// callback for method "m_trigger" (with one float argument)
 	FLEXT_CALLBACK_F(m_trigger)
@@ -90,7 +90,7 @@ const t_symbol
 	*attr2::sym_div,*attr2::sym_mul,
 	*attr2::sym_pow;
 
-void attr2::setup(t_class *c)
+void attr2::setup(t_classid c)
 {
 	// Upon class creation setup some symbols
 	// This is done only upon creation of of the first "attr2" object

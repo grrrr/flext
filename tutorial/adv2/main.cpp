@@ -44,7 +44,7 @@ protected:
 	
 private:
 	// define the _static_ class setup function
-	static void setup(t_class *c);
+	static void setup(t_classid c);
 
 	FLEXT_CALLBACK(m_tag)  
 	FLEXT_CALLBACK_I(m_tag_and_int)
@@ -57,12 +57,16 @@ FLEXT_NEW("adv2",adv2)
 
 adv2::adv2()
 { 
+	post("thisClassID=%p",thisClassId()); 
+
 	// define inlets
 	AddInAnything();  // add inlet of type anything (index 0)
 } 
 
-void adv2::setup(t_class *c)
+void adv2::setup(t_classid c)
 {
+	post("ClassID=%p",c); 
+
 	// register methods:
 	// notice the naming FLEXT_CADD_METHOD* instead of FLEXT_ADD_METHOD* 
 	// there is also an additional parameter c pointing to the class definition

@@ -145,12 +145,25 @@ class FLEXT_SHARE flext_obj:
         //! Get the class name (as a symbol)
 		const t_symbol *thisNameSym() const { return m_name; } 
 
+
 #if FLEXT_SYS == FLEXT_SYS_PD
         //! Get the class pointer
 		t_class *thisClass() { return (t_class *)((t_object *)(x_obj))->te_g.g_pd; }
+		
+		typedef t_class *t_classid;
+		//! Get unique id for object class
+		t_classid thisClassId() const { void *p = thisClass(); return reinterpret_cast<unsigned long>(p); }
+		//! Get class pointer from class id
+		static t_class *getClass(t_classid c) { return c; }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
         //! Get the class pointer
 		t_class *thisClass() { return (t_class *)(((t_tinyobject *)x_obj)->t_messlist-1); } 
+
+		typedef void *t_classid;
+		//! Get unique id for object class (for Max/MSP library object share the same (t_class *)!)
+		t_classid thisClassId() const; // { return classid; }
+		//! Get class pointer from class id
+		static t_class *getClass(t_classid);
 #endif
 
 	//!	@}  FLEXT_O_INFO
@@ -201,7 +214,7 @@ class FLEXT_SHARE flext_obj:
 	public:
 
     	//! Creation callback
-		static void __setup__(t_class *) { flext::Setup(); }	
+		static void __setup__(t_classid) { flext::Setup(); }	
 
 		/*! \brief This is a temporary holder
 			\warning don't touch it!
@@ -223,7 +236,7 @@ class FLEXT_SHARE flext_obj:
 
 		// Definitions for library objects
 		static void lib_init(const char *name,void setupfun(),bool attr);
-		static void obj_add(bool lib,bool dsp,bool attr,const char *idname,const char *names,void setupfun(t_class *),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...);
+		static void obj_add(bool lib,bool dsp,bool attr,const char *idname,const char *names,void setupfun(t_classid),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...);
 		static flext_hdr *obj_new(const t_symbol *s,int argc,t_atom *argv);
 		static void obj_free(flext_hdr *o);
 
@@ -272,8 +285,8 @@ static flext_obj *__init__(int argc,t_atom *argv);  \
 static void __free__(flext_hdr *hdr)    	    	    	\
 { flext_obj *mydata = hdr->data; delete mydata; \
   hdr->flext_hdr::~flext_hdr(); }   	    	\
-static void __setup__(t_class *classPtr) { 	    	\
-	PARENT_CLASS::__setup__(classPtr); } \
+static void __setup__(t_classid classid) { 	    	\
+	PARENT_CLASS::__setup__(classid); } \
 protected:    \
 static inline NEW_CLASS *thisObject(void *c) { return FLEXT_CAST<NEW_CLASS *>(((flext_hdr *)c)->data); } 
 
@@ -285,9 +298,9 @@ static flext_obj *__init__(int argc,t_atom *argv);  \
 static void __free__(flext_hdr *hdr)    	    	    	\
 { flext_obj *mydata = hdr->data; delete mydata; \
   hdr->flext_hdr::~flext_hdr(); }   	    	\
-static void __setup__(t_class *classPtr)  	    	\
-{ PARENT_CLASS::__setup__(classPtr);    	    	\
-	NEW_CLASS::SETUPFUN(classPtr); 	}    	    	\
+static void __setup__(t_classid classid)  	    	\
+{ PARENT_CLASS::__setup__(classid);    	    	\
+	NEW_CLASS::SETUPFUN(classid); 	}    	    	\
 protected: \
 static inline NEW_CLASS *thisObject(void *c) { return FLEXT_CAST<NEW_CLASS *>(((flext_hdr *)c)->data); }
 

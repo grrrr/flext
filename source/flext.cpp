@@ -27,8 +27,8 @@ flext_base::flext_base():
 	insigs(0),outsigs(0),
 	outlets(NULL),outattr(NULL),
 	distmsgs(false),
-	methhead(new itemarr),attrhead(new itemarr), //attrcnt(0),
-	clmethhead(ClMeths(thisClass())),clattrhead(ClAttrs(thisClass())), 
+	methhead(new itemarr),attrhead(new itemarr), 
+	clmethhead(ClMeths(thisClassId())),clattrhead(ClAttrs(thisClassId())), 
 	inlets(NULL)
 #if FLEXT_SYS == FLEXT_SYS_MAX
 	,indesc(NULL),outdesc(NULL)
@@ -125,8 +125,10 @@ bool flext_base::Init()
 /*! Set up proxy classes and basic methods at class creation time
 	This ensures that they are processed before the registered flext messages
 */
-void flext_base::Setup(t_class *c)
+void flext_base::Setup(t_classid id)
 {
+	t_class *c = getClass(id);
+
 	add_method(c,cb_help,"help");
 	add_loadbang(c,cb_loadbang);
 #if FLEXT_SYS == FLEXT_SYS_MAX

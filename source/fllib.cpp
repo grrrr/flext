@@ -123,41 +123,70 @@ libobject::libobject(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)
 // it will never be destroyed
 class libname {
 public:
-	libname(const t_symbol *n,libobject *o): name(n),obj(o),nxt(NULL) {}	
-
 	const t_symbol *name;
 	libobject *obj;
 
 	static void add(libname *n);
-	static libname *find(const t_symbol *s);
+	static libname *Find(const t_symbol *s,libobject *o = NULL);
 	
 protected:
+	libname(const t_symbol *n,libobject *o): name(n),obj(o),nxt(NULL) {}	
+
+	static int Hash(const t_symbol *s);
+	int Hash() const { return Hash(name); }
+
+	enum { HASHBITS=7, HASHSIZE=1<<HASHBITS };
+
 	libname *nxt;
-	void addrec(libname *n);
-	static libname *root;
+	void Add(libname *n);
+
+	static libname **root;
 };
 
-void libname::addrec(libname *n) { if(nxt) nxt->addrec(n); else nxt = n; }
+libname **libname::root = NULL;
 
-libname *libname::root = NULL;
 
-void libname::add(libname *l) {
-	if(root) root->addrec(l);
-	else root = l;
+void libname::Add(libname *n) { if(nxt) nxt->Add(n); else nxt = n; }
+
+int libname::Hash(const t_symbol *s) 
+{
+	return flext::FoldBits(reinterpret_cast<unsigned long>(s),HASHBITS);
 }
 
-libname *libname::find(const t_symbol *s) {
-	libname *l;
-	for(l = root; l; l = l->nxt)
-		if(s == l->name) break;
-	return l;
+libname *libname::Find(const t_symbol *s,libobject *o) 
+{
+	if(!root) {
+		root = new libname *[HASHSIZE];
+		memset(root,0,HASHSIZE*sizeof(*root));
+	}
+
+	int hash = Hash(s);
+	libname *a = root[hash];
+	libname *pa = NULL;
+	while(a && a->name != s) pa = a,a = a->nxt;
+
+	if(!a && o) {
+		a = new libname(s,o);
+		if(pa) 
+			// previous entry... extend
+			a->nxt = pa->nxt,pa->nxt = a;
+		else 
+			// new singular entry
+			root[hash] = a;
+	}
+
+	return a;
 }
+
 
 // for Max/MSP, the library is represented by a special object (class) registered at startup
 // all objects in the library are clones of that library object - they share the same class
 #if FLEXT_SYS == FLEXT_SYS_MAX
 static t_class *lib_class = NULL;
 static const t_symbol *lib_name = NULL;
+
+flext_obj::t_classid flext_obj::thisClassId() const { return libname::Find(thisNameSym())->obj; }
+t_class *flext_obj::getClass(t_classid id) { return reinterpret_cast<libobject *>(id)->clss; }
 #endif
 
 void flext_obj::lib_init(const char *name,void setupfun(),bool attr)
@@ -173,7 +202,7 @@ void flext_obj::lib_init(const char *name,void setupfun(),bool attr)
 	setupfun();
 }
 
-void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const char *names,void setupfun(t_class *),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...)
+void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const char *names,void setupfun(t_classid),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...)
 {
 	// get first possible object name
 	const t_symbol *nsym = MakeSymbol(extract(names));
@@ -203,6 +232,8 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 			(t_messlist **)cl,
     		(t_newmethod)obj_new,(t_method)obj_free,
      		sizeof(flext_hdr),NULL,A_GIMME,A_NULL);
+     	// attention: in Max/MSP the *cl variable is not initialized after that call.
+     	// just the address is stored, the initialization then occurs with the first object instance!
 	}
 #else
 #error
@@ -213,6 +244,8 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 	lo->lib = lib;
 	lo->dsp = dsp;
 	lo->attr = process_attributes;
+
+//	post("ADDCLASS %p -> LIBOBJ %p -> %p",*cl,lo,lo->clss);
 
 	// parse the argument type list and store it with the object
 	if(argtp1 == A_GIMME)
@@ -247,8 +280,7 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 		if(!c || !*c) break;
 
 		// add to name list
-		libname *l = new libname(MakeSymbol(c),lo);
-		libname::add(l);
+		libname *l = libname::Find(MakeSymbol(c),lo);
 	
 #if FLEXT_SYS == FLEXT_SYS_PD
 		if(ix > 0) 
@@ -264,8 +296,16 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 #endif	
 	}
 
+	// get unique class id
+#if FLEXT_SYS == FLEXT_SYS_PD
+	t_classid clid = lo->clss;
+#else
+	// in Max/MSP the t_class *value can't be used because it's possible that's it's not yet set!!
+	t_classid clid = lo;
+#endif
+
 	// call class setup function
-    setupfun(lo->clss);
+    setupfun(clid);
 }
 	
 
@@ -274,7 +314,7 @@ typedef flext_obj *(*libfun)(int,t_atom *);
 flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 {
 	flext_hdr *obj = NULL;
-	libname *l = libname::find(s);
+	libname *l = libname::Find(s);
 	if(l) {
 		bool ok = true;
 		t_atom args[FLEXT_MAXNEWARGS]; 
@@ -322,13 +362,19 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 		}
 
 		if(ok) {
+			t_classid clid;
+
 #if FLEXT_SYS == FLEXT_SYS_PD
+			clid = lo->clss;
 			obj = (flext_hdr *)::pd_new(lo->clss);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
+			clid = lo;
 			obj = (flext_hdr *)::newobject(lo->clss);
 #else
 #error
 #endif
+//			post("NEWINST CLID %p",clid);
+
 		    flext_obj::m_holder = obj;
 			flext_obj::m_holdname = l->name;
 			flext_obj::m_holdattr = lo->attr;
@@ -386,7 +432,7 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 void flext_obj::obj_free(flext_hdr *hdr)
 {
 	const t_symbol *name = hdr->data->thisNameSym();
-	libname *l = libname::find(name);
+	libname *l = libname::Find(name);
 
 	if(l) {
 		// call virtual exit function

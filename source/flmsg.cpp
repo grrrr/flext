@@ -159,7 +159,7 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,const t_atom 
 
 	curtag = s;
 
-	LOG3("methodmain inlet:%i args:%i symbol:%s",inlet,argc,s?GetString(s):"");
+//	post("methodmain inlet:%i args:%i symbol:%s",inlet,argc,s?GetString(s):"");
 	
 	bool ret = FindMeth(inlet,s,argc,argv);
 	if(ret) goto end;

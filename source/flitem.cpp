@@ -30,10 +30,12 @@ flext_base::itemarr::itemarr():
 	arr(new item *[2]),cnt(0),bits(-1)
 {
 	arr[0] = arr[1] = NULL;
+//	post("NEWARR %p",this);
 }
 
 flext_base::itemarr::~itemarr()
 {
+//	post("DELARR %p",this);
 	int c = Ready()?Size():2;
 
 	for(int i = 0; i < c; ++i)
@@ -54,9 +56,11 @@ void flext_base::itemarr::Add(item *it)
 			a->nxt = it;
 		}
 		else arr[ix] = it;
+
+//		post("RDY inlet=%i,tag=%s,hash=%i",it->inlet,GetString(it->tag),ix);			
 	}
 	else {
-//		post("ADD %i,%s",it->inlet,GetString(it->tag));			
+//		post("ADD index=%i,inlet=%i,tag=%s",cnt,it->inlet,GetString(it->tag));			
 
 		if(arr[0]) arr[1] = arr[1]->nxt = it;
 		else arr[0] = arr[1] = it;
@@ -69,6 +73,8 @@ void flext_base::itemarr::Finalize()
 	if(!Ready()) 
 	{
 		bits = Int2Bits(cnt); // at least enough bits to hold all items
+		
+//		post("This=%p, Count %i, Bits %i",this,cnt,bits);
 		
 		int sz = Size();
 
@@ -85,20 +91,6 @@ void flext_base::itemarr::Finalize()
 			l->nxt = NULL;
 
 			Add(l);
-/*
-			// retrieve array index
-			int ix = Hash(l->tag,l->inlet,bits);
-
-//			post("ADD %i,%s -> index %i",l->inlet,GetString(l->tag),ix);			
-
-			// add to array slot
-			if(arr[ix]) {
-				item *a = arr[ix];
-				while(a->nxt) a = a->nxt;
-				a->nxt = l;
-			}
-			else arr[ix] = l;
-*/
 		}
 
 #if 0
@@ -126,9 +118,11 @@ flext_base::item *flext_base::itemarr::Find(const t_symbol *tag,int inlet) const
 	else if(Count()) {
 		int ix = Hash(tag,inlet,bits);
 		a = arr[ix];
+//		post("FIND tag=%s inlet=%i hash=%i p=%p",GetString(tag),inlet,ix,a);
 	}
 	else
 		a = NULL;
+		
 
 	// Search first matching entry
 	while(a && (a->tag != tag || a->inlet != inlet)) a = a->nxt;
@@ -148,23 +142,23 @@ class _itemarr
 public:
 	enum { HASHBITS=7, HASHSIZE=1<<HASHBITS };
 
-	_itemarr(t_class *c,int i);
+	_itemarr(flext_obj::t_classid c,int i);
 	~_itemarr(); // will never be called
 
-	static int Hash(t_class *c,int ix);
+	static int Hash(flext_obj::t_classid c,int ix);
 
-	int Hash() const { return Hash(cl,ix); }
+	int Hash() const { return Hash(clid,ix); }
 	void Add(_itemarr *a);
 
-	t_class *cl;
+	flext_obj::t_classid clid;
 	int ix;
 	flext_base::itemarr *arr;
 
 	_itemarr *nxt;
 };
 
-_itemarr::_itemarr(t_class *c,int i):
-	cl(c),ix(i),
+_itemarr::_itemarr(flext_obj::t_classid c,int i):
+	clid(c),ix(i),
 	arr(new flext_base::itemarr),
 	nxt(NULL)
 {}
@@ -175,7 +169,7 @@ void _itemarr::Add(_itemarr *a)
 	else nxt = a;
 }
 
-int _itemarr::Hash(t_class *c,int ix) 
+int _itemarr::Hash(flext_obj::t_classid c,int ix) 
 {
 	unsigned long h = (reinterpret_cast<unsigned long>(c)&~3L)+ix;
 	return flext::FoldBits(h,HASHBITS);
@@ -183,7 +177,7 @@ int _itemarr::Hash(t_class *c,int ix)
 
 static _itemarr **_arrs = NULL;
 
-flext_base::itemarr *flext_base::GetClassArr(t_class *c,int ix) 
+flext_base::itemarr *flext_base::GetClassArr(t_classid c,int ix) 
 {
 	if(!_arrs) {
 		_arrs = new _itemarr *[_itemarr::HASHSIZE];
@@ -193,7 +187,9 @@ flext_base::itemarr *flext_base::GetClassArr(t_class *c,int ix)
 	int hash = _itemarr::Hash(c,ix);
 	_itemarr *a = _arrs[hash];
 	_itemarr *pa = NULL;
-	while(a && (a->cl != c || a->ix != ix)) pa = a,a = a->nxt;
+	while(a && (a->clid != c || a->ix != ix)) pa = a,a = a->nxt;
+
+//	post("GETARR classid=%p ix=%i -> hash=%i,arr=%p",c,ix,hash,a?a->arr:NULL);
 
 	if(!a) {
 		a = new _itemarr(c,ix);

@@ -20,8 +20,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // === flext_dsp ==============================================
 
-void flext_dsp::Setup(t_class *c)
+void flext_dsp::Setup(t_classid id)
 {
+	t_class *c = getClass(id);
+
 #if FLEXT_SYS == FLEXT_SYS_MAX
 //	dsp_initclass();
 	dsp_initboxclass();

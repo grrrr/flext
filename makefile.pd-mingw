@@ -7,11 +7,10 @@
 # to build run "make -f makefile.pd-mingw"
 #
 # ---------------------------------------------
-#
-# compiling for threaded usage is not supported
-#
+
 
 CONFIG=config-pd-mingw.txt
+MAKEFILE=makefile.pd-mingw
 
 include $(CONFIG)
 
@@ -23,10 +22,9 @@ FLAGS=-DFLEXT_SYS=2 $(UFLAGS)
 CFLAGS=-O2
 CFLAGS_D=-DFLEXT_DEBUG -g
 CFLAGS_T=-DFLEXT_THREADS
-CFLAGS_S=-DFLEXT_SHARED
-LIBS=$(PDPATH)/bin/pd.lib $(PTHREADS)/pthreadVC.lib
+CFLAGS_S=-DFLEXT_SHARED -DFLEXT_EXPORTS
 
-DYNAMIC=-Wl,-Bdynamic
+PDLIBS=$(PDPATH)/bin/pd.dll $(PDPATH)/bin/pthreadVC.dll
 
 INSTDIR=$(PDPATH)/flext
 
@@ -52,7 +50,7 @@ SRCS+=$(SRCS_STK)
 HDRS+=$(HDRS_STK)
 endif
 
-MAKEFILE=makefile.pd-mingw
+
 TARGET=$(TARGDIR)/$(NAME)-pdwin.lib
 TARGET_D=$(TARGDIR)/$(NAME)_d-pdwin.lib
 TARGET_T=$(TARGDIR)/$(NAME)_t-pdwin.lib
@@ -60,16 +58,16 @@ TARGET_TD=$(TARGDIR)/$(NAME)_td-pdwin.lib
 TARGET_S=$(TARGDIR)/$(NAME).dll
 TARGET_SD=$(TARGDIR)/$(NAME)_d.dll
 
-TARGETS=$(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD) # $(TARGET_S) $(TARGET_SD)
+TARGETS=$(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD) $(TARGET_S) $(TARGET_SD)
 
 
 all: $(TARGDIR) $(TARGETS)
+
 $(TARGDIR):
 	-mkdir $(TARGDIR)
 
 $(SRCS): $(HDRS) $(IHDRS) $(MAKEFILE) $(CONFIG)
-	touch $@
-
+#	echo touch $@  # minGW has no touch
 
 $(TARGDIR)/%.ro : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
@@ -84,10 +82,10 @@ $(TARGDIR)/%.tdo : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS_D) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
 $(TARGDIR)/%.sro : $(SRCDIR)/%.cpp
-	$(CXX) -shared -c $(CFLAGS) $(CFLAGS_S) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
+	$(CXX) -c $(CFLAGS) $(CFLAGS_S) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
 $(TARGDIR)/%.sdo : $(SRCDIR)/%.cpp
-	$(CXX) -shared -c $(CFLAGS_D) $(CFLAGS_S) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
+	$(CXX) -c $(CFLAGS_D) $(CFLAGS_S) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
 
 $(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.ro,$(SRCS))
@@ -107,11 +105,12 @@ $(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(SRCS))
 	chmod 644 $@
 
 $(TARGET_S) : $(patsubst %.cpp,$(TARGDIR)/%.sro,$(SRCS))
-	$(CXX) -shared $(DYNAMIC) -Wl,--strip-debug $(patsubst %,-L%,$(LIBPATH)) -o $@ $^ $(LIBS) # $(patsubst %,-l%,$(LIBS)) 
+	$(CXX) -shared $(patsubst %,-L%,$(LIBPATH)) -o $@ $^ $(PDLIBS)
+	strip --strip-unneeded $@
 	chmod 755 $@
 
 $(TARGET_SD) : $(patsubst %.cpp,$(TARGDIR)/%.sdo,$(SRCS))
-	$(CXX) -shared $(DYNAMIC) -Wl,--strip-debug $(patsubst %,-L%,$(LIBPATH)) -o $@ $^ $(LIBS) # $(patsubst %,-l%,$(LIBS)) 
+	$(CXX) -g -shared $(patsubst %,-L%,$(LIBPATH)) -o $@ $^ $(PDLIBS)
 	chmod 755 $@
 
 

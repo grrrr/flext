@@ -16,9 +16,6 @@ PDPATH=c:/programme/audio/pd
 # (leave blank or comment out to disable STK support)
 #STK=f:/prog/audio/stk/include
 
-# for shared builds the pthread libraries are necessary
-PTHREADS=f:/prog/packs/pthreads
-
 # where should flext libraries be built?
 TARGDIR=./pd-mingw
 

@@ -8,88 +8,299 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-// definitions for internal flext usage
-
+/*! \file fldefs.h
+    \brief Definitions for actual usage
+    
+*/
 
 #ifndef __FLEXT_DEFS_H
 #define __FLEXT_DEFS_H
 
-#include <flstdc.h>
+// ====================================================================================
 
 
-#ifdef PD
-
-#define add_dsp(clss,meth) class_addmethod(clss, (t_method)meth,gensym("dsp"),A_NULL)
-#define add_bang(clss,meth) class_addbang(clss, (t_method)meth)
-#define add_float(clss,meth) class_addfloat(clss, (t_method)meth)
-#define add_floatn(clss,meth,n) class_addmethod(clss, (t_method)meth,gensym("ft" #n),A_FLOAT,A_NULL)
-#define add_flint(clss,meth) class_addfloat(clss, (t_method)meth)
-#define add_flintn(clss,meth,n) class_addmethod(clss, (t_method)meth,gensym("ft" #n),A_FLOAT,A_NULL)
-#define add_method(clss,meth,text) class_addmethod(clss, (t_method)meth, gensym(text), A_NULL)
-#define add_methodG(clss,meth,text) class_addmethod(clss, (t_method)meth, gensym(text), A_GIMME,A_NULL)
-#define add_method1(clss,meth,text,a1) class_addmethod(clss, (t_method)meth, gensym(text), a1,A_NULL)
-#define add_method2(clss,meth,text,a1,a2) class_addmethod(clss, (t_method)meth, gensym(text), a1,a2,A_NULL)
-#define add_method3(clss,meth,text,a1,a2,a3) class_addmethod(clss, (t_method)meth, gensym(text), a1,a2,a3,A_NULL)
-#define add_method4(clss,meth,text,a1,a2,a3,a4) class_addmethod(clss, (t_method)meth, gensym(text), a1,a2,a3,a4,A_NULL)
-#define add_method5(clss,meth,text,a1,a2,a3,a5) class_addmethod(clss, (t_method)meth, gensym(text), a1,a2,a3,a4,a5,A_NULL)
-#define add_loadbang(clss,meth) class_addmethod(clss,(t_method)meth, gensym("loadbang"), A_CANT, A_NULL)
-#define add_anything(clss,meth) class_addanything(clss,meth)
-
-
-#define newout_signal(clss) outlet_new(clss,&s_signal)
-#define newout_float(clss) outlet_new(clss,&s_float)
-#define newout_flint(clss) outlet_new(clss,&s_float)
-#define newout_list(clss) outlet_new(clss,&s_list)
-#define newout_symbol(clss) outlet_new(clss,&s_symbol)
-#define newout_anything(clss) outlet_new(clss,&s_anything)
-
-#define outlet_flint(o,v) outlet_float(o,v)
-
-typedef t_perfroutine t_dspmethod;
-
-
-#elif defined(MAXMSP)
-
-/*
-typedef void _inlet;
-typedef _inlet t_inlet;
+/*! @name flext class header
+	One of these definitions is compulsary for the class declaration
 */
-  
-typedef void t_outlet;
-//typedef _outlet t_outlet;
 
-#define add_dsp(clss,meth) addmess((method)meth,"dsp",A_CANT,A_NOTHING)
-#define add_bang(clss,meth) addbang((method)meth)
-#define add_float(clss,meth) addfloat((method)meth)
-#define add_floatn(clss,meth,n) addftx((method)meth,n)
-#define add_flint(clss,meth) addint((method)meth)
-#define add_flintn(clss,meth,n) addinx((method)meth,n)
-#define add_method(clss,meth,text) addmess((method)meth, text, A_NOTHING)
-#define add_methodG(clss,meth,text) addmess((method)meth, text, A_GIMME,A_NOTHING)
-#define add_method1(clss,meth,text,a1) addmess((method)meth, text, a1,A_NOTHING)
-#define add_method2(clss,meth,text,a1,a2) addmess((method)meth, text, a1,a2,A_NOTHING)
-#define add_method3(clss,meth,text,a1,a2,a3) addmess((method)meth, text, a1,a2,a3,A_NOTHING)
-#define add_method4(clss,meth,text,a1,a2,a3,a4) addmess((method)meth, text, a1,a2,a3,a4,A_NOTHING)
-#define add_method5(clss,meth,text,a1,a2,a3,a5) addmess((method)meth, text, a1,a2,a3,a4,a5,A_NOTHING)
-#define add_anything(clss,meth) addmess((method)meth, "anything", A_GIMME,A_NOTHING)
+//@{ 
+// FLEXT_HEADERS
 
-#define add_assist(clss,meth) addmess((method)meth, "assist", A_CANT, A_NULL)
-#define add_loadbang(clss,meth) addmess((method)meth, "loadbang", A_CANT, A_NULL)
+//! Header without setup callback
+#define FLEXT_HEADER(NEW_CLASS, PARENT_CLASS)    	    	\
+	FLEXT_REALHDR(NEW_CLASS, PARENT_CLASS)    	    	
 
-#define newout_signal(clss) outlet_new(clss,"signal")
-#define newout_float(clss) outlet_new(clss,"float")
-#define newout_flint(clss) outlet_new(clss,"int")
-#define newout_list(clss) outlet_new(clss,"list")
-#define newout_symbol(clss) outlet_new(clss,"symbol")
-#define newout_anything(clss) outlet_new(clss,"anything")
+//! Header with setup callback
+#define FLEXT_HEADER_S(NEW_CLASS, PARENT_CLASS, SETUPFUN)    	    	\
+	FLEXT_REALHDR_S(NEW_CLASS, PARENT_CLASS, SETUPFUN)    	    	
 
-#define outlet_flint(o,v) outlet_int(o,v)
-#define outlet_symbol(o,s) outlet_anything(o,s,0,NULL)
-
-typedef t_perfroutine t_dspmethod;
+//@} FLEXT_HEADERS
 
 
-#endif
+
+// ====================================================================================
 
 
-#endif
+
+/*! @name flext implementation
+	One of these definitions is compulsary for the class declaration
+*/
+
+//@{ 
+// FLEXT_NEWS
+
+/*! These definitions implement flext based external classes.
+*/
+
+// NO ARGUMENTS
+// ----------------------------------------
+
+//! Implementation of a flext class with no arguments
+#define FLEXT_NEW(NAME,NEW_CLASS)		\
+REAL_NEW(NAME,NEW_CLASS, _setup)  \
+REAL_EXT(NEW_CLASS, _setup)
+
+//! Implementation of a flext tilde class with no arguments
+#define FLEXT_NEW_TILDE(NAME,NEW_CLASS)	\
+REAL_NEW(NAME,NEW_CLASS, _tilde_setup) \
+REAL_EXT(NEW_CLASS, _tilde_setup)
+
+//! Implementation of a flext class (part of a library) with no arguments
+#define FLEXT_LIB(NAME,NEW_CLASS) \
+REAL_LIB(NAME,NEW_CLASS, _setup) 
+
+//! Implementation of a flext tilde class (part of a library) with no arguments
+#define FLEXT_LIB_TILDE(NAME,NEW_CLASS)	\
+REAL_LIB(NAME,NEW_CLASS, _tilde_setup) 
+
+
+// ONE ARGUMENT
+// ----------------------------------------
+
+//! Implementation of a flext class with one argument
+#define FLEXT_NEW_1(NAME,NEW_CLASS, TYPE)		\
+REAL_NEW_1(NAME,NEW_CLASS, _setup, TYPE) \
+REAL_EXT(NEW_CLASS, _setup)
+
+//! Implementation of a flext tilde class with one argument
+#define FLEXT_NEW_TILDE_1(NAME,NEW_CLASS, TYPE)	\
+REAL_NEW_1(NAME,NEW_CLASS, _tilde_setup, TYPE) \
+REAL_EXT(NEW_CLASS, _tilde_setup)
+
+//! Implementation of a flext class (part of a library) with one argument
+#define FLEXT_LIB_1(NAME,NEW_CLASS, TYPE)		\
+REAL_LIB_1(NAME,NEW_CLASS, _setup,TYPE)
+
+//! Implementation of a flext tilde class (part of a library) with one argument
+#define FLEXT_LIB_TILDE_1(NAME,NEW_CLASS, TYPE)	\
+REAL_LIB_1(NAME,NEW_CLASS, _tilde_setup, TYPE)
+
+
+// GIMME ARGUMENT
+// ----------------------------------------
+
+//! Implementation of a flext class with a variable argument list
+#define FLEXT_NEW_G(NAME,NEW_CLASS)			\
+REAL_NEW_G(NAME,NEW_CLASS, _setup) \
+REAL_EXT(NEW_CLASS, _setup)
+
+//! Implementation of a flext tilde class with a variable argument list
+#define FLEXT_NEW_TILDE_G(NAME,NEW_CLASS)	\
+REAL_NEW_G(NAME,NEW_CLASS,_tilde_setup) \
+REAL_EXT(NEW_CLASS, _tilde_setup)
+
+//! Implementation of a flext class (part of a library) with a variable argument list
+#define FLEXT_LIB_G(NAME,NEW_CLASS)			\
+REAL_LIB_G(NAME,NEW_CLASS, _setup) 
+
+//! Implementation of a flext tilde class (part of a library) with a variable argument list
+#define FLEXT_LIB_TILDE_G(NAME,NEW_CLASS)	\
+REAL_LIB_G(NAME,NEW_CLASS, _tilde_setup) 
+
+
+// TWO ARGUMENTS
+// ----------------------------------------
+
+//! Implementation of a flext class with two arguments
+#define FLEXT_NEW_2(NAME,NEW_CLASS, TYPE1, TYPE2)			\
+REAL_NEW_2(NAME,NEW_CLASS, _setup, TYPE1, TYPE2) \
+REAL_EXT(NEW_CLASS, _setup)
+
+//! Implementation of a flext tilde class with one argument
+#define FLEXT_NEW_TILDE_2(NAME,NEW_CLASS, TYPE1, TYPE2)	\
+REAL_NEW_2(NAME,NEW_CLASS, _tilde_setup, TYPE1, TYPE2) \
+REAL_EXT(NEW_CLASS, _tilde_setup)
+
+//! Implementation of a flext class (part of a library) with two arguments
+#define FLEXT_LIB_2(NAME,NEW_CLASS, TYPE1, TYPE2)		\
+REAL_LIB_2(NAME,NEW_CLASS, _setup, TYPE1, TYPE2)
+
+//! Implementation of a flext tilde class (part of a library) with two arguments
+#define FLEXT_LIB_TILDE_2(NAME,NEW_CLASS, TYPE1, TYPE2)	\
+REAL_LIB_2(NAME,NEW_CLASS, _tilde_setup, TYPE1, TYPE2)
+
+
+// THREE ARGUMENTS
+// ----------------------------------------
+
+//! Implementation of a flext class with three arguments
+#define FLEXT_NEW_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3) \
+REAL_NEW_3(NAME,NEW_CLASS, _setup, TYPE1, TYPE2, TYPE3)  \
+REAL_EXT(NEW_CLASS, _setup)
+
+//! Implementation of a flext tilde class with three arguments
+#define FLEXT_NEW_TILDE_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3)	\
+REAL_NEW_3(NAME,NEW_CLASS, _tilde_setup, TYPE1, TYPE2, TYPE3) \
+REAL_EXT(NEW_CLASS, _tilde_setup)
+
+//! Implementation of a flext class (part of a library) with three arguments
+#define FLEXT_LIB_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3)		\
+REAL_LIB_3(NAME,NEW_CLASS, _setup,TYPE1, TYPE2, TYPE3)
+
+//! Implementation of a flext tilde class (part of a library) with three arguments
+#define FLEXT_LIB_TILDE_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3)	\
+REAL_LIB_3(NAME,NEW_CLASS, _tilde_setup, TYPE1, TYPE2, TYPE3)
+
+
+// MaxMSP doesn't seem to be able to handle more than 3 creation arguments! -> USE GIMME
+
+//@} FLEXT_NEWS
+
+
+// ====================================================================================
+
+
+/*! @name flext callbacks
+	Description the callbacks
+*/
+
+//@{ FLEXT_CALLBACKS
+
+//! with no arguments
+#define FLEXT_CALLBACK(M_FUN) \
+static void cb_ ## M_FUN(flext_base *c) { static_cast<thisType *>(c)->M_FUN(); }
+
+//! for anything
+#define FLEXT_CALLBACK_A(M_FUN) \
+static void cb_ ## M_FUN(flext_base *c,t_symbol *s,int argc,t_atom *argv) { static_cast<thisType *>(c)->M_FUN(s,argc,argv); }
+
+//! for gimme
+#define FLEXT_CALLBACK_G(M_FUN) \
+static void cb_ ## M_FUN(flext_base *c,int argc,t_atom *argv) { static_cast<thisType *>(c)->M_FUN(argc,argv); }
+
+//! for boolean argument
+#define FLEXT_CALLBACK_B(M_FUN) \
+static void cb_ ## M_FUN(flext_base *c,int &arg1) { static_cast<thisType *>(c)->M_FUN(arg1 != 0); }
+
+//! 1 argument
+#define FLEXT_CALLBACK_1(M_FUN,TP1) \
+static void cb_ ## M_FUN(flext_base *c,TP1 &arg1) { static_cast<thisType *>(c)->M_FUN(arg1); }
+
+//! 2 arguments
+#define FLEXT_CALLBACK_2(M_FUN,TP1,TP2) \
+static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2) { static_cast<thisType *>(c)->M_FUN(arg1,arg2); }
+
+//! 3 arguments
+#define FLEXT_CALLBACK_3(M_FUN,TP1,TP2,TP3) \
+static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3) { static_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3); }
+
+//! 4 arguments
+#define FLEXT_CALLBACK_4(M_FUN,TP1,TP2,TP3,TP4) \
+static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4) { static_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4); }
+
+//! 5 arguments
+#define FLEXT_CALLBACK_5(M_FUN,TP1,TP2,TP3,TP4,TP5) \
+static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,TP5 &arg5) { static_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4,arg5); }
+
+// Shortcuts:
+
+//! 1 float argument
+#define FLEXT_CALLBACK_F(M_FUN) FLEXT_CALLBACK_1(M_FUN,float)
+
+//! 2 float argument
+#define FLEXT_CALLBACK_FF(M_FUN) FLEXT_CALLBACK_2(M_FUN,float,float)
+//! 3 float argument
+#define FLEXT_CALLBACK_FFF(M_FUN) FLEXT_CALLBACK_3(M_FUN,float,float,float)
+
+//! 1 int argument
+#define FLEXT_CALLBACK_I(M_FUN) FLEXT_CALLBACK_1(M_FUN,int)
+//! 2 int arguments
+#define FLEXT_CALLBACK_II(M_FUN) FLEXT_CALLBACK_2(M_FUN,int,int)
+//! 3 int arguments
+#define FLEXT_CALLBACK_III(M_FUN) FLEXT_CALLBACK_3(M_FUN,int,int,int)
+
+//@} FLEXT_CALLBACKS
+
+
+
+// ====================================================================================
+
+
+
+/*! @name add flext methods
+	These should be the used in the class' constructor
+*/
+
+//@{ FLEXT_ADDMETHODS
+
+//! enable list element distribution over inlets (if no better handler found)
+#define FLEXT_ADDDIST() \
+SetDist(true)	
+
+//! add handler for bang 
+#define FLEXT_ADDBANG(IX,M_FUN) \
+AddMethod(IX,"bang",cb_ ## M_FUN)	
+
+//! add handler for method with no args
+#define FLEXT_ADDMETHOD(IX,M_FUN) \
+AddMethod(IX,cb_ ## M_FUN)	
+
+//! add handler for method with implicit args
+#define FLEXT_ADDMETHOD_(IX,M_TAG,M_FUN) \
+AddMethod(IX,M_TAG,cb_ ## M_FUN)	
+
+//! add handler for method with 1 enum type arg
+#define FLEXT_ADDMETHOD_E(IX,M_TAG,M_FUN) \
+AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),a_int,a_null)
+
+//! add handler for method with 1 arg
+#define FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,TP1) \
+AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),a_null)	
+
+//! add handler for method with 2 args
+#define FLEXT_ADDMETHOD_2(IX,M_TAG,M_FUN,TP1,TP2) \
+AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),a_null)
+
+//! add handler for method with 3 args
+#define FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,TP1,TP2,TP3) \
+AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),a_null)
+
+//! add handler for method with 4 args
+#define FLEXT_ADDMETHOD_4(IX,M_TAG,M_FUN,TP1,TP2,TP3,TP4) \
+AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),a_null)
+
+//! add handler for method with 5 args
+#define FLEXT_ADDMETHOD_5(IX,M_TAG,M_FUN,TP1,TP2,TP3,TP4,TP5) \
+AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),FLEXTARG(TP5),a_null)
+
+// a few shortcuts:
+
+//! boolean argument
+#define FLEXT_ADDMETHOD_B(IX,M_TAG,M_FUN) FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,bool)
+//! 1 float argument
+#define FLEXT_ADDMETHOD_F(IX,M_TAG,M_FUN) FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,float)
+//! 2 float arguments
+#define FLEXT_ADDMETHOD_FF(IX,M_TAG,M_FUN) FLEXT_ADDMETHOD_2(IX,M_TAG,M_FUN,float,float)
+//! 3 float arguments
+#define FLEXT_ADDMETHOD_FFF(IX,M_TAG,M_FUN) FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,float,float,float)
+//! 1 int argument
+#define FLEXT_ADDMETHOD_I(IX,M_TAG,M_FUN) FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,int)
+//! 2 int arguments
+#define FLEXT_ADDMETHOD_II(IX,M_TAG,M_FUN) FLEXT_ADDMETHOD_2(IX,M_TAG,M_FUN,int,int)
+//! 3 int arguments
+#define FLEXT_ADDMETHOD_III(IX,M_TAG,M_FUN) FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,int,int,int)
+
+//@} FLEXT_ADDMETHODS
+
+
+#endif __FLEXT_DEFS_H

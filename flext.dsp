@@ -102,7 +102,7 @@ SOURCE=.\flbuf.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\flcwmax.h
+SOURCE=.\flclass.h
 # End Source File
 # Begin Source File
 
@@ -119,6 +119,10 @@ SOURCE=.\flext.cpp
 # Begin Source File
 
 SOURCE=.\flext.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\flinternal.h
 # End Source File
 # Begin Source File
 

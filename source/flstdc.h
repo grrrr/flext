@@ -8,22 +8,22 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-/*
-this file contains a few definitions to unite a few of the notions that 
-once drifted apart in Max and PD. It is not elegant but helps.
+/*! \file flstdc.h
+    \brief Definitions to unite MaxMSP and PD notions
+    
+	This file contains a few definitions to unite a few of the notions that 
+	once drifted apart in Max and PD. It is not elegant but helps.
 */
 
 #ifndef __FLEXT_STDC_H
 #define __FLEXT_STDC_H
 
-
+// Be sure that one target is defined
 #if !defined(PD) && !defined(MAXMSP)
 #error Either PD or MAXMSP must be defined
 #endif
 
-
-// compiler checking
-
+// Do some compiler checking
 #if defined(__MRC__) && __MRC__ < 0x500
 #error Apples MPW MrCpp v.5.0.0 or better compiler required
 #endif
@@ -32,6 +32,8 @@ once drifted apart in Max and PD. It is not elegant but helps.
 // PD stuff
 
 #ifdef PD
+
+/*! PD definitions start here */
 
 #ifdef _MSC_VER
 #pragma warning (push)
@@ -42,6 +44,7 @@ once drifted apart in Max and PD. It is not elegant but helps.
 extern "C" {	    	    	    	    	    	    	
 #endif
 
+//! Include the relevant PD header files
 #ifdef _DEBUG
 #include <m_imp.h>  // for easier debugging
 #else
@@ -70,6 +73,9 @@ typedef t_symbol *t_symptr;
 // MAX stuff
 #elif defined(MAXMSP)
 
+/*! MaxMSP definitions start here */
+
+//! Include the relevant MaxMSP header files
 extern "C"
 {
 #include "ext.h"
@@ -96,16 +102,22 @@ typedef int t_atomtype;
 #endif
 
 
-
 #ifdef _LOG
+
+/*! If _LOG is defined implement logging */
 #define LOG(s) post(s)
 #define LOG1(s,v1) post(s,v1)
 #define LOG2(s,v1,v2) post(s,v1,v2)
 #define LOG3(s,v1,v2,v3) post(s,v1,v2,v3)
 #define LOG4(s,v1,v2,v3,v4) post(s,v1,v2,v3,v4)
 #define LOG5(s,v1,v2,v3,v4,v5) post(s,v1,v2,v3,v4,v5)
+
+
 #define ASSERT(b) ((void)(!(b)?(error("Assertion failed: " #b " - in " __FILE__ " line %i",(I)__LINE__),0):0)) 
+
 #else
+
+/*! If _LOG is not defined avoid logging */
 #define LOG(s) ((void)0)
 #define LOG1(s,v1) ((void)0)
 #define LOG2(s,v1,v2) ((void)0)
@@ -113,8 +125,11 @@ typedef int t_atomtype;
 #define LOG4(s,v1,v2,v3,v4) ((void)0)
 #define LOG5(s,v1,v2,v3,v4,v5) ((void)0)
 #define ASSERT(b) ((void)0)
+
 #endif
 
+
+/*! Set the right calling convention (and exporting) for the OS */
 
 #if defined(NT)
 #define FLEXT_EXT __declspec(dllexport)

@@ -9,7 +9,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 #include <flext.h>
-#include <fldefs.h>
+#include <flinternal.h>
 #include <stdarg.h>
 
 // === proxy class for flext_base ============================
@@ -171,6 +171,7 @@ void flext_base::AddXlet(xlet::type tp,int mult,xlet *&root)
 }
 
 
+void flext_base::ToOutBang(outlet *o) { outlet_bang((t_outlet *)o); }
 void flext_base::ToOutFloat(outlet *o,float f) { outlet_float((t_outlet *)o,f); }
 void flext_base::ToOutFlint(outlet *o,t_flint f) { outlet_flint((t_outlet *)o,f); }
 void flext_base::ToOutSymbol(outlet *o,const t_symbol *s) { outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); }

@@ -9,7 +9,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 #include <flext.h>
-#include <fldefs.h>
+#include <flinternal.h>
 
 
 // === flext_dsp ==============================================

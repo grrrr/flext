@@ -1,5 +1,5 @@
 flext - C++ layer for Max/MSP and pd (pure data) externals
-version 0.2.2
+version 0.2.3
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -69,6 +69,10 @@ see flext.h for the documented base classes
 ----------------------------------------------------------------------------
 
 Version history:
+
+0.2.3:
+- restructured files and started usable inline documentation
+- found that there was no means to output a bang?! Ugh! -> corrected
 
 0.2.2:
 - added xgimme argument type (supplies method handlers with symbol+gimme)

@@ -88,13 +88,13 @@ $(INSTDIR):
 
 install:: $(INSTDIR)
 
-install:: $(TARGET) $(TARGET_D) $(HDRS)
+install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD) $(HDRS)
 	cp $^ $(INSTDIR)
 	chown root.root $(patsubst %,$(INSTDIR)/%,$(notdir $^))
 
 .PHONY: clean
 clean:
-	rm -f $(TARGDIR)/*.o $(TARGET) $(TARGET_D)
+	rm -f $(TARGDIR)/*.o $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
 	
 
 

@@ -65,7 +65,7 @@ V flext_base::cb_px_int(t_class *c,I v)
 	// check if inlet allows int type
 	t_atom atom;
 	SETINT(&atom,v);  
-	cb_px_anything(c,&s_int,1,&atom);
+	cb_px_anything(c,sym_int,1,&atom);
 }
 
 V flext_base::cb_px_float(t_class *c,F v)
@@ -75,7 +75,7 @@ V flext_base::cb_px_float(t_class *c,F v)
 	// check if inlet allows float type
 	t_atom atom;
 	SETFLOAT(&atom,v);  
-	cb_px_anything(c,&s_float,1,&atom);
+	cb_px_anything(c,sym_float,1,&atom);
 }
 
 V flext_base::cb_px_bang(t_class *c)
@@ -83,7 +83,7 @@ V flext_base::cb_px_bang(t_class *c)
 //	static const t_symbol *sym_bang = gensym("bang");
 
 	// check if inlet allows bang
-	cb_px_anything(c,&s_bang,0,NULL);
+	cb_px_anything(c,sym_bang,0,NULL);
 }
 
 #define DEF_IN_FT(IX) \
@@ -425,7 +425,7 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 	while(!ret) {
 		const methitem *m = *it;
 		if(!m) break;
-		if(m->tag == &s_anything && m->argc == 1 && m->args[0] == a_gimme) {
+		if(m->tag == sym_anything && m->argc == 1 && m->args[0] == a_gimme) {
 			// any
 			((methfun_A)m->fun)(this,s,argc,argv);
 			ret = true;
@@ -440,9 +440,9 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 				ret = true;
 			}
 			else if(argc == m->argc) {
-				I iargs[MAXARGS];
+				I ix,iargs[MAXARGS];
 				BL ok = true;
-				for(I ix = 0; ix < argc && ok; ++ix) {
+				for(ix = 0; ix < argc && ok; ++ix) {
 					switch(m->args[ix]) {
 					case a_float: {
 						assert(sizeof(F) == sizeof(I));
@@ -483,6 +483,7 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 						else ok = false;
 						break;
 					}
+#ifdef PD					
 					case a_pointer: {
 						assert(sizeof(t_gpointer *) == sizeof(I));
 
@@ -491,6 +492,7 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 						else ok = false;
 						break;
 					}
+#endif
 					default:
 						error("Argument type illegal");
 						ok = false;
@@ -549,6 +551,11 @@ flext_base::methitem::methitem(I in,t_symbol *t,metharg &argl,methfun f /*,BL ix
 			if(a == a_gimme && ix > 0) {
 				error("GIMME argument must be the first and only one");
 			}
+#ifdef PD
+			if(a == a_pointer && flext_base::compatibility) {
+				post("Pointer arguments are not allowed in compatibility mode"); 
+			}
+#endif
 			args[ix] = a;
 			a = va_arg(marker,metharg);
 		}

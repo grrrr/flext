@@ -28,10 +28,7 @@ LIBS=
 NAME=flext
 
 # all the source files from the package
-SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flattr.cpp flsupport.cpp \
-flutil.cpp flatom.cpp flthr.cpp
-HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h flsupport.h fldsp.h flinternal.h
-IHDRS=
+include make-files.txt
 
 ifdef SNDOBJ
 _SRCS=$(SRCS) flsndobj.cpp

@@ -102,7 +102,7 @@ void flext::ThrHelper(void *)
 	pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);
 #endif
 
-	post("Helper thread started");
+//	post("Helper thread started");
 
 	// set thread priority one point below normal
 	// so thread construction won't disturb real-time audio

@@ -486,7 +486,7 @@ static void FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 		th->M_FUN(data); \
 		th->PopThread(); \
 	} \
-	delete data; \
+	delete (char *)data; \
 } 
 
 //! Set up a threaded method callback for a boolean argument

@@ -1,6 +1,6 @@
 # where are the Max/MSP SDK header files?
 # you should have the latest version!
-MAXSDKPATH="c:\data\prog\audio\maxmspsdk_win\4.5 headers\c74support"	
+MAXSDKPATH="%ProgramFiles%\MaxMSP 4.5\maxmspsdk_win\4.5 headers\c74support"	
 
 # where is MS VC++?
 # (not necessary if the build is run with the compiler environment)

@@ -1,6 +1,6 @@
 # where are the Max/MSP SDK header files?
 # you should have the latest version!
-MAXSDKPATH="c:/data/prog/audio/maxmspsdk_win/4.5 headers/c74support"
+MAXSDKPATH="%ProgramFiles%\MaxMSP 4.5/maxmspsdk_win/4.5 headers/c74support"
 
 ###############################################################
 
@@ -12,7 +12,7 @@ FLEXTLIB=$(FLEXTINC)
 
 # where do/should the flext shared libraries reside/be built?
 # (a good place is the MaxMSP program folder)
-FLEXTSHLIB="%ProgramFiles%\audio\MaxMSP 4.5"
+FLEXTSHLIB="%ProgramFiles%\MaxMSP 4.5"
 
 ###############################################################
 

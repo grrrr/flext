@@ -1,5 +1,5 @@
 # where is PD?
-PDPATH=c:\programme\audio\pd
+PDPATH="%ProgramFiles%\pd"
 
 ###############################################################
 

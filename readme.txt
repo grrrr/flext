@@ -1,6 +1,6 @@
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -8,126 +8,23 @@ This package seeks to encourage the development of open source software
 for the pd and Max/MSP platforms.
 
 Donations for further development of the package are highly appreciated.
-Visit https://www.paypal.com/xclick/business=t.grill%40gmx.net&item_name=flext&no_note=1&tax=0&currency_code=EUR
+https://www.paypal.com/xclick/business=t.grill%40gmx.net&item_name=flext&no_note=1&tax=0&currency_code=EUR
 
 ----------------------------------------------------------------------------
 
-o for PD you need the pd source code (which is most likely part of the distribution)
-  download from: http://www-crca.ucsd.edu/~msp/software.html
+Abstract:
 
-o for Max/MSP you will also need the Max/MSP SDK for OS9 (http://www.cycling74.com/products/dlmaxmsp.html) 
-  or OSX (http://www.cycling74.com/products/dlxmax.html)
-  and for threading the Multiprocessing library (download at http://developer.apple.com/sdk/)
+flext seeks to represent a uniform programming interface for extending the most common
+modular real-time audio systems Max/MSP and Pure Data (PD) with external modules, or
+short externals. These modules provide a way to tailor such a system for one’s 
+special needs and supply additional functionality. 
 
-o if you choose to compile with SndObj support you will need the respective library
-  download from: http://www.may.ie/academic/music/musictec/SndObj/main.html
+Source code based on flext is able to exploit nearly all features of the 
+respective real-time framework while staying completely independent of the
+actual host system and platform (hardware and operating system). 
 
-o if you choose to compile with STK support you will need the respective package and build a library
-  download from: http://ccrma-www.stanford.edu/software/stk/
-  For linking it may preferable to use a library of all the STK objects.
-  Under linux you can create one from the STK directory with something like
-  "g++ -c -pipe -I include -D __LINUX_OSS__ src/*.cpp && ar r libstk.a *.o && rm -f *.o"
-
-----------------------------------------------------------------------------
-
-
-BUILDING & INSTALLING:
-======================
-
-
-pd - Windows:
--------------
-o Microsoft Visual C++ 6 or 7: 
-	edit "config-pd-msvc.txt"
-	start a dos-shell (cmd.exe) and set the compiler environment (vcvars32.bat)
-	run "build-pd-msvc.bat" 
-
-o Borland C++ 5.5 (free): 
-	edit "config-pd-bcc.txt" and run "build-pd-bcc.bat" 
-	BCC++ currently supports non-threaded static flext libraries only
-
-o Cygwin: edit "config-pd-cygwin.txt" & run "sh build-pd-cygwin.sh" 
-	additional settings (e.g. target processor, compiler flags) can be made in makefile.pd-cygwin
-
-o MinGW: edit "config-pd-mingw.txt" & run "build-pd-mingw.bat" 
-	the MinGW binaries have to be in the PATH
-	additional settings (e.g. target processor, compiler flags) can be made in makefile.pd-mingw
-	MinGW currently supports non-threaded static flext libraries only
-	
-
-With your project using flext, be sure to define "FLEXT_SYS=2".
-
-
-pd - linux:
------------
-o GCC,ICC: edit "config-pd-linux.txt" & run "sh build-pd-linux.sh" 
-	additional settings (e.g. target processor, compiler flags) can be made in makefile.pd-linux
-
-Several variations of the flext library will be built: release and debug version of single-threaded and multi-threaded static libraries and of a multi-threaded shared library, respectively.
-These will be installed into the flext directory given in config-pd-linux.txt. For the shared libraries to be found, be sure to specify the flext folder in the /etc/ld.so.conf.
-
-
-With your project using flext, be sure to define "FLEXT_SYS=2".
-
-
-pd - MacOSX:
------------
-o GCC: edit "config-pd-darwin.txt" & run "sh build-pd-darwin.sh" 
-	additional settings (e.g. target processor, compiler flags) can be made in makefile.pd-darwin
-
-
-With your project using flext, be sure to define "FLEXT_SYS=2".
-
-
-Max/MSP - Windows:
-------------------
-o Microsoft Visual C++ 6 or 7: edit "config-max-msvc.txt" & run "build-max-msvc.bat" 
-
-
-With your project using flext, be sure to define "FLEXT_SYS=1".
-
-
-Max/MSP - MacOS 9:
-------------------
-o Metrowerks CodeWarrior: edit & use the "flext.cw" project file
-
-You must have the following "Source Trees" (CW preferences, not project specific!) defined:
-"flext" - Pointing to the flext main directory
-"Cycling74" - Pointing to the Cycling 74 SDK
-"MP SDK" - Pointing to the Multiprocessing SDK (for threading support)
-
-
-With your project using flext, be sure to define "FLEXT_SYS=1" 
-- alternatively use the prefix file "flcwmax.h" or "flcwmax-thr.h" for threading support.
-
-
-Max/MSP - MacOSX:
-------------------
-o Metrowerks CodeWarrior: edit & use the "flext.cw" project file
-
-Be sure to have the latest Max/MSK SDK downloadable from http://www.cycling74.com
-You should use "version 4.5 headers" rather than "version 4.3 headers".
-
-You must have the following "Source Trees" (CW preferences, not project specific!) defined:
-"OS X Volume" - Pointing to your OSX boot drive
-"flext" - Pointing to the flext main directory
-"Cycling74 OSX" - Pointing to the SDK for Max/MSP - the path should end with /c74support
-"MP SDK" - Pointing to the Multiprocessing SDK (for threading support)
-
-Note: Some parts of the Max/MSP SDK may not be compliant to the C standard. 
-If you get errors for lines like
-#endif _MOTO_
-You should changes all of these to
-#endif /* _MOTO_ */
-
-
-o GCC: edit "config-max-darwin.txt" & run "sh build-max-darwin.sh" 
-	additional settings (e.g. target processor, compiler flags) can be made in makefile.max-darwin
-
-
-With your project using flext, be sure to define "FLEXT_SYS=1" 
-- alternatively use the prefix file "flcwmax-x.h" or "flcwmax-x-thr.h" for threading support.
-
+flext currently supports development for PD under Linux, Windows and OSX as well as 
+Max/MSP under OS9, OSX and Windows with various programming environments.
 
 ----------------------------------------------------------------------------
 
@@ -139,12 +36,50 @@ pros:
 - sharing of common methods and data by using base classes
 - any input to any inlet (with the exception of signal streams)
 - transparent use of threads for methods
-- libraries of externals in MaxMSP
-- more than 3 typed creation arguments possible for MaxMSP
+- libraries of externals in Max/MSP
+- more than 3 typed creation arguments possible for Max/MSP
 
 cons:
-- introduces a small overhead to speed of message handling 
+- introduces a small overhead to speed of message and signal handling 
 - overhead in object size (due to possibly unneeded code)
 
-see flext.h, fldefs.h and flclass.h for the documented base definitions and classes
+----------------------------------------------------------------------------
 
+Prerequisites:
+
+o --- PD ---
+  You need the pd source code which is most likely part of the distribution.
+  Otherwise download from: http://www-crca.ucsd.edu/~msp/software.html
+
+o --- Max/MSP ---
+  You will need the latest Max/MSP SDK 
+  for Windows (http://synthesisters.com/pluggo3/downloadMaxWinSDK.php)
+  for OSX (http://www.synthesisters.com/sdk/max.php)
+  or for OS9 (ask Cycling'74 where to find that)
+
+  For OS9 threading support you'll also need the Multiprocessing library 
+  (download at http://developer.apple.com/sdk/)
+
+o --- SndObj ---
+  If you choose to compile with SndObj support you will need the respective library
+  download from: http://www.may.ie/academic/music/musictec/SndObj/main.html
+
+o --- STK ---
+  If you choose to compile with STK support you will need the respective package 
+  and build a library.
+  download from: http://ccrma-www.stanford.edu/software/stk/
+  For linking it may preferable to use a library of all the STK objects.
+  Under linux you can create one from the STK directory with something like
+  "g++ -c -pipe -I include -D __LINUX_OSS__ src/*.cpp && ar r libstk.a *.o && rm -f *.o"
+
+----------------------------------------------------------------------------
+
+Building and installing of flext and flext-based externals:
+
+  Read the build.txt document
+
+----------------------------------------------------------------------------
+
+History of changes:
+
+  Read the changes.txt document

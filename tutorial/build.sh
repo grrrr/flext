@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#! /bin/bash
 
 if 
 	[ -n "$1" -a -n "$2" -a -n "$3" ]

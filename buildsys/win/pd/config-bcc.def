@@ -1,8 +1,8 @@
 # where is PD?
-PDPATH=c:\programme\audio\pd		
+PDPATH="c:\program files\pd"
 
 # where is BorlandC++?
-BCCPATH=C:\Programme\prog\bcc55
+BCCPATH="c:\program files\bcc55"
 
 ###############################################################
 

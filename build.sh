@@ -1,4 +1,18 @@
-#! /usr/bin/bash
+#! /bin/bash
+
+# flext - C++ layer for Max/MSP and pd (pure data) externals
+#
+# Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+# For information on usage and redistribution, and for a DISCLAIMER OF ALL
+# WARRANTIES, see the file, "license.txt," in this distribution.  
+#
+# more information on http://grrrr.org/ext
+# ------------------------------------------------------------------------
+#
+# To build flext or flext-based externals simply run this script.
+# Running it without arguments will print some help to the console.
+#
+# ------------------------------------------------------------------------
 
 flext=${0%/*}/
 if [ "$flext" = "$0"/ ]; then flext=./ ; fi

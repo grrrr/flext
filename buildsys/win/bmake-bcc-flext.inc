@@ -54,24 +54,11 @@ FLEXTLIBINST=$(FLEXTSHLIB)
 FLEXTLIBINST=$(FLEXTLIB)
 !endif
 
-$(FLEXTINC):
-	if not exist $@ mkdir $@ > nul
+_install_:
+	@if not exist $@ mkdir $(FLEXTINC) > nul
+	@if not exist $@ mkdir $(FLEXTLIB) > nul
+	@if not exist $@ mkdir $(FLEXTLIBINST) > nul
 
-!if "$(FLEXTINC)" != "$(FLEXTLIB)"
-$(FLEXTLIB):
-	if not exist $@ mkdir $@ > nul
-
-_install_:: $(FLEXTLIB)
-!endif
-
-!if "$(FLEXTLIBINST)" != "$(FLEXTLIB)" && "$(FLEXTLIBINST)" != "$(FLEXTINC)"
-$(FLEXTLIBINST):
-	if not exist $@ mkdir $@ > nul
-
-_install_:: $(FLEXTLIBINST)
-!endif
-
-_install_:: $(FLEXTINC)
 	copy $(TARGET) $(FLEXTLIBINST) > nul
 !ifdef SHARED
 # copy import library
@@ -80,4 +67,4 @@ _install_:: $(FLEXTINC)
 # copy headers
 	for %%i in ($(HDRS)) do @copy $(SRCDIR)\%%i $(FLEXTINC) > nul	
 # copy import libraries
-	for %%i in ($(PDTARGETS)) do @copy %%i $(FLEXTLIBINST) > nul	
+	for %%i in ($(PDTARGETS)) do @copy %%i $(FLEXTLIB) > nul	

@@ -52,6 +52,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define FLEXT_OS_LINUX	3
 #define FLEXT_OS_IRIX	4
 
+// --- definitions for FLEXT_OS_API ---------------------
+#define FLEXT_OSAPI_UNKNOWN	0
+#define FLEXT_OSAPI_MAC_CARBON 1
+#define FLEXT_OSAPI_MAC_OSX 2
+
 // --- definitions for FLEXT_CPU ---------------------
 #define FLEXT_CPU_UNKNOWN	0
 #define FLEXT_CPU_INTEL 1
@@ -118,6 +123,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 		#endif
 	#endif
 
+	#define FLEXT_OSAPI FLEXT_OSAPI_UNKNOWN
+
 #elif defined(__BORLANDC__) 
 	// Borland C++
 
@@ -128,29 +135,47 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 		#define FLEXT_OS FLEXT_OS_WIN
 	#endif
 
+	#define FLEXT_OSAPI FLEXT_OSAPI_UNKNOWN
+
 #elif defined(__MWERKS__)
 	// Metrowerks CodeWarrior
 
+	#ifndef __CONDITIONALMACROS__
+	#include <ConditionalMacros.h>
+	#endif
+
 	#ifndef FLEXT_CPU
-		#if defined(__INTEL__)
+		#if TARGET_CPU_X86
 			#define FLEXT_CPU FLEXT_CPU_INTEL
-		#elif defined(__POWERPC__)
+		#elif TARGET_CPU_PPC
 			#define FLEXT_CPU FLEXT_CPU_PPC
-		#elif defined(__MIPS__)
+		#elif TARGET_CPU_MIPS
 			#define FLEXT_CPU FLEXT_CPU_MIPS
+		#elif TARGET_CPU_ALPHA
+			#define FLEXT_CPU FLEXT_CPU_ALPHA
 		#else
 			#define FLEXT_CPU FLEXT_CPU_UNKNOWN
 		#endif
 	#endif
 
 	#ifndef FLEXT_OS
-		#if defined(macintosh)
+		#if TARGET_OS_MAC
 			#define FLEXT_OS FLEXT_OS_MACOS
-		#elif defined(__INTEL__)
+		#elif TARGET_OS_WIN32
 			// assume Windows
 			#define FLEXT_OS FLEXT_OS_WIN
 		#else
 			#define FLEXT_OS FLEXT_OS_UNKNOWN
+		#endif
+	#endif
+	
+	#ifndef FLEXT_OSAPI
+		#if TARGET_API_MAC_CARBON
+			#define FLEXT_OSAPI FLEXT_OSAPI_MAC_CARBON
+		#elif TARGET_API_MAC_OSX
+			#define FLEXT_OSAPI FLEXT_OSAPI_MAC_OSX
+		#else
+			#define FLEXT_OSAPI FLEXT_OSAPI_UNKNOWN
 		#endif
 	#endif
 	
@@ -187,6 +212,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 		#endif
 	#endif
 
+	#if FLEXT_OS == FLEXT_OS_MACOS
+		#define FLEXT_OSAPI FLEXT_OSAPI_MAC_OSX
+	#else
+		#define FLEXT_OSAPI FLEXT_OSAPI_UNKNOWN
+	#endif
+
 #elif defined(__MRC__) && defined(MPW_CPLUS)
 	// Apple MPW MrCpp
 	#if __MRC__ < 0x500
@@ -208,6 +239,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 			#define FLEXT_OS FLEXT_OS_UNKNOWN
 		#endif
 	#endif
+
+	#define FLEXT_OSAPI FLEXT_OSAPI_UNKNOWN
 
 #endif
 

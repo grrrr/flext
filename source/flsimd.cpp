@@ -506,6 +506,156 @@ loopuu:
 #endif
 }
 
+#if defined(FLEXT_USE_SIMD) && FLEXT_CPU == FLEXT_CPU_PPC && defined(__ALTIVEC__)
+// because of some frame code Altivec stuff should be in seperate functions....
+
+static const vector float zero = (vector float)(0);
+
+static SetAlti(t_sample *dst,int cnt,t_sample s)
+{
+	vector float svec = LoadValue(s);
+   	int n = cnt>>4;
+    cnt -= n<<4;
+
+	while(n--) {
+		vec_st(svec,0,dst);
+		vec_st(svec,16,dst);
+		vec_st(svec,32,dst);
+		vec_st(svec,48,dst);
+		dst += 16;
+	}
+
+    while(cnt--) *(dst++) = s; 
+}
+
+static void MulAltivec(t_sample *dst,const t_sample *src,t_sample op,int cnt) 
+{
+	const vector float arg = LoadValue(op);
+   	int n = cnt>>4;
+    cnt -= n<<4;
+
+	for(; n--; src += 16,dst += 16) {
+		vector float a1 = vec_ld( 0,src);
+		vector float a2 = vec_ld(16,src);
+		vector float a3 = vec_ld(32,src);
+		vector float a4 = vec_ld(48,src);
+		
+		a1 = vec_madd(a1,arg,zero);
+		a2 = vec_madd(a2,arg,zero);
+		a3 = vec_madd(a3,arg,zero);
+		a4 = vec_madd(a4,arg,zero);
+
+		vec_st(a1, 0,dst);
+		vec_st(a2,16,dst);
+		vec_st(a3,32,dst);
+		vec_st(a4,48,dst);
+	}
+
+    while(cnt--) *(dst++) = *(src++)*op; 
+}
+
+static void MulAltivec(t_sample *dst,const t_sample *src,const t_sample *op,int cnt) 
+{
+   	int n = cnt>>4;
+    cnt -= n<<4;
+	
+	for(; n--; src += 16,op += 16,dst += 16) {
+		vector float a1 = vec_ld( 0,src),b1 = vec_ld( 0,op);
+		vector float a2 = vec_ld(16,src),b2 = vec_ld(16,op);
+		vector float a3 = vec_ld(32,src),b3 = vec_ld(32,op);
+		vector float a4 = vec_ld(48,src),b4 = vec_ld(48,op);
+		
+		a1 = vec_madd(a1,b1,zero);
+		a2 = vec_madd(a2,b2,zero);
+		a3 = vec_madd(a3,b3,zero);
+		a4 = vec_madd(a4,b4,zero);
+
+		vec_st(a1, 0,dst);
+		vec_st(a2,16,dst);
+		vec_st(a3,32,dst);
+		vec_st(a4,48,dst);
+	}
+	while(cnt--) *(dst++) = *(src++) * *(op++); 
+}
+
+static void AddAltivec(t_sample *dst,const t_sample *src,t_sample op,int cnt) 
+{
+	const vector float arg = LoadValue(op);
+   	int n = cnt>>4;
+    cnt -= n<<4;
+
+	for(; n--; src += 16,dst += 16) {
+		vector float a1 = vec_ld( 0,src);
+		vector float a2 = vec_ld(16,src);
+		vector float a3 = vec_ld(32,src);
+		vector float a4 = vec_ld(48,src);
+		
+		a1 = vec_add(a1,arg);
+		a2 = vec_add(a2,arg);
+		a3 = vec_add(a3,arg);
+		a4 = vec_add(a4,arg);
+
+		vec_st(a1, 0,dst);
+		vec_st(a2,16,dst);
+		vec_st(a3,32,dst);
+		vec_st(a4,48,dst);
+	}
+
+    while(cnt--) *(dst++) = *(src++)+op; 
+}
+
+static void AddAltivec(t_sample *dst,const t_sample *src,const t_sample *op,int cnt) 
+{
+   	int n = cnt>>4;
+    cnt -= n<<4;
+	
+	for(; n--; src += 16,op += 16,dst += 16) {
+		vector float a1 = vec_ld( 0,src),b1 = vec_ld( 0,op);
+		vector float a2 = vec_ld(16,src),b2 = vec_ld(16,op);
+		vector float a3 = vec_ld(32,src),b3 = vec_ld(32,op);
+		vector float a4 = vec_ld(48,src),b4 = vec_ld(48,op);
+		
+		a1 = vec_add(a1,b1);
+		a2 = vec_add(a2,b2);
+		a3 = vec_add(a3,b3);
+		a4 = vec_add(a4,b4);
+
+		vec_st(a1, 0,dst);
+		vec_st(a2,16,dst);
+		vec_st(a3,32,dst);
+		vec_st(a4,48,dst);
+	}
+	while(cnt--) *(dst++) = *(src++) + *(op++); 
+}
+
+void ScaleAltivec(t_sample *dst,const t_sample *src,t_sample opmul,t_sample opadd,int cnt) 
+{
+	const vector float argmul = LoadValue(opmul);
+	const vector float argadd = LoadValue(opadd);
+   	int n = cnt>>4;
+    cnt -= n<<4;
+
+	for(; n--; src += 16,dst += 16) {
+		vector float a1 = vec_ld( 0,src);
+		vector float a2 = vec_ld(16,src);
+		vector float a3 = vec_ld(32,src);
+		vector float a4 = vec_ld(48,src);
+		
+		a1 = vec_madd(a1,argmul,argadd);
+		a2 = vec_madd(a2,argmul,argadd);
+		a3 = vec_madd(a3,argmul,argadd);
+		a4 = vec_madd(a4,argmul,argadd);
+
+		vec_st(a1, 0,dst);
+		vec_st(a2,16,dst);
+		vec_st(a3,32,dst);
+		vec_st(a4,48,dst);
+	}
+
+	while(cnt--) *(dst++) = *(src++)*opmul+opadd; 
+}
+#endif
+
 void flext::SetSamples(t_sample *dst,int cnt,t_sample s) 
 {
 #ifdef FLEXT_USE_IPP
@@ -563,21 +713,8 @@ loopu:
     }
     else
 #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__ALTIVEC__)
-    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(dst)) {
-		vector float svec = LoadValue(s);
-   	    int n = cnt>>4;
-        cnt -= n<<4;
-
-		while(n--) {
-			vec_st(svec,0,dst);
-			vec_st(svec,16,dst);
-			vec_st(svec,32,dst);
-			vec_st(svec,48,dst);
-			dst += 16;
-		}
-
-       	while(cnt--) *(dst++) = s; 
-	}
+    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(dst)) 
+		SetAltivec(dst,cnt,s);
 	else
 #endif
 #endif // FLEXT_USE_SIMD
@@ -698,31 +835,8 @@ loopu:
 	}
 	else
 #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__ALTIVEC__)
-    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(dst)) {
-		const vector float arg = LoadValue(op);
-		const vector float zero = (vector float)(0);
-   	    int n = cnt>>4;
-        cnt -= n<<4;
-
-		for(; n--; src += 16,dst += 16) {
-			vector float a1 = vec_ld( 0,src);
-			vector float a2 = vec_ld(16,src);
-			vector float a3 = vec_ld(32,src);
-			vector float a4 = vec_ld(48,src);
-			
-			a1 = vec_madd(a1,arg,zero);
-			a2 = vec_madd(a2,arg,zero);
-			a3 = vec_madd(a3,arg,zero);
-			a4 = vec_madd(a4,arg,zero);
-
-			vec_st(a1, 0,dst);
-			vec_st(a2,16,dst);
-			vec_st(a3,32,dst);
-			vec_st(a4,48,dst);
-		}
-
-       	while(cnt--) *(dst++) = *(src++)*op; 
-	}
+    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(dst)) 
+		MulAltivec(dst,src,op,cnt);
 	else
 #endif // _MSC_VER
 #endif // FLEXT_USE_SIMD
@@ -948,29 +1062,8 @@ loopuu:
 	}
 	else
 #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__ALTIVEC__)
-    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(op) && IsVectorAligned(dst)) {
-	    const vector float zero = (vector float)(0);
-   	    int n = cnt>>4;
-        cnt -= n<<4;
-	   
-		for(; n--; src += 16,op += 16,dst += 16) {
-			vector float a1 = vec_ld( 0,src),b1 = vec_ld( 0,op);
-			vector float a2 = vec_ld(16,src),b2 = vec_ld(16,op);
-			vector float a3 = vec_ld(32,src),b3 = vec_ld(32,op);
-			vector float a4 = vec_ld(48,src),b4 = vec_ld(48,op);
-			
-			a1 = vec_madd(a1,b1,zero);
-			a2 = vec_madd(a2,b2,zero);
-			a3 = vec_madd(a3,b3,zero);
-			a4 = vec_madd(a4,b4,zero);
-
-			vec_st(a1, 0,dst);
-			vec_st(a2,16,dst);
-			vec_st(a3,32,dst);
-			vec_st(a4,48,dst);
-		}
-	    while(cnt--) *(dst++) = *(src++) * *(op++); 
-	}
+    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(op) && IsVectorAligned(dst)) 
+		MulAltivec(dst,src,op,cnt);
 	else
 #endif // _MSC_VER
 #endif // FLEXT_USE_SIMD
@@ -1099,30 +1192,8 @@ loopu:
     }
     else
 #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__ALTIVEC__)
-    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(dst)) {
-		const vector float arg = LoadValue(op);
-   	    int n = cnt>>4;
-        cnt -= n<<4;
-
-		for(; n--; src += 16,dst += 16) {
-			vector float a1 = vec_ld( 0,src);
-			vector float a2 = vec_ld(16,src);
-			vector float a3 = vec_ld(32,src);
-			vector float a4 = vec_ld(48,src);
-			
-			a1 = vec_add(a1,arg);
-			a2 = vec_add(a2,arg);
-			a3 = vec_add(a3,arg);
-			a4 = vec_add(a4,arg);
-
-			vec_st(a1, 0,dst);
-			vec_st(a2,16,dst);
-			vec_st(a3,32,dst);
-			vec_st(a4,48,dst);
-		}
-
-       	while(cnt--) *(dst++) = *(src++)+op; 
-	}
+    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(dst)) 
+		AddAltivec(dst,src,cnt);
 	else
 #endif // _MSC_VER
 #endif // FLEXT_USE_SIMD
@@ -1350,27 +1421,7 @@ void flext::AddSamples(t_sample *dst,const t_sample *src,const t_sample *op,int 
 	else
 #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__ALTIVEC__)
     if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(op) && IsVectorAligned(dst)) {
-   	    int n = cnt>>4;
-        cnt -= n<<4;
-	   
-		for(; n--; src += 16,op += 16,dst += 16) {
-			vector float a1 = vec_ld( 0,src),b1 = vec_ld( 0,op);
-			vector float a2 = vec_ld(16,src),b2 = vec_ld(16,op);
-			vector float a3 = vec_ld(32,src),b3 = vec_ld(32,op);
-			vector float a4 = vec_ld(48,src),b4 = vec_ld(48,op);
-			
-			a1 = vec_add(a1,b1);
-			a2 = vec_add(a2,b2);
-			a3 = vec_add(a3,b3);
-			a4 = vec_add(a4,b4);
-
-			vec_st(a1, 0,dst);
-			vec_st(a2,16,dst);
-			vec_st(a3,32,dst);
-			vec_st(a4,48,dst);
-		}
-	    while(cnt--) *(dst++) = *(src++) + *(op++); 
-	}
+		AddAltivec(dst,src,op,cnt);
 	else
 #endif // _MSC_VER
 #endif // FLEXT_USE_SIMD
@@ -1511,31 +1562,8 @@ loopu:
     }
     else
 #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__ALTIVEC__)
-    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(dst)) {
-		const vector float argmul = LoadValue(opmul);
-		const vector float argadd = LoadValue(opadd);
-   	    int n = cnt>>4;
-        cnt -= n<<4;
-
-		for(; n--; src += 16,dst += 16) {
-			vector float a1 = vec_ld( 0,src);
-			vector float a2 = vec_ld(16,src);
-			vector float a3 = vec_ld(32,src);
-			vector float a4 = vec_ld(48,src);
-			
-			a1 = vec_madd(a1,argmul,argadd);
-			a2 = vec_madd(a2,argmul,argadd);
-			a3 = vec_madd(a3,argmul,argadd);
-			a4 = vec_madd(a4,argmul,argadd);
-
-			vec_st(a1, 0,dst);
-			vec_st(a2,16,dst);
-			vec_st(a3,32,dst);
-			vec_st(a4,48,dst);
-		}
-
-	    while(cnt--) *(dst++) = *(src++)*opmul+opadd; 
-	}
+    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(dst)) 
+		ScaleAltivec(dst,src,opmul,opadd,cnt);
 	else
 #endif // _MSC_VER
 #endif // FLEXT_USE_SIMD

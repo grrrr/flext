@@ -289,6 +289,8 @@ public:
 		@{ 
 	*/
 
+	//! Symbol constant for ""
+	static const t_symbol *sym__;
 	//! Symbol constant for "float"
 	static const t_symbol *sym_float;
 	//! Symbol constant for "symbol"

@@ -324,38 +324,50 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 			if(lo->argc > FLEXT_MAXNEWARGS) { ERRINTERNAL(); ok = false; }
 #endif
 
-			if(argc == lo->argc) {
-				for(int i = 0; /*ok &&*/ i < lo->argc; ++i) {
-					switch(lo->argv[i]) {
+			int misnum = 0;
+			if(argc > lo->argc) { ok = false; misnum = 1; }
+
+			for(int i = 0; ok && i < lo->argc; ++i) {
+				switch(lo->argv[i]) {
 #if FLEXT_SYS != FLEXT_SYS_PD
-					case FLEXTTPN_INT:
-						if(IsInt(argv[i])) args[i] = argv[i];
-						else if(flext::IsFloat(argv[i])) flext::SetInt(args[i],(int)flext::GetFloat(argv[i]));
-						else ok = false;
-						break;
+				case FLEXTTPN_INT:
+				case FLEXTTPN_DEFINT:
+					if(i >= argc)
+						if(lo->argv[i] == FLEXTTPN_DEFINT) SetInt(args[i],0);
+						else { misnum = -1,ok = false; break; }
+					else if(IsInt(argv[i])) args[i] = argv[i];
+					else if(IsFloat(argv[i])) SetInt(args[i],(int)GetFloat(argv[i]));
+					else ok = false;
+					break;
 #endif
-					case FLEXTTPN_FLOAT:
-						if(IsInt(argv[i])) flext::SetFloat(args[i],(float)flext::GetInt(argv[i]));
-						else if(flext::IsFloat(argv[i])) args[i] = argv[i];
-						else ok = false;
-						break;
-					case FLEXTTPN_SYM:
-						// \todo shall we analyze the patcher args????... should already be done!
-						if(IsSymbol(argv[i])) 
+				case FLEXTTPN_FLOAT:
+				case FLEXTTPN_DEFFLOAT:
+					if(i >= argc)
+						if(lo->argv[i] == FLEXTTPN_DEFFLOAT) SetFloat(args[i],0);
+						else { misnum = -1,ok = false; break; }
+					else if(IsInt(argv[i])) SetFloat(args[i],(float)GetInt(argv[i]));
+					else if(IsFloat(argv[i])) args[i] = argv[i];
+					else ok = false;
+					break;
+				case FLEXTTPN_SYM:
+				case FLEXTTPN_DEFSYM:
+					// \todo shall we analyze the patcher args????... should already be done!
+					if(i >= argc)
+						if(lo->argv[i] == FLEXTTPN_DEFSYM) SetSymbol(args[i],sym__);
+						else { misnum = -1,ok = false; break; }
+					else if(IsSymbol(argv[i])) 
 //							SetSymbol(args[i],GetParamSym(GetSymbol(argv[i]),NULL));
-							args[i] = argv[i];
-						else ok = false;
-						break;
-					}
-				}
-			
-				if(!ok)
-					post("%s: Creation arguments do not match",GetString(s));
+						args[i] = argv[i];
+					else ok = false;
+					break;
+				}	
 			}
-			else {
-				error("%s: %s creation arguments",GetString(s),argc < lo->argc?"Not enough":"Too many");
-				ok = false;
-			}
+
+			if(!ok)
+				if(misnum)
+					error("%s: %s creation arguments",GetString(s),misnum < 0?"Not enough":"Too many");
+				else
+					error("%s: Creation arguments do not match",GetString(s));
 		}
 
 		if(ok) {

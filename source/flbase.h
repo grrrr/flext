@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -416,18 +416,18 @@ fts_module_t __##NAME##_module = {#NAME,#NAME,__##NAME##_initfun,0,0};
 	#define FLEXTTPN_FLOAT A_FLOAT
 	#define FLEXTTPN_DEFFLOAT A_DEFFLOAT
 	#define FLEXTTPN_SYM A_SYMBOL
-	#define FLEXTTPN_DEFSYM A_DEFSYM
+	#define FLEXTTPN_DEFSYM A_DEFSYMBOL
 	#define FLEXTTPN_VAR A_GIMME
 #else
 	#define FLEXTTPN_NULL 0
 	#define FLEXTTPN_PTR 1
 	#define FLEXTTPN_INT 2
-	#define FLEXTTPN_DEFINT 2
 	#define FLEXTTPN_FLOAT 3
-	#define FLEXTTPN_DEFFLOAT 3
 	#define FLEXTTPN_SYM 4
-	#define FLEXTTPN_DEFSYM 4
 	#define FLEXTTPN_VAR 5
+	#define FLEXTTPN_DEFINT 6
+	#define FLEXTTPN_DEFFLOAT 7
+	#define FLEXTTPN_DEFSYM 8
 #endif
 
 // Shortcuts for PD/Max type arguments
@@ -454,8 +454,8 @@ fts_module_t __##NAME##_module = {#NAME,#NAME,__##NAME##_initfun,0,0};
 #define FLEXTTYPE_t_symptr FLEXTTPN_SYM
 #define FLEXTTYPE_t_symptr0 FLEXTTPN_DEFSYM
 #define CALLBTYPE_t_symptr t_symptr
-#define FLEXTTYPE_t_symtype FLEXTTPN_SYM
-#define FLEXTTYPE_t_symtype0 FLEXTTPN_DEFSYM
+#define FLEXTTYPE_t_symtype FLEXTTYPE_t_symptr
+#define FLEXTTYPE_t_symtype0 FLEXTTYPE_t_symptr0
 #define CALLBTYPE_t_symtype t_symptr
 #define FLEXTTYPE_t_ptrtype FLEXTTPN_PTR
 #define CALLBTYPE_t_ptrtype t_ptrtype
@@ -465,10 +465,14 @@ fts_module_t __##NAME##_module = {#NAME,#NAME,__##NAME##_initfun,0,0};
 
 
 #define ARGMEMBER_int(a) GetInt(a)
+#define ARGMEMBER_int0(a) ARGMEMBER_int(a)
 #define ARGMEMBER_float(a) GetFloat(a)
+#define ARGMEMBER_float0(a) ARGMEMBER_float(a)
 #define ARGMEMBER_t_symptr(a) GetSymbol(a)
-#define ARGMEMBER_t_symtype(a) GetSymbol(a)
-#define ARGCAST(arg,tp) ARGMEMBER_##tp(arg)
+#define ARGMEMBER_t_symptr0(a) ARGMEMBER_t_symptr(a)
+#define ARGMEMBER_t_symtype(a) ARGMEMBER_t_symptr(a)
+#define ARGMEMBER_t_symtype0(a) ARGMEMBER_t_symptr0(a)
+#define ARGCAST(a,tp) ARGMEMBER_##tp(a)
 
 
 #define REAL_NEW(NAME,NEW_CLASS,DSP,LIB) \
@@ -494,7 +498,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
 #define REAL_NEW_1(NAME,NEW_CLASS,DSP,LIB, TYPE1) \
-flext_obj *NEW_CLASS::__init__(int ,t_atom *argv) \
+flext_obj *NEW_CLASS::__init__(int,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     return new NEW_CLASS(ARGCAST(argv[0],TYPE1));                     \
 }   	    	    	    	    	    	    	    	\
@@ -505,7 +509,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
 #define REAL_NEW_2(NAME,NEW_CLASS,DSP,LIB, TYPE1,TYPE2) \
-flext_obj *NEW_CLASS::__init__(int ,t_atom *argv) \
+flext_obj *NEW_CLASS::__init__(int,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     return new NEW_CLASS(ARGCAST(argv[0],TYPE1),ARGCAST(argv[1],TYPE2));                     \
 }   	    	    	    	    	    	    	    	\
@@ -516,7 +520,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
 #define REAL_NEW_3(NAME,NEW_CLASS,DSP,LIB, TYPE1, TYPE2, TYPE3) \
-flext_obj *NEW_CLASS::__init__(int ,t_atom *argv) \
+flext_obj *NEW_CLASS::__init__(int,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     return new NEW_CLASS(ARGCAST(argv[0],TYPE1),ARGCAST(argv[1],TYPE2),ARGCAST(argv[2],TYPE3));                     \
 }   	    	    	    	    	    	    	    	\
@@ -527,7 +531,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
 #define REAL_NEW_4(NAME,NEW_CLASS,DSP,LIB, TYPE1,TYPE2, TYPE3, TYPE4) \
-flext_obj *NEW_CLASS::__init__(int ,t_atom *argv) \
+flext_obj *NEW_CLASS::__init__(int,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     return new NEW_CLASS(ARGCAST(argv[0],TYPE1),ARGCAST(argv[1],TYPE2),ARGCAST(argv[2],TYPE3),ARGCAST(argv[3],TYPE4));                     \
 }   	    	    	    	    	    	    	    	\

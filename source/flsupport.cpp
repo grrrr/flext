@@ -23,6 +23,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define snprintf _snprintf
 #endif
 
+const t_symbol *flext::sym__ = NULL;
 const t_symbol *flext::sym_float = NULL;
 const t_symbol *flext::sym_symbol = NULL;
 const t_symbol *flext::sym_bang = NULL;
@@ -50,6 +51,7 @@ void flext::Setup()
 	else issetup = true;
 
 #if FLEXT_SYS == FLEXT_SYS_PD
+	sym__ = gensym("");
 	sym_anything = gensym("anything");
 	sym_pointer = gensym("pointer");
 	sym_float = gensym("float");
@@ -59,6 +61,7 @@ void flext::Setup()
 	sym_signal = gensym("signal");
 	sym_int = gensym("int");
 #elif FLEXT_SYS == FLEXT_SYS_MAX
+	sym__ = gensym("");
 	sym_int = gensym("int");
 	sym_float = gensym("float");
 	sym_symbol = gensym("symbol");
@@ -66,6 +69,7 @@ void flext::Setup()
 	sym_list = gensym("list");
 	sym_anything = gensym("anything");
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
+	sym__ = fts_new_symbol("");; // is there a static symbol for that?
 	sym_int = fts_s_int;
 	sym_float = fts_s_float;
 	sym_symbol = fts_s_symbol;

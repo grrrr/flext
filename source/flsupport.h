@@ -567,7 +567,7 @@ public:
 		AtomList &Part(int offs,int len) { return (*this = GetPart(offs,len)); }
 
 		//! Represent as a string
-		bool Print(char *buffer,int buflen) const { flext::PrintList(Count(),Atoms(),buffer,buflen); }
+		bool Print(char *buffer,int buflen) const { return flext::PrintList(Count(),Atoms(),buffer,buflen); }
 
 	protected:
 		int cnt;

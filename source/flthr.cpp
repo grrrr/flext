@@ -31,6 +31,36 @@ bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *me
 		return true;
 }
 
+void flext_base::PushThread()
+{
+	tlmutex.Lock();
+	thr_entry *nt = new thr_entry;
+	if(thrtail) thrtail->nxt = nt; 
+	else thrhead = nt;
+	thrtail = nt;
+	tlmutex.Unlock();
+}
+
+void flext_base::PopThread()
+{
+	tlmutex.Lock();
+	thr_entry *prv = NULL;
+	for(thr_entry *ti = thrhead; ti && !ti->Is(); prv = ti,ti = ti->nxt);
+
+	if(ti) {
+		if(prv) 
+			prv->nxt = ti->nxt;
+		else 
+			thrhead = thrtail = ti;
+		ti->nxt = NULL;
+		delete ti;
+	}
+	else {
+		post("%s - Internal error - Thread not found!",thisName());
+	}
+	
+	tlmutex.Unlock();
+}
 
 
 class flext_base::qmsg
@@ -60,7 +90,7 @@ public:
 		struct { const t_symbol *s; int argc; t_atom *argv; } _any;
 	};
 
-	void Add(qmsg *o);
+//	void Add(qmsg *o);
 };
 
 flext_base::qmsg::~qmsg() 
@@ -76,11 +106,13 @@ void flext_base::qmsg::Clear()
 	tp = tp_none;
 }
 
+/*
 void flext_base::qmsg::Add(qmsg *o) 
 {
 	if(nxt) nxt->Add(o);
 	else nxt = o;
 }
+*/
 
 void flext_base::QTick(flext_base *th)
 {
@@ -118,8 +150,9 @@ void flext_base::QTick(flext_base *th)
 void flext_base::Queue(qmsg *m)
 {
 	qmutex.Lock();
-	if(qhead) qtail->Add(m);
-	else qhead = qtail = m;
+	if(qtail) qtail->nxt = m;
+	else qhead = m;
+	qtail = m;
 	qmutex.Unlock();
 	clock_delay(qclk,0);
 }

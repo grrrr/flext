@@ -302,7 +302,7 @@ return 0; \
 
 #ifdef PD
 #define FLEXT_NEWFN ::class_new
-#define FLEXT_CLREF(NAME,CLASS) gensym(NAME)
+#define FLEXT_CLREF(NAME,CLASS) gensym(const_cast<char *>(NAME))
 //#define FLEXT_MAIN(MAINNAME) MAINNAME
 #define CLNEW_OPTIONS 0  // flags for class creation
 //#define LIB_INIT(NAME,NEWMETH,FREEMETH,ARG1,ARG2,ARG3,ARG4) ((void(0))
@@ -346,6 +346,23 @@ return 0; \
 #define CHECK_TILDE(OBJNAME,SETUPFUN) ((void)0)
 #endif
 
+#ifdef PD
+#define FLEXT_ADDALIAS(NAME,FUN) ::class_addcreator((t_newmethod)FUN,::gensym(const_cast<char *>(NAME)),A_NULL)
+#define FLEXT_ADDALIAS1(NAME,FUN,ARG1) ::class_addcreator((t_newmethod)FUN,::gensym(const_cast<char *>(NAME)),ARG1,A_NULL)
+#define FLEXT_ADDALIAS2(NAME,FUN,ARG1,ARG2) ::class_addcreator((t_newmethod)FUN,::gensym(const_cast<char *>(NAME)),ARG1,ARG2,A_NULL)
+#define FLEXT_ADDALIAS3(NAME,FUN,ARG1,ARG2,ARG3) ::class_addcreator((t_newmethod)FUN,::gensym(const_cast<char *>(NAME)),ARG1,ARG2,ARG3,A_NULL)
+#define FLEXT_ADDALIAS4(NAME,FUN,ARG1,ARG2,ARG3,ARG4) ::class_addcreator((t_newmethod)FUN,::gensym(const_cast<char *>(NAME)),ARG1,ARG2,ARG3,ARG4,A_NULL)
+#elif defined(MAXMSP)
+#define FLEXT_ADDALIAS(NAME,FUN) ::alias(const_cast<char *>(NAME))
+#define FLEXT_ADDALIAS1(NAME,FUN,ARG1) FLEXT_ADDALIAS(NAME,FUN)
+#define FLEXT_ADDALIAS2(NAME,FUN,ARG1,ARG2) FLEXT_ADDALIAS(NAME,FUN)
+#define FLEXT_ADDALIAS3(NAME,FUN,ARG1,ARG2,ARG3) FLEXT_ADDALIAS(NAME,FUN)
+#define FLEXT_ADDALIAS4(NAME,FUN,ARG1,ARG2,ARG3,ARG4) FLEXT_ADDALIAS(NAME,FUN)
+#else
+#error "No alias function defined!"
+#endif
+
+const char *extractname(const char *name,int ix = 0);
 
 // ----------------------------------------------------
 // These should never be called or used directly!!!
@@ -362,7 +379,7 @@ flext_hdr* class_ ## NEW_CLASS () \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
-    flext_obj::m_holdname = NAME;                         \
+    flext_obj::m_holdname = extractname(NAME);                         \
     obj->data = new NEW_CLASS;                     \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
@@ -371,11 +388,15 @@ FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
     NEW_CLASS ## _class = FLEXT_NEWFN(                       \
-     	FLEXT_CLREF(NAME,NEW_CLASS ## _class), 	    	    	    	\
+     	FLEXT_CLREF(extractname(NAME),NEW_CLASS ## _class), 	    	    	    	\
     	(t_newmethod)class_ ## NEW_CLASS,	    	\
     	(t_method)&NEW_CLASS::callb_free,         \
      	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
      	A_NULL);      	    	    	    	    	\
+	for(int ix = 1; ; ++ix) { \
+		const char *c = extractname(NAME,ix); if(!c) break; \
+		FLEXT_ADDALIAS(c,(t_newmethod)class_ ## NEW_CLASS); \
+	} \
     NEW_CLASS::callb_setup(NEW_CLASS ## _class); \
 } 
 
@@ -384,7 +405,7 @@ flext_hdr* class_ ## NEW_CLASS ()    \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(flext_obj::lib_class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
-    flext_obj::m_holdname = NAME;                         \
+    flext_obj::m_holdname = extractname(NAME);                         \
     obj->data = new NEW_CLASS;      \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
@@ -406,7 +427,7 @@ flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1) \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
-    flext_obj::m_holdname = NAME;                         \
+    flext_obj::m_holdname = extractname(NAME);                         \
     obj->data = new NEW_CLASS((TYPE1)arg1);                     \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
@@ -415,12 +436,16 @@ FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
     NEW_CLASS ## _class = FLEXT_NEWFN(                       \
-     	FLEXT_CLREF(NAME,NEW_CLASS ## _class), 	    	    	    	\
+     	FLEXT_CLREF(extractname(NAME),NEW_CLASS ## _class), 	    	    	    	\
     	(t_newmethod)class_ ## NEW_CLASS,	    	\
     	(t_method)&NEW_CLASS::callb_free,         \
      	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
      	FLEXTTP(TYPE1),                       \
      	A_NULL);      	    	    	    	    	\
+	for(int ix = 1; ; ++ix) { \
+		const char *c = extractname(NAME,ix); if(!c) break; \
+		FLEXT_ADDALIAS1(c,(t_newmethod)class_ ## NEW_CLASS,FLEXTTP(TYPE1)); \
+	} \
     NEW_CLASS::callb_setup(NEW_CLASS ## _class); \
 } 
 
@@ -429,7 +454,7 @@ flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1)    \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(flext_obj::lib_class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
-    flext_obj::m_holdname = NAME;                         \
+    flext_obj::m_holdname = extractname(NAME);                         \
     obj->data = new NEW_CLASS(ARGCAST(arg1,TYPE1));      \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
@@ -451,7 +476,7 @@ flext_hdr* class_ ## NEW_CLASS (t_symbol *s,int argc,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
-    flext_obj::m_holdname = NAME;                         \
+    flext_obj::m_holdname = extractname(NAME);                         \
     obj->data = new NEW_CLASS(argc,argv);                     \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
@@ -460,12 +485,16 @@ FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
     NEW_CLASS ## _class = FLEXT_NEWFN(                       \
-     	FLEXT_CLREF(NAME,NEW_CLASS ## _class), 	    	    	    	\
+     	FLEXT_CLREF(extractname(NAME),NEW_CLASS ## _class), 	    	    	    	\
     	(t_newmethod)class_ ## NEW_CLASS,	    	\
     	(t_method)&NEW_CLASS::callb_free,         \
      	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
      	A_GIMME,                       \
      	A_NULL);      	    	    	    	    	\
+	for(int ix = 1; ; ++ix) { \
+		const char *c = extractname(NAME,ix); if(!c) break; \
+		FLEXT_ADDALIAS1(c,(t_newmethod)class_ ## NEW_CLASS,A_GIMME); \
+	} \
     NEW_CLASS::callb_setup(NEW_CLASS ## _class); \
 } 
 
@@ -474,7 +503,7 @@ flext_hdr* class_ ## NEW_CLASS (t_symbol *s,int argc,t_atom *argv)    \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(flext_obj::lib_class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
-    flext_obj::m_holdname = NAME;                         \
+    flext_obj::m_holdname = extractname(NAME);                         \
     obj->data = new NEW_CLASS(argc,argv);      \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
@@ -496,7 +525,7 @@ flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1, CALLBTP(TYPE2) arg2) \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
-    flext_obj::m_holdname = NAME;                         \
+    flext_obj::m_holdname = extractname(NAME);                         \
     obj->data = new NEW_CLASS((TYPE1)arg1, (TYPE2)arg2);                     \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
@@ -505,12 +534,16 @@ FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
     NEW_CLASS ## _class = FLEXT_NEWFN(                       \
-     	FLEXT_CLREF(NAME,NEW_CLASS ## _class), 	    	    	    	\
+     	FLEXT_CLREF(extractname(NAME),NEW_CLASS ## _class), 	    	    	    	\
     	(t_newmethod)class_ ## NEW_CLASS,	    	\
     	(t_method)&NEW_CLASS::callb_free,         \
      	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
      	FLEXTTP(TYPE1), FLEXTTP(TYPE2),                       \
      	A_NULL);      	    	    	    	    	\
+	for(int ix = 1; ; ++ix) { \
+		const char *c = extractname(NAME,ix); if(!c) break; \
+		FLEXT_ADDALIAS2(c,(t_newmethod)class_ ## NEW_CLASS,FLEXTTP(TYPE1),FLEXTTP(TYPE2)); \
+	} \
     NEW_CLASS::callb_setup(NEW_CLASS ## _class); \
 } 
 
@@ -519,7 +552,7 @@ flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1,const flext_obj::
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(flext_obj::lib_class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
-    flext_obj::m_holdname = NAME;                         \
+    flext_obj::m_holdname = extractname(NAME);                         \
     obj->data = new NEW_CLASS(ARGCAST(arg1,TYPE1),ARGCAST(arg2,TYPE2));      \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
@@ -541,7 +574,7 @@ flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1,CALLBTP(TYPE2) arg2,CALLBTP(
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
-    flext_obj::m_holdname = NAME;                         \
+    flext_obj::m_holdname = extractname(NAME);                         \
     obj->data = new NEW_CLASS((TYPE1)arg1,(TYPE2)arg2,(TYPE3)arg3);                     \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
@@ -550,12 +583,16 @@ FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
     NEW_CLASS ## _class = FLEXT_NEWFN(                       \
-     	FLEXT_CLREF(NAME,NEW_CLASS ## _class), 	    	    	    	\
+     	FLEXT_CLREF(extractname(NAME),NEW_CLASS ## _class), 	    	    	    	\
     	(t_newmethod)class_ ## NEW_CLASS,	    	\
     	(t_method)&NEW_CLASS::callb_free,         \
      	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
      	FLEXTTP(TYPE1), FLEXTTP(TYPE2),FLEXTTP(TYPE3),                       \
      	A_NULL);      	    	    	    	    	\
+	for(int ix = 1; ; ++ix) { \
+		const char *c = extractname(NAME,ix); if(!c) break; \
+		FLEXT_ADDALIAS3(c,(t_newmethod)class_ ## NEW_CLASS,FLEXTTP(TYPE1),FLEXTTP(TYPE2),FLEXTTP(TYPE3)); \
+	} \
     NEW_CLASS::callb_setup(NEW_CLASS ## _class); \
 } 
 
@@ -564,7 +601,7 @@ flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1,const flext_obj::
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(flext_obj::lib_class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
-    flext_obj::m_holdname = NAME;                         \
+    flext_obj::m_holdname = extractname(NAME);                         \
     obj->data = new NEW_CLASS(ARGCAST(arg1,TYPE1),ARGCAST(arg2,TYPE2),ARGCAST(arg3,TYPE3));      \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
@@ -585,7 +622,7 @@ flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1,CALLBTP(TYPE2) arg2,CALLBTP(
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
-    flext_obj::m_holdname = NAME;                         \
+    flext_obj::m_holdname = extractname(NAME);                         \
     obj->data = new NEW_CLASS((TYPE1)arg1,(TYPE2)arg2,(TYPE3)arg3,(TYPE4)arg4);                     \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
@@ -594,12 +631,16 @@ FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
     NEW_CLASS ## _class = FLEXT_NEWFN(                       \
-     	FLEXT_CLREF(NAME,NEW_CLASS ## _class), 	    	    	    	\
+     	FLEXT_CLREF(extractname(NAME),NEW_CLASS ## _class), 	    	    	    	\
     	(t_newmethod)class_ ## NEW_CLASS,	    	\
     	(t_method)&NEW_CLASS::callb_free,         \
      	sizeof(flext_hdr), CLNEW_OPTIONS,                          \
      	FLEXTTP(TYPE1), FLEXTTP(TYPE2),FLEXTTP(TYPE3),FLEXTTP(TYPE4),                     \
      	A_NULL);      	    	    	    	    	\
+	for(int ix = 1; ; ++ix) { \
+		const char *c = extractname(NAME,ix); if(!c) break; \
+		FLEXT_ADDALIAS4(c,(t_newmethod)class_ ## NEW_CLASS,FLEXTTP(TYPE1),FLEXTTP(TYPE2),FLEXTTP(TYPE3),FLEXTTP(TYPE4)); \
+	} \
     NEW_CLASS::callb_setup(NEW_CLASS ## _class); \
 } 
 
@@ -608,7 +649,7 @@ flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1,const flext_obj::
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(flext_obj::lib_class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
-    flext_obj::m_holdname = NAME;                         \
+    flext_obj::m_holdname = extractname(NAME);                         \
     obj->data = new NEW_CLASS(ARGCAST(arg1,TYPE1),ARGCAST(arg2,TYPE2),ARGCAST(arg3,TYPE3),ARGCAST(arg4,TYPE4));      \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \

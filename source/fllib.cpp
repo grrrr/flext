@@ -40,32 +40,37 @@ void libfunction::add(libfunction *n) { if(nxt) nxt->add(n); else nxt = n; }
 	
 void flext_obj::libfun_add(const char *name,t_newmethod newfun,void (*freefun)(flext_hdr *),int argtp1,...)
 {
- 	alias(const_cast<char *>(name));  // make object name available to Max
-	
-	libfunction *l = new libfunction(gensym(const_cast<char *>(name)),newfun,freefun);
-	
-	if(argtp1 == A_GIMME)
-		l->argc = -1;
-	else {
-		int argtp,i;
-		va_list marker;
-		va_start(marker,argtp1);
-		l->argc = 0;
-		for(argtp = argtp1; argtp != A_NULL; ++l->argc) argtp = (int)va_arg(marker,int); 
-		va_end(marker);
+	for(int ix = 0; ; ++ix) {
+		const char *c = extractname(name,ix);
+		if(!c || !*c) break;
 
-		l->argv = new int[l->argc];
-		
-		va_start(marker,argtp1);
-		for(argtp = argtp1,i = 0; i < l->argc; ++i) {
-			l->argv[i] = argtp;
-			argtp = (int)va_arg(marker,int); 
-		}
-		va_end(marker);
-	}
+	 	alias(const_cast<char *>(c));  // make object name available to Max
 	
-	if(libfuncs) libfuncs->add(l);
-	else libfuncs = l;
+		libfunction *l = new libfunction(gensym(const_cast<char *>(c)),newfun,freefun);
+	
+		if(argtp1 == A_GIMME)
+			l->argc = -1;
+		else {
+			int argtp,i;
+			va_list marker;
+			va_start(marker,argtp1);
+			l->argc = 0;
+			for(argtp = argtp1; argtp != A_NULL; ++l->argc) argtp = (int)va_arg(marker,int); 
+			va_end(marker);
+	
+			l->argv = new int[l->argc];
+		
+			va_start(marker,argtp1);
+			for(argtp = argtp1,i = 0; i < l->argc; ++i) {
+				l->argv[i] = argtp;
+				argtp = (int)va_arg(marker,int); 
+			}
+			va_end(marker);
+		}
+	
+		if(libfuncs) libfuncs->add(l);
+		else libfuncs = l;
+	}
 }
 
 typedef flext_hdr *(*libfunG)(t_symbol *,int,t_atom *);

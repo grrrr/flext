@@ -347,10 +347,6 @@ public:
 
 #ifdef FLEXT_THREADS
 // --- thread stuff -----------------------------------------------
-	class thr_params;
-	static bool StartThread(void *(*)(thr_params *p),thr_params *p,char *methname);
-	void IncThreads() { ++thrcount; }
-	void DecThreads() { --thrcount; }
 
 	bool ShouldExit() const { return shouldexit; }
 
@@ -432,6 +428,13 @@ public:
 	static void Sleep(float s);
 
 // xxx internal stuff xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+// --- thread stuff -----------------------------------------------
+
+	class thr_params;
+	static bool StartThread(void *(*)(thr_params *p),thr_params *p,char *methname);
+	void PushThread();
+	void PopThread();
 
 protected:
 
@@ -519,6 +522,10 @@ private:
 
 	static void QTick(flext_base *th);
 	void Queue(qmsg *m);
+
+	class thr_entry;
+	thr_entry *thrhead,*thrtail;
+	ThrMutex tlmutex;
 #endif
 
 #ifdef PD

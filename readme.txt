@@ -77,6 +77,8 @@ Version history:
 - description text for inlets/outlets (e.g. for MaxMSPs assist function)
 - added buffer resize (to be implemented for MaxMSP!)
 - added some utility functions: Sleep, CopyAtom, CopyList
+- added List manipulation classes: AtomList, AtomAnything
+- Alias object names (simply specify with FLEXT_NEW*, separated by whitespace)
 - fixed type warning for class constructors with int arguments in PD
 
 0.2.3:
@@ -169,7 +171,7 @@ general:
 - exchange more preprocessor definitions for C++ base class code (esp. pd and max calls)
 - should we use a namespace?
 - where to put flext source/lib in linux: /usr/local/lib,/usr/local/include ?
-- clean up headers (eliminate flstdc.h)
+- clean up headers (eliminate flstdc.h?)
 
 bugs:
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)
@@ -178,18 +180,15 @@ bugs:
 tests:
 - PD: figure out what "pointer" messages do and where they occur
 - some more mutexes needed for thread safety?
+- test alias names with MaxMSP
 
 features:
 - abstraction for parsing argument lists
-- abstraction for creating lists and anythings
 - abstraction for clock functions
 - sending messages to own inlet (passing computation to other patch objects - message queue?)
-- adding/removing methods anytime
 
 premature thoughts:
 - explore jMax interface style
-- interface for supercollider, csound?
-- interface for VST, DX, ...?
 - interface for scripting language modules? (python?)
 
 

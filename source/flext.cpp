@@ -139,10 +139,10 @@ flext_base::flext_base():
 	LOG("Logging is on");
 
 #ifdef FLEXT_THREAD
-	thrcount = 0;
 	shouldexit = false;
 	qhead = qtail = NULL;
 	qclk = clock_new(this,(t_method)QTick);
+	thrhead = thrtail = NULL;
 #endif
 }
 
@@ -151,7 +151,16 @@ flext_base::~flext_base()
 #ifdef FLEXT_THREAD
 	// wait for thread termination
 	shouldexit = true;
-	while(thrcount) Sleep(1);
+	for(int wi = 0; thrhead && wi < 100; ++wi) Sleep(0.01f);
+	tlmutex.Lock();
+	// timeout -> hard termination
+	while(thrhead) {
+		thr_entry *t = thrhead;
+		if(pthread_cancel(t->thrid)) post("%s - Thread could not be terminated!",thisName());
+		thrhead = t->nxt;
+		t->nxt = NULL; delete t;
+	}
+	tlmutex.Unlock();
 
 	while(qhead) QTick(this);
 	clock_free(qclk);

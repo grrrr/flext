@@ -134,6 +134,10 @@ SOURCE=.\flinternal.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\flsetup.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\flstdc.h
 # End Source File
 # Begin Source File

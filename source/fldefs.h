@@ -245,10 +245,10 @@ static void cb_ ## M_FUN(flext_base *c) {  \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
 	thisType *th = static_cast<thisType *>(p->cl); \
+	th->PushThread(); \
 	delete p; \
-	th->IncThreads(); \
 	th->M_FUN(); \
-	th->DecThreads(); \
+	th->PopThread(); \
 	return NULL; \
 } 
 
@@ -260,11 +260,11 @@ static void cb_ ## M_FUN(flext_base *c,t_symbol *s,int argc,t_atom *argv) {  \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
 	thisType *th = static_cast<thisType *>(p->cl); \
+	th->PushThread(); \
 	t_symbol *s; int argc; t_atom argv; p->get_any(s,argc,argv); \
 	delete p; \
-	th->IncThreads(); \
 	th->M_FUN(s,argc,argv); \
-	th->DecThreads(); \
+	th->PopThread(); \
 	return NULL; \
 } 
 
@@ -276,11 +276,11 @@ static void cb_ ## M_FUN(flext_base *c,int argc,t_atom *argv) {  \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
 	thisType *th = static_cast<thisType *>(p->cl); \
+	th->PushThread(); \
 	int argc; t_atom argv; p->get_gimme(argc,argv); \
 	delete p; \
-	th->IncThreads(); \
 	th->M_FUN(argc,argv); \
-	th->DecThreads(); \
+	th->PopThread(); \
 	return NULL; \
 } 
 
@@ -292,11 +292,11 @@ static void cb_ ## M_FUN(flext_base *c,int &arg1) {  \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
 	thisType *th = static_cast<thisType *>(p->cl); \
+	th->PushThread(); \
 	bool b = p->var[0]; \
 	delete p; \
-	th->IncThreads(); \
 	th->M_FUN(b); \
-	th->DecThreads(); \
+	th->PopThread(); \
 	return NULL; \
 } 
 
@@ -309,11 +309,11 @@ static void cb_ ## M_FUN(flext_base *c,TP1 &arg1) {  \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
 	thisType *th = static_cast<thisType *>(p->cl); \
+	th->PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
 	delete p; \
-	th->IncThreads(); \
 	th->M_FUN(v1); \
-	th->DecThreads(); \
+	th->PopThread(); \
 	return NULL; \
 } 
 
@@ -327,12 +327,12 @@ static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2) {  \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
 	thisType *th = static_cast<thisType *>(p->cl); \
+	th->PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
 	const TP1 v2 = p->var[1]._ ## TP2; \
 	delete p; \
-	th->IncThreads(); \
 	th->M_FUN(v1,v2); \
-	th->DecThreads(); \
+	th->PopThread(); \
 	return NULL; \
 } 
 
@@ -347,13 +347,13 @@ static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3) {  \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
 	thisType *th = static_cast<thisType *>(p->cl); \
+	th->PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
 	const TP2 v2 = p->var[1]._ ## TP2; \
 	const TP3 v3 = p->var[2]._ ## TP3; \
 	delete p; \
-	th->IncThreads(); \
 	th->M_FUN(v1,v2,v3); \
-	th->DecThreads(); \
+	th->PopThread(); \
 	return NULL; \
 } 
 
@@ -369,14 +369,14 @@ static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4) 
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
 	thisType *th = static_cast<thisType *>(p->cl); \
+	th->PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
 	const TP2 v2 = p->var[1]._ ## TP2; \
 	const TP3 v3 = p->var[2]._ ## TP3; \
 	const TP4 v4 = p->var[3]._ ## TP4; \
 	delete p; \
-	th->IncThreads(); \
 	th->M_FUN(v1,v2,v3,v4); \
-	th->DecThreads(); \
+	th->PopThread(); \
 	return NULL; \
 } 
 

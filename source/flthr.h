@@ -20,7 +20,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <pthread.h>
 
-class flext_base::thr_params {
+class flext_base::thr_params 
+{
 public:
 	thr_params(flext_base *c): cl(c) {}
 
@@ -39,6 +40,17 @@ public:
 		struct { t_symbol *s; int argc; t_atom *argv; } _any;
 		struct { int argc; t_atom *argv; } _gimme;
 	} var[5];
+};
+
+class flext_base::thr_entry 
+{
+public:
+	thr_entry(pthread_t id = pthread_self()): thrid(id),nxt(NULL) {}
+
+	bool Is(pthread_t id = pthread_self()) const { return pthread_equal(thrid,id) != 0; }
+
+	pthread_t thrid;
+	thr_entry *nxt;
 };
 
 #endif // FLEXT_THREADS

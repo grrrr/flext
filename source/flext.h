@@ -1,18 +1,18 @@
+/* 
+
+max-pd - compatibility library for Max/MSP and pd (pure data)
+
+Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
+For information on usage and redistribution, and for a DISCLAIMER OF ALL
+WARRANTIES, see the file, "license.txt," in this distribution.  
+
+*/
+
 #ifndef __CPPEXT_H
 #define __CPPEXT_H
 
-#define VERSION "0.2"
-
-
 #include <_cpp.h>
 
-#ifdef PD
-extern "C" {
-EXT_EXTERN V xrecord_tilde_setup();
-EXT_EXTERN V xplay_tilde_setup();
-EXT_EXTERN V xgroove_tilde_setup();
-}
-#endif
 
 // ----------------------------
 

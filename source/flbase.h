@@ -1,3 +1,16 @@
+/* 
+
+max-pd - compatibility library for Max/MSP and pd (pure data)
+
+Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
+For information on usage and redistribution, and for a DISCLAIMER OF ALL
+WARRANTIES, see the file, "license.txt," in this distribution.  
+
+*/
+
+// This is all borrowed from GEM by Mark Danks
+
+
 #ifndef __CPP_H
 #define __CPP_H
 
@@ -13,9 +26,6 @@ extern "C" {	    	    	    	    	    	    	\
 }
 #pragma warning (pop)
 #endif
-
-
-// This is all borrowed from GEM by Mark Danks
 
 
 #ifdef _WINDOWS

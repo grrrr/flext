@@ -29,7 +29,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	#pragma warning (disable:4091 4005)
 #endif
 
-#if FLEXT_OS == FLEXT_OS_WIN
+#if FLEXT_OS == FLEXT_OS_WIN && !defined(NT)
 #define NT
 #endif
 

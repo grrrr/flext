@@ -131,6 +131,7 @@ general:
 
 bugs:
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)
+- No knowledge about external resizing of a buffer! (how to handle that?)
 
 tests:
 - PD: figure out what "pointer" messages do and where they occur
@@ -148,4 +149,5 @@ premature thoughts:
 - interface for supercollider, csound?
 - interface for VST, DX, ...?
 - interface for scripting language modules? (python?)
+
 

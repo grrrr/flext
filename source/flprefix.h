@@ -302,6 +302,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifdef FLEXT_SHARED
 	#undef FLEXT_THREADS
 	#define	FLEXT_THREADS
+/*
+	// and also enabled for virtual daughter-classes??
+	#undef FLEXT_VIRT
+	#define	FLEXT_VIRT
+*/
 #endif
 
 #ifdef FLEXT_THREADS

@@ -49,8 +49,8 @@ protected:
 
 	float arg;  // argument variable
 private:
-	FLEXT_CALLBACK_F(m_trigger);  // callback for method "m_trigger" (with one float argument)
-	FLEXT_ATTRVAR_F(arg);
+	FLEXT_CALLBACK_F(m_trigger)  // callback for method "m_trigger" (with one float argument)
+	FLEXT_ATTRVAR_F(arg)
 };
 
 libbase::libbase():

@@ -38,12 +38,12 @@ protected:
 	
 private:
 
-	FLEXT_CALLBACK(m_tag);  // callback for method "m_tag" (no arguments)
-	FLEXT_CALLBACK_I(m_tag_and_int);  // callback for method "m_tag_and_int" (int arguments)
-	FLEXT_CALLBACK_S(m_sym);  // callback for method "m_sym" (with one symbol argument)
+	FLEXT_CALLBACK(m_tag)  // callback for method "m_tag" (no arguments)
+	FLEXT_CALLBACK_I(m_tag_and_int)  // callback for method "m_tag_and_int" (int arguments)
+	FLEXT_CALLBACK_S(m_sym)  // callback for method "m_sym" (with one symbol argument)
 };
 
-// instantiate the class (constructor has a variable argument list)
+// instantiate the class (constructor takes no arguments)
 FLEXT_NEW("simple3",simple3)
 
 

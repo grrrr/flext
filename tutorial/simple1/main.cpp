@@ -38,7 +38,7 @@ protected:
 	void m_float(float f);  // method for float values
 
 private:
-	FLEXT_CALLBACK_1(m_float,float);  // callback for method "m_float" (with one float argument)
+	FLEXT_CALLBACK_1(m_float,float)  // callback for method "m_float" (with one float argument)
 };
 
 // instantiate the class

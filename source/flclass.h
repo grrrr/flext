@@ -582,10 +582,19 @@ protected:
 	class attritem:
 		public item { 
 	public:
-		attritem(const t_symbol *tag,metharg tp,methfun fun,bool get);
+		attritem(const t_symbol *tag,metharg tp,methfun fun,int flags);
 		~attritem();
 
-		bool isget;
+		enum { 
+			afl_getset = 0x01, afl_get = 0x00, afl_set = 0x01,
+			afl_bothexist = 0x02
+		};
+
+		bool IsGet() const { return (flags&afl_getset) == afl_get; }
+		bool IsSet() const { return (flags&afl_getset) == afl_set; }
+		bool BothExist() const { return (flags&afl_bothexist) != 0; }
+
+		int flags;
 		metharg argtp;
 		methfun fun;
 	};

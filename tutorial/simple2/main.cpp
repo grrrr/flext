@@ -37,8 +37,8 @@ protected:
 
 private:
 	// FLEXT_CALLBACK_F(...) is a shortcut for FLEXT_CALLBACK_1(...,float) 
-	FLEXT_CALLBACK_F(m_float1);  // callback for method "m_float1" (with one float argument)
-	FLEXT_CALLBACK_F(m_float2);  // callback for method "m_float2" (with one float argument)
+	FLEXT_CALLBACK_F(m_float1)  // callback for method "m_float1" (with one float argument)
+	FLEXT_CALLBACK_F(m_float2)  // callback for method "m_float2" (with one float argument)
 };
 
 // instantiate the class (constructor has one float argument)

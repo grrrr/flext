@@ -44,10 +44,10 @@ protected:
 
 private:
 	// callback for method "m_trigger" (with one float argument)
-	FLEXT_CALLBACK_F(m_trigger);  
+	FLEXT_CALLBACK_F(m_trigger)
 
 	// define attribute callbacks for variable "arg" (with GET and SET properties)
-	FLEXT_ATTRVAR_F(arg);  
+	FLEXT_ATTRVAR_F(arg)
 };
 
 // instantiate the class 

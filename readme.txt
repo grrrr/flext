@@ -101,7 +101,7 @@ Version history:
 
 0.4.1:
 - full port for Max@OSX
-- completely redesigned message and attribute handling: now hashed and a much more efficient
+- completely redesigned message and attribute handling: now hashed and much more efficient
 - added some prerequisites for usage of flext as a shared library
 - put overloaded new/delete into flext support class
 - introduced "Finalize" virtual method, called after all "Init" methods
@@ -126,6 +126,7 @@ Version history:
 - implemented threading support with the MacOS MP thread library
 - stripped the ThrMutex and ThrCond classes of non-portable (and irrelevant) functionality
 - simplified "ToQueue*" and threaded "ToOut*" message queue mechanism for Max/MSP 
+- deprecated FLEXT_ADDMETHOD_V and FLEXT_ADDMETHOD_A definitions which only lead to confusion
 
 0.4.0:
 - the use of the const keyword is enforced (e.g. the preferred type for symbols is now "const t_symbol *")
@@ -291,6 +292,7 @@ general:
 - add log messages for debugging version
 - feed assist function with in/outlet description
 - MaxMSP: how to call separate help files for objects in a library?
+- use PD's t_float type for floating point values (and what about t_int?)
 
 bugs:
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)
@@ -302,7 +304,9 @@ tests:
 - PD: figure out what "pointer" messages do and where they occur
 - some more mutexes needed for thread safety?
 - buffer resize: flext_base::buffer::Frames(): should we use buffer or system sample rate?
+
 - what about FLEXT_ADDMETHOD_V (for var arg lists) and FLEXT_ADDMETHOD_A (anythings)... nonsense?
+	-> yes, these definitions obscure the meaning of _ as an indication for usage of a message tag
 
 features:
 - abstraction for clock functions

@@ -1,0 +1,40 @@
+#N canvas 175 139 597 355 12;
+#X obj 16 7 cnv 15 550 40 empty empty adv3 10 22 0 24 -260818 -1 0
+;
+#X text 174 8 flext tutorial \, (C)2002 Thomas Grill;
+#X text 174 28 http://www.parasitaere-kapazitaeten.net;
+#X obj 229 266 adv3 2 5 1;
+#X obj 305 303 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 223 300 nbx 5 18 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
+12 -228992 -1 -1 0 256;
+#X msg 269 120 1 10;
+#X msg 389 118 1;
+#X msg 424 118 -1;
+#X msg 460 118 2;
+#X obj 88 119 bng 25 250 50 0 empty empty empty 0 -6 0 8 -258699 -1
+-1;
+#X msg 313 119 7 2;
+#X text 325 300 end has been reached;
+#X obj 157 117 nbx 5 18 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
+12 -228992 -1 -1 0 256;
+#X msg 158 140 set \$1;
+#X text 72 98 trigger;
+#X text 147 98 set counter;
+#X text 264 99 set bounds;
+#X text 390 96 set step size;
+#X msg 80 186 reset;
+#X text 83 166 reset;
+#X text 21 49 this is a port of IOhannes Zmoelnings "counter" example
+;
+#X connect 3 0 5 0;
+#X connect 3 1 4 0;
+#X connect 6 0 3 1;
+#X connect 7 0 3 2;
+#X connect 8 0 3 2;
+#X connect 9 0 3 2;
+#X connect 10 0 3 0;
+#X connect 11 0 3 1;
+#X connect 13 0 14 0;
+#X connect 14 0 3 0;
+#X connect 19 0 3 0;

@@ -671,18 +671,8 @@ FLEXT_THREAD_1(M_FUN,t_symptr)
 \
 AddMethod(CL,IX,"bang",FLEXT_CALL_PRE(M_FUN))	
 
-//! Add a handler for a method with no arguments
+//! Add a handler for a method with either no, list or anything arguments
 #define FLEXT_CADDMETHOD(CL,IX,M_FUN) \
-AddMethod(CL,IX,FLEXT_CALL_PRE(M_FUN))	
-
-//! Add a handler for a method with a (variable argument) list
-#define FLEXT_CADDMETHOD_V(CL,IX,M_FUN) \
-\
-AddMethod(CL,IX,FLEXT_CALL_PRE(M_FUN))	
-
-//! Add a handler for a method with an anything argument
-#define FLEXT_CADDMETHOD_A(CL,IX,M_FUN) \
-\
 AddMethod(CL,IX,FLEXT_CALL_PRE(M_FUN))	
 
 //! Add a a handler for a method with implicit arguments
@@ -777,21 +767,29 @@ SetDist(true)
 \
 AddMethod(IX,"bang",FLEXT_CALL_PRE(M_FUN))	
 
-//! Add a handler for a method with no arguments
+//! Add a handler for a method with either no, list or anything arguments
 #define FLEXT_ADDMETHOD(IX,M_FUN) \
 AddMethod(IX,FLEXT_CALL_PRE(M_FUN))	
 
-//! Add a handler for a method with a (variable argument) list
+#if 0
+// FLEXT_ADDMETHOD_V and FLEXT_ADDMETHOD_A definitions obscure that _ indicates the usage of a message tag
+
+/*! \brief Add a handler for a method with a (variable argument) list
+	\note This is already covered by FLEXT_ADDMETHOD, but here for the sake of clarity
+*/
 #define FLEXT_ADDMETHOD_V(IX,M_FUN) \
 \
 AddMethod(IX,FLEXT_CALL_PRE(M_FUN))	
 
-//! Add a handler for a method with an anything argument
+/*! \brief Add a handler for a method with an anything argument
+	\note This is already covered by FLEXT_ADDMETHOD, but here for the sake of clarity
+*/
 #define FLEXT_ADDMETHOD_A(IX,M_FUN) \
 \
 AddMethod(IX,FLEXT_CALL_PRE(M_FUN))	
+#endif
 
-//! Add a a handler for a method with implicit arguments
+//! Add a a handler for a tagged method with implicit arguments
 #define FLEXT_ADDMETHOD_(IX,M_TAG,M_FUN) \
 \
 AddMethod(IX,M_TAG,FLEXT_CALL_PRE(M_FUN))	

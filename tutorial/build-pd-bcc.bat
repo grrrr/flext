@@ -16,12 +16,24 @@
 @make -f ..\makefile.pd-bcc NAME=adv1 SETUPFUNCTION=adv1_setup
 @cd ..
 
+@cd adv2
+@make -f ..\makefile.pd-bcc NAME=adv2 SETUPFUNCTION=adv2_setup
+@cd ..
+
+@cd adv3
+@make -f ..\makefile.pd-bcc NAME=adv3 SETUPFUNCTION=adv3_setup
+@cd ..
+
 @cd attr1
 @make -f ..\makefile.pd-bcc NAME=attr1 SETUPFUNCTION=attr1_setup
 @cd ..
 
 @cd attr2
 @make -f ..\makefile.pd-bcc NAME=attr2 SETUPFUNCTION=attr2_setup
+@cd ..
+
+@cd attr3
+@make -f ..\makefile.pd-bcc NAME=attr3 SETUPFUNCTION=attr3_setup
 @cd ..
 
 @cd signal1

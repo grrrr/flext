@@ -39,7 +39,7 @@ protected:
 private:
 	// define threaded callback for method m_start
 	// the same syntax as with FLEXT_CALLBACK is used here
-	FLEXT_THREAD(m_start); 
+	FLEXT_THREAD(m_start)
 };
 
 FLEXT_NEW("thread1",thread1)

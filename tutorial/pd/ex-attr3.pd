@@ -1,0 +1,60 @@
+#N canvas 175 139 603 453 12;
+#X obj 16 7 cnv 15 550 40 empty empty attr3 10 22 0 24 -260818 -1 0
+;
+#X text 174 8 flext tutorial \, (C)2002 Thomas Grill;
+#X text 174 28 http://www.parasitaere-kapazitaeten.net;
+#X obj 293 364 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X obj 196 361 nbx 5 18 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
+12 -228992 -1 -1 8 256;
+#X msg 264 129 1 10;
+#X msg 384 127 1;
+#X msg 419 127 -1;
+#X msg 455 127 2;
+#X obj 36 128 bng 25 250 50 0 empty empty empty 0 -6 0 8 -258699 -1
+-1;
+#X msg 308 128 7 2;
+#X obj 159 123 nbx 5 18 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
+12 -228992 -1 -1 0 256;
+#X msg 160 146 set \$1;
+#X text 20 107 trigger;
+#X text 149 104 set counter;
+#X text 259 108 set bounds;
+#X text 385 105 set step size;
+#X msg 87 135 reset;
+#X text 90 115 reset;
+#X text 23 63 with attributes;
+#X obj 197 327 attr3 @bounds 2 5 @step 1;
+#X msg 32 195 getattributes;
+#X obj 392 363 print;
+#X text 440 362 attributes;
+#X msg 32 237 getcount;
+#X msg 258 234 getbounds;
+#X msg 388 232 getstep;
+#X text 149 193 list all attributes;
+#X msg 32 266 count 3;
+#X text 109 238 get count;
+#X text 104 266 set count;
+#X msg 257 261 bounds 5 15;
+#X msg 387 259 step 3;
+#X text 21 49 this is a port of IOhannes Zmoelnings "counter" example
+;
+#X connect 5 0 20 1;
+#X connect 6 0 20 2;
+#X connect 7 0 20 2;
+#X connect 8 0 20 2;
+#X connect 9 0 20 0;
+#X connect 10 0 20 1;
+#X connect 11 0 12 0;
+#X connect 12 0 20 0;
+#X connect 17 0 20 0;
+#X connect 20 0 4 0;
+#X connect 20 1 3 0;
+#X connect 20 2 22 0;
+#X connect 21 0 20 0;
+#X connect 24 0 20 0;
+#X connect 25 0 20 0;
+#X connect 26 0 20 0;
+#X connect 28 0 20 0;
+#X connect 31 0 20 0;
+#X connect 32 0 20 0;

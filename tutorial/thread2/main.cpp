@@ -41,11 +41,11 @@ protected:
 	void m_textout();
 
 private:
-	FLEXT_THREAD_I(m_start); // define threaded callback for method m_start
-	FLEXT_CALLBACK(m_stop);  // normal callback for m_stop
-	FLEXT_CALLBACK(m_text);  // turn on console output
+	FLEXT_THREAD_I(m_start) // define threaded callback for method m_start
+	FLEXT_CALLBACK(m_stop)  // normal callback for m_stop
+	FLEXT_CALLBACK(m_text)  // turn on console output
 
-	FLEXT_THREAD(m_textout); // text output
+	FLEXT_THREAD(m_textout) // text output
 
 	float delay;
 	volatile int count;

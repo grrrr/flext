@@ -155,7 +155,7 @@ public:
 	//! Zero a memory region
 	static void ZeroMem(void *dst,int bytes);
 	//! Sleep for an amount of time
-	static void Sleep(float s);
+	static void Sleep(double s);
 
 //!		@} FLEXT_S_UTIL
 

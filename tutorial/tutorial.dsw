@@ -19,6 +19,38 @@ Package=<4>
 
 ###############################################################################
 
+Project: "adv2"=.\adv2\adv2.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    adv2
+    .\adv2
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "adv3"=.\adv3\adv3.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    adv3
+    .\adv3
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "attr1"=.\attr1\attr1.dsp - Package Owner=<4>
 
 Package=<5>
@@ -42,6 +74,22 @@ Package=<5>
     begin source code control
     attr2
     .\attr2
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "attr3"=.\attr3\attr3.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    attr3
+    .\attr3
     end source code control
 }}}
 

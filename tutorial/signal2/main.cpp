@@ -37,7 +37,7 @@ protected:
 	void m_bang();  // method for bang
 
 private:
-	FLEXT_CALLBACK(m_bang);  // callback for method "m_bang" 
+	FLEXT_CALLBACK(m_bang)  // callback for method "m_bang" 
 };
 
 // instantiate the class

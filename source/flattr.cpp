@@ -21,9 +21,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define STD
 #endif
 
-flext_base::attritem::attritem(const t_symbol *t,metharg tp,methfun f,bool g):
+flext_base::attritem::attritem(const t_symbol *t,metharg tp,methfun f,int fl):
 	item(t,0,NULL),argtp(tp),
-	fun(f),isget(g)
+	fun(f),flags(fl)
 {
 }
 
@@ -57,7 +57,7 @@ void flext_base::AddAttrib(itemarr *aa,itemarr *ma,const char *attr,metharg tp,m
 
 //	if(sfun) // if commented out, there will be a warning at run-time (more user-friendly)
 	{
-		attritem *a = new attritem(asym,tp,sfun,false);
+		attritem *a = new attritem(asym,tp,sfun,attritem::afl_bothexist|attritem::afl_set);
 		aa->Add(a); 
 
 		// bind attribute to a method
@@ -68,7 +68,7 @@ void flext_base::AddAttrib(itemarr *aa,itemarr *ma,const char *attr,metharg tp,m
 
 //	if(gfun) // if commented out, there will be a warning at run-time (more user-friendly)
 	{
-		attritem *a = new attritem(asym,tp,gfun,true);
+		attritem *a = new attritem(asym,tp,gfun,attritem::afl_bothexist|attritem::afl_get);
 		aa->Add(a); 
 
 		static char tmp[256] = "get";
@@ -124,17 +124,22 @@ bool flext_base::ListAttrib()
 		int ccnt = clattrhead?clattrhead->Count():0;
 		AtomList la(ccnt+cnt);
 
-		for(int i = 0,ix = 0; i <= 1; ++i) {
+		int ix = 0;
+		for(int i = 0; i <= 1; ++i) {
 			itemarr *a = i?attrhead:clattrhead;
 			if(a) {
 				for(int ai = 0; ai < a->Size(); ++ai) {
 					for(item *l = a->Item(ai); l; l = l->nxt) 
-						SetSymbol(la[ix++],l->tag);
+					{
+						attritem *a = (attritem *)l;
+						if(!a->BothExist() || a->IsGet())
+							SetSymbol(la[ix++],a->tag);
+					}
 				}
 			}
 		}
 
-		ToOutAnything(outattr,MakeSymbol("attributes"),la.Count(),la.Atoms());
+		ToOutAnything(outattr,MakeSymbol("attributes"),ix,la.Atoms());
 		return true;
 	}
 	else
@@ -145,10 +150,10 @@ bool flext_base::SetAttrib(const t_symbol *tag,int argc,const t_atom *argv)
 {
 	// search for matching attribute
 	attritem *a = (attritem *)attrhead->Find(tag);
-	while(a && (a->tag != tag || a->inlet != 0 || a->isget)) a = (attritem *)a->nxt;
+	while(a && (a->tag != tag || a->inlet != 0 || a->IsGet())) a = (attritem *)a->nxt;
 	if(!a) {
 		a = (attritem *)clattrhead->Find(tag);	
-		while(a && (a->tag != tag || a->inlet != 0 || a->isget)) a = (attritem *)a->nxt;
+		while(a && (a->tag != tag || a->inlet != 0 || a->IsGet())) a = (attritem *)a->nxt;
 	}
 
 	if(a) 

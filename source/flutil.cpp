@@ -34,13 +34,14 @@ void flext::ZeroMem(void *dst,int bytes)
 	memset(dst,0,bytes);
 }
 
-void flext::Sleep(float s)
+void flext::Sleep(double s)
 {
 #if FLEXT_OS == FLEXT_OS_WIN
-	::Sleep((long)(s*1000));
+	::Sleep((long)(s*1000.));
 #elif FLEXT_OS == FLEXT_OS_LINUX || FLEXT_OS == FLEXT_OS_IRIX || defined(__GNUC__)
-	usleep((long)(s*1000000));
+	usleep((long)(s*1000000.));
 #elif FLEXT_OS == FLEXT_OS_MACOS
+	// that's just for OS9!
 	UnsignedWide tick;
 	Microseconds(&tick);
 	double target = tick.hi*((double)(1L<<((sizeof tick.lo)*4))*(double)(1L<<((sizeof tick.lo)*4)))+tick.lo+s*1.e6; 

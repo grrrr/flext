@@ -7,7 +7,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 -------------------------------------------------------------------------
 
-This is an example of an object doing various float operations
+This is an example of an object doing various float operations.
+
+Methods and attributes are registered at class level (opposed to object level in example "attr1").
+For details, see also example "adv2"
+
 */
 
 
@@ -58,25 +62,26 @@ private:
 	static void setup(t_class *);
 
 	// callback for method "m_trigger" (with one float argument)
-	FLEXT_CALLBACK_F(m_trigger);  
+	FLEXT_CALLBACK_F(m_trigger)
 
 	// define attribute callbacks for variable "arg" ("ATTRVAR" means GET and SET)
-	FLEXT_ATTRVAR_F(arg);  
+	FLEXT_ATTRVAR_F(arg) 
 
 	// define attribute callbacks for variable "res" (GET only)
-	FLEXT_ATTRGET_F(res);  
+	FLEXT_ATTRGET_F(res)
 
 	// methods for getting/setting the operation mode
 	void opget(const t_symbol *&s) const; 
 	void opset(const t_symbol *&s);
 
 	// define attribute callbacks for variable "res" (GET only)
-	FLEXT_CALLGET_S(opget);  
-	FLEXT_CALLSET_S(opset);  
+	FLEXT_CALLGET_S(opget)
+	FLEXT_CALLSET_S(opset)
 };
 
 // instantiate the class
 FLEXT_NEW("attr2",attr2)
+
 
 // instantiate static variables
 const t_symbol 
@@ -85,7 +90,7 @@ const t_symbol
 	*attr2::sym_div,*attr2::sym_mul,
 	*attr2::sym_pow;
 
-void attr2::setup(t_class *)
+void attr2::setup(t_class *c)
 {
 	// Upon class creation setup some symbols
 	// This is done only upon creation of of the first "attr2" object
@@ -95,6 +100,21 @@ void attr2::setup(t_class *)
 	sym_mul = MakeSymbol("*");
 	sym_div = MakeSymbol("/");
 	sym_pow = MakeSymbol("**");
+
+
+	// setup methods and attributes at class scope
+
+	// register method (for floats) "m_trigger" for inlet 0
+	FLEXT_CADDMETHOD(c,0,m_trigger);  
+
+	// register attribute "arg" with the variable "arg"
+	FLEXT_CADDATTR_VAR1(c,"arg",arg);  
+
+	// register attribute "result" with variable "res"
+	FLEXT_CADDATTR_GET(c,"result",res);  
+
+	// register attribute "op" with methods "opget" and "opset"
+	FLEXT_CADDATTR_VAR(c,"op",opget,opset);  
 }
 
 
@@ -107,18 +127,6 @@ attr2::attr2():
 	
 	// define outlets
 	AddOutFloat();  // one float outlet (has index 0)
-	
-	// register method (for floats) "m_trigger" for inlet 0
-	FLEXT_ADDMETHOD(0,m_trigger);  
-
-	// register attribute "arg" with the variable "arg"
-	FLEXT_ADDATTR_VAR1("arg",arg);  
-
-	// register attribute "result" with variable "res"
-	FLEXT_ADDATTR_GET("result",res);  
-
-	// register attribute "op" with methods "opget" and "opset"
-	FLEXT_ADDATTR_VAR("op",opget,opset);  
 } 
 
 // receive an operand, do the math operation and trigger the output

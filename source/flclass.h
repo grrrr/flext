@@ -677,7 +677,7 @@ protected:
 		public Item 
     { 
 	public:
-		AttrItem(metharg tp,methfun fun,int flags);
+		AttrItem(const t_symbol *tag,metharg tp,methfun fun,int flags);
 
 		enum { 
 			afl_get = 0x01, afl_set = 0x02, 
@@ -696,6 +696,7 @@ protected:
 		metharg argtp;
 		methfun fun;
 		AttrItem *counter;
+		const t_symbol *tag;
 	};
 
 	//! Represent a data value of an attribute

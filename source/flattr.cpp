@@ -25,10 +25,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define STD
 #endif
 
-flext_base::AttrItem::AttrItem(metharg tp,methfun f,int fl):
+flext_base::AttrItem::AttrItem(const t_symbol *t,metharg tp,methfun f,int fl):
 	Item(NULL),index(0),
 	flags(fl|afl_shown),
-	argtp(tp),fun(f),
+	argtp(tp),fun(f),tag(t),
 	counter(NULL)
 {}
 
@@ -50,7 +50,7 @@ void flext_base::AddAttrib(ItemCont *aa,ItemCont *ma,const char *attr,metharg tp
 
 	if(sfun) // if commented out, there will be a warning at run-time (more user-friendly)
 	{
-		a = new AttrItem(tp,sfun,AttrItem::afl_set);
+		a = new AttrItem(asym,tp,sfun,AttrItem::afl_set);
         a->index = aa->Members();
 		aa->Add(a,asym); 
 
@@ -64,7 +64,7 @@ void flext_base::AddAttrib(ItemCont *aa,ItemCont *ma,const char *attr,metharg tp
 
 	if(gfun) // if commented out, there will be a warning at run-time (more user-friendly)
 	{
-		b = new AttrItem(tp,gfun,AttrItem::afl_get);
+		b = new AttrItem(asym,tp,gfun,AttrItem::afl_get);
         b->index = aa->Members();
 		aa->Add(b,asym); 
 
@@ -337,11 +337,14 @@ bool flext_base::GetAttrib(const t_symbol *s,AtomList &a) const
 	return attr && GetAttrib(s,attr,a);
 }
 
+//! \param tag symbol "get[attribute]"
 bool flext_base::DumpAttrib(const t_symbol *tag,AttrItem *a) const
 {
 	AtomList la;
 	bool ret = GetAttrib(tag,a,la);
-	if(ret) ToOutAnything(GetOutAttr(),tag,la.Count(),la.Atoms());
+	if(ret) {
+		ToOutAnything(GetOutAttr(),a->tag,la.Count(),la.Atoms());
+	}
 	return ret;
 }
 

@@ -904,7 +904,7 @@ public:
 			simd_altivec = 0x10
 		};
 		
-		static unsigned long GetSIMDCapabilites() { return simdcaps; }
+		static unsigned long GetSIMDCapabilities() { return simdcaps; }
 
 //!		@} FLEXT_S_SIMD
 

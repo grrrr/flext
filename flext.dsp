@@ -263,11 +263,19 @@ SOURCE=.\source\flmspbuffer.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\source\flsimd.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\source\flsupport.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\source\flsupport.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\source\fltimer.cpp
 # End Source File
 # Begin Source File
 

@@ -12,7 +12,7 @@
 @set target=%4
 
 @rem --- The subbatch knowns which make utility to use ---
-@set subbatch=%flext%build\build-%compiler%.bat
+@set subbatch=%flext%buildsys\build-%compiler%.bat
 
 @if "%platform%"=="" goto syntax
 @if "%rtsys%"=="" goto syntax

@@ -13,7 +13,7 @@ compiler=$3
 target=$4
 
 # --- The subbatch knowns which make utility to use ---
-subbatch=${flext}build/build-${compiler}.sh
+subbatch=${flext}buildsys/build-${compiler}.sh
 
 if 
 	[ -n "$platform" -a -n "$rtsys" -a -n "$compiler" -a -f $subbatch ]

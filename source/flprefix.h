@@ -48,14 +48,15 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // --- definitions for FLEXT_OS ----------------------
 #define FLEXT_OS_UNKNOWN	0
 #define FLEXT_OS_WIN	1
-#define FLEXT_OS_MACOS	2  
+#define FLEXT_OS_MAC	2  
 #define FLEXT_OS_LINUX	3
 #define FLEXT_OS_IRIX	4
 
 // --- definitions for FLEXT_OS_API ---------------------
 #define FLEXT_OSAPI_UNKNOWN	0
-#define FLEXT_OSAPI_MAC_CARBON 1
-#define FLEXT_OSAPI_MAC_OSX 2
+#define FLEXT_OSAPI_MAC_CLASSIC 1
+#define FLEXT_OSAPI_MAC_CARBON 2
+#define FLEXT_OSAPI_MAC_OSX 3
 
 // --- definitions for FLEXT_CPU ---------------------
 #define FLEXT_CPU_UNKNOWN	0
@@ -160,7 +161,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 	#ifndef FLEXT_OS
 		#if TARGET_OS_MAC
-			#define FLEXT_OS FLEXT_OS_MACOS
+			#define FLEXT_OS FLEXT_OS_MAC
 		#elif TARGET_OS_WIN32
 			// assume Windows
 			#define FLEXT_OS FLEXT_OS_WIN
@@ -205,14 +206,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 		#elif defined(__CYGWIN__) || defined(__CYGWIN32__)
 			#define FLEXT_OS FLEXT_OS_WIN
 		#elif defined(__APPLE__) && defined(__MACH__)
-			#define FLEXT_OS FLEXT_OS_MACOS
+			#define FLEXT_OS FLEXT_OS_MAC
 		// how about IRIX??
 		#else
 			#define FLEXT_OS FLEXT_OS_UNKNOWN
 		#endif
 	#endif
 
-	#if FLEXT_OS == FLEXT_OS_MACOS
+	#if FLEXT_OS == FLEXT_OS_MAC
 		#define FLEXT_OSAPI FLEXT_OSAPI_MAC_OSX
 	#else
 		#define FLEXT_OSAPI FLEXT_OSAPI_UNKNOWN
@@ -234,7 +235,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 	#ifndef FLEXT_OS
 		#if defined(macintosh)
-			#define FLEXT_OS FLEXT_OS_MACOS
+			#define FLEXT_OS FLEXT_OS_MAC
 		#else
 			#define FLEXT_OS FLEXT_OS_UNKNOWN
 		#endif
@@ -269,7 +270,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	#else
 		#error "Flext SYS/OS combination unknown"
 	#endif
-#elif FLEXT_OS == FLEXT_OS_MACOS
+#elif FLEXT_OS == FLEXT_OS_MAC
 //	#pragma message("Compiling for MacOS")
 
 	#if FLEXT_SYS == FLEXT_SYS_PD
@@ -288,7 +289,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // set threading model
 #ifdef FLEXT_THREADS
 	#undef FLEXT_THREADS
-	#if FLEXT_OS == FLEXT_OS_MACOS && FLEXT_SYS == FLEXT_SYS_MAX
+	#if FLEXT_OS == FLEXT_OS_MAC && FLEXT_SYS == FLEXT_SYS_MAX
 		// Max crashes with posix threads (but don't know why...)
 		#define FLEXT_THREADS FLEXT_THR_MP		
 	#else

@@ -19,7 +19,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define ALIASDEL ','
 
 #define ALIASSLASHES ":/\\"
-#if FLEXT_OS == FLEXT_OS_MACOS
+#if FLEXT_OS == FLEXT_OS_MAC
 	#define ALIASSLASH ':'
 #elif FLEXT_OS == FLEXT_OS_WIN
 	#if FLEXT_SYS == FLEXT_SYS_PD

@@ -71,7 +71,7 @@ typedef t_clock t_qelem;
 
 // Include the relevant Max/MSP header files
 
-#if FLEXT_OS == FLEXT_OS_MACOS
+#if FLEXT_OS == FLEXT_OS_MAC
 	#ifndef __MRC__
 		#define powerc
 	#endif

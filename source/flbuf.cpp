@@ -119,6 +119,24 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
 	return ret;
 }
 
+bool flext::buffer::Valid() const
+{
+	if(sym) {
+#if FLEXT_SYS == FLEXT_SYS_PD
+		int frames1;
+		t_sample *data1;
+		return garray_getfloatarray(arr, &frames1, &data1);
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+		const _buffer *p = (const _buffer *)sym->s_thing;
+		return p && p->b_valid;
+#else
+#error
+#endif 
+	}
+	else return false;
+}
+
+
 bool flext::buffer::Update()
 {
 	if(!Ok()) return false;
@@ -172,7 +190,7 @@ void flext::buffer::Frames(int fr,bool keep)
 		// copy buffer data to tmp storage
 		tmp = new t_sample[sz];
 		if(tmp)
-			BlockMoveData(data,tmp,sizeof(t_sample)*sz);
+			CopySamples(data,tmp,sz);
 		else
 			error("flext::buffer - not enough memory for keeping buffer~ contents");
 	}
@@ -190,7 +208,7 @@ void flext::buffer::Frames(int fr,bool keep)
 
 	if(tmp) {
 		// copy data back
-		BlockMoveData(tmp,data,sizeof(t_sample)*sz);
+		CopySamples(tmp,data,sz);
 		delete[] tmp;
 	}
 #else

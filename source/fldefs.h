@@ -269,7 +269,7 @@ REAL_LIB_3(NAME,NEW_CLASS, 1, TYPE1, TYPE2, TYPE3)
 //! Set up a method callback with no arguments
 #define FLEXT_CALLBACK(M_FUN) \
 static bool cb_ ## M_FUN(flext_base *c) \
-{ static_cast<thisType *>(c)->M_FUN(); }
+{ static_cast<thisType *>(c)->M_FUN(); return true; }
 
 //! Set up a method callback for an anything argument
 #define FLEXT_CALLBACK_A(M_FUN) \

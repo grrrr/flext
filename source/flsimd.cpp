@@ -569,7 +569,7 @@ loopu:
 			vec_st(svec,16,dst);
 			vec_st(svec,32,dst);
 			vec_st(svec,48,dst);
-			dst += 64;
+			dst += 16;
 		}
 
        	while(cnt--) *(dst++) = s; 

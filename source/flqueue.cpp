@@ -18,6 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "flext.h"
 #include "flinternal.h"
+#include "flcontainers.h"
 #include <string.h> // for memcpy
 
 #ifdef FLEXT_THREADS
@@ -25,84 +26,64 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 flext::thrid_t flext::thrmsgid = 0;
 #endif
 
-#define QUEUE_LENGTH 2048
-#define QUEUE_ATOMS 8192
 
-class qmsg
+class qmsg:
+    public flext,
+    public Cell
 {
 public:
-    void Set(flext_base *t,int o,const t_symbol *s,int ac,const t_atom *av) 
-    { 
-        th = t; out = o;
-        sym = s,argc = ac,argv = av; 
-    }
+    qmsg(flext_base *t,int o,const t_symbol *s,int ac,const t_atom *av)
+        : msg(s,ac,av)
+        , th(t),out(o)
+    {}
 
     // \note PD sys lock must already be held by caller
     void Send() const
     {
         if(out < 0)
             // message to self
-            th->m_methodmain(-1-out,sym,argc,argv); 
+            th->m_methodmain(-1-out,msg.Header(),msg.Count(),msg.Atoms()); 
         else
             // message to outlet
-            th->ToSysAnything(out,sym,argc,argv);
+            th->ToSysAnything(out,msg.Header(),msg.Count(),msg.Atoms());
     }
-
-    int Args() const { return argc; }
 
 private:
     flext_base *th;
     int out;
-    const t_symbol *sym; 
-    int argc; 
-    const t_atom *argv;
+    AtomAnything msg;
 };
 
 /* \TODO This is only thread-safe if called from one thread which need NOT be the case.
          Reimplement in a thread-safe manner!!!
 */
 class Queue:
-    public flext
+    public flext,
+    public Fifo
 {
 public:
-    Queue()
-    {
-        qhead = qtail = 0;
-        ahead = atail = 0;
-    }
+    inline bool Empty() const { return Size() == 0; }
 
-    bool Empty() const { return qhead == qtail; }
+    inline void Push(qmsg *q) { Fifo::Put(q); }
 
-    int Count() const 
-    { 
-        int c = qtail-qhead;
-        return c >= 0?c:c+QUEUE_LENGTH; 
-    }
-
-    const qmsg &Head() { return lst[qhead]; }
-
-    void Pop() 
-    { 
-        PopAtoms(Head().Args());
-        qhead = (qhead+1)%QUEUE_LENGTH;
-    }
+    inline qmsg *Pop() { return static_cast<qmsg *>(Fifo::Get()); }
 
     void Push(flext_base *th,int o) // bang
     { 
-        Set(th,o,sym_bang,0,NULL); 
+        Put(new qmsg(th,o,sym_bang,0,NULL));
     }
 
     void Push(flext_base *th,int o,float dt) 
     { 
-        t_atom *at = GetAtoms(1); 
-        SetFloat(*at,dt);
-        Set(th,o,sym_float,1,at); 
+        t_atom at; 
+        SetFloat(at,dt);
+        Put(new qmsg(th,o,sym_float,1,&at));
     }
 
     void Push(flext_base *th,int o,int dt) 
     { 
-        t_atom *at = GetAtoms(1); 
-        SetInt(*at,dt);
+        t_atom at; 
+        SetInt(at,dt);
         const t_symbol *sym;
 #if FLEXT_SYS == FLEXT_SYS_PD
         sym = sym_float;
@@ -111,20 +92,18 @@ public:
 #else
 #error Not implemented!
 #endif
-        Set(th,o,sym,1,at); 
+        Put(new qmsg(th,o,sym,1,&at));
     }
 
     void Push(flext_base *th,int o,const t_symbol *dt) 
     { 
-        t_atom *at = GetAtoms(1); 
-        SetSymbol(*at,dt);
-        Set(th,o,sym_symbol,1,at); 
+        t_atom at; 
+        SetSymbol(at,dt);
+        Put(new qmsg(th,o,sym_symbol,1,&at));
     }
 
     void Push(flext_base *th,int o,const t_atom &a) 
     { 
-        t_atom *at = GetAtoms(1); 
-        *at = a;
         const t_symbol *sym;
         if(IsSymbol(a))
             sym = sym_symbol;
@@ -142,64 +121,18 @@ public:
             error("atom type not supported");
             return;
         }
-        Set(th,o,sym,1,at); 
+        Put(new qmsg(th,o,sym,1,&a));
     }
 
     void Push(flext_base *th,int o,int argc,const t_atom *argv) 
     {
-        t_atom *at = GetAtoms(argc);
-        memcpy(at,argv,argc*sizeof(t_atom));
-        Set(th,o,sym_list,argc,at); 
+        Put(new qmsg(th,o,sym_list,argc,argv));
     }
 
     void Push(flext_base *th,int o,const t_symbol *sym,int argc,const t_atom *argv) 
     { 
-        t_atom *at = GetAtoms(argc);
-        memcpy(at,argv,argc*sizeof(t_atom));
-        Set(th,o,sym,argc,at); 
+        Put(new qmsg(th,o,sym,argc,argv)); 
     }
-
-protected:
-    void Set(flext_base *th,int o,const t_symbol *sym,int argc,const t_atom *argv)
-    {
-        FLEXT_ASSERT(Count() < QUEUE_LENGTH-1);
-        lst[qtail].Set(th,o,sym,argc,argv);
-        qtail = (qtail+1)%QUEUE_LENGTH;
-    }
-
-    int CntAtoms() const 
-    { 
-        int c = atail-ahead;
-        return c >= 0?c:c+QUEUE_ATOMS;
-    }
-
-    // must return contiguous region
-    t_atom *GetAtoms(int argc)
-    {
-        t_atom *ret;
-        if(atail+argc >= QUEUE_ATOMS) {
-            FLEXT_ASSERT(ahead > argc);
-            ret = atoms;
-            atail = argc;
-        }
-        else {
-            FLEXT_ASSERT(ahead <= atail || ahead > atail+argc);
-            ret = atoms+atail;
-            atail += argc;
-        }
-        return ret;
-    }
-
-    void PopAtoms(int argc) 
-    {
-        const int p = ahead+argc;
-        ahead = p >= QUEUE_ATOMS?argc:p;
-    }
-
-    volatile int qhead,qtail;
-    qmsg lst[QUEUE_LENGTH];
-    volatile int ahead,atail;
-    t_atom atoms[QUEUE_ATOMS];
 };
 
 static Queue queue;
@@ -222,18 +155,18 @@ static void QWork(bool syslock)
         // qc will be a minimum guaranteed number of present queue elements.
         // On the other hand, if new queue elements are added by the methods called
         // in the loop, these will be sent in the next tick to avoid recursion overflow.
-        int qc = queue.Count();
+        int qc = queue.Size();
         if(!qc) break;
 
     #if FLEXT_QMODE == 2
         if(syslock) flext::Lock();
     #endif
 
-        // once more, because flushing in destructors could have reduced the count
-        for(qc = queue.Count(); qc--; ) {
-            queue.Head().Send();
-            queue.Pop();
-        } // inner loop
+        qmsg *q;
+        while((q = queue.Pop()) != NULL) {
+            q->Send();
+            delete q;
+        }
 
     #if FLEXT_QMODE == 2
         if(syslock) flext::Unlock();

@@ -26,7 +26,11 @@ $(TARGET):: $(TARGETPATH)
 $(TARGET):: $(COBJS) $(CPPOBJS)
 	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
 	chmod 755 $@
+ifndef DEBUG
+ifndef PROFILE
 	strip --strip-unneeded $@
+endif
+endif
 
 ##############################################
 

@@ -7,16 +7,17 @@ TARGET=$(TARGETPATH)/$(OUTNAME).$(EXT)
 ##############################################
 
 CFLAGS += -pthread
-LDFLAGS += -pthread -shared -Wl,-x
+LDFLAGS += -pthread -shared -Wl,-x 
 
 ##############################################
 
 ifdef DEBUG
 CFLAGS += -g
+LDFLAGS += -g
 else
 ifdef PROFILE
 CFLAGS += -g -pg
-LDFLAGS += -pg
+LDFLAGS += -g -pg
 else
 LDFLAGS += -Wl,-S
 endif

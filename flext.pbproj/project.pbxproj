@@ -125,6 +125,8 @@
 				F504A67203CE39F501A80AC9,
 				F504A67303CE39F501A80AC9,
 				F5B1FAC8041191190179CFEF,
+				F598D263044CC4A001A80AC9,
+				F598D264044CC4A001A80AC9,
 			);
 			isa = PBXGroup;
 			name = Source;
@@ -1521,6 +1523,8 @@
 				F504A69303CE3C1601A80AC9,
 				F504A69403CE3C1701A80AC9,
 				F5B1FACD0411918B0179CFEF,
+				F598D265044CC4A001A80AC9,
+				F598D266044CC4A001A80AC9,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1659,6 +1663,30 @@
 		F55CEE560383F9A301A80AC9 = {
 			isa = PBXTargetDependency;
 			target = F55CEE300383F59B01A80AC9;
+		};
+		F598D263044CC4A001A80AC9 = {
+			isa = PBXFileReference;
+			name = flbind.cpp;
+			path = source/flbind.cpp;
+			refType = 4;
+		};
+		F598D264044CC4A001A80AC9 = {
+			isa = PBXFileReference;
+			name = flsimd.cpp;
+			path = source/flsimd.cpp;
+			refType = 4;
+		};
+		F598D265044CC4A001A80AC9 = {
+			fileRef = F598D263044CC4A001A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F598D266044CC4A001A80AC9 = {
+			fileRef = F598D264044CC4A001A80AC9;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		F59A5F910386DF3201A80AC9 = {
 			buildPhases = (

@@ -28,13 +28,9 @@ LDFLAGS=$(LDFLAGS) /C /Tpd
 
 ##############################################
 
-CFLAGS=$(CFLAGS) $(UFLAGS)
-
 !ifdef DEBUG
-CFLAGS=$(CFLAGS) -v -D_DEBUG
+CFLAGS=$(CFLAGS) -v
 LDFLAGS=$(LDFLAGS) /v
-!else
-CFLAGS=$(CFLAGS) $(OFLAGS) -DNDEBUG
 !endif
 
 ##############################################

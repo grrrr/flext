@@ -2,6 +2,15 @@
 # flext defines
 ##############################################
 
+CFLAGS=$(CFLAGS) $(UFLAGS)
+
+!ifdef DEBUG
+CFLAGS=$(CFLAGS) /D_DEBUG $(DFLAGS)
+!else
+CFLAGS=$(CFLAGS) /DNDEBUG $(OFLAGS)
+!endif
+
+
 !ifdef SHARED
 # --- shared ---
 DEFS=$(DEFS) /DFLEXT_SHARED
@@ -22,30 +31,26 @@ DEFS=$(DEFS) /DFLEXT_THREADS
 ##############################################
 
 !ifdef SHARED
-
-!ifdef DEBUG
-FLEXTNAME=flext-$(RTSYS)_d
+TYPEEXT=_
 !else
-FLEXTNAME=flext-$(RTSYS)
-!endif
-
-!else
-
 !ifdef THREADED
-!ifdef DEBUG
-FLEXTNAME=flext-$(RTSYS)_td
+TYPEEXT=_t
 !else
-FLEXTNAME=flext-$(RTSYS)_t
-!endif
-!else
-!ifdef DEBUG
-FLEXTNAME=flext-$(RTSYS)_sd
-!else
-FLEXTNAME=flext-$(RTSYS)_s
+TYPEEXT=_s
 !endif
 !endif
 
-!endif # SHARED
+!ifdef DEBUG
+MODEEXT=d
+!else
+!ifdef PROFILE
+MODEEXT=p
+!else
+MODEEXT=
+!endif
+!endif
+
+FLEXTNAME=flext-$(RTSYS)$(TYPEEXT)$(MODEEXT)
 
 ##############################################
 # product name and folder

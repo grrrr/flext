@@ -47,4 +47,3 @@ else
 	echo system path and that all relevant environment variables are properly set.
 	echo
 fi
-

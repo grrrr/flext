@@ -39,7 +39,7 @@ or
 	clean-MODE-TYPE
 
 with
-	MODE: default, all, release, debug
+	MODE: default, all, release, debug, profile
 	TYPE: default, all, single, multi, shared
 
 
@@ -89,6 +89,7 @@ BUILDCLASS: can currently be flext or ext, default is ext.
 BUILDMODE: release or debug, default is release
 	if release, optimization flags will be used
 	if debug, debug information will be generated
+	if profile, profiling information will be generated (with debug info and optimization)
 
 BUILDTYPE: single, multi or shared, default is single
 	if single, it will be linked against the single-threaded static flext library

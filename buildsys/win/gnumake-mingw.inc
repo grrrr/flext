@@ -11,13 +11,15 @@ LDFLAGS += -pthread -shared
 
 ##############################################
 
-CFLAGS += $(UFLAGS)
-
 ifdef DEBUG
-CFLAGS += -g -D_DEBUG
+CFLAGS += -g
 else
-CFLAGS += $(OFLAGS) -DNDEBUG
+ifdef PROFILE
+CFLAGS += -g -pg
+LDFLAGS += -pg
+else
 LDFLAGS += -Wl,-S
+endif
 endif
 
 ##############################################

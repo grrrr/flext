@@ -6,6 +6,8 @@ build-release-default: build-release-all
 
 build-debug-default: build-debug-all
 
+build-profile-default: build-profile-all
+
 build-default-all: build-all-all
 
 build-default-single: build-all-single

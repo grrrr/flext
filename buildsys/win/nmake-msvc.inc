@@ -30,11 +30,8 @@ LDFLAGS=$(LDFLAGS) /nologo
 
 ##############################################
 
-CFLAGS=$(CFLAGS) $(UFLAGS)
-
 !ifdef DEBUG
 
-CFLAGS=$(CFLAGS) /D_DEBUG
 !ifdef DYNAMIC
 CFLAGS=$(CFLAGS) /MDd
 !else
@@ -45,7 +42,6 @@ LDFLAGS=$(LDFLAGS) /DEBUG
 
 !else
 
-CFLAGS=$(CFLAGS) $(OFLAGS) /DNDEBUG
 !ifdef DYNAMIC
 CFLAGS=$(CFLAGS) /MD
 !else

@@ -73,13 +73,15 @@ endif
 ###############################################
 # include file describing default target dependencies
 
+.PHONY : all build clean install profile
+
 include $(BUILDPATH)targets.inc
 
 include $(BUILDPATH)targets-$(BUILDCLASS).inc
 
 ###############################################
 
-.precious: $(SYSCONFIG) $(USRCONFIG)
+.PRECIOUS: $(SYSCONFIG) $(USRCONFIG)
 
 $(SYSCONFIG): $(SYSDEFAULT)
 	@cp $< $@

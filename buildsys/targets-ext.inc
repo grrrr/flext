@@ -6,6 +6,8 @@ build-release-default: build-release-$(BUILDTYPE)
 
 build-debug-default: build-debug-$(BUILDTYPE)
 
+build-profile-default: build-profile-$(BUILDTYPE)
+
 build-default-all: build-$(BUILDMODE)-all
 
 build-default-single: build-$(BUILDMODE)-single

@@ -14,7 +14,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
  
 #include "flext.h"
 
-bool flext_base::CallMeth(const methitem &m,int argc,const t_atom *argv)
+bool flext_base::CallMeth(const MethItem &m,int argc,const t_atom *argv)
 {
 	bool ret = false;
 	int ix;
@@ -72,7 +72,7 @@ bool flext_base::CallMeth(const methitem &m,int argc,const t_atom *argv)
 	return ret;
 }
 
-bool flext_base::TryMethTag(const methitem *m,int inlet,const t_symbol *t,int argc,const t_atom *argv)
+bool flext_base::TryMethTag(const MethItem *m,int inlet,const t_symbol *t,int argc,const t_atom *argv)
 {
 	do {
 		if(m->inlet == inlet && m->tag == t) {
@@ -99,11 +99,11 @@ bool flext_base::TryMethTag(const methitem *m,int inlet,const t_symbol *t,int ar
 				if(argc == m->argc && CallMeth(*m,argc,argv)) return true;
 			}
 		}
-	} while((m = (const methitem *)m->nxt) != NULL);
+	} while((m = (const MethItem *)m->nxt) != NULL);
 	return false;
 }
 
-bool flext_base::TryMethSym(const methitem *m,int inlet,const t_symbol *t,const t_symbol *s)
+bool flext_base::TryMethSym(const MethItem *m,int inlet,const t_symbol *t,const t_symbol *s)
 {
 	do {
 		if(!m->IsAttr() && m->inlet == inlet && m->tag == t) {
@@ -112,11 +112,11 @@ bool flext_base::TryMethSym(const methitem *m,int inlet,const t_symbol *t,const 
 			t_any sym; sym.st = const_cast<t_symbol *>(s);
 			if(((methfun_1)m->fun)(this,sym)) return true;
 		}
-	} while((m = (const methitem *)m->nxt) != NULL);
+	} while((m = (const MethItem *)m->nxt) != NULL);
 	return false;
 }
 
-bool flext_base::TryMethAny(const methitem *m,int inlet,const t_symbol *t,const t_symbol *s,int argc,const t_atom *argv)
+bool flext_base::TryMethAny(const MethItem *m,int inlet,const t_symbol *t,const t_symbol *s,int argc,const t_atom *argv)
 {
 	do {
 		if(!m->IsAttr() && m->inlet == inlet && m->tag == t) {
@@ -124,7 +124,7 @@ bool flext_base::TryMethAny(const methitem *m,int inlet,const t_symbol *t,const 
 
 			if(((methfun_A)m->fun)(this,s,argc,const_cast<t_atom *>(argv))) return true;
 		}
-	} while((m = (const methitem *)m->nxt) != NULL);
+	} while((m = (const MethItem *)m->nxt) != NULL);
 	return false;
 }
 
@@ -133,21 +133,21 @@ bool flext_base::TryMethAny(const methitem *m,int inlet,const t_symbol *t,const 
 */
 bool flext_base::FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *argv)
 {
-	methitem *m;
+	MethItem *m;
 	
 	// search for exactly matching tag
-	if((m = (methitem *)methhead->Find(s,inlet)) != NULL && TryMethTag(m,inlet,s,argc,argv)) return true;
-	if((m = (methitem *)clmethhead->Find(s,inlet)) != NULL && TryMethTag(m,inlet,s,argc,argv)) return true;
+	if((m = (MethItem *)methhead->Find(s,inlet)) != NULL && TryMethTag(m,inlet,s,argc,argv)) return true;
+	if((m = (MethItem *)clmethhead->Find(s,inlet)) != NULL && TryMethTag(m,inlet,s,argc,argv)) return true;
 	
 	// if no list args, then search for pure symbol 
 	if(!argc) {
-		if((m = (methitem *)methhead->Find(sym_symbol,inlet)) != NULL && TryMethSym(m,inlet,sym_symbol,s)) return true;
-		if((m = (methitem *)clmethhead->Find(sym_symbol,inlet)) != NULL && TryMethSym(m,inlet,sym_symbol,s)) return true;
+		if((m = (MethItem *)methhead->Find(sym_symbol,inlet)) != NULL && TryMethSym(m,inlet,sym_symbol,s)) return true;
+		if((m = (MethItem *)clmethhead->Find(sym_symbol,inlet)) != NULL && TryMethSym(m,inlet,sym_symbol,s)) return true;
 	}
 	
 	// otherwise search for anything
-	if((m = (methitem *)methhead->Find(sym_anything,inlet)) != NULL && m->argc == 1 && m->args[0] == a_any && TryMethAny(m,inlet,sym_anything,s,argc,argv)) return true;
-	if((m = (methitem *)clmethhead->Find(sym_anything,inlet)) != NULL && m->argc == 1 && m->args[0] == a_any && TryMethAny(m,inlet,sym_anything,s,argc,argv)) return true;
+	if((m = (MethItem *)methhead->Find(sym_anything,inlet)) != NULL && m->argc == 1 && m->args[0] == a_any && TryMethAny(m,inlet,sym_anything,s,argc,argv)) return true;
+	if((m = (MethItem *)clmethhead->Find(sym_anything,inlet)) != NULL && m->argc == 1 && m->args[0] == a_any && TryMethAny(m,inlet,sym_anything,s,argc,argv)) return true;
 
 	// if nothing found try any inlet
 	return inlet >= 0 && FindMeth(-1,s,argc,argv);

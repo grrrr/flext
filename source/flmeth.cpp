@@ -17,18 +17,18 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <stdarg.h>
 #include "flinternal.h"
 
-flext_base::methitem::methitem(int in,const t_symbol *tg,attritem *conn): 
-	item(tg,in,conn),
+flext_base::MethItem::MethItem(int in,const t_symbol *tg,AttrItem *conn): 
+	Item(tg,in,conn),
 	argc(0),args(NULL)
 	,fun(NULL)
 {}
 
-flext_base::methitem::~methitem() 
+flext_base::MethItem::~MethItem() 
 { 
 	if(args) delete[] args; 
 }
 
-void flext_base::methitem::SetArgs(methfun _fun,int _argc,metharg *_args)
+void flext_base::MethItem::SetArgs(methfun _fun,int _argc,metharg *_args)
 {
 	fun = _fun;
 	if(args) delete[] args;
@@ -38,12 +38,12 @@ void flext_base::methitem::SetArgs(methfun _fun,int _argc,metharg *_args)
 
 void flext_base::AddMethodDef(int inlet,const char *tag)
 {
-	methhead->Add(new methitem(inlet,tag?MakeSymbol(tag):NULL));
+	methhead->Add(new MethItem(inlet,tag?MakeSymbol(tag):NULL));
 }
 
 /*! \brief Add a method to the queue
 */
-void flext_base::AddMethod(itemarr *ma,int inlet,const char *tag,methfun fun,metharg tp,...)
+void flext_base::AddMethod(ItemCont *ma,int inlet,const char *tag,methfun fun,metharg tp,...)
 {
 	va_list marker; 
 
@@ -81,7 +81,7 @@ void flext_base::AddMethod(itemarr *ma,int inlet,const char *tag,methfun fun,met
 		va_end(marker);
 	}
 	
-	methitem *mi = new methitem(inlet,MakeSymbol(tag));
+	MethItem *mi = new MethItem(inlet,MakeSymbol(tag));
 
 	mi->SetArgs(fun,argc,args);
 

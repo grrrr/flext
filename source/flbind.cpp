@@ -56,11 +56,11 @@ void flext_base::SetupBindProxy()
 }
 
 
-flext_base::binditem::binditem(int in,const t_symbol *sym,bool (*f)(flext_base *,t_symbol *s,int,t_atom *,void *data),pxbnd_object *p):
-	item(sym,0,NULL),fun(f),px(p)
+flext_base::BindItem::BindItem(int in,const t_symbol *sym,bool (*f)(flext_base *,t_symbol *s,int,t_atom *,void *data),pxbnd_object *p):
+	Item(sym,0,NULL),fun(f),px(p)
 {}
 
-flext_base::binditem::~binditem()
+flext_base::BindItem::~BindItem()
 {
     if(px) {
 #if FLEXT_SYS == FLEXT_SYS_PD
@@ -92,7 +92,7 @@ flext_base::binditem::~binditem()
 bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbol *s,int argc,t_atom *argv,void *data),void *data)
 {
     if(!bindhead) 
-        bindhead = new itemarr;
+        bindhead = new ItemCont;
     else {
         // Search for symbol
         if(bindhead->Find(sym,0)) {
@@ -117,7 +117,7 @@ bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbo
 #endif
 
     if(px) {
-	    binditem *mi = new binditem(0,sym,fun,px);
+	    BindItem *mi = new BindItem(0,sym,fun,px);
 	    bindhead->Add(mi);
 
         px->init(this,mi,data);
@@ -145,9 +145,9 @@ bool flext_base::UnbindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_sym
     bool ok = false;
     
     if(bindhead) {
-        binditem *it = NULL;
+        BindItem *it = NULL;
         if(sym) {
-            it = (binditem *)bindhead->Find(sym,0);
+            it = (BindItem *)bindhead->Find(sym,0);
             while(it) {
                 if(it->tag == sym && (!fun || it->fun == fun)) break;
             }
@@ -157,7 +157,7 @@ bool flext_base::UnbindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_sym
             if(!sz) sz = 1;
 
             for(int i = 0; i < sz; ++i) {
-                for(it = (binditem *)bindhead->Item(i); it; it = (binditem *)it->nxt) {
+                for(it = (BindItem *)bindhead->GetItem(i); it; it = (BindItem *)it->nxt) {
                     if(it->tag == sym && (!fun || it->fun == fun)) break;
                 }
                 if(it) break;
@@ -180,7 +180,7 @@ bool flext_base::UnbindAll()
     if(!sz) sz = 1;
 
     for(int i = 0; i < sz; ++i) {
-        for(binditem *it = (binditem *)bindhead->Item(i); it; it = (binditem *)it->nxt) {
+        for(BindItem *it = (BindItem *)bindhead->GetItem(i); it; it = (BindItem *)it->nxt) {
 //			if(it->px->data) memleak = true;
             if(bindhead->Remove(it)) delete it;
         }

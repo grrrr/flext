@@ -37,12 +37,12 @@ flext_base::FLEXT_CLASSDEF(flext_base)():
 
 	t_classid clid = thisClassId();
 	clmethhead = ClMeths(clid);
-	methhead = new itemarr;
+	methhead = new ItemCont;
 	bindhead = NULL;
 
 	if(procattr) {
 		// initialize when attribute processing is enabled
-		attrhead = new itemarr;
+		attrhead = new ItemCont;
 		clattrhead = ClAttrs(clid);
 		attrdata = new AttrDataCont;
 	}

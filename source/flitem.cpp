@@ -16,23 +16,23 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <string.h>
 
 
-flext_base::item::item(const t_symbol *t,int inl,attritem *a): 
+flext_base::Item::Item(const t_symbol *t,int inl,AttrItem *a): 
  tag(t),inlet(inl),attr(a),nxt(NULL) 
 {}
 
-flext_base::item::~item()
+flext_base::Item::~Item()
 {
 	if(nxt) delete nxt;
 }
 
 
-flext_base::itemarr::itemarr():
-	arr(new item *[2]),cnt(0),bits(-1)
+flext_base::ItemCont::ItemCont():
+	arr(new Item *[2]),cnt(0),bits(-1)
 {
 	arr[0] = arr[1] = NULL;
 }
 
-flext_base::itemarr::~itemarr()
+flext_base::ItemCont::~ItemCont()
 {
     if(Ready()) {
         // if finalized, the array has several slots
@@ -47,7 +47,7 @@ flext_base::itemarr::~itemarr()
 	delete[] arr;
 }
 
-void flext_base::itemarr::Add(item *it)
+void flext_base::ItemCont::Add(Item *it)
 {
 	if(Ready()) {
 		// retrieve array index
@@ -55,7 +55,7 @@ void flext_base::itemarr::Add(item *it)
 
 		// add to array slot
 		if(arr[ix]) {
-			item *a = arr[ix];
+			Item *a = arr[ix];
 			while(a->nxt) a = a->nxt;
 			a->nxt = it;
 		}
@@ -72,7 +72,7 @@ void flext_base::itemarr::Add(item *it)
 	}
 }
 
-bool flext_base::itemarr::Remove(item *it)
+bool flext_base::ItemCont::Remove(Item *it)
 {
 	if(Ready()) {
 		// retrieve array index
@@ -80,7 +80,7 @@ bool flext_base::itemarr::Remove(item *it)
 
 		// remove from array slot
 		if(arr[ix]) {
-			item *a1 = NULL,*a = arr[ix];
+			Item *a1 = NULL,*a = arr[ix];
 			while(a && a != it) a1 = a,a = a->nxt;
             if(a) { // found (a == it)
                 if(a1) a1->nxt = it->nxt;
@@ -99,7 +99,7 @@ bool flext_base::itemarr::Remove(item *it)
 		if(!arr[0]) 
             return false;
         else {
-			item *a1 = NULL,*a = arr[0];
+			Item *a1 = NULL,*a = arr[0];
 			while(a && a != it) a1 = a,a = a->nxt;
             if(a) { // found (a == it)
                 if(a1) a1->nxt = it->nxt;
@@ -115,7 +115,7 @@ bool flext_base::itemarr::Remove(item *it)
 	}
 }
 
-void flext_base::itemarr::Finalize()
+void flext_base::ItemCont::Finalize()
 {
 	if(!Ready()) 
 	{
@@ -126,14 +126,14 @@ void flext_base::itemarr::Finalize()
 		int sz = Size();
 
 		// save stored item list
-		item *lst = arr[0];
+		Item *lst = arr[0];
 		
 		delete[] arr;
-		arr = new item *[sz];
+		arr = new Item *[sz];
 		memset(arr,0,sz*sizeof(*arr));
 		
 		while(lst) {
-			item *l = lst;
+			Item *l = lst;
 			lst = lst->nxt;
 			l->nxt = NULL;
 
@@ -157,9 +157,9 @@ void flext_base::itemarr::Finalize()
 	}
 }
 
-flext_base::item *flext_base::itemarr::Find(const t_symbol *tag,int inlet) const
+flext_base::Item *flext_base::ItemCont::Find(const t_symbol *tag,int inlet) const
 {
-	item *a;
+	Item *a;
 	if(!Ready())
 		a = arr[0];
 	else if(Count()) {
@@ -176,7 +176,7 @@ flext_base::item *flext_base::itemarr::Find(const t_symbol *tag,int inlet) const
 	return a;
 }
 
-int flext_base::itemarr::Hash(const t_symbol *tag,int inlet,int bits)
+int flext_base::ItemCont::Hash(const t_symbol *tag,int inlet,int bits)
 {
 	unsigned long h = ((reinterpret_cast<unsigned long>(tag)&~7L)<<1)+inlet;
 	return FoldBits(h,bits);
@@ -199,14 +199,14 @@ public:
 
 	flext_obj::t_classid clid;
 	int ix;
-	flext_base::itemarr *arr;
+	flext_base::ItemCont *arr;
 
 	_itemarr *nxt;
 };
 
 _itemarr::_itemarr(flext_obj::t_classid c,int i):
 	clid(c),ix(i),
-	arr(new flext_base::itemarr),
+	arr(new flext_base::ItemCont),
 	nxt(NULL)
 {}
 
@@ -230,7 +230,7 @@ int _itemarr::Hash(flext_obj::t_classid c,int ix)
 
 static _itemarr **_arrs = NULL;
 
-flext_base::itemarr *flext_base::GetClassArr(t_classid c,int ix) 
+flext_base::ItemCont *flext_base::GetClassArr(t_classid c,int ix) 
 {
 	if(!_arrs) {
 		_arrs = new _itemarr *[_itemarr::HASHSIZE];

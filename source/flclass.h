@@ -106,7 +106,7 @@ public:
 		/*! \brief Get pointer to buffer, channel and frame count.
 			\remark Channels are interleaved
 		*/
-		float *Data() { return data; }
+		t_sample *Data() { return data; }
 		//! Get channel count
 		int Channels() const { return chns; }
 		//! Get frame count
@@ -117,7 +117,7 @@ public:
 
 	protected:
 		t_symbol *sym;
-		float *data;
+		t_sample *data;
 		int chns,frames;
 #ifdef PD
 		float interval;
@@ -466,7 +466,7 @@ public:
 		@param insigs: array of input vectors  (get number with function CntInSig())
 		@param outsigs: array of output vectors  (get number with function CntOutSig())
 	*/
-	virtual void m_dsp(int n,float *const *insigs,float *const *outsigs);
+	virtual void m_dsp(int n,t_sample *const *insigs,t_sample *const *outsigs);
 
 	/*! \brief Called with every signal vector.
 		Here you do the dsp calculation
@@ -474,7 +474,7 @@ public:
 		@param insigs: array of input vectors  (get number with function CntInSig())
 		@param outsigs: array of output vectors  (get number with function CntOutSig())
 	*/
-	virtual void m_signal(int n,float *const *insigs,float *const *outsigs) = 0;
+	virtual void m_signal(int n,t_sample *const *insigs,t_sample *const *outsigs) = 0;
 
 #ifndef MAXMSP
 	//! called with "enable" message: pauses/resumes dsp - implicitely defined in MaxMSP
@@ -516,7 +516,7 @@ private:
 	// dsp stuff
 
 	static t_int *dspmeth(t_int *w); 
-	float **invecs,**outvecs;
+	t_sample **invecs,**outvecs;
 };
 
 #endif

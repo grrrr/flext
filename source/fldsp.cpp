@@ -64,7 +64,7 @@ t_int *flext_dsp::dspmeth(t_int *w)
 	return w+3;
 }
 
-void flext_dsp::m_dsp(int /*n*/,float *const * /*insigs*/,float *const * /*outsigs*/) {}
+void flext_dsp::m_dsp(int /*n*/,t_sample *const * /*insigs*/,t_sample *const * /*outsigs*/) {}
 
 void flext_dsp::cb_dsp(t_class *c,t_signal **sp) 
 { 
@@ -84,11 +84,11 @@ void flext_dsp::cb_dsp(t_class *c,t_signal **sp)
 	// store in and out signal vectors
 	int i,in = obj->CntInSig(),out = obj->CntOutSig();
 	if(obj->invecs) delete[] obj->invecs;
-	obj->invecs = new float *[in];
+	obj->invecs = new t_sample *[in];
 	for(i = 0; i < in; ++i) obj->invecs[i] = sp[i]->s_vec;
 
 	if(obj->outvecs) delete[] obj->outvecs;
-	obj->outvecs = new float *[out];
+	obj->outvecs = new t_sample *[out];
 	for(i = 0; i < out; ++i) obj->outvecs[i] = sp[in+i]->s_vec;
 
 	// with the following call derived classes can do their eventual DSP setup

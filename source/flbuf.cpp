@@ -11,7 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <_cppext.h>
 
 #ifdef PD
-#define DIRTY_INTERVAL 100   // buffer dirty check in msec
+#define DIRTY_INTERVAL 0   // buffer dirty check in msec
 #endif
 
 buffer::buffer(t_symbol *bn):
@@ -39,7 +39,7 @@ I buffer::Set(t_symbol *s)
 {
 	I ret = 0;
 
-	if(sym != s) {
+	if(s && sym != s) {
 		ret = -1;
 		data = NULL; 
 		frames = 0;
@@ -50,11 +50,11 @@ I buffer::Set(t_symbol *s)
 
 	if(sym) {
 #ifdef PD
-		t_garray *a;
 		I frames1;
 		F *data1;
     
-		if (!(a = (t_garray *)pd_findbyclass(sym, garray_class)))
+		t_garray *a = (t_garray *)pd_findbyclass(sym, garray_class);
+		if(!a)
 		{
     		if (*sym->s_name)
     			error("%s: no such array '%s'",thisName(), sym->s_name);
@@ -102,11 +102,11 @@ I buffer::Set(t_symbol *s)
 	return ret;
 }
 
-V buffer::Dirty()
+V buffer::Dirty(BL force)
 {
 	if(sym) {
 #ifdef PD
-		if(!ticking) {
+		if((!ticking) && (interval || force)) {
 			ticking = true;
 			clock_delay(tick,0);
 		}
@@ -136,10 +136,10 @@ V buffer::cb_tick(buffer *b)
 	t_garray *a = (t_garray *)pd_findbyclass(b->sym, garray_class);
 	if (a) garray_redraw(a);
 //		else bug("tabwrite_tilde_tick");
-	if(b->isdirty) {
-		b->ticking = true;
-		b->isdirty = false;
-		clock_delay(b->tick,b->interval);
+	if(b->isdirty && b->interval) {
+			b->isdirty = false;
+			b->ticking = true;
+			clock_delay(b->tick,b->interval);
 	}
 	else 
 		b->ticking = false;

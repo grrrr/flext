@@ -53,7 +53,7 @@ public:
 	~buffer();
 	
 	I Set(t_symbol *s = NULL);
-	V Dirty();
+	V Dirty(BL force = false);
 	
 	t_symbol *Symbol() { return sym; }
 	const C *Name() const { return sym?sym->s_name:""; }
@@ -61,6 +61,7 @@ public:
 	I Channels() const { return chns; }
 	I Frames() const { return frames; }
 
+	V SetRefrIntv(F intv) { interval = intv; }
 protected:
 	const C *thisName() const { return typeid(*this).name(); }
 

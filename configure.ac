@@ -3,6 +3,9 @@ dnl autoconf template
 dnl added by tim blechmann
 dnl
 
+dnl flext API version (current:release:age)
+API_VERSION=0:0:0
+
 AC_INIT([flext],[0.4.7],[gr@grrrr.org],[flext])
 AM_INIT_AUTOMAKE(1.8)
 
@@ -93,11 +96,11 @@ dnl Checks for library functions.
 dnl system specific
 
 if test 'uname -s' == Linux; then
-	DYNAMIC_LDFLAGS = -Wl,-Bdynamic
+	DYNAMIC_LDFLAGS = "-version-info $API_VERSION -release $AC_PACKAGE_VERSION -Wl,-Bdynamic"
 fi
 
 if test 'uname -s' == Darwin; then
-	DYNAMIC_LDFLAGS = "-dylib -dynamic -flat_namespace -undefined suppress"
+	DYNAMIC_LDFLAGS = "-version-info $API_VERSION -release $AC_PACKAGE_VERSION -dylib -dynamic -flat_namespace -undefined suppress"
 fi
 
 

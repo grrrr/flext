@@ -60,7 +60,7 @@ config: $(USRMAKE) $(SYSCONFIG) $(USRCONFIG)
 .precious: $(SYSCONFIG) $(USRCONFIG)
 
 $(SYSCONFIG): $(SYSDEFAULT)
-	@cp $> $@
+	@cp $< $@
 	@echo -------------------------------------------------------------------------
 	@echo A default system configuration file has been created.
 	@echo Please edit $(SYSCONFIG) 
@@ -70,7 +70,7 @@ $(SYSCONFIG): $(SYSDEFAULT)
 
 ifdef HAVECONFIG	
 $(USRCONFIG): $(USRDEFAULT)
-	@cp $> $@
+	@cp $< $@
 	@echo -------------------------------------------------------------------------
 	@echo A default package configuration file has been created.
 	@echo Please edit $(USRCONFIG) and start again.
@@ -86,3 +86,4 @@ $(USRMAKE):
 	@echo -------------------------------------------------------------------------
 	@false
 endif
+

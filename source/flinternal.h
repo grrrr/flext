@@ -46,12 +46,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define add_anything(clss,meth) class_addanything(clss,meth)
 
 
-#define newout_signal(clss) outlet_new(clss,&s_signal)
-#define newout_float(clss) outlet_new(clss,&s_float)
-#define newout_flint(clss) outlet_new(clss,&s_float)
-#define newout_list(clss) outlet_new(clss,&s_list)
-#define newout_symbol(clss) outlet_new(clss,&s_symbol)
-#define newout_anything(clss) outlet_new(clss,&s_anything)
+#define newout_signal(clss) outlet_new(clss,gensym("signal"))
+#define newout_float(clss) outlet_new(clss,gensym("float"))
+#define newout_flint(clss) outlet_new(clss,gensym("float"))
+#define newout_list(clss) outlet_new(clss,gensym("list"))
+#define newout_symbol(clss) outlet_new(clss,gensym("symbol"))
+#define newout_anything(clss) outlet_new(clss,gensym("anything"))
 
 #define outlet_flint(o,v) outlet_float(o,(float)(v))
 

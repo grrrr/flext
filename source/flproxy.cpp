@@ -35,7 +35,7 @@ void flext_base::cb_px_anything(t_class *c,const t_symbol *s,int argc,t_atom *ar
 #define DEF_IN_FT(IX) \
 void flext_base::cb_px_ft ## IX(t_class *c,float v) { \
 	t_atom atom; SETFLOAT(&atom,v);  \
-	thisObject(c)->m_methodmain(IX,&s_float,1,&atom); \
+	thisObject(c)->m_methodmain(IX,sym_float,1,&atom); \
 }
 
 #define ADD_IN_FT(IX) \

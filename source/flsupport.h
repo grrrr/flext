@@ -65,7 +65,7 @@ public:
 	//!	@}  FLEXT_S_MEMORY  	
 };
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) && !defined(__BORLANDC__)
 #define NEWTHROW throw(std::bad_alloc)
 #define DELTHROW throw()
 #else

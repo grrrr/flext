@@ -52,17 +52,22 @@
 @make -f ..\makefile.pd-bcc NAME=lib1 SETUPFUNCTION=lib1_setup
 @cd ..
 
-rem @cd sndobj1
-rem @make -f ..\makefile.pd-bcc NAME=sndobj1~ SETUPFUNCTION=sndobj1_tilde_setup
-rem @cd ..
+@cd bind1
+@make -f ..\makefile.pd-bcc NAME=bind1 SETUPFUNCTION=bind1_setup
+@cd ..
 
-rem @cd stk1
-rem @make -f ..\makefile.pd-bcc NAME=stk1~ SETUPFUNCTION=stk1_tilde_setup
-rem @cd ..
+@cd buffer1
+@make -f ..\makefile.pd-bcc NAME=buffer1 SETUPFUNCTION=buffer1_setup
+@cd ..
 
-rem @cd stk2
-rem @make -f ..\makefile.pd-bcc NAME=stk2~ SETUPFUNCTION=stk2_tilde_setup
-rem @cd ..
+@rem @cd sndobj1
+@rem @make -f ..\makefile.pd-bcc NAME=sndobj1~ SETUPFUNCTION=sndobj1_tilde_setup
+@rem @cd ..
 
+@rem @cd stk1
+@rem @make -f ..\makefile.pd-bcc NAME=stk1~ SETUPFUNCTION=stk1_tilde_setup
+@rem @cd ..
 
-
+@rem @cd stk2
+@rem @make -f ..\makefile.pd-bcc NAME=stk2~ SETUPFUNCTION=stk2_tilde_setup
+@rem @cd ..

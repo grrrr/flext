@@ -56,6 +56,8 @@ $(OUTPATH)\pd.lib: $(PDPATH)\bin\pd.dll
 
 $(OUTPATH)\$(NAME).def:
 	@echo EXPORTS $(SETUPFUNCTION) = _$(SETUPFUNCTION) > $<
+# this next line fixes a strange problem with implib - lacking underscore?!
+	@echo IMPORTS _rtext_retext=PD.rtext_retext >> $<
 
 $(OUTPATH)\$(NAME)~.dll : $(OUTPATH)\$(NAME).dll
 	-ren $** $<

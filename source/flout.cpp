@@ -133,16 +133,16 @@ bool flext_base::InitInlets()
 						}
 						else 
 							sym[2] = '0'+ix,sym[3] = 0;  
-					    if(ok) inlet_new(&x_obj->obj, &x_obj->obj.ob_pd, &s_float, gensym(sym)); 
+					    if(ok) inlet_new(&x_obj->obj, &x_obj->obj.ob_pd, (t_symbol *)sym_float, gensym(sym)); 
 						break;
 					}
 					case xlet::tp_sym: 
 					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
-						inlet_new(&x_obj->obj,&inlets[ix]->obj.ob_pd, &s_symbol, &s_symbol);  
+						inlet_new(&x_obj->obj,&inlets[ix]->obj.ob_pd, (t_symbol *)sym_symbol, (t_symbol *)sym_symbol);  
 						break;
 					case xlet::tp_list:
 					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
-						inlet_new(&x_obj->obj,&inlets[ix]->obj.ob_pd, &s_list, &s_list);  
+						inlet_new(&x_obj->obj,&inlets[ix]->obj.ob_pd, (t_symbol *)sym_list, (t_symbol *)sym_list);  
 						break;
 					case xlet::tp_any:
 					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
@@ -156,7 +156,7 @@ bool flext_base::InitInlets()
 						else {
 							// pd doesn't seem to be able to handle signals and messages into the same inlet...
 							
-							inlet_new(&x_obj->obj, &x_obj->obj.ob_pd, &s_signal, &s_signal);  
+							inlet_new(&x_obj->obj, &x_obj->obj.ob_pd, (t_symbol *)sym_signal, (t_symbol *)sym_signal);  
 							++insigs;
 						}
 						break;

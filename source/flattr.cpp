@@ -14,7 +14,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
  
 #include "flext.h"
 #include <string.h>
-#include <stdio.h>
 
 #ifdef MAXMSP
 #define STD std
@@ -46,8 +45,8 @@ void flext_base::AddAttrItem(attritem *m)
 void flext_base::AddAttrib(const char *attr,metharg tp,methfun gfun,methfun sfun)
 {
 	if(procattr) {
-		char tmp[1024];
-		STD::sprintf(tmp,"get%s",attr);
+		char tmp[256] = "get";
+		strcpy(tmp+3,attr);
 		AddAttrItem(new attritem(MakeSymbol(attr),MakeSymbol(tmp),tp,gfun,sfun));
 
 		AddMethod(0,attr,(methfun)cb_SetAttrib,a_any,a_null);

@@ -5,6 +5,6 @@
 
 SUBDIRS = source 
 
-EXTRA_DIST = flext.doxy examples tutorial 
+EXTRA_DIST = flext.doxy # examples tutorial 
 
 AUTOMAKE_OPTIONS = foreign

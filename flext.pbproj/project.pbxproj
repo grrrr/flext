@@ -109,8 +109,7 @@
 			sourceTree = "<group>";
 		};
 		08FB77AAFE841565C02AAC07 = {
-			fallbackIsa = PBXFileReference;
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
 			name = Carbon.framework;
 			path = /System/Library/Frameworks/Carbon.framework;
@@ -648,8 +647,6 @@
 			};
 		};
 		F5128F2503864E5501A80AC9 = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -662,8 +659,6 @@
 			name = Development;
 		};
 		F5128F2603864E5501A80AC9 = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
@@ -1025,8 +1020,7 @@
 		};
 		F55CEDC20383E6E401A80AC9 = {
 			explicitFileType = "compiled.mach-o.dylib";
-			fallbackIsa = PBXFileReference;
-			isa = PBXLibraryReference;
+			isa = PBXFileReference;
 			path = flext.a;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -1415,8 +1409,7 @@
 		};
 		F55CEE120383F55201A80AC9 = {
 			explicitFileType = "compiled.mach-o.dylib";
-			fallbackIsa = PBXFileReference;
-			isa = PBXLibraryReference;
+			isa = PBXFileReference;
 			path = flext_t.a;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -1666,8 +1659,7 @@
 		};
 		F55CEE2F0383F57A01A80AC9 = {
 			explicitFileType = "compiled.mach-o.dylib";
-			fallbackIsa = PBXFileReference;
-			isa = PBXLibraryReference;
+			isa = PBXFileReference;
 			path = flext_d.a;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -1917,8 +1909,7 @@
 		};
 		F55CEE4C0383F59B01A80AC9 = {
 			explicitFileType = "compiled.mach-o.dylib";
-			fallbackIsa = PBXFileReference;
-			isa = PBXLibraryReference;
+			isa = PBXFileReference;
 			path = flext_td.a;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -2235,8 +2226,7 @@
 		};
 		F59A5FAD0386DF3201A80AC9 = {
 			explicitFileType = "compiled.mach-o.dylib";
-			fallbackIsa = PBXFileReference;
-			isa = PBXLibraryReference;
+			isa = PBXFileReference;
 			path = flext_t.max.a;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -2482,8 +2472,7 @@
 		};
 		F5AAF632038683E801A80AC9 = {
 			explicitFileType = "compiled.mach-o.dylib";
-			fallbackIsa = PBXFileReference;
-			isa = PBXLibraryReference;
+			isa = PBXFileReference;
 			path = flext.max.a;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -2810,8 +2799,7 @@
 		};
 		F5C2051103D403B401A80AC9 = {
 			explicitFileType = "compiled.mach-o.dylib";
-			fallbackIsa = PBXFileReference;
-			isa = PBXLibraryReference;
+			isa = PBXFileReference;
 			path = flext.a;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -3105,8 +3093,7 @@
 		};
 		F5C2062403D470B401A80AC9 = {
 			explicitFileType = "compiled.mach-o.dylib";
-			fallbackIsa = PBXFileReference;
-			isa = PBXLibraryReference;
+			isa = PBXFileReference;
 			path = flext_t.a;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -3415,8 +3402,7 @@
 		};
 		F5CBC5B704757A5901A0C81C = {
 			explicitFileType = "compiled.mach-o.dylib";
-			fallbackIsa = PBXFileReference;
-			isa = PBXLibraryReference;
+			isa = PBXFileReference;
 			path = libflext.dylib;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -4502,8 +4488,7 @@
 		};
 		F5CBC69B047584CD01A0C81C = {
 			explicitFileType = "compiled.mach-o.dylib";
-			fallbackIsa = PBXFileReference;
-			isa = PBXLibraryReference;
+			isa = PBXFileReference;
 			path = libflext_d.dylib;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;

@@ -205,13 +205,19 @@ inline const char *thisName() const { return m_name; } \
 static NEW_CLASS *thisObject(void *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; }	  
 
 
+#define REAL_NEW(NAME,NEW_CLASS,SETUP_FUNCTION) REAL_INST(0,NAME,NEW_CLASS,SETUP_FUNCTION)
+#define REAL_NEW_G(NAME,NEW_CLASS,SETUP_FUNCTION) REAL_INST_G(0,NAME,NEW_CLASS,SETUP_FUNCTION)
+#define REAL_NEW_1(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1) REAL_INST_1(0,NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1)
+#define REAL_NEW_2(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2) REAL_INST_2(0,NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2)
+#define REAL_NEW_3(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2,TYPE3) REAL_INST_3(0,NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2,TYPE3)
+
 #ifdef PD
 #define REAL_EXT(NEW_CLASS,SETUP_FUNCTION)
-#define REAL_LIB(NAME,NEW_CLASS,SETUP_FUNCTION) REAL_NEW(NAME,NEW_CLASS,SETUP_FUNCTION)
-#define REAL_LIB_G(NAME,NEW_CLASS,SETUP_FUNCTION) REAL_NEW_G(NAME,NEW_CLASS,SETUP_FUNCTION)
-#define REAL_LIB_1(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1) REAL_NEW_1(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1)
-#define REAL_LIB_2(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2) REAL_NEW_2(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2)
-#define REAL_LIB_3(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2,TYPE3) REAL_NEW_3(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2,TYPE3)
+#define REAL_LIB(NAME,NEW_CLASS,SETUP_FUNCTION) REAL_INST(1,NAME,NEW_CLASS,SETUP_FUNCTION)
+#define REAL_LIB_G(NAME,NEW_CLASS,SETUP_FUNCTION) REAL_INST_G(1,NAME,NEW_CLASS,SETUP_FUNCTION)
+#define REAL_LIB_1(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1) REAL_INST_1(1,NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1)
+#define REAL_LIB_2(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2) REAL_INST_2(1,NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2)
+#define REAL_LIB_3(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2,TYPE3) REAL_INST_3(1,NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2,TYPE3)
 #else // MAXMSP
 #define REAL_EXT(NEW_CLASS,SETUP_FUNCTION) extern "C" FLEXT_EXT int main() { NEW_CLASS##SETUP_FUNCTION(); return 0; }
 #define REAL_LIB(NAME,NEW_CLASS,SETUP_FUNCTION) REAL_NEWLIB(NAME,NEW_CLASS,SETUP_FUNCTION)
@@ -313,6 +319,10 @@ REAL_EXT(NEW_CLASS, _tilde_setup)
 // This is to be called in the library setup function
 //////////////////////////////////////////////////////
 
+#define FLEXT_EXP_0 extern "C" FLEXT_EXT
+#define FLEXT_EXP_1  
+#define FLEXT_EXP(LIB) FLEXT_EXP_##LIB
+
 #define FLEXT_SETUP(cl) \
 extern void cl##_setup(); \
 cl##_setup()  
@@ -322,7 +332,7 @@ extern void cl##_tilde_setup(); \
 cl##_tilde_setup()  
 
 #ifdef PD
-#define FLEXT_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT void NAME##_setup( SETUPFUN(); )
+#define FLEXT_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT void NAME##_setup() { SETUPFUN(); }
 #else // MAXMSP
 #define FLEXT_LIB_SETUP(NAME,SETUPFUN) \
 extern "C" FLEXT_EXT int main() { \
@@ -404,7 +414,7 @@ return 0; \
 ///////////////////////////////////////////////////////////////////////////////
 // no args
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW(NAME,NEW_CLASS, SETUP_FUNCTION) \
+#define REAL_INST(LIB,NAME,NEW_CLASS, SETUP_FUNCTION) \
 static t_class * NEW_CLASS ## _class;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS () \
 {     	    	    	    	    	    	    	    	\
@@ -415,7 +425,7 @@ flext_hdr* class_ ## NEW_CLASS () \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-extern "C" FLEXT_EXT void NEW_CLASS ## SETUP_FUNCTION()   \
+FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
     NEW_CLASS ## _class = FLEXT_NEWFN(                       \
@@ -448,7 +458,7 @@ void NEW_CLASS ## SETUP_FUNCTION()   	\
 ///////////////////////////////////////////////////////////////////////////////
 // one arg
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW_1(NAME,NEW_CLASS, SETUP_FUNCTION, TYPE1) \
+#define REAL_INST_1(LIB,NAME,NEW_CLASS, SETUP_FUNCTION, TYPE1) \
 static t_class * NEW_CLASS ## _class;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (TYPE1 arg1) \
 {     	    	    	    	    	    	    	    	\
@@ -459,7 +469,7 @@ flext_hdr* class_ ## NEW_CLASS (TYPE1 arg1) \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-extern "C" FLEXT_EXT void NEW_CLASS ## SETUP_FUNCTION()   \
+FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
     NEW_CLASS ## _class = FLEXT_NEWFN(                       \
@@ -493,7 +503,7 @@ void NEW_CLASS ## SETUP_FUNCTION()   	\
 ///////////////////////////////////////////////////////////////////////////////
 // gimme arg
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW_G(NAME,NEW_CLASS, SETUP_FUNCTION) \
+#define REAL_INST_G(LIB,NAME,NEW_CLASS, SETUP_FUNCTION) \
 static t_class * NEW_CLASS ## _class;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (t_symbol *s,int argc,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
@@ -504,7 +514,7 @@ flext_hdr* class_ ## NEW_CLASS (t_symbol *s,int argc,t_atom *argv) \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-extern "C" FLEXT_EXT void NEW_CLASS ## SETUP_FUNCTION()   \
+FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
     NEW_CLASS ## _class = FLEXT_NEWFN(                       \
@@ -538,7 +548,7 @@ void NEW_CLASS ## SETUP_FUNCTION()   	\
 ///////////////////////////////////////////////////////////////////////////////
 // two args
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW_2(NAME,NEW_CLASS, SETUP_FUNCTION, TYPE1, TYPE2) \
+#define REAL_INST_2(LIB,NAME,NEW_CLASS, SETUP_FUNCTION, TYPE1, TYPE2) \
 static t_class * NEW_CLASS ## _class;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (TYPE1 arg1, TYPE2 arg2) \
 {     	    	    	    	    	    	    	    	\
@@ -549,7 +559,7 @@ flext_hdr* class_ ## NEW_CLASS (TYPE1 arg1, TYPE2 arg2) \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-extern "C" FLEXT_EXT void NEW_CLASS ## SETUP_FUNCTION()   \
+FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
     NEW_CLASS ## _class = FLEXT_NEWFN(                       \
@@ -583,7 +593,7 @@ void NEW_CLASS ## SETUP_FUNCTION()   	\
 ///////////////////////////////////////////////////////////////////////////////
 // three args
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW_3(NAME,NEW_CLASS, SETUP_FUNCTION, TYPE1,TYPE2,TYPE3) \
+#define REAL_INST_3(LIB,NAME,NEW_CLASS, SETUP_FUNCTION, TYPE1,TYPE2,TYPE3) \
 static t_class * NEW_CLASS ## _class;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (TYPE1 arg1,TYPE2 arg2,TYPE3 arg3) \
 {     	    	    	    	    	    	    	    	\
@@ -594,7 +604,7 @@ flext_hdr* class_ ## NEW_CLASS (TYPE1 arg1,TYPE2 arg2,TYPE3 arg3) \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-extern "C" FLEXT_EXT void NEW_CLASS ## SETUP_FUNCTION()   \
+FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
     NEW_CLASS ## _class = FLEXT_NEWFN(                       \
@@ -627,7 +637,7 @@ void NEW_CLASS ## SETUP_FUNCTION()   	\
 ///////////////////////////////////////////////////////////////////////////////
 // four args
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW_4(NAME,NEW_CLASS, SETUP_FUNCTION, TYPE1,TYPE2,TYPE3,TYPE4) \
+#define REAL_INST_4(LIB,NAME,NEW_CLASS, SETUP_FUNCTION, TYPE1,TYPE2,TYPE3,TYPE4) \
 static t_class * NEW_CLASS ## _class;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (TYPE1 arg1,TYPE2 arg2,TYPE3 arg3,TYPE4 arg4) \
 {     	    	    	    	    	    	    	    	\
@@ -638,7 +648,7 @@ flext_hdr* class_ ## NEW_CLASS (TYPE1 arg1,TYPE2 arg2,TYPE3 arg3,TYPE4 arg4) \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-extern "C" FLEXT_EXT void NEW_CLASS ## SETUP_FUNCTION()   \
+FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
 {   	    	    	    	    	    	    	    	\
 	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
     NEW_CLASS ## _class = FLEXT_NEWFN(                       \

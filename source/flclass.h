@@ -499,12 +499,7 @@ public:
 	/*! \brief Yield to other threads
 		\remark A call to this is only needed for systems with cooperative multitasking like MacOS<=9
 	*/
-	void Yield() 
-#ifdef MAXMSP
-	{}
-#else
-	;
-#endif
+	static void ThrYield() { sched_yield(); }
 
 	typedef pthread_t thrid_t;
 

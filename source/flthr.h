@@ -20,6 +20,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifdef FLEXT_THREADS
 
 #include <pthread.h>
+#include <sched.h>
 
 class flext_base::thr_params 
 {

@@ -19,7 +19,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #ifdef MAXMSP
 #define SCHEDTICK 1
-#include <sched.h>
 #endif
 
 #ifdef NT
@@ -50,8 +49,11 @@ bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *me
 	int policy;
 	pthread_getschedparam(id,&policy,&parm);
 	int prio = parm.sched_priority;
-	parm.sched_priority = prio-1;
-	pthread_setschedparam(id,policy,&parm);
+	int schmin = sched_get_priority_min(policy);
+	if(prio > schmin) {
+		parm.sched_priority = prio-1;
+		pthread_setschedparam(id,policy,&parm);
+	}
 
 	pthread_t thrid; 
 	int ret = pthread_create (&thrid,&attr,(void *(*)(void *))meth,p);
@@ -75,8 +77,6 @@ bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *me
 	}
 }
 
-
-
 bool flext_base::PushThread()
 {
 	tlmutex.Lock();
@@ -87,13 +87,36 @@ bool flext_base::PushThread()
 	else thrhead = nt;
 	thrtail = nt;
 
+	{
+#ifdef NT
+	// set detached thread to lower priority class
+	DWORD err;
+	HANDLE thr = GetCurrentThread();
+	DWORD cl = GetThreadPriority(thr);
+	if(!cl && (err = GetLastError()))
+		post("flext - error getting thread priority");
+	else {
+		BOOL ret = SetThreadPriority(thr,cl-2);
+		if(!ret) {
+			err = GetLastError();
+			if(!err) post("flext - error setting thread priority");
+		}
+	}
+#else
 	// set initial detached thread priority two points below normal
 	sched_param parm;
 	int policy;
-	pthread_getschedparam(nt->thrid,&policy,&parm);
+	if(pthread_getschedparam(nt->thrid,&policy,&parm))
+		post("flext - can't get thread parameters");
 	int prio = parm.sched_priority;
-	parm.sched_priority = prio-2;
-	pthread_setschedparam(nt->thrid,policy,&parm);
+	int schmin = sched_get_priority_min(policy);
+	if(prio > schmin) {
+		parm.sched_priority = prio-2;
+		if(pthread_setschedparam(nt->thrid,policy,&parm))
+			post("flext - can't set thread parameters");
+	}
+#endif
+	}
 
 	tlmutex.Unlock();
 	
@@ -133,9 +156,8 @@ void flext_base::PopThread()
 }
 
 #ifdef MAXMSP
-void flext_base::Yield() { sched_yield(); }
-
-void flext_base::YTick(flext_base *th) { 
+void flext_base::YTick(flext_base *th) 
+{ 
 	clock_delay(th->yclk,0); 
 	qelem_set(th->qclk); 
 	sched_yield();

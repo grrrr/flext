@@ -11,7 +11,7 @@
 ## EDIT ZONE ##################################
 
 # pd path 
-PDPATH=/usr/lib/pd/include
+PDPATH=/usr/local/include
 
 # where to install 
 INSTDIR=/usr/lib/pd/flext
@@ -37,7 +37,7 @@ NAME=flext
 
 # all the source files from the package
 SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flsetup.cpp flutil.cpp
-HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h
+HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h flthr.h fldsp.h
 IHDRS=flinternal.h
 
 MAKEFILE=makefile.pd-linux

@@ -85,7 +85,10 @@ Version history:
 - introduced a flext static class for general flext functions (to clean up the flext_base class)
 - creation argument handling is now done by flext
 	no more weird PD re-ordering of arguments 
-- calling SetupInOut() has become obsolete - flext creates all inlets/outlets by itself at the right time
+- calling SetupInOut() has become obsolete 
+	- flext creates all inlets/outlets by itself after the constructor has finished
+	- this implies that CntIn(),CntOut() and the outlet pointers are not valid in the constructor
+	- there is a virtual bool Init() function that may be used for such initialization
 - completely redesigned FLEXT_NEW macros, usage of dynamic classes (in fllib.cpp)
 - added ToQueue* functions - like ToOut* but messages or not directly sent (well suited for deadlock situations)
 - fixed potentially dangerous typo in flext.cpp - (was: FLEXT_THREAD instead of FLEXT_THREADS)

@@ -15,12 +15,13 @@ CXXFLAGS  = @CXXFLAGS@ \
 	@OPT_FLAGS@ \
 	@INCLUDEDIR@ \
 	-I../../source \
-	$(DEFS)
+	$(DEFS) \
+	-DFLEXT_SHARED
 
 LDFLAGS = @LDFLAGS@ \
 	$(patsubst %,-framework %,$(FRAMEWORKS))
 
-LIBS = @LIBS@
+LIBS = @LIBS@ -lflext
 
 FRAMEWORKS = @FRAMEWORKS@
 
@@ -35,9 +36,8 @@ SYSDIR = @SYSDIR@
 
 # ----------------------------- targets --------------------------------
 
-if SNDOBJ
 all-local: $(OBJECTS)
-	$(CXX) $(LDFLAGS) -shared ./*.@OBJEXT@ $(LIBS) -o ../$(TARGETDIR)/$(TARGET)
+	$(CXX) $(LDFLAGS) ./*.@OBJEXT@ $(LIBS) -o ../$(TARGETDIR)/$(TARGET)
 	strip --strip-unneeded ../$(TARGETDIR)/$(TARGET)
 
 ./%.@OBJEXT@ : %.cpp 
@@ -49,4 +49,3 @@ clean-local:
 
 install-exec-local:
 	install ../$(TARGET) $(SYSDIR)extra
-endif

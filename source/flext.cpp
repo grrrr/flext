@@ -199,15 +199,20 @@ flext_base::~flext_base()
 	if(attrhead) delete attrhead;
 }
 
-
+/*! This virtual function is created after the object has been created, that is, 
+	after the constructor has been processed. It creates the inlets and outlets.
+	\note You can override it in your own class, but be sure to call it, 
+	\note otherwise no inlets/outlets will be created
+	\remark Creation of inlets/outlets can't be done upon declaration, as MaxMSP needs creation
+	\remark in reverse.
+*/
 bool flext_base::Init()
 {
 //	if(!flext_obj::Init()) return false;
 
 	bool ok = true;
-	
-	incnt = insigs = 0; 
 
+/*
 	if(inlets) { 
 		for(int ix = 0; ix < incnt; ++ix) 
 			if(inlets[ix]) {
@@ -220,6 +225,13 @@ bool flext_base::Init()
 		delete[] inlets; 
 		inlets = NULL; 
 	}
+*/
+
+	// ----------------------------------
+	// create inlets
+	// ----------------------------------
+
+	incnt = insigs = 0; 
 
 	if(inlist) {
 		xlet *xi;
@@ -363,12 +375,18 @@ bool flext_base::Init()
 		delete[] list;
 	}
 	
+/*
 	if(outlets) { delete[] outlets; outlets = NULL; }
+*/
+	// ----------------------------------
+	// create outlets
+	// ----------------------------------
+
 	outcnt = outsigs = 0; 
 	
 #ifdef MAXMSP
+	// for MAXMSP the rightmost outlet has to be created first
 	if(procattr) 
-		// attribute dump outlet is the last one
 		outattr = (outlet *)newout_anything(&x_obj->obj);
 #endif
 
@@ -433,6 +451,9 @@ bool flext_base::Init()
 	return ok;
 }
 
+/*! Set up proxy classes and basic methods at class creation time
+	This ensures that they are processed before the registered flext messages
+*/
 void flext_base::Setup(t_class *c)
 {
 	add_method(c,cb_help,"help");
@@ -479,7 +500,9 @@ void flext_base::m_help()
 	post("%s (using flext " FLEXT_VERSTR ") - compiled on %s %s",thisName(),__DATE__,__TIME__);
 }
 
-
+/*! \brief All the message processing
+	The messages of all the inlets go here and are promoted to the registered callback functions
+*/
 bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 {
 	static bool trap = false;
@@ -708,6 +731,8 @@ void flext_base::AddMethodDef(int inlet,const char *tag)
 	AddMethItem(new methitem(inlet,tag?MakeSymbol(tag):NULL));
 }
 
+/*! \brief Add a method to the queue
+*/
 void flext_base::AddMethod(int inlet,const char *tag,methfun fun,metharg tp,...)
 {
 	methitem *mi = new methitem(inlet,MakeSymbol(tag));

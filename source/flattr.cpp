@@ -168,11 +168,12 @@ bool flext_base::InitAttrib(int argc,const t_atom *argv)
 	return true;
 }
 
-static const t_symbol *sym_attributes = flext::MakeSymbol("attributes");
-
 bool flext_base::ListAttrib() const
 {
     if(procattr) {
+        // defined in flsupport.cpp
+        extern const t_symbol *sym_attributes;
+
 		AtomList la;
 		ListAttrib(la);
 		ToOutAnything(GetOutAttr(),sym_attributes,la.Count(),la.Atoms());

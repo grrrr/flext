@@ -34,7 +34,13 @@ const t_symbol *flext::sym_signal = NULL;
 
 #if FLEXT_SYS != FLEXT_SYS_JMAX
 const t_symbol *flext::sym_anything = NULL;
+
+const t_symbol *sym_buffer = NULL;
+const t_symbol *sym_size = NULL;
 #endif
+
+const t_symbol *sym_attributes = NULL;
+const t_symbol *sym_methods = NULL;
 
 
 int flext::Version() { return FLEXT_VERSION; }
@@ -67,6 +73,9 @@ void flext::Setup()
 	sym_list = gensym("list");
 	sym_anything = gensym("anything");
 	sym_signal = gensym("signal");
+
+    sym_buffer = flext::MakeSymbol("buffer~");
+    sym_size = flext::MakeSymbol("size");
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
 	sym__ = fts_new_symbol("");; // is there a static symbol for that?
 	sym_int = fts_s_int;
@@ -77,6 +86,9 @@ void flext::Setup()
 	sym_pointer = fts_s_pointer;
 #else
 #endif
+
+    sym_attributes = flext::MakeSymbol("attributes");
+    sym_methods = flext::MakeSymbol("methods");
 
 #ifdef FLEXT_THREADS
 	thrid = GetThreadId();

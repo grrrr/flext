@@ -122,11 +122,12 @@ void flext_base::ListMethods(AtomList &la,int inlet) const
             SetSymbol(la[ix++],it.data());
 }
 
-static const t_symbol *sym_methods = flext::MakeSymbol("methods");
-
 bool flext_base::cb_ListMethods(flext_base *c,int argc,const t_atom *argv) 
 { 
     if(c->procattr && (argc == 0 || (argc == 1 && CanbeInt(argv[0])))) {
+        // defined in flsupport.cpp
+        extern const t_symbol *sym_methods;
+
         int inlet = argc?GetAInt(argv[0]):0;
         AtomList la;
         c->ListMethods(la,inlet);

@@ -429,9 +429,8 @@ void flext::CopySamples(t_sample *dst,const t_sample *src,int cnt)
         // single precision
 
         int n = cnt>>4;
-        cnt -= n<<4;
-
         if(!n) goto zero;
+        cnt -= n<<4;
 
         __asm {
             mov     eax,dword ptr [src]
@@ -535,7 +534,9 @@ loopuu:
                 }
             }
         }
-zero:
+
+        src += n<<4,dst += n<<4;
+zero:   
         while(cnt--) *(dst++) = *(src++); 
     }
     else
@@ -749,8 +750,8 @@ void flext::SetSamples(t_sample *dst,int cnt,t_sample s)
         // single precision
 
         int n = cnt>>4;
-        cnt -= n<<4;
         if(!n) goto zero;
+        cnt -= n<<4;
 
         __asm {
             movss   xmm0,xmmword ptr [s]
@@ -787,6 +788,8 @@ loopu:
                 loop    loopu
             }
         }
+
+        dst += n<<4;
 zero:
         while(cnt--) *(dst++) = s; 
     }
@@ -830,9 +833,8 @@ void flext::MulSamples(t_sample *dst,const t_sample *src,t_sample op,int cnt)
         __m128 a = _mm_load1_ps(&op);
 
         int n = cnt>>4;
-        cnt -= n<<4;
-
         if(!n) goto zero;
+        cnt -= n<<4;
 
         __asm {
             mov     eax,dword ptr [src]
@@ -905,6 +907,8 @@ loopu:
                 loop    loopu
             }
         }
+
+        src += n<<4,dst += n<<4;
 zero:
         while(cnt--) *(dst++) = *(src++)*op; 
     }
@@ -964,9 +968,8 @@ void flext::MulSamples(t_sample *dst,const t_sample *src,const t_sample *op,int 
     if(GetSIMDCapabilities()&simd_sse) {
         // single precision
         int n = cnt>>4;
-        cnt -= n<<4;
-
         if(!n) goto zero;
+        cnt -= n<<4;
 
         __asm {
             mov     eax,[src]
@@ -1133,6 +1136,8 @@ loopuu:
                 }
             }
         }
+
+        src += n<<4,dst += n<<4,op += n<<4;
 zero:
         while(cnt--) *(dst++) = *(src++) * *(op++); 
     }
@@ -1194,6 +1199,7 @@ void flext::AddSamples(t_sample *dst,const t_sample *src,t_sample op,int cnt)
     if(GetSIMDCapabilities()&simd_sse) {
         // single precision
         int n = cnt>>4;
+        if(!n) goto zero;
         cnt -= n<<4;
 
         __asm {
@@ -1267,6 +1273,8 @@ loopu:
                 loop    loopu
             }
         }
+        src += n<<4,dst += n<<4,op += n<<4;
+zero:
         while(cnt--) *(dst++) = *(src++)+op; 
     }
     else
@@ -1330,6 +1338,7 @@ void flext::AddSamples(t_sample *dst,const t_sample *src,const t_sample *op,int 
 
         // single precision
         int n = cnt>>4;
+        if(!n) goto zero;
         cnt -= n<<4;
 
         if(VectorsAligned(src,dst)) {
@@ -1488,6 +1497,9 @@ void flext::AddSamples(t_sample *dst,const t_sample *src,const t_sample *op,int 
                 }
             }
         }
+
+        src += n<<4,dst += n<<4,op += n<<4;
+zero:
         while(cnt--) *(dst++) = *(src++) + *(op++); 
     }
     else
@@ -1550,6 +1562,7 @@ void flext::ScaleSamples(t_sample *dst,const t_sample *src,t_sample opmul,t_samp
     if(GetSIMDCapabilities()&simd_sse) {
         // single precision
         int n = cnt>>4;
+        if(!n) goto zero;
         cnt -= n<<4;
 
         __asm {
@@ -1633,6 +1646,9 @@ loopu:
                 loop    loopu
             }
         }
+
+        src += n<<4,dst += n<<4;
+zero:
         while(cnt--) *(dst++) = *(src++)*opmul+opadd; 
     }
     else
@@ -1676,6 +1692,7 @@ void flext::ScaleSamples(t_sample *dst,const t_sample *src,t_sample opmul,const 
     if(GetSIMDCapabilities()&simd_sse) {
         // single precision
         int n = cnt>>4;
+        if(!n) goto zero;
         cnt -= n<<4;
 
         __asm {
@@ -1773,6 +1790,9 @@ loopu:
                 loop    loopu
             }
         }
+
+        src += n<<4,dst += n<<4,opadd += n<<4;
+zero:
         while(cnt--) *(dst++) = *(src++) * opmul + *(opadd++); 
     }
     else
@@ -1828,6 +1848,7 @@ void flext::ScaleSamples(t_sample *dst,const t_sample *src,const t_sample *opmul
     if(GetSIMDCapabilities()&simd_sse) {
         // single precision
         int n = cnt>>4;
+        if(!n) goto zero;
         cnt -= n<<4;
 
         __asm {
@@ -1938,6 +1959,8 @@ loopu:
                 loop    loopu
             }
         }
+        src += n<<4,dst += n<<4,opmul += n<<4,opadd += n<<4;
+zero:
         while(cnt--) *(dst++) = *(src++) * *(opmul++) + *(opadd++); 
     }
     else

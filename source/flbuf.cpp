@@ -28,8 +28,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
-static const t_symbol *sym_buffer = NULL;
-static const t_symbol *sym_size = NULL;
+// defined in flsupport.cpp
+extern const t_symbol *sym_buffer,*sym_size;
 #endif
 
 flext::buffer::buffer(const t_symbol *bn,bool delayed):
@@ -42,13 +42,6 @@ flext::buffer::buffer(const t_symbol *bn,bool delayed):
     isdirty = false;
     ticking = false;
     tick = clock_new(this,(t_method)cb_tick);
-#elif FLEXT_SYS == FLEXT_SYS_MAX
-    // for some strange reasons (maybe only on Mac) 
-    // static initializations are not processed
-    if(!sym_buffer) {
-        sym_buffer = flext::MakeSymbol("buffer~");
-	    sym_size = flext::MakeSymbol("size");
-    }
 #endif
 
     if(bn) Set(bn,delayed);

@@ -119,6 +119,8 @@ public:
 		int Channels() const { return chns; }
 		//! Get frame count
 		int Frames() const { return frames; }
+		//! Set frame count
+		void Frames(int fr,bool keep = false);
 		
 		//! Graphic auto refresh interval
 		void SetRefrIntv(float intv);

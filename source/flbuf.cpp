@@ -146,6 +146,15 @@ bool flext_base::buffer::Update()
 #endif
 }
 
+void flext_base::buffer::Frames(int fr,bool keep)
+{
+#ifdef PD
+	garray_resize(arr,(float)fr);
+#elif
+	error("buffer: resize not implemented!");
+#endif
+}
+
 
 #ifdef PD
 void flext_base::buffer::SetRefrIntv(float intv) 

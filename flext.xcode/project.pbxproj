@@ -227,7 +227,6 @@
 				HEADER_SEARCH_PATHS = "$(PD)/src";
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_STYLE = STATIC;
-				OPTIMIZATION_CFLAGS = "";
 				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = flext_s;
@@ -997,7 +996,6 @@
 				HEADER_SEARCH_PATHS = "$(PD)/src";
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_STYLE = BUNDLE;
-				OPTIMIZATION_CFLAGS = "";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-bundle_loader $(PD)/bin/pd";
 				OTHER_REZFLAGS = "";

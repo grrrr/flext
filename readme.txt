@@ -31,10 +31,10 @@ o Borland C++ 5.5 (free): makefile.bcc - makefile is no real make but works (you
 o Microsoft Visual C++ 6: flext.dsp - project file (you have to edit the pd path in the project properties/C-C++/preprocessor tab!)
 
 - pd - linux:
-o GCC: makefile.gcc - (you have to edit the pd path!)
+o GCC: makefile.pd-linux - you have to edit the pd path!
 
 - Max/MSP - MacOS:
-o Metrowerks CodeWarrior V6: flext - CodeWarrior project file
+o Metrowerks CodeWarrior V6: flext project - CodeWarrior project file
 
 
 

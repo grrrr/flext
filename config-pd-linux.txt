@@ -4,6 +4,7 @@
 
 # your c++ compiler (define only if it's different than g++)
 # CXX=g++
+CXX=icc
 
 # where are the PD header files? (m_pd.h, m_imp.h, g_canvas.h)
 # if it is a system include path (like /usr/local/include) 

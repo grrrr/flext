@@ -1158,6 +1158,8 @@ public:
     ~AnyMap();
     iterator find(unsigned int k);
     unsigned int &operator [](unsigned int k);
+
+    typedef std::pair<unsigned int,unsigned int> pair;
 };
 
 template <class K,class T>
@@ -1169,14 +1171,23 @@ public:
         public AnyMap::iterator
     {
     public:
+        iterator() {}
         iterator(AnyMap::iterator it): AnyMap::iterator(it) {}
 
-        T key() const { return reinterpret_cast<K>((*this)->first); }
-        T data() const { return reinterpret_cast<T>((*this)->second); }
+        inline K &key() const { return *(K *)&((*this)->first); }
+        inline T &data() const { return *(T *)&((*this)->second); }
     };
 
-    iterator find(K k) { return AnyMap::find(reinterpret_cast<unsigned int>(k)); }
-    T &operator [](K k) { return *(T *)&(AnyMap::operator [](reinterpret_cast<unsigned int>(k))); }
+    class pair:
+        public AnyMap::pair
+    {
+	public:
+        inline K &key() const { return *(K *)&first; }
+        inline T &data() const { return *(T *)&second; }
+	};
+
+    inline iterator find(K k) { return AnyMap::find(*(unsigned int *)&k); }
+    inline T &operator [](K k) { return *(T *)&(AnyMap::operator [](*(unsigned int *)&k)); }
 };
 
 

@@ -99,11 +99,11 @@ bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbo
         bindhead = new ItemCont;
     else {
         // Search for symbol
-        ItemList *lst = bindhead->FindList(sym);
+        Item *lst = bindhead->FindList(sym);
 
         if(lst)
-            for(ItemList::iterator it = lst->begin(); it != lst->end(); ++it) {
-                BindItem *item = (BindItem *)*it;
+            for(Item *it = lst; it; it = it->nxt) {
+                BindItem *item = (BindItem *)it;
 
                 // go through all items with matching tag
                 if(item->fun == fun) {
@@ -166,8 +166,8 @@ bool flext_base::UnbindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_sym
 
         BindItem *it = NULL;
         for(ItemSet::iterator si = it1; si != it2 && !it; ++si) {
-            for(ItemList::iterator i = si->second.begin(); i != si->second.end(); ++i) {
-                BindItem *item = (BindItem *)*i;
+            for(Item *i = si.data(); i; i = i->nxt) {
+                BindItem *item = (BindItem *)i;
                 if(!fun || item->fun == fun) { it = item; break; }
             }
         }
@@ -188,11 +188,11 @@ bool flext_base::GetBoundMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_s
 {
     if(bindhead) {
         // Search for symbol
-        ItemList *lst = bindhead->FindList(sym);
+        Item *lst = bindhead->FindList(sym);
 
         if(lst)
-            for(ItemList::iterator it = lst->begin(); it != lst->end(); ++it) {
-                BindItem *item = (BindItem *)*it;
+            for(Item *it = lst; it; it = it->nxt) {
+                BindItem *item = (BindItem *)it;
 
                 // go through all items with matching tag
                 if(item->fun == fun) {
@@ -209,13 +209,13 @@ bool flext_base::UnbindAll()
     if(bindhead && bindhead->Contained(0)) {
         ItemSet &set = bindhead->GetInlet();
         for(ItemSet::iterator si = set.begin(); si != set.end(); ++si) {
-            ItemList &lst = si->second;
-            while(!lst.empty()) {
-                // eventual allocated data in item is not freed!
-                BindItem *it = (BindItem *)lst.front();
-                it->Unbind(si->first);
+            Item *lst = si.data();
+            while(lst) {
+				Item *nxt = lst->nxt;
+                BindItem *it = (BindItem *)lst;
+                it->Unbind(si.key());
                 delete it;
-                lst.pop_front();
+				lst = nxt;
             }
         }
         set.clear();

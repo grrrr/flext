@@ -86,6 +86,7 @@ Version history:
 - fixed severe bug concerning symbol methods
 - MaxMSP: use critical sections for message output (for more safety in overdrive mode)
 - PD: default/manual definition of help file by flext_base::DefineHelp
+- added GetThing/SetThing to access t_symbol's s_thing data member
 
 - introduced FLEXT_NEW_DSP* and FLEXT_LIB_DSP* for FLEXT_NEW_TILDE* and FLEXT_LIB_TILDE* (the latter become deprecated)
 - all variable argument defs (aka gimme) now have a V instead of G  (e.g. FLEXT_NEW_V)

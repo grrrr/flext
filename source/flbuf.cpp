@@ -18,7 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define DIRTY_INTERVAL 0   // buffer dirty check in msec
 #endif
 
-flext_base::buffer::buffer(t_symbol *bn,bool delayed):
+flext_base::buffer::buffer(const t_symbol *bn,bool delayed):
 	sym(NULL),data(NULL),
 	chns(0),frames(0)
 {
@@ -40,7 +40,7 @@ flext_base::buffer::~buffer()
 #endif
 }
 
-int flext_base::buffer::Set(t_symbol *s,bool nameonly)
+int flext_base::buffer::Set(const t_symbol *s,bool nameonly)
 {
 	int ret = 0;
 	bool valid = data != NULL; // valid now? (before change)
@@ -62,7 +62,7 @@ int flext_base::buffer::Set(t_symbol *s,bool nameonly)
 		int frames1;
 		t_sample *data1;
     
-		arr = (t_garray *)pd_findbyclass(sym, garray_class);
+		arr = (t_garray *)pd_findbyclass(const_cast<t_symbol *>(sym), garray_class);
 		if(!arr)
 		{
     		if (*sym->s_name) error("buffer: no such array '%s'",sym->s_name);

@@ -86,7 +86,7 @@ public:
 			@param delayed = true: only sets name, needs another Set(NULL) to really initialize the buffer 
 			\remark As externals can be created prior to the buffer objects they are pointing to, initialization should be done at loadbang!
 		*/
-		buffer(t_symbol *s = NULL,bool delayed = false);
+		buffer(const t_symbol *s = NULL,bool delayed = false);
 		
 		//! Destroy buffer
 		~buffer();
@@ -102,7 +102,7 @@ public:
 		/*! \brief Set to specified buffer.
 			@param nameonly: if true sets name only, but doesn't look at buffer actually
 		*/
-		int Set(t_symbol *s = NULL,bool nameonly = false);
+		int Set(const t_symbol *s = NULL,bool nameonly = false);
 		
 		/*! \brief Declare buffer content as dirty.
 			@param refr: if true forces immediate graphics refresh
@@ -110,7 +110,7 @@ public:
 		void Dirty(bool refr = false);
 		
 		//! Get symbol of buffer 
-		t_symbol *Symbol() const { return sym; }
+		t_symbol *Symbol() const { return const_cast<t_symbol *>(sym); }
 		//! Get literal name of buffer 
 		const char *Name() const { return sym?sym->s_name:""; }
 		
@@ -129,7 +129,7 @@ public:
 		void SetRefrIntv(float intv);
 
 	protected:
-		t_symbol *sym;
+		const t_symbol *sym;
 		t_sample *data;
 		int chns,frames;
 #ifdef PD
@@ -304,7 +304,7 @@ public:
 	static const char *GetString(const t_symbol *s) { return s->s_name; }  
 	static const char *GetAString(const t_symbol *s) { return s?s->s_name:""; }  
 	
-	static void *GetThing(t_symbol *s) { return s->s_thing; }  
+	static void *GetThing(const t_symbol *s) { return s->s_thing; }  
 	static void SetThing(t_symbol *s,void *dt) { s->s_thing = (t_thing)dt; }  
 
 // --- argument list stuff ----------------------------------------

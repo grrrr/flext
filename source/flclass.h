@@ -644,6 +644,15 @@ protected:
 		methfun fun;
 	};
 
+	// these outlet functions don't check for thread but send directly to the real-time system
+	void ToSysBang(int n) const; 
+	void ToSysFloat(int n,float f) const; 
+	void ToSysInt(int n,int f) const; 
+	void ToSysBool(int n,bool f) const { ToSysInt(n,f?1:0); }
+	void ToSysSymbol(int n,const t_symbol *s) const; 
+	void ToSysList(int n,int argc,const t_atom *argv) const;
+	void ToSysAnything(int n,const t_symbol *s,int argc,const t_atom *argv)  const; 
+
 private:
 	class pxbnd_object;
 public:

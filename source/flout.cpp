@@ -17,42 +17,43 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <string.h>
  
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
- 
-#ifndef FLEXT_THREADS
-void flext_base::ToOutBang(int n) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_bang((t_outlet *)o); CRITOFF(); } }
-void flext_base::ToOutFloat(int n,float f) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_float((t_outlet *)o,f); CRITOFF(); } }
-void flext_base::ToOutInt(int n,int f) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_flint((t_outlet *)o,f); CRITOFF(); } }
-void flext_base::ToOutSymbol(int n,const t_symbol *s) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); CRITOFF(); } }
-void flext_base::ToOutList(int n,int argc,const t_atom *argv) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_list((t_outlet *)o,const_cast<t_symbol *>(sym_list),argc,(t_atom *)argv); CRITOFF(); } }
-void flext_base::ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,(t_atom *)argv); CRITOFF(); } }
-#else
-void flext_base::ToOutBang(int n) const { if(IsSystemThread()) { outlet *o = GetOut(n); if(o) { CRITON(); outlet_bang((t_outlet *)o); CRITOFF(); } } else ToQueueBang(n); }
-void flext_base::ToOutFloat(int n,float f) const { if(IsSystemThread()) { outlet *o = GetOut(n); if(o) { CRITON(); outlet_float((t_outlet *)o,f); CRITOFF(); } } else ToQueueFloat(n,f); }
-void flext_base::ToOutInt(int n,int f) const { if(IsSystemThread()) { outlet *o = GetOut(n); if(o) { CRITON(); outlet_flint((t_outlet *)o,f); CRITOFF(); } } else ToQueueInt(n,f); }
-void flext_base::ToOutSymbol(int n,const t_symbol *s) const { if(IsSystemThread()) { outlet *o = GetOut(n); if(o) { CRITON(); outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); CRITOFF(); } } else ToQueueSymbol(n,s); }
-void flext_base::ToOutList(int n,int argc,const t_atom *argv) const { if(IsSystemThread()) { outlet *o = GetOut(n); if(o) { CRITON(); outlet_list((t_outlet *)o,const_cast<t_symbol *>(sym_list),argc,(t_atom *)argv); CRITOFF(); } } else ToQueueList(n,argc,(t_atom *)argv); }
-void flext_base::ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { if(IsSystemThread()) { outlet *o = GetOut(n); if(o) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,(t_atom *)argv); CRITOFF(); } } else ToQueueAnything(n,s,argc,(t_atom *)argv); }
-#endif
+
+void flext_base::ToSysBang(int n) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_bang((t_outlet *)o); CRITOFF(); } }
+void flext_base::ToSysFloat(int n,float f) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_float((t_outlet *)o,f); CRITOFF(); } }
+void flext_base::ToSysInt(int n,int f) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_flint((t_outlet *)o,f); CRITOFF(); } }
+void flext_base::ToSysSymbol(int n,const t_symbol *s) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); CRITOFF(); } }
+void flext_base::ToSysList(int n,int argc,const t_atom *argv) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_list((t_outlet *)o,const_cast<t_symbol *>(sym_list),argc,(t_atom *)argv); CRITOFF(); } }
+void flext_base::ToSysAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,(t_atom *)argv); CRITOFF(); } }
 
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
 
-#ifndef FLEXT_THREADS
-void flext_base::ToOutBang(int n) const { fts_outlet_bang((fts_object *)thisHdr(),n); }
-void flext_base::ToOutFloat(int n,float f) const { fts_outlet_float((fts_object *)thisHdr(),n,f); }
-void flext_base::ToOutInt(int n,int f) const { fts_outlet_int((fts_object *)thisHdr(),n,f); }
-void flext_base::ToOutSymbol(int n,const t_symbol *s) const { fts_outlet_symbol((fts_object *)thisHdr(),n,s); }
-void flext_base::ToOutList(int n,int argc,const t_atom *argv) const { fts_outlet_send((fts_object *)thisHdr(),n,sym_list,argc,(t_atom *)argv); }
-void flext_base::ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { fts_outlet_send((fts_object *)thisHdr(),n,const_cast<t_symbol *>(s),argc,(t_atom *)argv); }
+void flext_base::ToSysBang(int n) const { fts_outlet_bang((fts_object *)thisHdr(),n); }
+void flext_base::ToSysFloat(int n,float f) const { fts_outlet_float((fts_object *)thisHdr(),n,f); }
+void flext_base::ToSysInt(int n,int f) const { fts_outlet_int((fts_object *)thisHdr(),n,f); }
+void flext_base::ToSysSymbol(int n,const t_symbol *s) const { fts_outlet_symbol((fts_object *)thisHdr(),n,s); }
+void flext_base::ToSysList(int n,int argc,const t_atom *argv) const { fts_outlet_send((fts_object *)thisHdr(),n,sym_list,argc,(t_atom *)argv); }
+void flext_base::ToSysAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { fts_outlet_send((fts_object *)thisHdr(),n,const_cast<t_symbol *>(s),argc,(t_atom *)argv); }
+
 #else
-void flext_base::ToOutBang(int n) const { if(IsSystemThread()) fts_outlet_bang((fts_object *)thisHdr(),n); else ToQueueBang(n); }
-void flext_base::ToOutFloat(int n,float f) const { if(IsSystemThread()) fts_outlet_float((fts_object *)thisHdr(),n,f); else ToQueueFloat(n,f); }
-void flext_base::ToOutInt(int n,int f) const { if(IsSystemThread()) fts_outlet_int((fts_object *)thisHdr(),n,f); else ToQueueInt(n,f); }
-void flext_base::ToOutSymbol(int n,const t_symbol *s) const { if(IsSystemThread()) fts_outlet_symbol((fts_object *)thisHdr(),n,s); else ToQueueSymbol(n,s); }
-void flext_base::ToOutList(int n,int argc,const t_atom *argv) const { if(IsSystemThread()) fts_outlet_send((fts_object *)thisHdr(),n,sym_list,argc,(t_atom *)argv); else ToQueueList(n,argc,(t_atom *)argv); }
-void flext_base::ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { if(IsSystemThread()) fts_outlet_send((fts_object *)thisHdr(),n,const_cast<t_symbol *>(s),argc,(t_atom *)argv); else ToQueueAnything(n,s,argc,(t_atom *)argv); }
+#error Not implemented
 #endif
 
+#ifndef FLEXT_THREADS
+void flext_base::ToOutBang(int n) const { ToSysBang(n); }
+void flext_base::ToOutFloat(int n,float f) const { ToSysFloat(n,f); }
+void flext_base::ToOutInt(int n,int f) const { ToSysInt(n,f); }
+void flext_base::ToOutSymbol(int n,const t_symbol *s) const { ToSysSymbol(n,s); }
+void flext_base::ToOutList(int n,int argc,const t_atom *argv) const { ToSysList(n,argc,argv); }
+void flext_base::ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { ToSysAnything(n,s,argc,argv); }
+#else
+void flext_base::ToOutBang(int n) const { if(IsSystemThread()) ToSysBang(n); else ToQueueBang(n); }
+void flext_base::ToOutFloat(int n,float f) const { if(IsSystemThread()) ToSysFloat(n,f); else ToQueueFloat(n,f); }
+void flext_base::ToOutInt(int n,int f) const { if(IsSystemThread()) ToSysInt(n,f); else ToQueueInt(n,f); }
+void flext_base::ToOutSymbol(int n,const t_symbol *s) const { if(IsSystemThread()) ToSysSymbol(n,s); else ToQueueSymbol(n,s); }
+void flext_base::ToOutList(int n,int argc,const t_atom *argv) const { if(IsSystemThread()) ToSysList(n,argc,argv); else ToQueueList(n,argc,argv); }
+void flext_base::ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { if(IsSystemThread()) ToSysAnything(n,s,argc,argv); else ToQueueAnything(n,s,argc,argv); }
 #endif
+
 
 bool flext_base::InitInlets()
 {

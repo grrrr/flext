@@ -10,6 +10,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 /*! \file flqueue.cpp
     \brief Implementation of the flext message queuing functionality.
+
+    \todo Let's see if queuing can be implemented for Max/MSP with defer_low
 */
 
 #include "flext.h"
@@ -79,17 +81,59 @@ void flext_base::QTick(flext_base *th)
 		qmsg *m = th->qhead;
 		if(!m) break;
 
-		switch(m->tp) {
-		case qmsg::tp_bang: th->ToOutBang(m->out); break;
-		case qmsg::tp_float: th->ToOutFloat(m->out,m->_float); break;
-		case qmsg::tp_int: th->ToOutInt(m->out,m->_int); break;
-		case qmsg::tp_sym: th->ToOutSymbol(m->out,m->_sym); break;
-		case qmsg::tp_list: th->ToOutList(m->out,m->_list.argc,m->_list.argv); break;
-		case qmsg::tp_any: th->ToOutAnything(m->out,m->_any.s,m->_any.argc,m->_any.argv); break;
-#ifdef FLEXT_DEBUG
-		default: ERRINTERNAL();
+        if(m->out < 0) {
+            // message to self
+
+            const int n = -1-m->out;
+            t_atom tmp;
+
+		    switch(m->tp) {
+		    case qmsg::tp_bang: 
+                th->m_methodmain(n,sym_bang,0,&tmp); 
+                break;
+		    case qmsg::tp_float: 
+                SetFloat(tmp,m->_float);
+                th->m_methodmain(n,sym_float,1,&tmp); 
+                break;
+            case qmsg::tp_int: 
+                SetInt(tmp,m->_int);
+#if FLEXT_SYS == FLEXT_SYS_PD
+                th->m_methodmain(n,sym_float,1,&tmp); 
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+                th->m_methodmain(n,sym_int,1,&tmp); 
+#else
+#error Not implemented!
 #endif
-		}
+		    case qmsg::tp_sym: 
+                SetSymbol(tmp,m->_sym);
+                th->m_methodmain(n,sym_symbol,1,&tmp); 
+                break;
+		    case qmsg::tp_list: 
+                th->m_methodmain(n,sym_list,m->_list.argc,m->_list.argv); 
+                break;
+		    case qmsg::tp_any: 
+                th->m_methodmain(n,m->_any.s,m->_any.argc,m->_any.argv); 
+                break;
+    #ifdef FLEXT_DEBUG
+		    default: ERRINTERNAL();
+    #endif
+		    }
+        }
+        else {
+            // message to outlet
+
+		    switch(m->tp) {
+		    case qmsg::tp_bang: th->ToOutBang(m->out); break;
+		    case qmsg::tp_float: th->ToOutFloat(m->out,m->_float); break;
+		    case qmsg::tp_int: th->ToOutInt(m->out,m->_int); break;
+		    case qmsg::tp_sym: th->ToOutSymbol(m->out,m->_sym); break;
+		    case qmsg::tp_list: th->ToOutList(m->out,m->_list.argc,m->_list.argv); break;
+		    case qmsg::tp_any: th->ToOutAnything(m->out,m->_any.s,m->_any.argc,m->_any.argv); break;
+    #ifdef FLEXT_DEBUG
+		    default: ERRINTERNAL();
+    #endif
+		    }
+        }
 
 		th->qhead = m->nxt;
 		if(!th->qhead) th->qtail = NULL;
@@ -167,5 +211,36 @@ void flext_base::ToQueueAnything(int o,const t_symbol *s,int argc,const t_atom *
 	qmsg *m = new qmsg; 
 	m->SetAny(o,s,argc,argv);
 	const_cast<flext_base &>(*this).Queue(m);
+}
+
+
+void flext_base::ToSelfBang(int n) const 
+{
+    ToQueueBang(-1-n);
+}
+
+void flext_base::ToSelfFloat(int n,float f) const
+{
+    ToQueueFloat(-1-n,f);
+}
+
+void flext_base::ToSelfInt(int n,int f) const
+{
+    ToQueueInt(-1-n,f);
+}
+
+void flext_base::ToSelfSymbol(int n,const t_symbol *s) const
+{
+    ToQueueSymbol(-1-n,s);
+}
+
+void flext_base::ToSelfList(int n,int argc,const t_atom *argv) const
+{
+    ToQueueList(-1-n,argc,argv);
+}
+
+void flext_base::ToSelfAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const
+{
+    ToQueueAnything(-1-n,s,argc,argv);
 }
 

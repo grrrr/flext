@@ -73,7 +73,7 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
 		arr = (t_garray *)pd_findbyclass(const_cast<t_symbol *>(sym), garray_class);
 		if(!arr)
 		{
-    		if (*GetString(sym)) error("buffer: no such array '%s'",GetString(sym));
+    		if (*GetString(sym)) FLEXT_LOG1("buffer: no such array '%s'",GetString(sym));
     		sym = NULL;
 			if(valid) ret = -1;
 		}
@@ -108,7 +108,7 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
 			}
 		}
 		else {
-    		error("buffer: symbol '%s' not defined", GetString(sym)); 
+    		FLEXT_LOG1("buffer: symbol '%s' not defined", GetString(sym)); 
     		if(valid) ret = -1;
 		}
 #else
@@ -261,7 +261,7 @@ void flext::buffer::Dirty(bool force)
 			}
 		}
 		else {
-    		error("buffer: symbol '%s' not defined",sym->s_name);
+    		FLEXT_LOG1("buffer: symbol '%s' not defined",sym->s_name);
 		}
 #else
 #error

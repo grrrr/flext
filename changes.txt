@@ -17,6 +17,8 @@ Version history:
 - fixed deadly bug for Max/MSP method-to-symbol-binding proxies
 - some fixes for CodeWarrior Mach-O compilation 
 - fixed destruction bug for hashed "item arrays"
+- added flext_base::ToSelf* methods for queued (deferred) self messaging
+- deleted flext::buffer console outputs for undefined arrays/buffer~s: should be done by externals
 
 0.4.3:
 - added forgotten flext_base::ToQueueString method

@@ -291,6 +291,22 @@ Package=<4>
 
 ###############################################################################
 
+Project: "timer1"=.\timer1\timer1.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    timer1
+    .\timer1
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Global:
 
 Package=<5>

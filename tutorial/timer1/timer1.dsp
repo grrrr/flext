@@ -1,35 +1,35 @@
-# Microsoft Developer Studio Project File - Name="simple1" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="timer1" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** NICHT BEARBEITEN **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=simple1 - Win32 Debug
+CFG=timer1 - Win32 Debug
 !MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
 !MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
-!MESSAGE NMAKE /f "simple1.mak".
-!MESSAGE  
+!MESSAGE NMAKE /f "timer1.mak".
+!MESSAGE 
 !MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
 !MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
-!MESSAGE NMAKE /f "simple1.mak" CFG="simple1 - Win32 Debug"
+!MESSAGE NMAKE /f "timer1.mak" CFG="timer1 - Win32 Debug"
 !MESSAGE 
 !MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
-!MESSAGE "simple1 - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "simple1 - Win32 Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "timer1 - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "timer1 - Win32 Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
-# PROP Scc_ProjName "simple1"
+# PROP Scc_ProjName "timer1"
 # PROP Scc_LocalPath "."
 CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "simple1 - Win32 Release"
+!IF  "$(CFG)" == "timer1 - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -53,9 +53,9 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib pd.lib flext-pdwin.lib /nologo /dll /machine:I386 /out:"../pd-msvc/simple1.dll" /libpath:"..\..\pd-msvc"
+# ADD LINK32 kernel32.lib user32.lib pd.lib flext-pdwin.lib /nologo /dll /machine:I386 /out:"../pd-msvc/timer1.dll" /libpath:"..\..\pd-msvc"
 
-!ELSEIF  "$(CFG)" == "simple1 - Win32 Debug"
+!ELSEIF  "$(CFG)" == "timer1 - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /ZI /Od /I "..\..\source" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "PD" /Fr /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /ZI /Od /I "c:\programme\audio\pd\src" /I "..\..\source" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "PD" /Fr /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0xc07 /d "_DEBUG"
@@ -85,8 +85,8 @@ LINK32=link.exe
 
 # Begin Target
 
-# Name "simple1 - Win32 Release"
-# Name "simple1 - Win32 Debug"
+# Name "timer1 - Win32 Release"
+# Name "timer1 - Win32 Debug"
 # Begin Source File
 
 SOURCE=.\main.cpp

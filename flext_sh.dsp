@@ -45,7 +45,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FLEXT_SH_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /G6 /MT /W3 /GR /GX /O2 /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "FLEXT_DLL" /D FLEXT_SYS=2 /D "FLEXT_SHARED" /D "FLEXT_THREADS" /YX /FD /c
+# ADD CPP /nologo /G6 /MT /W3 /GR /GX /O2 /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "FLEXT_DLL" /D FLEXT_SYS=2 /D "FLEXT_SHARED" /D "FLEXT_THREADS" /D "FLEXT_USE_SIMD" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0xc07 /d "NDEBUG"
@@ -72,7 +72,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FLEXT_SH_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /G6 /MTd /W3 /Gm /GR /GX /ZI /Od /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FLEXT_DLL" /D "FLEXT_SHARED" /D FLEXT_SYS=2 /D "FLEXT_THREADS" /YX /FD /GZ /c
+# ADD CPP /nologo /G6 /MTd /W3 /Gm /GR /GX /ZI /Od /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FLEXT_DLL" /D "FLEXT_SHARED" /D FLEXT_SYS=2 /D "FLEXT_THREADS" /D "FLEXT_USE_SIMD" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0xc07 /d "_DEBUG"
@@ -99,7 +99,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /G6 /MDd /W3 /Gm /GR /GX /ZI /Od /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FLEXT_DLL" /D "FLEXT_SHARED" /D FLEXT_SYS=2 /D "FLEXT_THREADS" /YX /FD /GZ /c
-# ADD CPP /nologo /G6 /MDd /W3 /Gm /GR /GX /ZI /Od /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FLEXT_DLL" /D "FLEXT_SHARED" /D FLEXT_SYS=2 /D "FLEXT_THREADS" /YX /FD /GZ /c
+# ADD CPP /nologo /G6 /MDd /W3 /Gm /GR /GX /ZI /Od /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "FLEXT_DLL" /D "FLEXT_SHARED" /D FLEXT_SYS=2 /D "FLEXT_THREADS" /D "FLEXT_USE_SIMD" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0xc07 /d "_DEBUG"
@@ -126,7 +126,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /G6 /MD /W3 /GR /GX /O2 /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "FLEXT_DLL" /D FLEXT_SYS=2 /D "FLEXT_SHARED" /D "FLEXT_THREADS" /YX /FD /c
-# ADD CPP /nologo /G6 /MD /W3 /GR /GX /O2 /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "FLEXT_DLL" /D FLEXT_SYS=2 /D "FLEXT_SHARED" /D "FLEXT_THREADS" /YX /FD /c
+# ADD CPP /nologo /G6 /MD /W3 /GR /GX /O2 /I "c:\programme\audio\pd\src" /I "f:\prog\audio\sndobj\include" /I "f:\prog\audio\stk\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "FLEXT_DLL" /D FLEXT_SYS=2 /D "FLEXT_SHARED" /D "FLEXT_THREADS" /D "FLEXT_USE_SIMD" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0xc07 /d "NDEBUG"

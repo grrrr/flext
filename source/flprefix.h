@@ -99,8 +99,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 // Definition of OS/CPU
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) || (defined(__ICC) && (FLEXT_OS == FLEXT_OS_WIN || defined(_WIN32)))
 	// Microsoft C++
+    // and Intel C++ (as guessed)
 	
 	#ifndef FLEXT_CPU
 		#if defined(_M_IX86)
@@ -193,8 +194,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	// This is important for everything
 	#pragma bool on
 
-#elif defined(__GNUG__)
+#elif defined(__GNUG__) || (defined(__ICC) && (FLEXT_OS == FLEXT_OS_LINUX || defined(linux) || defined(__linux__)))
+
 	// GNU C++
+    // and Intel (as suggested by Tim Blechmann)
 
 	#ifndef FLEXT_CPU
 		#if defined(_X86_) || defined(__i386__) || defined(__i586__) || defined(__i686__)

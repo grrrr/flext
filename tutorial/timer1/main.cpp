@@ -39,8 +39,8 @@ protected:
 	// timers
 	Timer tmrA,tmrB;
 
-	void m_getostime(float &f) { f = GetOSTime(); }  // method for operating system time attribute
-	void m_getrttime(float &f) { f = GetTime(); }  // method for real-time system time attribute
+	void m_getostime(float &f) { f = (float)GetOSTime(); }  // method for operating system time attribute
+	void m_getrttime(float &f) { f = (float)GetTime(); }  // method for real-time system time attribute
 
 	void m_timerA(void *) { ToOutString(0,"Timer A"); }  // timer A method
 	void m_timerB(void *) { ToOutString(0,"Timer B"); }  // timer B method

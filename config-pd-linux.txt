@@ -2,8 +2,8 @@
 # Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
 #
  
-# your c++ compiler (normally g++)
-CXX=g++ 
+# your c++ compiler (if it's different than g++)
+# CXX=g++ 
 
 # where are the PD header files?
 # if it is a system include path (like /usr/local/include) 

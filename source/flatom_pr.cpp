@@ -21,38 +21,48 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // \TODO take bufsz into account!
 bool flext::PrintAtom(const t_atom &a,char *buf,int bufsz)
 {
+	bool ok = true;
 	if(IsFloat(a)) {
-		sprintf(buf,"%g",GetFloat(a));
+		STD::sprintf(buf,"%g",GetFloat(a));
 	}
 	else if(IsInt(a)) {
-		sprintf(buf,"%i",GetInt(a));
+		STD::sprintf(buf,"%i",GetInt(a));
 	}
 	else if(IsSymbol(a)) {
-		strcpy(buf,GetString(a));
+		STD::strcpy(buf,GetString(a));
 	}
 	else if(IsPointer(a)) {
-		sprintf(buf,"%p",GetPointer(a));
+		STD::sprintf(buf,"%p",GetPointer(a));
 	}
-    else
+	else if(a.a_type == A_DOLLAR) {
+		STD::sprintf(buf,"$%d",a.a_w.w_index);
+	}
+	else if(a.a_type == A_DOLLSYM) {
+		STD::sprintf(buf,"$%s",GetString(a));
+	}
+	else {
 		ERRINTERNAL();
-	return true;
+		ok = false;
+	}
+	return ok;
 }
 
-bool flext::AtomList::Print(char *buffer,int buflen) const
+bool flext::PrintList(int argc,const t_atom *argv,char *buf,int bufsz)
 {
 	bool ok = true;
-    for(int i = 0; ok && i < Count(); ++i) {
-		if(i) { *(buffer++) = ' '; --buflen; } // prepend space
-		if(PrintAtom((*this)[i],buffer,buflen)) {
-			int len = strlen(buffer);
-			buffer += len,buflen -= len;
+    for(int i = 0; ok && i < argc && bufsz > 0; ++i) {
+		if(i) { *(buf++) = ' '; --bufsz; } // prepend space
+
+		if(PrintAtom(argv[i],buf,bufsz)) {
+			int len = strlen(buf);
+			buf += len,bufsz -= len;
 		}
 		else
 			ok = false;
     }
+	*buf = 0;
     return ok;
 }
-
 
 bool flext::ScanAtom(t_atom &a,const char *buf)
 {

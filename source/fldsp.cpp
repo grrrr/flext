@@ -141,7 +141,8 @@ void flext_dsp::cb_dsp(t_class *c,t_signal **sp)
 	obj->srate = sp[0]->s_sr;
 	obj->blksz = sp[0]->s_n;  // is this guaranteed to be the same as sys_getblksize() ?
 #endif
-	
+
+/*
 #if FLEXT_SYS == FLEXT_SYS_PD
 	obj->chnsin = sys_get_inchannels();
 	obj->chnsout = sys_get_outchannels();
@@ -152,13 +153,15 @@ void flext_dsp::cb_dsp(t_class *c,t_signal **sp)
 #else
 #error
 #endif
-
+*/
 	// store in and out signal vectors
-	int i,in = obj->CntInSig(),out = obj->CntOutSig();
+	int i;
+	int in = obj->chnsin = obj->CntInSig();
+	int out = obj->chnsout = obj->CntOutSig();
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 	// min. 1 input channel! (CLASS_MAININLET in pd...)
-	if(!in) in = 1;
+	if(!in) { obj->chnsin = in = 1; }
 #endif
 
 	if(obj->invecs) delete[] obj->invecs;

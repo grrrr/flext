@@ -224,6 +224,9 @@ public:
 
 	//! Copy a list of atoms
 	static t_atom *CopyList(int argc,const t_atom *argv);
+	//! Print an atom list
+	static bool PrintList(int argc,const t_atom *argv,char *buf,int bufsz);
+
 	//! Copy a memory region
 	static void CopyMem(void *dst,const void *src,int bytes);
 	//! Copy a sample array
@@ -532,7 +535,7 @@ public:
 		AtomList &Part(int offs,int len) { return (*this = GetPart(offs,len)); }
 
 		//! Represent as a string
-		bool Print(char *buffer,int buflen) const;
+		bool Print(char *buffer,int buflen) const { return flext::PrintList(Count(),Atoms(),buffer,buflen); }
 
 	protected:
 		int cnt;

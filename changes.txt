@@ -31,6 +31,7 @@ Version history:
 - enforcing usage of STL
 - explicit boolean attributes (great for attribute editor layout!)
 - added flext::NewLarge and flext::FreeLarge memory allocation functions which use the C-Library heap and should mainly be used in secondary threads
+- flext_dsp reported wrong inlet/outlet count (CntInSig, CntOutSig functions)
 
 0.4.4:
 - fixed deadly bug for Max/MSP method-to-symbol-binding proxies
@@ -252,7 +253,7 @@ Notes:
 - no support for default object arguments (A_DEFFLOAT, A_DEFSYMBOL) -> use variable argument lists instead
 
 Platform specific:
-- PD does not allow signal and message to go into the same inlet
+- PD does not allow signal and message to go into the same inlet (except leftmost inlet)
 
 Restrictions in compatibility mode:
 - Max allows only 9 float/int inlets
@@ -279,6 +280,8 @@ general:
 - add signal in/out connection query function
 
 bugs:
+- attributes and attribute editor saving with patcher arguments (like $0-gugu )
+
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)
 - hard thread termination upon object destruction doesn't seem to work properly -> crash
 - Max rounding bug ... buffer resize could be one sample less!

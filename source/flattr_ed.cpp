@@ -305,26 +305,6 @@ void flext_base::SetAttrEditor(t_classid c)
 	);
 }
 
-static int PrintList(char *buf,int argc,const t_atom *argv)
-{
-	char *b = buf;
-	for(int j = 0; j < argc; ++j) {
-		const t_atom &at = argv[j];
-		if(flext::IsString(at))
-			STD::sprintf(b,"%s",flext::GetString(at));
-		else if(flext::IsFloat(at))
-			STD::sprintf(b,"%g",flext::GetFloat(at));
-		else if(flext::IsInt(at))
-			STD::sprintf(b,"%i",flext::GetInt(at));
-		else
-			FLEXT_ASSERT(false);
-		b += strlen(b);
-
-		if(j < argc-1) *(b++) = ' ';
-	}
-	return b-buf;
-}
-
 void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 {
 	flext_base *th = thisObject(c);
@@ -337,7 +317,8 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 
 	int argc = binbuf_getnatom(x->te_binbuf);
 	t_atom *argv = binbuf_getvec(x->te_binbuf);
-	b += PrintList(b,argc,argv);
+
+	PrintList(argc,argv,b,sizeof(buf)+buf-b);	b += strlen(b);
 
 	STD::sprintf(b, " } { "); b += strlen(b);
 
@@ -393,7 +374,7 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 			// Retrieve attribute value
 			th->GetAttrib(gattr,lv);
 
-			b += PrintList(b,lv.Count(),lv.Atoms());
+			PrintList(lv.Count(),lv.Atoms(),b,sizeof(buf)+buf-b); b += strlen(b);
 		}
 		else {
 			strcpy(b,"{}"); b += strlen(b);
@@ -405,7 +386,7 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 			// if there is initialization data take this, otherwise take the current data
 			const AtomList &lp = initdata?*initdata:lv;
 
-			b += PrintList(b,lp.Count(),lp.Atoms());
+			PrintList(lp.Count(),lp.Atoms(),b,sizeof(buf)+buf-b); b += strlen(b);
 		}
 		else {
 			strcpy(b,"{}"); b += strlen(b);
@@ -450,12 +431,21 @@ void flext_base::cb_GfxVis(t_gobj *c, t_glist *gl, int vis)
 
 static void BinbufAdd(t_binbuf *b,const t_atom &at)
 {
+   	char tbuf[MAXPDSTRING];
 	if(flext::IsString(at))
 		binbuf_addv(b,"s",flext::GetSymbol(at));
 	else if(flext::IsFloat(at))
 		binbuf_addv(b,"f",flext::GetFloat(at));
 	else if(flext::IsInt(at))
 		binbuf_addv(b,"i",flext::GetInt(at));
+	else if(at.a_type == A_DOLLAR) {
+    	sprintf(tbuf, "$%d", at.a_w.w_index);
+		binbuf_addv(b,"s",flext::MakeSymbol(tbuf));
+	}
+	else if(at.a_type == A_DOLLSYM) {
+    	sprintf(tbuf, "$%s", at.a_w.w_symbol->s_name);
+		binbuf_addv(b,"s",flext::MakeSymbol(tbuf));
+	}
 	else
 		FLEXT_ASSERT(false);
 }

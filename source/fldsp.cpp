@@ -23,11 +23,15 @@ V flext_dsp::cb_setup(t_class *c)
 #endif
 	
 	add_dsp(c,cb_dsp);
-	add_method1(c,cb_dspon,"dspon",A_FLINT);
+#ifndef MAXMSP
+	add_method1(c,cb_enable,"enable",A_FLINT);
+#endif
 }
 
 flext_dsp::flext_dsp(): 
+#ifndef MAXMSP
 	dspon(true),
+#endif
 	srate(sys_getsr()),
 	invecs(NULL),outvecs(NULL)
 {}
@@ -43,7 +47,11 @@ flext_dsp::~flext_dsp()
 t_int *flext_dsp::dspmeth(t_int *w) 
 { 
 	flext_dsp *obj = (flext_dsp *)w[1];
+#ifdef MAXMSP
+	if(!obj->thisHdr()->z_disabled) 
+#else
 	if(obj->dspon) 
+#endif
 		obj->m_signal((I)w[2],obj->invecs,obj->outvecs); 
 	return w+3;
 }
@@ -74,9 +82,9 @@ V flext_dsp::cb_dsp(t_class *c,t_signal **sp)
 	dsp_add((t_dspmethod)dspmeth,2,obj,sp[0]->s_n);  
 }
 
-V flext_dsp::cb_dspon(t_class *c,FI on) { thisObject(c)->m_dspon(on != 0); }
-
-V flext_dsp::m_dspon(BL en) { dspon = en; }
-
+#ifndef MAXMSP
+V flext_dsp::cb_enable(t_class *c,FI on) { thisObject(c)->m_enable(on != 0); }
+V flext_dsp::m_enable(BL en) { dspon = en; }
+#endif
 
 

@@ -15,10 +15,10 @@ Name			= flext
 ObjDir          = :MPW:
 MaxSDK			= HD Daten:Prog Stuff:Max/MSP SDK:SDK Examples
 Includes        = -i :,"{MaxSDK}:Max Includes","{MaxSDK}:MSP Includes"
-Defines			= -d MAXMSP
+Defines			= -d MAXMSP 
 
 Sym-PPC         = -sym off
-Flags			= -bool on -includes unix -opt speed,unroll,unswitch 
+Flags			= -bool on -enum int -includes unix -opt speed,unroll,unswitch 
 WarnOff			= -w 35  # arg not used
 
 PPCCPlusOptions = {Includes} {Sym-PPC} {Defines} {Flags} {WarnOff}

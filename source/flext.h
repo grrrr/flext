@@ -404,9 +404,10 @@ public:
 	//   outsigs: array of output vectors  (get number with function cnt_outsig())
 	virtual V m_signal(I n,F *const *insigs,F *const *outsigs) = 0;
 
-	// called with "enable" message: pauses/resumes dsp
-	virtual V m_dspon(BL on);
-	
+	// called with "enable" message: pauses/resumes dsp - already defined in MaxMSP
+#ifndef MAXMSP
+	virtual V m_enable(BL on);
+#endif
 
 // --- inlet/outlet stuff -----------------------------------------	
 
@@ -425,13 +426,15 @@ protected:
 private:
 
 	F srate;
-	BL dspon;
 
 
 	// callback functions
 
 	static V cb_dsp(t_class *c,t_signal **s);
-	static V cb_dspon(t_class *c,FI on);
+#ifndef MAXMSP
+	static V cb_enable(t_class *c,FI on);
+	BL dspon;
+#endif
 
 	// dsp stuff
 

@@ -75,8 +75,9 @@ Version history:
 - no support for default arguments (A_DEFFLOAT and A_DEFSYMBOL).. use GIMME instead!
 - better graphics update behavior for PD
 - improved behavior for invalid/undefined buffers/arrays
-- changed "enable" message for DSP objects to "dspon" ("enable" is reserved in Max/MSP)
 - 128-bit aligned memory allocation with new[] 
+- use MaxMSP internal z_disabled flag with for pausing/resuming dsp processing in flext_dsp
+- included CHECK_TILDE, a test whether a tilde object (defined as FLEXT_TILDE_*) has a trailing ~. (debug mode only)
 
 0.1.1:
 - documentation for flext.h
@@ -108,7 +109,9 @@ Platform specific:
 Restrictions in compatibility mode:
 - Max allows only 9 float/int inlets
 
-
+Porting to new platforms:
+- enums must be int-sized
+- compiler must support RTTI and bool type
 
 ----------------------------------------------------------------------------
 

@@ -470,7 +470,6 @@ typedef V (*methfun_0)(flext_base *c);
 
 #define MAXARGS 5
 
-// the reference is needed for PPC processors
 typedef V (*methfun_1)(flext_base *c,t_any &);
 typedef V (*methfun_2)(flext_base *c,t_any &,t_any &);
 typedef V (*methfun_3)(flext_base *c,t_any &,t_any &,t_any &);
@@ -482,6 +481,8 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 	BL ret = false;
 	
 	LOG3("methodmain inlet:%i args:%i symbol:%s",inlet,argc,s?s->s_name:"");
+	
+//	LOG3("offset int=%i, float=%i, symbol=%i",(I)&((t_any *)0)->it,(I)&((t_any *)0)->ft,(I)&((t_any *)0)->st);
 	
 	for(const methitem *m = mlst; m && !ret; m = m->nxt) {
 		if(m->tag == sym_anything && m->argc == 1 && m->args[0] == a_gimme) {
@@ -510,17 +511,23 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 						if(is_float(argv[ix])) aargs[ix].ft = get_float(argv[ix]);
 						else if(is_int(argv[ix])) aargs[ix].ft = (F)get_int(argv[ix]);
 						else ok = false;
+						
+//						if(ok) LOG2("int arg %i = %f",ix,aargs[ix].ft);
 						break;
 					}
 					case a_int: {
 						if(is_float(argv[ix])) aargs[ix].it = (I)get_float(argv[ix]);
 						else if(is_int(argv[ix])) aargs[ix].it = get_int(argv[ix]);
 						else ok = false;
+						
+//						if(ok) LOG2("float arg %i = %i",ix,aargs[ix].it);
 						break;
 					}
 					case a_symbol: {
 						if(is_symbol(argv[ix])) aargs[ix].st = get_symbol(argv[ix]);
 						else ok = false;
+						
+//						if(ok) LOG2("symbol arg %i = %s",ix,get_string(aargs[ix].st));
 						break;
 					}
 #ifdef PD					

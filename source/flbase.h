@@ -138,6 +138,9 @@ class FLEXT_EXT flext_obj
         // The object's name in the patcher
 		const char *m_name;
 		
+#ifdef _DEBUG
+		static bool check_tilde(const char *objname,const char *setupfun);
+#endif
 };
 
 // This has a dummy arg so that NT won't complain
@@ -215,12 +218,6 @@ static void cb_setup(t_class *classPtr);
 //
 // ONE ARGUMENT
 /////////////////////////////////////////////////
-#define FLEXT_NEW_1ARG(NAME,NEW_CLASS, TYPE, PD_TYPE)    \
-    REAL_NEW_WITH_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, PD_TYPE)
-
-#define FLEXT_TILDE_NEW_1ARG(NAME,NEW_CLASS, TYPE, PD_TYPE)    	    	    	    	\
-    REAL_NEW_WITH_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, PD_TYPE)
-
 #define FLEXT_1ARG(NAME,NEW_CLASS, TYPE)    \
     REAL_NEW_WITH_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, FLEXTTP(TYPE))
 
@@ -230,12 +227,6 @@ static void cb_setup(t_class *classPtr);
 //
 // GIMME ARGUMENT
 /////////////////////////////////////////////////
-#define FLEXT_NEW_GIMME(NAME,NEW_CLASS)  	    	    	\
-    REAL_NEW_WITH_GIMME(NAME,NEW_CLASS, _setup, _class)
-
-#define FLEXT_TILDE_NEW_GIMME(NAME,NEW_CLASS)  	    	    	\
-    REAL_NEW_WITH_GIMME(NAME,NEW_CLASS, _tilde_setup, _class)
-
 #define FLEXT_GIMME(NAME,NEW_CLASS)  	    	    	\
     REAL_NEW_WITH_GIMME(NAME,NEW_CLASS, _setup, _class)
 
@@ -245,12 +236,6 @@ static void cb_setup(t_class *classPtr);
 //
 // TWO ARGUMENTS
 /////////////////////////////////////////////////
-#define FLEXT_NEW_2ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO)	\
-    REAL_NEW_WITH_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO)
-
-#define FLEXT_TILDE_NEW_2ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO)	\
-    REAL_NEW_WITH_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO)
-
 #define FLEXT_2ARGS(NAME,NEW_CLASS, TYPE, TTWO)	\
     REAL_NEW_WITH_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, FLEXTTP(TYPE), TTWO, FLEXTTP(TTWO))
 
@@ -260,12 +245,6 @@ static void cb_setup(t_class *classPtr);
 //
 // THREE ARGUMENTS
 /////////////////////////////////////////////////
-#define FLEXT_NEW_3ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE)	\
-    REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE)
-
-#define FLEXT_TILDE_NEW_3ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE)	\
-    REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE)
-
 #define FLEXT_3ARGS(NAME,NEW_CLASS, TYPE, TTWO, TTHREE)	\
     REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, FLEXTTP(TYPE), TTWO, FLEXTTP(TTWO), TTHREE, FLEXTTP(TTHREE))
 
@@ -275,12 +254,6 @@ static void cb_setup(t_class *classPtr);
 //
 // FOUR ARGUMENTS
 /////////////////////////////////////////////////
-#define FLEXT_NEW_4ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE, TFOUR, PD_FOUR) \
-    REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE, TFOUR, PD_FOUR)
-
-#define FLEXT_TILDE_NEW_4ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE, TFOUR, PD_FOUR) \
-    REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE, TFOUR, PD_FOUR)
-
 #define FLEXT_4ARGS(NAME,NEW_CLASS, TYPE, TTWO, TTHREE, TFOUR) \
     REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, FLEXTTP(TYPE), TTWO, FLEXTTP(TTWO), TTHREE, FLEXTTP(TTHREE), TFOUR, FLEXTTP(TFOUR))
 
@@ -306,6 +279,11 @@ static void cb_setup(t_class *classPtr);
 #define CLNEW_OPTIONS 0  // flags for class creation
 #endif
 
+#ifdef _DEBUG
+#define CHECK_TILDE(OBJNAME,SETUPFUN) flext_obj::check_tilde(OBJNAME,SETUPFUN)
+#else
+#define CHECK_TILDE(OBJNAME,SETUPFUN) ((void)0)
+#endif
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -331,7 +309,8 @@ void * EXTERN_NAME ## NEW_CLASS ()                              \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
 FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
-{   	    	    	    	    	    	    	    	\
+{					\
+	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
     NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
     	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
@@ -359,6 +338,7 @@ void * EXTERN_NAME ## NEW_CLASS (VAR_TYPE arg)                  \
 extern "C" {	    	    	    	    	    	    	\
 FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
+	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
     NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
     	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
@@ -387,6 +367,7 @@ void * EXTERN_NAME ## NEW_CLASS (t_symbol *, int argc, t_atom *argv) \
 extern "C" {	    	    	    	    	    	    	\
 FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
+	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
     NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
     	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
@@ -415,6 +396,7 @@ void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo) \
 extern "C" {	    	    	    	    	    	    	\
 FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
+	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
     NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
     	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
@@ -443,6 +425,7 @@ void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo, THREE_VA
 extern "C" {	    	    	    	    	    	    	\
 FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
+	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
     NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
     	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
@@ -471,6 +454,7 @@ void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo, THREE_VA
 extern "C" {	    	    	    	    	    	    	\
 FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
+	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
     NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
     	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\

@@ -29,12 +29,6 @@ once drifted apart in Max and PD. It is not elegant but helps.
 #endif
 
 
-#if 0
-// host namespace
-namespace flhost {
-#endif
-
-
 // PD stuff
 
 #ifdef PD
@@ -100,12 +94,6 @@ typedef int t_atomtype;
 #endif
 
 typedef t_symbol *t_symtype;
-
-
-#if 0
-// end of host namespace
-} 
-#endif
 
 
 #ifdef _LOG

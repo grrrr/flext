@@ -11,10 +11,48 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // This is all derived from GEM by Mark Danks
  
 #include "flbase.h"
+#include <string.h>
+
+/////////////////////////////////////////////////////////
+//
+// flext_obj
+//
+/////////////////////////////////////////////////////////
+
+flext_hdr *flext_obj::m_holder;
+const char *flext_obj::m_holdname;
 
 
-// --- global overloaded new/delete memory allocation methods ----
+/////////////////////////////////////////////////////////
+// Constructor
+//
+/////////////////////////////////////////////////////////
+flext_obj :: flext_obj()
+           : x_obj(m_holder)
+		   , m_name(m_holdname)
+{
+#ifdef PD
+    m_canvas = canvas_getcurrent();
+#elif defined(MAXMSP)
+    m_canvas = (t_patcher *)gensym("#P")->s_thing;
+    x_obj->curinlet = 0;
+#endif
+}
 
+/////////////////////////////////////////////////////////
+// Destructor
+//
+/////////////////////////////////////////////////////////
+flext_obj :: ~flext_obj()
+{ }
+
+
+
+
+/////////////////////////////////////////////////////////
+// overloaded new/delete memory allocation methods
+//
+/////////////////////////////////////////////////////////
 
 void *flext_obj::operator new(size_t bytes)
 {
@@ -59,36 +97,25 @@ void flext_obj::operator delete[](void *blk)
 
 
 /////////////////////////////////////////////////////////
-//
-// flext_obj
+// check if tilde object's name ends with a tilde
 //
 /////////////////////////////////////////////////////////
 
-flext_hdr *flext_obj::m_holder;
-const char *flext_obj::m_holdname;
 
-
-/////////////////////////////////////////////////////////
-// Constructor
-//
-/////////////////////////////////////////////////////////
-flext_obj :: flext_obj()
-           : x_obj(m_holder)
-		   , m_name(m_holdname)
+#ifdef _DEBUG
+bool flext_obj::check_tilde(const char *objname,const char *setupfun)
 {
-#ifdef PD
-    m_canvas = canvas_getcurrent();
-#elif defined(MAXMSP)
-    m_canvas = (t_patcher *)gensym("#P")->s_thing;
-    x_obj->curinlet = 0;
-#endif
+	int stplen = strlen(setupfun);
+	bool tilde = !strncmp(setupfun,"_tilde",6);
+	if((objname[strlen(objname)-1] == '~'?1:0)^(tilde?1:0)) {
+		if(tilde) 
+			error("flext_obj::check_tilde: %s (no trailing ~) is defined as a tilde object",objname);
+		else
+			error("flext_obj::check_tilde: %s is no tilde object",objname);
+		return true;
+	} 
+	else
+		return false;
 }
-
-/////////////////////////////////////////////////////////
-// Destructor
-//
-/////////////////////////////////////////////////////////
-flext_obj :: ~flext_obj()
-{ }
-
+#endif
 

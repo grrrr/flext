@@ -91,10 +91,6 @@ class FLEXT_EXT flext_obj
         // Constructor
     	flext_obj();
 
-        //////////
-        // The object header
-        t_sigobj          *x_obj;        	
-
     	//////////
     	// Destructor
     	virtual ~flext_obj() = 0;
@@ -104,15 +100,15 @@ class FLEXT_EXT flext_obj
         t_canvas            *getCanvas()        { return(m_canvas); }
 
         //////////
-        // This is a holder - don't touch it
-        static t_sigobj     *m_holder;
-
-        //////////
-        // the class name (as used in a patch)
-		const char *m_name;    
+        // Get the object's name
+        const char *thisName() const       { return(m_name); }
 
     protected:
     	
+        //////////
+        // The object header
+        t_sigobj          *x_obj;        	
+
     	//////////
     	// Creation callback
     	static void callb_setup(t_class *) {}	
@@ -132,6 +128,15 @@ class FLEXT_EXT flext_obj
         //////////
         // The canvas (patcher) that the object is in
         t_canvas            *m_canvas;
+        //////////
+
+	public:
+        //////////
+        // This is a holder - don't touch it
+        static t_sigobj     *m_holder;
+
+        // the class name (as used in a patch)
+		const char *m_name;    
 };
 
 // This has a dummy arg so that NT won't complain
@@ -149,7 +154,6 @@ FLEXT_EXT void *operator new(size_t, void *location, void *dummy);
 
 #define FLEXT_HEADER(NEW_CLASS, PARENT_CLASS)    	    	\
 public:     	    	    \
-const char *thisName() const { return m_name; /*#return NEW_CLASS;*/ } 	    	\
 static void callb_free(void *data)    	    	    	\
 { flext_obj *mydata = ((Obj_header *)data)->data; delete mydata; \
   ((Obj_header *)data)->Obj_header::~Obj_header(); }   	    	\

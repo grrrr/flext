@@ -835,6 +835,10 @@ private:
 
 	//! Start message queue
 	static void StartQueue();
+#ifdef FLEXT_QTHR
+    //! Queue worker function
+    static void QWorker(thr_params *);
+#endif
 	//! Flush messages in the queue
 	static void QFlush(flext_base *th = NULL);
 

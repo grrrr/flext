@@ -38,21 +38,22 @@ void flext_base::ToSysAnything(int n,const t_symbol *s,int argc,const t_atom *ar
 #error Not implemented
 #endif
 
-#ifndef FLEXT_THREADS
-void flext_base::ToOutBang(int n) const { ToSysBang(n); }
-void flext_base::ToOutFloat(int n,float f) const { ToSysFloat(n,f); }
-void flext_base::ToOutInt(int n,int f) const { ToSysInt(n,f); }
-void flext_base::ToOutSymbol(int n,const t_symbol *s) const { ToSysSymbol(n,s); }
-void flext_base::ToOutList(int n,int argc,const t_atom *argv) const { ToSysList(n,argc,argv); }
-void flext_base::ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { ToSysAnything(n,s,argc,argv); }
+#if defined(FLEXT_THREADS)
+    #if defined(FLEXT_QTHR)
+        #define CHKTHR() (IsSystemThread() || IsThread(flext::thrmsgid))
+    #else
+        #define CHKTHR() IsSystemThread()
+    #endif
 #else
-void flext_base::ToOutBang(int n) const { if(IsSystemThread()) ToSysBang(n); else ToQueueBang(n); }
-void flext_base::ToOutFloat(int n,float f) const { if(IsSystemThread()) ToSysFloat(n,f); else ToQueueFloat(n,f); }
-void flext_base::ToOutInt(int n,int f) const { if(IsSystemThread()) ToSysInt(n,f); else ToQueueInt(n,f); }
-void flext_base::ToOutSymbol(int n,const t_symbol *s) const { if(IsSystemThread()) ToSysSymbol(n,s); else ToQueueSymbol(n,s); }
-void flext_base::ToOutList(int n,int argc,const t_atom *argv) const { if(IsSystemThread()) ToSysList(n,argc,argv); else ToQueueList(n,argc,argv); }
-void flext_base::ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { if(IsSystemThread()) ToSysAnything(n,s,argc,argv); else ToQueueAnything(n,s,argc,argv); }
+    #define CHKTHR() true
 #endif
+
+void flext_base::ToOutBang(int n) const { if(CHKTHR()) ToSysBang(n); else ToQueueBang(n); }
+void flext_base::ToOutFloat(int n,float f) const { if(CHKTHR()) ToSysFloat(n,f); else ToQueueFloat(n,f); }
+void flext_base::ToOutInt(int n,int f) const { if(CHKTHR()) ToSysInt(n,f); else ToQueueInt(n,f); }
+void flext_base::ToOutSymbol(int n,const t_symbol *s) const { if(CHKTHR()) ToSysSymbol(n,s); else ToQueueSymbol(n,s); }
+void flext_base::ToOutList(int n,int argc,const t_atom *argv) const { if(CHKTHR()) ToSysList(n,argc,argv); else ToQueueList(n,argc,argv); }
+void flext_base::ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { if(CHKTHR()) ToSysAnything(n,s,argc,argv); else ToQueueAnything(n,s,argc,argv); }
 
 
 bool flext_base::InitInlets()

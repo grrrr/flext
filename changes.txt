@@ -25,7 +25,7 @@ Version history:
 - flext::StopThread function to terminate running threads (started with LaunchThread)
 - added flext::post() and flext::error() console printing (thread-safe)
 - added flext::CmpAtom and AtomList::operator < methods ... useful for using lists as keys for STL
-- make use of new PD thread locking (PD functions sys_lock() and sys_unlock())
+- make use of new PD thread locking (PD functions sys_lock() and sys_unlock()), queue messages only if necessary
 - better FLEXT_OSAPI resolution
 - ListAttributes (or the getattributes message) now lists attributes in the order they were created (first class, then object scope)
 - enforcing usage of STL

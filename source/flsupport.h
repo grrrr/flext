@@ -720,7 +720,7 @@ public:
 
 protected:
 
-	static thrid_t thrhelpid;
+	static thrid_t thrhelpid,thrmsgid;
 	static bool StartHelper();
 	static bool StopHelper();
 	static void ThrHelper(void *);

@@ -19,6 +19,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flext.h"
 #include "flinternal.h"
 
+//! Thread id of message queue thread
+flext::thrid_t flext::thrmsgid = 0;
+
 class qmsg
 {
 public:
@@ -237,8 +240,9 @@ static void Queue(qmsg *m)
 }
 
 #ifdef FLEXT_QTHR
-void QWorker(flext::thr_params *)
+void flext_base::QWorker(thr_params *)
 {
+    thrmsgid = GetThreadId();
 	for(;;) {
 		qthrcond.Wait();
 		QWork(true,true);

@@ -37,12 +37,18 @@ BUILDING & INSTALLING:
 
 pd - Windows:
 -------------
-o Microsoft Visual C++ 6 or 7: edit "config-pd-msvc.txt" & run "build-pd-msvc.bat" 
+o Microsoft Visual C++ 6 or 7: 
+	edit "config-pd-msvc.txt"
+	start a dos-shell (cmd.exe) and set the compiler environment (vcvars32.bat)
+	run "build-pd-msvc.bat" 
 
-o Borland C++ 5.5 (free): edit "config-pd-bcc.txt" & run "build-pd-bcc.bat" 
+o Borland C++ 5.5 (free): 
+	edit "config-pd-bcc.txt"
+	run "build-pd-bcc.bat" 
 
 o Cygwin: edit "config-pd-cygwin.txt" & run "sh build-pd-cygwin.sh" 
 	additional settings (e.g. target processor, compiler flags) can be made in makefile.pd-cygwin
+
 
 With your project using flext, be sure to define "FLEXT_SYS=2".
 
@@ -55,6 +61,7 @@ o GCC,ICC: edit "config-pd-linux.txt" & run "sh build-pd-linux.sh"
 Several variations of the flext library will be built: release and debug version of single-threaded and multi-threaded static libraries and of a multi-threaded shared library, respectively.
 These will be installed into the flext directory given in config-pd-linux.txt. For the shared libraries to be found, be sure to specify the flext folder in the /etc/ld.so.conf.
 
+
 With your project using flext, be sure to define "FLEXT_SYS=2".
 
 
@@ -63,12 +70,14 @@ pd - MacOSX:
 o GCC: edit "config-pd-darwin.txt" & run "sh build-pd-darwin.sh" 
 	additional settings (e.g. target processor, compiler flags) can be made in makefile.pd-darwin
 
+
 With your project using flext, be sure to define "FLEXT_SYS=2".
 
 
 Max/MSP - Windows:
 ------------------
 o Microsoft Visual C++ 6 or 7: edit "config-max-msvc.txt" & run "build-max-msvc.bat" 
+
 
 With your project using flext, be sure to define "FLEXT_SYS=1".
 

@@ -47,7 +47,7 @@ class flext_base::thr_entry
 public:
 	thr_entry(pthread_t id = pthread_self()): thrid(id),nxt(NULL) {}
 
-	bool Is(pthread_t id = pthread_self()) const { return pthread_equal(thrid,id) != 0; }
+	bool Is(pthread_t id = pthread_self()) const { return pthread_equal(thrid,id) == 0; }
 
 	pthread_t thrid;
 	thr_entry *nxt;

@@ -442,6 +442,7 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 		th->M_FUN(data); \
 		th->PopThread(); \
 	} \
+	delete data; \
 	return NULL; \
 } 
 

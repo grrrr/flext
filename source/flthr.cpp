@@ -51,13 +51,17 @@ bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *me
 	}
 }
 
+
+
 bool flext_base::PushThread()
 {
 	tlmutex.Lock();
+
 	thr_entry *nt = new thr_entry;
 	if(thrtail) thrtail->nxt = nt; 
 	else thrhead = nt;
 	thrtail = nt;
+
 	tlmutex.Unlock();
 	
 #ifdef MAXMSP
@@ -69,6 +73,7 @@ bool flext_base::PushThread()
 void flext_base::PopThread()
 {
 	tlmutex.Lock();
+
 	thr_entry *prv = NULL,*ti;
 	for(ti = thrhead; ti; prv = ti,ti = ti->nxt)
 		if(ti->Is()) break;
@@ -77,13 +82,15 @@ void flext_base::PopThread()
 		if(prv) 
 			prv->nxt = ti->nxt;
 		else 
-			thrhead = thrtail = ti->nxt;
+			thrhead = ti->nxt;
+		if(!ti->nxt) thrtail = ti;
+
 		ti->nxt = NULL;
 		delete ti;
 	}
 	else {
 #ifdef _DEBUG
-		post("%s - Am i too slow? - Thread not found!",thisName());
+		post("%s - INTERNAL ERROR: Thread not found!",thisName());
 #endif
 	}
 	
@@ -302,7 +309,7 @@ void flext_base::QueueAnything(outlet *o,const t_symbol *s,int argc,t_atom *argv
 
 
 flext_base::thr_params::thr_params(flext_base *c,int n): cl(c),var(new _data[n]) {}
-flext_base::thr_params::~thr_params() { delete[] var; }
+flext_base::thr_params::~thr_params() { if(var) delete[] var; }
 
 void flext_base::thr_params::set_any(const t_symbol *s,int argc,t_atom *argv) { var[0]._any.args = new AtomAnything(s,argc,argv); }
 void flext_base::thr_params::set_list(int argc,t_atom *argv) { var[0]._list.args = new AtomList(argc,argv); }

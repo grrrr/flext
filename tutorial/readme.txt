@@ -15,8 +15,8 @@ Contribution of examples to the package is higly appreciated!
 The recommended order to go through the tutorial examples is the following:
 
 1) simple*
-2) attr*
-3) adv*
+2) adv*
+3) attr*
 4) signal*
 5) lib*
 6) thread*

@@ -1,7 +1,7 @@
 /* 
 flext tutorial - stk 2
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002,2003 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -12,8 +12,8 @@ For STK see http://ccrma-www.stanford.edu/software/stk
 
 STK needs C++ exceptions switched on.
 
-The STK tutorial examples assume that a stk.lib static library exists which contains all the
-source files of the stk/src directory (except the rt*.cpp files).
+The STK tutorial examples assume that a static stk library exists which contains all the
+source files (except rt*.cpp) of the stk/src directory.
 The library should be compiled multithreaded and with the appropriate compiler flags for 
 the respective platform (e.g. __OS_WINDOWS__ and __LITTLE_ENDIAN__ for Windows)
 

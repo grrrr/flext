@@ -1,4 +1,4 @@
-#N canvas 405 36 592 400 12;
+#N canvas 237 9 577 257 12;
 #X obj 66 186 dac~;
 #X obj 15 8 cnv 15 550 40 empty empty stk1 10 22 0 24 -260818 -1 0
 ;

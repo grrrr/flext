@@ -14,6 +14,16 @@ PD=/usr/local/pd/bin/pd
 # where do the flext libraries reside?
 FLEXTPATH=/usr/local/pd/flext
 
+# where is the SndObj include directory? 
+# (leave blank or comment out to disable SndObj support)
+# if defined, you must have a libsndobj.a library in the lib path
+SNDOBJ=/usr/local/include/SndObj
+
+# where is the STK include directory?
+# (leave blank or comment out to disable STK support)
+# if defined, you must have a libstk.a library in the lib path
+STK=/usr/src/stk-4.1.1/include
+
 # where should the examples be built? (relative path)
 OUTPATH=./pd-darwin
 

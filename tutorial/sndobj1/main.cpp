@@ -1,7 +1,7 @@
 /* 
 flext tutorial - sndobj 1
 
-Copyright (c) 2002 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002,2003 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -10,7 +10,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 This is an example of an external using the SndObj library.
 See http://www.may.ie/academic/music/musictec/SndObj/
 
-This object shows simple stereo pitch shifting.
+The SndObj library should be compiled multithreaded.
+
+This external features simple stereo pitch shifting.
 
 */
 

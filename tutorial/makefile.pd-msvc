@@ -3,46 +3,46 @@
 #
 # Makefile for MSVC++
 #
-#
-# IMPORTANT: Adjust some of the paths also in makefile-inc.msvc
-#
-# usage: make -f makefile.pd-msvc
-#
 # ---------------------------------------------------------------
 
 !include config-pd-msvc.txt
 
-# includes
-INCPATH=/I"$(MSVCPATH)\include" /I"$(PDPATH)\src" /I"$(FLEXTPATH)"
-LIBPATH=/LIBPATH:"$(MSVCPATH)\lib" /LIBPATH:"$(PDPATH)\bin" /LIBPATH:"$(FLEXTPATH)"
-LIBS=pd.lib pthreadVC.lib flext_t-pdwin.lib
 
-# compiler definitions and flags
-DEFS=/DFLEXT_SYS=2 /DFLEXT_THREADS
+TARGETS=normal threads
 
-CFLAGS=/GR /GD /G6 /Ox /MT
+!ifdef SNDOBJ
+TARGETS=$(TARGETS) sndobj
+!endif
+
+!ifdef STK
+TARGETS=$(TARGETS) stk
+!endif
+
+all: $(TARGETS)
+
+normal:
+	nmake /f make-sub.pd-msvc NAME=simple1 DIR=simple1
+	nmake /f make-sub.pd-msvc NAME=simple2 DIR=simple2
+	nmake /f make-sub.pd-msvc NAME=simple3 DIR=simple3
+	nmake /f make-sub.pd-msvc NAME=adv1 DIR=adv1
+	nmake /f make-sub.pd-msvc NAME=adv2 DIR=adv2
+	nmake /f make-sub.pd-msvc NAME=adv3 DIR=adv3
+	nmake /f make-sub.pd-msvc NAME=attr1 DIR=attr1
+	nmake /f make-sub.pd-msvc NAME=attr2 DIR=attr2
+	nmake /f make-sub.pd-msvc NAME=attr3 DIR=attr3
+	nmake /f make-sub.pd-msvc NAME=signal1~ DIR=signal1
+	nmake /f make-sub.pd-msvc NAME=signal2~ DIR=signal2
+	nmake /f make-sub.pd-msvc NAME=lib1 DIR=lib1
+
+threads:
+	nmake /f make-sub.pd-msvc NAME=thread1  DIR=thread1 
+	nmake /f make-sub.pd-msvc NAME=thread2  DIR=thread2 
+
+sndobj:
+	nmake /f make-sub.pd-msvc NAME=sndobj1~ DIR=sndobj1
+
+stk:
+	nmake /f make-sub.pd-msvc NAME=stk1~ DIR=stk1
+	nmake /f make-sub.pd-msvc NAME=stk2~ DIR=stk2
 
 
-# the rest can stay untouched
-# ----------------------------------------------
-
-# all the source files from the package
-SRCS=main.cpp
-HDRS=
-
-# -----------------------------------------------
-
-all: $(OUTPATH) $(OUTPATH)\$(NAME).dll
-
-$(OUTPATH):
-	-mkdir $(OUTPATH)
-
-$(OUTPATH)\$(NAME)~.dll : $(OUTPATH)\$(NAME).dll
-	-ren $** $<
-
-$(OUTPATH)\$(NAME).dll : $(DIR)\$(SRCS)
-	cl /c /LD $(CFLAGS) $(DEFS) $(INCPATH) $** /Fotemp.obj
-	link /DLL /out:$@ /INCREMENTAL:NO temp.obj $(LIBS) $(LIBPATH)
-	@-del $(OUTPATH)\*.exp
-	@-del $(OUTPATH)\*.lib
-	@-del temp.obj

@@ -1,4 +1,4 @@
-#N canvas 405 36 598 406 12;
+#N canvas 245 28 590 384 12;
 #X obj 68 318 dac~;
 #X obj 15 8 cnv 15 550 40 empty empty stk2 10 22 0 24 -260818 -1 0
 ;
@@ -13,9 +13,9 @@
 #X msg 183 139 shL \$1;
 #X msg 241 139 shR \$1;
 #X obj 267 77 hsl 128 15 0.5 2 1 0 empty empty empty -2 -6 0 8 -261681
--1 -1 8200 1;
+-1 -1 0 1;
 #X obj 267 95 hsl 128 15 0.5 2 1 0 empty empty empty -2 -6 0 8 -261681
--1 -1 9200 1;
+-1 -1 0 1;
 #X text 172 73 pitch left;
 #X text 172 93 pitch right;
 #X obj 68 78 osc~ 442;

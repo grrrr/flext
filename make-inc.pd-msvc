@@ -13,7 +13,11 @@ SOURCE=source
 INCPATH=/I$(MSVCPATH)\include /I$(PDPATH)\src /I$(SOURCE)
 
 !ifdef SNDOBJ
-INCPATH=$(INCPATH) /I$(SNDOBJ)
+INCPATH=$(INCPATH) /I$(SNDOBJ) 
+!endif
+
+!ifdef STK
+INCPATH=$(INCPATH) /I$(STK) 
 !endif
 
 # compiler definitions and flags
@@ -60,6 +64,11 @@ OBJPATH=sd
 !ifdef SNDOBJ
 SRCS=$(SRCS) $(SRCS_SNDOBJ)
 HDRS=$(HDRS) $(HDRS_SNDOBJ)
+!endif
+
+!ifdef STK
+SRCS=$(SRCS) $(SRCS_STK)
+HDRS=$(HDRS) $(HDRS_STK)
 !endif
 
 #default target

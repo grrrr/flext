@@ -12,5 +12,15 @@ MSVCPATH=c:\programme\prog\microsoft visual studio\VC98
 # where do the flext libraries reside?
 FLEXTPATH=$(PDPATH)\flext
 
+# where is the SndObj include directory?
+# (leave blank or comment out to disable SndObj support)
+SNDOBJ=f:\prog\packs\sndobj\include
+SNDOBJLIB=f:\prog\packs\sndobj\lib\sndobj.lib
+
+# where is the STK include directory?
+# (leave blank or comment out to disable STK support)
+STK=f:\prog\packs\stk\include
+STKLIB=f:\prog\packs\stk\lib\stk.lib
+
 # where should the examples be built?
 OUTPATH=.\pd-msvc

@@ -243,6 +243,22 @@ Package=<4>
 
 ###############################################################################
 
+Project: "stk2"=.\stk2\stk2.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    stk2
+    .\stk2
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "thread1"=.\thread1\thread1.dsp - Package Owner=<4>
 
 Package=<5>

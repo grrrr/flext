@@ -25,8 +25,19 @@ LDFLAGS=-bundle -bundle_loader $(PD)
 
 # all the source files from the package
 
-EXAMPLES=simple1 simple2 simple3 adv1 adv2 adv3 attr1 attr2 attr3 signal1~ signal2~ sndobj1~ stk1~ stk2~ lib1 thread1 thread2 
+EXAMPLES=simple1 simple2 simple3 adv1 adv2 adv3 attr1 attr2 attr3 signal1~ signal2~ lib1 thread1 thread2 
 
+ifdef SNDOBJ
+INCLUDES+=$(SNDOBJ)
+EXAMPLES+=sndobj1~ 
+LIBS+=sndobj
+endif
+
+ifdef STK
+INCLUDES+=$(STK)
+EXAMPLES+=stk1~ stk2~
+LIBS+=stk
+endif
 
 TARGETS=$(patsubst %,$(OUTPATH)/%.pd_darwin,$(EXAMPLES))
 

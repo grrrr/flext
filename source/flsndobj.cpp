@@ -95,7 +95,7 @@ void flext_sndobj::m_signal(int n,t_sample *const *in,t_sample *const *out)
 
 
 flext_sndobj::Inlet::Inlet(const t_sample *b,int vecsz,float sr): 
-  SndIO(1,sizeof(t_sample)*8,NULL,vecsz,sr),buf(b) 
+    SndIO(1,sizeof(t_sample)*8,NULL,vecsz,sr),buf(b) 
 {}
 
 short flext_sndobj::Inlet::Read() 
@@ -112,7 +112,7 @@ short flext_sndobj::Inlet::Write() { return 0; }
 
 
 flext_sndobj::Outlet::Outlet(t_sample *b,int vecsz,float sr): 
-  SndIO(1,sizeof(t_sample)*8,NULL,vecsz,sr),buf(b) 
+    SndIO(1,sizeof(t_sample)*8,NULL,vecsz,sr),buf(b) 
 {}
 
 short flext_sndobj::Outlet::Read() { return 0; }

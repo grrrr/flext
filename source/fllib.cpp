@@ -177,7 +177,7 @@ void flext_obj::lib_init(const char *name,void setupfun(),bool attr)
     catch(std::exception &x) {
         error("%s - Exception at library setup: %s",name,x.what());
     }
-    catch(const char *txt) {
+    catch(char *txt) {
     	error("%s - Exception at library setup: %s",name,txt);
     }
     catch(...) {
@@ -306,7 +306,7 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
     catch(std::exception &x) {
         error("%s - Exception while initializing class: %s",idname,x.what());
     }
-    catch(const char *txt) {
+    catch(char *txt) {
     	error("%s - Exception while initializing class: %s",idname,txt);
     }
     catch(...) {
@@ -458,7 +458,7 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
                 error("%s - Exception while creating object: %s",GetString(s),x.what());
                 ok = false;
             }
-            catch(const char *txt) {
+            catch(char *txt) {
     		    error("%s - Exception while creating object: %s",GetString(s),txt);
                 ok = false;
             }
@@ -509,7 +509,7 @@ void flext_obj::obj_free(flext_hdr *h)
         catch(std::exception &x) {
             error("%s - Exception while destroying object: %s",GetString(name),x.what());
         }
-        catch(const char *txt) {
+        catch(char *txt) {
     		error("%s - Exception while destroying object: %s",GetString(name),txt);
         }
         catch(...) {

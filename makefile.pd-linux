@@ -18,7 +18,8 @@ INSTDIR=/usr/lib/pd/flext
 # compiler+linker stuff ### EDIT! ###
 INCLUDES=/usr/lib/pd/include
 FLAGS=-DPD
-CFLAGS=-O6 -mpentium -g 
+CFLAGS=-O6 -mpentium
+CFLAGS_D=-mpentium -g
 LIBS=
 
 # the rest can stay untouched
@@ -30,8 +31,9 @@ HDRS=flstdc.h flbase.h flext.h
 IHDRS=fldefs.h
 
 TARGET=$(TARGDIR)/$(NAME).a
+TARGET_D=$(TARGDIR)/$(NAME)_d.a
 
-all: $(TARGDIR) $(TARGET)
+all: $(TARGDIR) $(TARGET) $(TARGET_D)
 
 $(TARGDIR):
 	mkdir $(TARGDIR)
@@ -42,7 +44,14 @@ $(SRCS): $(HDRS) $(IHDRS)
 $(TARGDIR)/%.o : %.cpp
 	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) .) $< -o $@
 
+$(TARGDIR)/%.do : %.cpp
+	$(CXX) -c $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) .) $< -o $@
+
 $(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS)) 
+	ar rc $@ $^ 
+	chmod 755 $@
+
+$(TARGET_D) : $(patsubst %.cpp,$(TARGDIR)/%.do,$(SRCS)) 
 	ar rc $@ $^ 
 	chmod 755 $@
 
@@ -51,12 +60,14 @@ $(INSTDIR):
 
 install:: $(INSTDIR)
 
-install:: $(TARGET) $(HDRS)
+install:: $(TARGET) $(TARGET_D) $(HDRS)
 	cp $^ $(INSTDIR)
 	chown root.root $(patsubst %,$(INSTDIR)/%,$(notdir $^))
 
 .PHONY: clean
 clean:
-	rm -f $(TARGDIR)/*.o $(TARGET)
+	rm -f $(TARGDIR)/*.o $(TARGET) $(TARGET_D)
 	
+
+
 

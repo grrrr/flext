@@ -31,7 +31,12 @@ class flext_dsp:
 	
 public:
 
-/*!	\defgroup FLEXT_C_DSP Flext basic dsp functionality
+/*!	\defgroup FLEXT_DSP Flext dsp class
+
+	@{ 
+*/
+
+/*!	\defgroup FLEXT_C_DSP Basic dsp functionality
 
 	@{ 
 */
@@ -57,7 +62,7 @@ public:
 
 // --- inheritable virtual methods --------------------------------
 
-/*!	\defgroup FLEXT_C_VIRTUAL_DSP Flext virtual dsp functions
+/*!	\defgroup FLEXT_C_DSP_VIRTUAL Flext virtual dsp functions
 
 	@{ 
 */
@@ -88,7 +93,7 @@ public:
 //!	@} 
 
 
-/*!	\defgroup FLEXT_C_INOUT_DSP Flext dsp in-/outlet functions
+/*!	\defgroup FLEXT_C_DSP_INOUT Flext dsp in-/outlet functions
 	\note These must be called in the class' constructor
 
 	@{ 
@@ -107,6 +112,7 @@ public:
 
 //!	@} 
 
+//!	@} 
 
 protected:
 	

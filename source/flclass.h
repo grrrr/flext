@@ -52,9 +52,13 @@ class flext_base:
 	
 	friend class flext_obj;
 
+	/*!	\defgroup FLEXT_CLASS Flext base class
+
+		@{ 
+	*/
 public:
 
-	/*!	\defgroup FLEXT_C_BASE Flext basic class functionality
+	/*!	\defgroup FLEXT_C_BASE Basic class functionality
 
 		@{ 
 	*/
@@ -67,9 +71,11 @@ public:
 	*/
 	static bool compatibility;  
 
+//!		@} FLEXT_C_BASE
+
 // --- inheritable virtual methods --------------------------------
 
-	/*!	\defgroup FLEXT_C_VIRTUAL Flext virtual base class functions
+	/*!	\defgroup FLEXT_C_VIRTUAL Virtual base class functions
 
 		@{ 
 	*/
@@ -80,7 +86,7 @@ public:
 	//! called on patcher load (not on mere object creation!)
 	virtual void m_loadbang() {}
 
-	//! quickhelp for inlets/outlets (gets calles in MaxMSP only)
+	//! quickhelp for inlets/outlets (gets called in MaxMSP only)
 	virtual void m_assist(long /*msg*/,long /*arg*/,char * /*s*/) {}
 
 	/*!	\brief Called for every incoming message.
@@ -92,7 +98,7 @@ public:
 	//! called for every unhandled message (by m_methodmain)
 	virtual bool m_method_(int inlet,const t_symbol *s,int argc,t_atom *argv);
 
-//!		@} 
+//!		@} FLEXT_C_VIRTUAL
 
 
 // --- inlet/outlet stuff -----------------------------------------	
@@ -164,8 +170,6 @@ public:
 
 
 	class outlet;
-//	class AtomList;
-//	class AtomAnything;
 
 	//! Retrieve currently processed message tag (NULL if no message processing)
 	const t_symbol *thisTag() const { return curtag; }
@@ -226,7 +230,7 @@ public:
 	void ToQueueAnything(int n,const t_symbol *s,int argc,const t_atom *argv) { outlet *o = GetOut(n); if(o) ToQueueAnything(o,s,argc,argv); }
 	void ToQueueAnything(int n,const AtomAnything &any)  { ToQueueAnything(n,any.Header(),any.Count(),any.Atoms()); }
 
-//!		@} 
+//!		@} FLEXT_C_INOUT
 
 
 // --- message handling -------------------------------------------
@@ -241,7 +245,7 @@ public:
 
 	typedef bool (*methfun)(flext_base *c);
 
-	/*!	\defgroup FLEXT_C_ADDMETHOD Flext method handling
+	/*!	\defgroup FLEXT_C_ADDMETHOD Method handling
 		\internal
 
 		@{ 
@@ -273,9 +277,14 @@ public:
 	//! Set MaxMSP style of distributing list elements over (message) inlets
 	void SetDist(bool d = true) { distmsgs = d; }
 
-//!		@} 
+//!		@} FLEXT_C_ADDMETHOD
 
 // --- bind/unbind ---------------------------------------
+
+	/*!	\defgroup FLEXT_C_BIND Methods for binding a flext class to a symbol
+
+		@{ 
+	*/
 
 #ifdef PD
 	//! Bind object to a symbol
@@ -304,10 +313,12 @@ public:
 	static t_class **GetBound(const t_symbol *s) { return (t_class **)s->s_thing; }
 */
 
+//!		@} FLEXT_C_BIND
+
 // --- thread stuff -----------------------------------------------
 
 #ifdef FLEXT_THREADS
-	/*!	\defgroup FLEXT_C_THREAD Flext thread handling 
+	/*!	\defgroup FLEXT_C_THREAD Thread handling 
 
 		@{ 
 	*/
@@ -346,7 +357,7 @@ public:
 
 #endif // FLEXT_THREADS
 
-//!		@} 
+//!		@}  FLEXT_C_THREAD
 
 // xxx internal stuff xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
@@ -355,6 +366,10 @@ protected:
 // --- thread stuff -----------------------------------------------
 
 #ifdef FLEXT_THREADS
+
+	/*! \brief Thread parameters
+		\internal
+	*/
 	class thr_params 
 	{
 	public:
@@ -376,19 +391,35 @@ protected:
 		} *var;
 	};
 
+	/*! \brief This represents an entry to the list of active method threads
+		\internal
+	*/
 	class thr_entry 
 	{
 	public:
 		thr_entry(pthread_t id = pthread_self()): thrid(id),nxt(NULL) {}
 
+		//! \brief Check if this class represents the current thread
 		bool Is(pthread_t id = pthread_self()) const { return pthread_equal(thrid,id) != 0; }
 
 		pthread_t thrid;
 		thr_entry *nxt;
 	};
 
-	static bool StartThread(void *(*)(thr_params *p),thr_params *p,char *methname);
+	/*! \brief Start a method thread
+		\internal
+	*/
+	static bool StartThread(void *(*)(thr_params *p) meth,thr_params *p,char *methname);
+
+	/*! \brief Add current thread to list of active threads
+		\return true on success
+		\internal
+	*/
 	bool PushThread();
+
+	/*! \brief Remove current thread from list of active threads
+		\internal
+	*/
 	void PopThread();
 #endif
 
@@ -400,10 +431,12 @@ protected:
 // inlets and outlets
 		
 	/*! \brief Set up inlets and outlets
+		\ingroup FLEXT_C_INOUT 
 		\return True on successful creation of all inlets and outlets
 	*/
 	virtual bool Init();
 
+	//! \brief This represents either an inlet or outlet
 	struct xlet {	
 		enum type {
 			tp_none = 0,
@@ -420,8 +453,7 @@ protected:
 		xlet *nxt;
 	};
 
-	/*!	\addtogroup FLEXT_C_ATTR
-
+	/*!	\defgroup FLEXT_C_ATTR Attribute handling methods
 		@{ 
 	*/
 
@@ -434,27 +466,43 @@ protected:
 	void AddAttrib(const char *attr,bool (*get)(flext_base *,AtomList *&),bool (*set)(flext_base *,AtomList *&)) { AddAttrib(attr,a_LIST,(methfun)get,(methfun)set); }
 	void AddAttrib(const char *attr,bool (*get)(flext_base *,AtomAnything *&),bool (*set)(flext_base *,AtomAnything *&)) { AddAttrib(attr,a_ANY,(methfun)get,(methfun)set); }
 
-//!		@} 
+//!		@} FLEXT_C_ATTR
 
 	/*!	\addtogroup FLEXT_C_INOUT 
 
 		@{ 
 	*/
 
+	//! \brief get a code for a list of inlets or outlets
 	unsigned long XletCode(xlet::type tp = xlet::tp_none,...); // end list with 0 (= tp_none) !!
 
-	void AddInlets(unsigned long code); // use XletCode to get code value
+	/*! \brief Add some inlets by a special code representing the types
+		\remark use XletCode function to get code value
+	*/
+	void AddInlets(unsigned long code); 
+
+	//! \brief Add one or more inlet(s)
 	void AddInlet(xlet::type tp,int mult = 1,const char *desc = NULL) { AddXlet(tp,mult,desc,inlist); }
-	void AddOutlets(unsigned long code); // use XletCode to get code value
+
+	/*! \brief Add some inlets by a special code representing the types
+		\remark use XletCode function to get code value
+	*/
+	void AddOutlets(unsigned long code); 
+
+	//! \brief Add one or more outlet(s)
 	void AddOutlet(xlet::type tp,int mult = 1,const char *desc = NULL) { AddXlet(tp,mult,desc,outlist); }
 
+	//! \brief Set the description of an indexed inlet
 	void DescInlet(int ix,const char *desc) { DescXlet(ix,desc,inlist); }
+
+	//! \brief Set the description of an indexed outlet
 	void DescOutlet(int ix,const char *desc) { DescXlet(ix,desc,outlist); }
 
-//!		@} 
+//!		@} FLEXT_C_INOUT
 
 // method handling
 
+	//! \brief This represents an item of the method list
 	class methitem { 
 	public:
 		methitem(int inlet,const t_symbol *t);
@@ -471,8 +519,7 @@ protected:
 		methitem *nxt;
 	};
 	
-//	const methitem *FindMethItem(int inlet,const t_symbol *tag,const methitem *st);
-	
+	//! \brief This represents an item of the attribute list
 	class attritem { 
 	public:
 		attritem(const t_symbol *tag,const t_symbol *gtag,metharg tp,methfun gfun,methfun sfun);
@@ -484,6 +531,8 @@ protected:
 
 		attritem *nxt;
 	};
+
+//!		@} FLEXT_CLASS
 
 private:
 

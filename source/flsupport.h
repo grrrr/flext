@@ -22,11 +22,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 class FLEXT_EXT flext {
+
+	/*!	\defgroup FLEXT_SUPPORT Flext support class
+		@{ 
+	*/
 public:
 // --- buffer/array stuff -----------------------------------------	
 
-	/*!	\defgroup FLEXT_N_BUFFER Flext buffer handling
-
+	/*!	\defgroup FLEXT_S_BUFFER Buffer handling
 		@{ 
 	*/
 
@@ -35,6 +38,7 @@ public:
 	{
 	public:
 		/*! \brief Construct buffer.
+			\param s: symbol name, can be NULL
 			\param delayed = true: only sets name, needs another Set(NULL) to really initialize the buffer 
 			\remark As externals can be created prior to the buffer objects they are pointing to, initialization should be done at loadbang!
 		*/
@@ -97,12 +101,34 @@ public:
 #endif
 	};
 
-//!		@} 
+//!		@} FLEXT_S_BUFFER
+
+// --- utilities --------------------------------------------------
+
+	/*!	\defgroup FLEXT_S_UTIL Utility functions
+		@{ 
+	*/
+
+	//! Copy an atom
+	static void CopyAtom(t_atom *dst,const t_atom *src) { *dst = *src; }
+
+	//! Print an atom
+	static void PrintAtom(const t_atom &a,char *buf);
+	//! Scan an atom
+	static bool ScanAtom(t_atom &a,const char *buf);
+
+	//! Copy a list of atoms
+	static t_atom *CopyList(int argc,const t_atom *argv);
+	//! Copy a memory region
+	static void CopyMem(void *dst,const void *src,int bytes);
+	//! Sleep for an amount of time
+	static void Sleep(float s);
+
+//!		@} FLEXT_S_UTIL
 
 // --- various symbols --------------------------------------------
 
-	/*!	\defgroup FLEXT_N_SYMBOL Flext atom/symbol handling 
-
+	/*!	\defgroup FLEXT_S_ATOM Atom/list handling
 		@{ 
 	*/
 
@@ -142,32 +168,6 @@ public:
 	static const char *GetString(const t_symbol *s) { return s->s_name; }  
 	//! Check for symbol and get string
 	static const char *GetAString(const t_symbol *s) { return s?s->s_name:""; }  
-
-//!		@} 
-
-// --- utilities --------------------------------------------------
-
-	/*!	\defgroup FLEXT_C_UTIL Flext utility functions
-
-		@{ 
-	*/
-
-	//! Copy an atom
-	static void CopyAtom(t_atom *dst,const t_atom *src) { *dst = *src; }
-
-	//! Print an atom
-	static void PrintAtom(const t_atom &a,char *buf);
-	//! Scan an atom
-	static bool ScanAtom(t_atom &a,const char *buf);
-
-	//! Copy a list of atoms
-	static t_atom *CopyList(int argc,const t_atom *argv);
-	//! Copy a memory region
-	static void CopyMem(void *dst,const void *src,int bytes);
-	//! Sleep for an amount of time
-	static void Sleep(float s);
-
-//!		@} 
 
 // --- atom stuff ----------------------------------------
 		
@@ -265,11 +265,6 @@ public:
 
 // --- atom list stuff -------------------------------------------
 
-	/*!	\defgroup FLEXT_N_ATOM Flext atom/list handling
-
-		@{ 
-	*/
-
 	//! Class representing a list of atoms
 	class AtomList
 	{
@@ -360,12 +355,12 @@ public:
 		const t_symbol *hdr;
 	};
 
-//!		@} 
+//!		@} FLEXT_S_ATOM
 
 // --- clock stuff ------------------------------------------------
 
 
-	/*!	\defgroup FLEXT_N_CLOCK Flext clock functions
+	/*!	\defgroup FLEXT_S_CLOCK Flext clock functions
 
 		At the moment there are none
 
@@ -378,8 +373,7 @@ public:
 // --- thread stuff -----------------------------------------------
 
 #ifdef FLEXT_THREADS
-	/*!	\defgroup FLEXT_N_THREAD Flext thread handling 
-
+	/*!	\defgroup FLEXT_S_THREAD Flext thread handling 
 		@{ 
 	*/
 
@@ -441,8 +435,11 @@ public:
 	protected:
 		pthread_cond_t cond;
 	};
-//!		@} 
+//!		@} FLEXT_S_THREAD
+
 #endif // FLEXT_THREADS
+
+//!		@} 
 
 protected:
 	static void Setup();

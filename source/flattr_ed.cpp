@@ -395,6 +395,9 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 
 			b += PrintList(b,lv.Count(),lv.Atoms());
 		}
+		else {
+			strcpy(b,"{}"); b += strlen(b);
+		}
 
 		strcpy(b, list?"} {":" "); b += strlen(b);
 
@@ -404,6 +407,10 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 
 			b += PrintList(b,lp.Count(),lp.Atoms());
 		}
+		else {
+			strcpy(b,"{}"); b += strlen(b);
+		}
+
 
 		STD::sprintf(b, list?"} %i %i %i ":" %i %i %i ",tp,sv,pattr?(pattr->BothExist()?2:1):0); b += strlen(b);
 	}

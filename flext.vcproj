@@ -449,6 +449,7 @@
 				CommandLine="copy F:\prog\max\flext\source\*.h f:\prog\maestra\dev\api\include
 copy F:\prog\max\flext\pd-msvc\flext_l.lib f:\prog\maestra\dev\api\lib
 copy F:\prog\max\flext\pd-msvc\flext.dll f:\prog\maestra\dev\release
+copy F:\prog\max\flext\pd-msvc\flext.dll f:\prog\dll
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>

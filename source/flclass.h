@@ -92,6 +92,10 @@ public:
 		*/
 		bool Ok() const { return sym != NULL && data != NULL; }
 		
+		/*! \brief Check and update if the buffer has been changed (e.g. resized)
+		*/
+		bool Update();
+		
 		/*! \brief Set to specified buffer.
 			@param nameonly: if true sets name only, but doesn't look at buffer actually
 		*/
@@ -124,6 +128,7 @@ public:
 		t_sample *data;
 		int chns,frames;
 #ifdef PD
+		t_garray *arr;
 		float interval;
 		bool isdirty,ticking;
 		t_clock *tick;

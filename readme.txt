@@ -71,6 +71,9 @@ see flext.h for the documented base classes
 
 Version history:
 
+0.2.4:
+- check/update function for buffer change (resize etc.)
+
 0.2.3:
 - restructured files and started usable inline documentation
 - found that there was no method to output a bang?! Ugh! -> corrected

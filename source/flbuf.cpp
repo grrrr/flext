@@ -23,6 +23,7 @@ flext_base::buffer::buffer(t_symbol *bn,bool delayed):
 	chns(0),frames(0)
 {
 #ifdef PD
+	arr = NULL;
 	interval = DIRTY_INTERVAL;
 	isdirty = false;
 	ticking = false;
@@ -59,16 +60,16 @@ int flext_base::buffer::Set(t_symbol *s,bool nameonly)
 	else if(!nameonly) {
 #ifdef PD
 		int frames1;
-		float *data1;
+		t_sample *data1;
     
-		t_garray *a = (t_garray *)pd_findbyclass(sym, garray_class);
-		if(!a)
+		arr = (t_garray *)pd_findbyclass(sym, garray_class);
+		if(!arr)
 		{
     		if (*sym->s_name) error("buffer: no such array '%s'",sym->s_name);
     		sym = NULL;
 			if(valid) ret = -1;
 		}
-		else if (!garray_getfloatarray(a, &frames1, &data1))
+		else if(!garray_getfloatarray(arr, &frames1, &data1))
 		{
     		error("buffer: bad template '%s'", sym->s_name); 
     		data = NULL;
@@ -76,7 +77,7 @@ int flext_base::buffer::Set(t_symbol *s,bool nameonly)
 			if(valid) ret = -1;
 		}
 		else {
-			garray_usedindsp(a);
+			garray_usedindsp(arr);
 			if(frames != frames1) { frames = frames1; if(!ret) ret = 1; }
 			if(data != data1) { data = data1; if(!ret) ret = 1; }
 			chns = 1;
@@ -106,6 +107,43 @@ int flext_base::buffer::Set(t_symbol *s,bool nameonly)
 	}
 
 	return ret;
+}
+
+bool flext_base::buffer::Update()
+{
+	if(!Ok()) return false;
+
+#ifdef PD
+	int frames1;
+	t_sample *data1;
+	if(!garray_getfloatarray(arr, &frames1, &data1)) {
+		frames = 0;
+		data = NULL;
+		chns = 0;
+		return true;
+	}
+	else if(data != data1 || frames != frames1) {
+		frames = frames1;
+		data = data1;
+		return true;
+	}
+	else
+		return false;
+#else // MAXMSP
+	if(!sym->s_thing) 
+		return false;
+	else {
+		const _buffer *p = (const _buffer *)sym->s_thing;
+		if(data != p->b_samples || chns != p->b_nchans || frames != p->b_frames) {
+			data = p->b_samples;
+			chns = p->b_nchans;
+			frames = p->b_frames;
+			return true;
+		}
+		else
+			return false;
+	}
+#endif
 }
 
 
@@ -156,8 +194,8 @@ void flext_base::buffer::Dirty(bool force)
 #ifdef PD
 void flext_base::buffer::cb_tick(buffer *b)
 {
-	t_garray *a = (t_garray *)pd_findbyclass(b->sym, garray_class);
-	if (a) garray_redraw(a);
+//	t_garray *a = (t_garray *)pd_findbyclass(b->sym, garray_class);
+	if(b->arr) garray_redraw(b->arr);
 //		else bug("tabwrite_tilde_tick");
 	if(b->isdirty && b->interval) {
 			b->isdirty = false;

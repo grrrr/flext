@@ -13,8 +13,8 @@ this file contains a few definitions to unite a few of the notions that
 once drifted apart in Max and PD. It is not elegant but helps.
 */
 
-#ifndef __FLSTDC_H
-#define __FLSTDC_H
+#ifndef __FLEXT_STDC_H
+#define __FLEXT_STDC_H
 
 
 #if !defined(PD) && !defined(MAXMSP)
@@ -76,9 +76,7 @@ extern "C"
 //#include "ext_strings.h"  // clashes with MPW
 #include "ext_user.h"
 #include "z_dsp.h"
-#include "z_atom.h"
-
-#include "flmspbuffer.h" // inofficial buffer.h included here for conveniance
+//#include "z_atom.h"
 }
 
 typedef t_pxobject t_sigobj;

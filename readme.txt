@@ -22,6 +22,7 @@ Package files:
 - fllib.cpp: code for handling external libraries in MaxMSP
 - fldefs.h: definitions for internal flext use
 - flcwmax.h: trivial prefix header file for Max/MSP CodeWarrior projects
+- flmspbuffer.h: MaxMSP's inofficial buffer.h included here for conveniance
 
 
 ----------------------------------------------------------------------------

@@ -11,8 +11,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // This is all derived from GEM by Mark Danks
 
 
-#ifndef _FLBASE_H
-#define _FLBASE_H
+#ifndef __FLEXT_BASE_H
+#define __FLEXT_BASE_H
 
 #include <flstdc.h>
 

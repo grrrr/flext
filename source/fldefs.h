@@ -11,8 +11,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // definitions for internal flext usage
 
 
-#ifndef _FLDEFS_H
-#define _FLDEFS_H
+#ifndef __FLEXT_DEFS_H
+#define __FLEXT_DEFS_H
 
 #include <flstdc.h>
 

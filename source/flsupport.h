@@ -167,8 +167,11 @@ public:
 	static t_atom *CopyList(int argc,const t_atom *argv);
 	//! Copy a memory region
 	static void CopyMem(void *dst,const void *src,int bytes);
+	static void CopySamples(t_sample *dst,const t_sample *src,int cnt) { CopyMem(dst,src,cnt*sizeof(t_sample)); }
 	//! Zero a memory region
 	static void ZeroMem(void *dst,int bytes);
+	static void ZeroSamples(t_sample *dst,int cnt) { ZeroMem(dst,cnt*sizeof(t_sample)); }
+
 	//! Sleep for an amount of time
 	static void Sleep(double s);
 

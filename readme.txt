@@ -66,6 +66,7 @@ Version history:
 - flext now uses PD's or Max's memory allocation functions (for safety in Max's overdrive)
 - added outlets for anythings
 - better graphics update behavior for PD
+- proxy object for any non-leftmost inlets (still lacking consistency!)
 
 0.1.1:
 - documentation for flext.h
@@ -122,13 +123,13 @@ tests:
 - test loadbang upon object creation in Max/MSP
 
 features:
-- proxy object for any non-leftmost inlets (see existing gate object, Krzysztof Czajas spy))
+- use anything inlets from system - do method parsing in flext_base?
 - abstraction for parsing argument lists
 - abstraction for creating lists and anythings
 - simulate loadbang on object creation for PD
 - abstraction for clock functions
 - message queue? (for multithreaded operation)
-- sending messages to own inlet (passing computation to other patch objects)
+- sending messages to own inlet (passing computation to other patch objects - message queue?)
 
 premature thoughts:
 - explore jMax interface style

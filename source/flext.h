@@ -114,6 +114,8 @@ public:
 	V add_in_float(I m = 1) { AddInlet(xlet::tp_float,m); }
 	V add_in_flint(I m = 1) { AddInlet(xlet::tp_flint,m); }
 	V add_in_symbol(I m = 1) { AddInlet(xlet::tp_sym,m); }
+	V add_in_list(I m = 1) { AddInlet(xlet::tp_list,m); }  // via proxy
+	V add_in_anything(I m = 1) { AddInlet(xlet::tp_any,m); } // via proxy
 	
 	V add_out_float(I m = 1) { AddOutlet(xlet::tp_float,m); }
 	V add_out_flint(I m = 1) { AddOutlet(xlet::tp_flint,m); }
@@ -173,14 +175,23 @@ protected:
 	V AddInlet(xlet::type tp,I mult) { AddXlet(tp,mult,inlist); }
 	V AddOutlet(xlet::type tp,I mult) { AddXlet(tp,mult,outlist); }
 
+	// this is temporary!!
+	virtual V m_anything_n(I inlet,t_symbol *s,I argc,t_atom *argv);
+
 private:
 
 	xlet *inlist,*outlist;
 	I incnt,outcnt,insigs,outsigs;
 	t_outlet **outlets;
-	
+
 	V AddXlet(xlet::type tp,I mult,xlet *&root);	
 
+
+	// proxy object (for additional inlets) stuff
+	struct px_object;
+	friend struct px_object;
+
+	px_object **inlets;
 
 	// callback functions
 
@@ -191,6 +202,7 @@ private:
 	static V cb_assist(V *c,V *b,L msg,L arg,C *s);
 #endif
 };
+
 
 
 // === flext_dsp ==================================================

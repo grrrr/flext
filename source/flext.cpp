@@ -11,6 +11,27 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <flext.h>
 
 
+// === proxy class for flext_base ============================
+
+static t_class *px_class;
+
+struct flext_base::px_object  // no virtual table!
+{ 
+	t_object x_obj; 
+	flext_base *base;
+	I index;
+
+	V init(flext_base *b,I ix) { base = b; index = ix; }
+	static V px_method(px_object *c,t_symbol *s,I argc,t_atom *argv);
+};
+
+
+V flext_base::px_object::px_method(px_object *obj,t_symbol *s,I argc,t_atom *argv)
+{
+	obj->base->m_anything_n(obj->index,s,argc,argv);
+}
+
+
 // === flext_base ============================================
 
 BL flext_base::compatibility = true;
@@ -28,6 +49,16 @@ flext_base::~flext_base()
 	if(inlist) delete inlist;
 	if(outlist) delete outlist;
 	if(outlets) delete[] outlets;
+
+	if(inlets) {
+		for(I ix = 0; ix < incnt; ++ix) {
+#ifdef PD
+			if(inlets[ix]) pd_free(&inlets[ix]->x_obj.ob_pd);
+#elif defined(MAXMSP)
+#endif
+		}
+		delete inlets;
+	}
 }
 
 flext_base::xlet::~xlet() { if(nxt) delete nxt; }
@@ -48,6 +79,17 @@ BL flext_base::setup_inout()
 	
 	incnt = insigs = 0; 
 
+	if(inlets) { 
+		for(I ix = 0; ix < incnt; ++ix) {
+#ifdef PD
+			if(inlets[ix]) pd_free(&inlets[ix]->x_obj.ob_pd);
+#elif defined(MAXMSP)
+#endif
+		}
+		delete[] inlets; 
+		inlets = NULL; 
+	}
+
 	if(inlist) {
 		xlet *xi;
 		incnt = 0;
@@ -57,6 +99,8 @@ BL flext_base::setup_inout()
 		for(xi = inlist,i = 0; xi; xi = xi->nxt,++i) list[i] = xi->tp;
 		delete inlist; inlist = NULL;
 		
+		inlets = new px_object *[incnt];
+
 		// type info is now in list array
 #ifdef PD
 		{
@@ -72,7 +116,7 @@ BL flext_base::setup_inout()
 						++insigs;
 						break;
 					default:
-						error("%s: Leftmost inlet must be of type signal or default",thisName());
+						error("%s: Leftmost inlet must be of type default or signal",thisName());
 						ok = false;
 				} 
 			}		
@@ -106,6 +150,11 @@ BL flext_base::setup_inout()
 					case xlet::tp_sig:
 	    				inlet_new(x_obj, &x_obj->ob_pd, &s_signal, &s_signal);  
 						++insigs;
+						break;
+					case xlet::tp_any:
+					case xlet::tp_list:
+					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
+						inlet_new(x_obj,&inlets[ix]->x_obj.ob_pd, 0, 0);  // create proxy inlet 
 						break;
 					default:
 						error("%s: Wrong type for inlet #%i",thisName(),ix);
@@ -161,9 +210,7 @@ BL flext_base::setup_inout()
 		delete[] list;
 	}
 	
-	if(outlets) { 
-		delete[] outlets; outlets = NULL; 
-	}
+	if(outlets) { delete[] outlets; outlets = NULL; }
 	outcnt = outsigs = 0; 
 	
 	if(outlist) {
@@ -225,6 +272,10 @@ V flext_base::cb_setup(t_class *c)
 #ifdef MAXMSP
 	add_assist(c,cb_assist);
 #endif
+
+	// proxy for extra inlets
+    px_class = class_new(gensym("flext_base proxy"),NULL,NULL,sizeof(px_object),CLASS_PD|CLASS_NOINLET, A_NULL);
+	class_addanything(px_class,px_object::px_method);
 }
 
 V flext_base::cb_help(V *c) { thisObject(c)->m_help(); }	
@@ -238,6 +289,12 @@ V flext_base::m_help()
 {
 	// This should better be overloaded
 	post("%s (using flext) - compiled on %s %s",thisName(),__DATE__,__TIME__);
+}
+
+
+
+V flext_base::m_anything_n(I inlet,t_symbol *s,I argc,t_atom *argv)
+{
 }
 
 

@@ -24,7 +24,7 @@ void operator delete(void *blk);
 
 // this are aligned (with some overhead)
 void *operator new[](size_t bytes); 
-inline void operator delete[](void *blk);
+void operator delete[](void *blk);
 
 
 

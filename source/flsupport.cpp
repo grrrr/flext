@@ -58,3 +58,21 @@ void flext::GetAString(const t_atom &a,char *buf,int szbuf)
 	else if(IsInt(a)) sprintf(buf,"%i",GetInt(a));
 #endif
 }  
+
+int flext::FoldBits(unsigned long h,int bits)
+{
+	if(!bits) return 0;
+	const int hmax = (1<<bits)-1;
+	int ret = 0;
+	for(int i = 0; i < sizeof(h)*8; i += bits)
+		ret = ret^((h>>i)&hmax);
+	return ret;
+}
+
+int flext::Int2Bits(unsigned long n)
+{
+	int b;
+	for(b = 0; n; ++b) n >>= 1;
+	return b;
+}
+

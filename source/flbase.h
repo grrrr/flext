@@ -117,10 +117,13 @@ class FLEXT_EXT flext_obj:
 
 		//! Virtual function called at creation time (but after the constructor)
 		// this also guarantees that there are no instances of flext_obj
-		virtual bool Init() = 0; 
+		virtual bool Init(); 
+
+		//! Virtual function called after Init() has succeeded
+		virtual bool Finalize();
 	
 		//! Virtual function called at destruction (before the destructor)
-		virtual void Exit() {}
+		virtual void Exit();
 
 	//!	@}  FLEXT_O_CREATION
 

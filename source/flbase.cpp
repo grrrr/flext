@@ -56,6 +56,10 @@ flext_obj :: flext_obj()
 flext_obj :: ~flext_obj() {}
 
 
+bool flext_obj::Init() { return true; }
+bool flext_obj::Finalize() { return true; }
+void flext_obj::Exit() {}
+
 void flext_obj::DefineHelp(t_class *c,const char *ref,const char *dir,bool addtilde)
 {
 #if FLEXT_SYS == FLEXT_SYS_PD

@@ -1,0 +1,120 @@
+/* 
+
+flext - C++ layer for Max/MSP and pd (pure data) externals
+
+Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
+For information on usage and redistribution, and for a DISCLAIMER OF ALL
+WARRANTIES, see the file, "license.txt," in this distribution.  
+
+*/
+
+/*! \file flmeth.cpp
+    \brief Method processing of flext base class.
+*/
+ 
+#include "flext.h"
+#include <string.h>
+#include <stdarg.h>
+
+flext_base::methitem::methitem(int in,const t_symbol *tg): 
+	item(tg,in),
+	argc(0),args(NULL)
+	,fun(NULL)
+{}
+
+flext_base::methitem::~methitem() 
+{ 
+	if(args) delete[] args; 
+}
+
+void flext_base::methitem::SetArgs(methfun _fun,int _argc,metharg *_args)
+{
+	fun = _fun;
+	if(args) delete[] args;
+	argc = _argc,args = _args;
+}
+
+/*
+void flext_base::AddMethItem(methitem *m)
+{
+	int ix = m->Hash();
+	post("method index %x",ix);
+	methitem *&mix = methhead[ix];
+
+	if(mix) {
+		methitem *mi;
+		for(mi = mix; mi->nxt; mi = mi->nxt) {}
+		mi->nxt = m;
+	}
+	else 
+		mix = m;
+}
+*/
+/*
+const flext_base::methitem *flext_base::FindMethItem(int inlet,const t_symbol *tag,const methitem *st)
+{
+	const methitem *mi = st?st:mlst;
+	if(inlet < 0) {
+		for(; mi; mi = mi->nxt) 
+			if(mi->tag == tag) break;
+	}
+	else {
+		for(; mi; mi = mi->nxt) 
+			if(mi->inlet == inlet && mi->tag == tag) break;
+	}
+	return mi;
+}
+*/
+
+void flext_base::AddMethodDef(int inlet,const char *tag)
+{
+	AddMethItem(new methitem(inlet,tag?MakeSymbol(tag):NULL));
+}
+
+/*! \brief Add a method to the queue
+*/
+void flext_base::AddMethod(int inlet,const char *tag,methfun fun,metharg tp,...)
+{
+	methitem *mi = new methitem(inlet,MakeSymbol(tag));
+
+	va_list marker;
+
+	// at first just count the arg type list (in argc)
+	int argc = 0;
+	va_start(marker,tp);
+	metharg *args = NULL,arg = tp;
+	for(; arg != a_null; ++argc) arg = (metharg)va_arg(marker,int); //metharg);
+	va_end(marker);
+	
+	if(argc > 0) {
+		if(argc > FLEXT_MAXMETHARGS) {
+			error("%s - method %s: only %i arguments are type-checkable: use variable argument list for more",thisName(),tag?tag:"?",FLEXT_MAXMETHARGS);
+			argc = FLEXT_MAXMETHARGS;
+		}
+
+		args = new metharg[argc];
+
+		va_start(marker,tp);
+		metharg a = tp;
+		for(int ix = 0; ix < argc; ++ix) {
+#ifdef FLEXT_DEBUG
+			if(a == a_list && ix > 0) {
+				ERRINTERNAL();
+			}
+#endif
+#if FLEXT_SYS == FLEXT_SYS_PD
+			if(a == a_pointer && flext_base::compatibility) {
+				post("Pointer arguments are not allowed in compatibility mode"); 
+			}
+#endif
+			args[ix] = a;
+			a = (metharg)va_arg(marker,int); //metharg);
+		}
+		va_end(marker);
+	}
+	
+	mi->SetArgs(fun,argc,args);
+
+	AddMethItem(mi);
+}
+

@@ -16,14 +16,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flinternal.h"
 
  
-#if FLEXT_SYS == FLEXT_SYS_MAX
-#define CRITON() short state = lockout_set(1)
-#define CRITOFF() lockout_set(state) 
-#else
-#define CRITON() 
-#define CRITOFF() 
-#endif
-
 #ifndef FLEXT_THREADS
 void flext_base::ToOutBang(outlet *o) const { CRITON(); outlet_bang((t_outlet *)o); CRITOFF(); }
 void flext_base::ToOutFloat(outlet *o,float f) const { CRITON(); outlet_float((t_outlet *)o,f); CRITOFF(); }
@@ -41,153 +33,242 @@ void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,const t_atom
 #endif
 
 
-class flext_base::qmsg
+bool flext_base::InitInlets()
 {
-public:
-	qmsg(): nxt(NULL),tp(tp_none) {}
-	~qmsg();
+	bool ok = true;
 
-	qmsg *nxt;
+	// ----------------------------------
+	// create inlets
+	// ----------------------------------
 
-	void Clear();
+	incnt = insigs = 0; 
 
-	void SetBang(outlet *o) { Clear(); out = o; tp = tp_bang; }
-	void SetFloat(outlet *o,float f) { Clear(); out = o; tp = tp_float; _float = f; }
-	void SetInt(outlet *o,int i) { Clear(); out = o; tp = tp_int; _int = i; }
-	void SetSymbol(outlet *o,const t_symbol *s) { Clear(); out = o; tp = tp_sym; _sym = s; }
-	void SetList(outlet *o,int argc,const t_atom *argv) { Clear(); out = o; tp = tp_list; _list.argc = argc,_list.argv = CopyList(argc,argv); }
-	void SetAny(outlet *o,const t_symbol *s,int argc,const t_atom *argv) { Clear(); out = o; tp = tp_any; _any.s = s,_any.argc = argc,_any.argv = CopyList(argc,argv); }
-
-	outlet *out;
-	enum { tp_none,tp_bang,tp_float,tp_int,tp_sym,tp_list,tp_any } tp;
-	union {
-		float _float;
-		int _int;
-		const t_symbol *_sym;
-		struct { int argc; t_atom *argv; } _list;
-		struct { const t_symbol *s; int argc; t_atom *argv; } _any;
-	};
-};
-
-flext_base::qmsg::~qmsg() 
-{ 
-	Clear();
-	if(nxt) delete nxt; 
-}
-
-void flext_base::qmsg::Clear() 
-{ 
-	if(tp == tp_list) { if(_list.argv) delete[] _list.argv; }
-	else if(tp == tp_any) { if(_any.argv) delete[] _any.argv; }
-	tp = tp_none;
-}
-
-void flext_base::QTick(flext_base *th)
-{
-//	post("qtick");
-#if defined(FLEXT_THREADS) && defined(FLEXT_DEBUG)
-	if(!th->IsSystemThread()) {
-		error("flext - Queue tick called by wrong thread!");
-		return;
-	}
-#endif
-
-#ifdef FLEXT_THREADS
-	th->qmutex.Lock();
-#endif
-	for(;;) {
-		qmsg *m = th->qhead;
-		if(!m) break;
-
-		CRITON();
-
-		switch(m->tp) {
-		case qmsg::tp_bang: th->ToOutBang(m->out); break;
-		case qmsg::tp_float: th->ToOutFloat(m->out,m->_float); break;
-		case qmsg::tp_int: th->ToOutInt(m->out,m->_int); break;
-		case qmsg::tp_sym: th->ToOutSymbol(m->out,m->_sym); break;
-		case qmsg::tp_list: th->ToOutList(m->out,m->_list.argc,m->_list.argv); break;
-		case qmsg::tp_any: th->ToOutAnything(m->out,m->_any.s,m->_any.argc,m->_any.argv); break;
-#ifdef FLEXT_DEBUG
-		default: ERRINTERNAL();
-#endif
-		}
-
-		CRITOFF();
-
-		th->qhead = m->nxt;
-		if(!th->qhead) th->qtail = NULL;
-		m->nxt = NULL;
-		delete m;
-	}
-#ifdef FLEXT_THREADS
-	th->qmutex.Unlock();
-#endif
-}
-
-void flext_base::Queue(qmsg *m)
-{
-//	post("Queue");
-
-#ifdef FLEXT_THREADS
-	qmutex.Lock();
-#endif
-	if(qtail) qtail->nxt = m;
-	else qhead = m;
-	qtail = m;
-#ifdef FLEXT_THREADS
-	qmutex.Unlock();
-#endif
-
+	if(inlist) {
+		xlet *xi;
+		incnt = 0;
+		for(xi = inlist; xi; xi = xi->nxt) ++incnt;
+		xlet::type *list = new xlet::type[incnt];
+		int i;
+		for(xi = inlist,i = 0; xi; xi = xi->nxt,++i) list[i] = xi->tp;
+		delete inlist; inlist = NULL;
+		
+		inlets = new px_object *[incnt];
+		for(i = 0; i < incnt; ++i) inlets[i] = NULL;
+		
+		// type info is now in list array
 #if FLEXT_SYS == FLEXT_SYS_PD
-	clock_delay(qclk,0);
+		{
+			int cnt = 0;
+
+			if(incnt >= 1) {
+				switch(list[0]) {
+					case xlet::tp_sig:
+						CLASS_MAINSIGNALIN(thisClass(),flext_hdr,defsig);
+						++insigs;
+						break;
+					default:
+						// leftmost inlet is already there...
+						break;
+				} 
+				++cnt;
+			}		
+
+			for(int ix = 1; ix < incnt; ++ix,++cnt) {
+				switch(list[ix]) {
+					case xlet::tp_float:
+					case xlet::tp_int: {
+						char sym[] = "ft??";
+						if(ix >= 10) { 
+							if(compatibility) {
+								// Max allows max. 9 inlets
+								post("%s: Only 9 float/int inlets allowed in compatibility mode",thisName());
+								ok = false;
+							}
+							else {
+								if(ix > 99)
+									post("%s: Inlet index > 99 not allowed for float/int inlets",thisName());
+								sym[2] = '0'+ix/10,sym[3] = '0'+ix%10;
+							}
+						}
+						else 
+							sym[2] = '0'+ix,sym[3] = 0;  
+					    if(ok) inlet_new(&x_obj->obj, &x_obj->obj.ob_pd, &s_float, gensym(sym)); 
+						break;
+					}
+					case xlet::tp_sym: 
+					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
+						inlet_new(&x_obj->obj,&inlets[ix]->obj.ob_pd, &s_symbol, &s_symbol);  
+						break;
+					case xlet::tp_list:
+					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
+						inlet_new(&x_obj->obj,&inlets[ix]->obj.ob_pd, &s_list, &s_list);  
+						break;
+					case xlet::tp_any:
+					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
+						inlet_new(&x_obj->obj,&inlets[ix]->obj.ob_pd, 0, 0);  
+						break;
+					case xlet::tp_sig:
+						if(compatibility && list[ix-1] != xlet::tp_sig) {
+							post("%s: All signal inlets must be left-aligned in compatibility mode",thisName());
+							ok = false;
+						}
+						else {
+							// pd doesn't seem to be able to handle signals and messages into the same inlet...
+							
+							inlet_new(&x_obj->obj, &x_obj->obj.ob_pd, &s_signal, &s_signal);  
+							++insigs;
+						}
+						break;
+					default:
+						error("%s: Wrong type for inlet #%i: %i",thisName(),ix,(int)list[ix]);
+						ok = false;
+				} 
+			}
+
+			incnt = cnt;
+		}
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	qelem_set(qclk); 
+		{
+			int ix,cnt;
+			// count leftmost signal inlets
+			while(insigs < incnt && list[insigs] == xlet::tp_sig) ++insigs;
+			
+			for(cnt = 0,ix = incnt-1; ix >= insigs; --ix,++cnt) {
+				if(ix == 0) {
+					if(list[ix] != xlet::tp_any) {
+						error("%s: Leftmost inlet must be of type signal or default",thisName());
+						ok = false;
+					}
+				}
+				else {
+					switch(list[ix]) {
+						case xlet::tp_sig:
+							error("%s: All signal inlets must be at the left side",thisName());
+							ok = false;
+							break;
+						case xlet::tp_float:
+							if(ix >= 10) { 
+								post("%s: Only 9 float inlets possible",thisName());
+								ok = false;
+							}
+							else
+								floatin(x_obj,ix);  
+							break;
+						case xlet::tp_int:
+							if(ix >= 10) { 
+								post("%s: Only 9 int inlets possible",thisName());
+								ok = false;
+							}
+							else
+								intin(x_obj,ix);  
+							break;
+						case xlet::tp_any: // non-leftmost
+						case xlet::tp_sym:
+						case xlet::tp_list:
+							inlets[ix] = (px_object *)proxy_new(x_obj,ix,&((flext_hdr *)x_obj)->curinlet);  
+							break;
+						default:
+							error("%s: Wrong type for inlet #%i: %i",thisName(),ix,(int)list[ix]);
+							ok = false;
+					} 
+				}
+			}
+
+			incnt = cnt;
+	
+			if(insigs) 
+//				dsp_setup(thisHdr(),insigs); // signal inlets	
+				dsp_setupbox(thisHdr(),insigs); // signal inlets	
+		}
 #else
-#error 
+#error
 #endif
 
+		delete[] list;
+	}
+
+	return ok;	
 }
 
-void flext_base::ToQueueBang(outlet *o) const 
+bool flext_base::InitOutlets()
 {
-	qmsg *m = new qmsg(); 
-	m->SetBang(o);
-	const_cast<flext_base &>(*this).Queue(m);
+	bool ok = true;
+
+	// ----------------------------------
+	// create outlets
+	// ----------------------------------
+
+	outcnt = outsigs = 0; 
+	
+#if FLEXT_SYS == FLEXT_SYS_MAX
+	// for Max/MSP the rightmost outlet has to be created first
+	if(procattr) 
+		outattr = (outlet *)newout_anything(&x_obj->obj);
+#endif
+
+	if(outlist) {
+		xlet *xi;
+
+		// count outlets
+		outcnt = 0;
+		for(xi = outlist; xi; xi = xi->nxt) ++outcnt;
+
+		xlet::type *list = new xlet::type[outcnt];
+		int i;
+		for(xi = outlist,i = 0; xi; xi = xi->nxt,++i) list[i] = xi->tp;
+		delete outlist; outlist = NULL;
+		
+		outlets = new outlet *[outcnt];
+
+		// type info is now in list array
+#if FLEXT_SYS == FLEXT_SYS_PD
+		for(int ix = 0; ix < outcnt; ++ix) 
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+		for(int ix = outcnt-1; ix >= 0; --ix) 
+#else
+#error
+#endif
+		{
+			switch(list[ix]) {
+				case xlet::tp_float:
+					outlets[ix] = (outlet *)newout_float(&x_obj->obj);
+					break;
+				case xlet::tp_int: 
+					outlets[ix] = (outlet *)newout_flint(&x_obj->obj);
+					break;
+				case xlet::tp_sig:
+					outlets[ix] = (outlet *)newout_signal(&x_obj->obj);
+					++outsigs;
+					break;
+				case xlet::tp_sym:
+					outlets[ix] = (outlet *)newout_symbol(&x_obj->obj);
+					break;
+				case xlet::tp_list:
+					outlets[ix] = (outlet *)newout_list(&x_obj->obj);
+					break;
+				case xlet::tp_any:
+					outlets[ix] = (outlet *)newout_anything(&x_obj->obj);
+					break;
+#ifdef FLEXT_DEBUG
+				default:
+					ERRINTERNAL();
+					ok = false;
+#endif
+			} 
+		}
+		
+		delete[] list;
+	}
+
+	if(procattr) {
+#if FLEXT_SYS == FLEXT_SYS_PD
+		// attribute dump outlet is the last one
+		outattr = (outlet *)newout_anything(&x_obj->obj);
+#endif
+
+	}
+	
+	return ok;
 }
 
-void flext_base::ToQueueFloat(outlet *o,float f) const
-{
-	qmsg *m = new qmsg; 
-	m->SetFloat(o,f);
-	const_cast<flext_base &>(*this).Queue(m);
-}
-
-void flext_base::ToQueueInt(outlet *o,int f) const
-{
-	qmsg *m = new qmsg; 
-	m->SetInt(o,f);
-	const_cast<flext_base &>(*this).Queue(m);
-}
-
-void flext_base::ToQueueSymbol(outlet *o,const t_symbol *s) const
-{
-	qmsg *m = new qmsg; 
-	m->SetSymbol(o,s);
-	const_cast<flext_base &>(*this).Queue(m);
-}
-
-void flext_base::ToQueueList(outlet *o,int argc,const t_atom *argv) const
-{
-	qmsg *m = new qmsg; 
-	m->SetList(o,argc,argv);
-	const_cast<flext_base &>(*this).Queue(m);
-}
-
-void flext_base::ToQueueAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv) const
-{
-	qmsg *m = new qmsg; 
-	m->SetAny(o,s,argc,argv);
-	const_cast<flext_base &>(*this).Queue(m);
-}
 

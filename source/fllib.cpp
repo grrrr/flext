@@ -354,7 +354,11 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 				flext_obj::m_holdaargv = argv+argc;
 
 				// call virtual init function 
+				// here, inlets, outlets, methods and attributes can be set up
 				ok = obj->data->Init();
+
+				// call another virtual init function 
+				if(ok) ok = obj->data->Finalize();
 
 				flext_obj::m_holdaargc = 0;
 				flext_obj::m_holdaargv = NULL;

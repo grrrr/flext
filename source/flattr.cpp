@@ -21,36 +21,48 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define STD
 #endif
 
-flext_base::attritem::attritem(const t_symbol *t,const t_symbol *gt,metharg tp,methfun gf,methfun sf):
-	tag(t),gtag(gt),argtp(tp),gfun(gf),sfun(sf),nxt(NULL)
-{}
+flext_base::attritem::attritem(const t_symbol *t,metharg tp,methfun gf,methfun sf):
+	item(t),argtp(tp),
+	gfun(gf),sfun(sf)
+//	,nxt(NULL)
+{
+}
 
 flext_base::attritem::~attritem()
 {
-	if(nxt) delete nxt;
+//	if(nxt) delete nxt;
 }
 
+/*
 void flext_base::AddAttrItem(attritem *m)
 {
-	if(attrhead) {
+	int ix = m->Hash();
+	post("attr index %x",ix);
+	attritem *&aix = attrhead[ix];
+
+	if(aix) {
 		attritem *mi;
-		for(mi = attrhead; mi->nxt; mi = mi->nxt) {}
+		for(mi = aix; mi->nxt; mi = mi->nxt) {}
 		mi->nxt = m;
 	}
 	else 
-		attrhead = m;
-	attrcnt++;
+		aix = m;
+//	m->th->attrcnt++;
 }
+*/
 
+//! Add get and set attributes
 void flext_base::AddAttrib(const char *attr,metharg tp,methfun gfun,methfun sfun)
 {
 	if(procattr) {
-		char tmp[256] = "get";
-		strcpy(tmp+3,attr);
-		AddAttrItem(new attritem(MakeSymbol(attr),MakeSymbol(tmp),tp,gfun,sfun));
-
-		AddMethod(0,attr,(methfun)cb_SetAttrib,a_any,a_null);
-		AddMethod(0,tmp,(methfun)cb_GetAttrib,a_any,a_null);
+		AddAttrItem(new attritem(MakeSymbol(attr),tp,gfun,sfun)); 
+		
+		if(sfun) AddMethod(0,attr,(methfun)cb_SetAttrib,a_any,a_null); // SET
+		if(gfun) {
+			static char tmp[256] = "get";
+			strcpy(tmp+3,attr);
+			AddMethod(0,tmp,(methfun)cb_GetAttrib,a_any,a_null); // GET
+		}
 	}
 	else
 		error("%s - attribute procession is not enabled!",thisName());
@@ -81,9 +93,13 @@ bool flext_base::InitAttrib(int argc,const t_atom *argv)
 bool flext_base::ListAttrib()
 {
 	if(outattr) {
-		AtomList la(attrcnt);
-		attritem *a = attrhead;
-		for(int i = 0; i < attrcnt; ++i,a = a->nxt) SetSymbol(la[i],a->tag);
+		int cnt = attrhead->Count(),ccnt = clattrhead->Count();
+		AtomList la(ccnt+cnt);
+
+		for(int i = 0,ix = 0; i <= 1; ++i) {
+			itemarr *a = i?attrhead:clattrhead;
+			
+		}
 
 		ToOutAnything(outattr,MakeSymbol("attributes"),la.Count(),la.Atoms());
 		return true;
@@ -94,9 +110,10 @@ bool flext_base::ListAttrib()
 
 bool flext_base::SetAttrib(const t_symbol *tag,int argc,const t_atom *argv)
 {
-	attritem *a = attrhead;
-	for(; a && a->tag != tag; a = a->nxt) {}
-
+	// search for attribute
+	attritem *a = (attritem *)attrhead->Find(tag);
+	if(!a) a = (attritem *)clattrhead->Find(tag);	
+	
 	if(a) {
 		if(a->sfun) {
 			bool ok = true;
@@ -149,8 +166,18 @@ bool flext_base::GetAttrib(const t_symbol *tag,int argc,const t_atom *argv)
 	if(argc)
 		post("%s - %s: arguments ignored",thisName(),GetString(tag));
 
-	attritem *a = attrhead;
-	for(; a && a->gtag != tag; a = a->nxt) {}
+#ifdef FLEXT_DEBUG
+	if(strncpy(GetString(tag),"get",3)) {
+		post("%s - %s: tag has no 'get' prefix",thisName(),GetString(tag));
+		return false;
+	}
+#endif
+	// main attribute tag
+	const t_symbol *mtag = MakeSymbol(GetString(tag)+3);
+	
+	// search for attribute
+	attritem *a = (attritem *)attrhead->Find(tag);
+	if(!a) a = (attritem *)clattrhead->Find(tag);	
 
 	if(a) {
 		if(a->gfun) {
@@ -183,13 +210,13 @@ bool flext_base::GetAttrib(const t_symbol *tag,int argc,const t_atom *argv)
 			default:
 				ERRINTERNAL();
 			}
-			ToOutAnything(outattr,a->tag,la.Count(),la.Atoms());
+			ToOutAnything(outattr,mtag,la.Count(),la.Atoms());
 		}
 		else 
-			post("%s - attribute %s has no set method",thisName(),GetString(tag));
+			post("%s - attribute %s has no set method",thisName(),GetString(mtag));
 	}
 	else
-		error("%s - %s: attribute not found",thisName(),GetString(tag));
+		error("%s - %s: attribute not found",thisName(),GetString(mtag));
 	return true;
 }
 

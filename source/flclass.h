@@ -77,10 +77,10 @@ public:
 	virtual void m_help();
 	
 	//! called on patcher load (not on mere object creation!)
-	virtual void m_loadbang() {}
+	virtual void m_loadbang();
 
 	//! quickhelp for inlets/outlets (gets called in Max/MSP only)
-	virtual void m_assist(long /*msg*/,long /*arg*/,char * /*s*/) {}
+	virtual void m_assist(long /*msg*/,long /*arg*/,char * /*s*/);
 
 	/*!	\brief Called for every incoming message.
 		All method handling is done in there
@@ -411,14 +411,10 @@ protected:
 
 	flext_base();
 	virtual ~flext_base();
-
-// inlets and outlets
 		
-	/*! \brief Set up inlets and outlets
-		\ingroup FLEXT_C_INOUT 
-		\return True on successful creation of all inlets and outlets
+	/*! \brief Set up inlets and outlets, method and attribute lists
 	*/
-	virtual bool Init();
+	virtual bool Finalize();
 
 	//! \brief This represents either an inlet or outlet
 	struct xlet {	
@@ -483,34 +479,62 @@ protected:
 
 // method handling
 
-	//! \brief This represents an item of the method list
-	class methitem { 
+	class item {
 	public:
-		methitem(int inlet,const t_symbol *t);
-		~methitem();
-
-		void SetArgs(methfun fun,int argc,metharg *args);
+		item(const t_symbol *t,int inl = 0);
+		~item();
+		
+		bool operator <(const item &it) const { return inlet == it.inlet?tag < it.tag:inlet < it.inlet; }
 
 		const t_symbol *tag;
 		int inlet;
+		item *nxt;
+	};
+
+	class itemarr {
+	public:
+		itemarr();
+		~itemarr();
+		
+		void Add(item *it);
+		item *Find(const t_symbol *tag,int inlet = 0) const;
+		void Finalize();
+		
+		bool Ready() const { return bits >= 0; }
+		int Count() const { return cnt; }
+
+	protected:		
+		int Size() const { return bits?1<<bits:0; }
+	
+		static int Hash(const t_symbol *,int inlet,int bits);
+	
+		item **arr;
+		int cnt,bits;
+	};
+
+	//! \brief This represents an item of the method list
+	class methitem:
+		public item { 
+	public:
+		methitem(int inlet,const t_symbol *tg);
+		~methitem();
+		
+		void SetArgs(methfun fun,int argc,metharg *args);
+
 		int argc;
 		metharg *args;
 		methfun fun;
-		
-		methitem *nxt;
 	};
 	
 	//! \brief This represents an item of the attribute list
-	class attritem { 
+	class attritem:
+		public item { 
 	public:
-		attritem(const t_symbol *tag,const t_symbol *gtag,metharg tp,methfun gfun,methfun sfun);
+		attritem(const t_symbol *tag,metharg tp,methfun gfun,methfun sfun);
 		~attritem();
 
-		const t_symbol *tag,*gtag;
 		metharg argtp;
-		methfun	gfun,sfun;
-
-		attritem *nxt;
+		methfun gfun,sfun;
 	};
 
 //!		@} FLEXT_CLASS
@@ -546,13 +570,23 @@ private:
 	typedef bool (*methfun_3)(flext_base *c,t_any &,t_any &,t_any &);
 	typedef bool (*methfun_4)(flext_base *c,t_any &,t_any &,t_any &,t_any &);
 	typedef bool (*methfun_5)(flext_base *c,t_any &,t_any &,t_any &,t_any &,t_any &);
-	
-	methitem *methhead;
-	void AddMethItem(methitem *m);
 
-	attritem *attrhead;
-	int attrcnt;
-	void AddAttrItem(attritem *m);
+	itemarr *GetClassArr(int ix) const;
+
+	itemarr *methhead,*clmethhead;
+	void AddMethItem(methitem *m) { methhead->Add(m); }
+	void AddClMethItem(methitem *m) { clmethhead->Add(m); }
+	
+	bool CallMeth(const methitem &m,int argc,const t_atom *argv);
+	bool FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *argv);
+	bool TryMethTag(const methitem *m,int inlet,const t_symbol *t,int argc,const t_atom *argv);
+	bool TryMethSym(const methitem *m,int inlet,const t_symbol *t,const t_symbol *s);
+	bool TryMethAny(const methitem *m,int inlet,const t_symbol *t,const t_symbol *s,int argc,const t_atom *argv);
+
+	itemarr *attrhead,*clattrhead;
+//	int attrcnt;
+	void AddAttrItem(attritem *m) { attrhead->Add(m); }
+	void AddClAttrItem(attritem *m) { clattrhead->Add(m); }
 
 	void AddAttrib(const char *attr,metharg tp,methfun gfun,methfun sfun);
 
@@ -566,7 +600,6 @@ private:
 	static bool cb_ListAttrib(flext_base *c) { return c->ListAttrib(); }
 	static bool cb_GetAttrib(flext_base *c,const t_symbol *s,int argc,const t_atom *argv) { return c->GetAttrib(s,argc,argv); }
 	static bool cb_SetAttrib(flext_base *c,const t_symbol *s,int argc,const t_atom *argv) { return c->SetAttrib(s,argc,argv); }
-
 
 	// queue stuff
 
@@ -615,6 +648,11 @@ private:
 	static void cb_px_ft9(t_class *c,float f);
 
 	px_object **inlets;
+
+	static void SetProxies(t_class *c);
+
+	bool InitInlets();
+	bool InitOutlets();
 
 	// callback functions
 

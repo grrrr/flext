@@ -62,6 +62,9 @@ typedef t_perfroutine t_dspmethod;
 #define qelem_set clock_set
 #define qelem_unset clock_unset
 
+#define CRITON() 
+#define CRITOFF() 
+
 
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 
@@ -105,6 +108,9 @@ typedef void t_outlet;
 #define outlet_symbol(o,s) outlet_anything(o,s,0,NULL)
 
 typedef t_perfroutine t_dspmethod;
+
+#define CRITON() short state = lockout_set(1)
+#define CRITOFF() lockout_set(state) 
 
 #endif
 

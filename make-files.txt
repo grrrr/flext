@@ -1,5 +1,7 @@
 SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flattr.cpp flsupport.cpp \
-flutil.cpp flatom.cpp flatom_pr.cpp flthr.cpp flout.cpp
+flutil.cpp flatom.cpp flatom_pr.cpp flthr.cpp flout.cpp \
+flatom_app.cpp flatom_part.cpp flitem.cpp flmeth.cpp flmsg.cpp \
+flproxy.cpp flqueue.cpp
 HDRS=flprefix.h flstdc.h flbase.h flclass.h fldefs.h flext.h flsupport.h fldsp.h flinternal.h
 SRCS_SNDOBJ=flsndobj.cpp
 HDRS_SNDOBJ=flsndobj.h

@@ -22,7 +22,7 @@ CFLAGS=$(CFLAGS) /Fp$(TARGETPATH)\precompiled.pch
 ##############################################
 
 # create code for DLL
-CFLAGS=$(CFLAGS) /LD /GD
+CFLAGS=$(CFLAGS) /LD
 
 # enable exception handling
 CFLAGS=$(CFLAGS) /GX

@@ -41,9 +41,8 @@ $(TARGET) :: $(OBJS)
 # remove build
 
 _clean_:
-	-del /q $(TARGET) > nul
-	-cd $(TARGETPATH)
-	-del /q $(OBJS) > nul
+	-del /q $(TARGETPATH)\*.* > nul
+	-rmdir /q $(TARGETPATH) > nul
 
 ##############################################
 

@@ -42,20 +42,20 @@ TARGETTYPE=single
 ##############################
 # flext-specific make stuff
 
-!include $(BUILDPATH)bmake-$(BUILDCLASS).inc
-
 !include $(BUILDPATH)bmake.inc
+
+!include $(BUILDPATH)bmake-$(BUILDCLASS).inc
 
 ##############################
 # platform-specific make stuff
 
-!include $(BUILDPATH)$(PLATFORM)\$(RTSYS)\bmake-$(COMPILER)-$(BUILDCLASS).inc
-
 !include $(BUILDPATH)$(PLATFORM)\$(RTSYS)\bmake-$(COMPILER).inc
+
+!include $(BUILDPATH)$(PLATFORM)\$(RTSYS)\bmake-$(COMPILER)-$(BUILDCLASS).inc
 
 ##############################
 # general make stuff
 
-!include $(BUILDPATH)$(PLATFORM)\bmake-$(COMPILER)-$(BUILDCLASS).inc
-
 !include $(BUILDPATH)$(PLATFORM)\bmake-$(COMPILER).inc
+
+!include $(BUILDPATH)$(PLATFORM)\bmake-$(COMPILER)-$(BUILDCLASS).inc

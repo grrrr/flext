@@ -14,7 +14,7 @@ FLEXTINC=$(PDPATH)\flext
 FLEXTLIB=$(FLEXTINC)
 
 # where do/should the flext shared libraries reside/be built?
-FLEXTSHLIB=$(FLEXTINC)
+FLEXTSHLIB=$(PDPATH)\bin
 
 ###############################################################
 

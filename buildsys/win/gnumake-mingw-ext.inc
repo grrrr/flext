@@ -32,7 +32,8 @@ $(TARGET) :: $(COBJS) $(CPPOBJS)
 ##############################################
 
 _clean_:
-	-del $(subst /,\,$(COBJS) $(CPPOBJS) $(TARGET))
+	-del /q $(subst /,\,$(TARGETPATH)/*.*) > nul
+	-rmdir /q $(subst /,\,$(TARGETPATH)) > nul
 
 ##############################################
 

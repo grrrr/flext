@@ -118,7 +118,7 @@ extern "C" {
 
 #include "ext.h"
 #include "ext_user.h"
-#if FLEXT_OS == FLEXT_OS_MAC && defined(MAC_VERSION)
+#if FLEXT_OS != FLEXT_OS_MAC || defined(MAC_VERSION)
 // doesn't exist for OS9
 #include "ext_critical.h"
 #endif

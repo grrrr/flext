@@ -4,7 +4,7 @@ MAXSDKPATH="c:\data\prog\audio\maxmspsdk_win\4.5 headers\c74support"
 
 # where is MS VC++?
 # (not necessary if the build is run with the compiler environment)
-# MSVCPATH=C:\Programme\Microsoft Visual Studio .NET 2003\Vc7
+# MSVCPATH="%ProgramFiles%\Microsoft Visual Studio .NET 2003\Vc7"
 
 ###############################################################
 
@@ -15,7 +15,8 @@ FLEXTINC="%CommonProgramFiles%\Cycling '74\flext"
 FLEXTLIB=$(FLEXTINC)
 
 # where do/should the flext shared libraries reside/be built?
-FLEXTSHLIB=$(FLEXTINC)
+# (a good place is the MaxMSP program folder)
+FLEXTSHLIB="%ProgramFiles%\MaxMSP 4.5"
 
 ###############################################################
 
@@ -25,6 +26,12 @@ OUTPATH=max-msvc
 
 # where should the external be installed?
 INSTPATH="%CommonProgramFiles%\Cycling '74\externals\flext"
+
+# where should the initialization files be installed?
+INITPATH="%CommonProgramFiles%\Cycling '74\init"
+
+# where should the help files be installed?
+HELPPATH="%ProgramFiles%\MaxMSP 4.5\max-help\flext"
 
 ###############################################################
 

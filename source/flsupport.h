@@ -20,6 +20,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #if FLEXT_OS == FLEXT_OS_WIN
 #include <sys/timeb.h>
+#elif FLEXT_OS == FLEXT_OS_LINUX
+#include <unistd.h>
 #endif
 
 class FLEXT_SHARE flext_base;

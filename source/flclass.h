@@ -391,37 +391,48 @@ public:
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 	//! Bind object to a symbol
-	bool Bind(const t_symbol *s) { pd_bind(&thisHdr()->ob_pd,const_cast<t_symbol *>(s)); return true; }
+	bool Bind(const t_symbol *sym);
 	//! Unbind object from a symbol
-	bool Unbind(const t_symbol *s) { pd_unbind(&thisHdr()->ob_pd,const_cast<t_symbol *>(s)); return true; }
-#elif FLEXT_SYS == FLEXT_SYS_MAX
-	//! Bind object to a symbol
-	bool Bind(const t_symbol *s) { if(s->s_thing) return false; else { const_cast<t_symbol *>(s)->s_thing = (t_object *)thisHdr(); return true; } }
-	//! Unbind object from a symbol
-	bool Unbind(const t_symbol *s) { if(s->s_thing != (t_object *)thisHdr()) return false; else { const_cast<t_symbol *>(s)->s_thing = NULL; return true; } }
+	bool Unbind(const t_symbol *sym);
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
 	//! Bind object to a symbol (as string)
-	bool Bind(const char *c); // ** TODO **  
+	bool Bind(const char *sym); // ** TODO **  
 	//! Unbind object from a symbol (as string)
-	bool Unbind(const char *c);  // ** TODO **   
+	bool Unbind(const char *sym);  // ** TODO **   
 #else
 	//! Bind object to a symbol (as string)
-	bool Bind(const char *c) { return Bind(MakeSymbol(c)); }  
+	bool Bind(const char *sym) { return Bind(MakeSymbol(sym)); }  
 	//! Unbind object from a symbol (as string)
-	bool Unbind(const char *c) { return Unbind(MakeSymbol(c)); }  
+	bool Unbind(const char *sym) { return Unbind(MakeSymbol(sym)); }  
 #endif
 
-    //! Bind a method to a symbol
-	bool BindMethod(const t_symbol *s,bool (*m)(flext_base *,t_symbol *s,int argc,t_atom *argv,void *data),void *data = NULL);
-    //! Unbind a method from a symbol
-	bool UnbindMethod(const t_symbol *s);
+    /*! \brief Bind a method to a symbol
+        \param sym Symbol to bind to
+        \param meth Function to bind
+        \param data User data that is passed to the function
+        \return true on success
+    */
+	bool BindMethod(const t_symbol *sym,bool (*meth)(flext_base *obj,t_symbol *sym,int argc,t_atom *argv,void *data),void *data = NULL);
+    /*! \brief Unbind a method from a symbol
+        \param data returns data pointer specified with BindMethod
+        \return true on success
+    */
+	bool UnbindMethod(const t_symbol *sym,void **data = NULL);
 
-    //! Bind a method to a symbol (as string)
-    bool BindMethod(const char *c,bool (*m)(flext_base *,t_symbol *s,int argc,t_atom *argv,void *data),void *data = NULL) { return BindMethod(MakeSymbol(c),m,data); }
-    //! Unbind a method from a symbol (as string)
-    bool UnbindMethod(const char *c) { return UnbindMethod(MakeSymbol(c)); }
+    /*! \brief Bind a method to a symbol (as string)
+        \param sym Symbol to bind to
+        \param meth Function to bind
+        \param data User data that is passed to the function
+        \return true on success
+    */
+    bool BindMethod(const char *sym,bool (*meth)(flext_base *obj,t_symbol *sym,int argc,t_atom *argv,void *data),void *data = NULL) { return BindMethod(MakeSymbol(sym),meth,data); }
+    /*! \brief Unbind a method from a symbol (as string)
+        \param data returns data pointer specified with BindMethod
+        \return true on success
+    */
+    bool UnbindMethod(const char *sym,void **data = NULL) { return UnbindMethod(MakeSymbol(sym),data); }
 
 //!		@} FLEXT_C_BIND
 

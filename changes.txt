@@ -23,6 +23,7 @@ Version history:
 - tiny update for PD 0.37 header file usage
 - fixed a bug associated to attribute argument lists
 - added functions for version number and string (flext::Version and flext::VerStr, mainly for usage of a shared flext library)
+- flext_base::UnbindMethod returns user data
 
 0.4.3:
 - added forgotten flext_base::ToQueueString method
@@ -249,7 +250,7 @@ general:
 - documentation
 - add log messages for debugging version
 - MaxMSP: how to call separate help files for objects in a library? -> object mappings (in OSX)
-- use PD's t_float type for floating point values (and what about t_int?)
+- use PD's t_float and t_int types (or comparable for 32-Bit safety)
 
 bugs:
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)
@@ -259,7 +260,6 @@ bugs:
 
 tests:
 - PD: figure out what "pointer" messages do and where they occur
-- some more mutexes needed for thread safety?
 - buffer resize: flext_base::buffer::Frames(): should we use buffer or system sample rate?
 
 - what about FLEXT_ADDMETHOD_V (for var arg lists) and FLEXT_ADDMETHOD_A (anythings)... nonsense?

@@ -34,6 +34,13 @@ BindMethod(SYM,FLEXT_CALL_PRE(M_FUN),DATA)
 \
 UnbindMethod(SYM)
 
+/*! \brief Unbind any handler for a method from a symbol and return user data pointer by DATA
+    \note Memory associated to the DATA parameter of FLEXT_BINDMETHOD will *not* be freed here.
+*/
+#define FLEXT_UNBINDMETHOD_X(SYM,DATA) \
+\
+UnbindMethod(SYM,&DATA)
+
 
 //! @} FLEXT_D_BINDMETHOD
 

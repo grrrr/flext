@@ -77,6 +77,18 @@ flext_base::binditem::~binditem()
     }
 }
 
+#if FLEXT_SYS == FLEXT_SYS_PD
+    //! Bind object to a symbol
+    bool flext_base::Bind(const t_symbol *sym) { pd_bind(&thisHdr()->ob_pd,const_cast<t_symbol *>(sym)); return true; }
+    //! Unbind object from a symbol
+    bool flext_base::Unbind(const t_symbol *sym) { pd_unbind(&thisHdr()->ob_pd,const_cast<t_symbol *>(sym)); return true; }
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+    //! Bind object to a symbol
+    bool flext_base::Bind(const t_symbol *sym) { if(sym->s_thing) return false; else { const_cast<t_symbol *>(sym)->s_thing = (t_object *)thisHdr(); return true; } }
+    //! Unbind object from a symbol
+    bool flext_base::Unbind(const t_symbol *sym) { if(sym->s_thing != (t_object *)thisHdr()) return false; else { const_cast<t_symbol *>(sym)->s_thing = NULL; return true; } }
+#endif
+
 bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbol *s,int argc,t_atom *argv,void *data),void *data)
 {
     if(!bindhead) 
@@ -123,16 +135,18 @@ bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbo
 }
 
 
-bool flext_base::UnbindMethod(const t_symbol *sym)
+bool flext_base::UnbindMethod(const t_symbol *sym,void **data)
 {
-    item *it = bindhead?bindhead->Find(sym,0):NULL;
+    bool ok = false;
+    binditem *it = bindhead?(binditem *)bindhead->Find(sym,0):NULL;
+    void *d = NULL;
     if(it) {
-        bool ok = bindhead->Remove(it);
+        d = it->px->data;
+        ok = bindhead->Remove(it);
         if(ok) delete it;
-        return ok;
     }
-    else
-        return true;
+    if(data) *data = d;
+    return ok;
 }
 
 void flext_base::pxbnd_object::px_method(pxbnd_object *c,const t_symbol *s,int argc,t_atom *argv)

@@ -175,8 +175,10 @@ protected:
 	V AddInlet(xlet::type tp,I mult) { AddXlet(tp,mult,inlist); }
 	V AddOutlet(xlet::type tp,I mult) { AddXlet(tp,mult,outlist); }
 
+#ifdef PROXYIN
 	// this is temporary!!
 	virtual V m_anything_n(I inlet,t_symbol *s,I argc,t_atom *argv);
+#endif
 
 private:
 
@@ -186,12 +188,21 @@ private:
 
 	V AddXlet(xlet::type tp,I mult,xlet *&root);	
 
-
+#ifdef PROXYIN
+#ifdef PD
 	// proxy object (for additional inlets) stuff
 	struct px_object;
 	friend struct px_object;
+#elif defined(MAXMSP)
+	typedef object px_object;
+	static V cb_px_anything(V *c,t_symbol *s,I argc,t_atom *argv);
+	static V cb_px_int(V *c,I v);
+	static V cb_px_float(V *c,F f);
+	static V cb_px_bang(V *c);
+#endif
 
 	px_object **inlets;
+#endif
 
 	// callback functions
 
@@ -235,7 +246,7 @@ public:
 	virtual V m_signal(I n,F *const *insigs,F *const *outsigs) = 0;
 
 	// called with "enable" message: pauses/resumes dsp
-	virtual V m_enable(BL on);
+	virtual V m_dspon(BL on);
 	
 
 // --- inlet/outlet stuff -----------------------------------------	
@@ -255,13 +266,13 @@ protected:
 private:
 
 	F srate;
-	BL enable;
+	BL dspon;
 
 
 	// callback functions
 
 	static V cb_dsp(V *c,t_signal **s);
-	static V cb_enable(V *c,FI on);
+	static V cb_dspon(V *c,FI on);
 
 	// dsp stuff
 

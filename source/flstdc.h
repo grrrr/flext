@@ -37,6 +37,7 @@ extern "C" {
 #pragma warning (pop)
 
 typedef t_object t_sigobj;
+typedef t_gpointer *t_ptrtype;
 
 typedef t_float t_flint;
 
@@ -66,6 +67,7 @@ typedef t_float t_flint;
 #define add_method4(clss,meth,text,a1,a2,a3,a4) class_addmethod(clss, (t_method)meth, gensym(text), a1,a2,a3,a4,A_NULL)
 #define add_method5(clss,meth,text,a1,a2,a3,a5) class_addmethod(clss, (t_method)meth, gensym(text), a1,a2,a3,a4,a5,A_NULL)
 #define add_loadbang(clss,meth) class_addmethod(clss,(t_method)meth, gensym("loadbang"), A_CANT, A_NULL)
+#define add_anything(clss,meth) class_addanything(clss,meth)
 
 #define newout_signal(clss) outlet_new(clss,&s_signal)
 #define newout_float(clss) outlet_new(clss,&s_float)
@@ -84,6 +86,7 @@ extern "C"
 #include "ext_strings.h"
 #include "ext_user.h"
 #include "z_dsp.h"
+#include "z_atom.h"
 #include "buffer.h"
 }
 
@@ -101,13 +104,13 @@ typedef _outlet t_outlet;
 #define t_newmethod method
 
 #define A_NULL A_NOTHING
-#define A_FLINT A_LONG
+#define A_FLINT A_INT
 #define A_DEFFLINT A_DEFLONG
 
 #define atom_getflintarg atom_getintarg
 #define atom_getsymbolarg atom_getsymarg
 #define SETFLINT(atom,value) SETINT(atom,(int)(value))
-#define ISINT(atom) ((atom)->a_type == A_LONG)
+#define ISINT(atom) ((atom)->a_type == A_INT)
 #define ISFLINT(atom) ISINT(atom)
 
 #define add_dsp(clss,meth) addmess((method)meth,"dsp",A_CANT,A_NOTHING)
@@ -123,6 +126,7 @@ typedef _outlet t_outlet;
 #define add_method3(clss,meth,text,a1,a2,a3) addmess((method)meth, text, a1,a2,a3,A_NOTHING)
 #define add_method4(clss,meth,text,a1,a2,a3,a4) addmess((method)meth, text, a1,a2,a3,a4,A_NOTHING)
 #define add_method5(clss,meth,text,a1,a2,a3,a5) addmess((method)meth, text, a1,a2,a3,a4,a5,A_NOTHING)
+#define add_anything(clss,meth) addmess((method)meth, "anything", A_GIMME,A_NOTHING)
 
 #define add_assist(clss,meth) addmess((method)meth, "assist", A_CANT, A_NULL)
 #define add_loadbang(clss,meth) addmess((method)meth, "loadbang", A_CANT, A_NULL)
@@ -141,7 +145,6 @@ typedef _outlet t_outlet;
 
 
 typedef t_symbol *t_symtype;
-typedef t_gpointer *t_ptrtype;
 
 #define ISFLOAT(atom) ((atom).a_type == A_FLOAT)
 #define ISSYMBOL(atom) ((atom).a_type == A_SYMBOL)

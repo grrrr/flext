@@ -53,6 +53,10 @@ struct FLEXT_EXT flext_hdr
 		float defsig;			// float signal holder for pd
 #endif
 
+#if defined(MAXMSP) && defined(PROXYIN)
+		long curinlet;      // current inlet used by proxy objects
+#endif
+
     	//////////
     	// Our data structure
         flext_obj           *data;
@@ -133,7 +137,7 @@ class FLEXT_EXT flext_obj
 };
 
 // This has a dummy arg so that NT won't complain
-inline void *operator new(size_t, void *location, void *dummy) { return location; }
+inline void *operator new(size_t, void *location, void *) { return location; }
 
 ////////////////////////////////////////
 // This should be used in the header

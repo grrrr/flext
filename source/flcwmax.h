@@ -16,5 +16,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <MacHeaders.h>
 
 #define MAXMSP
+#define PROXYIN
 
 #endif

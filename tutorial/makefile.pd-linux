@@ -23,7 +23,7 @@ INSTDIR=/usr/local/lib/pd/flext/tutorial
 INCLUDES=$(PDPATH)
 LIBPATH=
 FLAGS=-DPD -DFLEXT_THREADS
-CFLAGS=-g -O6 -mcpu=pentiumpro
+CFLAGS=-O6 -mcpu=pentiumpro
 LIBS=m
 
 

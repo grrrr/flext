@@ -413,6 +413,7 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
                 flext_obj::m_holder = obj;
 			    flext_obj::m_holdname = s;
 			    flext_obj::m_holdattr = lo->attr;
+                flext_obj::initing = true;
 
 			    // get actual flext object (newfun calls "new flext_obj()")
 			    if(lo->argc >= 0)
@@ -446,6 +447,8 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 				    // here, inlets, outlets, methods and attributes can be set up
 				    ok = obj->data->Init();
 
+                    flext_obj::initing = false;
+
 				    // call another virtual init function 
 				    if(ok) ok = obj->data->Finalize();
 
@@ -466,6 +469,8 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
     		    error("%s - Unknown exception while creating object",GetString(s));
                 ok = false;
             }
+
+            flext_obj::initing = false;
 
             if(!ok) { 
 				// there was some init error, free object
@@ -500,6 +505,8 @@ void flext_obj::obj_free(flext_hdr *h)
 
 	if(lcl) {
         try {
+            flext_obj::exiting = true;
+
 		    // call virtual exit function
 		    hdr->data->Exit();
 
@@ -515,7 +522,9 @@ void flext_obj::obj_free(flext_hdr *h)
         catch(...) {
     		error("%s - Unknown exception while destroying object",GetString(name));
         }
-	}
+
+        flext_obj::exiting = false;
+    }
 #ifdef FLEXT_DEBUG
 	else 
 #if FLEXT_SYS == FLEXT_SYS_MAX

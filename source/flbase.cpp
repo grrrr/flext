@@ -44,6 +44,9 @@ int flext_obj::m_holdaargc = 0;
 const t_atom *flext_obj::m_holdaargv = NULL;
 bool flext_obj::process_attributes = false;
 
+bool flext_obj::initing = false;
+bool flext_obj::exiting = false;
+
 void flext_obj::ProcessAttributes(bool attr) { process_attributes = attr; }
 
 /////////////////////////////////////////////////////////
@@ -51,10 +54,10 @@ void flext_obj::ProcessAttributes(bool attr) { process_attributes = attr; }
 //
 /////////////////////////////////////////////////////////
 flext_obj :: FLEXT_CLASSDEF(flext_obj)()
-           : x_obj(m_holder)
-           , procattr(m_holdattr)
-           , init_ok(true)
-           , m_name(m_holdname)
+    : x_obj(m_holder)
+    , procattr(m_holdattr)
+    , init_ok(true)
+    , m_name(m_holdname)
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
     m_canvas = canvas_getcurrent();

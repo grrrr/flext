@@ -81,7 +81,7 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
         if(!arr)
         {
             if (*GetString(sym)) FLEXT_LOG1("buffer: no such array '%s'",GetString(sym));
-            sym = NULL;
+//            sym = NULL;
             if(valid) ret = -1;
         }
         else if(!garray_getfloatarray(arr, &frames1, &data1))
@@ -147,11 +147,13 @@ bool flext::buffer::Valid() const
 
 bool flext::buffer::Update()
 {
-    if(!Ok()) return false;
+//    if(!Ok()) return false;
 
     bool ok = false;
 
 #if FLEXT_SYS == FLEXT_SYS_PD
+    if(!sym || !arr) return data == NULL;
+
     int frames1;
     t_sample *data1;
     if(!garray_getfloatarray(arr, &frames1, &data1)) {
@@ -166,6 +168,8 @@ bool flext::buffer::Update()
         ok = true;
     }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
+    if(!sym) return data == NULL;
+
     if(sym->s_thing) {
         const _buffer *p = (const _buffer *)sym->s_thing;
         if(data != p->b_samples || chns != p->b_nchans || frames != p->b_frames) {

@@ -24,6 +24,8 @@ Version history:
 - added global system locking
 - added general atom outlet functions To{Sys,Out,Queue}Atom
 - added build system for flext-based externals
+- flags for object construction and destruction phase (Initing() and Exiting())
+- reconsidered flext::buffer::Update
 
 0.4.7:
 - added flext::GetBool (just because flext::GetInt has been there for a while)

@@ -219,6 +219,9 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
         //! Flag for successful object construction
         bool				init_ok;
 
+        // flags for init and exit procedure;
+        static bool initing,exiting;
+
 	public:
 
     	//! Creation callback
@@ -241,6 +244,14 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 
 		//! Check whether construction was successful
 		bool InitOk() const { return init_ok; }
+
+        /*! Return true if in object initialization phase
+            true when in constructor or Init, false when in Finalize
+        */
+        static bool Initing() { return initing; }
+
+        //! Return true if in object destruction phase (Exit or destructor)
+        static bool Exiting() { return exiting; }
 
 		// Definitions for library objects
 		static void lib_init(const char *name,void setupfun(),bool attr);

@@ -9,6 +9,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 This is a simple external featuring the chaotic Henon attractor.
 
+See also http://improv.sapp.org/doc/examples/synthImprov/henontune/henontune.html
+Thanks to David Casal for the pointer!
+
 */
 
 // IMPORTANT: enable attribute processing (specify before inclusion of flext headers!)

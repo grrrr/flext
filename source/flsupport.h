@@ -35,9 +35,9 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_root) {
 public:
 // --- console output -----------------------------------------------	
 
-		//! post message to console
+		//! post message to console (limited to 1k chars!)
 		static void post(const char *s,...);
-		//! post error message to console
+		//! post error message to console (limited to 1k chars!)
 		static void error(const char *s,...);
 
 // --- memory -------------------------------------------------------	

@@ -23,6 +23,7 @@ Version history:
 - support for MinGW
 - added flext_obj::CanvasArgs
 - fixed small problem with buffer->Valid() on startup
+- fixed buffer overrun problems with flext::post, flext::error... (but still to improve)
 
 0.4.5:
 - added some more SIMD functions
@@ -306,7 +307,7 @@ bugs:
 - flext_dsp: Max/MSP doesn't correctly report in/out channel counts
 
 - linker problems between MFC libraries and global new and delete overloadings
-- flext::post and flext::error should print via a worker thread
+- flext::post and flext::error should print via a worker thread (and should be unlimited in characters)
 
 
 tests:

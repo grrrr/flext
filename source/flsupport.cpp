@@ -18,6 +18,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <stdarg.h>
 #include <new>
 
+#ifdef _MSC_VER
+#define vsnprintf _vsnprintf
+#endif
+
 const t_symbol *flext::sym_float = NULL;
 const t_symbol *flext::sym_symbol = NULL;
 const t_symbol *flext::sym_bang = NULL;
@@ -263,10 +267,9 @@ void flext::GetAString(const t_atom &a,char *buf,int szbuf)
 #if FLEXT_SYS == FLEXT_SYS_PD
 	atom_string(const_cast<t_atom *>(&a),buf,szbuf);
 #else
-    // no checking for size here
-    if(IsSymbol(a)) STD::sprintf(buf,GetString(a));
-	else if(IsFloat(a)) STD::sprintf(buf,"%f",GetFloat(a));
-	else if(IsInt(a)) STD::sprintf(buf,"%i",GetInt(a));
+    if(IsSymbol(a)) STD::strncpy(buf,szbuf,GetString(a));
+	else if(IsFloat(a)) STD::snprintf(buf,szbuf,"%f",GetFloat(a));
+	else if(IsInt(a)) STD::snprintf(buf,szbuf,"%i",GetInt(a));
     else *buf = 0;
 #endif
 }  
@@ -286,8 +289,9 @@ void flext_root::post(const char *fmt, ...)
 	va_list ap;
     va_start(ap, fmt);
 
-	char buf[1024]; // \TODO this is quite unsafe.....
-    vsprintf(buf, fmt, ap);
+	char buf[1024];
+    vsnprintf(buf,sizeof buf,fmt, ap);
+	buf[sizeof buf-1] = 0; // in case of overrun
 	::post(buf);
 
     va_end(ap);
@@ -298,9 +302,10 @@ void flext_root::error(const char *fmt,...)
 	va_list ap;
     va_start(ap, fmt);
 
-	char buf[1024]; // \TODO this is quite unsafe.....
-    STD::sprintf(buf,"error: ");
-    vsprintf(buf+7, fmt, ap);
+	char buf[1024];
+    strcpy(buf,"error: ");
+    vsnprintf(buf+7,sizeof buf-7,fmt, ap);
+	buf[sizeof buf-1] = 0; // in case of overrun
 	::post(buf);
 
     va_end(ap);

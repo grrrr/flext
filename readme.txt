@@ -4,7 +4,7 @@ Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
-This package wants to encourage the development of open source software
+This package seeks to encourage the development of open source software
 for the pd and Max/MSP platforms.
 
 Donations for further development of the package are highly appreciated.

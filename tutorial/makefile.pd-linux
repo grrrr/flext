@@ -17,7 +17,8 @@ INCLUDES=$(PDPATH)/src
 LIBPATH=
 FLAGS=-DFLEXT_SYS=2 -DFLEXT_THREADS
 CFLAGS=-O6 -fno-rtti 
-CFALGS+=-mcpu=pentium3 -msse  # gcc 3.2
+CFLAGS+=-mcpu=pentiumpro  # gcc 2.95
+# CFLAGS+=-mcpu=pentium3 -msse  # gcc 3.2
 LIBS=m
 
 

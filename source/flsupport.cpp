@@ -125,9 +125,9 @@ void flext::GetAString(const t_atom &a,char *buf,int szbuf)
 	atom_string(const_cast<t_atom *>(&a),buf,szbuf);
 #else
     // no checking for size here
-    if(IsSymbol(a)) sprintf(tmp,GetString(a));
-	else if(IsFloat(a)) sprintf(tmp,"%f",GetFloat(a));
-	else if(IsInt(a)) sprintf(tmp,"%i",GetInt(a));
+    if(IsSymbol(a)) sprintf(buf,GetString(a));
+	else if(IsFloat(a)) sprintf(buf,"%f",GetFloat(a));
+	else if(IsInt(a)) sprintf(buf,"%i",GetInt(a));
     else *buf = 0;
 #endif
 }  

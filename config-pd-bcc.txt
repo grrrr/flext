@@ -10,11 +10,11 @@ BCCPATH=c:\programme\prog\bcc55
 
 # where is the SndObj include directory? 
 # (leave blank or comment out to disable SndObj support)
-SNDOBJ=f:\prog\packs\sndobj\include
+SNDOBJ=f:\prog\audio\sndobj\include
 
 # where is the STK include directory? 
 # (leave blank or comment out to disable STK support)
-STK=f:\prog\packs\stk\include
+STK=f:\pprog\audio\stk\include
 
 # build directory for flext libraries?
 OUTPATH=.\pd-bcc

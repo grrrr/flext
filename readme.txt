@@ -274,12 +274,8 @@ TODO list:
 general:
 - documentation
 - add log messages for debugging version
-- where to put flext source/lib in linux: /usr/local/lib,/usr/local/include ?
-- clean up headers (eliminate flstdc.h?)
-- check that SetupInOut is only called once
 - feed assist function with in/outlet description
 - MaxMSP: how to call separate help files for objects in a library?
-- MaxMSP for OSX: add support 
 
 bugs:
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)

@@ -15,40 +15,60 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __FLEXT_PREFIX_H
 #define __FLEXT_PREFIX_H
 
-// definitions for FLEXT_SYS
+// --- definitions for FLEXT_SYS ---------------------
 #define FLEXT_SYS_UNKNOWN	0
-#define FLEXT_SYS_MAX	1
-#define FLEXT_SYS_PD	2
 
-// definitions for FLEXT_OS
+#ifndef FLEXT_SYS_MAX
+	#define FLEXT_SYS_MAX	1
+#else
+	// already defined
+	#undef FLEXT_SYS_MAX
+	#define FLEXT_SYS_MAX	1
+	#define FLEXT_SYS FLEXT_SYS_MAX
+#endif
+
+#ifndef FLEXT_SYS_PD
+	#define FLEXT_SYS_PD	2
+#else
+	// already defined
+	#undef FLEXT_SYS_PD
+	#define FLEXT_SYS_PD	2
+	#define FLEXT_SYS FLEXT_SYS_PD
+#endif
+
+// --- definitions for FLEXT_OS ----------------------
 #define FLEXT_OS_UNKNOWN	0
 #define FLEXT_OS_WIN	1
 #define FLEXT_OS_MACOS	2  
 #define FLEXT_OS_LINUX	3
 #define FLEXT_OS_IRIX	4
 
-// definitions for FLEXT_CPU
+// --- definitions for FLEXT_CPU ---------------------
 #define FLEXT_CPU_UNKNOWN	0
 #define FLEXT_CPU_INTEL 1
 #define FLEXT_CPU_PPC 	2
 #define FLEXT_CPU_MIPS	3
 #define FLEXT_CPU_ALPHA	4
 
+// ---------------------------------------------------
+// support old definitions
 
-
-// Old definitions
-#if defined(MAXMSP)
-	#define FLEXT_SYS FLEXT_SYS_MAX
-//	#undef MAXMSP
-#elif defined(PD)
-	#define FLEXT_SYS FLEXT_SYS_PD
-//	#undef PD
-//	#undef NT
+#ifndef FLEXT_SYS
+	#if defined(MAXMSP)
+		#define FLEXT_SYS FLEXT_SYS_MAX
+	//	#undef MAXMSP
+	#elif defined(PD)
+		#define FLEXT_SYS FLEXT_SYS_PD
+	//	#undef PD
+	//	#undef NT
+	#endif
 #endif
 
 #if defined(_DEBUG)
 	#define FLEXT_DEBUG
 #endif
+
+// ---------------------------------------------------
 
 // Definition of supported real-time systems
 #if FLEXT_SYS == FLEXT_SYS_MAX

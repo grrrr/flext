@@ -353,6 +353,40 @@ public:
 	void DecThreads() { --thrcount; }
 
 	bool ShouldExit() const { return shouldexit; }
+
+	class ThrMutex 
+	{
+	public:
+		ThrMutex() { pthread_mutex_init(&mutex,NULL); }
+		~ThrMutex() { pthread_mutex_destroy(&mutex); }
+
+		int Lock() { return pthread_mutex_lock(&mutex); }
+		int TryLock() { return pthread_mutex_trylock(&mutex); }
+		int Unlock() { return pthread_mutex_unlock(&mutex); }
+	protected:
+		pthread_mutex_t mutex;
+	};
+
+	class ThrCond:
+		public ThrMutex
+	{
+	public:
+		ThrCond() { pthread_cond_init(&cond,NULL); }
+		~ThrCond() { pthread_cond_destroy(&cond); }
+
+		int Wait() { return pthread_cond_wait(&cond,&mutex); }
+
+		int TimedWait(float time) 
+		{ 
+			timespec tm; tm.tv_sec = (long)time; tm.tv_nsec = (long)((time-(long)time)*1.e9);
+			return pthread_cond_timedwait(&cond,&mutex,&tm); 
+		}
+
+		int Signal() { return pthread_cond_signal(&cond); }
+		int Broadcast() { return pthread_cond_broadcast(&cond); }
+	protected:
+		pthread_cond_t cond;
+	};
 #endif // FLEXT_THREADS
 
 // --- list creation stuff ----------------------------------------
@@ -365,7 +399,7 @@ public:
 
 	static void CopyAtom(t_atom *dst,const t_atom *src) { *dst = *src; }
 	static t_atom *CopyList(int argc,const t_atom *argv);
-	static void Sleep(int ms);
+	static void Sleep(float s);
 
 // xxx internal stuff xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 

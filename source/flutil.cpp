@@ -22,10 +22,10 @@ t_atom *flext_base::CopyList(int argc,const t_atom *argv)
 	return dst;
 }
 
-void flext_base::Sleep(int ms)
+void flext_base::Sleep(float s)
 {
 #ifdef NT
-	::Sleep(ms);
+	::Sleep((long)(s*1000));
 #else
 #pragma message ("flext - Sleep not implemented!")
 #endif

@@ -113,7 +113,7 @@ typedef int t_atomtype;
 #define LOG5(s,v1,v2,v3,v4,v5) post(s,v1,v2,v3,v4,v5)
 
 
-#define ASSERT(b) ((void)(!(b)?(error("Assertion failed: " #b " - in " __FILE__ " line %i",(I)__LINE__),0):0)) 
+#define ASSERT(b) ((void)(!(b)?(error("Assertion failed: " #b " - in " __FILE__ " line %i",(int)__LINE__),0):0)) 
 
 #else
 
@@ -127,6 +127,8 @@ typedef int t_atomtype;
 #define ASSERT(b) ((void)0)
 
 #endif
+
+#define ERRINTERNAL() error("flext: Internal error in file " __FILE__ ", line %i - please report",(int)__LINE__)
 
 
 /*! Set the right calling convention (and exporting) for the OS */

@@ -103,7 +103,7 @@ void flext_base::QTick(flext_base *th)
 		case qmsg::tp_list: th->ToOutList(m->out,m->_list.argc,m->_list.argv); break;
 		case qmsg::tp_any: th->ToOutAnything(m->out,m->_any.s,m->_any.argc,m->_any.argv); break;
 #ifdef DEBUG
-		default: error("flext: Internal error in file " __FILE__ ", line " __LINE__ " - please report");
+		default: ERRINTERNAL();
 #endif
 		}
 

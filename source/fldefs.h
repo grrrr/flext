@@ -498,4 +498,35 @@ AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(
 //@} FLEXT_ADDMETHODS
 
 
+
+/*! @name call flext methods manually
+	These can only be used in class member functions!
+*/
+
+//@{ FLEXT_CALLMETHODS
+
+//! call method with no args
+#define FLEXT_CALLMETHOD(M_FUN) cb_ ## M_FUN(this)
+
+//! call method with 1 enum type arg
+#define FLEXT_CALLMETHOD_E(M_FUN,ARG) cb_ ## M_FUN(this,ARG)
+
+//! call method with 1 arg
+#define FLEXT_CALLMETHOD_1(M_FUN,ARG) cb_ ## M_FUN(this,ARG)
+
+//! call method with 2 args
+#define FLEXT_CALLMETHOD_2(M_FUN,ARG1,ARG2) cb_ ## M_FUN(this,ARG1,ARG2)
+
+//! call method with 3 args
+#define FLEXT_CALLMETHOD_3(M_FUN,ARG1,ARG2,ARG3) cb_ ## M_FUN(this,ARG1,ARG2,ARG3)
+
+//! call method with 4 args
+#define FLEXT_CALLMETHOD_4(M_FUN,ARG1,ARG2,ARG3,ARG4) cb_ ## M_FUN(this,ARG1,ARG2,ARG3,ARG4)
+
+//! call method with 5 args
+#define FLEXT_CALLMETHOD_5(M_FUN,ARG1,ARG2,ARG3,ARG4,ARG5) cb_ ## M_FUN(this,ARG1,ARG2,ARG3,ARG4,ARG5)
+
+//@} FLEXT_CALLMETHODS
+
+
 #endif // __FLEXT_DEFS_H

@@ -76,7 +76,7 @@ Version history:
 - check/update function for buffer change (resize etc.)
 - description text for inlets/outlets (e.g. for MaxMSPs assist function)
 - added buffer resize (to be implemented for MaxMSP!)
-- added some utility functions: Sleep, CopyList
+- added some utility functions: Sleep, CopyAtom, CopyList
 - fixed type warning for class constructors with int arguments in PD
 
 0.2.3:
@@ -173,16 +173,15 @@ general:
 
 bugs:
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)
-- No knowledge about external resizing of a buffer! (how to handle that?)
 
 tests:
 - PD: figure out what "pointer" messages do and where they occur
+- some more mutexes needed for thread safety?
 
 features:
 - abstraction for parsing argument lists
 - abstraction for creating lists and anythings
 - abstraction for clock functions
-- multithreaded operation: detached method handling, message queue
 - sending messages to own inlet (passing computation to other patch objects - message queue?)
 - adding/removing methods anytime
 

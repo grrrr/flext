@@ -29,7 +29,8 @@ class signal1:
 	FLEXT_HEADER(signal1, flext_dsp)
 
 	public:
-		signal1() 
+		signal1():
+			f_pan(0) // initialize f_pan
 		{
 			// The constructor of your class is responsible for
 			// setting up inlets and outlets and for registering

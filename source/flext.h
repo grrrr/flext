@@ -59,11 +59,14 @@ public:
 	// called on "help" message: should post some text
 	virtual V m_help();
 	
-	// called on patcher load (Max/MSP only)
+	// called on patcher load (not on mere object creation!)
 	virtual V m_loadbang() {}
 
 	// quickhelp for inlets/outlets (Max/MSP only)
 	virtual V m_assist(L /*msg*/,L /*arg*/,C * /*s*/) {}
+
+	// called for every incoming message (returns true if a handler was found and called)
+	virtual BL m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv);
 
 
 // --- buffer/array stuff -----------------------------------------	
@@ -117,6 +120,8 @@ public:
 // --- inlet/outlet stuff -----------------------------------------	
 
 	// define inlets/outlets - all (also default) inlets must be defined
+	// argument m specifies multiple inlet/outlet count
+	
 	V add_in_def() { AddInlet(xlet::tp_def,1); }
 	V add_in_float(I m = 1) { AddInlet(xlet::tp_float,m); }
 	V add_in_flint(I m = 1) { AddInlet(xlet::tp_flint,m); }
@@ -154,6 +159,9 @@ public:
 	V to_out_anything(t_outlet *o,const t_symbol *s,I argc,t_atom *argv) { outlet_anything(o,const_cast<t_symbol *>(s),argc,argv); }
 	V to_out_anything(I n,const t_symbol *s,I argc,t_atom *argv)  { t_outlet *o = get_out(n); if(o) to_out_anything(o,const_cast<t_symbol *>(s),argc,argv); }
 		
+		
+// --- message handling -------------------------------------------
+
 	enum metharg {
 		a_null = 0,
 		a_float,a_int, //a_bool,
@@ -161,53 +169,7 @@ public:
 		a_gimme
 	};
 
-// --- argument list stuff ----------------------------------------
-		
-		
-// --- list creation stuff ----------------------------------------
-
-
-// xxx internal stuff xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-protected:
-
-	flext_base();
-	virtual ~flext_base();
-		
-	struct xlet {	
-		enum type {
-			tp_none = 0,tp_def,tp_float,tp_flint,tp_sym,tp_list,tp_sig,tp_any
-		};
-
-		xlet(type t): tp(t),nxt(NULL) {}
-		~xlet();
-		
-		type tp;
-		xlet *nxt;
-	};
-	
-	V AddInlet(xlet::type tp,I mult) { AddXlet(tp,mult,inlist); }
-	V AddOutlet(xlet::type tp,I mult) { AddXlet(tp,mult,outlist); }
-
-#if 1
 	typedef V (*methfun)(t_class *c);
-
-	class methitem { 
-	public:
-		methitem(I inlet,t_symbol *t);
-		methitem(I inlet,t_symbol *t,metharg &arg,methfun fun /*,BL ixd*/);
-		~methitem();
-
-		t_symbol *tag;
-		I inlet;
-		I argc;
-		metharg *args;
-
-		methfun fun;
-//		BL iix; // function gets inlet index as 1st argument
-	};
-	
-	std::list<methitem *> mlst;
 
 	V add_meth_def(I inlet); // call virtual function for inlet
 	V add_meth_def(I inlet,const C *tag); // call virtual function for tag && inlet
@@ -226,9 +188,75 @@ protected:
 	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,I i)) { add_meth_one(inlet,tag,(methfun)m,a_int,a_gimme,a_null); } // method+int
 	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,t_symbol *s)) { add_meth_one(inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
 	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,F)) { add_meth_one(inlet,tag,(methfun)m,a_float,a_null); }  // method+float
+
+
+// --- various symbols --------------------------------------------
+
+	static const t_symbol *sym_float;
+	static const t_symbol *sym_symbol;
+	static const t_symbol *sym_bang;
+	static const t_symbol *sym_list;
+	static const t_symbol *sym_anything;
+
+#ifdef PD
+	static const t_symbol *sym_pointer;
+	static const t_symbol *sym_signal;
+#endif
+#ifdef MAXMSP
+	static const t_symbol *sym_int;
 #endif
 
-	virtual BL m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv);
+// --- argument list stuff ----------------------------------------
+		
+		
+// --- list creation stuff ----------------------------------------
+
+
+// --- clock stuff ------------------------------------------------
+
+
+// xxx internal stuff xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+protected:
+
+	flext_base();
+	virtual ~flext_base();
+		
+// inlets and outlets
+		
+	struct xlet {	
+		enum type {
+			tp_none = 0,tp_def,tp_float,tp_flint,tp_sym,tp_list,tp_sig,tp_any
+		};
+
+		xlet(type t): tp(t),nxt(NULL) {}
+		~xlet();
+		
+		type tp;
+		xlet *nxt;
+	};
+	
+	V AddInlet(xlet::type tp,I mult) { AddXlet(tp,mult,inlist); }
+	V AddOutlet(xlet::type tp,I mult) { AddXlet(tp,mult,outlist); }
+
+// method handling
+
+	class methitem { 
+	public:
+		methitem(I inlet,t_symbol *t);
+		methitem(I inlet,t_symbol *t,metharg &arg,methfun fun /*,BL ixd*/);
+		~methitem();
+
+		t_symbol *tag;
+		I inlet;
+		I argc;
+		metharg *args;
+
+		methfun fun;
+//		BL iix; // function gets inlet index as 1st argument
+	};
+	
+	std::list<methitem *> mlst;
 
 private:
 

@@ -10,6 +10,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <flstdc.h>
 
+/*
 #ifdef PD
 const t_symbol *const sym_anything = &s_anything;
 const t_symbol *const sym_pointer = &s_gpointer;
@@ -26,4 +27,4 @@ const t_symbol *const sym_bang = gensym("bang");
 const t_symbol *const sym_list = gensym("list");
 const t_symbol *const sym_anything = gensym("anything");
 #endif
-
+*/

@@ -123,8 +123,6 @@ bugs:
 no unfixed known
 
 tests:
-- test loadbang upon object creation in Max/MSP
-- test effects of Max/MSP proxy objects (loadbang, assist, floatx, intx, ...)
 - do i have to destroy the method list elements with the list?
 
 

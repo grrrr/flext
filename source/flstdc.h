@@ -76,6 +76,7 @@ typedef t_float t_flint;
 #define add_loadbang(clss,meth) class_addmethod(clss,(t_method)meth, gensym("loadbang"), A_CANT, A_NULL)
 #define add_anything(clss,meth) class_addanything(clss,meth)
 
+/*
 extern const t_symbol *const sym_pointer;
 extern const t_symbol *const sym_float;
 extern const t_symbol *const sym_int;
@@ -84,7 +85,7 @@ extern const t_symbol *const sym_bang;
 extern const t_symbol *const sym_list;
 extern const t_symbol *const sym_anything;
 extern const t_symbol *const sym_signal;
-
+*/
 
 #define newout_signal(clss) outlet_new(clss,&s_signal)
 #define newout_float(clss) outlet_new(clss,&s_float)
@@ -159,12 +160,14 @@ typedef int t_atomtype;
 #define outlet_flint(o,v) outlet_int(o,v)
 #define outlet_symbol(o,s) outlet_anything(o,s,0,NULL)
 
+/*
 extern const t_symbol *const sym_float;
 extern const t_symbol *const sym_int;
 extern const t_symbol *const sym_symbol;
 extern const t_symbol *const sym_bang;
 extern const t_symbol *const sym_list;
 extern const t_symbol *const sym_anything;
+*/
 
 #endif
 

@@ -53,6 +53,7 @@ add_method1(c,cb_px_ft ## IX,"ft" #IX,A_FLOAT)
 V flext_base::cb_px_anything(t_class *c,const t_symbol *s,I argc,t_atom *argv)
 {
 	// check if inlet allows anything (or list)
+	
 	flext_base *o = thisObject(c);
 	I ci = ((flext_hdr *)o->x_obj)->curinlet;
 	o->m_methodmain(ci,s,argc,argv);
@@ -60,8 +61,6 @@ V flext_base::cb_px_anything(t_class *c,const t_symbol *s,I argc,t_atom *argv)
 
 V flext_base::cb_px_int(t_class *c,I v)
 {
-//	static const t_symbol *sym_int = gensym("int");
-
 	// check if inlet allows int type
 	t_atom atom;
 	SETINT(&atom,v);  
@@ -70,8 +69,6 @@ V flext_base::cb_px_int(t_class *c,I v)
 
 V flext_base::cb_px_float(t_class *c,F v)
 {
-//	static const t_symbol *sym_float = gensym("float");
-
 	// check if inlet allows float type
 	t_atom atom;
 	SETFLOAT(&atom,v);  
@@ -80,8 +77,6 @@ V flext_base::cb_px_float(t_class *c,F v)
 
 V flext_base::cb_px_bang(t_class *c)
 {
-//	static const t_symbol *sym_bang = gensym("bang");
-
 	// check if inlet allows bang
 	cb_px_anything(c,sym_bang,0,NULL);
 }
@@ -114,13 +109,28 @@ DEF_IN_FT(9)
 BL flext_base::compatibility = true;
 
 
+const t_symbol *flext_base::sym_float;
+const t_symbol *flext_base::sym_symbol;
+const t_symbol *flext_base::sym_bang;
+const t_symbol *flext_base::sym_list;
+const t_symbol *flext_base::sym_anything;
+
+#ifdef PD
+const t_symbol *flext_base::sym_pointer;
+const t_symbol *flext_base::sym_signal;
+#endif
+#ifdef MAXMSP
+const t_symbol *flext_base::sym_int;
+#endif
+
+
 flext_base::flext_base():
 	inlist(NULL),outlist(NULL),
 	incnt(0),outcnt(0),
 	insigs(0),outsigs(0),
 	outlets(NULL),inlets(NULL)
 {
-//	add_meth(0,"help",cb_help);
+	LOG("Logging is on");
 }
 
 flext_base::~flext_base()
@@ -358,6 +368,23 @@ BL flext_base::setup_inout()
 
 V flext_base::cb_setup(t_class *c)
 {
+#ifdef PD
+	sym_anything = &s_anything;
+	sym_pointer = &s_gpointer;
+	sym_float = &s_float;
+	sym_symbol = &s_symbol;
+	sym_bang = &s_bang;
+	sym_list = &s_list;
+	sym_signal = &s_signal;
+#elif defined(MAXMSP)
+	sym_int = gensym("int");
+	sym_float = gensym("float");
+	sym_symbol = gensym("symbol");
+	sym_bang = gensym("bang");
+	sym_list = gensym("list");
+	sym_anything = gensym("anything");
+#endif
+
 	add_method(c,cb_help,"help");
 	
 	add_loadbang(c,cb_loadbang);
@@ -421,22 +448,24 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 {
 	BL ret = false;
 	
+	LOG3("methodmain inlet:%i args:%i symbol:%s",inlet,argc,s?s->s_name:"");
+	
 	std::list<methitem *>::const_iterator it(mlst.begin());
 	while(!ret) {
 		const methitem *m = *it;
 		if(!m) break;
 		if(m->tag == sym_anything && m->argc == 1 && m->args[0] == a_gimme) {
 			// any
-			((methfun_A)m->fun)(this,s,argc,argv);
+//			((methfun_A)m->fun)(this,s,argc,argv);
 			ret = true;
 		}
 		else
 		if(m->tag == s && (inlet == m->inlet || m->inlet < 0 )) {
 			// tag fits
-//			post("found method tag %s: inlet=%i, symbol=%s, argc=%i",m->tag->s_name,inlet,s->s_name,argc);
+			LOG4("found method tag %s: inlet=%i, symbol=%s, argc=%i",m->tag->s_name,inlet,s->s_name,argc);
 
 			if(m->argc == 1 && m->args[0] == a_gimme) {
-				((methfun_G)m->fun)(this,argc,argv);
+//				((methfun_G)m->fun)(this,argc,argv);
 				ret = true;
 			}
 			else if(argc == m->argc) {
@@ -498,6 +527,7 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 						ok = false;
 					}
 				}
+/*				
 				if(ix == argc) {
 					switch(argc) {
 					case 0:	((methfun_0)m->fun)(this); break;
@@ -509,11 +539,14 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 					}
 					ret = true;	
 				}
+*/
 			}
 		} 
 		if(it == mlst.end()) break;
 		else ++it;
 	}
+	
+	if(!ret) LOG("Did not find any method tag");
 	
 	return ret; // true if appropriate handler was found and called
 }

@@ -266,7 +266,7 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 	int cnt = th->ListAttrib(la);
 
 	for(int i = 0; i < cnt; ++i) {
-		const t_symbol *sym = GetSymbol(la[i]);
+		const t_symbol *sym = GetSymbol(la[i]); 
 
 		// get flags
 		int sv;

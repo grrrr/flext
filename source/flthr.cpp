@@ -543,9 +543,9 @@ bool flext::ThrCond::TimedWait(double ftime)
 
 bool flext::ThrCond::Signal() 
 { 
-	Lock();
+//	Lock();
 	bool ret = pthread_cond_signal(&cond) == 0; 
-	Unlock();
+//	Unlock();
 	return ret;
 }
 #endif

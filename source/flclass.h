@@ -665,6 +665,8 @@ protected:
 	class AttrData 
 	{
 	public:
+		AttrData(): flags(0) {}
+
 		enum { afl_save = 0x01,afl_init = 0x02,afl_inited = 0x04 };
 
 		void SetSave(bool s) { if(s) flags  |= afl_save; else flags &= ~afl_save; }

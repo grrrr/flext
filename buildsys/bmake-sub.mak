@@ -5,7 +5,9 @@
 # project-specific definitions
 
 # package info
+!if "$(PKGINFO)" != "" && "$(PKGINFO)" != "1"
 !include $(PKGINFO)
+!endif
 
 # special package settings
 !ifdef USRCONFIG

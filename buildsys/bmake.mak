@@ -12,8 +12,16 @@
 PKGINFO=package.txt
 !endif
 
-!if "$(PKGINFO)" != ""
+!if "$(PKGINFO)" != "" && "$(PKGINFO)" != "1"
 !include $(PKGINFO)
+!endif
+
+!ifndef NAME
+!error NAME variable must be defined (name of target)
+!endif
+
+!ifndef SRCS
+!error SRCS variable must be defined (list of source files)
 !endif
 
 ###############################################

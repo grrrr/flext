@@ -287,6 +287,12 @@ void flext::CopySamples(t_sample *dst,const t_sample *src,int cnt)
     if(GetSIMDCapabilities()&simd_sse) {
         // single precision
 
+		__asm {
+			mov		eax,dword ptr [src]
+			prefetcht0 [eax+0]
+			prefetcht0 [eax+32]
+		}
+
    	    int n = cnt>>4;
         cnt -= n<<4;
 
@@ -295,10 +301,11 @@ void flext::CopySamples(t_sample *dst,const t_sample *src,int cnt)
 				// aligned src, aligned dst
 				__asm {
 					mov		eax,dword ptr [src]
-					prefetcht0 [eax]
 					mov		edx,dword ptr [dst]
 					mov		ecx,[n]
-	loopaa:
+loopaa:
+					prefetcht0 [eax+64]
+					prefetcht0 [eax+96]
 					movaps	xmm0,xmmword ptr[eax]
 					movaps	xmmword ptr[edx],xmm0
 					movaps	xmm1,xmmword ptr[eax+4*4]
@@ -317,10 +324,11 @@ void flext::CopySamples(t_sample *dst,const t_sample *src,int cnt)
 				// aligned src, unaligned dst
 				__asm {
 					mov		eax,dword ptr [src]
-					prefetcht0 [eax]
 					mov		edx,dword ptr [dst]
 					mov		ecx,[n]
-	loopau:
+loopau:
+					prefetcht0 [eax+64]
+					prefetcht0 [eax+96]
 					movaps	xmm0,xmmword ptr[eax]
 					movups	xmmword ptr[edx],xmm0
 					movaps	xmm1,xmmword ptr[eax+4*4]
@@ -341,10 +349,11 @@ void flext::CopySamples(t_sample *dst,const t_sample *src,int cnt)
 				// unaligned src, aligned dst
 				__asm {
 					mov		eax,dword ptr [src]
-					prefetcht0 [eax]
 					mov		edx,dword ptr [dst]
 					mov		ecx,[n]
 loopua:
+					prefetcht0 [eax+64]
+					prefetcht0 [eax+96]
 					movups	xmm0,xmmword ptr[eax]
 					movaps	xmmword ptr[edx],xmm0
 					movups	xmm1,xmmword ptr[eax+4*4]
@@ -363,10 +372,11 @@ loopua:
 				// unaligned src, unaligned dst
 				__asm {
 					mov		eax,dword ptr [src]
-					prefetcht0 [eax]
 					mov		edx,dword ptr [dst]
 					mov		ecx,[n]
 loopuu:
+					prefetcht0 [eax+64]
+					prefetcht0 [eax+96]
 					movups	xmm0,xmmword ptr[eax]
 					movups	xmmword ptr[edx],xmm0
 					movups	xmm1,xmmword ptr[eax+4*4]
@@ -502,6 +512,10 @@ void flext::MulSamples(t_sample *dst,const t_sample *src,t_sample op,int cnt)
         cnt -= n<<4;
 
         __asm {
+			mov		eax,dword ptr [src]
+			prefetcht0 [eax+0]
+			prefetcht0 [eax+32]
+
 			movss	xmm0,xmmword ptr [op]
 			shufps	xmm0,xmm0,0
 		}
@@ -515,6 +529,9 @@ void flext::MulSamples(t_sample *dst,const t_sample *src,t_sample op,int cnt)
 				mov		eax,dword ptr [src]
 				mov		edx,dword ptr [dst]
 loopa:
+				prefetcht0 [eax+64]
+				prefetcht0 [eax+96]
+
 				movaps	xmm1,xmmword ptr[eax]
 				mulps	xmm1,xmm0
 				movaps	xmmword ptr[edx],xmm1
@@ -543,6 +560,9 @@ loopa:
 				mov		eax,dword ptr [src]
 				mov		edx,dword ptr [dst]
 loopu:
+				prefetcht0 [eax+64]
+				prefetcht0 [eax+96]
+
 				movups	xmm1,xmmword ptr[eax]
 				mulps	xmm1,xmm0
 				movups	xmmword ptr[edx],xmm1
@@ -619,75 +639,171 @@ void flext::MulSamples(t_sample *dst,const t_sample *src,const t_sample *op,int 
    	    int n = cnt>>4;
         cnt -= n<<4;
 
+		__asm {
+			mov		eax,[src]
+			mov		ebx,[op]
+			prefetcht0 [eax+0]
+			prefetcht0 [ebx+0]
+			prefetcht0 [eax+32]
+			prefetcht0 [ebx+32]
+		}
+
         if((reinterpret_cast<unsigned long>(src)&(__alignof(__m128)-1)) == 0
             && (reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0
-            && (reinterpret_cast<unsigned long>(op)&(__alignof(__m128)-1)) == 0
-        ) {
-            // aligned version
-	        __asm {
-				mov		ecx,[n]
-				mov		eax,dword ptr [src]
-				mov		edx,dword ptr [dst]
-				mov		ebx,dword ptr [op]
-loopa:
-				movaps	xmm0,xmmword ptr[eax]
-				movaps	xmm1,xmmword ptr[ebx]
-				mulps	xmm0,xmm1
-				movaps	xmmword ptr[edx],xmm0
+		) {
+			if((reinterpret_cast<unsigned long>(op)&(__alignof(__m128)-1)) == 0) {
+				__asm {
+					mov		ecx,[n]
+					mov		eax,dword ptr [src]
+					mov		edx,dword ptr [dst]
+					mov		ebx,dword ptr [op]
+	loopaa:
+					prefetcht0 [eax+64]
+					prefetcht0 [ebx+64]
+					prefetcht0 [eax+96]
+					prefetcht0 [ebx+96]
 
-				movaps	xmm2,xmmword ptr[eax+4*4]
-				movaps	xmm3,xmmword ptr[ebx+4*4]
-				mulps	xmm2,xmm3
-				movaps	xmmword ptr[edx+4*4],xmm2
+					movaps	xmm0,xmmword ptr[eax]
+					movaps	xmm1,xmmword ptr[ebx]
+					mulps	xmm0,xmm1
+					movaps	xmmword ptr[edx],xmm0
 
-				movaps	xmm4,xmmword ptr[eax+8*4]
-				movaps	xmm5,xmmword ptr[ebx+8*4]
-				mulps	xmm4,xmm5
-				movaps	xmmword ptr[edx+8*4],xmm4
+					movaps	xmm2,xmmword ptr[eax+4*4]
+					movaps	xmm3,xmmword ptr[ebx+4*4]
+					mulps	xmm2,xmm3
+					movaps	xmmword ptr[edx+4*4],xmm2
 
-				movaps	xmm6,xmmword ptr[eax+12*4]
-				movaps	xmm7,xmmword ptr[ebx+12*4]
-				mulps	xmm6,xmm7
-				movaps	xmmword ptr[edx+12*4],xmm6
+					movaps	xmm4,xmmword ptr[eax+8*4]
+					movaps	xmm5,xmmword ptr[ebx+8*4]
+					mulps	xmm4,xmm5
+					movaps	xmmword ptr[edx+8*4],xmm4
 
-				add		eax,16*4
-				add		ebx,16*4
-				add		edx,16*4
-				loop	loopa
+					movaps	xmm6,xmmword ptr[eax+12*4]
+					movaps	xmm7,xmmword ptr[ebx+12*4]
+					mulps	xmm6,xmm7
+					movaps	xmmword ptr[edx+12*4],xmm6
+
+					add		eax,16*4
+					add		ebx,16*4
+					add		edx,16*4
+					loop	loopaa
+				}
 			}
-        }
+			else {
+				__asm {
+					mov		ecx,[n]
+					mov		eax,dword ptr [src]
+					mov		edx,dword ptr [dst]
+					mov		ebx,dword ptr [op]
+	loopau:
+					prefetcht0 [eax+64]
+					prefetcht0 [ebx+64]
+					prefetcht0 [eax+96]
+					prefetcht0 [ebx+96]
+
+					movaps	xmm0,xmmword ptr[eax]
+					movups	xmm1,xmmword ptr[ebx]
+					mulps	xmm0,xmm1
+					movaps	xmmword ptr[edx],xmm0
+
+					movaps	xmm2,xmmword ptr[eax+4*4]
+					movups	xmm3,xmmword ptr[ebx+4*4]
+					mulps	xmm2,xmm3
+					movaps	xmmword ptr[edx+4*4],xmm2
+
+					movaps	xmm4,xmmword ptr[eax+8*4]
+					movups	xmm5,xmmword ptr[ebx+8*4]
+					mulps	xmm4,xmm5
+					movaps	xmmword ptr[edx+8*4],xmm4
+
+					movaps	xmm6,xmmword ptr[eax+12*4]
+					movups	xmm7,xmmword ptr[ebx+12*4]
+					mulps	xmm6,xmm7
+					movaps	xmmword ptr[edx+12*4],xmm6
+
+					add		eax,16*4
+					add		ebx,16*4
+					add		edx,16*4
+					loop	loopau
+				}
+			}
+		}
         else {
-            // unaligned version
-            __asm {
-				mov		ecx,[n]
-				mov		eax,dword ptr [src]
-				mov		edx,dword ptr [dst]
-				mov		ebx,dword ptr [op]
-loopu:
-				movups	xmm0,xmmword ptr[eax]
-				movups	xmm1,xmmword ptr[ebx]
-				mulps	xmm0,xmm1
-				movups	xmmword ptr[edx],xmm0
+			if((reinterpret_cast<unsigned long>(op)&(__alignof(__m128)-1)) == 0) {
+				__asm {
+					mov		ecx,[n]
+					mov		eax,dword ptr [src]
+					mov		edx,dword ptr [dst]
+					mov		ebx,dword ptr [op]
+	loopua:
+					prefetcht0 [eax+64]
+					prefetcht0 [ebx+64]
+					prefetcht0 [eax+96]
+					prefetcht0 [ebx+96]
 
-				movups	xmm2,xmmword ptr[eax+4*4]
-				movups	xmm3,xmmword ptr[ebx+4*4]
-				mulps	xmm2,xmm3
-				movups	xmmword ptr[edx+4*4],xmm2
+					movups	xmm0,xmmword ptr[eax]
+					movaps	xmm1,xmmword ptr[ebx]
+					mulps	xmm0,xmm1
+					movups	xmmword ptr[edx],xmm0
 
-				movups	xmm4,xmmword ptr[eax+8*4]
-				movups	xmm5,xmmword ptr[ebx+8*4]
-				mulps	xmm4,xmm5
-				movups	xmmword ptr[edx+8*4],xmm4
+					movups	xmm2,xmmword ptr[eax+4*4]
+					movaps	xmm3,xmmword ptr[ebx+4*4]
+					mulps	xmm2,xmm3
+					movups	xmmword ptr[edx+4*4],xmm2
 
-				movups	xmm6,xmmword ptr[eax+12*4]
-				movups	xmm7,xmmword ptr[ebx+12*4]
-				mulps	xmm6,xmm7
-				movups	xmmword ptr[edx+12*4],xmm6
+					movups	xmm4,xmmword ptr[eax+8*4]
+					movaps	xmm5,xmmword ptr[ebx+8*4]
+					mulps	xmm4,xmm5
+					movups	xmmword ptr[edx+8*4],xmm4
 
-				add		eax,16*4
-				add		ebx,16*4
-				add		edx,16*4
-				loop	loopu
+					movups	xmm6,xmmword ptr[eax+12*4]
+					movaps	xmm7,xmmword ptr[ebx+12*4]
+					mulps	xmm6,xmm7
+					movups	xmmword ptr[edx+12*4],xmm6
+
+					add		eax,16*4
+					add		ebx,16*4
+					add		edx,16*4
+					loop	loopua
+				}
+			}
+			else {
+				__asm {
+					mov		ecx,[n]
+					mov		eax,dword ptr [src]
+					mov		edx,dword ptr [dst]
+					mov		ebx,dword ptr [op]
+loopuu:
+					prefetcht0 [eax+64]
+					prefetcht0 [ebx+64]
+					prefetcht0 [eax+96]
+					prefetcht0 [ebx+96]
+
+					movups	xmm0,xmmword ptr[eax]
+					movups	xmm1,xmmword ptr[ebx]
+					mulps	xmm0,xmm1
+					movups	xmmword ptr[edx],xmm0
+
+					movups	xmm2,xmmword ptr[eax+4*4]
+					movups	xmm3,xmmword ptr[ebx+4*4]
+					mulps	xmm2,xmm3
+					movups	xmmword ptr[edx+4*4],xmm2
+
+					movups	xmm4,xmmword ptr[eax+8*4]
+					movups	xmm5,xmmword ptr[ebx+8*4]
+					mulps	xmm4,xmm5
+					movups	xmmword ptr[edx+8*4],xmm4
+
+					movups	xmm6,xmmword ptr[eax+12*4]
+					movups	xmm7,xmmword ptr[ebx+12*4]
+					mulps	xmm6,xmm7
+					movups	xmmword ptr[edx+12*4],xmm6
+
+					add		eax,16*4
+					add		ebx,16*4
+					add		edx,16*4
+					loop	loopuu
+				}
 			}
         }
 	    while(cnt--) *(dst++) = *(src++) * *(op++); 
@@ -748,6 +864,10 @@ void flext::AddSamples(t_sample *dst,const t_sample *src,t_sample op,int cnt)
         cnt -= n<<4;
 
         __asm {
+			mov		eax,[src]
+			prefetcht0 [eax+0]
+			prefetcht0 [eax+32]
+
 			movss	xmm0,xmmword ptr [op]
 			shufps	xmm0,xmm0,0
 		}
@@ -761,6 +881,9 @@ void flext::AddSamples(t_sample *dst,const t_sample *src,t_sample op,int cnt)
 				mov		eax,dword ptr [src]
 				mov		edx,dword ptr [dst]
 loopa:
+				prefetcht0 [eax+64]
+				prefetcht0 [eax+96]
+
 				movaps	xmm1,xmmword ptr[eax]
 				addps	xmm1,xmm0
 				movaps	xmmword ptr[edx],xmm1
@@ -789,6 +912,9 @@ loopa:
 				mov		eax,dword ptr [src]
 				mov		edx,dword ptr [dst]
 loopu:
+				prefetcht0 [eax+64]
+				prefetcht0 [eax+96]
+
 				movups	xmm1,xmmword ptr[eax]
 				addps	xmm1,xmm0
 				movups	xmmword ptr[edx],xmm1
@@ -867,79 +993,176 @@ void flext::AddSamples(t_sample *dst,const t_sample *src,const t_sample *op,int 
 #ifdef FLEXT_USE_SIMD
 #ifdef _MSC_VER
     if(GetSIMDCapabilities()&simd_sse) {
+		// Prefetch cache
+		__asm {
+			mov		eax,dword ptr [src]
+			mov		ebx,dword ptr [op]
+			prefetcht0 [eax]
+			prefetcht0 [ebx]
+			prefetcht0 [eax+32]
+			prefetcht0 [ebx+32]
+		}
+
         // single precision
    	    int n = cnt>>4;
         cnt -= n<<4;
 
         if((reinterpret_cast<unsigned long>(src)&(__alignof(__m128)-1)) == 0
             && (reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0
-            && (reinterpret_cast<unsigned long>(op)&(__alignof(__m128)-1)) == 0
-        ) {
-            // aligned version
-	        __asm {
-				mov		ecx,dword ptr [n]
-				mov		eax,dword ptr [src]
-				mov		edx,dword ptr [dst]
-				mov		ebx,dword ptr [op]
-loopa:
-				movaps	xmm0,xmmword ptr[eax]
-				movaps	xmm1,xmmword ptr[ebx]
-				addps	xmm0,xmm1
-				movaps	xmmword ptr[edx],xmm0
+		) {
+			if((reinterpret_cast<unsigned long>(op)&(__alignof(__m128)-1)) == 0) {
+				__asm {
+					mov		ecx,dword ptr [n]
+					mov		eax,dword ptr [src]
+					mov		edx,dword ptr [dst]
+					mov		ebx,dword ptr [op]
+	loopaa:
+					prefetcht0 [eax+64]
+					prefetcht0 [ebx+64]
+					prefetcht0 [eax+96]
+					prefetcht0 [ebx+96]
 
-				movaps	xmm2,xmmword ptr[eax+4*4]
-				movaps	xmm3,xmmword ptr[ebx+4*4]
-				addps	xmm2,xmm3
-				movaps	xmmword ptr[edx+4*4],xmm2
+					movaps	xmm0,xmmword ptr[eax]
+					movaps	xmm1,xmmword ptr[ebx]
+					addps	xmm0,xmm1
+					movaps	xmmword ptr[edx],xmm0
 
-				movaps	xmm4,xmmword ptr[eax+8*4]
-				movaps	xmm5,xmmword ptr[ebx+8*4]
-				addps	xmm4,xmm5
-				movaps	xmmword ptr[edx+8*4],xmm4
+					movaps	xmm2,xmmword ptr[eax+4*4]
+					movaps	xmm3,xmmword ptr[ebx+4*4]
+					addps	xmm2,xmm3
+					movaps	xmmword ptr[edx+4*4],xmm2
 
-				movaps	xmm6,xmmword ptr[eax+12*4]
-				movaps	xmm7,xmmword ptr[ebx+12*4]
-				addps	xmm6,xmm7
-				movaps	xmmword ptr[edx+12*4],xmm6
+					movaps	xmm4,xmmword ptr[eax+8*4]
+					movaps	xmm5,xmmword ptr[ebx+8*4]
+					addps	xmm4,xmm5
+					movaps	xmmword ptr[edx+8*4],xmm4
 
-				add		eax,16*4
-				add		ebx,16*4
-				add		edx,16*4
-				loop	loopa
+					movaps	xmm6,xmmword ptr[eax+12*4]
+					movaps	xmm7,xmmword ptr[ebx+12*4]
+					addps	xmm6,xmm7
+					movaps	xmmword ptr[edx+12*4],xmm6
+
+					add		eax,16*4
+					add		ebx,16*4
+					add		edx,16*4
+					loop	loopaa
+				}
+			}
+			else {
+				__asm {
+					mov		ecx,dword ptr [n]
+					mov		eax,dword ptr [src]
+					mov		edx,dword ptr [dst]
+					mov		ebx,dword ptr [op]
+	loopau:
+					prefetcht0 [eax+64]
+					prefetcht0 [ebx+64]
+					prefetcht0 [eax+96]
+					prefetcht0 [ebx+96]
+
+					movaps	xmm0,xmmword ptr[eax]
+					movups	xmm1,xmmword ptr[ebx]
+					addps	xmm0,xmm1
+					movaps	xmmword ptr[edx],xmm0
+
+					movaps	xmm2,xmmword ptr[eax+4*4]
+					movups	xmm3,xmmword ptr[ebx+4*4]
+					addps	xmm2,xmm3
+					movaps	xmmword ptr[edx+4*4],xmm2
+
+					movaps	xmm4,xmmword ptr[eax+8*4]
+					movups	xmm5,xmmword ptr[ebx+8*4]
+					addps	xmm4,xmm5
+					movaps	xmmword ptr[edx+8*4],xmm4
+
+					movaps	xmm6,xmmword ptr[eax+12*4]
+					movups	xmm7,xmmword ptr[ebx+12*4]
+					addps	xmm6,xmm7
+					movaps	xmmword ptr[edx+12*4],xmm6
+
+					add		eax,16*4
+					add		ebx,16*4
+					add		edx,16*4
+					loop	loopau
+				}
 			}
         }
         else {
-            // unaligned version
-	        __asm {
-				mov		ecx,dword ptr [n]
-				mov		eax,dword ptr [src]
-				mov		edx,dword ptr [dst]
-				mov		ebx,dword ptr [op]
-loopu:
-				movups	xmm0,xmmword ptr[eax]
-				movups	xmm1,xmmword ptr[ebx]
-				addps	xmm0,xmm1
-				movups	xmmword ptr[edx],xmm0
+			if((reinterpret_cast<unsigned long>(op)&(__alignof(__m128)-1)) == 0) {
+				__asm {
+					mov		ecx,dword ptr [n]
+					mov		eax,dword ptr [src]
+					mov		edx,dword ptr [dst]
+					mov		ebx,dword ptr [op]
+	loopua:
+					prefetcht0 [eax+64]
+					prefetcht0 [ebx+64]
+					prefetcht0 [eax+96]
+					prefetcht0 [ebx+96]
 
-				movups	xmm2,xmmword ptr[eax+4*4]
-				movups	xmm3,xmmword ptr[ebx+4*4]
-				addps	xmm2,xmm3
-				movups	xmmword ptr[edx+4*4],xmm2
+					movups	xmm0,xmmword ptr[eax]
+					movaps	xmm1,xmmword ptr[ebx]
+					addps	xmm0,xmm1
+					movups	xmmword ptr[edx],xmm0
 
-				movups	xmm4,xmmword ptr[eax+8*4]
-				movups	xmm5,xmmword ptr[ebx+8*4]
-				addps	xmm4,xmm5
-				movups	xmmword ptr[edx+8*4],xmm4
+					movups	xmm2,xmmword ptr[eax+4*4]
+					movaps	xmm3,xmmword ptr[ebx+4*4]
+					addps	xmm2,xmm3
+					movups	xmmword ptr[edx+4*4],xmm2
 
-				movups	xmm6,xmmword ptr[eax+12*4]
-				movups	xmm7,xmmword ptr[ebx+12*4]
-				addps	xmm6,xmm7
-				movups	xmmword ptr[edx+12*4],xmm6
+					movups	xmm4,xmmword ptr[eax+8*4]
+					movaps	xmm5,xmmword ptr[ebx+8*4]
+					addps	xmm4,xmm5
+					movups	xmmword ptr[edx+8*4],xmm4
 
-				add		eax,16*4
-				add		ebx,16*4
-				add		edx,16*4
-				loop	loopu
+					movups	xmm6,xmmword ptr[eax+12*4]
+					movaps	xmm7,xmmword ptr[ebx+12*4]
+					addps	xmm6,xmm7
+					movups	xmmword ptr[edx+12*4],xmm6
+
+					add		eax,16*4
+					add		ebx,16*4
+					add		edx,16*4
+					loop	loopua
+				}
+			}
+			else {
+				__asm {
+					mov		ecx,dword ptr [n]
+					mov		eax,dword ptr [src]
+					mov		edx,dword ptr [dst]
+					mov		ebx,dword ptr [op]
+	loopuu:
+					prefetcht0 [eax+64]
+					prefetcht0 [ebx+64]
+					prefetcht0 [eax+96]
+					prefetcht0 [ebx+96]
+
+					movups	xmm0,xmmword ptr[eax]
+					movups	xmm1,xmmword ptr[ebx]
+					addps	xmm0,xmm1
+					movups	xmmword ptr[edx],xmm0
+
+					movups	xmm2,xmmword ptr[eax+4*4]
+					movups	xmm3,xmmword ptr[ebx+4*4]
+					addps	xmm2,xmm3
+					movups	xmmword ptr[edx+4*4],xmm2
+
+					movups	xmm4,xmmword ptr[eax+8*4]
+					movups	xmm5,xmmword ptr[ebx+8*4]
+					addps	xmm4,xmm5
+					movups	xmmword ptr[edx+8*4],xmm4
+
+					movups	xmm6,xmmword ptr[eax+12*4]
+					movups	xmm7,xmmword ptr[ebx+12*4]
+					addps	xmm6,xmm7
+					movups	xmmword ptr[edx+12*4],xmm6
+
+					add		eax,16*4
+					add		ebx,16*4
+					add		edx,16*4
+					loop	loopuu
+				}
 			}
         }
 	    while(cnt--) *(dst++) = *(src++) + *(op++); 
@@ -1008,6 +1231,10 @@ void flext::ScaleSamples(t_sample *dst,const t_sample *src,t_sample opmul,t_samp
         cnt -= n<<4;
 
         __asm {
+			mov		eax,dword ptr [src]
+			prefetcht0 [eax+0]
+			prefetcht0 [eax+32]
+
 			movss	xmm0,xmmword ptr [opadd]
 			shufps	xmm0,xmm0,0
 			movss	xmm1,xmmword ptr [opmul]
@@ -1023,6 +1250,9 @@ void flext::ScaleSamples(t_sample *dst,const t_sample *src,t_sample opmul,t_samp
 				mov		eax,dword ptr [src]
 				mov		edx,dword ptr [dst]
 loopa:
+				prefetcht0 [eax+64]
+				prefetcht0 [eax+96]
+
 				movaps	xmm2,xmmword ptr[eax]
 				mulps	xmm2,xmm1
 				addps	xmm2,xmm0
@@ -1055,6 +1285,9 @@ loopa:
 				mov		eax,dword ptr [src]
 				mov		edx,dword ptr [dst]
 loopu:
+				prefetcht0 [eax+64]
+				prefetcht0 [eax+96]
+
 				movups	xmm2,xmmword ptr[eax]
 				mulps	xmm2,xmm1
 				addps	xmm2,xmm0

@@ -83,6 +83,16 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 		#endif
 	#endif
 
+#elif defined(__BORLANDC__) 
+	// Borland C++
+
+	#ifndef FLEXT_CPU
+		#define FLEXT_CPU FLEXT_CPU_INTEL
+	#endif
+	#ifndef FLEXT_OS
+		#define FLEXT_OS FLEXT_OS_WIN
+	#endif
+
 #elif defined(__MWERKS__)
 	// Metrowerks CodeWarrior
 

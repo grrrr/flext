@@ -105,6 +105,8 @@ void flext_base::YTick(flext_base *th)
 
 void flext_base::QTick(flext_base *th)
 {
+#ifdef FLEXT_THREADS
+
 #ifdef FLEXT_DEBUG
 	if(!th->IsSystemThread()) {
 		error("flext - Queue tick called by wrong thread!");
@@ -112,7 +114,6 @@ void flext_base::QTick(flext_base *th)
 	}
 #endif
 
-#ifdef FLEXT_THREADS
 	th->qmutex.Lock();
 #endif
 	while(th->qhead) {

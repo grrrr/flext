@@ -668,8 +668,8 @@ private:
 	qmsg *qhead,*qtail;
 	t_qelem *qclk;
 #if FLEXT_SYS == FLEXT_SYS_MAX
-	t_clock *yclk;
-	static void YTick(flext_base *th);
+//	t_clock *yclk;
+//	static void YTick(flext_base *th);
 #endif
 
 	static void QTick(flext_base *th);

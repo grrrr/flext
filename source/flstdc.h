@@ -118,6 +118,7 @@ extern "C" {
 
 #include "ext.h"
 #include "ext_user.h"
+#include "ext_critical.h"
 #include "z_dsp.h"
 
 } // extern "C"

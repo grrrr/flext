@@ -32,7 +32,11 @@ flext::thrid_t flext::thrmsgid = 0;
 class qmsg
 {
 public:
-    void Set(flext_base *t,int o,const t_symbol *s,int ac,const t_atom *av) { th = t,out = o,sym = s,argc = ac,argv = av; }
+    void Set(flext_base *t,int o,const t_symbol *s,int ac,const t_atom *av) 
+    { 
+        th = t; out = o;
+        sym = s,argc = ac,argv = av; 
+    }
 
     // \note PD sys lock must already be held by caller
     void Send() const
@@ -98,10 +102,11 @@ public:
     { 
         t_atom *at = GetAtoms(1); 
         SetInt(*at,dt);
+        const t_symbol *sym;
 #if FLEXT_SYS == FLEXT_SYS_PD
-        const t_symbol *sym = sym_float;
+        sym = sym_float;
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-        const t_symbol *sym = sym_int;
+        sym = sym_int;
 #else
 #error Not implemented!
 #endif
@@ -113,6 +118,30 @@ public:
         t_atom *at = GetAtoms(1); 
         SetSymbol(*at,dt);
         Set(th,o,sym_symbol,1,at); 
+    }
+
+    void Push(flext_base *th,int o,const t_atom &a) 
+    { 
+        t_atom *at = GetAtoms(1); 
+        *at = a;
+        const t_symbol *sym;
+        if(IsSymbol(a))
+            sym = sym_symbol;
+        else if(IsFloat(a))
+            sym = sym_float;
+#if FLEXT_SYS == FLEXT_SYS_MAX
+        else if(IsInt(a))
+            sym = sym_int;
+#endif
+#if FLEXT_SYS == FLEXT_SYS_PD
+        else if(IsPointer(a))
+            sym = sym_pointer;
+#endif
+        else {
+            error("atom type not supported");
+            return;
+        }
+        Set(th,o,sym,1,at); 
     }
 
     void Push(flext_base *th,int o,int argc,const t_atom *argv) 
@@ -309,6 +338,12 @@ void flext_base::ToQueueInt(int o,int f) const
 void flext_base::ToQueueSymbol(int o,const t_symbol *s) const
 {
     queue.Push(const_cast<flext_base *>(this),o,s);
+    Trigger();
+}
+
+void flext_base::ToQueueAtom(int o,const t_atom &at) const
+{
+    queue.Push(const_cast<flext_base *>(this),o,at);
     Trigger();
 }
 

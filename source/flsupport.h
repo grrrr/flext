@@ -645,6 +645,29 @@ public:
 
 // --- thread stuff -----------------------------------------------
 
+	/*!	\defgroup FLEXT_S_LOCK Global system locking
+		@{ 
+	*/
+
+#if FLEXT_SYS == FLEXT_SYS_PD
+    #if PD_MINOR_VERSION >= 38 || (PD_MINOR_VERSION >= 37 && defined(PD_DEVEL_VERSION))
+        static void Lock() { sys_lock(); }
+        static void Unlock() { sys_unlock(); }
+    #else
+        // no system locking for old PD versions
+        static void Lock() {}
+        static void Unlock() {}
+    #endif
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+    // Max 4.2 upwards!
+    static void Lock() { critical_enter(0); }
+    static void Unlock() { critical_exit(0); }
+#else
+#error
+#endif
+
+//!		@} FLEXT_S_LOCK
+
 #ifdef FLEXT_THREADS
 	/*!	\defgroup FLEXT_S_THREAD Flext thread handling 
 		@{ 

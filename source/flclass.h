@@ -231,6 +231,9 @@ public:
 	//! Output string aka symbol (index n starts with 0)
 	void ToOutString(int n,const char *s) const { ToOutSymbol(n,MakeSymbol(s)); }
 
+	//! Output atom (index n starts with 0)
+	void ToOutAtom(int n,const t_atom &at) const; 
+
 	//! Output list (index n starts with 0)
 	void ToOutList(int n,int argc,const t_atom *argv) const;
 	//! Output list (index n starts with 0)
@@ -264,6 +267,9 @@ public:
 	//! Output string aka symbol (to appointed outlet)
 	void ToQueueString(int n,const char *s) const { ToQueueSymbol(n,MakeSymbol(s)); }
 
+	//! Output atom (index n starts with 0)
+	void ToQueueAtom(int n,const t_atom &at) const; 
+
 	//! Output list (index n starts with 0)
 	void ToQueueList(int n,int argc,const t_atom *argv) const; 
 	//! Output list (index n starts with 0)
@@ -291,6 +297,9 @@ public:
     void ToSelfSymbol(int n,const t_symbol *s) const { ToQueueSymbol(-1-n,s); }
 	//! Send string aka symbol to self (inlet 0)
 	void ToSelfString(int n,const char *s) const { ToSelfSymbol(n,MakeSymbol(s)); }
+
+	//! Output atom (index n starts with 0)
+    void ToSelfAtom(int n,const t_atom &at) const { ToQueueAtom(-1-n,at); }
 
 	//! Send list to self (inlet n)
     void ToSelfList(int n,int argc,const t_atom *argv) const { ToQueueList(-1-n,argc,argv); }
@@ -736,6 +745,7 @@ protected:
 	void ToSysInt(int n,int f) const; 
 	void ToSysBool(int n,bool f) const { ToSysInt(n,f?1:0); }
 	void ToSysSymbol(int n,const t_symbol *s) const; 
+	void ToSysAtom(int n,const t_atom &at) const;
 	void ToSysList(int n,int argc,const t_atom *argv) const;
 	void ToSysAnything(int n,const t_symbol *s,int argc,const t_atom *argv)  const; 
 

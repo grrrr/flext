@@ -21,6 +21,8 @@ Version history:
 - show saveable attributes on object select
 - fix for long attribute dialogs
 - dropped support for Max UI objects
+- added global system locking
+- added general atom outlet functions To{Sys,Out,Queue}Atom
 
 0.4.7:
 - added flext::GetBool (just because flext::GetInt has been there for a while)

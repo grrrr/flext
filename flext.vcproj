@@ -121,7 +121,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="c:\programme\audio\pd\src,f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
+				AdditionalIncludeDirectories="c:\programme\audio\pd\src;c:\data\prog\audio\sndobj\include;c:\data\prog\audio\stk\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_PD;FLEXT_THREADS;FLEXT_USE_SIMD"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -223,7 +223,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="c:\programme\audio\pd\src,f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
+				AdditionalIncludeDirectories="c:\programme\audio\pd\src;c:\data\prog\audio\sndobj\include;c:\data\prog\audio\stk\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;FLEXT_SYS=2;FLEXT_THREADS;FLEXT_USE_SIMD"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
@@ -698,7 +698,7 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				InlineFunctionExpansion="0"
 				FavorSizeOrSpeed="0"
 				EnableFiberSafeOptimizations="FALSE"
-				AdditionalIncludeDirectories="F:\prog\audio\MaxWinSDK\c74support\max-includes,F:\prog\audio\MaxWinSDK\c74support\msp-includes,f:\prog\packs\pthreads,f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
+				AdditionalIncludeDirectories="&quot;C:\data\prog\audio\maxmspsdk_win\4.5 headers\c74support\max-includes&quot;;&quot;C:\data\prog\audio\maxmspsdk_win\4.5 headers\c74support\msp-includes&quot;;c:\data\prog\audio\sndobj\include;c:\data\prog\audio\stk\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_MAX;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_EXPORTS"
 				StringPooling="TRUE"
 				RuntimeLibrary="1"
@@ -753,7 +753,7 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				InlineFunctionExpansion="2"
 				FavorSizeOrSpeed="0"
 				EnableFiberSafeOptimizations="FALSE"
-				AdditionalIncludeDirectories="F:\prog\audio\MaxWinSDK\c74support\max-includes,F:\prog\audio\MaxWinSDK\c74support\msp-includes,f:\prog\packs\pthreads,f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
+				AdditionalIncludeDirectories="&quot;C:\data\prog\audio\maxmspsdk_win\4.5 headers\c74support\max-includes&quot;;&quot;C:\data\prog\audio\maxmspsdk_win\4.5 headers\c74support\msp-includes&quot;;c:\data\prog\audio\sndobj\include;c:\data\prog\audio\stk\include"
 				PreprocessorDefinitions="WIN32;_LIB;FLEXT_SYS_MAX;FLEXT_USE_SIMD;FLEXT_EXPORTS;FLEXT_THREADS"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
@@ -4042,7 +4042,8 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="PD Threads Debug|Win32">
+					Name="PD Threads Debug|Win32"
+					ExcludedFromBuild="TRUE">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -4062,7 +4063,8 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="PD Threads Release|Win32">
+					Name="PD Threads Release|Win32"
+					ExcludedFromBuild="TRUE">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
@@ -4242,7 +4244,8 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="PD Threads Debug|Win32">
+					Name="PD Threads Debug|Win32"
+					ExcludedFromBuild="TRUE">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -4262,7 +4265,8 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="PD Threads Release|Win32">
+					Name="PD Threads Release|Win32"
+					ExcludedFromBuild="TRUE">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"

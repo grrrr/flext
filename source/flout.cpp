@@ -25,6 +25,29 @@ void flext_base::ToSysSymbol(int n,const t_symbol *s) const { outlet *o = GetOut
 void flext_base::ToSysList(int n,int argc,const t_atom *argv) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_list((t_outlet *)o,const_cast<t_symbol *>(sym_list),argc,(t_atom *)argv); CRITOFF(); } }
 void flext_base::ToSysAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,(t_atom *)argv); CRITOFF(); } }
 
+void flext_base::ToSysAtom(int n,const t_atom &at) const 
+{ 
+    outlet *o = GetOut(n); 
+    if(o) { 
+        CRITON(); 
+        if(IsSymbol(at))
+            outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(GetSymbol(at))); 
+        else if(IsFloat(at))
+            outlet_float((t_outlet *)o,GetFloat(at)); 
+#if FLEXT_SYS == FLEXT_SYS_MAX
+        else if(IsInt(at))
+            outlet_flint((t_outlet *)o,GetInt(at));
+#endif
+#if FLEXT_SYS == FLEXT_SYS_PD
+        else if(IsPointer(at))
+            outlet_pointer((t_outlet *)o,GetPointer(at)); 
+#endif
+        else
+            error("Atom type not supported");
+        CRITOFF(); 
+    } 
+}
+
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
 
 void flext_base::ToSysBang(int n) const { fts_outlet_bang((fts_object *)thisHdr(),n); }
@@ -52,6 +75,7 @@ void flext_base::ToOutBang(int n) const { if(CHKTHR()) ToSysBang(n); else ToQueu
 void flext_base::ToOutFloat(int n,float f) const { if(CHKTHR()) ToSysFloat(n,f); else ToQueueFloat(n,f); }
 void flext_base::ToOutInt(int n,int f) const { if(CHKTHR()) ToSysInt(n,f); else ToQueueInt(n,f); }
 void flext_base::ToOutSymbol(int n,const t_symbol *s) const { if(CHKTHR()) ToSysSymbol(n,s); else ToQueueSymbol(n,s); }
+void flext_base::ToOutAtom(int n,const t_atom &at) const { if(CHKTHR()) ToSysAtom(n,at); else ToQueueAtom(n,at); }
 void flext_base::ToOutList(int n,int argc,const t_atom *argv) const { if(CHKTHR()) ToSysList(n,argc,argv); else ToQueueList(n,argc,argv); }
 void flext_base::ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { if(CHKTHR()) ToSysAnything(n,s,argc,argv); else ToQueueAnything(n,s,argc,argv); }
 

@@ -199,8 +199,8 @@ void flext::buffer::Frames(int fr,bool keep,bool zero)
 	t_atom msg;
 	_buffer *buf = (_buffer *)sym->s_thing;
 	// b_msr reflects buffer sample rate... is this what we want?
-	// Max bug: adding small value 0.001 to get right sample count
-	float ms = fr/buf->b_msr+0.001;
+	// Max bug: adding half a sample to prevent roundoff errors....
+	float ms = (fr+0.5)/buf->b_msr;
 	
 	SetFloat(msg,ms); 
 	::typedmess((object *)buf,gensym("size"),1,&msg);

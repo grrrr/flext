@@ -23,6 +23,8 @@ void flext::CopyMem(void *dst,const void *src,int bytes)
 {
 #if FLEXT_OS == FLEXT_OS_WIN
     MoveMemory(dst,src,bytes);
+#elif FLEXT_OS == FLEXT_OS_MAC
+	BlockMoveData(src,dst,bytes);
 #else
 	memcpy(dst,src,bytes);
 #endif
@@ -32,6 +34,8 @@ void flext::ZeroMem(void *dst,int bytes)
 {
 #if FLEXT_OS == FLEXT_OS_WIN
     ZeroMemory(dst,bytes);
+#elif FLEXT_OS == FLEXT_OS_MAC
+    BlockZero(dst,bytes);
 #else
 	memset(dst,0,bytes);
 #endif

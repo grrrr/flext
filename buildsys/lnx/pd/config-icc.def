@@ -25,7 +25,7 @@ INSTPATH=/usr/local/lib/pd/extra
 
 # user defined compiler flags
 # (check if they match your system!)
-UFLAGS=-msse -mfpmath=sse -ffast-math
+UFLAGS=
 
 # user defined optimization flags
 # (check if they match your system!)

@@ -83,8 +83,9 @@ Version history:
 Notes:
 - no support for default object arguments (A_DEFFLOAT, A_DEFSYMBOL) -> use GIMME instead
 
-Platform restrictions:
+Platform specific:
 - Max does not allow external libraries -> only one FLEXT_NEW* or FLEXT_TILDE_NEW* in a project 
+- In PD loadbang is not triggered upon object creation
 
 Restrictions in compatibility mode:
 - Max allows only 9 float/int inlets
@@ -112,4 +113,4 @@ features:
 - static class methods for definition of object methods
 - abstraction for parsing argument lists
 - abstraction for creating lists and anythings
-
+- simulate loadbang on object creation for PD

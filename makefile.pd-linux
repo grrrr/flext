@@ -16,13 +16,13 @@ include ${CONFIG}
 INCLUDES=${PDPATH}
 
 # general compiler flags
-FLAGS=-DFLEXT_SYS=2 ${UFLAGS}
+FLAGS=-DFLEXT_SYS=2 -fPIC ${UFLAGS}
 
 # compiler flags for optimized build
-CFLAGS=-O2 
+CFLAGS=-O2
 
 # compiler flags for debug build
-CFLAGS_D=-g -DFLEXT_DEBUG      
+CFLAGS_D=-g -DFLEXT_DEBUG 
 
 # additional flags for threading
 CFLAGS_T=-DFLEXT_THREADS  

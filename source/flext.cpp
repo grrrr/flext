@@ -252,7 +252,7 @@ BL flext_base::setup_inout()
 						++insigs;
 						break;
 					default:
-						error("%s: Wrong type for inlet #%i",thisName(),ix);
+						error("%s: Wrong type for inlet #%i: %i",thisName(),ix,(I)list[ix]);
 						ok = false;
 				} 
 			}
@@ -290,8 +290,11 @@ BL flext_base::setup_inout()
 					case xlet::tp_list:
 						inlets[ix] = (px_object *)proxy_new(x_obj,ix,&((flext_hdr *)x_obj)->curinlet);  
 						break;
+					case xlet::tp_def:
+						if(ix) error("%s: Default inlet type reserved for inlet #0",thisName());
+						break;
 					default:
-						error("%s: Wrong type for inlet #%i",thisName(),ix);
+						error("%s: Wrong type for inlet #%i: %i",thisName(),ix,(I)list[ix]);
 						ok = false;
 				} 
 			}
@@ -397,10 +400,11 @@ V flext_base::cb_setup(t_class *c)
     px_class = class_new(gensym("flext_base proxy"),NULL,NULL,sizeof(px_object),CLASS_PD|CLASS_NOINLET, A_NULL);
 	add_anything(px_class,px_object::px_method); // for other inlets
 #elif defined(MAXMSP) 
-	add_anything(c,cb_px_anything);
 	add_bang(c,cb_px_bang);
 	add_method1(c,cb_px_int,"int",A_INT);  
 	add_method1(c,cb_px_float,"float",A_FLOAT);  
+	add_methodG(c,cb_px_anything,"list");  
+	add_anything(c,cb_px_anything);
 #endif	
 
 	// setup non-leftmost ints and floats
@@ -478,19 +482,15 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 						ASSERT(sizeof(F) == sizeof(I));
 
 						F a;
-						if(ISFLOAT(argv[ix])) iargs[ix] = *(I *)&(a = GETFLOAT(argv[ix]));
-#ifdef MAXMSP
-						else if(ISINT(argv[ix])) iargs[ix] = *(I *)&(a = GETINT(argv[ix]));
-#endif
+						if(is_float(argv[ix])) iargs[ix] = *(I *)&(a = get_float(argv[ix]));
+						else if(is_int(argv[ix])) iargs[ix] = *(I *)&(a = get_int(argv[ix]));
 						else ok = false;
 						break;
 					}
 					case a_int: {
 						I a;
-						if(ISFLOAT(argv[ix])) iargs[ix] = *(I *)&(a = GETFLOAT(argv[ix]));
-#ifdef MAXMSP
-						else if(ISINT(argv[ix])) iargs[ix] = *(I *)&(a = GETINT(argv[ix]));
-#endif
+						if(is_float(argv[ix])) iargs[ix] = *(I *)&(a = get_float(argv[ix]));
+						else if(is_int(argv[ix])) iargs[ix] = *(I *)&(a = get_int(argv[ix]));
 						else ok = false;
 						break;
 					}
@@ -509,7 +509,7 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 						ASSERT(sizeof(t_symbol *) == sizeof(I));
 
 						t_symbol *a;
-						if(ISSYMBOL(argv[ix])) iargs[ix] = *(I *)&(a = GETSYMBOL(argv[ix]));
+						if(is_symbol(argv[ix])) iargs[ix] = *(I *)&(a = get_symbol(argv[ix]));
 						else ok = false;
 						break;
 					}
@@ -518,7 +518,7 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 						ASSERT(sizeof(t_gpointer *) == sizeof(I));
 
 						t_gpointer *a;
-						if(ISPOINTER(argv[ix])) iargs[ix] = *(I *)&(a = GETPOINTER(argv[ix]));
+						if(is_pointer(argv[ix])) iargs[ix] = *(I *)&(a = get_pointer(argv[ix]));
 						else ok = false;
 						break;
 					}

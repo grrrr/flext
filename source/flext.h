@@ -211,6 +211,43 @@ public:
 
 // --- argument list stuff ----------------------------------------
 		
+	static BL is_float(const t_atom &a) { return a.a_type == A_FLOAT; }
+	static F get_float(const t_atom &a) { return a.a_w.w_float; }
+	static F geta_float(const t_atom &a) { return is_float(a)?get_float(a):0; }
+	static V set_float(t_atom &a,F v) { a.a_type = A_FLOAT; a.a_w.w_float = v; }
+
+	static BL is_symbol(const t_atom &a) { return a.a_type == A_SYMBOL; }
+	static t_symbol *get_symbol(const t_atom &a) { return a.a_w.w_symbol; }
+	static t_symbol *geta_symbol(const t_atom &a) { return is_symbol(a)?get_symbol(a):NULL; }  // NULL or empty symbol?
+	static V set_symbol(t_atom &a,t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_symbol = s; }
+
+#ifdef PD
+	static BL is_pointer(const t_atom &a) { return a.a_type == A_POINTER; }
+	static t_gpointer *get_pointer(const t_atom &a) { return a.a_w.w_gpointer; }
+	static t_gpointer *geta_pointer(const t_atom &a) { return is_pointer(a)?get_pointer(a):NULL; }
+	static V set_pointer(t_atom &a,t_gpointer *p) { a.a_type = A_POINTER; a.a_w.w_gpointer = p; }
+
+	static BL is_int(const t_atom &) { return false; }
+	static I get_int(const t_atom &) { return 0; }
+	static I geta_int(const t_atom &) { return 0; }
+//	static V set_int(const t_atom &,I) { }
+
+	static BL is_flint(const t_atom &a) { return is_float(a); }
+	static F geta_flint(const t_atom &a) { return get_float(a); }
+#elif defined(MAXMSP)
+	static BL is_pointer(const t_atom &) { return false; }
+	static V *get_pointer(const t_atom &) { return NULL; }
+	static V *geta_pointer(const t_atom &) { return NULL; }
+//	static V set_pointer(t_atom &,V *) {}
+	static BL is_int(const t_atom &a) { return a.a_type == A_INT; }
+	static I get_int(const t_atom &a) { return a.a_w.w_long; }
+	static I geta_int(const t_atom &a) { return is_int(a)?get_int(a):0; }
+	static V set_int(t_atom &a,I v) { a.a_type = A_INT, a.a_w.w_long = v; }
+
+	static BL is_flint(const t_atom &a) { return is_float(a) || is_int(a); }
+	static F geta_flint(const t_atom &a) { return is_float(a)?get_float(a):(is_int(a)?get_int(a):0); }
+#endif
+
 		
 // --- list creation stuff ----------------------------------------
 

@@ -52,11 +52,12 @@ typedef t_float t_flint;
 #define A_FLINT A_FLOAT
 #define A_DEFFLINT A_DEFFLOAT
  
+/*
 #define atom_getflintarg(ix,argc,argv) ((int)atom_getfloatarg(ix,argc,argv))
 #define atom_getsymarg atom_getsymbolarg
 #define SETFLINT(atom,value) SETFLOAT(atom,(float)(value))
 #define ISFLINT(atom) ISFLOAT(atom)
-
+*/
 
 #define newobject(CLSS) pd_new(CLSS)
 
@@ -126,10 +127,12 @@ typedef int t_atomtype;
 #define A_FLINT A_INT
 #define A_DEFFLINT A_DEFLONG
 
+/*
 #define atom_getflintarg atom_getintarg
 #define atom_getsymbolarg atom_getsymarg
 #define SETFLINT(atom,value) SETINT(atom,(int)(value))
 #define ISFLINT(atom) ISINT(atom)
+*/
 
 #define add_dsp(clss,meth) addmess((method)meth,"dsp",A_CANT,A_NOTHING)
 #define add_bang(clss,meth) addbang((method)meth)
@@ -173,6 +176,7 @@ extern const t_symbol *const sym_anything;
 
 typedef t_symbol *t_symtype;
 
+/*
 #define ISFLOAT(atom) ((atom).a_type == A_FLOAT)
 #define GETFLOAT(atom) (atom.a_w.w_float)
 #define ISSYMBOL(atom) ((atom).a_type == A_SYMBOL)
@@ -186,7 +190,11 @@ typedef t_symbol *t_symtype;
 #ifdef MAXMSP
 #define ISINT(atom) ((atom).a_type == A_INT)
 #define GETINT(atom) (atom.a_w.w_long)
+#else
+#define ISINT(atom) false
+#define GETINT(atom) 0
 #endif
+*/
 
 #ifdef _LOG
 #define LOG(s) post(s)

@@ -159,9 +159,7 @@ void flext_base::Setup(t_classid id)
 
 	SetProxies(c);
 
-#ifdef FLEXT_QTHR
-	StartQThr();
-#endif
+	StartQueue();
 }
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX

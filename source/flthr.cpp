@@ -283,8 +283,6 @@ bool flext_base::StopThreads()
 #endif
 	
 		// --- all object threads have terminated by now -------
-
-		qmutex.Lock(); // Lock message queue
 		tlmutex.Lock();
 
 		// timeout -> hard termination
@@ -306,7 +304,6 @@ bool flext_base::StopThreads()
         thrhead = NULL;
 
 		tlmutex.Unlock();
-		qmutex.Unlock();
 	}
 	
 //	post("All threads have terminated");

@@ -25,7 +25,7 @@ OUTPATH=".\max-msvc"
 
 # where should flext libraries be installed?
 # (leave blank to omit installation)
-INSTDIR=$(PDPATH)\flext
+INSTDIR="%CommonProgramFiles%\Cycling '74\flext"
 
 # user-definable compiler flags
 # e.g. FLEXT_USE_SIMD enables SIMD support for capable CPUs (for VC++ 6, you need the Processor Pack)

@@ -10,9 +10,13 @@
 SOURCE=source
 
 # includes
-INCPATH=/I$(MSVCPATH)\include /I$(MAXSDKPATH)\max-includes /I$(MAXSDKPATH)\msp-includes /I$(SOURCE)
-LDFLAGS=/LIBPATH:$(MSVCPATH)\lib
+INCPATH=/I$(MAXSDKPATH)\max-includes /I$(MAXSDKPATH)\msp-includes /I$(SOURCE)
+LDFLAGS=
 
+!ifdef MSVCPATH
+INCPATH=$(INCPATH) /I$(MSVCPATH)\include 
+LDFLAGS=$(LDFLAGS) /LIBPATH:$(MSVCPATH)\lib
+!endif
 
 # compiler definitions and flags
 DEFS=/DFLEXT_SYS=1 $(UFLAGS)

@@ -153,6 +153,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 			#define FLEXT_OS FLEXT_OS_UNKNOWN
 		#endif
 	#endif
+	
+	// This is important for method and attribute callbacks
+	#pragma enumsalwaysint on
+	// This is important for everything
+	#pragma bool on
 
 #elif defined(__GNUG__)
 	// GNU C++

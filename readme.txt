@@ -110,6 +110,8 @@ Version history:
 - moved CLASS_MAINSIGNALIN to class scope (fixed "float method overwritten" warning)
 - unix makefiles: CXX should be commented out if standard (to enable environmental settings)
 - introduced default returns for the different flext::GetA* functions
+- pragma for Metrowerks compilers: enumsalwaysint on, bool on
+- MaxMSP: added assist string for attribute outlets
 
 0.4.1:
 - full port for Max@OSX
@@ -297,9 +299,10 @@ Restrictions in compatibility mode:
 - Max allows only 9 float/int inlets
 
 Porting to new compilers/platforms:
-- enums must be int-sized
+- enums must be int-sized!!!
 - compiler must support bool type
 - no need of C++ exceptions or RTTI (RTTI only for GUI objects)
+	BUT: some libraries could use RTTI and then need run-time type information from the library! (this is known for gcc compiles)
 
 ----------------------------------------------------------------------------
 

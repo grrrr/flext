@@ -180,7 +180,10 @@ void flext_base::m_assist(long msg,long arg,char *s)
 		strcpy(s,arg < incnt && indesc[arg]?indesc[arg]:""); 
 		break;
 	case 2: //ASSIST_OUTLET:
-		strcpy(s,arg < outcnt && outdesc[arg]?outdesc[arg]:""); 
+		if(arg < outcnt)
+			strcpy(s,outdesc[arg]?outdesc[arg]:""); 
+		else
+			strcpy(s,arg == outcnt && procattr?"Attributes":""); 
 		break;
 	}
 #endif

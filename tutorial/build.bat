@@ -2,6 +2,10 @@
 @if "%2"=="" @goto syntax
 @if "%3"=="" @goto syntax
 
+@rem first check configuration
+@call ..\build.bat %1 %2 %3 config "PKGINFO="
+@if not errorlevel 0 @goto end
+
 for /D %%i in (*) do @(
 	@pushd %%i
 	@if exist package.txt @( 

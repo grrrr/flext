@@ -1,3 +1,5 @@
+#! /usr/bin/bash
+
 flext=${0%/*}/
 if [ "$flext" = "$0"/ ]; then flext=./ ; fi
 
@@ -18,7 +20,7 @@ subbatch=${flext}buildsys/build-${compiler}.sh
 if 
 	[ -n "$platform" -a -n "$rtsys" -a -n "$compiler" -a -f $subbatch ]
 then 
-	sh $subbatch $platform $rtsys $target $5 $6 $7 $8 $9
+	bash $subbatch $platform $rtsys $target $5 $6 $7 $8 $9
 else
 	echo 
 	echo SYNTAX: build.sh [platform] [system] [compiler] {target}
@@ -29,5 +31,6 @@ else
 	echo 
 	echo Please make sure that your make program and compiler can be accessed with the
 	echo system path and that all relevant environment variables are properly set.
+	echo
 fi
 

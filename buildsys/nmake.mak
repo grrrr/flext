@@ -12,7 +12,9 @@
 PKGINFO=package.txt
 !endif
 
+!if "$(PKGINFO)" != ""
 !include $(PKGINFO)
+!endif
 
 ###############################################
 # check variables

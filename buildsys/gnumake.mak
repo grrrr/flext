@@ -12,7 +12,9 @@ ifndef PKGINFO
 PKGINFO=package.txt
 endif
 
+ifneq ($(PKGINFO),)
 include $(PKGINFO)
+endif
 
 ###############################################
 # check variables

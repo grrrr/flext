@@ -45,6 +45,9 @@ MODEEXT=d
 MODEEXT=p
 !else
 MODEEXT=
+!ifdef SHARED
+TYPEEXT=
+!endif
 !endif
 !endif
 

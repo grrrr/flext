@@ -1,4 +1,5 @@
-# where is PD?
+# where is the PD installation?
+# (this should point to the main folder, which has a "src" subfolder)
 PDPATH="%ProgramFiles%\pd"
 
 ###############################################################
@@ -24,7 +25,7 @@ INSTPATH=$(PDPATH)\extra
 
 # user defined compiler flags
 # (check if they match your system!)
-UFLAGS=-msse -ffast-math
+UFLAGS=-msse -mfpmath=sse -ffast-math
 
 # user defined optimization flags
 # (check if they match your system!)

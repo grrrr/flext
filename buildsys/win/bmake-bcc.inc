@@ -12,13 +12,9 @@ TARGET=$(TARGETPATH)\$(OUTNAME).$(EXT)
 ##############################################
 # use precompiled headers
 
-!ifndef PRECOMPILE
-CFLAGS=$(CFLAGS) -Hh=flext.h
-!else
-CFLAGS=$(CFLAGS) -Hh=$(PRECOMPILE)
+!ifdef PRECOMPILE
+CFLAGS=$(CFLAGS) -Hh=$(PRECOMPILE) -H=$(OBJPATH)\precompiled.pch
 !endif
-# location of precompiled file
-CFLAGS=$(CFLAGS) -H=$(OBJPATH)\precompiled.pch
 
 ##############################################
 

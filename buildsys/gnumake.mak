@@ -84,22 +84,38 @@ include $(BUILDPATH)targets-$(BUILDCLASS).inc
 .PRECIOUS: $(SYSCONFIG) $(USRCONFIG)
 
 $(SYSCONFIG): $(SYSDEFAULT)
+ifeq ($(COMPILER),mingw)
+	@copy $(subst /,\,$<) $(subst /,\,$@)
+else
 	@cp $< $@
+endif
 	@echo -------------------------------------------------------------------------
 	@echo A default system configuration file has been created.
 	@echo Please edit $(SYSCONFIG) 
 	@echo to match your platform, then start again.
 	@echo -------------------------------------------------------------------------
+ifeq ($(COMPILER),mingw)
+	@exit 1
+else
 	@false
+endif
 
 ifdef BUILDDIR
 $(USRCONFIG): $(USRDEFAULT)
+ifeq ($(COMPILER),mingw)
+	@copy $(subst /,\,$<) $(subst /,\,$@)
+else
 	@cp $< $@
+endif
 	@echo -------------------------------------------------------------------------
 	@echo A default package configuration file has been created.
 	@echo Please edit $(USRCONFIG), then start again.
 	@echo -------------------------------------------------------------------------
+ifeq ($(COMPILER),mingw)
+	@exit 1
+else
 	@false
+endif
 
 $(USRDEFAULT) $(USRMAKE):
 	@echo -------------------------------------------------------------------------
@@ -109,5 +125,10 @@ $(USRDEFAULT) $(USRMAKE):
 	@echo and
 	@echo $(USRMAKE)
 	@echo -------------------------------------------------------------------------
+ifeq ($(COMPILER),mingw)
+	@exit 1
+else
 	@false
+endif
+
 endif

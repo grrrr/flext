@@ -1,4 +1,5 @@
-# where is PD?
+# where is the PD installation?
+# (this should point to the main folder, which has a "src" subfolder)
 PDPATH="c:\program files\pd"
 
 # where is BorlandC++?

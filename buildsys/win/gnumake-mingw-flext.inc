@@ -9,22 +9,22 @@ _build_: $(TARGET)
 #	touch $@
 
 $(OUTPATH):
-	-cmd /c "mkdir $(subst /,\,$@)"
+	-mkdir $(subst /,\,$@)
 
 $(TARGETPATH): $(OUTPATH)
-	-cmd /c "mkdir $(subst /,\,$@)"
+	-mkdir $(subst /,\,$@)
 
 $(TARGETPATH)/%.opp : $(SRCDIR)/%.cpp
-	$(CXX) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
+	$(CXX) -c $(CFLAGS) $(DEFS) $(subst \,/,$(INCPATH)) $< -o $(subst /,\,$@)
 
 $(TARGETPATH)/%.o : $(SRCDIR)/%.c
-	$(CC) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
+	$(CC) -c $(CFLAGS) $(DEFS) $(subst \,/,$(INCPATH)) $< -o $(subst /,\,$@)
 
 $(TARGET) :: $(TARGETPATH)
 
 $(TARGET) :: $(COBJS) $(CPPOBJS)
 ifdef SHARED
-	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
+	$(CXX) $(LDFLAGS) $(LIBPATH) -o $(subst /,\,$@) $(subst /,\,$(COBJS) $(CPPOBJS) $(LIBS))
 	-strip --strip-unneeded $@
 else
 	$(AR) rc $@ $(COBJS) $(CPPOBJS)
@@ -33,8 +33,8 @@ endif
 ##############################################
 
 _clean_:
-	-cmd /c "del /q $(subst /,\,$(TARGETPATH)/*.*)" > nul
-	-cmd /c "rmdir /q $(subst /,\,$(TARGETPATH))" > nul
+	-del /q $(subst /,\,$(TARGETPATH)/*.*) > nul
+	-rmdir /q $(subst /,\,$(TARGETPATH)) > nul
 
 ##############################################
 
@@ -44,14 +44,9 @@ else
 FLEXTLIBINST=$(FLEXTLIB)
 endif
 
-$(FLEXTINC):
-	-cmd /c "mkdir $(subst /,\,$@)"
-
-$(FLEXTLIBINST):
-	-cmd /c "mkdir $(subst /,\,$@)"
-
-_install_:: $(FLEXTINC) $(FLEXTLIBINST)
-
 _install_::
-	cmd /c "copy $(subst /,\,$(TARGET) $(FLEXTLIBINST))"
-	-cmd /c "for %i in ($(HDRS)) do @cmd /c copy $(SRCDIR)\%i $(subst /,\,$(FLEXTPATH))" > nul
+	@if not exist $(subst /,\,$(FLEXTINC)) -mkdir $(subst /,\,$(FLEXTINC))
+	@if not exist $(subst /,\,$(FLEXTLIBINST)) -mkdir $(subst /,\,$(FLEXTLIBINST))
+
+	copy $(subst /,\,$(TARGET) $(FLEXTLIBINST))
+	-for %i in ($(HDRS)) do @cmd /c copy $(SRCDIR)\%i $(subst /,\,$(FLEXTPATH)) > nul

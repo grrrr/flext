@@ -91,6 +91,7 @@ typedef void t_outlet;
 
 #define add_assist(clss,meth) addmess((method)meth, "assist", A_CANT, A_NULL)
 #define add_loadbang(clss,meth) addmess((method)meth, "loadbang", A_CANT, A_NULL)
+#define add_dblclick(clss,meth) addmess((method)meth, "dblclick", A_CANT, A_NULL)
 
 #define newout_signal(clss) outlet_new(clss,"signal")
 #define newout_float(clss) outlet_new(clss,"float")

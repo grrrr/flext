@@ -91,8 +91,8 @@ public:
 	//! called on patcher load (not on mere object creation!)
 	virtual void m_loadbang();
 
-	//! quickhelp for inlets/outlets (gets called in Max/MSP only)
-	virtual void m_assist(long /*msg*/,long /*arg*/,char * /*s*/);
+	//! called on (double-)click into object box
+	virtual void m_click();
 
 	/*!	\brief Called for every incoming message.
 		All method handling is done in there
@@ -643,7 +643,7 @@ protected:
         //! Add an entry
 		void Add(Item *it,const t_symbol *tag,int inlet = 0);
         //! Remove an entry
-		bool Remove(Item *it,const t_symbol *tag,int inlet = 0);
+		bool Remove(Item *it,const t_symbol *tag,int inlet,bool free);
         //! Find an entry list in the Item array
 		Item *FindList(const t_symbol *tag,int inlet = 0);
 		
@@ -978,10 +978,15 @@ private:
 	static void cb_loadbang(t_class *c);
 #endif
 
+#if FLEXT_SYS == FLEXT_SYS_PD
+	static int cb_click(t_gobj *z, struct _glist *glist,int xpix, int ypix, int shift, int alt, int dbl, int doit);
+#endif
+
 #if FLEXT_SYS == FLEXT_SYS_MAX
 	char **indesc,**outdesc;
 
 	static void cb_assist(t_class *c,void *b,long msg,long arg,char *s);
+    static void cb_click (t_class *c, Point pt, short mods);
 #endif
 };
 

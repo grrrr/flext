@@ -148,6 +148,7 @@ void flext_base::Setup(t_classid id)
     add_loadbang(c,cb_loadbang);
 #if FLEXT_SYS == FLEXT_SYS_MAX
     add_assist(c,cb_assist);
+    add_dblclick(c,cb_click);
 #endif
 #else
     fts_class_message_varargs(c,MakeSymbol("help"),cb_help);
@@ -184,23 +185,41 @@ void flext_base::m_help()
 
 void flext_base::m_loadbang() {}
 
-#if FLEXT_SYS == FLEXT_SYS_MAX
-void flext_base::cb_assist(t_class *c,void * /*b*/,long msg,long arg,char *s) { thisObject(c)->m_assist(msg,arg,s); }
+void flext_base::m_click() {}
+
+#if FLEXT_SYS == FLEXT_SYS_PD
+int flext_base::cb_click(t_gobj *c, struct _glist *glist,int xpix, int ypix, int shift, int alt, int dbl, int doit)
+{
+    if(doit && alt) {
+        thisObject(c)->m_click();
+        return 1;
+    }
+    else
+        return 0;
+}
 #endif
 
-void flext_base::m_assist(long msg,long arg,char *s) 
-{
 #if FLEXT_SYS == FLEXT_SYS_MAX
+void flext_base::cb_click(t_class *c, Point pt, short mods)
+{
+    thisObject(c)->m_click();
+}
+
+void flext_base::cb_assist(t_class *c,void * /*b*/,long msg,long arg,char *s) 
+{ 
+    flext_base *th = thisObject(c); 
+
     switch(msg) {
     case 1: //ASSIST_INLET:
-        strcpy(s,arg < incnt && indesc[arg]?indesc[arg]:""); 
+        if(arg < th->incnt && th->indesc[arg]) strcpy(s,th->indesc[arg]);
         break;
     case 2: //ASSIST_OUTLET:
-        if(arg < outcnt)
-            strcpy(s,outdesc[arg]?outdesc[arg]:""); 
+        if(arg < th->outcnt) {
+            if(th->outdesc[arg]) strcpy(s,th->outdesc[arg]);
+        }
         else
-            strcpy(s,arg == outcnt && procattr?"Attributes":""); 
+            if(arg == th->outcnt && th->procattr) strcpy(s,"Attributes");
         break;
     }
-#endif
 }
+#endif

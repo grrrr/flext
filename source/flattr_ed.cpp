@@ -419,14 +419,12 @@ void flext_base::SetAttrEditor(t_classid c)
     widgetbehavior.w_displacefn =   c->c_wb->w_displacefn; 
     widgetbehavior.w_activatefn =   c->c_wb->w_activatefn; 
     widgetbehavior.w_deletefn =     c->c_wb->w_deletefn; 
-    widgetbehavior.w_clickfn =      c->c_wb->w_clickfn;
     widgetbehavior.w_selectfn =     c->c_wb->w_selectfn;
 #else
     widgetbehavior.w_getrectfn =    text_widgetbehavior.w_getrectfn; 
     widgetbehavior.w_displacefn =   text_widgetbehavior.w_displacefn; 
     widgetbehavior.w_activatefn =   text_widgetbehavior.w_activatefn; 
     widgetbehavior.w_deletefn =     text_widgetbehavior.w_deletefn; 
-    widgetbehavior.w_clickfn =      text_widgetbehavior.w_clickfn;
     widgetbehavior.w_selectfn =     text_widgetbehavior.w_selectfn;
 #endif
 
@@ -438,6 +436,7 @@ void flext_base::SetAttrEditor(t_classid c)
     widgetbehavior.w_savefn =       cb_GfxSave;
 #endif
 
+    widgetbehavior.w_clickfn =      cb_click;
     widgetbehavior.w_visfn =        cb_GfxVis;
     widgetbehavior.w_selectfn =     cb_GfxSelect; 
     class_setwidget(c, &widgetbehavior);

@@ -165,13 +165,18 @@ bool flext_base::UnbindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_sym
         for(ItemSet::iterator si = it1; si != it2 && !it; ++si) {
             for(Item *i = si.data(); i; i = i->nxt) {
                 BindItem *item = (BindItem *)i;
-                if(!fun || item->fun == fun) { it = item; break; }
+                if(!fun || item->fun == fun) 
+                { 
+                    it = item; 
+                    if(!sym) sym = si.key();
+                    break; 
+                }
             }
         }
 
         if(it) {
             if(data) *data = it->px->data;
-            ok = bindhead->Remove(it,sym);
+            ok = bindhead->Remove(it,sym,0,false);
             if(ok) {
                 it->Unbind(sym);
                 delete it;

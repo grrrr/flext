@@ -60,6 +60,8 @@ void flext_base::ItemCont::Resize(int nsz)
 
 void flext_base::ItemCont::Add(Item *item,const t_symbol *tag,int inlet)
 {
+    FLEXT_ASSERT(tag);
+
     if(!Contained(inlet)) Resize(inlet+2);
     ItemSet &set = GetInlet(inlet);
     Item *&lst = set[tag];
@@ -72,8 +74,10 @@ void flext_base::ItemCont::Add(Item *item,const t_symbol *tag,int inlet)
     members++;
 }
 
-bool flext_base::ItemCont::Remove(Item *item,const t_symbol *tag,int inlet)
+bool flext_base::ItemCont::Remove(Item *item,const t_symbol *tag,int inlet,bool free)
 {
+    FLEXT_ASSERT(tag);
+
     if(Contained(inlet)) {
         ItemSet &set = GetInlet(inlet);
         ItemSet::iterator it = set.find(tag);
@@ -83,7 +87,8 @@ bool flext_base::ItemCont::Remove(Item *item,const t_symbol *tag,int inlet)
                     if(prv) prv->nxt = lit->nxt;
                     else it.data() = lit->nxt;
                 
-                    lit->nxt = NULL; delete lit;
+                    lit->nxt = NULL; 
+                    if(free) delete lit;
                     return true;
                 }
             }
@@ -94,6 +99,8 @@ bool flext_base::ItemCont::Remove(Item *item,const t_symbol *tag,int inlet)
 
 flext_base::Item *flext_base::ItemCont::FindList(const t_symbol *tag,int inlet)
 {
+    FLEXT_ASSERT(tag);
+
     if(Contained(inlet)) {
         ItemSet &ai = GetInlet(inlet);
         ItemSet::iterator as = ai.find(tag); 

@@ -43,8 +43,12 @@ flext::buffer::buffer(const t_symbol *bn,bool delayed):
     ticking = false;
     tick = clock_new(this,(t_method)cb_tick);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	if(!sym_buffer) sym_buffer = flext::MakeSymbol("buffer~");
-	if(!sym_size) sym_size = flext::MakeSymbol("size");
+    // for some strange reasons (maybe only on Mac) 
+    // static initializations are not processed
+    if(!sym_buffer) {
+        sym_buffer = flext::MakeSymbol("buffer~");
+	    sym_size = flext::MakeSymbol("size");
+    }
 #endif
 
     if(bn) Set(bn,delayed);

@@ -42,6 +42,7 @@ TODO LIST:
 - add double handlers
 - add signal in/out connection query function
 
+- support creation of buffers
 - support for Max qelem style
 
 - flext::post and flext::error should print via a worker thread (and should be unlimited in characters)

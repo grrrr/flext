@@ -24,6 +24,9 @@ Version history:
 - enhanced buffer handling
 - support for buffer locking (flext::buffer::Lock() and Unlock()) - it's a must for Max/MSP at least
 - use new PD idle callback for queues messages (currently in devel_0_38)
+- fixed bug with unregistering for bound symbols
+- removed virtual m_assist function (which was only useful for Max)... stick to static assist strings
+- added m_click method which gets called on alt-click (PD) resp. double clicks (Max) onto the object box
 
 0.4.7:
 - added flext::GetBool (just because flext::GetInt has been there for a while)

@@ -26,7 +26,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define FLEXT_VERSION 500
 
 //! \brief flext version string
-#define FLEXT_VERSTR "0.5.0pre"
+#define FLEXT_VERSTR "0.5.0"
 
 //! @}
 

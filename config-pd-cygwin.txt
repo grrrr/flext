@@ -25,4 +25,4 @@ INSTDIR=${PDPATH}/flext
 
 # additional compiler flags
 # (check if they fit for your system!)
-UFLAGS=-mcpu=pentium3 -msse
+UFLAGS=-mcpu=pentium4 -msse

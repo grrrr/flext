@@ -13,7 +13,7 @@ Donations for further development of the package are highly appreciated.
 
 Version history:
 
-0.4.8:
+0.5.0:
 - fixes for 64 bit builds (size_t is integer type of pointer size)
 - finally added a autoconf system (many many thanks to Tim Blechmann)
 - more character escapes for attribute editor

@@ -14,11 +14,11 @@
 @rem --- The subbatch knowns which make utility to use ---
 @set subbatch=%flext%buildsys\build-%compiler%.bat
 
-@if "%platform%"=="" goto syntax
-@if "%rtsys%"=="" goto syntax
-@if "%compiler%"=="" goto syntax
+@if "%platform%"=="" @goto syntax
+@if "%rtsys%"=="" @goto syntax
+@if "%compiler%"=="" @goto syntax
 
-@if not exist %subbatch% goto syntax
+@if not exist %subbatch% @goto syntax
 
 @call %subpatch% %subbatch% %platform% %rtsys% %target% %5 %6 %7 %8 %9
 
@@ -36,5 +36,6 @@
 @echo .
 @echo Please make sure that your make program and compiler can be accessed with the
 @echo system path and that all relevant environment variables are properly set.
+@echo .
 
 :end

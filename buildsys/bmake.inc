@@ -51,5 +51,9 @@ FLEXTNAME=flext-$(RTSYS)_s
 # product name and folder
 ##############################################
 
+!ifndef SRCDIR
+SRCDIR=.
+!endif
+
 OUTNAME=$(NAME)
 OUTSUB=$(TARGETMODE)-$(TARGETTYPE)

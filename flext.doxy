@@ -4,8 +4,8 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = flext
-PROJECT_NUMBER         = "version 0.4.7"
-OUTPUT_DIRECTORY       = c:/data/prog/max/flext/doc/
+PROJECT_NUMBER         = "version 0.5.0"
+OUTPUT_DIRECTORY       = c:/data/pdmax/flext/doc/
 OUTPUT_LANGUAGE        = English
 USE_WINDOWS_ENCODING   = YES
 BRIEF_MEMBER_DESC      = YES
@@ -62,7 +62,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = F:/prog/max/flext/source/
+INPUT                  = c:/data/pdmax/flext/source/
 FILE_PATTERNS          = 
 RECURSIVE              = NO
 EXCLUDE                = 

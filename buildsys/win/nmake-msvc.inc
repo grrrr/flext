@@ -12,13 +12,9 @@ TARGET=$(TARGETPATH)\$(OUTNAME).$(EXT)
 ##############################################
 # use precompiled headers (automatic mode)
 
-!ifndef PRECOMPILE
-CFLAGS=$(CFLAGS) /YXflext.h
-!else
-CFLAGS=$(CFLAGS) /YX$(PRECOMPILE)
+!ifdef PRECOMPILE
+CFLAGS=$(CFLAGS) /YX$(PRECOMPILE) /Fp$(OBJPATH)\precompiled.pch
 !endif
-# location of precompiled file
-CFLAGS=$(CFLAGS) /Fp$(OBJPATH)\precompiled.pch
 
 ##############################################
 

@@ -51,4 +51,8 @@ endif # SHARED
 # product name and folder
 ##############################################
 
+ifndef SRCDIR
+SRCDIR=.
+endif
+
 OUTSUB=$(TARGETMODE)-$(TARGETTYPE)

@@ -108,7 +108,8 @@ void flext_base::ListMethods(AtomList &la,int inlet) const
 	typedef std::set<MethItem *,methless> MethList;
 	MethList list[2];
 
-	for(int i = 0; i <= 1; ++i) {
+	int i;
+	for(i = 0; i <= 1; ++i) {
 		ItemCont *a = i?methhead:clmethhead;
 		if(a) {
 			for(int ai = 0; ai < a->Size(); ++ai) {

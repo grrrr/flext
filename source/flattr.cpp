@@ -120,7 +120,8 @@ void flext_base::ListAttrib(AtomList &la) const
 	typedef std::set<AttrItem *,attrless> AttrList;
 	AttrList list[2];
 
-	for(int i = 0; i <= 1; ++i) {
+	int i;
+	for(i = 0; i <= 1; ++i) {
 		ItemCont *a = i?attrhead:clattrhead;
 		if(a) {
 			for(int ai = 0; ai < a->Size(); ++ai) {

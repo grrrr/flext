@@ -62,7 +62,7 @@ void flext_base::ToSysAnything(int n,const t_symbol *s,int argc,const t_atom *ar
 #endif
 
 #if defined(FLEXT_THREADS)
-    #if defined(FLEXT_QTHR)
+    #if FLEXT_QMODE == 2
         #define CHKTHR() (IsSystemThread() || IsThread(flext::thrmsgid))
     #else
         #define CHKTHR() IsSystemThread()

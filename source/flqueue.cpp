@@ -25,7 +25,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 flext::thrid_t flext::thrmsgid = 0;
 #endif
 
-
 #define QUEUE_LENGTH 2048
 #define QUEUE_ATOMS 8192
 
@@ -203,9 +202,9 @@ protected:
 static Queue queue;
 
 
-#ifdef FLEXT_QTHR
+#if FLEXT_QMODE == 2
 static flext::ThrCond qthrcond;
-#else
+#elif FLEXT_QMODE == 0
 static t_qelem *qclk = NULL;
 #endif
 
@@ -222,7 +221,7 @@ static void QWork(bool syslock)
         int qc = queue.Count();
         if(!qc) break;
 
-    #ifdef FLEXT_QTHR
+    #if FLEXT_QMODE == 2
         if(syslock) sys_lock();
     #endif
 
@@ -232,14 +231,14 @@ static void QWork(bool syslock)
             queue.Pop();
         } // inner loop
 
-    #ifdef FLEXT_QTHR
+    #if FLEXT_QMODE == 2
         if(syslock) sys_unlock();
     #endif
 
     }
 }
 
-#if !defined(FLEXT_QTHR)
+#if FLEXT_QMODE == 0
 #if FLEXT_SYS == FLEXT_SYS_JMAX
 static void QTick(fts_object_t *c,int winlet, fts_symbol_t s, int ac, const fts_atom_t *at)
 {
@@ -251,6 +250,17 @@ static void QTick(flext_base *c)
     FLEXT_ASSERT(flext::IsSystemThread());
 #endif
     QWork(false);
+}
+
+#elif FLEXT_QMODE == 1
+static t_int QTick(t_int *)
+{
+    QWork(false);
+#ifdef FLEXT_SHARED
+    return 1;
+#else
+    return 0;
+#endif
 }
 #endif
 
@@ -273,23 +283,29 @@ void flext_base::QFlush(flext_base *th)
 static void Trigger()
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
-    #ifdef FLEXT_QTHR
+    #if FLEXT_QMODE == 2
         // wake up worker thread
         qthrcond.Signal();
-    #else
+    #elif FLEXT_QMODE == 1 && !defined(FLEXT_SHARED)
+        set_callback(QTick,NULL,0);
+    #elif FLEXT_QMODE == 0
         clock_delay(qclk,0);
     #endif
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-    qelem_set(qclk); 
+    #if FLEXT_QMODE == 0
+        qelem_set(qclk); 
+    #endif
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
-    // this is dangerous because there may be other timers on this object!
-    fts_timebase_add_call(fts_get_timebase(), (fts_object_t *)thisHdr(), QTick, NULL, 0);
+    #if FLEXT_QMODE == 0
+        // this is dangerous because there may be other timers on this object!
+        fts_timebase_add_call(fts_get_timebase(), (fts_object_t *)thisHdr(), QTick, NULL, 0);
+    #endif
 #else
 #error Not implemented
 #endif
 }
 
-#ifdef FLEXT_QTHR
+#if FLEXT_QMODE == 2
 void flext_base::QWorker(thr_params *)
 {
     thrmsgid = GetThreadId();
@@ -306,14 +322,16 @@ void flext_base::StartQueue()
     if(started) return;
     else started = true;
 
-#ifdef FLEXT_QTHR
+#if FLEXT_QMODE == 1
+#ifdef FLEXT_SHARED
+    set_callback(QTick,NULL,0);
+#endif
+#elif FLEXT_QMODE == 2
     LaunchThread(QWorker,NULL);
-#else
-#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
+#elif FLEXT_QMODE == 0 && (FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX)
     qclk = (t_qelem *)(qelem_new(NULL,(t_method)QTick));
 #else
 #error Not implemented!
-#endif
 #endif
 }
 

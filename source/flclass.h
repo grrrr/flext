@@ -854,7 +854,7 @@ private:
 
 	//! Start message queue
 	static void StartQueue();
-#ifdef FLEXT_QTHR
+#if FLEXT_QMODE == 2
     //! Queue worker function
     static void QWorker(thr_params *);
 #endif

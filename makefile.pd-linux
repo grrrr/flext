@@ -11,13 +11,12 @@
 include config-pd-linux.txt
 
 # compiler+linker stuff 
-INCLUDES=$(PDPATH)
+INCLUDES=$(PDPATH) $(SNDOBJ)
 FLAGS=-DPD 
 CFLAGS=-O6 -mcpu=pentiumpro
 CFLAGS_D=-mcpu=pentiumpro -g
 CFLAGS_T=-DFLEXT_THREADS
 LIBS=
-
 
 # ----------------------------------------------
 # the rest can stay untouched
@@ -30,6 +29,11 @@ SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flsetup.cpp \
 flutil.cpp flatom.cpp flthr.cpp
 HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h flthr.h fldsp.h flinternal.h
 IHDRS=
+
+ifdef SNDOBJ
+SRCS=$(SRCS) flsndobj.cpp
+HDRS=$(HDRS) flsndobj.h
+endif
 
 MAKEFILE=makefile.pd-linux
 TARGET=$(TARGDIR)/$(NAME).a 

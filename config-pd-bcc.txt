@@ -1,6 +1,8 @@
 # flext - C++ layer for Max/MSP and pd (pure data) externals
 # Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 #
+# sorry, no SndObj support for BCC
+#
 
 # where is PD?
 PDPATH=c:\programme\audio\pd		

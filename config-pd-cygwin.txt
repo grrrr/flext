@@ -1,6 +1,8 @@
 # flext - C++ layer for Max/MSP and pd (pure data) externals
 # Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 #
+# sorry, no SndObj support for cygwin
+#
 
 # where is PD?
 PDPATH=/cygdrive/c/programme/audio/pd

@@ -12,6 +12,10 @@ SOURCE=source
 # includes
 INCPATH=/I$(MSVCPATH)\include /I$(PDPATH)\src /I$(SOURCE)
 
+!ifdef SNDOBJ
+INCPATH=$(INCPATH) /I$(SNDOBJ)
+!endif
+
 # compiler definitions and flags
 DEFS=/DPD /DNT 
 
@@ -55,6 +59,10 @@ SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flsetup.cpp f
 HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h flthr.h fldsp.h flinternal.h
 IHDRS=
 
+!ifdef SNDOBJ
+SRCS=$(SRCS) flsndobj.cpp
+HDRS=$(HDRS) flsndobj.h
+!endif
 
 #default target
 all: $(OUTPATH)\$(NAME)-$(TARGET).lib

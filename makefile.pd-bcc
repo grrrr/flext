@@ -35,7 +35,6 @@ SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flsetup.cpp f
 HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h flinternal.h
 IHDRS=
 
-
 #default target
 all: $(OUTPATH)\$(NAME)-$(TARGET).lib
 

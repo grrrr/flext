@@ -30,19 +30,19 @@ void flext::PrintAtom(const t_atom &a,char *buf)
 	case A_NULL:
 		break;
 	case A_FLOAT:
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 		if(a.a_w.w_float == (int)a.a_w.w_float)
 			STD::sprintf(buf,"%i",(int)GetFloat(a));
 		else
 #endif
 		STD::sprintf(buf,"%f",GetFloat(a));
 		break;
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 	case A_LONG:
 		STD::sprintf(buf,"%i",GetInt(a));
 		break;
 #endif
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 	case A_POINTER:
 		STD::sprintf(buf,"%x",GetPointer(a));
 		break;
@@ -50,7 +50,7 @@ void flext::PrintAtom(const t_atom &a,char *buf)
 	case A_SYMBOL:
 		strcpy(buf,GetString(a));
 		break;
-#ifdef _DEBUG
+#ifdef FLEXT_DEBUG
 	default:
 		ERRINTERNAL();
 #endif
@@ -76,7 +76,7 @@ bool flext::ScanAtom(t_atom &a,const char *buf)
 
 	switch(s) {
 	case 0: // integer
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 		SetInt(a,atol(tmp));
 		break;
 #endif

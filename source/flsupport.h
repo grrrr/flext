@@ -17,10 +17,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "flstdc.h"
 
-#ifdef FLEXT_THREADS
-#include <pthread.h>
-#endif
-
 class FLEXT_EXT flext {
 
 	/*!	\defgroup FLEXT_SUPPORT Flext support class
@@ -90,7 +86,7 @@ public:
 		const t_symbol *sym;
 		t_sample *data;
 		int chns,frames;
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 		t_garray *arr;
 		float interval;
 		bool isdirty,ticking;
@@ -155,8 +151,7 @@ public:
 	*/
 	static const t_symbol *sym_pointer;
 
-#ifdef PD
-
+#if FLEXT_SYS == FLEXT_SYS_PD
 	/*! \brief Symbol constant for "signal"
 		\note PD only
 	*/
@@ -195,7 +190,7 @@ public:
 
 	//! Check whether the atom is a symbol
 	static bool IsSymbol(const t_atom &a) { return a.a_type == A_SYMBOL; }
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 	//! Access the symbol value (without type check)
 	static t_symbol *GetSymbol(const t_atom &a) { return a.a_w.w_symbol; }
 	//! Set the atom to represent a symbol
@@ -228,7 +223,7 @@ public:
 	//! Check for an boolean and get its value 
 	static bool GetABool(const t_atom &a) { return GetAInt(a) != 0; }
 
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 	//! Check for a float and get its value 
 	static float GetAFloat(const t_atom &a) { return IsFloat(a)?GetFloat(a):0; }
 
@@ -252,7 +247,7 @@ public:
 	//! Set the atom to represent a pointer
 	static void SetPointer(t_atom &a,void *p) { a.a_type = A_POINTER; a.a_w.w_gpointer = (t_gpointer *)p; }
 
-#elif defined(MAXMSP)
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 	//! Check for a float and get its value 
 	static float GetAFloat(const t_atom &a) { return IsFloat(a)?GetFloat(a):(IsInt(a)?GetInt(a):0); }
 
@@ -273,6 +268,8 @@ public:
 	static void *GetAPointer(const t_atom &a) { return IsInt(a)?(void *)GetInt(a):NULL; }
 	//! Set the atom to represent a pointer
 	static void SetPointer(t_atom &a,void *p) { SetInt(a,(int)p); }
+#else
+#error
 #endif
 
 // --- atom list stuff -------------------------------------------

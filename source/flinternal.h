@@ -12,7 +12,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     \brief Definitions for internal flext usage
 	\internal
     
-    Here, a few shortcuts for common MaxMSP or PD library calls and type definitions 
+    Here, a few shortcuts for common Max/MSP or PD library calls and type definitions 
 	are declared
 */
 
@@ -22,7 +22,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flstdc.h"
 
 
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 
 #define object_new(clss) pd_new(clss)
 #define object_free(obj) pd_free(&(obj).ob_pd)
@@ -62,7 +62,8 @@ typedef t_perfroutine t_dspmethod;
 #define qelem_set clock_set
 #define qelem_unset clock_unset
 
-#elif defined(MAXMSP)
+
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 
 /*
 typedef void _inlet;

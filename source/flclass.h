@@ -79,7 +79,7 @@ public:
 	//! called on patcher load (not on mere object creation!)
 	virtual void m_loadbang() {}
 
-	//! quickhelp for inlets/outlets (gets called in MaxMSP only)
+	//! quickhelp for inlets/outlets (gets called in Max/MSP only)
 	virtual void m_assist(long /*msg*/,long /*arg*/,char * /*s*/) {}
 
 	/*!	\brief Called for every incoming message.
@@ -325,10 +325,12 @@ public:
 	void AddMethod(int inlet,bool (*m)(flext_base *,float &)) { AddMethod(inlet,"float",(methfun)m,a_float,a_null); }  // single float
 	void AddMethod(int inlet,bool (*m)(flext_base *,float &,float &)) { AddMethod(inlet,"list",(methfun)m,a_float,a_float,a_null); } // list of 2 floats
 	void AddMethod(int inlet,bool (*m)(flext_base *,float &,float &,float &)) { AddMethod(inlet,"list",(methfun)m,a_float,a_float,a_float,a_null); } // list of 3 floats
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 	void AddMethod(int inlet,bool (*m)(flext_base *,int &)) { AddMethod(inlet,"float",(methfun)m,a_int,a_null); }  // single float
-#else
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 	void AddMethod(int inlet,bool (*m)(flext_base *,int &)) { AddMethod(inlet,"int",(methfun)m,a_int,a_null); }  // single float
+#else
+#error
 #endif
 	void AddMethod(int inlet,bool (*m)(flext_base *,int &,int &)) { AddMethod(inlet,"list",(methfun)m,a_int,a_int,a_null); } // list of 2 floats
 	void AddMethod(int inlet,bool (*m)(flext_base *,int &,int &,int &)) { AddMethod(inlet,"list",(methfun)m,a_int,a_int,a_int,a_null); } // list of 3 floats
@@ -341,7 +343,7 @@ public:
 	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,float &)) { AddMethod(inlet,tag,(methfun)m,a_float,a_null); }  // method+float
 	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,int &)) { AddMethod(inlet,tag,(methfun)m,a_int,a_null); } // method+int
 
-	//! Set MaxMSP style of distributing list elements over (message) inlets
+	//! Set Max/MSP style of distributing list elements over (message) inlets
 	void SetDist(bool d = true) { distmsgs = d; }
 
 //!		@} FLEXT_C_ADDMETHOD
@@ -353,7 +355,7 @@ public:
 		@{ 
 	*/
 
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 	//! Bind object to a symbol
 	bool Bind(const t_symbol *s) { pd_bind(&thisHdr()->ob_pd,const_cast<t_symbol *>(s)); return true; }
 	//! Unbind object from a symbol
@@ -616,9 +618,9 @@ private:
 		float ft;
 		int it;
 		t_symbol *st;
-	#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 		t_gpointer *pt;
-	#endif
+#endif
 		void *vt;
 	};
 
@@ -665,7 +667,7 @@ private:
 	class qmsg;
 	qmsg *qhead,*qtail;
 	t_qelem *qclk;
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 	t_clock *yclk;
 	static void YTick(flext_base *th);
 #endif
@@ -673,11 +675,11 @@ private:
 	static void QTick(flext_base *th);
 	void Queue(qmsg *m);
 
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 	// proxy object (for additional inlets) stuff
 	struct px_object;
 	friend struct px_object;
-#elif defined(MAXMSP)
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 	typedef object px_object;
 	static void cb_px_float(t_class *c,float f);
 	static void cb_px_int(t_class *c,int v);
@@ -692,6 +694,8 @@ private:
 	static void cb_px_in7(t_class *c,int v);
 	static void cb_px_in8(t_class *c,int v);
 	static void cb_px_in9(t_class *c,int v);
+#else
+#error
 #endif
 	static void cb_px_anything(t_class *c,const t_symbol *s,int argc,t_atom *argv);
 
@@ -712,7 +716,7 @@ private:
 	static void cb_help(t_class *c);
 
 	static void cb_loadbang(t_class *c);
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 	static void cb_assist(t_class *c,void *b,long msg,long arg,char *s);
 #endif
 };

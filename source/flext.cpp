@@ -20,7 +20,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // === proxy class for flext_base ============================
 
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 
 static t_class *px_class;
 
@@ -54,7 +54,7 @@ void flext_base::cb_px_ft ## IX(t_class *c,float v) { \
 #define ADD_IN_FT(IX) \
 add_method1(c,cb_px_ft ## IX,"ft" #IX,A_FLOAT)
 
-#elif defined(MAXMSP)
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 
 void flext_base::cb_px_anything(t_class *c,const t_symbol *s,int argc,t_atom *argv)
 {
@@ -97,7 +97,9 @@ void flext_base::cb_px_ft ## IX(t_class *c,float v) { long &ci = ((flext_hdr *)t
 add_method1(c,cb_px_in ## IX,"in" #IX,A_INT); \
 add_method1(c,cb_px_ft ## IX,"ft" #IX,A_FLOAT)
 
-#endif // MAXMSP
+#else
+#error // Other system
+#endif 
 
 
 DEF_IN_FT(1)
@@ -135,7 +137,7 @@ flext_base::flext_base():
 #endif
 	qhead = qtail = NULL;
 	qclk = (t_qelem *)(qelem_new(this,(t_method)QTick));
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 	yclk = (t_clock *)(clock_new(this,(t_method)YTick));
 #endif
 
@@ -149,7 +151,7 @@ flext_base::~flext_base()
 	shouldexit = true;
 	for(int wi = 0; thrhead && wi < 100; ++wi) Sleep(0.01f);
 	
-#ifdef _POSIX_THREADS	
+//#ifdef _POSIX_THREADS	
 	qmutex.Lock(); // Lock message queue
 	tlmutex.Lock();
 	// timeout -> hard termination
@@ -161,16 +163,16 @@ flext_base::~flext_base()
 	}
 	tlmutex.Unlock();
 	qmutex.Unlock();
-#else
-#pragma message ("No tread cancelling")
-#endif
+//#else
+//#pragma message ("No tread cancelling")
+//#endif
 
 #endif
 
 	// send remaining pending messages
 	while(qhead) QTick(this);
 	qelem_free((t_qelem *)qclk);
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 	clock_free((object *)yclk);
 #endif
 
@@ -181,16 +183,16 @@ flext_base::~flext_base()
 	if(inlets) {
 		for(int ix = 0; ix < incnt; ++ix)
 			if(inlets[ix]) {
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 				pd_free(&inlets[ix]->obj.ob_pd);
-#elif defined(MAXMSP)
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 				freeobject((object *)inlets[ix]);
 #endif
 			}
 		delete[] inlets;
 	}
 	
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 //	if(insigs) dsp_free(thisHdr());
 	if(insigs) dsp_freebox(thisHdr());
 #endif
@@ -203,29 +205,12 @@ flext_base::~flext_base()
 	after the constructor has been processed. It creates the inlets and outlets.
 	\note You can override it in your own class, but be sure to call it, 
 	\note otherwise no inlets/outlets will be created
-	\remark Creation of inlets/outlets can't be done upon declaration, as MaxMSP needs creation
+	\remark Creation of inlets/outlets can't be done upon declaration, as Max/MSP needs creation
 	\remark in reverse.
 */
 bool flext_base::Init()
 {
-//	if(!flext_obj::Init()) return false;
-
 	bool ok = true;
-
-/*
-	if(inlets) { 
-		for(int ix = 0; ix < incnt; ++ix) 
-			if(inlets[ix]) {
-#ifdef PD
-				pd_free(&inlets[ix]->obj.ob_pd);
-#elif defined(MAXMSP)
-				freeobject(inlets[ix]);
-#endif
-			}
-		delete[] inlets; 
-		inlets = NULL; 
-	}
-*/
 
 	// ----------------------------------
 	// create inlets
@@ -246,7 +231,7 @@ bool flext_base::Init()
 		for(i = 0; i < incnt; ++i) inlets[i] = NULL;
 		
 		// type info is now in list array
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 		{
 			int cnt = 0;
 
@@ -317,7 +302,7 @@ bool flext_base::Init()
 
 			incnt = cnt;
 		}
-#elif defined(MAXMSP)
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 		{
 			int ix,cnt;
 			// count leftmost signal inlets
@@ -370,6 +355,8 @@ bool flext_base::Init()
 //				dsp_setup(thisHdr(),insigs); // signal inlets	
 				dsp_setupbox(thisHdr(),insigs); // signal inlets	
 		}
+#else
+#error
 #endif
 
 		delete[] list;
@@ -384,8 +371,8 @@ bool flext_base::Init()
 
 	outcnt = outsigs = 0; 
 	
-#ifdef MAXMSP
-	// for MAXMSP the rightmost outlet has to be created first
+#if FLEXT_SYS == FLEXT_SYS_MAX
+	// for Max/MSP the rightmost outlet has to be created first
 	if(procattr) 
 		outattr = (outlet *)newout_anything(&x_obj->obj);
 #endif
@@ -405,10 +392,12 @@ bool flext_base::Init()
 		outlets = new outlet *[outcnt];
 
 		// type info is now in list array
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 		for(int ix = 0; ix < outcnt; ++ix) 
-#elif defined(MAXMSP)
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 		for(int ix = outcnt-1; ix >= 0; --ix) 
+#else
+#error
 #endif
 		{
 			switch(list[ix]) {
@@ -431,7 +420,7 @@ bool flext_base::Init()
 				case xlet::tp_any:
 					outlets[ix] = (outlet *)newout_anything(&x_obj->obj);
 					break;
-#ifdef _DEBUG
+#ifdef FLEXT_DEBUG
 				default:
 					ERRINTERNAL();
 					ok = false;
@@ -443,7 +432,7 @@ bool flext_base::Init()
 	}
 
 	if(procattr) {
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 		// attribute dump outlet is the last one
 		outattr = (outlet *)newout_anything(&x_obj->obj);
 #endif
@@ -464,21 +453,23 @@ void flext_base::Setup(t_class *c)
 {
 	add_method(c,cb_help,"help");
 	add_loadbang(c,cb_loadbang);
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 	add_assist(c,cb_assist);
 #endif
 
 	// proxy for extra inlets
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 	add_anything(c,cb_px_anything); // for leftmost inlet
     px_class = class_new(gensym("flext_base proxy"),NULL,NULL,sizeof(px_object),CLASS_PD|CLASS_NOINLET, A_NULL);
 	add_anything(px_class,px_object::px_method); // for other inlets
-#elif defined(MAXMSP) 
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 	add_bang(c,cb_px_bang);
 	add_method1(c,cb_px_int,"int",A_INT);  
 	add_method1(c,cb_px_float,"float",A_FLOAT);  
 	add_methodG(c,cb_px_anything,"list");  
 	add_anything(c,cb_px_anything);
+#else
+#error
 #endif	
 
 	// setup non-leftmost ints and floats
@@ -496,7 +487,7 @@ void flext_base::Setup(t_class *c)
 void flext_base::cb_help(t_class *c) { thisObject(c)->m_help(); }	
 
 void flext_base::cb_loadbang(t_class *c) { thisObject(c)->m_loadbang(); }	
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 void flext_base::cb_assist(t_class *c,void * /*b*/,long msg,long arg,char *s) { thisObject(c)->m_assist(msg,arg,s); }
 #endif
 
@@ -558,7 +549,7 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,const t_atom 
 						if(ok) LOG2("symbol arg %i = %s",ix,GetString(aargs[ix].st));
 						break;
 					}
-#ifdef PD					
+#if FLEXT_SYS == FLEXT_SYS_PD
 					case a_pointer: {
 						if(IsPointer(argv[ix])) aargs[ix].pt = GetPointer(argv[ix]);
 						else ok = false;
@@ -598,7 +589,7 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,const t_atom 
 		}
 	}
 	
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 	// If float message is not explicitly handled: try int handler instead
 	if(!ret && argc == 1 && s == sym_float && !trap) {
 		t_atom fl;
@@ -620,14 +611,14 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,const t_atom 
 	
 	// If float or int message is not explicitly handled: try list handler instead
 	if(!ret && !trap && argc == 1 && (s == sym_float
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 		|| s == sym_int
 #endif
 	)) {
 		t_atom list;
 		if(s == sym_float) 
 			SetFloat(list,GetFloat(argv[0]));
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 		else if(s == sym_int)
 			SetInt(list,GetInt(argv[0]));
 #endif
@@ -655,7 +646,7 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,const t_atom 
 			if(IsFloat(argv[i])) sym = sym_float;
 			else if(IsInt(argv[i])) sym = sym_int;
 			else if(IsSymbol(argv[i])) sym = sym_symbol;
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 			else if(IsPointer(argv[i])) sym = sym_pointer;  // can pointer atoms occur here?
 #endif
 			if(sym) {
@@ -677,7 +668,7 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,const t_atom 
 
 bool flext_base::m_method_(int inlet,const t_symbol *s,int argc,const t_atom *argv) 
 {
-//#ifdef _DEBUG
+//#ifdef FLEXT_DEBUG
 	post("%s: message unhandled - inlet:%i args:%i symbol:%s",thisName(),inlet,argc,s?s->s_name:"");
 //#endif
 	return false;
@@ -763,12 +754,12 @@ void flext_base::AddMethod(int inlet,const char *tag,methfun fun,metharg tp,...)
 		va_start(marker,tp);
 		metharg a = tp;
 		for(int ix = 0; ix < argc; ++ix) {
-#ifdef _DEBUG
+#ifdef FLEXT_DEBUG
 			if(a == a_list && ix > 0) {
 				ERRINTERNAL();
 			}
 #endif
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 			if(a == a_pointer && flext_base::compatibility) {
 				post("Pointer arguments are not allowed in compatibility mode"); 
 			}

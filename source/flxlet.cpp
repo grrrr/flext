@@ -17,7 +17,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <string.h>
 #include <stdarg.h>
 
-//namespace flext {
 
 flext_base::xlet::xlet(type t,const char *d): 
 	tp(t),nxt(NULL)
@@ -60,7 +59,7 @@ unsigned long flext_base::XletCode(xlet::type tp,...)
 	int cnt = 0;
 	xlet::type *args = NULL,arg = tp;
 	for(; arg; ++cnt) {
-#ifdef _DEBUG
+#ifdef FLEXT_DEBUG
 		if(cnt > 9) {
 			error("%s - Too many in/outlets defined - truncated to 9",thisName());
 			break;			
@@ -85,4 +84,3 @@ void flext_base::AddOutlets(unsigned long code)
 	for(; code; code /= 10) AddOutlet((xlet::type)(code%10));
 }
 
-//} // namespace flext

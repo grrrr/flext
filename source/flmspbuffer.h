@@ -16,7 +16,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	The latter is not easily found so i included the original file buffer.h with flext
 */
 
-#if defined(MAXMSP) && !defined(__FLEXT_MSPBUFFER_H)
+#if (FLEXT_SYS == FLEXT_SYS_MAX) && !defined(__FLEXT_MSPBUFFER_H)
 #define __FLEXT_MSPBUFFER_H
 
 enum {

@@ -22,31 +22,31 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 void flext_dsp::Setup(t_class *c)
 {
-#ifdef PD
-//	CLASS_MAINSIGNALIN(c,flext_hdr,defsig);
-#elif defined(MAXMSP)
+#if FLEXT_SYS == FLEXT_SYS_MAX
 //	dsp_initclass();
 	dsp_initboxclass();
 #endif
 	
 	add_dsp(c,cb_dsp);
-#ifndef MAXMSP
-	add_method1(c,cb_enable,"enable",A_FLINT);
+#if FLEXT_SYS != FLEXT_SYS_MAX
+	add_method1(c,cb_enable,"enable",A_FLOAT);
 #endif
 }
 
 flext_dsp::flext_dsp(): 
-#ifndef MAXMSP
+#if FLEXT_SYS != FLEXT_SYS_MAX
 	dspon(true),
 #endif
 	srate(sys_getsr()),  // should we set it?
 	blksz(sys_getblksize()),
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 	chnsin(sys_get_inchannels()),
 	chnsout(sys_get_outchannels()),
-#else // MAXMSP
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 	chnsin(sys_getch()),
 	chnsout(sys_getch()),
+#else
+#error
 #endif
 	invecs(NULL),outvecs(NULL)
 {}
@@ -62,7 +62,7 @@ flext_dsp::~flext_dsp()
 t_int *flext_dsp::dspmeth(t_int *w) 
 { 
 	flext_dsp *obj = (flext_dsp *)w[1];
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 	if(!obj->thisHdr()->z_disabled) 
 #else
 	if(obj->dspon) 
@@ -89,11 +89,13 @@ void flext_dsp::cb_dsp(t_class *c,t_signal **sp)
 	obj->srate = sp[0]->s_sr;
 	obj->blksz = sp[0]->s_n;  // is this guaranteed to be the same as sys_getblksize() ?
 	
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 	obj->chnsin = sys_get_inchannels();
 	obj->chnsout = sys_get_outchannels();
-#else // MAXMSP
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 	obj->chnsin = obj->chnsout = sys_getch();
+#else
+#error
 #endif
 
 	// store in and out signal vectors
@@ -113,8 +115,8 @@ void flext_dsp::cb_dsp(t_class *c,t_signal **sp)
 	dsp_add((t_dspmethod)dspmeth,2,obj,sp[0]->s_n);  
 }
 
-#ifndef MAXMSP
-void flext_dsp::cb_enable(t_class *c,t_flint on) { thisObject(c)->m_enable(on != 0); }
+#if FLEXT_SYS != FLEXT_SYS_MAX
+void flext_dsp::cb_enable(t_class *c,t_float on) { thisObject(c)->m_enable(on != 0); }
 void flext_dsp::m_enable(bool en) { dspon = en; }
 #endif
 

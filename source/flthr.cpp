@@ -12,25 +12,22 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     \brief Implementation of the flext thread functionality.
 */
  
-#ifdef FLEXT_THREADS
-
 #include "flext.h"
 #include "flinternal.h"
 
-#ifdef MAXMSP
-#define SCHEDTICK 1
-#endif
+#ifdef FLEXT_THREADS
 
-#ifdef NT
+#if FLEXT_OS == FLEXT_OS_WIN
 #include <windows.h>
 #endif
+
 #include <errno.h>
 
 bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *methname)
 {
 	static bool init = false;
 	static pthread_attr_t attr;
-#ifdef _DEBUG
+#ifdef FLEXT_DEBUG
 	if(!p) {
 		ERRINTERNAL(); 
 		return false;
@@ -55,8 +52,6 @@ bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *me
 		pthread_setschedparam(id,policy,&parm);
 	}
 	
-//	post("Create thread");
-
 	pthread_t thrid; 
 	int ret = pthread_create (&thrid,&attr,(void *(*)(void *))meth,p);
 
@@ -65,7 +60,7 @@ bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *me
 	pthread_setschedparam(id,policy,&parm);
 
 	if(ret) { 
-#ifdef _DEBUG	
+#ifdef FLEXT_DEBUG	
 		error((char *)(ret == EAGAIN?"%s - Unsufficient resources to launch thread!":"%s - Could not launch method!"),methname); 
 #endif		
 		error((char *)("%s - Could not launch method!"),methname); 
@@ -73,14 +68,8 @@ bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *me
 		delete p; 
 		return false;
 	}
-	else {
-#ifdef MAXMSP
-		sched_yield();
-#endif
-//		post("Create thread: OK");
-
+	else
 		return true;
-	}
 }
 
 bool flext_base::PushThread()
@@ -96,7 +85,7 @@ bool flext_base::PushThread()
 	thrtail = nt;
 
 	{
-#ifdef NT
+#if FLEXT_OS == FLEXT_OS_WIN
 	// set detached thread to lower priority class
 	DWORD err;
 	HANDLE thr = GetCurrentThread();
@@ -128,9 +117,6 @@ bool flext_base::PushThread()
 
 	tlmutex.Unlock();
 	
-#ifdef MAXMSP
-	clock_delay(yclk,0);
-#endif
 	return true;
 }
 
@@ -157,7 +143,7 @@ void flext_base::PopThread()
 		delete ti;
 	}
 	else {
-#ifdef _DEBUG
+#ifdef FLEXT_DEBUG
 		post("%s - INTERNAL ERROR: Thread not found!",thisName());
 #endif
 	}
@@ -175,7 +161,7 @@ bool flext_base::ChangePriority(int dp,thrid_t id)
 	sched_param parm;
 	int policy;
 	if(pthread_getschedparam(id,&policy,&parm) < 0) {
-#ifdef _DEBUG
+#ifdef FLEXT_DEBUG
 		post("flext - failed to get parms");
 #endif
 		return false;
@@ -183,7 +169,7 @@ bool flext_base::ChangePriority(int dp,thrid_t id)
 	else {
 		parm.sched_priority += dp;
 		if(pthread_setschedparam(id,policy,&parm) < 0) {
-#ifdef _DEBUG		
+#ifdef FLEXT_DEBUG		
 			post("flext - failed to change priority");
 #endif
 			return false;
@@ -198,7 +184,7 @@ int flext_base::GetPriority(thrid_t id)
 	sched_param parm;
 	int policy;
 	if(pthread_getschedparam(id,&policy,&parm) < 0) {
-#ifdef _DEBUG
+#ifdef FLEXT_DEBUG
 		post("flext - failed to get parms");
 #endif
 		return -1;
@@ -212,7 +198,7 @@ bool flext_base::SetPriority(int p,thrid_t id)
 	sched_param parm;
 	int policy;
 	if(pthread_getschedparam(id,&policy,&parm) < 0) {
-#ifdef _DEBUG
+#ifdef FLEXT_DEBUG
 		post("flext - failed to get parms");
 #endif
 		return false;
@@ -220,7 +206,7 @@ bool flext_base::SetPriority(int p,thrid_t id)
 	else {
 		parm.sched_priority = p;
 		if(pthread_setschedparam(id,policy,&parm) < 0) {
-#ifdef _DEBUG		
+#ifdef FLEXT_DEBUG		
 			post("flext - failed to change priority");
 #endif
 			return false;

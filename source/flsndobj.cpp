@@ -1,6 +1,6 @@
+#include "flext.h"
 #include "flsndobj.h"
 
-//namespace flext {
 
 flext_sndobj::flext_sndobj():
 	inobjs(0),outobjs(0),
@@ -103,5 +103,4 @@ short flext_sndobj::Outlet::Write()
 	else return 0; 
 }
 
-//} // namespace flext
 

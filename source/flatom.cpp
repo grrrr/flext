@@ -14,6 +14,13 @@ WARRANTIES, see the file, "license.txt," in this distribution.
  
 #include "flext.h"
 
+t_atom *flext::CopyList(int argc,const t_atom *argv)
+{
+	int i;
+	t_atom *dst = new t_atom[argc];
+	for(i = 0; i < argc; ++i) CopyAtom(dst+i,argv+i);
+	return dst;
+}
 
 flext::AtomList::AtomList(int argc,const t_atom *argv):
 	cnt(0),lst(NULL)

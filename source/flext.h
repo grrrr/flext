@@ -30,13 +30,16 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 //! @}
 
+
+// determine System/OS/CPU
+#include "flprefix.h"
+
 #ifdef FLEXT_THREADS
 extern "C" {
-#include <pthread.h>
-#include <sched.h>
+	#include <pthread.h>
+	#include <sched.h>
 }
 #endif
-
 
 // include all the flext interface definitions
 #include "fldefs.h"

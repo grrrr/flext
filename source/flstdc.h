@@ -9,7 +9,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 /*! \file flstdc.h
-	\brief Definitions to unite MaxMSP and PD notions
+	\brief Definitions to unite Max/MSP and PD notions
     
 	This file contains a few definitions to unite a few of the notions that 
 	once drifted apart in Max and PD. It is not elegant but helps.
@@ -18,45 +18,36 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __FLEXT_STDC_H
 #define __FLEXT_STDC_H
 
-// Be sure that one target is defined
-#if !defined(PD) && !defined(MAXMSP)
-#error Either PD or MAXMSP must be defined
-#endif
-
-// Do some compiler checking
-#if defined(__MRC__) && __MRC__ < 0x500
-#error Apple MPW MrCpp v.5.0.0 or better compiler required
-#endif
-
-
 // PD stuff
 
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 
 /* PD definitions start here */
 
 #ifdef _MSC_VER
-#pragma warning (push)
-#pragma warning (disable:4091)
+	#pragma warning (push)
+	#pragma warning (disable:4091)
 #endif
 
-#ifdef __cplusplus
+#define PD
+#if FLEXT_OS == FLEXT_OS_WIN
+#define NT
+#endif
+
 extern "C" {	    	    	    	    	    	    	
-#endif
-
-// Include the relevant PD header files
-#ifdef _DEBUG
-#include <m_imp.h>  // for easier debugging
-#else
-#include <m_pd.h>
-#endif
-
-#ifdef __cplusplus
+	// Include the relevant PD header files
+	#ifdef FLEXT_DEBUG
+		#include <m_imp.h>  // for easier debugging
+	#else
+		#include <m_pd.h>
+	#endif
 }
-#endif
+
+#undef PD
+#undef NT
 
 #ifdef _MSC_VER
-#pragma warning (pop)
+	#pragma warning (pop)
 #endif
 
 #ifdef cabs
@@ -77,37 +68,36 @@ typedef t_clock t_qelem;
 #define A_FLINT A_FLOAT
 #define A_DEFFLINT A_DEFFLOAT
 
-// MAX stuff
-#elif defined(MAXMSP)
 
-/* MaxMSP definitions start here */
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 
-#ifndef __MRC__
-#define powerc
+/* Max/MSP definitions start here */
+
+
+// Include the relevant Max/MSP header files
+
+#if FLEXT_OS == FLEXT_OS_MACOS
+	#ifndef __MRC__
+		#define powerc
+	#endif
+	#define __MOTO__ 0
+
+	#include <MacTypes.h>
+#elif FLEXT_OS == FLEXT_OS_WIN
+	#define WIN_VERSION 1
 #endif
-#define __MOTO__ 0
-
-
-// Include the relevant MaxMSP header files
-
-#include <MacTypes.h>
 
 extern "C"
 {
-
-#include "ext.h"
-/*
-#include "ext_prefix.h"
-#include "ext_mess.h"
-#include "ext_proto.h"
-*/
-//#include "ext_strings.h"  // clashes with MPW
-#include "ext_user.h"
-#include "z_dsp.h"
-//#include "z_atom.h"
+	#include "ext.h"
+	#include "ext_user.h"
+	#include "z_dsp.h"
 }
 
-typedef t_pxbox t_sigobj;  // that's the all-in-one object type of MaxMSP (not very memory-efficent, i guess)
+#undef WIN_VERSION
+
+
+typedef t_pxbox t_sigobj;  // that's the all-in-one object type of Max/MSP (not very memory-efficent, i guess)
 typedef t_patcher t_canvas;
 
 typedef t_int t_flint;
@@ -128,7 +118,6 @@ typedef void t_binbuf;
 #define clock_free(tick) freeobject((object *)tick)
 
 #define A_NULL A_NOTHING
-//#define A_FLINT A_INT
 #define A_DEFFLINT A_DEFLONG
 
 #ifndef A_INT
@@ -165,7 +154,7 @@ typedef void t_binbuf;
 
 #endif
 
-#ifdef _DEBUG
+#ifdef FLEXT_DEBUG
 #define ASSERT(b) ((void)(!(b)?(error("Assertion failed: " #b " - in " __FILE__ " line %i",(int)__LINE__),0):0)) 
 #else
 #define ASSERT(b) ((void)0)
@@ -176,15 +165,10 @@ typedef void t_binbuf;
 
 /* Set the right calling convention (and exporting) for the OS */
 
-#if defined(NT)
-#define FLEXT_EXT __declspec(dllexport)
+#ifdef _MSC_VER
+	#define FLEXT_EXT __declspec(dllexport)
 #else                   // other OS's
-#define FLEXT_EXT
+	#define FLEXT_EXT
 #endif
 
 #endif
-
-
-
-
-

@@ -10,9 +10,13 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define FLEXT_SNDOBJ
 
 #include "flext.h"
-#include <SndObj/AudioDefs.h>
 
-//namespace flext {
+#ifndef FLEXT_THREADS
+#define NOPTHREAD
+#endif
+#include <SndObj/AudioDefs.h>
+#undef NOPTHREAD
+
 
 class flext_sndobj:
 	public flext_dsp
@@ -77,7 +81,5 @@ private:
 	float smprt;
 	int blsz;
 };
-
-//} // namespace flext
 
 #endif

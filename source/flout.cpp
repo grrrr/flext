@@ -16,7 +16,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flinternal.h"
 
  
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 #define CRITON() short state = lockout_set(1)
 #define CRITOFF() lockout_set(state) 
 #else
@@ -92,7 +92,7 @@ void flext_base::qmsg::Add(qmsg *o)
 }
 */
 
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 void flext_base::YTick(flext_base *th) 
 { 
 	clock_delay(th->yclk,0); 
@@ -105,7 +105,7 @@ void flext_base::YTick(flext_base *th)
 
 void flext_base::QTick(flext_base *th)
 {
-#ifdef DEBUG
+#ifdef FLEXT_DEBUG
 	if(!th->IsSystemThread()) {
 		error("flext - Queue tick called by wrong thread!");
 		return;
@@ -118,7 +118,7 @@ void flext_base::QTick(flext_base *th)
 	while(th->qhead) {
 		qmsg *m = th->qhead;
 
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 		short state = lockout_set(1);
 #endif
 
@@ -129,12 +129,12 @@ void flext_base::QTick(flext_base *th)
 		case qmsg::tp_sym: th->ToOutSymbol(m->out,m->_sym); break;
 		case qmsg::tp_list: th->ToOutList(m->out,m->_list.argc,m->_list.argv); break;
 		case qmsg::tp_any: th->ToOutAnything(m->out,m->_any.s,m->_any.argc,m->_any.argv); break;
-#ifdef DEBUG
+#ifdef FLEXT_DEBUG
 		default: ERRINTERNAL();
 #endif
 		}
 
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 		lockout_set(state);
 #endif
 
@@ -156,13 +156,14 @@ void flext_base::Queue(qmsg *m)
 	if(qtail) qtail->nxt = m;
 	else qhead = m;
 	qtail = m;
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 	clock_delay(qclk,0);
-#elif defined(MAXMSP)
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 	clock_delay(yclk,0);
 #else
-	#error "To implement!"
+#error 
 #endif
+
 #ifdef FLEXT_THREADS
 	qmutex.Unlock();
 #endif

@@ -15,7 +15,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flext.h"
 #include <string.h>
 
-#ifdef MAXMSP
+#ifdef __MWERKS__
 #define STD std
 #else
 #define STD

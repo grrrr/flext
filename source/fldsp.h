@@ -83,9 +83,9 @@ public:
 	*/
 	virtual void m_signal(int n,t_sample *const *insigs,t_sample *const *outsigs);
 
-#ifndef MAXMSP
+#if FLEXT_SYS != FLEXT_SYS_MAX
 	/*! \brief called with "enable" message: pauses/resumes dsp
-		\note PD only - implicitely defined in MaxMSP
+		\note PD only - implicitely defined in Max/MSP
 	*/
 	virtual void m_enable(bool on);
 #endif
@@ -132,8 +132,8 @@ private:
 	// callback functions
 
 	static void cb_dsp(t_class *c,t_signal **s);
-#ifndef MAXMSP
-	static void cb_enable(t_class *c,t_flint on);
+#if FLEXT_SYS != FLEXT_SYS_MAX
+	static void cb_enable(t_class *c,t_float on);
 	bool dspon;
 #endif
 

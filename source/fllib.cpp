@@ -19,11 +19,16 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define ALIASDEL ','
 
 #define ALIASSLASHES ":/\\"
-#ifdef MAXMSP
+#if FLEXT_OS == FLEXT_OS_MACOS
 	#define ALIASSLASH ':'
-#elif defined(NT)
-	#define ALIASSLASH '/'
+#elif FLEXT_OS == FLEXT_OS_WIN
+	#if FLEXT_SYS == FLEXT_SYS_PD
+		#define ALIASSLASH '/'
+	#else
+	#error "Undefined"
+	#endif
 #else
+	// default to "/"
 	#define ALIASSLASH '/'
 #endif
 
@@ -146,16 +151,16 @@ libname *libname::find(const t_symbol *s) {
 	return l;
 }
 
-// for MAXMSP, the library is represented by a special object (class) registered at startup
+// for Max/MSP, the library is represented by a special object (class) registered at startup
 // all objects in the library are clones of that library object - they share the same class
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 static t_class *lib_class = NULL;
 static const t_symbol *lib_name = NULL;
 #endif
 
 void flext_obj::lib_init(const char *name,void setupfun(),bool attr)
 {
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 	lib_name = MakeSymbol(name);
 	::setup(
 		(t_messlist **)&lib_class,
@@ -171,7 +176,7 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 	// get first possible object name
 	const t_symbol *nsym = MakeSymbol(extract(names));
 	
-#ifdef _DEBUG
+#ifdef FLEXT_DEBUG
 	if(dsp) chktilde(GetString(nsym));
 #endif
 
@@ -179,24 +184,26 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 
 	// set dynamic class pointer
 	t_class **cl = 
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 		lib?&lib_class:
 #endif
 		new t_class *;
 
 	// register object class
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
     *cl = ::class_new(
 		(t_symbol *)nsym,
     	(t_newmethod)obj_new,(t_method)obj_free,
      	sizeof(flext_hdr),0,A_GIMME,A_NULL);
-#elif defined(MAXMSP)
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 	if(!lib) {
 		::setup(
 			(t_messlist **)cl,
     		(t_newmethod)obj_new,(t_method)obj_free,
      		sizeof(flext_hdr),NULL,A_GIMME,A_NULL);
 	}
+#else
+#error
 #endif
 
 	// make new dynamic object
@@ -241,15 +248,17 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 		libname *l = new libname(MakeSymbol(c),lo);
 		libname::add(l);
 	
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 		if(ix > 0) 
 			// in PD the first name is already registered with class creation
 			::class_addcreator((t_newmethod)obj_new,(t_symbol *)l->name,A_GIMME,A_NULL);
-#elif defined(MAXMSP)
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 		if(ix > 0 || lib) 
-			// in MaxMSP the first alias gets its name from the name of the object file,
+			// in Max/MSP the first alias gets its name from the name of the object file,
 			// unless it is a library (then the name can be different)
 			::alias(const_cast<char *>(c));  
+#else
+#error
 #endif	
 	}
 
@@ -275,14 +284,14 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 		}
 
 		if(lo->argc >= 0) {
-#ifdef _DEBUG
+#ifdef FLEXT_DEBUG
 			if(lo->argc > FLEXT_MAXNEWARGS) { ERRINTERNAL(); ok = false; }
 #endif
 
 			if(argc == lo->argc) {
 				for(int i = 0; /*ok &&*/ i < lo->argc; ++i) {
 					switch(lo->argv[i]) {
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 					case A_INT:
 						if(flext::IsInt(argv[i])) args[i] = argv[i];
 						else if(flext::IsFloat(argv[i])) flext::SetInt(args[i],(int)flext::GetFloat(argv[i]));
@@ -311,10 +320,12 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 		}
 
 		if(ok) {
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 			obj = (flext_hdr *)::pd_new(lo->clss);
-#elif defined(MAXMSP)
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 			obj = (flext_hdr *)::newobject(lo->clss);
+#else
+#error
 #endif
 		    flext_obj::m_holder = obj;
 			flext_obj::m_holdname = l->name;
@@ -354,10 +365,10 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 			}
 		}
 	}
-#ifdef _DEBUG
+#ifdef FLEXT_DEBUG
 	else
-#ifdef MAXMSP
-		// in MaxMSP an object with the name of the library exists, even if not explicitely declared!
+#if FLEXT_SYS == FLEXT_SYS_MAX
+		// in Max/MSP an object with the name of the library exists, even if not explicitely declared!
 		if(s != lib_name) 
 #endif
 		error("Class %s not found in library!",s->s_name);
@@ -378,10 +389,10 @@ void flext_obj::obj_free(flext_hdr *hdr)
 		// now call object destructor and deallocate
 		l->obj->freefun(hdr);
 	}
-#ifdef _DEBUG
+#ifdef FLEXT_DEBUG
 	else 
-#ifdef MAXMSP
-		// in MaxMSP an object with the name of the library exists, even if not explicitely declared!
+#if FLEXT_SYS == FLEXT_SYS_PD
+		// in Max/MSP an object with the name of the library exists, even if not explicitely declared!
 		if(name != lib_name) 
 #endif
 		error("Class %s not found in library!",name);

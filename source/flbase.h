@@ -44,13 +44,13 @@ struct FLEXT_EXT flext_hdr
 		*/
     	t_sigobj    	    obj;  
 
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 		//! PD only: float signal holder for pd
 		float defsig;			
 #endif
 
-#if defined(MAXMSP) 
-		//! MaxMSP only: current inlet used by proxy objects
+#if FLEXT_SYS == FLEXT_SYS_MAX
+		//! Max/MSP only: current inlet used by proxy objects
 		long curinlet;      
 #endif
 
@@ -142,10 +142,10 @@ class flext_obj:
         //! Get the class name (as a symbol)
 		const t_symbol *thisNameSym() const { return m_name; } 
 
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
         //! Get the class pointer
 		t_class *thisClass() { return (t_class *)((t_object *)(x_obj))->te_g.g_pd; }
-#elif defined(MAXMSP)
+#elif FLEXT_SYS == FLEXT_SYS_MAX
         //! Get the class pointer
 		t_class *thisClass() { return (t_class *)(((t_tinyobject *)x_obj)->t_messlist-1); } 
 #endif
@@ -159,7 +159,7 @@ class flext_obj:
 	*/
 
 		/*! Overloaded new memory allocation method
-			\warning MaxMSP (or MacOS) allows only 16K in overdrive mode!
+			\warning Max/MSP (or MacOS) allows only 16K in overdrive mode!
 		*/
 		void *operator new(size_t bytes);
 		//! Overloaded delete method
@@ -337,10 +337,12 @@ cl##_tilde_setup()
 
 // specify that to define the library itself
 
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 #define REAL_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT void NAME##_setup() { flext_obj::lib_init(#NAME,SETUPFUN,FLEXT_ATTRIBUTES); }
-#else // MAXMSP
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 #define REAL_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT int main() { flext_obj::lib_init(#NAME,SETUPFUN,FLEXT_ATTRIBUTES); return 0; }
+#else
+#error
 #endif
 
 
@@ -351,11 +353,14 @@ cl##_tilde_setup()
 #define FLEXT_EXP_1 
 #define FLEXT_EXP(LIB) FLEXT_EXP_##LIB
 
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 #define FLEXT_OBJ_SETUP_0(NEW_CLASS,DSP)
-#else // MAXMSP
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 #define FLEXT_OBJ_SETUP_0(NEW_CLASS,DSP) extern "C" FLEXT_EXT int main() { FLEXT_STPF(NEW_CLASS,DSP)(); return 0; }
+#else
+#error
 #endif
+
 #define FLEXT_OBJ_SETUP_1(NEW_CLASS,DSP)
 
 #define FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB) FLEXT_OBJ_SETUP_##LIB(NEW_CLASS,DSP)
@@ -374,12 +379,14 @@ cl##_tilde_setup()
 #define FLEXTTYPE_t_float A_FLOAT
 #define CALLBTYPE_t_float t_float
 
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 #define FLEXTTYPE_int A_FLOAT
 #define CALLBTYPE_int float
-#else
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 #define FLEXTTYPE_int A_INT
 #define CALLBTYPE_int int
+#else
+#error
 #endif
 
 #define FLEXTTYPE_t_symptr A_SYMBOL

@@ -14,7 +14,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	\remark This is all derived from GEM by Mark Danks
 */
  
-#include "flbase.h"
+#include "flext.h"
 #include "flinternal.h"
 #include <string.h>
 
@@ -41,9 +41,9 @@ flext_obj :: flext_obj()
 		   , procattr(m_holdattr)
 		   , init_ok(true)
 {
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
     m_canvas = canvas_getcurrent();
-#elif defined(MAXMSP)
+#elif FLEXT_SYS == FLEXT_SYS_MAX
     m_canvas = (t_patcher *)gensym("#P")->s_thing;
     x_obj->curinlet = 0;
 #endif
@@ -58,7 +58,7 @@ flext_obj :: ~flext_obj() {}
 
 void flext_obj::DefineHelp(t_class *c,const char *ref,const char *dir,bool addtilde)
 {
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 	char tmp[256];
 	if(dir) { 
 		strcpy(tmp,dir); 
@@ -70,7 +70,7 @@ void flext_obj::DefineHelp(t_class *c,const char *ref,const char *dir,bool addti
 		strcpy(tmp,ref);
     ::class_sethelpsymbol(c,gensym(const_cast<char *>(tmp)));
 #else
-	// no solution for MaxMSP yet
+	// no solution for Max/MSP yet
 #endif
 }
 

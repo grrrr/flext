@@ -100,7 +100,9 @@ Version history:
 - added flext::GetType(t_atom &), flext::ZeroMem
 - put the clock_delay for the message queue inside the thread-locked area
 - BACKWARDS-INCOMPATIBLE CHANGE: flext_base::m_methodmain and flext_base::m_method_ have got 
-	const modifiers.... these virtual methods are used rarely (for example in py/pyext)
+	const modifiers.... these virtual methods are used rarely (except for example in py/pyext)
+- now MUCH cleaner platform identification... FLEXT_SYS,FLEXT_OS,FLEXT_CPU definitions
+- also FLEXT_DEBUG for debug build
 
 0.4.0:
 - the use of the const keyword is enforced (e.g. the preferred type for symbols is now "const t_symbol *")

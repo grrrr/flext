@@ -14,11 +14,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
  
 #include "flext.h"
 
-#ifdef MAXMSP
+#if FLEXT_SYS == FLEXT_SYS_MAX
 #include "flmspbuffer.h" // include inofficial buffer.h
 #endif
 
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 #define DIRTY_INTERVAL 0   // buffer dirty check in msec
 #endif
 
@@ -28,7 +28,7 @@ flext::buffer::buffer(const t_symbol *bn,bool delayed):
 	sym(NULL),data(NULL),
 	chns(0),frames(0)
 {
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 	arr = NULL;
 	interval = DIRTY_INTERVAL;
 	isdirty = false;
@@ -41,7 +41,7 @@ flext::buffer::buffer(const t_symbol *bn,bool delayed):
 
 flext::buffer::~buffer()
 {
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
     clock_free(tick);
 #endif
 }
@@ -64,7 +64,7 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
 		if(valid) ret = -1;
 	}	
 	else if(!nameonly) {
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 		int frames1;
 		t_sample *data1;
     
@@ -88,7 +88,7 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
 			if(data != data1) { data = data1; if(!ret) ret = 1; }
 			chns = 1;
 		}
-#elif defined(MAXMSP)
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 		if(sym->s_thing) {
 			const _buffer *p = (const _buffer *)sym->s_thing;
 			
@@ -97,7 +97,7 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
 				if(valid) ret = -1;
 			}
 			else {
-#ifdef DEBUG
+#ifdef FLEXT_DEBUG
 				post("%s: buffer object '%s' - valid:%i samples:%i channels:%i frames:%i",thisName(),bufname->s_name,p->b_valid,p->b_frames,p->b_nchans,p->b_frames);
 #endif
 				if(data != p->b_samples) { data = p->b_samples; if(!ret) ret = 1; }
@@ -109,6 +109,8 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
     		error("buffer: symbol '%s' not defined", sym->s_name); 
     		if(valid) ret = -1;
 		}
+#else
+#error
 #endif
 	}
 
@@ -119,7 +121,7 @@ bool flext::buffer::Update()
 {
 	if(!Ok()) return false;
 
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 	int frames1;
 	t_sample *data1;
 	if(!garray_getfloatarray(arr, &frames1, &data1)) {
@@ -135,7 +137,7 @@ bool flext::buffer::Update()
 	}
 	else
 		return false;
-#else // MAXMSP
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 	if(!sym->s_thing) 
 		return false;
 	else {
@@ -149,15 +151,17 @@ bool flext::buffer::Update()
 		else
 			return false;
 	}
+#else
+#error
 #endif
 }
 
 void flext::buffer::Frames(int fr,bool keep)
 {
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 	::garray_resize(arr,(float)fr);
 	Update();
-#else
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 	t_sample *tmp = NULL;
 	int sz = frames;
 	if(fr < sz) sz = fr;
@@ -187,11 +191,13 @@ void flext::buffer::Frames(int fr,bool keep)
 		BlockMoveData(tmp,data,sizeof(t_sample)*sz);
 		delete[] tmp;
 	}
+#else
+#error
 #endif
 }
 
 
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 void flext::buffer::SetRefrIntv(float intv) 
 { 
 	interval = intv; 
@@ -200,15 +206,17 @@ void flext::buffer::SetRefrIntv(float intv)
 		ticking = false;
 	}
 }
-#else
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 void flext::buffer::SetRefrIntv(float) {}
+#else
+#error
 #endif
 
 
 void flext::buffer::Dirty(bool force)
 {
 	if(sym) {
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 		if((!ticking) && (interval || force)) {
 			ticking = true;
 			cb_tick(this); // immediately redraw
@@ -217,7 +225,7 @@ void flext::buffer::Dirty(bool force)
 			if(force) clock_delay(tick,0);
 			isdirty = true;
 		}
-#elif defined(MAXMSP)
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 		if(sym->s_thing) {
 			_buffer *p = (_buffer *)sym->s_thing;
 			
@@ -231,15 +239,17 @@ void flext::buffer::Dirty(bool force)
 		else {
     		error("buffer: symbol '%s' not defined",sym->s_name);
 		}
+#else
+#error
 #endif 
 	}
 }
 
-#ifdef PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 void flext::buffer::cb_tick(buffer *b)
 {
 	if(b->arr) garray_redraw(b->arr);
-#ifdef _DEBUG
+#ifdef FLEXT_DEBUG
 	else error("buffer: array is NULL");
 #endif
 

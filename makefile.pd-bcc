@@ -56,6 +56,9 @@ OBJS= $(SRCS:.cpp=.obj)
 
 #.PATH.obj=$(OUTPATH)
 
+
+DIR="/"
+
 {$(SOURCE)}.cpp.obj:
 	bcc32 -c $(CFLAGS) $(DEFS) $(INCPATH) -n$(OUTPATH) $<
 
@@ -69,7 +72,7 @@ $(OUTPATH)\$(NAME)-$(TARGET).lib:: $(OBJS)
 	cd $(OUTPATH)
 	tlib "..\$<" +$(**: = +)
 	cd ..
-!ifdef INSTDIR
+!if $d(INSTDIR) && DIR <= "aaaaaaaa"
 	@-if not exist $(INSTDIR) mkdir $(INSTDIR)
 	copy $< $(INSTDIR) >nul
 	copy $(SOURCE)\*.h $(INSTDIR) >nul

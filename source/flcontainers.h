@@ -112,7 +112,7 @@ public:
     }
 
     inline size_t Size() const { return ic-oc; }
-#elif defined(__GNUC__) && defined(__)
+#elif defined(__GNUC__) && (defined(_X86_) || defined(__i386__) || defined(__i586__) || defined(__i686__))
     #ifndef SMPLOCK
     # ifdef __SMP__
     #  define SMPLOCK "lock ; "

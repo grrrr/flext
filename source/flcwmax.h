@@ -1,0 +1,20 @@
+/* 
+
+max-pd - C++ compatibility layer for Max/MSP and pd (pure data) externals
+
+Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
+For information on usage and redistribution, and for a DISCLAIMER OF ALL
+WARRANTIES, see the file, "license.txt," in this distribution.  
+
+*/
+
+// This is the prefix file for CodeWarrior projects 
+
+#ifndef __CW_MAX_H
+#define __CW_MAX_H
+
+#include <MacHeaders.h>
+
+#define MAXMSP
+
+#endif

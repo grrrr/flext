@@ -17,6 +17,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "flstdc.h"
 #include <new>
+#include <map>
 
 /*!	\defgroup FLEXT_SUPPORT Flext support classes
 	@{
@@ -1147,8 +1148,6 @@ inline bool operator >(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(
 inline bool operator >=(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(flext)::CmpAtom(a,b) >= 0; }
 
 
-#include <map>
-
 class AnyMap:
     public std::map<unsigned int,unsigned int>
 {
@@ -1188,6 +1187,7 @@ public:
 
     inline iterator find(K k) { return AnyMap::find(*(unsigned int *)&k); }
     inline T &operator [](K k) { return *(T *)&(AnyMap::operator [](*(unsigned int *)&k)); }
+    inline void erase(K k) { AnyMap::erase(*(unsigned int *)&k); }
 };
 
 

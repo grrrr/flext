@@ -33,7 +33,7 @@ public:
     AnyMap();
     ~AnyMap();
     iterator find(AnyMapType k);
-    unsigned int &operator [](AnyMapType k);
+    AnyMapType &operator [](AnyMapType k);
 
     typedef std::pair<AnyMapType,AnyMapType> pair;
 };
@@ -69,9 +69,9 @@ public:
         inline T &data() const { return *(T *)&second; }
 	};
 
-    inline iterator find(K k) { return AnyMap::find(*(unsigned int *)&k); }
-    inline T &operator [](K k) { return *(T *)&(AnyMap::operator [](*(unsigned int *)&k)); }
-    inline void erase(K k) { AnyMap::erase(*(unsigned int *)&k); }
+    inline iterator find(K k) { return AnyMap::find(*(AnyMapType *)&k); }
+    inline T &operator [](K k) { return *(T *)&(AnyMap::operator [](*(AnyMapType *)&k)); }
+    inline void erase(K k) { AnyMap::erase(*(AnyMapType *)&k); }
 };
 
 //! @} // FLEXT_SUPPORT

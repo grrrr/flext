@@ -636,7 +636,7 @@ public:
     };
 
     template<int PRE>
-    class FLEXT_SHARE AtomListStatic
+    class AtomListStatic
         : public AtomListStaticBase
     {
     public:

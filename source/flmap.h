@@ -99,7 +99,7 @@ protected:
         , n(0),parent(p),left(NULL),right(NULL) 
     {}
 
-    virtual ~TableAnyMap() { clear(); }
+    virtual ~TableAnyMap();
 
     int size() const;
 
@@ -183,7 +183,7 @@ protected:
 
 
 template <typename K,typename T,int N = 8,bool O = false>
-class FLEXT_SHARE TableMap
+class TableMap
     : TableAnyMap
 {
 public:

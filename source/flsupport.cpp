@@ -304,6 +304,8 @@ AnyMap::iterator AnyMap::find(AnyMapType k) { return Parent::find(k); }
 AnyMapType &AnyMap::operator [](AnyMapType k) { return Parent::operator [](k); }
 #endif
 
+TableAnyMap::~TableAnyMap() { clear(); }
+
 void TableAnyMap::clear() 
 {
     if(left) { delete left; left = NULL; }

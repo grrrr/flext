@@ -21,8 +21,12 @@ TARGET=pdwin  # appendix to lib name
 # includes
 INCPATH=-I$(BCCPATH)\include -I$(PDPATH)\src -I$(SOURCE)
 
+!ifdef SNDOBJ
+INCPATH=$(INCPATH) -I$(SNDOBJ)
+!endif
+
 # compiler definitions and flags
-DEFS=-DPD -DNT 
+DEFS=-DPD -DNT -DNOPTHREAD
 CFLAGS=-6 -O2 -OS -ff -tWD 
 
 
@@ -34,6 +38,11 @@ CFLAGS=-6 -O2 -OS -ff -tWD
 SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flsetup.cpp flutil.cpp flatom.cpp
 HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h flinternal.h
 IHDRS=
+
+!ifdef SNDOBJ
+SRCS=$(SRCS) flsndobj.cpp
+HDRS=$(HDRS) flsndobj.h
+!endif
 
 #default target
 all: $(OUTPATH)\$(NAME)-$(TARGET).lib

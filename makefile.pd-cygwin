@@ -15,8 +15,8 @@ include config-pd-cygwin.txt
 
 
 # compiler+linker stuff
-INCLUDES=$(PDPATH)/src
-FLAGS=-DPD -DNT
+INCLUDES=$(PDPATH)/src $(SNDOBJ)
+FLAGS=-DPD -DNT -DNOPTHREAD
 CFLAGS=-O6 -mcpu=pentiumpro
 CFLAGS_D=-mcpu=pentiumpro -g
 CFLAGS_T=-DFLEXT_THREADS
@@ -35,6 +35,14 @@ SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flsetup.cpp f
 HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h fldsp.h flthr.h flinternal.h
 IHDRS=
 
+ifdef SNDOBJ
+_SRCS=$(SRCS) flsndobj.cpp
+_HDRS=$(HDRS) flsndobj.h
+else
+_SRCS=$(SRCS) 
+_HDRS=$(HDRS) 
+endif
+
 MAKEFILE=makefile.pd-cygwin
 TARGET=$(TARGDIR)/$(NAME)-pdwin.lib
 TARGET_D=$(TARGDIR)/$(NAME)_d-pdwin.lib
@@ -46,7 +54,7 @@ all: $(TARGDIR) $(TARGET) $(TARGET_D) # $(TARGET_T) $(TARGET_TD)
 $(TARGDIR):
 	-mkdir $(TARGDIR)
 
-$(SRCS): $(HDRS) $(IHDRS) $(MAKEFILE)
+$(SRCS): $(_HDRS) $(IHDRS) $(MAKEFILE)
 	touch $@
 
 $(TARGDIR)/%.o : source/%.cpp
@@ -61,19 +69,19 @@ $(TARGDIR)/%.to : source/%.cpp
 $(TARGDIR)/%.tdo : source/%.cpp
 	$(CXX) -c $(CFLAGS_D) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) source) $< -o $@
 
-$(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS))
+$(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(_SRCS))
 	ar rc $@ $^
 	chmod 755 $@
 
-$(TARGET_D) : $(patsubst %.cpp,$(TARGDIR)/%.do,$(SRCS))
+$(TARGET_D) : $(patsubst %.cpp,$(TARGDIR)/%.do,$(_SRCS))
 	ar rc $@ $^
 	chmod 755 $@
 
-$(TARGET_T) : $(patsubst %.cpp,$(TARGDIR)/%.to,$(SRCS))
+$(TARGET_T) : $(patsubst %.cpp,$(TARGDIR)/%.to,$(_SRCS))
 	ar rc $@ $^
 	chmod 755 $@
 
-$(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(SRCS))
+$(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(_SRCS))
 	ar rc $@ $^
 	chmod 755 $@
 
@@ -86,7 +94,7 @@ $(INSTDIR):
 
 install:: $(INSTDIR)
 
-install:: $(TARGET) $(TARGET_D) $(patsubst %,source/%,$(HDRS)) # $(TARGET_T) $(TARGET_TD)  
+install:: $(TARGET) $(TARGET_D) $(patsubst %,source/%,$(_HDRS)) # $(TARGET_T) $(TARGET_TD)  
 	cp $^ $(INSTDIR)
 
 

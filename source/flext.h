@@ -40,11 +40,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // include the flext dsp class
 #include "fldsp.h"
 
-// include pthreads if threading is enabled
-#ifdef FLEXT_THREADS
-#include "flthr.h"
-#endif
-
 #endif // FLEXT_H
 
 

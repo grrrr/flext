@@ -21,8 +21,8 @@ CFLAGS=$(CFLAGS) /YX$(PRECOMPILE) /Fp$(OBJPATH)\precompiled.pch
 # create code for DLL
 CFLAGS=$(CFLAGS) /LD
 
-# enable exception handling
-CFLAGS=$(CFLAGS) /EHsc
+# enable exception handling and RTTI
+CFLAGS=$(CFLAGS) /EHsc /GR
 
 # no banner
 CFLAGS=$(CFLAGS) /nologo

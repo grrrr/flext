@@ -72,7 +72,7 @@ $(OUTPATH)\$(NAME)-$(TARGET).lib:: $(OBJS)
 	cd $(OUTPATH)
 	tlib "..\$<" +$(**: = +)
 	cd ..
-!if $d(INSTDIR) && DIR <= "aaaaaaaa"
+!if $d(INSTDIR) && "$(INSTDIR)" != ""
 	@-if not exist $(INSTDIR) mkdir $(INSTDIR)
 	copy $< $(INSTDIR) >nul
 	copy $(SOURCE)\*.h $(INSTDIR) >nul

@@ -302,6 +302,7 @@ TODO list:
 for 0.4.7:
 - SIMD for gcc
 - individual apply buttons for each attribute in the attribute editor
+- Max/MSP MachO support
 
 bugs:
 - recreation of object with different argument line forgets about eventually present attributes

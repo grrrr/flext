@@ -1,14 +1,26 @@
 # where is the PD source package?
 PDPATH=/usr/local/src/pd-0.38-0test10
 
-# where should the external be installed?
-INSTPATH=/usr/local/lib/pd/extra
+###############################################################
 
-# where do the flext headers and libraries reside?
-FLEXTPATH=/usr/local/lib/pd/flext
+# where do/should the flext headers reside/be built?
+FLEXTINC=/usr/local/lib/pd/include
+
+# where do/should the flext static libraries reside/be built?
+FLEXTLIB=/usr/local/lib/pd/flext
+
+# where do/should the flext shared libraries reside/be built?
+FLEXTSHLIB=/usr/local/lib
+
+###############################################################
 
 # where should the external be built?
 OUTPATH=pd-linux
+
+# where should the external be installed?
+INSTPATH=/usr/local/lib/pd/extra
+
+###############################################################
 
 # user defined compiler flags
 # (check if they match your system!)

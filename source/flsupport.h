@@ -391,6 +391,43 @@ public:
 		@{ 
 	*/
 
+	//! thread type
+	typedef pthread_t thrid_t;
+
+protected:
+	//! system's thread id
+	static thrid_t thrid;  // the system thread
+
+public:
+
+	//! Check if current thread is the realtime system's thread
+	static bool IsSystemThread() { pthread_t cur = pthread_self(); return pthread_equal(cur,thrid) != 0; }
+
+	/*! \brief Yield to other threads
+		\remark A call to this is only needed for systems with cooperative multitasking like MacOS<=9
+	*/
+	static void ThrYield() { sched_yield(); }
+
+	/*! \brief Get current thread id
+	*/
+	static thrid_t GetThreadId() { return pthread_self(); }
+
+	/*! \brief Get current thread id
+	*/
+	static thrid_t GetSysThreadId() { return thrid; }
+
+	/*! \brief Increase/Decrease priority of a thread
+	*/
+	static bool RelPriority(int dp,thrid_t ref = GetSysThreadId(),thrid_t thr = GetThreadId());
+
+	/*! \brief Get priority of a thread
+	*/
+	static int GetPriority(thrid_t thr = GetThreadId());
+
+	/*! \brief Set priority of a thread
+	*/
+	static bool SetPriority(int p,thrid_t thr = GetThreadId());
+
 	/*! \brief Thread mutex
 		\sa pthreads documentation
 	*/

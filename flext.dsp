@@ -89,7 +89,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "pd-msvc\td"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GR /ZI /Od /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /D "FLEXT_THREADS" /FR /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /ZI /Od /I "c:\programme\audio\pd\src" /I "f:\prog\packs\sndobj\include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D FLEXT_SYS=2 /D "FLEXT_THREADS" /FR /YX"flext.h" /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /ZI /Od /I "c:\programme\audio\pd\src" /I "f:\prog\packs\sndobj\include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "FLEXT_SYS_PD" /D "FLEXT_THREADS" /FR /YX"flext.h" /FD /GZ /c
 # ADD BASE RSC /l 0xc07 /d "_DEBUG"
 # ADD RSC /l 0xc07 /d "_DEBUG"
 BSC32=bscmake.exe

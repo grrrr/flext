@@ -130,7 +130,7 @@ flext_base::flext_base():
 	LOG1("%s - flext logging is on",thisName());
 
 #ifdef FLEXT_THREADS
-	shouldexit = false;
+//	shouldexit = false;
 //	thrhead = thrtail = NULL;
 #endif
 	qhead = qtail = NULL;

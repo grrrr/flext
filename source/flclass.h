@@ -395,34 +395,7 @@ public:
 	/*! \brief Check if current thread should terminate
 		\todo Check for currently running thread
 	*/
-	bool ShouldExit() const { return shouldexit; }
-
-	//! Check if current thread is the realtime system's thread
-	bool IsSystemThread() const { pthread_t cur = pthread_self(); return pthread_equal(cur,thrid) != 0; }
-
-	/*! \brief Yield to other threads
-		\remark A call to this is only needed for systems with cooperative multitasking like MacOS<=9
-	*/
-	static void ThrYield() { sched_yield(); }
-
-	typedef pthread_t thrid_t;
-
-	/*! \brief Get current thread id
-	*/
-	static thrid_t GetThreadId();
-
-	/*! \brief Increase/Decrease priority of a thread
-	*/
-	static bool ChangePriority(int dp,thrid_t thr = GetThreadId());
-
-	/*! \brief Get priority of a thread
-	*/
-	static int GetPriority(thrid_t thr = GetThreadId());
-
-	/*! \brief Set priority of a thread
-	*/
-	static bool SetPriority(int p,thrid_t thr = GetThreadId());
-
+	bool ShouldExit() const;
 
 #endif // FLEXT_THREADS
 
@@ -467,12 +440,12 @@ protected:
 	class thr_entry 
 	{
 	public:
-		thr_entry(flext_base *t,void *(*m)(thr_params *),thr_params *p,pthread_t id = pthread_self()): th(t),meth(m),params(p),thrid(id),active(false),nxt(NULL) {}
+		thr_entry(flext_base *t,void *(*m)(thr_params *),thr_params *p,pthread_t id = pthread_self());
 
 		//! \brief Check if this class represents the current thread
 		bool Is(pthread_t id = pthread_self()) const { return pthread_equal(thrid,id) != 0; }
 
-		bool active;
+		bool active,shouldexit;
 		pthread_t thrid;
 		void *(*meth)(thr_params *);
 		thr_params *params;
@@ -660,10 +633,9 @@ private:
 	static bool cb_SetAttrib(flext_base *c,const t_symbol *s,int argc,const t_atom *argv) { return c->SetAttrib(s,argc,argv); }
 
 #ifdef FLEXT_THREADS
-	bool shouldexit;
-	int thrcount;
+//	bool shouldexit;
+//	int thrcount;
 	
-	static pthread_t thrid;  // the thread that created the object (the system thread)
 	ThrMutex qmutex;
 
 	static thr_entry *thrhead,*thrtail;

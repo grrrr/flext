@@ -24,10 +24,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <errno.h>
 
 //! Thread id of system thread
-pthread_t flext_base::thrid;
+flext::thrid_t flext::thrid;
 
 //! Thread id of helper thread
-pthread_t flext_base::thrhelpid;
+flext::thrid_t flext_base::thrhelpid;
 
 flext_base::thr_entry *flext_base::thrhead = NULL,*flext_base::thrtail = NULL;
 flext::ThrMutex flext_base::tlmutex;
@@ -35,7 +35,16 @@ flext::ThrMutex flext_base::tlmutex;
 //! Helper thread should terminate
 bool thrhelpexit = false;
 
+//! Helper thread conditional
 flext::ThrCond *thrhelpcond = NULL;
+
+
+flext_base::thr_entry::thr_entry(flext_base *t,void *(*m)(thr_params *),thr_params *p,pthread_t id): 
+	th(t),meth(m),params(p),thrid(id),
+	active(false),shouldexit(false),
+	nxt(NULL) 
+{}
+
 
 //! Start helper thread
 bool flext_base::StartHelper()
@@ -75,15 +84,7 @@ void flext_base::ThrHelper(void *)
 
 	// set thread priority one point below normal
 	// so thread construction won't disturb real-time audio
-	sched_param parm;
-	int policy;
-	pthread_getschedparam(thrhelpid,&policy,&parm);
-	int prio = parm.sched_priority;
-	int schmin = sched_get_priority_min(policy);
-	if(prio > schmin) {
-		parm.sched_priority = prio-1;
-		pthread_setschedparam(thrhelpid,policy,&parm);
-	}
+	RelPriority(-1);
 
 	thrhelpcond = new ThrCond;
 
@@ -151,106 +152,19 @@ bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *me
 	return true;
 }
 
-/*
-bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *methname)
+bool flext_base::ShouldExit() const 
 {
-#ifdef FLEXT_DEBUG
-	if(!p) {
-		ERRINTERNAL(); 
-		return false;
-	}
-#endif
+	for(thr_entry *ti = thrhead; ti; ti = ti->nxt)
+		if(ti->Is()) return ti->shouldexit;
 
-	static bool init = false;
-	static pthread_attr_t attr;
-	if(!init) {
-		pthread_attr_init(&attr);
-		pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);
-		init = true;
-	}
-
-	// set thread priority one point below normal
-	// so thread construction won't disturb real-time audio
-	pthread_t id = pthread_self();
-	sched_param parm;
-	int policy;
-	pthread_getschedparam(id,&policy,&parm);
-	int prio = parm.sched_priority;
-	int schmin = sched_get_priority_min(policy);
-	if(prio > schmin) {
-		parm.sched_priority = prio-1;
-		pthread_setschedparam(id,policy,&parm);
-	}
-	
-	pthread_t thrid; 
-	int ret = pthread_create (&thrid,&attr,(void *(*)(void *))meth,p);
-
-	// set thread priority back to normal
-	parm.sched_priority = prio;
-	pthread_setschedparam(id,policy,&parm);
-
-	if(ret) { 
-#ifdef FLEXT_DEBUG	
-		error((char *)(ret == EAGAIN?"%s - Unsufficient resources to launch thread!":"%s - Could not launch method!"),methname); 
-#else
-		error((char *)("%s - Could not launch method!"),methname); 
-#endif		
-
-		delete p; 
-		return false;
-	}
-	else
-		return true;
+	// thread was not found -> EXIT!!!
+	return true;
 }
-*/
 
 bool flext_base::PushThread()
 {
-	tlmutex.Lock();
-
-//	post("Push thread");
-
-/*
-	// make an entry into thread list
-	thr_entry *nt = new thr_entry;
-	if(thrtail) thrtail->nxt = nt; 
-	else thrhead = nt;
-	thrtail = nt;
-*/
-	{
-#if FLEXT_OS == FLEXT_OS_WIN
-	// set detached thread to lower priority class
-	DWORD err;
-	HANDLE thr = GetCurrentThread();
-	DWORD cl = GetThreadPriority(thr);
-	if(!cl && (err = GetLastError()))
-		post("flext - error getting thread priority");
-	else {
-		BOOL ret = SetThreadPriority(thr,cl-2);
-		if(!ret) {
-			err = GetLastError();
-			if(!err) post("flext - error setting thread priority");
-		}
-	}
-#else
-	// set initial detached thread priority two points below normal
-	sched_param parm;
-	int policy;
-	pthread_t cur = pthread_self();
-	if(pthread_getschedparam(cur,&policy,&parm))
-		post("flext - can't get thread parameters");
-	int prio = parm.sched_priority;
-	int schmin = sched_get_priority_min(policy);
-	if(prio > schmin) {
-		parm.sched_priority = prio-2;
-		if(pthread_setschedparam(cur,policy,&parm))
-			post("flext - can't set thread parameters");
-	}
-#endif
-	}
-
-	tlmutex.Unlock();
-	
+	// set priority of newly created thread one point below the system thread's
+	RelPriority(-1);
 	return true;
 }
 
@@ -285,17 +199,33 @@ void flext_base::PopThread()
 	tlmutex.Unlock();
 }
 
+//! Terminate all object threads
 void flext_base::TermThreads()
 {
+	thr_entry *t;
+
+	// signal termination
+	for(t = thrhead; t; t = t->nxt)
+		if(t->th == this) t->shouldexit = true;
+
+	// TODO: maybe there should be a thread conditional for every thread so that it can be signaled
+
 	// wait for thread termination
-	shouldexit = true;
-	for(int wi = 0; thrhead && wi < 100; ++wi) Sleep(0.01f);
+	for(int wi = 0; wi < 100; ++wi) {
+		int cnt = 0;
+		for(t = thrhead; t; t = t->nxt)
+			if(t->th == this) ++cnt;
+		if(!cnt) break;
+		Sleep(0.01f);
+	}
+
+	// --- all object threads have terminated by now -------
 
 	qmutex.Lock(); // Lock message queue
 	tlmutex.Lock();
 
 	// timeout -> hard termination
-	for(thr_entry *t = thrhead; t; )
+	for(t = thrhead; t; )
 		if(t->th == this) {
 			if(pthread_cancel(t->thrid)) post("%s - Thread could not be terminated!",thisName());
 			thr_entry *tn = t->nxt;
@@ -308,26 +238,39 @@ void flext_base::TermThreads()
 	qmutex.Unlock();
 }
 
-flext_base::thrid_t flext_base::GetThreadId() 
-{ 
-	return pthread_self(); 
-}
-
-bool flext_base::ChangePriority(int dp,thrid_t id)
+bool flext::RelPriority(int dp,thrid_t ref,thrid_t id)
 {
 	sched_param parm;
 	int policy;
-	if(pthread_getschedparam(id,&policy,&parm) < 0) {
+	if(pthread_getschedparam(ref,&policy,&parm) < 0) {
 #ifdef FLEXT_DEBUG
-		post("flext - failed to get parms");
+		post("flext - failed to get thread priority");
 #endif
 		return false;
 	}
 	else {
 		parm.sched_priority += dp;
+
+		// MSVC++ 6 produces wrong code with the following lines!!!
+//		int schmin = sched_get_priority_min(policy);
+//		int schmax = sched_get_priority_max(policy);
+
+		if(parm.sched_priority < sched_get_priority_min(policy)) {
+#ifdef FLEXT_DEBUG		
+			post("flext - minimum thread priority reached");
+#endif
+			parm.sched_priority = sched_get_priority_min(policy);
+		}
+		else if(parm.sched_priority > sched_get_priority_max(policy)) {
+#ifdef FLEXT_DEBUG		
+			post("flext - maximum thread priority reached");
+#endif
+			parm.sched_priority = sched_get_priority_max(policy);
+		}
+		
 		if(pthread_setschedparam(id,policy,&parm) < 0) {
 #ifdef FLEXT_DEBUG		
-			post("flext - failed to change priority");
+			post("flext - failed to change thread priority");
 #endif
 			return false;
 		}
@@ -336,7 +279,7 @@ bool flext_base::ChangePriority(int dp,thrid_t id)
 }
 
 
-int flext_base::GetPriority(thrid_t id)
+int flext::GetPriority(thrid_t id)
 {
 	sched_param parm;
 	int policy;
@@ -350,7 +293,7 @@ int flext_base::GetPriority(thrid_t id)
 }
 
 
-bool flext_base::SetPriority(int p,thrid_t id)
+bool flext::SetPriority(int p,thrid_t id)
 {
 	sched_param parm;
 	int policy;

@@ -99,9 +99,14 @@ typedef t_clock t_qelem;
 #endif
 
 
+// necessary for the old OS9 SDK
+extern "C" {	    	    	    
+
 #include "ext.h"
 #include "ext_user.h"
 #include "z_dsp.h"
+
+} // extern "C"
 
 #undef WIN_VERSION
 

@@ -142,9 +142,9 @@ protected:
     void _set(size_t k,void *t);
     void *_find(size_t k);
 
-    Data *const data;
-    const int max;
     const bool owned;
+    const int max;
+    Data *const data;
     int n;
     TableAnyMap *parent,*left,*right;
 

@@ -13,6 +13,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 #include "flext.h"
+#include <string.h>
 
 #if FLEXT_OS == FLEXT_OS_WIN
 #include <windows.h>
@@ -218,7 +219,7 @@ notamd:
 // not MSVC
 static int _cpuid (_p_info *pinfo)
 {
-    if(pinfo) flext::ZeroMemory(*pinfo,sizeof *pinfo);
+    if(pinfo) memset(pinfo,0,sizeof *pinfo);
     return 0;
 }
 #endif

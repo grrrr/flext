@@ -16,6 +16,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __FLSUPPORT_H
 
 #include "flstdc.h"
+#include <time.h>
 
 class FLEXT_SHARE flext_base;
 
@@ -729,11 +730,24 @@ public:
 		}
 
 		/*! \brief Wait for condition (for a certain time)
-			\param time Wait time in seconds
+			\param ftime Wait time in seconds
+			\ret 0 = signalled, 1 = timed out 
+			\remark Depending on the implementation ftime may not be fractional. 
+			\remark So if ftime = 0 this may suck away your cpu if used in a signalled loop.
 		*/
-		bool TimedWait(float time) 
+		bool TimedWait(float ftime) 
 		{ 
-			timespec tm; tm.tv_sec = (long)time; tm.tv_nsec = (long)((time-(long)time)*1.e9);
+			timespec tm; 
+#if 0 // find out when the following is defined
+			clock_gettime(CLOCK_REALTIME,tm);
+			tm.tv_nsec += (long)((ftime-(long)ftime)*1.e9);
+			long nns = tm.tv_nsec%1000000000;
+			tm.tv_sec += (long)ftime+(tm.tv_nsec-nns)/1000000000; 
+			tm.tv_nsec = nns;
+#else
+			tm.tv_sec = time(NULL)+(long)ftime;
+			tm.tv_nsec = 0;
+#endif
 			Lock();
 			bool ret = pthread_cond_timedwait(&cond,&mutex,&tm) == 0; 
 			Unlock();

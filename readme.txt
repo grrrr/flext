@@ -117,6 +117,7 @@ Version history:
 - introduced default returns for the different flext::GetA* functions
 - pragma for Metrowerks compilers: enumsalwaysint on, bool on
 - MaxMSP: added assist string for attribute outlets
+- added new POSIX for ThrCond::TimedWait (but still have to find out when to enable it....)
 
 0.4.1:
 - full port for Max@OSX

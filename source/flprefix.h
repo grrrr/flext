@@ -211,7 +211,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #endif
 
-
 #if FLEXT_OS == FLEXT_OS_WIN
 //	#pragma message("Compiling for Windows")
 

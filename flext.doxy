@@ -4,7 +4,7 @@
 # General configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = flext
-PROJECT_NUMBER         = "version 0.4.1"
+PROJECT_NUMBER         = "version 0.4.2"
 OUTPUT_DIRECTORY       = f:/prog/max/flext/doc/
 OUTPUT_LANGUAGE        = English
 EXTRACT_ALL            = NO

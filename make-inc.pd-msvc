@@ -19,7 +19,7 @@ INCPATH=$(INCPATH) /I$(SNDOBJ)
 # compiler definitions and flags
 DEFS=/DPD /DNT 
 
-CFLAGS=/GR /GD /G6
+CFLAGS=/GR- /GX- /GD /G6
 OFLAGS=/Ox
 DFLAGS=/Od /Zi
 

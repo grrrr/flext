@@ -465,17 +465,17 @@ void flext_base::cb_GfxSave(t_gobj *c, t_binbuf *b)
 
 	int argc = binbuf_getnatom(t->te_binbuf);
 	t_atom *argv = binbuf_getvec(t->te_binbuf);
-	int cnt = CheckAttrib(argc,argv);
+	int i,cnt = CheckAttrib(argc,argv);
 
 	// process the creation arguments
-	for(int i = 1; i < cnt; ++i) BinbufAdd(b,argv[i]);
+	for(i = 1; i < cnt; ++i) BinbufAdd(b,argv[i]);
 
 	// process the attributes
 	AtomList la;
 	th->ListAttrib(la);
 	cnt = la.Count();
 
-	for(int i = 0; i < cnt; ++i) {
+	for(i = 0; i < cnt; ++i) {
 		const t_symbol *sym = GetSymbol(la[i]);
 		AtomList lv;
 		const AtomList *lref = NULL;

@@ -59,14 +59,16 @@ public:
 		*/
 		static void *NewLarge(size_t bytes) { return ::operator new(bytes); }
 		//! Free a large memory block
-		static void FreeLarge(void *blk) { return ::operator delete(blk); }
+		static void FreeLarge(void *blk) { ::operator delete(blk); }
 
 		//! Get an aligned memory block
 		static void *NewAligned(size_t bytes,int bitalign = 128);
 		//! Free an aligned memory block
 		static void FreeAligned(void *blk);
 		//! Test for alignment
-		static bool IsAligned(void *ptr,int bitalign = 128)	{ return (reinterpret_cast<unsigned long long>(ptr)&(bitalign-1)) == 0; }
+		static bool IsAligned(void *ptr,int bitalign = 128)	{ 
+            return (reinterpret_cast<unsigned long>(ptr)&(bitalign-1)) == 0; 
+        }
 		
 	//!	@}  FLEXT_S_MEMORY  	
 
@@ -720,7 +722,8 @@ public:
 
 protected:
 
-	static thrid_t thrhelpid,thrmsgid;
+	static thrid_t thrhelpid;
+	static thrid_t thrmsgid;
 	static bool StartHelper();
 	static bool StopHelper();
 	static void ThrHelper(void *);

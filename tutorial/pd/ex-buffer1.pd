@@ -1,0 +1,77 @@
+#N canvas 94 140 759 485 12;
+#X obj 15 8 cnv 15 550 40 empty empty buffer1 10 22 0 24 -260818 -1
+0;
+#X text 182 28 http://www.parasitaere-kapazitaeten.net;
+#X text 182 8 flext tutorial \, (C)2003 Thomas Grill;
+#N canvas 0 0 450 300 graph1 0;
+#X array buf1 100 float 1;
+#A 0 0 0 0.17 0.0728567 0.244286 1.06 0.358572 0.394287 1.06 0.358572
+1.06 0.387144 0.387144 1.06 0.387144 1.06 0.387144 1.06 1.06 0.387144
+1.06 0.387144 0.387144 1.06 0.387144 1.06 0.372858 1.06 1.06 0.344286
+1.06 0.330001 0.330001 1.06 0.330001 1.06 0.287143 0.69 1.06 0.268096
+1.06 0.258572 1.06 1.06 0.172857 1.06 0.144286 1.06 0.69 0.0585709
+1.06 0.0442851 1.06 0.69 -0.120001 1.06 0 1.06 0.69 0 1.06 0 1.06 0.69
+0 0.69 0 1.06 0.69 0 1.06 0 1.06 0.69 0 0.69 0 0.17 0.69 0 0.69 0 0.17
+0.69 0 0.69 0 0.17 0.69 0 0.69 0 0.17 0.69 0 0.69 0 0.17 0.69 0;
+#X coords 0 1 99 -1 200 140 1;
+#X restore 543 69 graph;
+#N canvas 0 0 450 300 graph1 0;
+#X array buf2 300 float 1;
+#A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;
+#X coords 0 1 299 -1 200 140 1;
+#X restore 543 214 graph;
+#X obj 28 385;
+#X obj 28 426 nbx 5 14 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
+10 -262131 -1 -1 0 256;
+#X text 23 443 peek value;
+#X obj 127 421 print A;
+#X text 127 442 print attributes to the console;
+#X msg 45 66 set;
+#X msg 69 118 set buf1;
+#X msg 149 118 buffer buf2;
+#X msg 69 149 getbuffer;
+#X text 154 149 query current buffer;
+#X text 77 63 set no buffer;
+#X text 72 98 set buffer;
+#X msg 88 205 frames 1000;
+#X msg 89 233 getframes;
+#X text 187 205 set buffer length;
+#X text 172 233 query buffer length;
+#X msg 20 285 getchannels;
+#X text 27 310 always 1 for PD!;
+#X obj 235 301 nbx 5 14 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
+10 -262131 -1 -1 0 256;
+#X obj 340 301 nbx 5 14 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
+10 -262131 -1 -1 72 256;
+#X obj 398 301 nbx 5 14 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
+10 -262131 -1 -1 1.06 256;
+#X obj 338 324 pack 0 0;
+#X msg 339 351 poke \$1 \$2 0;
+#X msg 234 351 peek \$1 0;
+#X text 234 278 get sample;
+#X text 342 278 set sample;
+#X text 352 383 the change is not immediately seen on PD;
+#X text 354 396 (you'll have to draw in the window);
+#X connect 5 0 6 0;
+#X connect 5 1 8 0;
+#X connect 10 0 5 0;
+#X connect 11 0 5 0;
+#X connect 12 0 5 0;
+#X connect 13 0 5 0;
+#X connect 17 0 5 0;
+#X connect 18 0 5 0;
+#X connect 21 0 5 0;
+#X connect 23 0 28 0;
+#X connect 24 0 26 0;
+#X connect 25 0 26 1;
+#X connect 26 0 27 0;
+#X connect 27 0 5 0;
+#X connect 28 0 5 0;

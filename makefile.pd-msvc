@@ -12,7 +12,7 @@
 
 !include config-pd-msvc.txt
 
-all: flext flext_t flext_d flext_td # flext_l flext_ld
+all: flext flext_t flext_d flext_td # flext_s flext_sd
 
 flext:
 	nmake /f make-inc.pd-msvc  NAME=$* 
@@ -26,11 +26,11 @@ flext_t:
 flext_td:
 	nmake /f make-inc.pd-msvc  NAME=$* FLEXT_THREADS=1 _DEBUG=1
 
-flext_l:
-	nmake /f make-inc.pd-msvc  NAME=flext FLEXT_THREADS=1 FLEXT_SHARED=1
+flext_s:
+	nmake /f make-inc.pd-msvc  NAME=flext FLEXT_SHARED=1
 
-flext_ld:
-	nmake /f make-inc.pd-msvc  NAME=flext_d FLEXT_THREADS=1 FLEXT_SHARED=1 _DEBUG=1
+flext_sd:
+	nmake /f make-inc.pd-msvc  NAME=flext_d FLEXT_SHARED=1 _DEBUG=1
 
 
 clean:

@@ -97,12 +97,9 @@ typedef t_clock t_qelem;
 	#define WIN_VERSION 1
 #endif
 
-extern "C"
-{
-	#include "ext.h"
-	#include "ext_user.h"
-	#include "z_dsp.h"
-}
+#include "ext.h"
+#include "ext_user.h"
+#include "z_dsp.h"
 
 #undef WIN_VERSION
 

@@ -4,38 +4,37 @@
 # ----- for internal use ----------------------
 #
 
-!include config-pd-msvc.txt
+!include config-max-msvc.txt
 
 # source files
 SOURCE=source
 
 # includes
-INCPATH=/I$(PDPATH)\src /I$(SOURCE)
-
-!ifdef MSVCPATH
-INCPATH=$(INCPATH) /I$(MSVCPATH)\include 
-!endif
-
-!ifdef PTHREADS
-INCPATH=$(INCPATH) /I$(PTHREADS)
-!endif
-
+INCPATH=/I$(MSVCPATH)\include /I$(MAXSDKPATH)\max-includes /I$(MAXSDKPATH)\msp-includes /I$(PTHREADS) /I$(SOURCE)
 LDFLAGS=/LIBPATH:$(MSVCPATH)\lib
 
 
 # compiler definitions and flags
-DEFS=/DFLEXT_SYS=2 $(UFLAGS)
+DEFS=/DFLEXT_SYS=1 $(UFLAGS)
 
 CFLAGS=/GX /GD
 OFLAGS=/Ox
 DFLAGS=/Od /Zi
 
-TARGET=pdwin  # appendix to lib name
+TARGET=maxwin  # appendix to lib name
 
 
 
 !ifdef FLEXT_SHARED
 DEFS=$(DEFS) /DFLEXT_SHARED /DFLEXT_EXPORTS 
+
+LIBS=$(LIBS) $(PTHREADS)\pthreadVC.lib 
+
+!ifdef _DEBUG
+LIBS=$(LIBS) $(MAXSDKPATH)\max-includes\win-includes\debug\maxapi.lib $(MAXSDKPATH)\msp-includes\win-includes\debug\maxaudio.lib
+!else
+LIBS=$(LIBS) $(MAXSDKPATH)\max-includes\win-includes\release\maxapi.lib $(MAXSDKPATH)\msp-includes\win-includes\release\maxaudio.lib
+!endif
 
 EXT=dll
 
@@ -45,14 +44,6 @@ OBJPATH=l
 !else
 CFLAGS=$(CFLAGS) $(DFLAGS) /MTd /LDd
 OBJPATH=ld
-!endif
-
-LIBS=$(PDPATH)\bin\pd.lib 
-
-!ifdef PTHREADS
-LIBS=$(LIBS) $(PTHREADS)\pthreadVC.lib 
-!else
-LIBS=$(LIBS) $(PDPATH)\bin\pthreadVC.lib 
 !endif
 
 !else
@@ -94,15 +85,13 @@ OBJPATH=sd
 !ifdef SNDOBJ
 SRCS=$(SRCS) $(SRCS_SNDOBJ)
 HDRS=$(HDRS) $(HDRS_SNDOBJ)
-INCPATH=$(INCPATH) /I$(SNDOBJ)\include
-LIBS=$(LIBS) $(SNDOBJ)\lib\sndobj.lib
+INCPATH=$(INCPATH) /I$(SNDOBJ)/include
 !endif
 
 !ifdef STK
 SRCS=$(SRCS) $(SRCS_STK)
 HDRS=$(HDRS) $(HDRS_STK)
-INCPATH=$(INCPATH) /I$(STK)\include
-LIBS=$(LIBS) $(STK)\lib\stk.lib
+INCPATH=$(INCPATH) /I$(STK)/include 
 !endif
 
 #default target
@@ -126,7 +115,8 @@ OBJS= $(SRCS:.cpp=.obj)
 	@cd $(OUTPATH)
 	@-if not exist $(OBJPATH) mkdir $(OBJPATH)
 	@cd ..
-	cl /c $(CFLAGS) $(DEFS) $(INCPATH) /Fo$(OUTPATH)\$(OBJPATH)\$(@F) $<
+	cl /c $(CFLAGS) $(DEFS) $(INCPATH) /Fo$(OUTPATH)\$(OBJPATH)\$@ $<
+
 
 
 $(OUTPATH)\$(NAME)-$(TARGET).lib: $(OBJS)

@@ -19,8 +19,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flext.h"
 #include "flinternal.h"
 
+#ifdef FLEXT_THREADS
 //! Thread id of message queue thread
 flext::thrid_t flext::thrmsgid = 0;
+#endif
 
 class qmsg
 {

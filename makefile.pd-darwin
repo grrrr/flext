@@ -2,7 +2,7 @@
 # Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 #
 # Makefile for gcc @ darwin
-#
+# 
 # usage:
 # to build run "make -f makefile.pd-darwin"
 # to install (as root), do "make -f makefile.pd-darwin install"

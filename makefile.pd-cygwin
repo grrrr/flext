@@ -1,24 +1,20 @@
 # flext - C++ layer for Max/MSP and pd (pure data) externals
 # Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 #
-# Makefile for gcc @ linux
+# Makefile for gcc @ cygwin
 #
 # usage:
 # to build run "make -f makefile.pd-cygwin"
-# to install (as root), do "make -f makefile.pd-cygwin install"
 #
 # ---------------------------------------------
 #
-# compiling for threaded usage is not yet possible
+# compiling for threaded usage is not supported
 #
 
 ## EDIT ZONE ##################################
 
 # pd path
 PDPATH=c:/programme/audio/pd/src
-
-# where to install
-INSTDIR=
 
 ###############################################
 
@@ -27,7 +23,7 @@ TARGDIR=./pd-cygwin
 
 # compiler+linker stuff
 INCLUDES=$(PDPATH)
-FLAGS=-DPD
+FLAGS=-DPD -DNT
 CFLAGS=-O6 -mcpu=pentiumpro
 CFLAGS_D=-mcpu=pentiumpro -g
 CFLAGS_T=-DFLEXT_THREADS
@@ -41,7 +37,7 @@ LIBS=
 NAME=flext
 
 # all the source files from the package
-SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flsetup.cpp flutil.cpp
+SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flsetup.cpp flutil.cpp flatom.cpp
 HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h
 IHDRS=flinternal.h
 
@@ -86,15 +82,6 @@ $(TARGET_T) : $(patsubst %.cpp,$(TARGDIR)/%.to,$(SRCS))
 $(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(SRCS))
 	ar rc $@ $^
 	chmod 755 $@
-
-$(INSTDIR):
-	mkdir $(INSTDIR)
-
-install:: $(INSTDIR)
-
-install:: $(TARGET) $(TARGET_D) $(HDRS)
-	cp $^ $(INSTDIR)
-	chown root.root $(patsubst %,$(INSTDIR)/%,$(notdir $^))
 
 .PHONY: clean
 clean:

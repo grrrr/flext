@@ -1,4 +1,4 @@
-// pan~ - a flext tutorial external written by Frank Barknecht
+// signal1~ - a flext tutorial external written by Frank Barknecht
 // 
 // This is a commented port of the pan~ example from the PD-Externals-Howto to
 // illustrate the usage of flext. You can get the original code at
@@ -7,13 +7,13 @@
 #include <flext.h>
 #include <math.h>
 
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 202)
-#error You need at least flext version 0.2.2 
+#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 300)
+#error You need at least flext version 0.3.0
 #endif
 
 
 // A flext dsp external ("tilde object") inherits from the class flext_dsp 
-class pan: 
+class signal1: 
 	public flext_dsp
 {
 	// Each external that is written in C++ needs to use #defines 
@@ -26,10 +26,10 @@ class pan:
 	// should be somewhere in your dsp file.
 	// A good place is here:
 	
-	FLEXT_HEADER(pan, flext_dsp)
+	FLEXT_HEADER(signal1, flext_dsp)
 
 	public:
-		pan() 
+		signal1() 
 		{
 			// The constructor of your class is responsible for
 			// setting up inlets and outlets and for registering
@@ -82,15 +82,16 @@ class pan:
 			// following line: 
 			//post("Set panning to %.2f, maybe clipped from %.2f", f_pan,f);
 		} // end setPan
-}; // end of class deklaration for pan
+}; // end of class declaration for signal1
 
 
-// Before we can run our pan-class in PD, the object has to be registered as a
+// Before we can run our signal1-class in PD, the object has to be registered as a
 // PD object. Otherwise it would be a simple C++-class, and what good would
 // that be for?  Registering is made easy with the FLEXT_NEW_* macros defined
-// in flext.h. For tilde objects without argguments call:
+// in flext.h. For tilde objects without arguments call:
 
-FLEXT_NEW_TILDE("pan~", pan)
+FLEXT_NEW_DSP("signal1~ signal1~", signal1)
+// T.Grill: there are two names for the object: signal1~ as main name and pan~ as its alias
 
 // Now we define our DSP function. It gets this arguments:
 // 
@@ -99,7 +100,7 @@ FLEXT_NEW_TILDE("pan~", pan)
 //          These are arrays of the signals in the objects signal inlets rsp.
 //          oulets. We come to that later inside the function.
 
-void pan::m_signal(int n, float *const *in, float *const *out)
+void signal1::m_signal(int n, float *const *in, float *const *out)
 {
 	
 	const float *ins1    =  in[0];

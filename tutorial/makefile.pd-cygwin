@@ -1,0 +1,63 @@
+# flext tutorial examples
+#
+# Makefile for gcc @ cygwin
+#
+# usage: make -f makefile.pd-cygwin
+#
+# -----------------------------------------------------
+#
+# note: the thread examples don't compile with cygwin
+#
+# -----------------------------------------------------
+
+# where to build
+TARGDIR=./pd-cygwin
+
+# flext stuff  ### EDIT! ###
+FLEXTPATH=..
+FLEXTLIB=$(FLEXTPATH)/pd-cygwin/flext.lib
+
+# compiler+linker stuff	### EDIT! ###
+INCLUDES=c:/programme/audio/pd/src
+LIBPATH=c:/programme/audio/pd/bin
+FLAGS=-DPD -DNT
+CFLAGS=-O6 -mcpu=pentiumpro
+LIBS=m pd
+
+
+# the rest can stay untouched
+# ----------------------------------------------
+
+# all the source files from the package
+
+EXAMPLES=simple1 simple2 simple3 adv1 signal1~ signal2~   # thread1 thread2
+
+TARGETS=$(patsubst %,$(TARGDIR)/%.dll,$(EXAMPLES))
+
+# default target
+all: $(TARGDIR) $(TARGETS)
+
+
+$(TARGDIR)/%~.dll : $(TARGDIR)/%.dll 
+	mv $^ $@
+
+$(SRCS): $(HDRS)
+	touch $@
+
+$(TARGDIR):
+	mkdir $(TARGDIR)
+
+$(TARGDIR)/%.o : %/main.cpp
+	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(FLEXTPATH)) $< -o $@
+
+$(TARGDIR)/%.dll : $(TARGDIR)/%.o $(FLEXTLIB)
+	$(CXX) $(LDFLAGS) -shared $(patsubst %,-L%,$(LIBPATH)) $^ $(patsubst %,-l%,$(LIBS)) -o $@
+	chmod 755 $@
+
+
+.PHONY: clean
+clean:
+	rm -f $(TARGDIR)/*.o $(TARGETS)
+	
+
+

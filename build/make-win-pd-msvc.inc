@@ -10,13 +10,13 @@ EXT=dll
 
 #########################################
 
-!ifdef FLEXT_SHARED
+!ifdef SHARED
 # --- shared ---
 
-!elseifdef FLEXT_THREADED
+!elseifdef THREADED
 # --- static multi-threaded ---
 
-!ifdef _DEBUG
+!ifdef DEBUG
 LIBS=$(LIBS) flext_td-pdwin.lib 
 !else
 LIBS=$(LIBS) flext_t-pdwin.lib 
@@ -25,7 +25,7 @@ LIBS=$(LIBS) flext_t-pdwin.lib
 !else 
 # --- static single-threaded ---
 
-!ifdef _DEBUG
+!ifdef DEBUG
 LIBS=$(LIBS) flext_d-pdwin.lib 
 !else
 LIBS=$(LIBS) flext-pdwin.lib 

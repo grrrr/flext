@@ -11,13 +11,13 @@ EXT=mxe
 
 #########################################
 
-!ifdef FLEXT_SHARED
+!ifdef SHARED
 # --- shared ---
 
-!elseifdef FLEXT_THREADED
+!elseifdef THREADED
 # --- static multi-threaded ---
 
-!ifdef _DEBUG
+!ifdef DEBUG
 LIBS=$(LIBS) flext_td-maxwin.lib 
 !else
 LIBS=$(LIBS) flext_t-maxwin.lib 
@@ -26,7 +26,7 @@ LIBS=$(LIBS) flext_t-maxwin.lib
 !else 
 # --- static single-threaded ---
 
-!ifdef _DEBUG
+!ifdef DEBUG
 LIBS=$(LIBS) flext_d-maxwin.lib 
 !else
 LIBS=$(LIBS) flext-maxwin.lib 

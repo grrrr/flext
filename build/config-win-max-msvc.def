@@ -19,4 +19,4 @@ INSTPATH="%CommonProgramFiles%\Cycling '74\externals\flext"
 
 # some user-definable flags
 # (check if they match your system!)
-UFLAGS=/G6 /Ox /arch:SSE
+OFLAGS=/G6 /Ox /arch:SSE

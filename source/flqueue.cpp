@@ -29,13 +29,20 @@ flext::thrid_t flext::thrmsgid = 0;
 
 class qmsg:
     public flext,
-    public Cell
+    public Fifo::Cell
 {
 public:
     qmsg(flext_base *t,int o,const t_symbol *s,int ac,const t_atom *av)
         : msg(s,ac,av)
         , th(t),out(o)
     {}
+
+    void Set(flext_base *t,int o,const t_symbol *s,int ac,const t_atom *av)
+    {
+        th = t;
+        out = o;
+        msg(s,ac,av);
+    }
 
     // \note PD sys lock must already be held by caller
     void Send() const
@@ -59,28 +66,26 @@ private:
 */
 class Queue:
     public flext,
-    public Fifo
+    public TypedFifo<qmsg>
 {
 public:
     inline bool Empty() const { return Size() == 0; }
 
-    inline void Push(qmsg *q) { Fifo::Put(q); }
+    void New(flext_base *t,int o,const t_symbol *s,int ac,const t_atom *av);
 
-    inline qmsg *Pop() { return static_cast<qmsg *>(Fifo::Get()); }
-
-    void Push(flext_base *th,int o) // bang
+    inline void Push(flext_base *th,int o) // bang
     { 
-        Put(new qmsg(th,o,sym_bang,0,NULL));
+        New(th,o,sym_bang,0,NULL);
     }
 
-    void Push(flext_base *th,int o,float dt) 
+    inline void Push(flext_base *th,int o,float dt) 
     { 
         t_atom at; 
         SetFloat(at,dt);
-        Put(new qmsg(th,o,sym_float,1,&at));
+        New(th,o,sym_float,1,&at);
     }
 
-    void Push(flext_base *th,int o,int dt) 
+    inline void Push(flext_base *th,int o,int dt) 
     { 
         t_atom at; 
         SetInt(at,dt);
@@ -92,14 +97,14 @@ public:
 #else
 #error Not implemented!
 #endif
-        Put(new qmsg(th,o,sym,1,&at));
+        New(th,o,sym,1,&at);
     }
 
-    void Push(flext_base *th,int o,const t_symbol *dt) 
+    inline void Push(flext_base *th,int o,const t_symbol *dt) 
     { 
         t_atom at; 
         SetSymbol(at,dt);
-        Put(new qmsg(th,o,sym_symbol,1,&at));
+        New(th,o,sym_symbol,1,&at);
     }
 
     void Push(flext_base *th,int o,const t_atom &a) 
@@ -121,21 +126,31 @@ public:
             error("atom type not supported");
             return;
         }
-        Put(new qmsg(th,o,sym,1,&a));
+        New(th,o,sym,1,&a);
     }
 
-    void Push(flext_base *th,int o,int argc,const t_atom *argv) 
+    inline void Push(flext_base *th,int o,int argc,const t_atom *argv) 
     {
-        Put(new qmsg(th,o,sym_list,argc,argv));
+        New(th,o,sym_list,argc,argv);
     }
 
-    void Push(flext_base *th,int o,const t_symbol *sym,int argc,const t_atom *argv) 
+    inline void Push(flext_base *th,int o,const t_symbol *sym,int argc,const t_atom *argv) 
     { 
-        Put(new qmsg(th,o,sym,argc,argv)); 
+        New(th,o,sym,argc,argv);
     }
 };
 
-static Queue queue;
+static Queue queue,requeue;
+
+void Queue::New(flext_base *t,int o,const t_symbol *s,int ac,const t_atom *av)
+{
+    qmsg *m = requeue.Get();
+    if(m)
+        m->Set(t,o,s,ac,av);
+    else
+        m = new qmsg(t,o,s,ac,av);
+    Put(m);
+}
 
 
 #if FLEXT_QMODE == 2
@@ -163,9 +178,9 @@ static void QWork(bool syslock)
     #endif
 
         qmsg *q;
-        while((q = queue.Pop()) != NULL) {
+        while((q = queue.Get()) != NULL) {
             q->Send();
-            delete q;
+            requeue.Put(q);
         }
 
     #if FLEXT_QMODE == 2

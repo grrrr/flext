@@ -21,15 +21,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flprefix.h"
 
 
-class Cell 
-{
-	friend class Lifo;
-	friend class Fifo;
-private:
-	Cell *link;
-};
-
-
 #if 1 //def __Pentium__
 #define VTYPE volatile
 #else
@@ -42,6 +33,14 @@ private:
 class FLEXT_SHARE Lifo 
 {
 public:
+    class Cell 
+    {
+	    friend class Lifo;
+	    friend class Fifo;
+    private:
+	    Cell *link;
+    };
+
     inline Lifo() { Init(); }
 
     inline void Init() { ic = oc = 0; top = NULL; }
@@ -258,10 +257,22 @@ private:
 #endif
 };
 
+template <typename T>
+class TypedLifo
+    : public Lifo
+{
+public:
+    inline T *Avail() { return static_cast<T *>(Lifo::Avail()); }
+    inline void Push(T *c) { Lifo::Push(static_cast<T *>(c)); }
+    inline T *Pop() { return static_cast<T *>(Lifo::Pop()); }
+};
+
 
 class FLEXT_SHARE Fifo 
 {
 public:
+    typedef Lifo::Cell Cell;
+
     void Init() { in.Init(); out.Init(); }
 
     inline size_t Size() const { return in.Size()+out.Size(); }
@@ -309,6 +320,17 @@ public:
     }
 
 	Lifo in,out;
+};
+
+template <typename T>
+class TypedFifo
+    : public Fifo
+{
+public:
+    inline T *Avail() { return static_cast<T *>(Fifo::Avail()); }
+    inline void Put(T *c) { Fifo::Put(static_cast<T *>(c)); }
+    inline T *Get() { return static_cast<T *>(Fifo::Get()); }
+    inline T *Clear() { return static_cast<T *>(Fifo::Clear()); }
 };
 
 

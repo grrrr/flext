@@ -303,7 +303,10 @@ public:
 	// get symbol string
 	static const char *GetString(const t_symbol *s) { return s->s_name; }  
 	static const char *GetAString(const t_symbol *s) { return s?s->s_name:""; }  
-		
+	
+	static void *GetThing(t_symbol *s) { return s->s_thing; }  
+	static void SetThing(t_symbol *s,void *dt) { s->s_thing = (t_thing)dt; }  
+
 // --- argument list stuff ----------------------------------------
 		
 	static bool IsFloat(const t_atom &a) { return a.a_type == A_FLOAT; }

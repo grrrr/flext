@@ -36,7 +36,7 @@ const char *fl_extract(const char *name,int ix)
 			char *t;
 			for(t = tmp; *n && !isspace(*n); ++t,++n) *t = *n;
 			*t = 0;
-			return *tmp?strdup(tmp):NULL;
+			return *tmp?fl_strdup(tmp):NULL;
 		}
 		else {
 			while(*n && !isspace(*n)) ++n;

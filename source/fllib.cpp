@@ -13,7 +13,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifdef MAXMSP
 
 #include "flbase.h"
-#include <string.h>
+//#include <string.h>
 #include <stdarg.h>
 
 class libfunction {
@@ -41,7 +41,7 @@ void libfunction::add(libfunction *n) { if(nxt) nxt->add(n); else nxt = n; }
 void flext_obj::libfun_add(const char *name,t_newmethod newfun,void (*freefun)(flext_hdr *),int argtp1,...)
 {
 	for(int ix = 0; ; ++ix) {
-		const char *c = extractname(name,ix);
+		const char *c = fl_extract(name,ix);
 		if(!c || !*c) break;
 
 	 	alias(const_cast<char *>(c));  // make object name available to Max

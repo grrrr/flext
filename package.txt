@@ -35,7 +35,7 @@ SRCS= \
 	flatom_app.cpp flatom_part.cpp flitem.cpp flmeth.cpp flmsg.cpp \
 	flproxy.cpp flqueue.cpp flbind.cpp
 HDRS= \
-	flprefix.h flstdc.h flbase.h flclass.h flext.h flsupport.h flmap.h fldsp.h flinternal.h \
+	flprefix.h flstdc.h flbase.h flclass.h flext.h flsupport.h flmap.h fldsp.h flinternal.h flcontainers.h \
 	fldefs.h fldefs_hdr.h fldefs_setup.h \
 	fldefs_methcb.h fldefs_meththr.h fldefs_methadd.h fldefs_methbind.h fldefs_methcall.h \
 	fldefs_attrcb.h fldefs_attrvar.h fldefs_attradd.h

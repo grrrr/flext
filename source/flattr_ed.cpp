@@ -16,9 +16,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #if FLEXT_SYS == FLEXT_SYS_PD && !defined(FLEXT_NOATTREDIT)
 
+/*
 #ifdef PD_DEVEL_VERSION
 #define FLEXT_CLONEWIDGET
 #endif
+*/
 
 #ifdef _MSC_VER
 #pragma warning( disable : 4091 ) 

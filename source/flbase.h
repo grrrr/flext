@@ -173,35 +173,53 @@ static void cb_setup(t_class *classPtr);
 #define FLEXT_NEW(NAME,NEW_CLASS)    	    	    	    	\
     REAL_NEW(NAME,NEW_CLASS, _setup, _class)
 
+#define FLEXT_TILDE_NEW(NAME,NEW_CLASS)    	    	    	    	\
+    REAL_NEW(NAME,NEW_CLASS, _tilde_setup, _class)
+
 //
 // ONE ARGUMENT
 /////////////////////////////////////////////////
-#define FLEXT_NEW_WITH_ONE_ARG(NAME,NEW_CLASS, TYPE, PD_TYPE)    \
+#define FLEXT_NEW_1ARG(NAME,NEW_CLASS, TYPE, PD_TYPE)    \
     REAL_NEW_WITH_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, PD_TYPE)
+
+#define FLEXT_TILDE_NEW_1ARG(NAME,NEW_CLASS, TYPE, PD_TYPE)    	    	    	    	\
+    REAL_NEW_WITH_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, PD_TYPE)
 
 //
 // GIMME ARGUMENT
 /////////////////////////////////////////////////
-#define FLEXT_NEW_WITH_GIMME(NAME,NEW_CLASS)  	    	    	\
+#define FLEXT_NEW_GIMME(NAME,NEW_CLASS)  	    	    	\
     REAL_NEW_WITH_GIMME(NAME,NEW_CLASS, _setup, _class)
+
+#define FLEXT_TILDE_NEW_GIMME(NAME,NEW_CLASS)  	    	    	\
+    REAL_NEW_WITH_GIMME(NAME,NEW_CLASS, _tilde_setup, _class)
 
 //
 // TWO ARGUMENTS
 /////////////////////////////////////////////////
-#define FLEXT_NEW_WITH_TWO_ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO)	\
+#define FLEXT_NEW_2ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO)	\
     REAL_NEW_WITH_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO)
+
+#define FLEXT_TILDE_NEW_2ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO)	\
+    REAL_NEW_WITH_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO)
 
 //
 // THREE ARGUMENTS
 /////////////////////////////////////////////////
-#define FLEXT_NEW_WITH_THREE_ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE)	\
+#define FLEXT_NEW_3ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE)	\
     REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE)
+
+#define FLEXT_TILDE_NEW_3ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE)	\
+    REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE)
 
 //
 // FOUR ARGUMENTS
 /////////////////////////////////////////////////
-#define FLEXT_NEW_WITH_FOUR_ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE, TFOUR, PD_FOUR) \
+#define FLEXT_NEW_4ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE, TFOUR, PD_FOUR) \
     REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE, TFOUR, PD_FOUR)
+
+#define FLEXT_TILDE_NEW_4ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE, TFOUR, PD_FOUR) \
+    REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE, TFOUR, PD_FOUR)
 
 ////////////////////////////////////////
 // These definitions are used below
@@ -210,9 +228,11 @@ static void cb_setup(t_class *classPtr);
 #ifdef PD
 #define FLEXT_NEWFN ::class_new
 #define FLEXT_CLREF(NAME,CLASS) gensym(NAME)
+#define FLEXT_MAIN(MAINNAME) MAINNAME
 #elif defined(MAXMSP)
 #define FLEXT_NEWFN NULL; ::setup
 #define FLEXT_CLREF(NAME,CLASS) (t_messlist **)&(CLASS)
+#define FLEXT_MAIN(MAINNAME) main
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -237,7 +257,7 @@ void * EXTERN_NAME ## NEW_CLASS ()                              \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
-void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
+void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
     NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
     	     	FLEXT_CLREF(NEW_CLASS::m_name,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
@@ -264,7 +284,7 @@ void * EXTERN_NAME ## NEW_CLASS (VAR_TYPE arg)                  \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
-void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
+void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
     NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
     	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
@@ -292,7 +312,7 @@ void * EXTERN_NAME ## NEW_CLASS (t_symbol *, int argc, t_atom *argv) \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
-void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
+void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
     NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
     	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
@@ -320,7 +340,7 @@ void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo) \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
-void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
+void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
     NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
     	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
@@ -348,7 +368,7 @@ void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo, THREE_VA
 return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
-void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
+void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
     NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
     	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
@@ -376,7 +396,7 @@ void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo, THREE_VA
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
-void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
+void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
     NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
     	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\

@@ -1,8 +1,10 @@
 flext - Compatibility library for Max/MSP and pd (pure data) externals
+version 0.1.1
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
+
 
 ----------------------------------------------------------------------------
 
@@ -14,6 +16,7 @@ Package files:
 - flext.h,flext.cpp: actual base classes for message (flext_base) and dsp (flext_dsp) processing
 - flbuf.cpp: buffer object handling for base classes
 - flcwmax.h: trivial prefix header file for Max/MSP CodeWarrior projects
+
 
 ----------------------------------------------------------------------------
 
@@ -29,14 +32,47 @@ o GCC: no makefile yet
 - Max/MSP - MacOS:
 o Metrowerks CodeWarrior V6: ok
 
+
+
+for Max/MSP you will also need the Max/MSP SDK
+for PD you need the source code (which is most likely part of the distribution)
+
+----------------------------------------------------------------------------
+
+Version history:
+
+0.1.1:
+- more emancipation from GEM code
+- abstraction for dsp processing
+- makefile for BCC
+- manual call of extern_setup or main unnecessary for single objects - only in pd libraries
+
+
+0.1.0: 
+- max-pd 0.2 became flext 0.1.0
+- heavy usage of unchanged GEM code
+
+
+----------------------------------------------------------------------------
+
+Platform restrictions:
+- Max does not allow external libraries -> only one FLEXT_NEW* or FLEXT_TILDE_NEW* in a project 
+
+Restrictions in compatibility mode:
+- Max allows only 9 float inlets
+
+
+
 ----------------------------------------------------------------------------
 
 TODO list:
-- Documentation
-- Trade preprocessor definitions for C++ base class code
+- documentation
+- add warning messages for debugging version
+- exchange preprocessor definitions for C++ base class code
 - cleaner makefiles
+- makefile and project for MS VC++ 6
+- flext project and example template for CodeWarrior
 - better function names
 - abstraction for parsing GIMME args
 - abstraction for creating lists
-+ clarify: what is Max/MSP behavior for floats into signal inlets? -> SEEMS TO ACT LIKE PD
 

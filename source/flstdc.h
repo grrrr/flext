@@ -55,20 +55,10 @@ typedef t_float t_flint;
 #define add_bang(clss,meth) class_addbang(clss, (t_method)meth)
 #define add_float(clss,meth) class_addfloat(clss, (t_method)meth)
 #define add_floatn(clss,meth,n) class_addmethod(clss, (t_method)meth,gensym("ft" #n),A_FLOAT,A_NULL)
-/*
-#define add_float2(clss,meth) class_addmethod(clss, (t_method)meth,gensym("ft2"),A_FLOAT,A_NULL)
-#define add_float3(clss,meth) class_addmethod(clss, (t_method)meth,gensym("ft3"),A_FLOAT,A_NULL)
-#define add_float4(clss,meth) class_addmethod(clss, (t_method)meth,gensym("ft4"),A_FLOAT,A_NULL)
-*/
 #define add_flint(clss,meth) class_addfloat(clss, (t_method)meth)
 #define add_flintn(clss,meth,n) class_addmethod(clss, (t_method)meth,gensym("ft" #n),A_FLOAT,A_NULL)
-/*
-#define add_flint2(clss,meth) class_addmethod(clss, (t_method)meth,gensym("ft2"),A_FLOAT,A_NULL)
-#define add_flint3(clss,meth) class_addmethod(clss, (t_method)meth,gensym("ft3"),A_FLOAT,A_NULL)
-#define add_flint4(clss,meth) class_addmethod(clss, (t_method)meth,gensym("ft4"),A_FLOAT,A_NULL)
-*/
+#define add_method(clss,meth,text) class_addmethod(clss, (t_method)meth, gensym(text), A_NULL)
 #define add_methodG(clss,meth,text) class_addmethod(clss, (t_method)meth, gensym(text), A_GIMME,A_NULL)
-#define add_method0(clss,meth,text) class_addmethod(clss, (t_method)meth, gensym(text), A_NULL)
 #define add_method1(clss,meth,text,a1) class_addmethod(clss, (t_method)meth, gensym(text), a1,A_NULL)
 #define add_method2(clss,meth,text,a1,a2) class_addmethod(clss, (t_method)meth, gensym(text), a1,a2,A_NULL)
 #define add_method3(clss,meth,text,a1,a2,a3) class_addmethod(clss, (t_method)meth, gensym(text), a1,a2,a3,A_NULL)
@@ -116,20 +106,10 @@ typedef _outlet t_outlet;
 #define add_bang(clss,meth) addbang((method)meth)
 #define add_float(clss,meth) addfloat((method)meth)
 #define add_floatn(clss,meth,n) addftx((method)meth,n)
-/*
-#define add_float2(clss,meth) addftx((method)meth,2)
-#define add_float3(clss,meth) addftx((method)meth,3)
-#define add_float4(clss,meth) addftx((method)meth,4)
-*/
 #define add_flint(clss,meth) addint((method)meth)
 #define add_flintn(clss,meth,n) addinx((method)meth,n)
-/*
-#define add_flint2(clss,meth) addinx((method)meth,2)
-#define add_flint3(clss,meth) addinx((method)meth,3)
-#define add_flint4(clss,meth) addinx((method)meth,4)
-*/
+#define add_method(clss,meth,text) addmess((method)meth, text, A_NOTHING)
 #define add_methodG(clss,meth,text) addmess((method)meth, text, A_GIMME,A_NOTHING)
-#define add_method0(clss,meth,text) addmess((method)meth, text, A_NOTHING)
 #define add_method1(clss,meth,text,a1) addmess((method)meth, text, a1,A_NOTHING)
 #define add_method2(clss,meth,text,a1,a2) addmess((method)meth, text, a1,a2,A_NOTHING)
 #define add_method3(clss,meth,text,a1,a2,a3) addmess((method)meth, text, a1,a2,a3,A_NOTHING)

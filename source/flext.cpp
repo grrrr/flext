@@ -12,18 +12,19 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // -- flext_base --------------------------
 
+BL flext_base::compatibility = true;
+
 flext_base::flext_base():
 	inlist(NULL),outlist(NULL),
 	incnt(0),outcnt(0),
 	insigs(0),outsigs(0),
-	inlets(NULL),outlets(NULL)
+	outlets(NULL)
 {}
 
 flext_base::~flext_base()
 {
 	if(inlist) delete inlist;
 	if(outlist) delete outlist;
-	if(inlets) delete[] inlets;
 	if(outlets) delete[] outlets;
 }
 
@@ -39,14 +40,11 @@ V flext_base::AddXlet(xlet::type tp,I mult,xlet *&root)
 	}
 }
 
-BL flext_base::SetupInOut()
+BL flext_base::setup_inout()
 {
 	BL ok = true;
 	
-	if(inlets) { 
-		delete[] inlets; inlets = NULL; 
-		incnt = insigs = 0; 
-	}
+	incnt = insigs = 0; 
 
 	if(inlist) {
 		xlet *xi;
@@ -57,8 +55,6 @@ BL flext_base::SetupInOut()
 		for(xi = inlist,i = 0; xi; xi = xi->nxt,++i) list[i] = xi->tp;
 		delete inlist; inlist = NULL;
 		
-		inlets = new t_inlet *[incnt];
-
 		// type info is now in list array
 #ifdef PD
 		{
@@ -78,24 +74,33 @@ BL flext_base::SetupInOut()
 						error("%s: Leftmost inlet must be of type signal or default",thisName());
 						ok = false;
 				} 
-				inlets[0] = NULL;
 			}		
 			for(ix = 1; ix < incnt; ++ix) {
 				switch(list[ix]) {
 					case xlet::tp_float:
 					case xlet::tp_flint: {
-						C sym[] = "ft?\0";
-						// is this correct handling for ix > 9????
-						if(ix >= 10) sym[2] = '0'+ix/10,sym[3] = '0'+ix%10;
-						else sym[2] = '0'+ix;  
-					    inlets[ix] = inlet_new(x_obj, &x_obj->ob_pd, &s_float, gensym(sym)); 
+						C sym[] = "ft??";
+						if(ix >= 10) { 
+#ifdef MAXMSP
+							post("%s: Only 9 float inlets possible",thisName());
+#else
+							if(compatibility)
+								// Max allows max. 9 inlets
+								post("%s: Only 9 float inlets allowed in compatibility mode",thisName());
+							else 
+								sym[2] = '0'+ix/10,sym[3] = '0'+ix%10;
+#endif
+						}
+						else 
+							sym[2] = '0'+ix,sym[3] = 0;  
+					    inlet_new(x_obj, &x_obj->ob_pd, &s_float, gensym(sym)); 
 						break;
 					}
 					case xlet::tp_sym: 
-					    inlets[ix] = inlet_new(x_obj, &x_obj->ob_pd, &s_symbol, &s_symbol); 
+					    inlet_new(x_obj, &x_obj->ob_pd, &s_symbol, &s_symbol); 
 						break;
 					case xlet::tp_sig:
-	    				inlets[ix] = inlet_new(x_obj, &x_obj->ob_pd, &s_signal, &s_signal);  
+	    				inlet_new(x_obj, &x_obj->ob_pd, &s_signal, &s_signal);  
 						++insigs;
 						break;
 					default:
@@ -113,10 +118,10 @@ BL flext_base::SetupInOut()
 			for(ix = incnt-1; ix >= insigs; --ix) {
 				switch(list[ix]) {
 					case xlet::tp_float:
-						/*inlets[ix] =*/ floatin(x_obj,ix);  
+						floatin(x_obj,ix);  
 						break;
 					case xlet::tp_flint:
-						/*inlets[ix] =*/ intin(x_obj,ix);  
+						intin(x_obj,ix);  
 						break;
 					case xlet::tp_sig:
 						error("%s: Signal inlets must be at the left side",thisName());
@@ -144,8 +149,8 @@ BL flext_base::SetupInOut()
 	
 	if(outlets) { 
 		delete[] outlets; outlets = NULL; 
-		outcnt = outsigs = 0; 
 	}
+	outcnt = outsigs = 0; 
 	
 	if(outlist) {
 		xlet *xi;
@@ -198,7 +203,7 @@ BL flext_base::SetupInOut()
 
 V flext_base::cb_setup(t_class *c)
 {
-	add_method0(c,cb_help,"help");
+	add_method(c,cb_help,"help");
 	
 #ifdef MAXMSP
 	add_loadbang(c,cb_loadbang);
@@ -260,7 +265,7 @@ V flext_dsp::cb_dsp(V *c,t_signal **sp)
 	obj->srate = sp[0]->s_sr;
 
 	// store in and out signal vectors
-	I i,in = obj->InSignals(),out = obj->OutSignals();
+	I i,in = obj->cnt_insig(),out = obj->cnt_outsig();
 	if(obj->invecs) delete[] obj->invecs;
 	obj->invecs = new F *[in];
 	for(i = 0; i < in; ++i) obj->invecs[i] = sp[i]->s_vec;

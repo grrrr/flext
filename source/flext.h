@@ -22,6 +22,10 @@ class flext_base:
 	FLEXT_HEADER(flext_base,flext_obj)
 	
 public:
+	// compatibility mode: flext allows only operations valid for all platforms
+	// true by default
+	static BL compatibility;  
+
 	flext_base();
 	virtual ~flext_base();
 	
@@ -75,28 +79,27 @@ public:
 protected:
 
 	// inlets/outlets - all (also default) inlets must be defined
-	V Inlet_def() { AddInlet(xlet::tp_def,1); }
-	V Inlet_float(I m = 1) { AddInlet(xlet::tp_float,m); }
-	V Inlet_flint(I m = 1) { AddInlet(xlet::tp_flint,m); }
-	V Inlet_symbol(I m = 1) { AddInlet(xlet::tp_sym,m); }
+	V add_in_def() { AddInlet(xlet::tp_def,1); }
+	V add_in_float(I m = 1) { AddInlet(xlet::tp_float,m); }
+	V add_in_flint(I m = 1) { AddInlet(xlet::tp_flint,m); }
+	V add_in_symbol(I m = 1) { AddInlet(xlet::tp_sym,m); }
 	
-	V Outlet_float(I m = 1) { AddOutlet(xlet::tp_float,m); }
-	V Outlet_flint(I m = 1) { AddOutlet(xlet::tp_flint,m); }
-	V Outlet_symbol(I m = 1) { AddOutlet(xlet::tp_sym,m); }
-	V Outlet_list(I m = 1) { AddOutlet(xlet::tp_list,m); }
+	V add_out_float(I m = 1) { AddOutlet(xlet::tp_float,m); }
+	V add_out_flint(I m = 1) { AddOutlet(xlet::tp_flint,m); }
+	V add_out_symbol(I m = 1) { AddOutlet(xlet::tp_sym,m); }
+	V add_out_list(I m = 1) { AddOutlet(xlet::tp_list,m); }
 	
 	// must be called to actually set up the defined inlets/outlets 
 	// only ONCE!!!
-	BL SetupInOut(); 
+	BL setup_inout(); 
 
-	I Inlets() const { return incnt; }
-	I Outlets() const { return outcnt; }
-	I InSignals() const { return insigs; }
-	I OutSignals() const { return outsigs; }
+	I cnt_in() const { return incnt; }
+	I cnt_out() const { return outcnt; }
+	I cnt_insig() const { return insigs; }
+	I cnt_outsig() const { return outsigs; }
 
 	// get pointer _after_wards	
-	t_inlet *Inlet(I ix) { return (inlets && ix < incnt)?inlets[ix]:NULL; }
-	t_outlet *Outlet(I ix) { return (outlets && ix < outcnt)?outlets[ix]:NULL; }
+	t_outlet *get_out(I ix) { return (outlets && ix < outcnt)?outlets[ix]:NULL; }
 
 	struct xlet {	
 		enum type {
@@ -117,7 +120,6 @@ private:
 
 	xlet *inlist,*outlist;
 	I incnt,outcnt,insigs,outsigs;
-	t_inlet **inlets;
 	t_outlet **outlets;
 	
 	V AddXlet(xlet::type tp,I mult,xlet *&root);	
@@ -155,15 +157,15 @@ public:
 	virtual V m_enable(BL on);
 
 	// returns current sample rate
-	F Samplerate() const { return srate; }
+	F samplerate() const { return srate; }
 	
 protected:
 
 	// add signal inlet
-	V Inlet_signal(I m = 1) { AddInlet(xlet::tp_sig,m); }
+	V add_in_signal(I m = 1) { AddInlet(xlet::tp_sig,m); }
 
 	// add signal outlet
-	V Outlet_signal(I m = 1) { AddOutlet(xlet::tp_sig,m); }
+	V add_out_signal(I m = 1) { AddOutlet(xlet::tp_sig,m); }
 	
 private:
 

@@ -27,7 +27,7 @@ unamesys=$(uname -s)
 case $unamesys in
 	Linux) platform=lnx;;
 	Darwin) platform=mac;;
-	CYGWIN*) platform=win;;
+	CYGWIN*|MINGW*) platform=win;;
 	*) echo Platform $unamesys not supported; exit;;
 esac
 

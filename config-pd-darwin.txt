@@ -15,6 +15,6 @@ TARGDIR=./pd-darwin
 INSTALL=yes
 
 # where should flext libraries be installed?
-INSTDIR=/usr/local/pd/extra/flext
+INSTDIR=/usr/local/pd/flext
 
 

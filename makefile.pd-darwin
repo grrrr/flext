@@ -13,9 +13,9 @@ include config-pd-darwin.txt
 # compiler+linker stuff 
 INCLUDES=$(PDPATH) $(SNDOBJ)
 FLAGS=-DPD -Dunix
-CFLAGS=-DMACOSX -DPD -Dunix -O2 -W -Wshadow -Wstrict-prototypes \
+CFLAGS=-DMACOSX -DPD -Dunix -maltivec -O2 -W -Wshadow -Wstrict-prototypes \
     -Wno-unused -Wno-parentheses -Wno-switch
-#CFLAGS_D=-mcpu=pentiumpro -g
+CFLAGS_D=-g
 CFLAGS_T=-DFLEXT_THREADS
 LIBS=
 

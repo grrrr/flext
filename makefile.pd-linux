@@ -37,8 +37,8 @@ NAME=flext
 
 # all the source files from the package
 SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp
-HDRS=flstdc.h flbase.h flext.h
-IHDRS=fldefs.h
+HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h
+IHDRS=flinternal.h
 
 MAKEFILE=makefile.pd-linux
 TARGET=$(TARGDIR)/$(NAME).a

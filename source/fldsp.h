@@ -19,13 +19,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // include the header file declaring the base classes
 #include "flext.h"
 
+namespace flext {
 
 // === flext_dsp ==================================================
 
 /*! \brief Flext dsp enabled base object
 */
-class flext_dsp:
-	public flext_base
+class CDsp: //flext_dsp:
+public CBase //flext_base
 {
 	FLEXT_HEADER_S(flext_dsp,flext_base,Setup)
 	
@@ -110,9 +111,12 @@ public:
 
 protected:
 	
-	flext_dsp();
-	~flext_dsp();
-	
+//	flext_dsp();
+//	~flext_dsp();
+
+	CDsp();
+	virtual ~CDsp();
+
 private:
 
 	// not static, could be different in different patchers..
@@ -136,5 +140,7 @@ private:
 	static t_int *dspmeth(t_int *w); 
 	t_sample **invecs,**outvecs;
 };
+
+} // namespace flext
 
 #endif

@@ -10,12 +10,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define FLEXT_SNDOBJ
 
 #include "flext.h"
-
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 300)
-#error You need at least flext version 0.3.0 
-#endif
-
 #include <SndObj/AudioDefs.h>
+
+namespace flext {
 
 class flext_sndobj:
 	public flext_dsp
@@ -80,5 +77,7 @@ private:
 	float smprt;
 	int blsz;
 };
+
+} // namespace flext
 
 #endif

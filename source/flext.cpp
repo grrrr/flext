@@ -17,6 +17,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <string.h>
 #include <stdarg.h>
 
+namespace flext {
+
 // === proxy class for flext_base ============================
 
 #ifdef PD
@@ -115,23 +117,23 @@ DEF_IN_FT(9)
 
 bool flext_base::compatibility = true;
 
-
-const t_symbol *flext_base::sym_float = NULL;
-const t_symbol *flext_base::sym_symbol = NULL;
-const t_symbol *flext_base::sym_bang = NULL;
-const t_symbol *flext_base::sym_list = NULL;
-const t_symbol *flext_base::sym_anything = NULL;
-const t_symbol *flext_base::sym_pointer = NULL;
-const t_symbol *flext_base::sym_int = NULL;
+const t_symbol *sym_float = NULL;
+const t_symbol *sym_symbol = NULL;
+const t_symbol *sym_bang = NULL;
+const t_symbol *sym_list = NULL;
+const t_symbol *sym_anything = NULL;
+const t_symbol *sym_pointer = NULL;
+const t_symbol *sym_int = NULL;
 
 #ifdef PD
-const t_symbol *flext_base::sym_signal = NULL;
+const t_symbol *sym_signal = NULL;
 #endif
 
-const t_symbol *flext_base::MakeSymbol(const char *s) { return gensym(const_cast<char *>(s)); }
+const t_symbol *MakeSymbol(const char *s) { return gensym(const_cast<char *>(s)); }
 
 
-flext_base::flext_base():
+//flext_base::flext_base():
+CBase::CBase():
 	inlist(NULL),outlist(NULL),
 	incnt(0),outcnt(0),
 	insigs(0),outsigs(0),
@@ -154,7 +156,8 @@ flext_base::flext_base():
 #endif
 }
 
-flext_base::~flext_base()
+//flext_base::~flext_base()
+CBase::~CBase()
 {
 #ifdef FLEXT_THREAD
 	// wait for thread termination
@@ -827,7 +830,7 @@ void flext_base::AddMethod(int inlet,const char *tag,methfun fun,metharg tp,...)
 
 
 
-void flext_base::GetAString(const t_atom &a,char *buf,int szbuf)
+void GetAString(const t_atom &a,char *buf,int szbuf)
 { 
 #ifdef PD
 	atom_string(const_cast<t_atom *>(&a),buf,szbuf);
@@ -837,5 +840,7 @@ void flext_base::GetAString(const t_atom &a,char *buf,int szbuf)
 	else if(IsInt(a)) sprintf(buf,"%i",GetInt(a));
 #endif
 }  
+
+} // namespace flext
 
 

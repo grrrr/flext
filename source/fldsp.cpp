@@ -16,6 +16,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flinternal.h"
 #include <string.h>
 
+namespace flext {
+
 // === flext_dsp ==============================================
 
 void flext_dsp::Setup(t_class *c)
@@ -33,7 +35,7 @@ void flext_dsp::Setup(t_class *c)
 #endif
 }
 
-flext_dsp::flext_dsp(): 
+CDsp::CDsp(): //flext_dsp::flext_dsp(): 
 #ifndef MAXMSP
 	dspon(true),
 #endif
@@ -50,7 +52,7 @@ flext_dsp::flext_dsp():
 {}
 
 
-flext_dsp::~flext_dsp()
+CDsp::~CDsp() //flext_dsp::~flext_dsp()
 {
 	if(invecs) delete[] invecs;
 	if(outvecs) delete[] outvecs;
@@ -108,4 +110,5 @@ void flext_dsp::cb_enable(t_class *c,t_flint on) { thisObject(c)->m_enable(on !=
 void flext_dsp::m_enable(bool en) { dspon = en; }
 #endif
 
+} // namespace flext
 

@@ -16,6 +16,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __FLEXT_DEFS_H
 #define __FLEXT_DEFS_H
 
+#define flext_base flext::CBase
+#define flext_dsp flext::CDsp
+
 #ifdef FLEXT_GUI
 #define FLEXT_CAST dynamic_cast
 #else

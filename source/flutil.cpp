@@ -28,7 +28,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <unistd.h>
 #endif
 
-t_atom *flext_base::CopyList(int argc,const t_atom *argv)
+namespace flext {
+
+t_atom *CopyList(int argc,const t_atom *argv)
 {
 	int i;
 	t_atom *dst = new t_atom[argc];
@@ -36,7 +38,7 @@ t_atom *flext_base::CopyList(int argc,const t_atom *argv)
 	return dst;
 }
 
-void flext_base::CopyMem(void *dst,const void *src,int bytes) 
+void CopyMem(void *dst,const void *src,int bytes) 
 {
 #ifdef macintosh
 	BlockMoveData(src,dst,bytes);
@@ -45,7 +47,7 @@ void flext_base::CopyMem(void *dst,const void *src,int bytes)
 #endif
 }
 
-void flext_base::Sleep(float s)
+void Sleep(float s)
 {
 #ifdef NT
 	::Sleep((long)(s*1000));
@@ -62,3 +64,5 @@ void flext_base::Sleep(float s)
 	usleep((long)(s*1000000));
 #endif
 }
+
+} // namespace flext

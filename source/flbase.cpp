@@ -27,7 +27,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 flext_hdr *flext_obj::m_holder = NULL;
 const t_symbol *flext_obj::m_holdname = NULL;
 bool flext_obj::m_holdattr = false;
-
+bool flext_obj::process_attributes = false;
 
 /////////////////////////////////////////////////////////
 // Constructor

@@ -153,7 +153,7 @@ static t_class *lib_class = NULL;
 static const t_symbol *lib_name = NULL;
 #endif
 
-void flext_obj::lib_init(const char *name,void setupfun())
+void flext_obj::lib_init(const char *name,void setupfun(),bool attr)
 {
 #ifdef MAXMSP
 	lib_name = MakeSymbol(name);
@@ -162,6 +162,7 @@ void flext_obj::lib_init(const char *name,void setupfun())
 		(t_newmethod)obj_new,(t_method)obj_free,
 		sizeof(flext_hdr),NULL,A_GIMME,A_NULL);
 #endif
+	process_attributes = attr;
 	setupfun();
 }
 
@@ -173,6 +174,8 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 #ifdef _DEBUG
 	if(dsp) chktilde(GetString(nsym));
 #endif
+
+	if(!lib) process_attributes = attr;
 
 	// set dynamic class pointer
 	t_class **cl = 
@@ -200,7 +203,7 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 	libobject *lo = new libobject(*cl,newfun,freefun);
 	lo->lib = lib;
 	lo->dsp = dsp;
-	lo->attr = attr;
+	lo->attr = process_attributes;
 
 	// parse the argument type list and store it with the object
 	if(argtp1 == A_GIMME)

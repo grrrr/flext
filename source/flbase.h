@@ -129,6 +129,8 @@ class FLEXT_EXT flext_obj:
 
 		void InitProblem() { init_ok = false; }
 
+		static void ProcessAttributes(bool attr) { process_attributes = attr; }
+
 		// this also guarantees that there are no instances of flext_obj
 		virtual bool Init() = 0; 
 		virtual void Exit() {}
@@ -153,6 +155,8 @@ class FLEXT_EXT flext_obj:
 
         //! Flag for attribute procession
         bool				procattr;
+
+		static bool				process_attributes;
 
     private:
 
@@ -185,7 +189,7 @@ class FLEXT_EXT flext_obj:
 		//@{
 		//! Definitions for library objects
 
-		static void lib_init(const char *name,void setupfun());
+		static void lib_init(const char *name,void setupfun(),bool attr);
 		static void obj_add(bool lib,bool dsp,bool attr,const char *idname,const char *names,void setupfun(t_class *),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...);
 		static flext_hdr *obj_new(const t_symbol *s,int argc,t_atom *argv);
 		static void obj_free(flext_hdr *o);
@@ -272,9 +276,9 @@ cl##_tilde_setup()
 // specify that to define the library itself
 
 #ifdef PD
-#define FLEXT_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT void NAME##_setup() { flext_obj::lib_init(#NAME,SETUPFUN); }
+#define FLEXT_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT void NAME##_setup() { flext_obj::lib_init(#NAME,SETUPFUN,FLEXT_ATTRIBUTES); }
 #else // MAXMSP
-#define FLEXT_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT int main() { flext_obj::lib_init(#NAME,SETUPFUN); return 0; }
+#define FLEXT_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT int main() { flext_obj::lib_init(#NAME,SETUPFUN,FLEXT_ATTRIBUTES); return 0; }
 #endif
 
 

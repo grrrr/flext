@@ -144,5 +144,5 @@ install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD) $(TARGET_S) $(TARGET_SD
 	chmod a+r $(patsubst %,$(INSTDIR)/%,$(notdir $^))
 	chown root.users $(patsubst %,$(INSTDIR)/%,$(notdir $^))
 ifdef V4_NAMING
-	ln -s $(INSTDIR)/*.a $(patsubst %.a,lib%.a,$(INSTDIR)/*.a)
+	echo $(patsubst %.a,$(INSTDIR)/%.a,$(notdir $^))
 endif

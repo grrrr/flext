@@ -18,9 +18,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __FLEXT_H
 
 //! flext version number
-#define FLEXT_VERSION 203
+#define FLEXT_VERSION 204
 //! flext version string
-#define FLEXT_VERSTR "0.2.3"
+#define FLEXT_VERSTR "0.2.4pre"
 
 // include all the important flext interface definitions
 #include <fldefs.h>

@@ -464,7 +464,6 @@ void flext_base::Setup(t_class *c)
 #endif
 
 	add_method(c,cb_help,"help");
-	
 	add_loadbang(c,cb_loadbang);
 #ifdef MAXMSP
 	add_assist(c,cb_assist);

@@ -6,8 +6,12 @@
 PDPATH=/usr/local/pd/src
 
 # where is the SndObj include directory? 
-# (leave blank to disable SndObj support)
+# (leave blank or comment out to disable SndObj support)
 # SNDOBJ=/usr/src/sndobj/include
+
+# where is the STK include directory?
+# (leave blank or comment out to disable STK support)
+# STK=/usr/src/stk/include
 
 # where should flext libraries be built?
 TARGDIR=./pd-darwin

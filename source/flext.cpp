@@ -106,15 +106,15 @@ BL flext_base::SetupInOut()
 		{
 			I ix;
 			// count leftmost signal inlets
-			while(insigs < cnt && list[insigs] == xlet::tp_sig) ++insigs;
+			while(insigs < incnt && list[insigs] == xlet::tp_sig) ++insigs;
 			
-			for(ix = cnt-1; ix >= insigs; --ix) {
+			for(ix = incnt-1; ix >= insigs; --ix) {
 				switch(list[ix]) {
 					case xlet::tp_float:
-						inlets[ix] = floatin(x_obj,ix);  
+						/*inlets[ix] =*/ floatin(x_obj,ix);  
 						break;
 					case xlet::tp_flint:
-						inlets[ix] = intin(x_obj,ix);  
+						/*inlets[ix] =*/ intin(x_obj,ix);  
 						break;
 					case xlet::tp_sig:
 						error("%s: Signal inlets must be at the left side",thisName());
@@ -126,11 +126,11 @@ BL flext_base::SetupInOut()
 				} 
 			}
 			
-			if(sigs) {
+			if(insigs) {
 				dsp_setup(x_obj,insigs); // signal inlets	
 			}
 			else {
-				if(cnt && list[0] != xlet::tp_def) {
+				if(incnt && list[0] != xlet::tp_def) {
 					error("%s: Leftmost inlet must be of type signal or default",thisName());
 					ok = false;
 				}
@@ -208,7 +208,7 @@ V flext_base::cb_help(V *c) { thisObject(c)->m_help(); }
 
 #ifdef MAXMSP
 V flext_base::cb_loadbang(V *c) { thisObject(c)->m_loadbang(); }	
-V flext_base::cb_assist(V *c,V *b,L msg,L arg,C *s) { thisObject(c)->m_assist(msg,arg,s); }
+V flext_base::cb_assist(V *c,V * /*b*/,L msg,L arg,C *s) { thisObject(c)->m_assist(msg,arg,s); }
 #endif
 
 V flext_base::m_help()

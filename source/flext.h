@@ -32,7 +32,7 @@ public:
 	virtual V m_loadbang() {}
 
 	// quickhelp for inlets/outlets (Max/MSP only)
-	virtual V m_assist(L msg,L arg,C *s) {}
+	virtual V m_assist(L /*msg*/,L /*arg*/,C * /*s*/) {}
 
 	// class for platform independent buffer handling
 	class buffer

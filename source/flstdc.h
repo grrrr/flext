@@ -94,6 +94,8 @@ typedef t_patcher t_canvas;
 
 typedef t_int t_flint;
 
+typedef void _inlet;
+typedef _inlet t_inlet;
 typedef void _outlet;
 typedef _outlet t_outlet;
 

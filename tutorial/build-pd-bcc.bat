@@ -1,4 +1,4 @@
-echo --- Building flext tutorial examples with BorlandC++ ---
+@echo --- Building flext tutorial examples with BorlandC++ ---
 
 @cd simple1
 @make -f ..\makefile.pd-bcc NAME=simple1 SETUPFUNCTION=simple1_setup

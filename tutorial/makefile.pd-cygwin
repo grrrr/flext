@@ -10,16 +10,12 @@
 #
 # -----------------------------------------------------
 
-# where to build
-TARGDIR=./pd-cygwin
+include config-pd-cygwin.txt
 
-# flext stuff  ### EDIT! ###
-FLEXTPATH=..
-FLEXTLIB=$(FLEXTPATH)/pd-cygwin/flext.lib
+FLEXTLIB=$(FLEXTPATH)/flext-pdwin.lib
 
-# compiler+linker stuff	### EDIT! ###
-INCLUDES=c:/programme/audio/pd/src
-LIBPATH=c:/programme/audio/pd/bin
+INCLUDES=$(PDPATH)/src
+LIBPATH=$(PDPATH)/bin
 FLAGS=-DPD -DNT
 CFLAGS=-O6 -mcpu=pentiumpro
 LIBS=m pd
@@ -32,32 +28,31 @@ LIBS=m pd
 
 EXAMPLES=simple1 simple2 simple3 adv1 signal1~ signal2~   # thread1 thread2
 
-TARGETS=$(patsubst %,$(TARGDIR)/%.dll,$(EXAMPLES))
+TARGETS=$(patsubst %,$(OUTPATH)/%.dll,$(EXAMPLES))
 
 # default target
-all: $(TARGDIR) $(TARGETS)
+all: $(OUTPATH) $(TARGETS)
 
 
-$(TARGDIR)/%~.dll : $(TARGDIR)/%.dll 
+$(OUTPATH)/%~.dll : $(OUTPATH)/%.dll 
 	mv $^ $@
 
 $(SRCS): $(HDRS)
 	touch $@
 
-$(TARGDIR):
-	mkdir $(TARGDIR)
+$(OUTPATH):
+	-mkdir $(OUTPATH)
 
-$(TARGDIR)/%.o : %/main.cpp
+$(OUTPATH)/%.o : %/main.cpp
 	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(FLEXTPATH)) $< -o $@
 
-$(TARGDIR)/%.dll : $(TARGDIR)/%.o $(FLEXTLIB)
+$(OUTPATH)/%.dll : $(OUTPATH)/%.o $(FLEXTLIB)
 	$(CXX) $(LDFLAGS) -shared $(patsubst %,-L%,$(LIBPATH)) $^ $(patsubst %,-l%,$(LIBS)) -o $@
+	rm $<
 	chmod 755 $@
 
 
 .PHONY: clean
 clean:
-	rm -f $(TARGDIR)/*.o $(TARGETS)
+	rm -f $(OUTPATH)/*.o $(TARGETS)
 	
-
-

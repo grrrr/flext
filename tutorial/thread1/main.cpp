@@ -58,12 +58,18 @@ void thread1::m_start()
 	// Please note that this functions needs about 10 seconds to complete
 	// Without threads it would block the real-time system
 
-	// Okay, that functionality would be more elegant with timers
+	// Okay, that functionality would be far more elegant with timers
 	// ... but hey, it's a demo!
 
-	for(int i = 0; i < 20; ++i) {
+	for(int i = 0; i < 20 && !ShouldExit(); ++i) {
 		ToOutInt(0,i); // output loop count
-		Sleep(0.5f); // wait for half a second
+
+		// wait for half a second
+		for(int j = 0; j < 5 && !ShouldExit(); ++j) Sleep(0.1f); 
+		// note: we shall not block a thread for a longer time.
+		// The system might want to destroy the object in the meantime and
+		// expects thread termination.
+		// Flext waits for 1 second by default, then it aborts the thread brutally
 	}
 
 	// output a final zero

@@ -6,20 +6,15 @@
 #
 # ---------------------------------------------
 
-# where to put the build
-OUTPATH=..\bcc
+!include ..\config-pd-bcc.txt
 
-# flext stuff
-FLEXTPATH=..\..	### EDIT! ###
+OUTPATH=..\$(OUTPATH)
+
 TARGET=pdwin
 
-# paths
-BCCPATH=c:\programme\prog\bcc55		### EDIT! ###
-PDPATH=c:\programme\audio\pd		### EDIT! ###
-
 # includes, libs
-INCPATH=-I$(BCCPATH)\include -I$(PDPATH)\src -I$(FLEXTPATH)\source
-LIBPATH=-L$(BCCPATH)\lib -L$(PDPATH)\lib -L$(FLEXTPATH)\bcc
+INCPATH=-I$(BCCPATH)\include -I$(PDPATH)\src -I$(FLEXTPATH)
+LIBPATH=-L$(BCCPATH)\lib -L$(PDPATH)\lib -L$(FLEXTPATH)
 LIBS=cw32.lib import32.lib C0D32.OBJ
 
 # compiler definitions and flags

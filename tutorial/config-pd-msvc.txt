@@ -1,0 +1,16 @@
+# flext - C++ layer for Max/MSP and pd (pure data) externals
+# tutorial examples
+# Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
+#
+
+# where is PD?
+PDPATH=c:\programme\audio\pd		
+
+# where is MS VC++?
+MSVCPATH=c:\programme\prog\microsoft visual studio\VC98
+
+# where do the flext libraries reside?
+FLEXTPATH=$(PDPATH)\flext
+
+# where should the examples be built?
+OUTPATH=.\pd-msvc

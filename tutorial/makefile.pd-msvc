@@ -1,0 +1,48 @@
+# flext - C++ layer for Max/MSP and pd (pure data) externals
+# Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
+#
+# Makefile for MSVC++
+#
+#
+# IMPORTANT: Adjust some of the paths also in makefile-inc.msvc
+#
+# usage: make -f makefile.pd-msvc
+#
+# ---------------------------------------------------------------
+
+!include config-pd-msvc.txt
+
+# includes
+INCPATH=/I"$(MSVCPATH)\include" /I"$(PDPATH)\src" /I"$(FLEXTPATH)"
+LIBPATH=/LIBPATH:"$(MSVCPATH)\lib" /LIBPATH:"$(PDPATH)\bin" /LIBPATH:"$(FLEXTPATH)"
+LIBS=pd.lib pthreadVC.lib flext_t-pdwin.lib
+
+# compiler definitions and flags
+DEFS=/DPD /DNT /DFLEXT_THREADS
+
+CFLAGS=/GR /GD /G6 /Ox /MT
+
+
+# the rest can stay untouched
+# ----------------------------------------------
+
+# all the source files from the package
+SRCS=main.cpp
+HDRS=
+
+# -----------------------------------------------
+
+all: $(OUTPATH) $(OUTPATH)\$(NAME).dll
+
+$(OUTPATH):
+	-mkdir $(OUTPATH)
+
+$(OUTPATH)\$(NAME)~.dll : $(OUTPATH)\$(NAME).dll
+	-ren $** $<
+
+$(OUTPATH)\$(NAME).dll : $(DIR)\$(SRCS)
+	cl /c /LD $(CFLAGS) $(DEFS) $(INCPATH) $** /Fotemp.obj
+	link /DLL /out:$@ /INCREMENTAL:NO temp.obj $(LIBS) $(LIBPATH)
+	@-del $(OUTPATH)\*.exp
+	@-del $(OUTPATH)\*.lib
+	@-del temp.obj

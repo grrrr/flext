@@ -328,7 +328,7 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 		STD::sprintf(b, "} {"); b += strlen(b);
 
 		// get puttable attribute
-		AttrItem *pattr = th->FindAttrib(GetSymbol(la[i]),false);
+		AttrItem *pattr = gattr->Counterpart();
 
 		if(pattr) {
 			// if there is initialization data take this, otherwise take the current data

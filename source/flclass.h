@@ -537,6 +537,17 @@ protected:
 	//! Set an attribute value
 	bool SetAttrib(const t_symbol *s,const AtomList &a) { return SetAttrib(s,a.Count(),a.Atoms()); }
 
+	// get and set the attribute
+	bool BangAttrib(const t_symbol *a);
+	// get and set the attribute
+	bool BangAttrib(const char *a) { return BangAttrib(MakeSymbol(a)); }
+	// get and set all (both get- and settables)
+	bool BangAttribAll();
+	// show/hide the attribute
+	bool ShowAttrib(const t_symbol *a,bool show) const;
+	// show/hide the attribute
+	bool ShowAttrib(const char *a,bool show) { return ShowAttrib(MakeSymbol(a),show); }
+
 	//! List methods
 	void ListMethods(AtomList &a,int inlet = 0) const;
 
@@ -653,19 +664,22 @@ protected:
 		virtual ~AttrItem();
 
 		enum { 
-			afl_getset = 0x01, afl_get = 0x00, afl_set = 0x01,
-			afl_bothexist = 0x02,
-			afl_save = 0x04,afl_init = 0x08,afl_inited = 0x10
+			afl_get = 0x01, afl_set = 0x02, 
+			afl_getset = afl_get|afl_set,
+			afl_shown = 0x08
 		};
 
 		bool IsGet() const { return (flags&afl_getset) == afl_get; }
 		bool IsSet() const { return (flags&afl_getset) == afl_set; }
-		bool BothExist() const { return (flags&afl_bothexist) != 0; }
+		bool IsShown() const { return (flags&afl_shown) != 0; }
+		bool BothExist() const { return counter != NULL; }
+		AttrItem *Counterpart() { return counter; }
 
 		int index;
 		int flags;
 		metharg argtp;
 		methfun fun;
+		AttrItem *counter;
 	};
 
 	//! Represent a data value of an attribute
@@ -768,8 +782,8 @@ private:
 
 	static ItemCont *GetClassArr(t_classid,int ix);
 
-	ItemCont *methhead,*clmethhead;
-	ItemCont *bindhead;
+	mutable ItemCont *methhead,*clmethhead;
+	mutable ItemCont *bindhead;
 	
 	bool CallMeth(const MethItem &m,int argc,const t_atom *argv);
 	bool FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *argv);
@@ -777,8 +791,8 @@ private:
 	bool TryMethSym(const MethItem *m,int inlet,const t_symbol *t,const t_symbol *s);
 	bool TryMethAny(const MethItem *m,int inlet,const t_symbol *t,const t_symbol *s,int argc,const t_atom *argv);
 
-	ItemCont *attrhead,*clattrhead;
-	AttrDataCont *attrdata;
+	mutable ItemCont *attrhead,*clattrhead;
+	mutable AttrDataCont *attrdata;
 
 	AttrItem *FindAttrib(const t_symbol *tag,bool get,bool msg = false) const;
 
@@ -787,11 +801,15 @@ private:
 
 	bool ListMethods(int inlet = 0) const;
 	bool ListAttrib() const;
-	bool GetAttrib(AttrItem *a);
+	bool DumpAttrib(AttrItem *a) const;
 	bool GetAttrib(AttrItem *a,AtomList &l) const;
 	bool SetAttrib(const t_symbol *s,int argc,const t_atom *argv);
 	bool SetAttrib(AttrItem *a,int argc,const t_atom *argv);
 	bool SetAttrib(AttrItem *a,const AtomList &l) { return SetAttrib(a,l.Count(),l.Atoms()); }
+	// get and set the attribute
+	bool BangAttrib(AttrItem *a);
+	// show/hide the attribute
+	bool ShowAttrib(AttrItem *a,bool show) const;
 
 	static bool cb_ListMethods(flext_base *c,int argc,const t_atom *argv);
 	static bool cb_ListAttrib(flext_base *c) { return c->ListAttrib(); }

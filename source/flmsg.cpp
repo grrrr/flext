@@ -82,7 +82,7 @@ bool flext_base::TryMethTag(const MethItem *m,int inlet,const t_symbol *t,int ar
 				// attributes are treated differently
 
 				if(m->attr->IsGet())
-					return GetAttrib(m->attr);
+					return DumpAttrib(m->attr);
 				else
 					return SetAttrib(m->attr,argc,argv);
 			}

@@ -26,7 +26,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 flext_base::AttrItem::AttrItem(const t_symbol *t,metharg tp,methfun f,int fl):
 	Item(t,0,NULL),index(0),
-	flags(fl),argtp(tp),fun(f)
+	flags(fl|afl_shown),counter(NULL),
+	argtp(tp),fun(f)
 {}
 
 flext_base::AttrItem::~AttrItem()
@@ -39,10 +40,11 @@ flext_base::AttrItem::~AttrItem()
 void flext_base::AddAttrib(ItemCont *aa,ItemCont *ma,const char *attr,metharg tp,methfun gfun,methfun sfun)
 {
 	const t_symbol *asym = MakeSymbol(attr);
+	AttrItem *a,*b;
 
 	if(sfun) // if commented out, there will be a warning at run-time (more user-friendly)
 	{
-		AttrItem *a = new AttrItem(asym,tp,sfun,AttrItem::afl_bothexist|AttrItem::afl_set);
+		a = new AttrItem(asym,tp,sfun,AttrItem::afl_set);
 
 		// set index of item to the next higher value
 		AttrItem *last = (AttrItem *)aa->Last();
@@ -55,24 +57,33 @@ void flext_base::AddAttrib(ItemCont *aa,ItemCont *ma,const char *attr,metharg tp
 		mi->SetArgs(sfun,1,new metharg(tp));
 		ma->Add(mi);
 	}
+	else
+		a = NULL;
 
 	if(gfun) // if commented out, there will be a warning at run-time (more user-friendly)
 	{
-		AttrItem *a = new AttrItem(asym,tp,gfun,AttrItem::afl_bothexist|AttrItem::afl_get);
+		b = new AttrItem(asym,tp,gfun,AttrItem::afl_get);
 
 		// set index of item to the next higher value
 		AttrItem *last = (AttrItem *)aa->Last();
-		if(last) a->index = last->index+1;
+		if(last) b->index = last->index+1;
 
-		aa->Add(a); 
+		aa->Add(b); 
 
 		static char tmp[256] = "get";
 		strcpy(tmp+3,attr);
 
 		// bind attribute to a method
-		MethItem *mi = new MethItem(0,MakeSymbol(tmp),a);
+		MethItem *mi = new MethItem(0,MakeSymbol(tmp),b);
 		mi->SetArgs(gfun,0,NULL);
 		ma->Add(mi);
+	}
+	else
+		b = NULL;
+
+	if(a && b) {
+		a->counter = b;
+		b->counter = a;
 	}
 }
 
@@ -300,7 +311,13 @@ bool flext_base::GetAttrib(AttrItem *a,AtomList &la) const
 	return ok;
 }
 
-bool flext_base::GetAttrib(AttrItem *a)
+bool flext_base::GetAttrib(const t_symbol *s,AtomList &a) const
+{
+	AttrItem *attr = FindAttrib(s,true);
+	return attr && GetAttrib(attr,a);
+}
+
+bool flext_base::DumpAttrib(AttrItem *a) const
 {
 	AtomList la;
 	bool ret = GetAttrib(a,la);
@@ -308,15 +325,70 @@ bool flext_base::GetAttrib(AttrItem *a)
 	return ret;
 }
 
-bool flext_base::GetAttrib(const t_symbol *s,AtomList &a) const
-{
-	AttrItem *attr = FindAttrib(s,true);
-	return attr && GetAttrib(attr,a);
-}
-
-
 bool flext_base::DumpAttrib(const t_symbol *attr) const
 {
 	AttrItem *item = FindAttrib(attr,true);
-	return item && const_cast<flext_base *>(this)->GetAttrib(item);
+	return item && DumpAttrib(item);
+}
+
+bool flext_base::BangAttrib(AttrItem *item)
+{
+	AtomList val;
+	AttrItem *item2;
+	if(!item->IsGet()) 
+		item = item->Counterpart();
+	if(item) {
+		item2 = item->Counterpart();
+		return item2 && GetAttrib(item,val) && SetAttrib(item2,val);
+	}
+	else
+		return false;
+}
+
+bool flext_base::BangAttrib(const t_symbol *attr)
+{
+	AttrItem *item = FindAttrib(attr,true);
+	return item && BangAttrib(item);
+}
+
+bool flext_base::BangAttribAll()
+{
+	int i,cnt = clattrhead->Ready()?clattrhead->Size():2;
+	for(i = 0; i < cnt; ++i) {
+		AttrItem *a = (AttrItem *)clattrhead->GetItem(i);
+		for(; a; a = (AttrItem *)a->nxt) {
+			if(a->IsGet() && a->BothExist()) 
+				BangAttrib(a);
+		}
+	}
+
+	cnt = attrhead->Ready()?attrhead->Size():2;
+	for(i = 0; i < cnt; ++i) {
+		AttrItem *a = (AttrItem *)attrhead->GetItem(i);
+		for(; a; a = (AttrItem *)a->nxt) {
+			if(a->IsGet() && a->BothExist()) 
+				BangAttrib(a);
+		}
+	}
+	return true;
+}
+
+bool flext_base::ShowAttrib(AttrItem *a,bool show) const
+{
+	if(show) a->flags |= AttrItem::afl_shown;
+	else a->flags &= ~AttrItem::afl_shown;
+
+	// also change counterpart, if present
+	AttrItem *ca = a->Counterpart();
+	if(ca) {
+		if(show) ca->flags |= AttrItem::afl_shown;
+		else ca->flags &= ~AttrItem::afl_shown;
+	}
+	return true;
+}
+
+bool flext_base::ShowAttrib(const t_symbol *attr,bool show) const
+{
+	AttrItem *item = FindAttrib(attr,true);
+	return item && ShowAttrib(item,show);
 }

@@ -18,9 +18,23 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <string.h>
 #include <stdio.h>
 
+// \TODO take bufsz into account!
 void flext::PrintAtom(const t_atom &a,char *buf,int bufsz)
 {
-    GetAString(a,buf,bufsz?bufsz:100000);
+	if(IsFloat(a)) {
+		sprintf(buf,"%g",GetFloat(a));
+	}
+	else if(IsInt(a)) {
+		sprintf(buf,"%i",GetInt(a));
+	}
+	else if(IsSymbol(a)) {
+		strcpy(buf,GetString(a));
+	}
+	else if(IsPointer(a)) {
+		sprintf(buf,"%p",GetPointer(a));
+	}
+    else
+		ERRINTERNAL();
 }
 
 bool flext::ScanAtom(t_atom &a,const char *buf)

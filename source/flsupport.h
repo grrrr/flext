@@ -454,6 +454,9 @@ public:
 //!		@} 
 
 protected:
+#ifdef __MRC__
+	friend class flext_obj;
+#endif
 	static void Setup();
 };
 

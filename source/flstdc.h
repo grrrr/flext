@@ -82,14 +82,18 @@ typedef t_clock t_qelem;
 
 /* MaxMSP definitions start here */
 
+#ifndef __MRC__
+#define powerc
+#endif
+#define __MOTO__ 0
+
+
 // Include the relevant MaxMSP header files
 
 #include <MacTypes.h>
 
 extern "C"
 {
-#define powerc
-#define __MOTO__
 
 #include "ext.h"
 /*
@@ -111,8 +115,11 @@ typedef t_symbol *t_symptr;
 typedef t_symbol *t_symtype;
 typedef t_object *t_thing;
 
-//typedef qelem t_qelem;
+#ifdef MAC_VERSION
 typedef void t_qelem;
+#else
+typedef qelem t_qelem;
+#endif
 
 typedef method t_method;
 typedef method t_newmethod;

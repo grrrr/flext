@@ -13,12 +13,12 @@ MAKEFILE        = flext.mpw
 Name			= flext
 
 ObjDir          = :MPW:
-MaxSDK			= Daten:Prog Stuff:Max/MSP SDK:SDK Examples
+MaxSDK			= Daten:Prog:C74 Support
 Includes        = -i :,"{MaxSDK}:Max Includes","{MaxSDK}:MSP Includes"
 Defines			= -d MAXMSP 
 
 Sym-PPC         = -sym off
-Flags			= -bool on -enum int -includes unix -opt speed,unroll,unswitch 
+Flags			= -bool on -enum int -includes unix -opt speed,unroll,unswitch -rtti off
 WarnOff			= -w 35  # arg not used
 
 PPCCPlusOptions = {Includes} {Sym-PPC} {Defines} {Flags} {WarnOff}
@@ -26,8 +26,8 @@ PPCCPlusOptions = {Includes} {Sym-PPC} {Defines} {Flags} {WarnOff}
 
 ### Source Files ###
 
-Headers			= flstdc.h flbase.h fldefs.h flext.h flclass.h fldsp.h flthr.h flmspbuffer.h flinternal.h
-SrcFiles        = flbase.cpp flbuf.cpp flext.cpp fllib.cpp fldsp.cpp flatom.cpp flsetup.cpp flthr.cpp flutil.cpp flxlet.cpp 
+Headers			= flstdc.h flbase.h flclass.h fldefs.h flext.h flsupport.h fldsp.h flinternal.h
+SrcFiles        = flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flattr.cpp flsupport.cpp flutil.cpp flatom.cpp flatom_pr.cpp flthr.cpp flout.cpp 
 
 SrcDir	= :source:
 
@@ -35,15 +35,18 @@ SrcDir	= :source:
 
 ObjFiles-PPC    =  ¶
 				  "{ObjDir}flbase.cpp.x" ¶
-				  "{ObjDir}flbuf.cpp.x" ¶
 				  "{ObjDir}flext.cpp.x" ¶
-				  "{ObjDir}fllib.cpp.x" ¶
+				  "{ObjDir}flbuf.cpp.x" ¶
 				  "{ObjDir}fldsp.cpp.x" ¶
-				  "{ObjDir}flatom.cpp.x" ¶
-				  "{ObjDir}flsetup.cpp.x" ¶
-				  "{ObjDir}flthr.cpp.x" ¶
+				  "{ObjDir}fllib.cpp.x" ¶
+				  "{ObjDir}flxlet.cpp.x" ¶
+				  "{ObjDir}flattr.cpp.x" ¶
+				  "{ObjDir}flsupport.cpp.x" ¶
 				  "{ObjDir}flutil.cpp.x" ¶
-				  "{ObjDir}flxlet.cpp.x"
+				  "{ObjDir}flatom.cpp.x" ¶
+				  "{ObjDir}flatom_pr.cpp.x" ¶
+				  "{ObjDir}flthr.cpp.x" ¶
+				  "{ObjDir}flout.cpp.x"
 
 ### Libraries ###
 

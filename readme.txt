@@ -59,8 +59,6 @@ Max/MSP - MacOS 9:
 ------------------
 o Metrowerks CodeWarrior V6: edit & use the "flext.cw" project file
 
-o Apple MPW-PR: edit & use the "flext.mpw" makefile
-
 Max/MSP - MacOSX:
 ------------------
 ... sorry, not yet... would someone please donate me a CodeWarrior V8 ?

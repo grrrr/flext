@@ -20,6 +20,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flbase.h"
 #include "flsupport.h"
 
+#include <map>
+#include <set>
+#include <list>
 
 #ifdef _MSC_VER
 #pragma warning(disable: 4786)
@@ -646,19 +649,40 @@ protected:
 		enum { 
 			afl_getset = 0x01, afl_get = 0x00, afl_set = 0x01,
 			afl_bothexist = 0x02,
-			afl_save = 0x04
+			afl_save = 0x04,afl_init = 0x08,afl_inited = 0x10
 		};
 
 		bool IsGet() const { return (flags&afl_getset) == afl_get; }
 		bool IsSet() const { return (flags&afl_getset) == afl_set; }
 		bool BothExist() const { return (flags&afl_bothexist) != 0; }
-		void SetSave(bool s) { if(s) flags  |= afl_save; else flags &= ~afl_save; }
-		bool IsSaved() const { return (flags&afl_save) != 0; }
 
 		int flags;
 		metharg argtp;
 		methfun fun;
 	};
+
+	//! Represent a data value of an attribute
+	class AttrData 
+	{
+	public:
+		enum { afl_save = 0x01,afl_init = 0x02,afl_inited = 0x04 };
+
+		void SetSave(bool s) { if(s) flags  |= afl_save; else flags &= ~afl_save; }
+		bool IsSaved() const { return (flags&afl_save) != 0; }
+		void SetInit(bool s) { if(s) flags  |= afl_init; else flags &= ~afl_init; }
+		bool IsInit() const { return (flags&afl_init) != 0; }
+		void SetInitValue(int argc,const t_atom *argv) { init(argc,argv); flags |= afl_inited; }
+		void SetInitValue(const AtomList &l) { SetInitValue(l.Count(),l.Atoms()); }
+		bool IsInitValue() const { return (flags&afl_inited) != 0; }
+		const AtomList &GetInitValue() const { return init; }
+
+		AtomList init;
+		int flags;
+	};
+
+	typedef std::map<const t_symbol *,AttrData> AttrDataCont;
+	typedef std::pair<const t_symbol *,AttrData> AttrDataPair;
+
 
 	// these outlet functions don't check for thread but send directly to the real-time system
 	void ToSysBang(int n) const; 
@@ -744,6 +768,7 @@ private:
 	bool TryMethAny(const methitem *m,int inlet,const t_symbol *t,const t_symbol *s,int argc,const t_atom *argv);
 
 	itemarr *attrhead,*clattrhead;
+	AttrDataCont *attrdata;
 
 	attritem *FindAttrib(const t_symbol *tag,bool get,bool msg = false) const;
 
@@ -756,9 +781,7 @@ private:
 	bool GetAttrib(attritem *a,AtomList &l) const;
 	bool SetAttrib(const t_symbol *s,int argc,const t_atom *argv);
 	bool SetAttrib(attritem *a,int argc,const t_atom *argv);
-
-	void SetAttribSave(attritem *a,bool save);
-	bool GetAttribSave(attritem *a) const { return a->IsSaved(); }
+	bool SetAttrib(attritem *a,const AtomList &l) { return SetAttrib(a,l.Count(),l.Atoms()); }
 
 	static bool cb_ListMethods(flext_base *c,int argc,const t_atom *argv);
 	static bool cb_ListAttrib(flext_base *c) { return c->ListAttrib(); }

@@ -95,8 +95,7 @@ int flext_base::ListAttrib(AtomList &la) const
 		itemarr *a = i?attrhead:clattrhead;
 		if(a) {
 			for(int ai = 0; ai < a->Size(); ++ai) {
-				for(item *l = a->Item(ai); l; l = l->nxt) 
-				{
+				for(item *l = a->Item(ai); l; l = l->nxt) {
 					attritem *aa = (attritem *)l;
 
 					// only list once!
@@ -122,8 +121,7 @@ int flext_base::ListMethods(AtomList &la,int inlet) const
 		itemarr *a = i?methhead:clmethhead;
 		if(a) {
 			for(int ai = 0; ai < a->Size(); ++ai) {
-				for(item *l = a->Item(ai); l; l = l->nxt) 
-				{
+				for(item *l = a->Item(ai); l; l = l->nxt) {
 					methitem *aa = (methitem *)l;
 
 					// match inlet and see that it's not related to an attribute
@@ -156,10 +154,17 @@ bool flext_base::InitAttrib(int argc,const t_atom *argv)
 			if(IsString(argv[nxt]) && *GetString(argv[nxt]) == '@') break;
 
 		const t_symbol *tag = MakeSymbol(GetString(argv[cur])+1);
+
+		// find puttable attribute
 		attritem *attr = FindAttrib(tag,false,true);
 		if(attr) {
-			if(SetAttrib(attr,nxt-cur-1,argv+cur+1))
-				SetAttribSave(attr,true);
+			// make an entry (there are none beforehand...)
+			AttrData &a = (*attrdata)[tag];
+			a.SetInit(true);
+			a.SetInitValue(nxt-cur-1,argv+cur+1);
+
+			// pass value to object
+			SetAttrib(attr,a.GetInitValue());
 		}
 	}
 	return true;
@@ -339,16 +344,4 @@ bool flext_base::DumpAttrib(const t_symbol *attr) const
 {
 	attritem *item = FindAttrib(attr,true);
 	return item && const_cast<flext_base *>(this)->GetAttrib(item);
-}
-
-void flext_base::SetAttribSave(attritem *a,bool save)
-{
-	a->SetSave(save);
-	if(a->BothExist()) {
-		// find opposite attribute item
-		attritem *b = FindAttrib(a->tag,!a->IsGet());
-		FLEXT_ASSERT(b != NULL);
-
-		b->SetSave(save);
-	}
 }

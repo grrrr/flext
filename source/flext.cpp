@@ -44,9 +44,12 @@ flext_base::FLEXT_CLASSDEF(flext_base)():
 		// initialize when attribute processing is enabled
 		attrhead = new itemarr;
 		clattrhead = ClAttrs(clid);
+		attrdata = new AttrDataCont;
 	}
-	else
+	else {
 		attrhead = clattrhead = NULL;
+		attrdata = NULL;
+	}
 }
 
 flext_base::~FLEXT_CLASSDEF(flext_base)()
@@ -68,6 +71,7 @@ flext_base::~FLEXT_CLASSDEF(flext_base)()
 	if(methhead) delete methhead;
 	if(bindhead) delete bindhead;  // ATTENTION: the object must free all memory associated to bindings itself
 	if(attrhead) delete attrhead;
+	if(attrdata) delete attrdata;
 	
 	// destroy inlets and outlets and their proxy objects
 	if(inlist) delete inlist;

@@ -21,6 +21,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 // This is problematic... non-public headers!
+// compilation may be specific for one version of PD!!
 #include <m_imp.h>
 #include <g_canvas.h>
 
@@ -56,33 +57,45 @@ void flext_base::SetAttrEditor(t_classid c)
 
 			// make a list of the attribute values (including save flags)
 			"set lst {}\n"
-			"for {set ix 0} {$ix < $alen} {incr ix} {\n"
+			"for {set ix 1} {$ix <= $alen} {incr ix} {\n"
 				"set var_attr_name [concat [concat var_name_$ix]_$vid ]\n"
 				"global $var_attr_name\n"
+				"set var_attr_init [concat [concat var_init_$ix]_$vid ]\n"
+				"global $var_attr_init\n"
 				"set var_attr_val [concat [concat var_val_$ix]_$vid ]\n"
 				"global $var_attr_val\n"
 				"set var_attr_save [concat [concat var_save_$ix]_$vid ]\n"
 				"global $var_attr_save\n"
 		
 				"lappend lst [eval concat $$var_attr_name]\n" 
-				// see if it's a list
+
+				// process current value
 				"set len [llength [expr $$var_attr_val]]\n"
+				// see if it's a list
 				"if { $len > 1 } {\n"
-					"set lst [concat $lst \"list\" $len [expr $$var_attr_val]]\n" 
+					"set lst [concat $lst {list} $len [expr $$var_attr_val]]\n" 
 				"} else {\n"
 					"lappend lst [expr $$var_attr_val]\n" 
 				"}\n"
+
+				// process init value
+				"set len [llength [expr $$var_attr_init]]\n"
+				// see if it's a list
+				"if { $len > 1 } {\n"
+					"set lst [concat $lst {list} $len [expr $$var_attr_init]]\n" 
+				"} else {\n"
+					"lappend lst [expr $$var_attr_init]\n" 
+				"}\n"
+
 				"lappend lst [eval concat $$var_attr_save]\n" 
 			"}\n"
 
 			"set cmd [concat $id attributedialog $lst \\;]\n"
-			// puts stderr $cmd
 			"pd $cmd\n"
 		"}\n"
 
 		"proc flext_cancel {id} {\n"
 			"set cmd [concat $id cancel \\;]\n"
-			// puts stderr $cmd
 			"pd $cmd\n"
 		"}\n"
 
@@ -91,43 +104,61 @@ void flext_base::SetAttrEditor(t_classid c)
 			"flext_cancel $id\n"
 		"}\n"
 
-		"proc pdtk_flext_dialog {id attrlist} {\n"
+		"proc flext_copyval {dst src} {\n"
+			"global $src\n"
+			"global $dst\n"
+			"set $dst [expr $$src]\n"
+		"}\n"
+
+		"proc pdtk_flext_dialog {id title attrlist} {\n"
 				"set vid [string trimleft $id .]\n"
-				"set alen [expr [llength $attrlist] / 4 ]\n"
+				"set alen [expr [llength $attrlist] / 5 ]\n"
 
 				"toplevel $id\n"
-				"wm title $id {object attributes}\n"
+				"wm title $id $title\n" 
 				"wm protocol $id WM_DELETE_WINDOW [concat flext_cancel $id]\n"
-/*
-				"label $id.label -text {Attributes}\n"
-				"pack $id.label -side top\n"
-*/
-				"set ix 0\n"
 
-				"foreach {an av asv afl} $attrlist {\n"
-					// generate variable name
-					"set nm [concat $id.nm-$ix]\n"
+				"set row 0\n"
 
+				// set column labels
+				"label $id.label -text {attribute} -height 2 -font {Helvetica 9 bold}\n"
+				"label $id.init  -text {initial value} -height 2 -font {Helvetica 9 bold}\n"
+				"label $id.copy  -text {copy} -height 2 -font {Helvetica 9 bold}\n"
+				"label $id.val   -text {current value} -height 2 -font {Helvetica 9 bold}\n"
+				"foreach {i txt} {0 {don't\rsave} 1 {do\rinit} 2 {always\rsave} } {\n"
+					"label $id.b$i -text $txt -height 2 -font {Helvetica 9 bold}\n"
+				"}\n"
+//				"label $id.options -text {options} -height 2\n"
+
+				"grid config $id.label -column 0 -row $row \n"
+				"grid config $id.init  -column 1 -row $row \n"
+				"grid config $id.copy  -column 2 -columnspan 2 -row $row \n"
+				"grid config $id.val   -column 4 -row $row \n"
+				"foreach i {0 1 2} { grid config $id.b$i -column [expr $i + 5] -row $row }\n"
+//				"grid config $id.options -column 3 -row 0 \n"
+				"incr row\n"
+
+				// Separator
+				"frame $id.sep -relief ridge -bd 1 -height 2\n"
+				"grid config $id.sep -column 0 -columnspan 8 -row $row -pady 2 -sticky {snew}\n"
+				"incr row\n"
+
+				"set ix 1\n"
+				"foreach {an av ai asv afl} $attrlist {\n"
 					// get attribute name
 					"set var_attr_name [concat [concat var_name_$ix]_$vid ]\n"
 					"global $var_attr_name\n"
 					"set $var_attr_name $an\n"
 
+					// get attribute init value (list)
+					"set var_attr_init [concat [concat var_init_$ix]_$vid ]\n"
+					"global $var_attr_init\n"
+					"set $var_attr_init $ai\n"
+
 					// get attribute value (list)
 					"set var_attr_val [concat [concat var_val_$ix]_$vid ]\n"
 					"global $var_attr_val\n"
-
-					// format value list
-					"set $var_attr_val {}\n"
-					"foreach i $av {\n"
-						"if { [string is double $i] } {\n"
-							// it's a number.. take as many digits as necessary
-							"lappend $var_attr_val [format %g $i]\n"
-						"} else {\n"
-							// it's a string, append unchanged
-							"lappend $var_attr_val $i\n"
-						"}\n"
-					"}\n"
+					"set $var_attr_val $av\n"
 
 					// get save flag
 					"set var_attr_save [concat [concat var_save_$ix]_$vid ]\n"
@@ -135,90 +166,150 @@ void flext_base::SetAttrEditor(t_classid c)
 					"set $var_attr_save $asv\n"
 
 					// add dialog elements to window
-					"frame $nm\n"
-					"pack $nm -side top\n"
-					"label $nm.lwidth -text \"$an :\"\n"
-					"entry $nm.width -textvariable $var_attr_val -width 20\n"
-					"bind $nm.width <KeyPress-Return> [concat flext_ok $id $alen]\n"
 
-					"foreach i {0 1 2} { radiobutton $nm.b$i -value $i -variable $var_attr_save }\n"
+					// attribute label
+					"label $id.label-$ix -text \"$an :\" -font {Helvetica 8 bold}\n"
+					"grid config $id.label-$ix -column 0 -row $row -padx 5 -sticky {e}\n"
+					// entry field for initial value
+					"entry $id.init-$ix -textvariable $var_attr_init\n"
+					"grid config $id.init-$ix  -column 1 -row $row -padx 5 -sticky {ew}\n"
 
-					"pack $nm.lwidth $nm.width $nm.b0 $nm.b1 $nm.b2 -side left\n"
+					"button $id.b2i-$ix -text {<-} -height 1 -command \" flext_copyval $var_attr_init $var_attr_val \"\n"
+					"grid config $id.b2i-$ix  -column 2 -row $row  -sticky {ew}\n"
+					"button $id.b2c-$ix -text {->} -height 1 -command \" flext_copyval $var_attr_val $var_attr_init \"\n"
+					"grid config $id.b2c-$ix  -column 3 -row $row  -sticky {ew}\n"
+
+					// entry field for current value
+					"entry $id.val-$ix -textvariable $var_attr_val\n"
+					"grid config $id.val-$ix   -column 4 -row $row -padx 5 -sticky {ew}\n"
+
+//					"tk_optionMenu $id.opt-$ix $var_attr_save {don't save} {initialize} {always save}\n"
+//					"grid config $id.opt-$ix -column 5 -row $ix \n"
+
+					// radiobuttons
+					"foreach {i c} {0 black 1 blue 2 red} {\n"
+						"radiobutton $id.b$i-$ix -value $i -foreground $c -variable $var_attr_save \n"
+						"grid config $id.b$i-$ix -column [expr $i + 5] -row $row  \n"
+					"}\n"
 
 					// increase counter
 					"incr ix\n"
+					"incr row\n"
 				"}\n"
 
-//				"focus $id.1-rangef.width\n"
-
+				// Separator
+				"frame $id.sep2 -relief ridge -bd 1 -height 2\n"
+				"grid config $id.sep2 -column 0 -columnspan 8 -row $row -pady 5 -sticky {snew}\n"
+				"incr row\n"
 
 				// Buttons
-				
 				"frame $id.buttonframe\n"
-				"pack $id.buttonframe -side bottom -fill x -pady 2m\n"
+				"pack $id.buttonframe -side bottom -fill x\n"
 
-				"button $id.buttonframe.cancel -text {Cancel} -command \"flext_cancel $id\"\n"
-				"button $id.buttonframe.apply -text {Apply} -command \"flext_apply $id $alen\"\n"
-				"button $id.buttonframe.ok -text {OK} -command \"flext_ok $id $alen\"\n"
+				"button $id.buttonframe.cancel -text {Cancel} -width 20 -command \" flext_cancel $id \"\n"
+				"button $id.buttonframe.apply -text {Apply} -width 20 -command \" flext_apply $id $alen \"\n"
+				"button $id.buttonframe.ok -text {OK} -width 20 -command \" flext_ok $id $alen \"\n"
 
 				"pack $id.buttonframe.cancel -side left -expand 1\n"
 				"pack $id.buttonframe.apply -side left -expand 1\n"
 				"pack $id.buttonframe.ok -side left -expand 1\n"
 
+				"grid config $id.buttonframe -column 0 -columnspan 8 -row $row -pady 5 -sticky {ew}\n"
+
+				// Key bindings
+				"bind $id {<KeyPress-Escape>} \" flext_cancel $id \"\n"
+				"bind $id {<KeyPress-Return>} \" flext_ok $id $alen \"\n"
+				"bind $id {<Shift-KeyPress-Return>} \" flext_apply $id $alen \"\n"
 		"}\n"
 	);
 }
 
+static int PrintList(char *buf,int argc,const t_atom *argv)
+{
+	char *b = buf;
+	for(int j = 0; j < argc; ++j) {
+		const t_atom &at = argv[j];
+		if(flext::IsString(at))
+			STD::sprintf(b,"%s",flext::GetString(at));
+		else if(flext::IsFloat(at))
+			STD::sprintf(b,"%g",flext::GetFloat(at));
+		else if(flext::IsInt(at))
+			STD::sprintf(b,"%i",flext::GetInt(at));
+		else
+			FLEXT_ASSERT(false);
+		b += strlen(b);
+
+		if(j < argc-1) *(b++) = ' ';
+	}
+	return b-buf;
+}
 
 void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 {
 	flext_base *th = thisObject(c);
-	char buf[1000],*b = buf;
+	char buf[10000],*b = buf;
+
+	STD::sprintf(b, "pdtk_flext_dialog %%s { "); b += strlen(b);
+
+	t_text *x = (t_text *)c;
+	FLEXT_ASSERT(x->te_binbuf);
+
+	int argc = binbuf_getnatom(x->te_binbuf);
+	t_atom *argv = binbuf_getvec(x->te_binbuf);
+	b += PrintList(b,argc,argv);
+
+	STD::sprintf(b, " } { "); b += strlen(b);
 
 	AtomList la;
 	int cnt = th->ListAttrib(la);
 
-	STD::sprintf(b, "pdtk_flext_dialog %%s { "); b += strlen(b);
-
 	for(int i = 0; i < cnt; ++i) {
-		STD::sprintf(b,"%s {",GetString(la[i])); b += strlen(b);
+		const t_symbol *sym = GetSymbol(la[i]);
 
-		bool sv;
+		// get flags
+		int sv;
+		const AtomList *initdata;
+		AttrDataCont::iterator it = th->attrdata->find(sym);
+		if(it == th->attrdata->end())
+			sv = 0,initdata = NULL;
+		else {
+			const AttrData &a = it->second;
+			if(a.IsSaved())
+				sv = 2;
+			else if(a.IsInit())
+				sv = 1;
+			else 
+				sv = 0;
+
+			initdata = a.IsInitValue()?&a.GetInitValue():NULL;
+		}
+
+		STD::sprintf(b,"%s {",GetString(sym)); b += strlen(b);
 
 		// get attribute
-		attritem *attr = th->FindAttrib(GetSymbol(la[i]),true);
+		attritem *gattr = th->FindAttrib(sym,true);
 
-		if(attr) {
-			// Attribute is gettable
+		AtomList lv;
+		if(gattr) { // gettable attribute is present
+			// Retrieve attribute value
+			th->GetAttrib(gattr,lv);
 
-			// Get attribute value
-			AtomList lv;
-			th->GetAttrib(attr,lv);
-
-			sv = th->GetAttribSave(attr);
-
-			for(int j = 0; j < lv.Count(); ++j) {
-				if(IsString(lv[j]))
-					STD::sprintf(b,"%s",GetString(lv[j]));
-				else if(IsFloat(lv[j]))
-					STD::sprintf(b,"%f",GetFloat(lv[j]));
-				else if(IsInt(lv[j]))
-					STD::sprintf(b,"%i",GetInt(lv[j]));
-				else
-					FLEXT_ASSERT(false);
-				b += strlen(b);
-
-				if(j < lv.Count()-1) *(b++) = ' ';
-			}
-		}
-		else {
-			// Attribute is not gettable
-			sv = false;
-
-			// \TODO set flag for tcl/tk dialog
+			b += PrintList(b,lv.Count(),lv.Atoms());
 		}
 
-		STD::sprintf(b, "} %i %i ", sv?1:0,attr?(attr->BothExist()?2:1):0); b += strlen(b);
+		STD::sprintf(b, "} {"); b += strlen(b);
+
+		// get puttable attribute
+		attritem *pattr = th->FindAttrib(GetSymbol(la[i]),false);
+
+		if(pattr) {
+			// if there is initialization data take this, otherwise take the current data
+			const AtomList &lp = initdata?*initdata:lv;
+
+			b += PrintList(b,lp.Count(),lp.Atoms());
+		}
+
+		STD::sprintf(b, "} %i %i ", sv,pattr?(pattr->BothExist()?2:1):0); b += strlen(b);
 	}
 
 	strcpy(b, " }\n");
@@ -247,6 +338,18 @@ void flext_base::cb_GfxVis(t_gobj *c, t_glist *gl, int vis)
 	ori_vis(c,gl,vis);
 }
 
+static void BinbufAdd(t_binbuf *b,const t_atom &at)
+{
+	if(flext::IsString(at))
+		binbuf_addv(b,"s",flext::GetSymbol(at));
+	else if(flext::IsFloat(at))
+		binbuf_addv(b,"f",flext::GetFloat(at));
+	else if(flext::IsInt(at))
+		binbuf_addv(b,"i",flext::GetInt(at));
+	else
+		FLEXT_ASSERT(false);
+}
+
 void flext_base::cb_GfxSave(t_gobj *c, t_binbuf *b)
 {
 	flext_base *th = thisObject(c);
@@ -258,16 +361,7 @@ void flext_base::cb_GfxSave(t_gobj *c, t_binbuf *b)
 	int cnt = CheckAttrib(argc,argv);
 
 	// process the creation arguments
-	for(int i = 1; i < cnt; ++i) {
-		if(IsString(argv[i]))
-			binbuf_addv(b,"s",GetSymbol(argv[i]));
-		else if(IsFloat(argv[i]))
-			binbuf_addv(b,"f",GetFloat(argv[i]));
-		else if(IsInt(argv[i]))
-			binbuf_addv(b,"i",GetInt(argv[i]));
-		else
-			FLEXT_ASSERT(false);
-	}
+	for(int i = 1; i < cnt; ++i) BinbufAdd(b,argv[i]);
 
 	// process the attributes
 	AtomList la;
@@ -275,28 +369,35 @@ void flext_base::cb_GfxSave(t_gobj *c, t_binbuf *b)
 	char attrname[100];
 	*attrname= '@';
 
+
 	for(int i = 0; i < cnt; ++i) {
-		// must be both settable and gettable....
-		attritem *attr = th->FindAttrib(GetSymbol(la[i]),true);
+		const t_symbol *sym = GetSymbol(la[i]);
+		AtomList lv;
+		const AtomList *lref = NULL;
+		AttrDataCont::iterator it = th->attrdata->find(sym);
 
-		if(attr && attr->BothExist() && th->GetAttribSave(attr)) {
-			// Get attribute value
-			AtomList lv;
-			th->GetAttrib(attr,lv);
+		if(it != th->attrdata->end()) {
+			const AttrData &a = it->second;
+			if(a.IsInit() && a.IsInitValue()) 
+				lref = &a.GetInitValue();
+			else if(a.IsSaved()) {
+				attritem *attr = th->FindAttrib(sym,true);
 
-			strcpy(attrname+1,GetString(la[i]));
+				// attribute must be gettable (so that the data can be retrieved) and puttable (so that the data can be inited)
+				if(attr && attr->BothExist()) {
+					th->GetAttrib(attr,lv); 
+					lref = &lv;
+				}
+			}
+		}
+
+		if(lref) {
+			// store name
+			strcpy(attrname+1,GetString(sym));
 			binbuf_addv(b,"s",MakeSymbol(attrname));
 
-			for(int j = 0; j < lv.Count(); ++j) {
-				if(IsString(lv[j]))
-					binbuf_addv(b,"s",GetSymbol(lv[j]));
-				else if(IsFloat(lv[j]))
-					binbuf_addv(b,"f",GetFloat(lv[j]));
-				else if(IsInt(lv[j]))
-					binbuf_addv(b,"i",GetInt(lv[j]));
-				else
-					FLEXT_ASSERT(false);
-			}
+			// store value
+			for(int j = 0; j < lref->Count(); ++j) BinbufAdd(b,(*lref)[j]);
 		}
 	}
 
@@ -311,31 +412,68 @@ bool flext_base::cb_AttrDialog(flext_base *th,int argc,const t_atom *argv)
 	for(; i < argc; ) {
 		FLEXT_ASSERT(IsSymbol(argv[i]));
 
+		// get name
 		const t_symbol *aname = GetSymbol(argv[i]);
 		i++;
 
-		int cnt,offs;
+		// get current value
+		int ccnt,coffs;
 		if(IsSymbol(argv[i]) && GetSymbol(argv[i]) == sym_list) {
 			i++;
 			FLEXT_ASSERT(CanbeInt(argv[i]));
-			cnt = GetAInt(argv[i]);
-			offs = ++i;
+			ccnt = GetAInt(argv[i]);
+			coffs = ++i;
 		}
 		else
-			offs = i,cnt = 1;
+			coffs = i,ccnt = 1;
+		i += ccnt;
 
-		i += cnt;
+		// get init value
+		int icnt,ioffs;
+		if(IsSymbol(argv[i]) && GetSymbol(argv[i]) == sym_list) {
+			i++;
+			FLEXT_ASSERT(CanbeInt(argv[i]));
+			icnt = GetAInt(argv[i]);
+			ioffs = ++i;
+		}
+		else
+			ioffs = i,icnt = 1;
+		i += icnt;
 
 		FLEXT_ASSERT(i < argc);
 		int sv = GetAInt(argv[i]);
 		++i;
 
-		// find settable attribute
+		// find puttable attribute
 		attritem *attr = th->FindAttrib(aname,false);
 		if(attr) {
-			th->SetAttribSave(attr,sv != 0);
-			bool ret = th->SetAttrib(attr,cnt,argv+offs);
+			bool ret = th->SetAttrib(attr,ccnt,argv+coffs);
 			FLEXT_ASSERT(ret);
+
+			AttrDataCont::iterator it = th->attrdata->find(aname);
+
+			if(sv >= 1) {
+				// if data not present create it
+				if(it == th->attrdata->end()) {
+					AttrDataPair pair; pair.first = aname;
+					it = th->attrdata->insert(th->attrdata->begin(),pair);
+				}
+
+				AttrData &a = it->second;
+				a.SetSave(sv == 2);
+				a.SetInit(true);
+				a.SetInitValue(icnt,argv+ioffs);
+			}
+			else {
+				if(it != th->attrdata->end()) {
+					AttrData &a = it->second;
+					// if data is present reset flags
+					a.SetSave(false);
+					a.SetInit(false);
+
+					// let init data as is
+				}
+			}
 		}
 		else {
 			post("%s - Attribute %s can't be set",th->thisName(),GetString(aname));
@@ -343,6 +481,5 @@ bool flext_base::cb_AttrDialog(flext_base *th,int argc,const t_atom *argv)
 	}
 	return true;
 }
-
 
 #endif // FLEXT_SYS_PD

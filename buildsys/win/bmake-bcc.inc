@@ -5,7 +5,8 @@ LIBPATH=$(LIBPATH) -L$(BCCPATH)\lib
 
 ##############################################
 
-TARGETPATH=$(OUTPATH)\$(OUTSUB)
+OBJPATH=$(OUTPATH)\$(OUTSUB)
+TARGETPATH=$(OBJPATH)
 TARGET=$(TARGETPATH)\$(OUTNAME).$(EXT)
 
 ##############################################
@@ -17,7 +18,7 @@ CFLAGS=$(CFLAGS) -Hh=flext.h
 CFLAGS=$(CFLAGS) -Hh=$(PRECOMPILE)
 !endif
 # location of precompiled file
-CFLAGS=$(CFLAGS) -H=$(TARGETPATH)\precompiled.pch
+CFLAGS=$(CFLAGS) -H=$(OBJPATH)\precompiled.pch
 
 ##############################################
 

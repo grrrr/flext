@@ -5,7 +5,8 @@ LIBPATH=$(LIBPATH) /LIBPATH:$(MSVCPATH)\lib
 
 ##############################################
 
-TARGETPATH=$(OUTPATH)\$(OUTSUB)
+OBJPATH=$(OUTPATH)\$(OUTSUB)
+TARGETPATH=$(OBJPATH)
 TARGET=$(TARGETPATH)\$(OUTNAME).$(EXT)
 
 ##############################################
@@ -17,7 +18,7 @@ CFLAGS=$(CFLAGS) /YXflext.h
 CFLAGS=$(CFLAGS) /YX$(PRECOMPILE)
 !endif
 # location of precompiled file
-CFLAGS=$(CFLAGS) /Fp$(TARGETPATH)\precompiled.pch
+CFLAGS=$(CFLAGS) /Fp$(OBJPATH)\precompiled.pch
 
 ##############################################
 

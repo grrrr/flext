@@ -54,7 +54,7 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
 	bool valid = data != NULL; // valid now? (before change)
 
 	if(s && sym != s) {
-		ret = -1;
+		ret = 1;
 		data = NULL; 
 		frames = 0;
 		chns = 0; 

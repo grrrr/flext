@@ -33,6 +33,12 @@ public:
 	// constructor with no arguments
 	bind1();
 
+    /*
+        no constructor necessary here:
+        flext frees all eventually still bound symbols when the object is destroyed
+        (but NOT the data that can be passed via the FLEXT_BINDMETHOD call!)
+    */
+
 protected:
 	const t_symbol *bufname;
 	buffer *buf;

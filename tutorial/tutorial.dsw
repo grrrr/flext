@@ -99,6 +99,38 @@ Package=<4>
 
 ###############################################################################
 
+Project: "bind1"=.\bind1\bind1.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    max/flext/tutorial/bind1
+    .\bind1
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "buffer1"=.\buffer1\buffer1.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    max/flext/tutorial/buffer1
+    .\buffer1
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "flext"=..\flext.dsp - Package Owner=<4>
 
 Package=<5>

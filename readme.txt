@@ -124,8 +124,8 @@ no unfixed known
 tests:
 - do i have to destroy the method list elements with the list?
 
-
 features:
+- MAX/MSP disributes list elements over inlets (if no explicit handler defined) -> emulate this also for flext?
 - abstraction for parsing argument lists
 - abstraction for creating lists and anythings
 - simulate loadbang on object creation for PD

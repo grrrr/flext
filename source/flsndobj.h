@@ -26,10 +26,12 @@ public:
 	flext_sndobj();
 	virtual ~flext_sndobj();
 
+	// these have to be overridden in child classes
 	virtual void NewObjs() {}
 	virtual void FreeObjs() {}
 	virtual void ProcessObjs() {}
 
+	// inputs and outputs
 	SndObj &InObj(int i) { return *tmpobj[i]; }
 	SndIO &OutObj(int i) { return *outobj[i]; }
 

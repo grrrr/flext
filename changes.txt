@@ -29,6 +29,7 @@ Version history:
 - attribute editor: close editor window on object destruction
 - fixed $0-arguments in attribute saving
 - introducing ring buffer for message queue (thanks to Tom Schouten)
+- printing of atoms into buffer with better error checking
 
 0.4.6:
 - added a text edit window for list attributes

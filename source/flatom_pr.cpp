@@ -27,29 +27,38 @@ bool flext::PrintAtom(const t_atom &a,char *buf,int bufsz)
 {
     bool ok = true;
     if(IsFloat(a)) {
-        STD::snprintf(buf,bufsz,"%g",GetFloat(a));
+        ok = STD::snprintf(buf,bufsz,"%g",GetFloat(a)) > 0;
     }
     else if(IsInt(a)) {
-        STD::snprintf(buf,bufsz,"%i",GetInt(a));
+        ok = STD::snprintf(buf,bufsz,"%i",GetInt(a)) > 0;
     }
     else if(IsSymbol(a)) {
-        if(!FLEXT_ASSERT(GetSymbol(a))) *buf = 0;
-        else 
-            STD::strncpy(buf,GetString(a),bufsz);
+        if(!FLEXT_ASSERT(GetSymbol(a))) 
+            *buf = 0;
+        else {
+            const char *c = GetString(a);
+            int len = strlen(c);
+            if(len < bufsz) {
+                memcpy(buf,c,len); buf[len] = 0;
+                ok = true;
+            }
+            else 
+                ok = false;
+        }
     }
     else if(IsPointer(a)) {
-        STD::snprintf(buf,bufsz,"%p",GetPointer(a));
+        ok = STD::snprintf(buf,bufsz,"%p",GetPointer(a)) > 0;
     }
 #if FLEXT_SYS == FLEXT_SYS_PD
     else if(a.a_type == A_DOLLAR) {
-        STD::snprintf(buf,bufsz,"$%d",a.a_w.w_index);
+        ok = STD::snprintf(buf,bufsz,"$%d",a.a_w.w_index) > 0;
     }
     else if(a.a_type == A_DOLLSYM) {
-        STD::snprintf(buf,bufsz,"$%s",GetString(a));
+        ok = STD::snprintf(buf,bufsz,"$%s",GetString(a)) > 0;
     }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
     else if(a.a_type == A_DOLLAR) {
-        STD::snprintf(buf,bufsz,"$%d",a.a_w.w_long);
+        ok = STD::snprintf(buf,bufsz,"$%d",a.a_w.w_long) > 0;
     }
 #else
 //#pragma message("Not implemented")

@@ -408,7 +408,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="pd.lib pthreadVC.lib stk.lib sndobj.lib"
 				OutputFile=".\pd-msvc\flext.dll"
-				AdditionalLibraryDirectories="f:\prog\packs\pthreads;&quot;f:\prog\pd\pd-cvs\bin&quot;;F:\prog\audio\stk\lib;F:\prog\audio\sndobj\lib"
+				AdditionalLibraryDirectories="c:\data\prog\packs\pthreads;&quot;c:\data\prog\pd\pd-cvs\bin&quot;;c:\data\prog\audio\stk\lib;c:\data\prog\audio\sndobj\lib"
 				GenerateDebugInformation="FALSE"
 				OptimizeReferences="1"
 				ImportLibrary="./pd-msvc/flext_l.lib"

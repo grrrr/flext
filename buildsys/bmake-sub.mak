@@ -18,24 +18,6 @@
 !endif
 
 ##############################
-
-!ifdef DEBUG
-TARGETMODE=debug
-!else
-TARGETMODE=release
-!endif
-
-!ifdef SHARED
-TARGETTYPE=shared
-!else
-!ifdef THREADED
-TARGETTYPE=multi
-!else
-TARGETTYPE=single
-!endif
-!endif
-
-##############################
 # flext-specific make stuff
 
 !include $(BUILDPATH)bmake.inc

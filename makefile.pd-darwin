@@ -15,7 +15,7 @@ include $(CONFIG)
 # compiler+linker stuff 
 INCLUDES=$(PDPATH) $(SNDOBJ)
 FLAGS=-DFLEXT_SYS=2 -Wno-unused -Wno-parentheses -Wno-switch -Wstrict-prototypes # -maltivec 
-CFLAGS=-O6 -fno-exceptions -fno-rtti
+CFLAGS=-O6 -fno-exceptions 
 CFLAGS_D=-g -Wshadow 
 CFLAGS_T=-DFLEXT_THREADS
 LIBS=

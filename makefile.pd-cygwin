@@ -19,7 +19,7 @@ include $(CONFIG)
 # compiler+linker stuff
 INCLUDES=$(PDPATH)/src 
 FLAGS=-DFLEXT_SYS=2
-CFLAGS=-O6 -fno-exceptions -fno-rtti
+CFLAGS=-O6 -fno-exceptions 
 CFLAGS+=-mcpu=pentium3 -msse    # cygwin gcc 3.2
 CFLAGS_D=-g
 CFLAGS_T=-DFLEXT_THREADS

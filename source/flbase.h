@@ -27,7 +27,7 @@ class flext_obj;
 /*-----------------------------------------------------------------
 -------------------------------------------------------------------
 CLASS
-    Obj_header
+    flext_hdr
     
     The obligatory object header
 
@@ -39,7 +39,7 @@ DESCRIPTION
     the vtable.
      
 -----------------------------------------------------------------*/
-struct FLEXT_EXT Obj_header
+struct FLEXT_EXT flext_hdr
 {
     	//////////
     	// The obligatory object header
@@ -99,10 +99,6 @@ class FLEXT_EXT flext_obj
         // Get the object's canvas
         t_canvas            *getCanvas()        { return(m_canvas); }
 
-        //////////
-        // Get the object's name
-        const char *thisName() const       { return(m_name); }
-
     protected:
     	
         //////////
@@ -117,7 +113,7 @@ class FLEXT_EXT flext_obj
 		static void enable_signal(t_class *classPtr,float def = 0.) 
 		{
 #ifdef PD
-			((Obj_header *)classPtr)->defsig = def;
+			((flext_hdr *)classPtr)->defsig = def;
 #elif defined(MAXMSP)
 			dsp_initclass();
 #endif
@@ -128,15 +124,15 @@ class FLEXT_EXT flext_obj
         //////////
         // The canvas (patcher) that the object is in
         t_canvas            *m_canvas;
-        //////////
 
 	public:
         //////////
         // This is a holder - don't touch it
         static t_sigobj     *m_holder;
 
-        // the class name (as used in a patch)
-		const char *m_name;    
+        //////////
+        // The object's name in the patcher
+		const char *m_name;
 };
 
 // This has a dummy arg so that NT won't complain
@@ -155,14 +151,15 @@ FLEXT_EXT void *operator new(size_t, void *location, void *dummy);
 #define FLEXT_HEADER(NEW_CLASS, PARENT_CLASS)    	    	\
 public:     	    	    \
 static void callb_free(void *data)    	    	    	\
-{ flext_obj *mydata = ((Obj_header *)data)->data; delete mydata; \
-  ((Obj_header *)data)->Obj_header::~Obj_header(); }   	    	\
+{ flext_obj *mydata = ((flext_hdr *)data)->data; delete mydata; \
+  ((flext_hdr *)data)->flext_hdr::~flext_hdr(); }   	    	\
 static void callb_setup(t_class *classPtr)  	    	\
 { PARENT_CLASS::callb_setup(classPtr);    	    	\
   NEW_CLASS::cb_setup(classPtr); }  	    	    	\
 private:    \
 inline t_class *thisClass() { return FLEXT_GETCLASS(x_obj); } \
-static NEW_CLASS *thisObject(V *c) { return (NEW_CLASS *)((Obj_header *)c)->data; }	    	   \
+inline const char *thisName() const { return m_name; } \
+static NEW_CLASS *thisObject(V *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; }	    	  \
 static void cb_setup(t_class *classPtr);
 
 
@@ -231,12 +228,12 @@ static void cb_setup(t_class *classPtr);
 #define REAL_NEW(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME)        \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS ()                              \
-{     	    	    	    	    	    	    	    	\
-    Obj_header *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) Obj_header; \
-    flext_obj::m_name = NAME;                         \
+{     	    	    	    	    	    	    	\
+    flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = &obj->pd_obj;                         \
     obj->data = new NEW_CLASS;                                  \
     flext_obj::m_holder = NULL;                                 \
+	obj->data->m_name = NAME;									\
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
@@ -246,7 +243,7 @@ void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
     	     	FLEXT_CLREF(NEW_CLASS::m_name,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
-    	     	sizeof(Obj_header), 0,                          \
+    	     	sizeof(flext_hdr), 0,                          \
     	     	A_NULL);                                        \
     NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
 }   	    	    	    	    	    	    	    	\
@@ -259,10 +256,11 @@ void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (VAR_TYPE arg)                  \
 {     	    	    	    	    	    	    	    	\
-    Obj_header *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) Obj_header; \
+    flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = &obj->pd_obj;                         \
     obj->data = new NEW_CLASS(arg);                             \
     flext_obj::m_holder = NULL;                                 \
+	obj->data->m_name = NAME;									\
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
@@ -272,7 +270,7 @@ void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
     	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
-    	     	sizeof(Obj_header), 0,                          \
+    	     	sizeof(flext_hdr), 0,                          \
     	     	PD_TYPE,                                        \
     	     	A_NULL);      	    	    	    	    	\
     NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
@@ -286,10 +284,11 @@ void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (t_symbol *, int argc, t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
-    Obj_header *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) Obj_header; \
+    flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = &obj->pd_obj;                         \
     obj->data = new NEW_CLASS(argc, argv);                      \
     flext_obj::m_holder = NULL;                                 \
+	obj->data->m_name = NAME;									\
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
@@ -299,7 +298,7 @@ void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
     	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
-    	     	sizeof(Obj_header), 0,                          \
+    	     	sizeof(flext_hdr), 0,                          \
     	     	A_GIMME,                                        \
     	     	A_NULL);      	    	    	    	    	\
     NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
@@ -313,10 +312,11 @@ void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo) \
 {     	    	    	    	    	    	    	    	\
-    Obj_header *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) Obj_header; \
+    flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = &obj->pd_obj;                         \
     obj->data = new NEW_CLASS(arg, argtwo);                     \
     flext_obj::m_holder = NULL;                                 \
+	obj->data->m_name = NAME;									\
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
@@ -326,7 +326,7 @@ void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
     	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
-    	     	sizeof(Obj_header), 0,                          \
+    	     	sizeof(flext_hdr), 0,                          \
     	     	ONE_PD_TYPE, TWO_PD_TYPE,                       \
     	     	A_NULL);      	    	    	    	    	\
     NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
@@ -340,11 +340,12 @@ void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo, THREE_VAR_TYPE argthree) \
 {     	    	    	    	    	    	    	    	\
-    Obj_header *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) Obj_header; \
+    flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = &obj->pd_obj;                         \
     obj->data = new NEW_CLASS(arg, argtwo, argthree);           \
     flext_obj::m_holder = NULL;                                 \
-    return(obj);                                                \
+   	obj->data->m_name = NAME;									\
+return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
 void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
@@ -353,7 +354,7 @@ void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
     	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
-    	     	sizeof(Obj_header), 0,                          \
+    	     	sizeof(flext_hdr), 0,                          \
     	     	ONE_PD_TYPE, TWO_PD_TYPE, THREE_PD_TYPE,        \
     	     	A_NULL);      	    	    	    	    	\
     NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
@@ -367,10 +368,11 @@ void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo, THREE_VAR_TYPE argthree, FOUR_VAR_TYPE argfour) \
 {     	    	    	    	    	    	    	    	\
-    Obj_header *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) Obj_header; \
+    flext_hdr *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = &obj->pd_obj;                         \
     obj->data = new NEW_CLASS(arg, argtwo, argthree, argfour);  \
     flext_obj::m_holder = NULL;                                 \
+	obj->data->m_name = NAME;									\
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
@@ -380,7 +382,7 @@ void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
     	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
-    	     	sizeof(Obj_header), 0,                          \
+    	     	sizeof(flext_hdr), 0,                          \
     	     	ONE_PD_TYPE, TWO_PD_TYPE, THREE_PD_TYPE, FOUR_PD_TYPE, \
     	     	A_NULL);      	    	    	    	    	\
     NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \

@@ -71,7 +71,7 @@ BL flext_base::SetupInOut()
 					case xlet::tp_def:
 						break;
 					case xlet::tp_sig:
-						CLASS_MAINSIGNALIN(thisClass(), Obj_header, defsig);
+						CLASS_MAINSIGNALIN(thisClass(), flext_hdr, defsig);
 						++insigs;
 						break;
 					default:

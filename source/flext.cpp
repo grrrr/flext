@@ -169,7 +169,6 @@ void flext_base::Setup(t_classid id)
 
 #ifdef FLEXT_THREADS
 	thrid = GetThreadId();
-	StartHelper();
 #endif
 }
 

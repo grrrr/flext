@@ -55,6 +55,10 @@ void flext::Setup()
 	sym_pointer = fts_s_pointer;
 #else
 #endif
+
+#ifdef FLEXT_THREADS
+    StartHelper();
+#endif
 }
 
 

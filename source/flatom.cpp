@@ -29,10 +29,10 @@ flext::AtomList::AtomList(const AtomList &a):
 
 flext::AtomList::~AtomList() {	Clear(); }
 
-flext::AtomList &flext::AtomList::Set(int argc,const t_atom *argv,int offs)
+flext::AtomList &flext::AtomList::Set(int argc,const t_atom *argv,int offs,bool resize)
 {
 	int ncnt = argc+offs;
-	if(lst && cnt != ncnt) { delete[] lst; lst = NULL; cnt = 0; }
+	if(resize && lst && cnt != ncnt) { delete[] lst; lst = NULL; cnt = 0; }
 
 	if(ncnt) {
 		if(!lst) lst = new t_atom[cnt = ncnt];

@@ -18,34 +18,38 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <string.h>
 #include <stdio.h>
 
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#endif
+
 // \TODO take bufsz into account!
 bool flext::PrintAtom(const t_atom &a,char *buf,int bufsz)
 {
 	bool ok = true;
 	if(IsFloat(a)) {
-		STD::sprintf(buf,"%g",GetFloat(a));
+		STD::snprintf(buf,bufsz,"%g",GetFloat(a));
 	}
 	else if(IsInt(a)) {
-		STD::sprintf(buf,"%i",GetInt(a));
+		STD::snprintf(buf,bufsz,"%i",GetInt(a));
 	}
 	else if(IsSymbol(a)) {
         if(!FLEXT_ASSERT(GetSymbol(a))) *buf = 0;
         else 
-            STD::strcpy(buf,GetString(a));
+            STD::strncpy(buf,GetString(a),bufsz);
 	}
 	else if(IsPointer(a)) {
-		STD::sprintf(buf,"%p",GetPointer(a));
+		STD::snprintf(buf,bufsz,"%p",GetPointer(a));
 	}
 #if FLEXT_SYS == FLEXT_SYS_PD
 	else if(a.a_type == A_DOLLAR) {
-		STD::sprintf(buf,"$%d",a.a_w.w_index);
+		STD::snprintf(buf,bufsz,"$%d",a.a_w.w_index);
 	}
 	else if(a.a_type == A_DOLLSYM) {
-		STD::sprintf(buf,"$%s",GetString(a));
+		STD::snprintf(buf,bufsz,"$%s",GetString(a));
 	}
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	else if(a.a_type == A_DOLLAR) {
-		STD::sprintf(buf,"$%d",a.a_w.w_long);
+		STD::snprintf(buf,bufsz,"$%d",a.a_w.w_long);
 	}
 #else
 //#pragma message("Not implemented")
@@ -72,11 +76,6 @@ bool flext::PrintList(int argc,const t_atom *argv,char *buf,int bufsz)
     }
 	*buf = 0;
     return ok;
-}
-
-bool flext::AtomList::Print(char *buffer,int buflen) const 
-{ 
-	return flext::PrintList(Count(),Atoms(),buffer,buflen); 
 }
 
 

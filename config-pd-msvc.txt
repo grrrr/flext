@@ -25,5 +25,5 @@ OUTPATH=".\pd-msvc"
 INSTDIR=$(PDPATH)\flext
 
 # user-definable compiler flags
-# e.g. FLEXT_USE_SIMD enables SIMD support for capable CPUs
+# e.g. FLEXT_USE_SIMD enables SIMD support for capable CPUs (you need the Processor Pack for MSVC++)
 UFLAGS=-DFLEXT_USE_SIMD

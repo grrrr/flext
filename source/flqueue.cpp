@@ -66,8 +66,8 @@ void qmsg::Clear()
 	tp = tp_none;
 }
 
-static int qcnt = 0;
-static qmsg *qhead = NULL,*qtail = NULL;
+static volatile int qcnt = 0;
+static qmsg *volatile qhead = NULL,*volatile qtail = NULL;
 
 #ifdef FLEXT_QTHR
 static flext::ThrCond qthrcond;
@@ -275,13 +275,15 @@ void flext_base::StartQueue()
 
 void flext_base::ToQueueBang(int o) const 
 {
-	qmsg *m = new qmsg(const_cast<flext_base *>(this)); 
+	FLEXT_ASSERT(o >= 0);
+    	qmsg *m = new qmsg(const_cast<flext_base *>(this)); 
 	m->SetBang(o);
 	Queue(m);
 }
 
 void flext_base::ToQueueFloat(int o,float f) const
 {
+	FLEXT_ASSERT(o >= 0);
 	qmsg *m = new qmsg(const_cast<flext_base *>(this)); 
 	m->SetFloat(o,f);
 	Queue(m);
@@ -289,6 +291,7 @@ void flext_base::ToQueueFloat(int o,float f) const
 
 void flext_base::ToQueueInt(int o,int f) const
 {
+	FLEXT_ASSERT(o >= 0);
 	qmsg *m = new qmsg(const_cast<flext_base *>(this)); 
 	m->SetInt(o,f);
 	Queue(m);
@@ -296,6 +299,7 @@ void flext_base::ToQueueInt(int o,int f) const
 
 void flext_base::ToQueueSymbol(int o,const t_symbol *s) const
 {
+	FLEXT_ASSERT(o >= 0);
 	qmsg *m = new qmsg(const_cast<flext_base *>(this)); 
 	m->SetSymbol(o,s);
 	Queue(m);
@@ -303,6 +307,7 @@ void flext_base::ToQueueSymbol(int o,const t_symbol *s) const
 
 void flext_base::ToQueueList(int o,int argc,const t_atom *argv) const
 {
+	FLEXT_ASSERT(o >= 0);
 	qmsg *m = new qmsg(const_cast<flext_base *>(this)); 
 	m->SetList(o,argc,argv);
 	Queue(m);
@@ -310,6 +315,7 @@ void flext_base::ToQueueList(int o,int argc,const t_atom *argv) const
 
 void flext_base::ToQueueAnything(int o,const t_symbol *s,int argc,const t_atom *argv) const
 {
+	FLEXT_ASSERT(o >= 0);
 	qmsg *m = new qmsg(const_cast<flext_base *>(this)); 
 	m->SetAny(o,s,argc,argv);
 	Queue(m);
@@ -318,31 +324,37 @@ void flext_base::ToQueueAnything(int o,const t_symbol *s,int argc,const t_atom *
 
 void flext_base::ToSelfBang(int n) const 
 {
+    FLEXT_ASSERT(n >= 0);
     ToQueueBang(-1-n);
 }
 
 void flext_base::ToSelfFloat(int n,float f) const
 {
+    FLEXT_ASSERT(n >= 0);
     ToQueueFloat(-1-n,f);
 }
 
 void flext_base::ToSelfInt(int n,int f) const
 {
+    FLEXT_ASSERT(n >= 0);
     ToQueueInt(-1-n,f);
 }
 
 void flext_base::ToSelfSymbol(int n,const t_symbol *s) const
 {
+    FLEXT_ASSERT(n >= 0);
     ToQueueSymbol(-1-n,s);
 }
 
 void flext_base::ToSelfList(int n,int argc,const t_atom *argv) const
 {
+    FLEXT_ASSERT(n >= 0);
     ToQueueList(-1-n,argc,argv);
 }
 
 void flext_base::ToSelfAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const
 {
+    FLEXT_ASSERT(n >= 0);
     ToQueueAnything(-1-n,s,argc,argv);
 }
 

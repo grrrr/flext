@@ -9,6 +9,11 @@ PDPATH=/usr/local/include
 # where do the flext libraries reside?
 FLEXTPATH=/usr/local/lib/pd/flext
 
-# where should the examples be built?
-OUTPATH=./pd-cygwin
+# where should the examples be built? (relative path)
+OUTPATH=./pd-linux
 
+# install the examples? (yes/no)
+INSTALL=yes
+
+# where should the examples be installed?
+INSTPATH=${FLEXTPATH}/tutorial

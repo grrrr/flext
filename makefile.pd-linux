@@ -79,7 +79,7 @@ clean:
 	rm -f $(TARGDIR)/*.o $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
 	
 $(INSTDIR):
-	mkdir $(INSTDIR)
+	-mkdir $(INSTDIR)
 
 install:: $(INSTDIR)
 

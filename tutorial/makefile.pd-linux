@@ -6,21 +6,13 @@
 #
 # -----------------------------------------------------
 
-# pd path 
-PDPATH=/usr/local/include
+include config-pd-linux.txt
 
-# where to build
-TARGDIR=./pd-linux
-
-# flext stuff  ### EDIT! ###
-FLEXTPATH=/usr/local/lib/pd/flext
 FLEXTLIB=$(FLEXTPATH)/flext_t.a  # take threaded library for all
 
-# where to install 
-INSTDIR=/usr/local/lib/pd/flext/tutorial
 
 # compiler+linker stuff	### EDIT! ###
-INCLUDES=$(PDPATH)
+INCLUDES=$(PDPATH)/src
 LIBPATH=
 FLAGS=-DPD -DFLEXT_THREADS
 CFLAGS=-O6 -mcpu=pentiumpro
@@ -35,32 +27,31 @@ LIBS=m
 EXAMPLES=simple1 simple2 simple3 adv1 signal1~ signal2~ thread1 thread2
 
 
-TARGETS=$(patsubst %,$(TARGDIR)/%.pd_linux,$(EXAMPLES))
+TARGETS=$(patsubst %,$(OUTPATH)/%.pd_linux,$(EXAMPLES))
 
 # default target
-all: $(TARGDIR) $(TARGETS)
+all: $(OUTPATH) $(TARGETS)
 
 
-$(TARGDIR)/%~.pd_linux : $(TARGDIR)/%.pd_linux
+$(OUTPATH)/%~.pd_linux : $(OUTPATH)/%.pd_linux
 	mv $^ $@
 
 $(SRCS): $(HDRS)
 	touch $@
 
-$(TARGDIR):
-	mkdir $(TARGDIR)
+$(OUTPATH):
+	mkdir $(OUTPATH)
 
-$(TARGDIR)/%.o : %/main.cpp
+$(OUTPATH)/%.o : %/main.cpp
 	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(FLEXTPATH)) $< -o $@
 
-$(TARGDIR)/%.pd_linux : $(TARGDIR)/%.o $(FLEXTLIB)
+$(OUTPATH)/%.pd_linux : $(OUTPATH)/%.o $(FLEXTLIB)
 	$(CXX) $(LDFLAGS) -shared $(patsubst %,-L%,$(LIBPATH)) $^ $(patsubst %,-l%,$(LIBS)) -o $@
 	chmod 755 $@
 
 
 .PHONY: clean
 clean:
-	rm -f $(TARGDIR)/*.o $(TARGETS)
+	rm -f $(OUTPATH)/*.o $(TARGETS)
 	
-
 

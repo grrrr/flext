@@ -48,10 +48,13 @@ FLEXTLIBINST=$(FLEXTLIB)
 $(FLEXTINC):
 	if not exist $@ mkdir $@ > nul
 
+$(FLEXTLIB):
+	if not exist $@ mkdir $@ > nul
+
 $(FLEXTLIBINST):
 	if not exist $@ mkdir $@ > nul
 
-install:: $(FLEXTINC) $(FLEXTLIBINST) $(FLEXTLIB)
+install:: $(FLEXTINC) $(FLEXTLIB) $(FLEXTLIBINST)
 
 install::
 	copy $(TARGET) $(FLEXTLIBINST) > nul

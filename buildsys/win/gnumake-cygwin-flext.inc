@@ -5,14 +5,14 @@
 # default target
 build: $(TARGET)
 
-#$(CSRCS) $(CPPSRCS): $(patsubst %,$(SRCDIR)/%,$(HDRS))
-#	touch $@
+$(CSRCS) $(CPPSRCS): $(patsubst %,$(SRCDIR)/%,$(HDRS))
+	touch $@
 
 $(OUTPATH):
-	-mkdir $(subst /,\,$@)
+	-mkdir -p $@
 
 $(TARGETPATH): $(OUTPATH)
-	-mkdir $(subst /,\,$@)
+	-mkdir -p $@
 
 $(TARGETPATH)/%.opp : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
@@ -20,11 +20,12 @@ $(TARGETPATH)/%.opp : $(SRCDIR)/%.cpp
 $(TARGETPATH)/%.o : $(SRCDIR)/%.c
 	$(CC) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
 
-$(TARGET) :: $(TARGETPATH)
+$(TARGET) :: $(TARGETPATH) 
 
 $(TARGET) :: $(COBJS) $(CPPOBJS)
 ifdef SHARED
 	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
+	chmod 755 $@
 else
 	$(AR) rc $@ $(COBJS) $(CPPOBJS)
 endif
@@ -32,7 +33,7 @@ endif
 ##############################################
 
 clean:
-	-del $(subst /,\,$(COBJS) $(CPPOBJS) $(TARGET))
+	rm $(COBJS) $(CPPOBJS) $(TARGET)
 
 ##############################################
 
@@ -43,13 +44,11 @@ FLEXTLIBINST=$(FLEXTLIB)
 endif
 
 $(FLEXTINC):
-	-mkdir $(subst /,\,$@)
+	-mkdir -p $@
 
 $(FLEXTLIBINST):
-	-mkdir $(subst /,\,$@)
+	-mkdir -p $@
 
-install:: $(FLEXTINC) $(FLEXTLIBINST)
-
-install::
-	copy $(subst /,\,$(TARGET) $(FLEXTLIBINST))
-	-for %%i in ($(HDRS)) do @copy $(SRCDIR)\%%i $(subst /,\,$(FLEXTPATH)) > nul
+install: $(FLEXTINC) $(FLEXTLIBINST)
+	install $(TARGET) $(FLEXTLIBINST)
+	install $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTINC)

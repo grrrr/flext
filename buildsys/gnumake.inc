@@ -17,11 +17,6 @@ else
 endif
 endif
 
-
-ifdef FLEXTBUILD
-DEFS+=-DFLEXT_EXPORTS
-endif
-
 ##############################################
 # name of flext library
 ##############################################
@@ -44,46 +39,17 @@ FLEXTNAME=flext-$(RTSYS)_t
 endif
 else
 ifdef DEBUG
-FLEXTNAME=flext-$(RTSYS)_d
+FLEXTNAME=flext-$(RTSYS)_sd
 else
-FLEXTNAME=flext-$(RTSYS)
+FLEXTNAME=flext-$(RTSYS)_s
 endif
 endif
 
 endif # SHARED
 
 ##############################################
-# build subdirectories
+# product name and folder
 ##############################################
 
-ifdef FLEXTBUILD
-
-ifdef SHARED
-
-ifdef DEBUG
-OUTSUB=dd
-else
-OUTSUB=dr
-endif
-
-else # SHARED
-
-ifdef THREADED
-ifdef DEBUG
-OUTSUB=td
-else
-OUTSUB=tr
-endif
-else
-ifdef DEBUG
-OUTSUB=sd
-else
-OUTSUB=sr
-endif
-endif
-
-endif # SHARED
-
-else # FLEXTBUILD
-OUTSUB=.
-endif # FLEXTBUILD
+OUTNAME=$(NAME)
+OUTSUB=$(TARGETMODE)-$(TARGETTYPE)

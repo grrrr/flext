@@ -5,5 +5,3 @@ LIBPATH += -L$(PDPATH)/bin
 
 # these are both in PDPATH
 LIBS += -lpd -lpthreadVC
-
-EXT=dll

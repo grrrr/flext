@@ -7,5 +7,3 @@ CFLAGS += -include /usr/include/pthread.h -DPTHREAD_H
 
 LIBS += $(PDPATH)/bin/pd.dll 
 #LIBS += $(PDPATH)/bin/pthreadVC.dll
-
-EXT=dll

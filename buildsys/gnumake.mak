@@ -5,11 +5,39 @@
 # COMPILER - msvc/gcc/mingw/cygwin
 # BUILDPATH including trailing /
 
+###############################################
 # package info
+
 USRINFO=package.txt
 
 include $(USRINFO)
 
+###############################################
+# check variables
+
+ifndef BUILDCLASS
+	error BUILDCLASS must be specified in $(USRINFO)
+endif
+
+ifndef BUILDMODE
+	error BUILDMODE must be specified in $(USRINFO)
+endif
+
+ifndef BUILDTYPE
+	error BUILDTYPE must be specified in $(USRINFO)
+endif
+
+##############################
+
+ifndef TARGETMODE
+	TARGETMODE=$(BUILDMODE)
+endif
+
+ifndef TARGETTYPE
+	TARGETTYPE=$(BUILDTYPE)
+endif
+
+###############################################
 
 ifeq ($(PLATFORM),win)
 	# substitute eventual \ by /
@@ -18,15 +46,16 @@ else
 	UBUILDPATH=$(BUILDPATH)
 endif
 
+###############################################
 
 SYSCONFIG=$(UBUILDPATH)config-$(PLATFORM)-$(RTSYS)-$(COMPILER).txt
 SYSDEFAULT=$(UBUILDPATH)$(PLATFORM)/$(RTSYS)/config-$(COMPILER).def
-
 
 OPTIONS=-f $(UBUILDPATH)gnumake-sub.mak \
 	PLATFORM=$(PLATFORM) RTSYS=$(RTSYS) COMPILER=$(COMPILER) \
 	BUILDPATH=$(UBUILDPATH) USRINFO=$(USRINFO)
 
+###############################################
 
 ifdef BUILDDIR
 USRCONFIG=config.txt
@@ -37,86 +66,14 @@ USRMAKE=$(BUILDDIR)/makefile-$(PLATFORM)-$(COMPILER).inc
 OPTIONS+=USRCONFIG=$(USRCONFIG) USRMAKE=$(USRMAKE)
 endif
 
+###############################################
+# include file describing default target dependencies
 
-ifdef FLEXTBUILD
-all: flext
-else
-all: build-sr
+include $(BUILDPATH)targets.inc
 
-shared: build-tr
-endif
+include $(BUILDPATH)targets-$(BUILDCLASS).inc
 
-flext: flext-release flext-debug
-
-flext-release: build-dr build-tr build-sr
-
-flext-debug: build-dd build-td build-sd
-
-install: install-dr install-tr install-sr install-dd install-td install-sd
-
-clean: clean-dr clean-tr clean-sr clean-dd clean-td clean-sd
-
-
-build-sr: config
-	$(MAKE) $(OPTIONS) _all_
-
-build-sd: config
-	$(MAKE) $(OPTIONS) DEBUG=1 _all_
-
-build-tr: config
-	$(MAKE) $(OPTIONS) THREADED=1 _all_
-
-build-td: config
-	$(MAKE) $(OPTIONS) THREADED=1 DEBUG=1 _all_
-
-build-dr: config
-	$(MAKE) $(OPTIONS) SHARED=1 _all_
-
-build-dd: config
-	$(MAKE) $(OPTIONS) SHARED=1 DEBUG=1 _all_
-
-
-install-sr:
-	$(MAKE) $(OPTIONS) _install_
-
-install-sd:
-	$(MAKE) $(OPTIONS) DEBUG=1 _install_
-
-install-tr:
-	$(MAKE) $(OPTIONS) THREADED=1 _install_
-
-install-td:
-	$(MAKE) $(OPTIONS) THREADED=1 DEBUG=1 _install_
-
-install-dr:
-	$(MAKE) $(OPTIONS) SHARED=1 _install_
-
-install-dd:
-	$(MAKE) $(OPTIONS) SHARED=1 DEBUG=1 _install_
-
-
-clean-sr:
-	$(MAKE) $(OPTIONS) _clean_
-
-clean-sd:
-	$(MAKE) $(OPTIONS) DEBUG=1 _clean_
-
-clean-tr:
-	$(MAKE) $(OPTIONS) THREADED=1 _clean_
-
-clean-td:
-	$(MAKE) $(OPTIONS) THREADED=1 DEBUG=1 _clean_
-
-clean-dr:
-	$(MAKE) $(OPTIONS) SHARED=1 _clean_
-
-clean-dd:
-	$(MAKE) $(OPTIONS) SHARED=1 DEBUG=1 _clean_
-
-
-
-config: $(USRMAKE) $(SYSCONFIG) $(USRCONFIG) 
-
+###############################################
 
 .precious: $(SYSCONFIG) $(USRCONFIG)
 

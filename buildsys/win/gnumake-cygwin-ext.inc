@@ -3,7 +3,7 @@
 ifndef FLEXTBUILD
 INCPATH += -I$(FLEXTPATH)
 LIBPATH += -L$(FLEXTPATH)
-LIBS+=$(FLEXTPATH)/$(FLEXTNAME).lib
+LIBS += $(FLEXTPATH)/$(FLEXTNAME).a
 endif
 
 ##############################################
@@ -11,14 +11,14 @@ endif
 # default target
 build: $(TARGET)
 
-#$(CSRCS) $(CPPSRCS): $(patsubst %,$(SRCDIR)/%,$(HDRS))
-#	touch $@
+$(CSRCS) $(CPPSRCS): $(patsubst %,$(SRCDIR)/%,$(HDRS))
+	touch $@
 
 $(OUTPATH):
-	-mkdir $(subst /,\,$@)
+	-mkdir -p $@
 
 $(TARGETPATH): $(OUTPATH)
-	-mkdir $(subst /,\,$@)
+	-mkdir -p $@
 
 $(TARGETPATH)/%.opp : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
@@ -26,20 +26,21 @@ $(TARGETPATH)/%.opp : $(SRCDIR)/%.cpp
 $(TARGETPATH)/%.o : $(SRCDIR)/%.c
 	$(CC) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
 
-$(TARGET) :: $(TARGETPATH)
+$(TARGET) :: $(TARGETPATH) 
 
 $(TARGET) :: $(COBJS) $(CPPOBJS)
 	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
+	chmod 755 $@
 
 ##############################################
 
 clean:
-	-del $(subst /,\,$(COBJS) $(CPPOBJS) $(TARGET))
+	rm $(COBJS) $(CPPOBJS) $(TARGET)
 
 ##############################################
 
 $(INSTPATH):
-	-mkdir $(subst /,\,$@)
+	-mkdir -p $@
 
-install:: $(INSTPATH)
-	copy $(subst /,\,$(TARGET) $(INSTPATH))
+install: $(INSTPATH)
+	install $(TARGET) $(INSTPATH)

@@ -73,7 +73,7 @@ void signal2::m_bang()
 	ToOutInt(3,ChannelsOut()); 
 }
 
-void signal2::m_signal(int n, float *const *in, float *const *out)
+void signal2::m_signal(int, float *const *, float *const *)
 {
 	// do no dsp work
 }

@@ -87,7 +87,11 @@ void adv1::m_any(t_symbol *s,int argc,t_atom *argv)
 	for(; i < lst.Count(); ++i) CopyAtom(&result[ix++],&lst[i]);
 
 	// if anything is no "list" or "float" then append it to result list
-	if(s != sym_list && s != sym_float)
+	if(s != sym_list && s != sym_float
+#ifdef MAXMSP
+		 && s != sym_int  // in Max integers are system data types
+#endif
+	)
 		SetSymbol(result[ix++],s); 
 
 	// append pending arguments to result list

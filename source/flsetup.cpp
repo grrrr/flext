@@ -14,7 +14,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     !Lacking Details.!
 */
 
-#include <flext.h>
+#include "flext.h"
 #include <ctype.h>
 #include <string.h>
 

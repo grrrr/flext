@@ -29,6 +29,8 @@ PPCCPlusOptions = {Includes} {Sym-PPC} {Defines} {Flags} {WarnOff}
 Headers			= flstdc.h flbase.h fldefs.h flext.h flclass.h fldsp.h flthr.h flmspbuffer.h flinternal.h
 SrcFiles        = flbase.cpp flbuf.cpp flext.cpp fllib.cpp fldsp.cpp flatom.cpp flsetup.cpp flthr.cpp flutil.cpp flxlet.cpp 
 
+SrcDir	= :source:
+
 ### Object Files ###
 
 ObjFiles-PPC    =  è
@@ -43,7 +45,6 @@ ObjFiles-PPC    =  è
 				  "{ObjDir}flutil.cpp.x" è
 				  "{ObjDir}flxlet.cpp.x"
 
-
 ### Libraries ###
 
 LibFiles-PPC    = 
@@ -51,7 +52,7 @@ LibFiles-PPC    =
 
 ### Default Rules ###
 
-{ObjDir} ü :
+{ObjDir} ü {SrcDir}
 
 .cpp.x  ü  .cpp  {ÄMondoBuildÄ} {Headers}
 	{PPCCPlus} {depDir}{default}.cpp -o {targDir}{default}.cpp.x {PPCCPlusOptions}

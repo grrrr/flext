@@ -27,6 +27,6 @@ void flext_base::Sleep(float s)
 #ifdef NT
 	::Sleep((long)(s*1000));
 #else
-#pragma message ("flext - Sleep not implemented!")
+	Delay(s*1000,NULL);
 #endif
 }

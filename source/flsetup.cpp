@@ -23,7 +23,8 @@ const char *extractname(const char *name,int ix)
 	const char *n = name;
 	for(int i = 0; n && *n; ++i) {
 		if(i == ix) {
-			for(char *t = tmp; *n && !isspace(*n); ++t,++n) *t = *n;
+			char *t;
+			for(t = tmp; *n && !isspace(*n); ++t,++n) *t = *n;
 			*t = 0;
 			return *tmp?tmp:NULL;
 		}

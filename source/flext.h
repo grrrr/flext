@@ -219,6 +219,26 @@ private:
 	static V cb_px_anything(V *c,const t_symbol *s,I argc,t_atom *argv);
 	static V cb_px_int(V *c,I v);
 	static V cb_px_float(V *c,F f);
+
+	static V cb_px_in1(V *c,I v);
+	static V cb_px_in2(V *c,I v);
+	static V cb_px_in3(V *c,I v);
+	static V cb_px_in4(V *c,I v);
+	static V cb_px_in5(V *c,I v);
+	static V cb_px_in6(V *c,I v);
+	static V cb_px_in7(V *c,I v);
+	static V cb_px_in8(V *c,I v);
+	static V cb_px_in9(V *c,I v);
+	static V cb_px_ft1(V *c,F f);
+	static V cb_px_ft2(V *c,F f);
+	static V cb_px_ft3(V *c,F f);
+	static V cb_px_ft4(V *c,F f);
+	static V cb_px_ft5(V *c,F f);
+	static V cb_px_ft6(V *c,F f);
+	static V cb_px_ft7(V *c,F f);
+	static V cb_px_ft8(V *c,F f);
+	static V cb_px_ft9(V *c,F f);
+
 	static V cb_px_bang(V *c);
 #endif
 	px_object **inlets;

@@ -67,6 +67,20 @@ V flext_base::cb_px_float(V *c,F v)
 	cb_px_anything(c,sym_float,1,&atom);
 }
 
+#define DEF_IN_FT(IX) \
+V flext_base::cb_px_in ## IX(V *c,I v) { L &ci = ((flext_hdr *)thisObject(c)->x_obj)->curinlet; ci = IX; cb_px_int(c,v); ci = 0; } \
+V flext_base::cb_px_ft ## IX(V *c,F v) { L &ci = ((flext_hdr *)thisObject(c)->x_obj)->curinlet; ci = IX; cb_px_float(c,v); ci = 0; }
+
+DEF_IN_FT(1)
+DEF_IN_FT(2)
+DEF_IN_FT(3)
+DEF_IN_FT(4)
+DEF_IN_FT(5)
+DEF_IN_FT(6)
+DEF_IN_FT(7)
+DEF_IN_FT(8)
+DEF_IN_FT(9)
+
 V flext_base::cb_px_bang(V *c)
 {
 	static const t_symbol *sym_bang = gensym("bang");
@@ -345,6 +359,26 @@ V flext_base::cb_setup(t_class *c)
 	add_bang(c,cb_px_bang);
 	add_method1(c,cb_px_int,"int",A_INT);  // does this interfere with other int inlets?
 	add_method1(c,cb_px_float,"float",A_FLOAT);  // does this interfere with other float inlets?
+
+	add_method1(c,cb_px_ft1,"ft1",A_FLOAT); 
+	add_method1(c,cb_px_ft2,"ft2",A_FLOAT);  
+	add_method1(c,cb_px_ft3,"ft3",A_FLOAT); 
+	add_method1(c,cb_px_ft4,"ft4",A_FLOAT);  
+	add_method1(c,cb_px_ft5,"ft5",A_FLOAT);
+	add_method1(c,cb_px_ft6,"ft6",A_FLOAT); 
+	add_method1(c,cb_px_ft7,"ft7",A_FLOAT);  
+	add_method1(c,cb_px_ft8,"ft8",A_FLOAT);  
+	add_method1(c,cb_px_ft9,"ft9",A_FLOAT); 
+	
+	add_method1(c,cb_px_in1,"in1",A_INT); 
+	add_method1(c,cb_px_in2,"in2",A_INT);  
+	add_method1(c,cb_px_in3,"in3",A_INT); 
+	add_method1(c,cb_px_in4,"in4",A_INT);  
+	add_method1(c,cb_px_in5,"in5",A_INT);
+	add_method1(c,cb_px_in6,"in6",A_INT); 
+	add_method1(c,cb_px_in7,"in7",A_INT);  
+	add_method1(c,cb_px_in8,"in8",A_INT);  
+	add_method1(c,cb_px_in9,"in9",A_INT); 
 #endif
 }
 

@@ -32,7 +32,8 @@ CFLAGS_S=-DFLEXT_SHARED -DFLEXT_EXPORTS
 
 # libraries
 # it seems like libstdc++ must be defined for icc....
-LIBS=stdc++
+# LIBS=stdc++
+# but it seems that's only true for older icc versions....
 
 # ----------------------------------------------
 # the rest can stay untouched

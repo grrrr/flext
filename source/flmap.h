@@ -288,7 +288,7 @@ class TablePtrMapOwned
     : public TablePtrMap<K,T,N>
 {
 public:
-    virtual ~TablePtrMapOwned() { clear(); }
+    virtual ~TablePtrMapOwned() { TablePtrMapOwned<K,T,N>::clear(); }
 
 protected:
     virtual void Free(void *ptr) 

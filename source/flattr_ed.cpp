@@ -427,7 +427,8 @@ void flext_base::SetAttrEditor(t_classid c)
 static size_t escapeit(char *dst,size_t maxlen,const char *src)
 {
     int ret = 0;
-    for(char *d = dst; *src && (d-dst) < (int)maxlen; ++src) {
+    char *d;
+    for(d = dst; *src && (d-dst) < (int)maxlen; ++src) {
         if(*src == '%')
             *(d++) = '%',*(d++) = '%';
         else

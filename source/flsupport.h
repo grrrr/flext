@@ -886,6 +886,8 @@ public:
 		bool Delay(double tm,void *data = NULL);
 		//! Trigger a periodic interval
 		bool Periodic(double tm,void *data = NULL);
+		//! Trigger immediately
+        bool Now(void *data = NULL) { return Delay(0,data); }
 
 		//! Worker function, called on every timer event
 		virtual void Work();

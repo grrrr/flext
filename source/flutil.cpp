@@ -17,6 +17,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #if FLEXT_OS == FLEXT_OS_WIN
 #include <windows.h>
+#elif FLEXT_OS == FLEXT_OS_MAC
+#include <MacMemory.h>
 #endif
 
 void flext::CopyMem(void *dst,const void *src,int bytes) 

@@ -360,7 +360,7 @@ public:
 	//! Check whether the atom can be a pointer
 	static bool CanbePointer(const t_atom &a) { return IsInt(a); }
 	//! Access the pointer value (without type check)
-	static void *GetPointer(const t_atom &a) { return NULL; }
+	static void *GetPointer(const t_atom &) { return NULL; }
 	//! Check for a pointer and get its value 
 	static void *GetAPointer(const t_atom &a,void *def = NULL) { return IsInt(a)?(void *)GetInt(a):def; }
 	//! Set the atom to represent a pointer

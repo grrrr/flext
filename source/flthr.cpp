@@ -20,10 +20,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <errno.h>
 
 //! Thread id of system thread
-flext::thrid_t flext::thrid;
+flext::thrid_t flext::thrid = 0;
 
 //! Thread id of helper thread
-flext::thrid_t flext::thrhelpid;
+flext::thrid_t flext::thrhelpid = 0;
 
 /*
 flext::thr_entry *flext::thrhead = NULL,*flext::thrtail = NULL;
@@ -42,6 +42,8 @@ static flext::ThrCond *thrhelpcond = NULL;
 //! Start helper thread
 bool flext::StartHelper()
 {
+	if(thrhelpid) return true;
+
 	bool ok = false;
 #if FLEXT_THREADS == FLEXT_THR_POSIX
 	pthread_attr_t attr;

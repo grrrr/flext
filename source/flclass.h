@@ -313,35 +313,63 @@ public:
 	*/
 
 	void AddMethodDef(int inlet,const char *tag = NULL); // call virtual function for tag && inlet
-	void AddMethod(int inlet,const char *tag,methfun fun,metharg tp,...); 
 
-	void AddMethod(int inlet,bool (*m)(flext_base *,int,t_atom *)) { AddMethod(inlet,"list",(methfun)m,a_list,a_null); }
-	void AddMethod(int inlet,bool (*m)(flext_base *,int,const t_atom *)) { AddMethod(inlet,"list",(methfun)m,a_list,a_null); }
-	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *)) { AddMethod(inlet,tag,(methfun)m,a_null); }  // pure method
-	void AddMethod(int inlet,bool (*m)(flext_base *,t_symbol *,int,t_atom *)) { AddMethod(inlet,"anything",(methfun)m,a_any,a_null); } // anything
-	void AddMethod(int inlet,bool (*m)(flext_base *,const t_symbol *,int,const t_atom *)) { AddMethod(inlet,"anything",(methfun)m,a_any,a_null); } // anything
-	void AddMethod(int inlet,bool (*m)(flext_base *,t_symbol *&)) { AddMethod(inlet,"symbol",(methfun)m,a_symbol,a_null); } // single symbol
-	void AddMethod(int inlet,bool (*m)(flext_base *,const t_symbol *&)) { AddMethod(inlet,"symbol",(methfun)m,a_symbol,a_null); } // single symbol
-	void AddMethod(int inlet,bool (*m)(flext_base *,float &)) { AddMethod(inlet,"float",(methfun)m,a_float,a_null); }  // single float
-	void AddMethod(int inlet,bool (*m)(flext_base *,float &,float &)) { AddMethod(inlet,"list",(methfun)m,a_float,a_float,a_null); } // list of 2 floats
-	void AddMethod(int inlet,bool (*m)(flext_base *,float &,float &,float &)) { AddMethod(inlet,"list",(methfun)m,a_float,a_float,a_float,a_null); } // list of 3 floats
+	void AddMethod(int inlet,bool (*m)(flext_base *,int,t_atom *)) { AddMethod(ThMeths(),inlet,"list",(methfun)m,a_list,a_null); }
+	void AddMethod(int inlet,bool (*m)(flext_base *,int,const t_atom *)) { AddMethod(ThMeths(),inlet,"list",(methfun)m,a_list,a_null); }
+	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *)) { AddMethod(ThMeths(),inlet,tag,(methfun)m,a_null); }  // pure method
+	void AddMethod(int inlet,bool (*m)(flext_base *,t_symbol *,int,t_atom *)) { AddMethod(ThMeths(),inlet,"anything",(methfun)m,a_any,a_null); } // anything
+	void AddMethod(int inlet,bool (*m)(flext_base *,const t_symbol *,int,const t_atom *)) { AddMethod(ThMeths(),inlet,"anything",(methfun)m,a_any,a_null); } // anything
+	void AddMethod(int inlet,bool (*m)(flext_base *,t_symbol *&)) { AddMethod(ThMeths(),inlet,"symbol",(methfun)m,a_symbol,a_null); } // single symbol
+	void AddMethod(int inlet,bool (*m)(flext_base *,const t_symbol *&)) { AddMethod(ThMeths(),inlet,"symbol",(methfun)m,a_symbol,a_null); } // single symbol
+	void AddMethod(int inlet,bool (*m)(flext_base *,float &)) { AddMethod(ThMeths(),inlet,"float",(methfun)m,a_float,a_null); }  // single float
+	void AddMethod(int inlet,bool (*m)(flext_base *,float &,float &)) { AddMethod(ThMeths(),inlet,"list",(methfun)m,a_float,a_float,a_null); } // list of 2 floats
+	void AddMethod(int inlet,bool (*m)(flext_base *,float &,float &,float &)) { AddMethod(ThMeths(),inlet,"list",(methfun)m,a_float,a_float,a_float,a_null); } // list of 3 floats
 #if FLEXT_SYS == FLEXT_SYS_PD
-	void AddMethod(int inlet,bool (*m)(flext_base *,int &)) { AddMethod(inlet,"float",(methfun)m,a_int,a_null); }  // single float
+	void AddMethod(int inlet,bool (*m)(flext_base *,int &)) { AddMethod(ThMeths(),inlet,"float",(methfun)m,a_int,a_null); }  // single float
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	void AddMethod(int inlet,bool (*m)(flext_base *,int &)) { AddMethod(inlet,"int",(methfun)m,a_int,a_null); }  // single float
+	void AddMethod(int inlet,bool (*m)(flext_base *,int &)) { AddMethod(ThMeths(),inlet,"int",(methfun)m,a_int,a_null); }  // single float
 #else
 #error
 #endif
-	void AddMethod(int inlet,bool (*m)(flext_base *,int &,int &)) { AddMethod(inlet,"list",(methfun)m,a_int,a_int,a_null); } // list of 2 floats
-	void AddMethod(int inlet,bool (*m)(flext_base *,int &,int &,int &)) { AddMethod(inlet,"list",(methfun)m,a_int,a_int,a_int,a_null); } // list of 3 floats
-	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,int,t_atom *)) { AddMethod(inlet,tag,(methfun)m,a_list,a_null); } // method+gimme
-	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,int,const t_atom *)) { AddMethod(inlet,tag,(methfun)m,a_list,a_null); } // method+gimme
-	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,t_symbol *,int,t_atom *)) { AddMethod(inlet,tag,(methfun)m,a_any,a_null); } // method+gimme 
-	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,const t_symbol *,int,const t_atom *)) { AddMethod(inlet,tag,(methfun)m,a_any,a_null); } // method+gimme 
-	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,t_symbol *&)) { AddMethod(inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
-	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,const t_symbol *&)) { AddMethod(inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
-	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,float &)) { AddMethod(inlet,tag,(methfun)m,a_float,a_null); }  // method+float
-	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,int &)) { AddMethod(inlet,tag,(methfun)m,a_int,a_null); } // method+int
+	void AddMethod(int inlet,bool (*m)(flext_base *,int &,int &)) { AddMethod(ThMeths(),inlet,"list",(methfun)m,a_int,a_int,a_null); } // list of 2 floats
+	void AddMethod(int inlet,bool (*m)(flext_base *,int &,int &,int &)) { AddMethod(ThMeths(),inlet,"list",(methfun)m,a_int,a_int,a_int,a_null); } // list of 3 floats
+	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,int,t_atom *)) { AddMethod(ThMeths(),inlet,tag,(methfun)m,a_list,a_null); } // method+gimme
+	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,int,const t_atom *)) { AddMethod(ThMeths(),inlet,tag,(methfun)m,a_list,a_null); } // method+gimme
+	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,t_symbol *,int,t_atom *)) { AddMethod(ThMeths(),inlet,tag,(methfun)m,a_any,a_null); } // method+gimme 
+	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,const t_symbol *,int,const t_atom *)) { AddMethod(ThMeths(),inlet,tag,(methfun)m,a_any,a_null); } // method+gimme 
+	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,t_symbol *&)) { AddMethod(ThMeths(),inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
+	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,const t_symbol *&)) { AddMethod(ThMeths(),inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
+	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,float &)) { AddMethod(ThMeths(),inlet,tag,(methfun)m,a_float,a_null); }  // method+float
+	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,int &)) { AddMethod(ThMeths(),inlet,tag,(methfun)m,a_int,a_null); } // method+int
+
+	static void AddMethod(t_class *c,int inlet,bool (*m)(flext_base *,int,t_atom *)) { AddMethod(ClMeths(c),inlet,"list",(methfun)m,a_list,a_null); }
+	static void AddMethod(t_class *c,int inlet,bool (*m)(flext_base *,int,const t_atom *)) { AddMethod(ClMeths(c),inlet,"list",(methfun)m,a_list,a_null); }
+	static void AddMethod(t_class *c,int inlet,const char *tag,bool (*m)(flext_base *)) { AddMethod(ClMeths(c),inlet,tag,(methfun)m,a_null); }  // pure method
+	static void AddMethod(t_class *c,int inlet,bool (*m)(flext_base *,t_symbol *,int,t_atom *)) { AddMethod(ClMeths(c),inlet,"anything",(methfun)m,a_any,a_null); } // anything
+	static void AddMethod(t_class *c,int inlet,bool (*m)(flext_base *,const t_symbol *,int,const t_atom *)) { AddMethod(ClMeths(c),inlet,"anything",(methfun)m,a_any,a_null); } // anything
+	static void AddMethod(t_class *c,int inlet,bool (*m)(flext_base *,t_symbol *&)) { AddMethod(ClMeths(c),inlet,"symbol",(methfun)m,a_symbol,a_null); } // single symbol
+	static void AddMethod(t_class *c,int inlet,bool (*m)(flext_base *,const t_symbol *&)) { AddMethod(ClMeths(c),inlet,"symbol",(methfun)m,a_symbol,a_null); } // single symbol
+	static void AddMethod(t_class *c,int inlet,bool (*m)(flext_base *,float &)) { AddMethod(ClMeths(c),inlet,"float",(methfun)m,a_float,a_null); }  // single float
+	static void AddMethod(t_class *c,int inlet,bool (*m)(flext_base *,float &,float &)) { AddMethod(ClMeths(c),inlet,"list",(methfun)m,a_float,a_float,a_null); } // list of 2 floats
+	static void AddMethod(t_class *c,int inlet,bool (*m)(flext_base *,float &,float &,float &)) { AddMethod(ClMeths(c),inlet,"list",(methfun)m,a_float,a_float,a_float,a_null); } // list of 3 floats
+#if FLEXT_SYS == FLEXT_SYS_PD
+	static void AddMethod(t_class *c,int inlet,bool (*m)(flext_base *,int &)) { AddMethod(ClMeths(c),inlet,"float",(methfun)m,a_int,a_null); }  // single float
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+	static void AddMethod(t_class *c,int inlet,bool (*m)(flext_base *,int &)) { AddMethod(ClMeths(c),inlet,"int",(methfun)m,a_int,a_null); }  // single float
+#else
+#error
+#endif
+	static void AddMethod(t_class *c,int inlet,bool (*m)(flext_base *,int &,int &)) { AddMethod(ClMeths(c),inlet,"list",(methfun)m,a_int,a_int,a_null); } // list of 2 floats
+	static void AddMethod(t_class *c,int inlet,bool (*m)(flext_base *,int &,int &,int &)) { AddMethod(ClMeths(c),inlet,"list",(methfun)m,a_int,a_int,a_int,a_null); } // list of 3 floats
+	static void AddMethod(t_class *c,int inlet,const char *tag,bool (*m)(flext_base *,int,t_atom *)) { AddMethod(ClMeths(c),inlet,tag,(methfun)m,a_list,a_null); } // method+gimme
+	static void AddMethod(t_class *c,int inlet,const char *tag,bool (*m)(flext_base *,int,const t_atom *)) { AddMethod(ClMeths(c),inlet,tag,(methfun)m,a_list,a_null); } // method+gimme
+	static void AddMethod(t_class *c,int inlet,const char *tag,bool (*m)(flext_base *,t_symbol *,int,t_atom *)) { AddMethod(ClMeths(c),inlet,tag,(methfun)m,a_any,a_null); } // method+gimme 
+	static void AddMethod(t_class *c,int inlet,const char *tag,bool (*m)(flext_base *,const t_symbol *,int,const t_atom *)) { AddMethod(ClMeths(c),inlet,tag,(methfun)m,a_any,a_null); } // method+gimme 
+	static void AddMethod(t_class *c,int inlet,const char *tag,bool (*m)(flext_base *,t_symbol *&)) { AddMethod(ClMeths(c),inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
+	static void AddMethod(t_class *c,int inlet,const char *tag,bool (*m)(flext_base *,const t_symbol *&)) { AddMethod(ClMeths(c),inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
+	static void AddMethod(t_class *c,int inlet,const char *tag,bool (*m)(flext_base *,float &)) { AddMethod(ClMeths(c),inlet,tag,(methfun)m,a_float,a_null); }  // method+float
+	static void AddMethod(t_class *c,int inlet,const char *tag,bool (*m)(flext_base *,int &)) { AddMethod(ClMeths(c),inlet,tag,(methfun)m,a_int,a_null); } // method+int
+
 
 	//! Set Max/MSP style of distributing list elements over (message) inlets
 	void SetDist(bool d = true) { distmsgs = d; }
@@ -411,11 +439,11 @@ protected:
 
 	flext_base();
 	virtual ~flext_base();
-		
+
 	/*! \brief Set up inlets and outlets, method and attribute lists
 	*/
-	virtual bool Finalize();
-
+	virtual bool Init();
+	
 	//! \brief This represents either an inlet or outlet
 	struct xlet {	
 		enum type {
@@ -443,6 +471,13 @@ protected:
 	void AddAttrib(const char *attr,bool (*get)(flext_base *,t_symbol *&),bool (*set)(flext_base *,t_symbol *&)) { AddAttrib(attr,a_symbol,(methfun)get,(methfun)set); }
 	void AddAttrib(const char *attr,bool (*get)(flext_base *,AtomList *&),bool (*set)(flext_base *,AtomList *&)) { AddAttrib(attr,a_LIST,(methfun)get,(methfun)set); }
 	void AddAttrib(const char *attr,bool (*get)(flext_base *,AtomAnything *&),bool (*set)(flext_base *,AtomAnything *&)) { AddAttrib(attr,a_ANY,(methfun)get,(methfun)set); }
+
+	static void AddAttrib(t_class *c,const char *attr,bool (*get)(flext_base *,float &),bool (*set)(flext_base *,float &)) { AddAttrib(c,attr,a_float,(methfun)get,(methfun)set); }
+	static void AddAttrib(t_class *c,const char *attr,bool (*get)(flext_base *,int &),bool (*set)(flext_base *,int &)) { AddAttrib(c,attr,a_int,(methfun)get,(methfun)set); }
+	static void AddAttrib(t_class *c,const char *attr,bool (*get)(flext_base *,const t_symbol *&),bool (*set)(flext_base *,const t_symbol *&)) { AddAttrib(c,attr,a_symbol,(methfun)get,(methfun)set); }
+	static void AddAttrib(t_class *c,const char *attr,bool (*get)(flext_base *,t_symbol *&),bool (*set)(flext_base *,t_symbol *&)) { AddAttrib(c,attr,a_symbol,(methfun)get,(methfun)set); }
+	static void AddAttrib(t_class *c,const char *attr,bool (*get)(flext_base *,AtomList *&),bool (*set)(flext_base *,AtomList *&)) { AddAttrib(c,attr,a_LIST,(methfun)get,(methfun)set); }
+	static void AddAttrib(t_class *c,const char *attr,bool (*get)(flext_base *,AtomAnything *&),bool (*set)(flext_base *,AtomAnything *&)) { AddAttrib(c,attr,a_ANY,(methfun)get,(methfun)set); }
 
 //!		@} FLEXT_C_ATTR
 
@@ -479,13 +514,13 @@ protected:
 
 // method handling
 
+	public:
+
 	class item {
 	public:
 		item(const t_symbol *t,int inl = 0);
 		~item();
 		
-		bool operator <(const item &it) const { return inlet == it.inlet?tag < it.tag:inlet < it.inlet; }
-
 		const t_symbol *tag;
 		int inlet;
 		item *nxt;
@@ -502,10 +537,10 @@ protected:
 		
 		bool Ready() const { return bits >= 0; }
 		int Count() const { return cnt; }
-
-	protected:		
 		int Size() const { return bits?1<<bits:0; }
+		item *Item(int ix) { return arr[ix]; }
 	
+	protected:		
 		static int Hash(const t_symbol *,int inlet,int bits);
 	
 		item **arr;
@@ -539,6 +574,18 @@ protected:
 
 //!		@} FLEXT_CLASS
 
+	itemarr *ThMeths() { return methhead; }
+	static itemarr *ClMeths(t_class *c) { return GetClassArr(c,0); }
+
+	static void AddMethod(itemarr *ma,int inlet,const char *tag,methfun fun,metharg tp,...); 
+
+	itemarr *ThAttrs() { return attrhead; }
+	static itemarr *ClAttrs(t_class *c) { return GetClassArr(c,1); }
+
+	static void AddAttrib(itemarr *aa,itemarr *ma,const char *attr,metharg tp,methfun gfun,methfun sfun);
+	void AddAttrib(const char *attr,metharg tp,methfun gfun,methfun sfun);
+	static void AddAttrib(t_class *c,const char *attr,metharg tp,methfun gfun,methfun sfun);
+
 private:
 
 	static void Setup(t_class *c);
@@ -571,11 +618,9 @@ private:
 	typedef bool (*methfun_4)(flext_base *c,t_any &,t_any &,t_any &,t_any &);
 	typedef bool (*methfun_5)(flext_base *c,t_any &,t_any &,t_any &,t_any &,t_any &);
 
-	itemarr *GetClassArr(int ix) const;
+	static itemarr *GetClassArr(t_class *c,int ix);
 
 	itemarr *methhead,*clmethhead;
-	void AddMethItem(methitem *m) { methhead->Add(m); }
-	void AddClMethItem(methitem *m) { clmethhead->Add(m); }
 	
 	bool CallMeth(const methitem &m,int argc,const t_atom *argv);
 	bool FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *argv);
@@ -584,11 +629,6 @@ private:
 	bool TryMethAny(const methitem *m,int inlet,const t_symbol *t,const t_symbol *s,int argc,const t_atom *argv);
 
 	itemarr *attrhead,*clattrhead;
-//	int attrcnt;
-	void AddAttrItem(attritem *m) { attrhead->Add(m); }
-	void AddClAttrItem(attritem *m) { clattrhead->Add(m); }
-
-	void AddAttrib(const char *attr,metharg tp,methfun gfun,methfun sfun);
 
 	static int CheckAttrib(int argc,const t_atom *argv);
 	bool InitAttrib(int argc,const t_atom *argv);
@@ -615,7 +655,18 @@ private:
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 	// proxy object (for additional inlets) stuff
-	struct px_object;
+	static t_class *px_class;
+
+	struct px_object  // no virtual table!
+	{ 
+		t_object obj;			// MUST reside at memory offset 0
+		flext_base *base;
+		int index;
+
+		void init(flext_base *b,int ix) { base = b; index = ix; }
+		static void px_method(px_object *c,const t_symbol *s,int argc,t_atom *argv);
+	};
+
 	friend struct px_object;
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	typedef object px_object;

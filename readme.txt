@@ -101,6 +101,8 @@ Version history:
 
 0.4.1:
 - full port for Max@OSX
+- totally redesigned message and attribute handling: now hashed and a much more efficient
+- introduced "Finalize" virtual method, called after all "Init" methods... does inlet/outlet/method/attribute setup
 - fixed crash issue in flext_dsp when there are NO signal inlets or outlets defined
 	(this is possibly only a problem for the signal2 tutorial example)
 - added flext::GetType(t_atom &), flext::ZeroMem
@@ -299,7 +301,6 @@ tests:
 - some more mutexes needed for thread safety?
 - buffer resize: flext_base::buffer::Frames(): should we use buffer or system sample rate?
 - what about FLEXT_ADDMETHOD_V (for var arg lists) and FLEXT_ADDMETHOD_A (anythings)... nonsense?
-- queued messages... triggering timer should not be necessary for MaxMSP qmsg
 
 features:
 - abstraction for clock functions

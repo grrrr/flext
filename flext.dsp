@@ -146,18 +146,29 @@ SOURCE=".\make-files.txt"
 SOURCE=.\readme.txt
 # End Source File
 # End Group
+# Begin Group "Atom"
+
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=.\source\flatom.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\source\flatom_pr.cpp
+SOURCE=.\source\flatom_app.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\source\flattr.cpp
+SOURCE=.\source\flatom_part.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\source\flatom_pr.cpp
+# End Source File
+# End Group
+# Begin Group "Base"
+
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=.\source\flbase.cpp
@@ -168,23 +179,11 @@ SOURCE=.\source\flbase.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\source\flbuf.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\source\flclass.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\source\fldefs.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\source\fldsp.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\source\fldsp.h
 # End Source File
 # Begin Source File
 
@@ -204,7 +203,35 @@ SOURCE=.\source\fllib.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\source\flmspbuffer.h
+SOURCE=.\source\flprefix.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\source\flstdc.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\source\flthr.cpp
+# End Source File
+# End Group
+# Begin Group "IO"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\source\flattr.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\source\flitem.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\source\flmeth.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\source\flmsg.cpp
 # End Source File
 # Begin Source File
 
@@ -212,19 +239,27 @@ SOURCE=.\source\flout.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\source\flprefix.h
+SOURCE=.\source\flproxy.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\source\flsndobj.cpp
+SOURCE=.\source\flqueue.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\source\flsndobj.h
+SOURCE=.\source\flxlet.cpp
+# End Source File
+# End Group
+# Begin Group "Util"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\source\flbuf.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\source\flstdc.h
+SOURCE=.\source\flmspbuffer.h
 # End Source File
 # Begin Source File
 
@@ -236,15 +271,32 @@ SOURCE=.\source\flsupport.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\source\flthr.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\source\flutil.cpp
 # End Source File
+# End Group
+# Begin Group "Dsp"
+
+# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\source\flxlet.cpp
+SOURCE=.\source\fldsp.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\source\fldsp.h
+# End Source File
+# End Group
+# Begin Group "SndObj"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\source\flsndobj.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\source\flsndobj.h
+# End Source File
+# End Group
 # End Target
 # End Project

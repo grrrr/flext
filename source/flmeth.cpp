@@ -68,16 +68,14 @@ const flext_base::methitem *flext_base::FindMethItem(int inlet,const t_symbol *t
 
 void flext_base::AddMethodDef(int inlet,const char *tag)
 {
-	AddMethItem(new methitem(inlet,tag?MakeSymbol(tag):NULL));
+	methhead->Add(new methitem(inlet,tag?MakeSymbol(tag):NULL));
 }
 
 /*! \brief Add a method to the queue
 */
-void flext_base::AddMethod(int inlet,const char *tag,methfun fun,metharg tp,...)
+void flext_base::AddMethod(itemarr *ma,int inlet,const char *tag,methfun fun,metharg tp,...)
 {
-	methitem *mi = new methitem(inlet,MakeSymbol(tag));
-
-	va_list marker;
+	va_list marker; 
 
 	// at first just count the arg type list (in argc)
 	int argc = 0;
@@ -88,7 +86,7 @@ void flext_base::AddMethod(int inlet,const char *tag,methfun fun,metharg tp,...)
 	
 	if(argc > 0) {
 		if(argc > FLEXT_MAXMETHARGS) {
-			error("%s - method %s: only %i arguments are type-checkable: use variable argument list for more",thisName(),tag?tag:"?",FLEXT_MAXMETHARGS);
+			error("flext - method %s: only %i arguments are type-checkable: use variable argument list for more",tag?tag:"?",FLEXT_MAXMETHARGS);
 			argc = FLEXT_MAXMETHARGS;
 		}
 
@@ -113,8 +111,10 @@ void flext_base::AddMethod(int inlet,const char *tag,methfun fun,metharg tp,...)
 		va_end(marker);
 	}
 	
+	methitem *mi = new methitem(inlet,MakeSymbol(tag));
+
 	mi->SetArgs(fun,argc,args);
 
-	AddMethItem(mi);
+	ma->Add(mi);
 }
 

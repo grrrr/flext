@@ -696,32 +696,89 @@ AddMethod(IX,M_TAG,FLEXT_CALL_PRE(M_FUN))
 //! Add a handler for a method with 1 enum type argument
 #define FLEXT_ADDMETHOD_E(IX,M_TAG,M_FUN) \
 \
-AddMethod(IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),a_int,a_null)
+AddMethod(ThMeths(),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),a_int,a_null)
 
 //! Add a handler for a method with 1 argument
 #define FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,TP1) \
 \
-AddMethod(IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),a_null)	
+AddMethod(ThMeths(),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),a_null)	
 
 //! Add a handler for a method with 2 arguments
 #define FLEXT_ADDMETHOD_2(IX,M_TAG,M_FUN,TP1,TP2) \
 \
-AddMethod(IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),a_null)
+AddMethod(ThMeths(),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),a_null)
 
 //! Add a handler for a method with 3 arguments
 #define FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,TP1,TP2,TP3) \
 \
-AddMethod(IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),a_null)
+AddMethod(ThMeths(),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),a_null)
 
 //! Add a handler for a method with 4 arguments
 #define FLEXT_ADDMETHOD_4(IX,M_TAG,M_FUN,TP1,TP2,TP3,TP4) \
 \
-AddMethod(IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),a_null)
+AddMethod(ThMeths(),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),a_null)
 
 //! Add a handler for a method with 5 arguments
 #define FLEXT_ADDMETHOD_5(IX,M_TAG,M_FUN,TP1,TP2,TP3,TP4,TP5) \
 \
-AddMethod(IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),FLEXTARG(TP5),a_null)
+AddMethod(ThMeths(),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),FLEXTARG(TP5),a_null)
+
+
+// Now the same in class scope
+
+//! Add a method handler for bang 
+#define FLEXT_CADDBANG(CL,IX,M_FUN) \
+\
+AddMethod(CL,IX,"bang",FLEXT_CALL_PRE(M_FUN))	
+
+//! Add a handler for a method with no arguments
+#define FLEXT_CADDMETHOD(CL,IX,M_FUN) \
+AddMethod(CL,IX,FLEXT_CALL_PRE(M_FUN))	
+
+//! Add a handler for a method with a (variable argument) list
+#define FLEXT_CADDMETHOD_V(CL,IX,M_FUN) \
+\
+AddMethod(CL,IX,FLEXT_CALL_PRE(M_FUN))	
+
+//! Add a handler for a method with an anything argument
+#define FLEXT_CADDMETHOD_A(CL,IX,M_FUN) \
+\
+AddMethod(CL,IX,FLEXT_CALL_PRE(M_FUN))	
+
+//! Add a a handler for a method with implicit arguments
+#define FLEXT_CADDMETHOD_(CL,IX,M_TAG,M_FUN) \
+\
+AddMethod(CL,IX,M_TAG,FLEXT_CALL_PRE(M_FUN))	
+
+//! Add a handler for a method with 1 enum type argument
+#define FLEXT_CADDMETHOD_E(CL,IX,M_TAG,M_FUN) \
+\
+AddMethod(ClMeths(CL),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),a_int,a_null)
+
+//! Add a handler for a method with 1 argument
+#define FLEXT_CADDMETHOD_1(CL,IX,M_TAG,M_FUN,TP1) \
+\
+AddMethod(ClMeths(CL),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),a_null)	
+
+//! Add a handler for a method with 2 arguments
+#define FLEXT_CADDMETHOD_2(CL,IX,M_TAG,M_FUN,TP1,TP2) \
+\
+AddMethod(ClMeths(CL),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),a_null)
+
+//! Add a handler for a method with 3 arguments
+#define FLEXT_CADDMETHOD_3(CL,IX,M_TAG,M_FUN,TP1,TP2,TP3) \
+\
+AddMethod(ClMeths(CL),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),a_null)
+
+//! Add a handler for a method with 4 arguments
+#define FLEXT_CADDMETHOD_4(CL,IX,M_TAG,M_FUN,TP1,TP2,TP3,TP4) \
+\
+AddMethod(ClMeths(CL),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),a_null)
+
+//! Add a handler for a method with 5 arguments
+#define FLEXT_CADDMETHOD_5(CL,IX,M_TAG,M_FUN,TP1,TP2,TP3,TP4,TP5) \
+\
+AddMethod(ClMeths(CL),IX,M_TAG,(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),FLEXTARG(TP5),a_null)
 
 
 //	Shortcuts
@@ -760,6 +817,44 @@ FLEXT_ADDMETHOD_2(IX,M_TAG,M_FUN,int,int)
 #define FLEXT_ADDMETHOD_III(IX,M_TAG,M_FUN) \
 \
 FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,int,int,int)
+
+
+// again, the same with class scope
+
+//! Add a handler for a method with a boolean argument
+#define FLEXT_CADDMETHOD_B(CL,IX,M_TAG,M_FUN) \
+\
+FLEXT_CADDMETHOD_1(CL,IX,M_TAG,M_FUN,bool)
+
+//! Add a handler for a method with 1 float argument
+#define FLEXT_CADDMETHOD_F(CL,IX,M_TAG,M_FUN) \
+\
+FLEXT_CADDMETHOD_1(CL,IX,M_TAG,M_FUN,float)
+
+//! Add a handler for a method with 2 float arguments
+#define FLEXT_CADDMETHOD_FF(CL,IX,M_TAG,M_FUN) \
+\
+FLEXT_CADDMETHOD_2(CL,IX,M_TAG,M_FUN,float,float)
+
+//! Add a handler for a method with 3 float arguments
+#define FLEXT_CADDMETHOD_FFF(CL,IX,M_TAG,M_FUN) \
+\
+FLEXT_CADDMETHOD_3(CL,IX,M_TAG,M_FUN,float,float,float)
+
+//! Add a handler for a method with 1 integer argument
+#define FLEXT_CADDMETHOD_I(CL,IX,M_TAG,M_FUN) \
+\
+FLEXT_CADDMETHOD_1(CL,IX,M_TAG,M_FUN,int)
+
+//! Add a handler for a method with 2 integer arguments
+#define FLEXT_CADDMETHOD_II(CL,IX,M_TAG,M_FUN) \
+\
+FLEXT_CADDMETHOD_2(CL,IX,M_TAG,M_FUN,int,int)
+
+//! Add a handler for a method with 3 integer arguments
+#define FLEXT_CADDMETHOD_III(CL,IX,M_TAG,M_FUN) \
+\
+FLEXT_CADDMETHOD_3(CL,IX,M_TAG,M_FUN,int,int,int)
 
 //! @} FLEXT_D_ADDMETHOD
 
@@ -1127,6 +1222,51 @@ AddAttrib(NAME,(bool (*)(flext_base *,int &))(FLEXT_GET_PRE(GFUN)),(bool (*)(fle
 #define	FLEXT_ADDATTR_VAR1_E(NAME,FUN) \
 \
 AddAttrib(NAME,(bool (*)(flext_base *,int &))(FLEXT_GET_PRE(FUN)),(bool (*)(flext_base *,int &))(FLEXT_SET_PRE(FUN)))
+
+
+// now, the same with class scope
+
+//! Add handler for a gettable attribute
+#define	FLEXT_CADDATTR_GET(CL,NAME,GFUN) \
+\
+AddAttrib(CL,NAME,(FLEXT_GET_PRE(GFUN)),NULL)
+
+//! Add handler for a settable attribute
+#define	FLEXT_CADDATTR_SET(CL,NAME,SFUN) \
+\
+AddAttrib(CL,NAME,NULL,(FLEXT_SET_PRE(SFUN)))
+
+//! Add handlers for a both get- and settable attribute
+#define	FLEXT_CADDATTR_VAR(CL,NAME,GFUN,SFUN) \
+\
+AddAttrib(CL,NAME,(FLEXT_GET_PRE(GFUN)),(FLEXT_SET_PRE(SFUN)))
+
+//! Add handlers for a both get- and settable attribute
+#define	FLEXT_CADDATTR_VAR1(CL,NAME,FUN) \
+\
+AddAttrib(CL,NAME,(FLEXT_GET_PRE(FUN)),(FLEXT_SET_PRE(FUN)))
+
+
+//! Add handler for a gettable enum attribute
+#define	FLEXT_CADDATTR_GET_E(CL,NAME,GFUN) \
+\
+AddAttrib(CL,NAME,(bool (*)(flext_base *,int &))(FLEXT_GET_PRE(GFUN)),NULL)
+
+//! Add handler for a settable enum attribute
+#define	FLEXT_CADDATTR_SET_E(CL,NAME,SFUN) \
+\
+AddAttrib(CL,NAME,NULL,(bool (*)(flext_base *,int &))(FLEXT_SET_PRE(SFUN)))
+
+//! Add handlers for a both get- and settable enum attribute
+#define	FLEXT_CADDATTR_VAR_E(CL,NAME,GFUN,SFUN) \
+\
+AddAttrib(CL,NAME,(bool (*)(flext_base *,int &))(FLEXT_GET_PRE(GFUN)),(bool (*)(flext_base *,int &))(FLEXT_SET_PRE(SFUN)))
+
+//! Add handlers for a both get- and settable enum attribute
+#define	FLEXT_CADDATTR_VAR1_E(CL,NAME,FUN) \
+\
+AddAttrib(CL,NAME,(bool (*)(flext_base *,int &))(FLEXT_GET_PRE(FUN)),(bool (*)(flext_base *,int &))(FLEXT_SET_PRE(FUN)))
+
 
 //! @} FLEXT_D_ADDATTR
 

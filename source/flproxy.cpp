@@ -20,18 +20,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 
-static t_class *px_class;
-
-struct flext_base::px_object  // no virtual table!
-{ 
-	t_object obj;			// MUST reside at memory offset 0
-	flext_base *base;
-	int index;
-
-	void init(flext_base *b,int ix) { base = b; index = ix; }
-	static void px_method(px_object *c,const t_symbol *s,int argc,t_atom *argv);
-};
-
+t_class *flext_base::px_class = NULL;
 
 void flext_base::px_object::px_method(px_object *obj,const t_symbol *s,int argc,t_atom *argv)
 {

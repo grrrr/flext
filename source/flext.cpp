@@ -28,7 +28,7 @@ flext_base::flext_base():
 	outlets(NULL),outattr(NULL),
 	distmsgs(false),
 	methhead(new itemarr),attrhead(new itemarr), //attrcnt(0),
-	clmethhead(GetClassArr(0)),clattrhead(GetClassArr(1)), 
+	clmethhead(ClMeths(thisClass())),clattrhead(ClAttrs(thisClass())), 
 	inlets(NULL)
 {
 	LOG1("%s - flext logging is on",thisName());
@@ -37,7 +37,8 @@ flext_base::flext_base():
 	qhead = qtail = NULL;
 	qclk = (t_qelem *)(qelem_new(this,(t_method)QTick));
 
-	if(procattr) AddMethod(0,"getattributes",(methfun)cb_ListAttrib);
+	if(procattr) 
+		AddMethod(0,"getattributes",(methfun)cb_ListAttrib);
 }
 
 flext_base::~flext_base()
@@ -79,17 +80,17 @@ flext_base::~flext_base()
 }
 
 /*! This virtual function is called after the object has been created, that is, 
-	after the all Init() functions have been processed. It creates the inlets and outlets.
+	after the constructor has been processed. 
+	It creates the inlets and outlets and the message and attribute lists.
 	\note You can override it in your own class, but be sure to call it, 
 	\note otherwise no inlets/outlets will be created
+	\mote All inlet, outlets, method and attribute declarations must be made before a call to Init!
 	\remark Creation of inlets/outlets can't be done upon declaration, as Max/MSP needs creation
 	\remark in reverse.
 */
-bool flext_base::Finalize()
+bool flext_base::Init()
 {
-	post("Finalize");
-
-	bool ok = flext_obj::Finalize();
+	bool ok = flext_obj::Init();
 
 	if(ok) ok = InitInlets() && InitOutlets();
 
@@ -108,6 +109,7 @@ bool flext_base::Finalize()
 				ok = InitAttrib(m_holdaargc,m_holdaargv);
 		}
 	}
+
 	return ok;
 }
 

@@ -77,10 +77,7 @@ bool flext_base::TryMethTag(const methitem *m,int inlet,const t_symbol *t,int ar
 	do {
 		if(m->inlet == inlet && m->tag == t) {
 			LOG3("found method tag %s: inlet=%i, argc=%i",GetString(m->tag),m->inlet,argc);
-
-			// try matching number of args
-			if(argc == m->argc && CallMeth(*m,argc,argv)) return true;
-			
+		
 			if(m->argc == 1) {
 				// try list
 				if(m->args[0] == a_list && ((methfun_V)m->fun)(this,argc,const_cast<t_atom *>(argv))) return true;
@@ -88,6 +85,9 @@ bool flext_base::TryMethTag(const methitem *m,int inlet,const t_symbol *t,int ar
 				// try anything
 				if(m->args[0] == a_any && ((methfun_A)m->fun)(this,m->tag,argc,const_cast<t_atom *>(argv))) return true;
 			}
+
+			// try matching number of args
+			if(argc == m->argc && CallMeth(*m,argc,argv)) return true;
 		}
 	} while((m = (const methitem *)m->nxt) != NULL);
 	return false;
@@ -137,7 +137,7 @@ bool flext_base::FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *arg
 	if((m = (methitem *)clmethhead->Find(sym_anything,inlet)) != NULL && m->argc == 1 && m->args[0] == a_any && TryMethAny(m,inlet,sym_anything,s,argc,argv)) return true;
 
 	// if nothing found try any inlet
-	return FindMeth(-1,s,argc,argv);
+	return inlet >= 0 && FindMeth(-1,s,argc,argv);
 }
 
 /*! \brief All the message processing

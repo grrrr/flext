@@ -67,7 +67,7 @@ void flext_base::itemarr::Finalize()
 		
 		int sz = Size();
 
-		post("count=%i, bit=%i size=%i",Count(),bits,sz);
+//		post("count=%i, bit=%i size=%i",Count(),bits,sz);
 
 		// save stored item list
 		item *lst = arr[0];
@@ -94,7 +94,8 @@ void flext_base::itemarr::Finalize()
 			}
 			else arr[ix] = l;
 		}
-		
+
+#if 0
 		if(Count()) {
 			static char usage[1024];
 			int c = 0,i;
@@ -106,6 +107,7 @@ void flext_base::itemarr::Finalize()
 			post("USAGE %s",usage);
 			post("USAGE %i/%i ... sparseness=%i%%",c,Count(),(int)((float)c/Count()*100.));
 		}
+#endif
 	}
 }
 
@@ -120,7 +122,11 @@ flext_base::item *flext_base::itemarr::Find(const t_symbol *tag,int inlet) const
 #endif
 	if(Count()) {
 		int ix = Hash(tag,inlet,bits);
-		return arr[ix];
+		item *a = arr[ix];
+
+		// Search first matching entry
+		while(a && (a->tag != tag || a->inlet != inlet)) a = (attritem *)a->nxt;
+		return a;
 	}
 	else
 		return NULL;
@@ -128,14 +134,73 @@ flext_base::item *flext_base::itemarr::Find(const t_symbol *tag,int inlet) const
 
 int flext_base::itemarr::Hash(const t_symbol *tag,int inlet,int bits)
 {
-	unsigned long h = ((reinterpret_cast<unsigned long>(tag)&~7L)<<2)+inlet;
-	
+	unsigned long h = ((reinterpret_cast<unsigned long>(tag)&~7L)<<1)+inlet;
 	return FoldBits(h,bits);
 }
 
+// --- class item lists (methods and attributes) ----------------
 
-flext_base::itemarr *flext_base::GetClassArr(int ix) const
+class _itemarr 
 {
-	// class item array should be retrieved here
-	return new itemarr;
+public:
+	enum { HASHBITS=7, HASHSIZE=1<<HASHBITS };
+
+	_itemarr(t_class *c,int i);
+	~_itemarr(); // will never be called
+
+	static int Hash(t_class *c,int ix);
+
+	int Hash() const { return Hash(cl,ix); }
+	void Add(_itemarr *a);
+
+	t_class *cl;
+	int ix;
+	flext_base::itemarr *arr;
+
+	_itemarr *nxt;
+};
+
+_itemarr::_itemarr(t_class *c,int i):
+	cl(c),ix(i),
+	arr(new flext_base::itemarr),
+	nxt(NULL)
+{}
+
+void _itemarr::Add(_itemarr *a)
+{
+	if(nxt) nxt->Add(a);
+	else nxt = a;
+}
+
+int _itemarr::Hash(t_class *c,int ix) 
+{
+	unsigned long h = (reinterpret_cast<unsigned long>(c)&~3L)+ix;
+	return flext::FoldBits(h,HASHBITS);
+}
+
+static _itemarr **_arrs = NULL;
+
+flext_base::itemarr *flext_base::GetClassArr(t_class *c,int ix) 
+{
+	if(!_arrs) {
+		_arrs = new _itemarr *[_itemarr::HASHSIZE];
+		memset(_arrs,0,_itemarr::HASHSIZE*sizeof(*_arrs));
+	}
+
+	int hash = _itemarr::Hash(c,ix);
+	_itemarr *a = _arrs[hash];
+	_itemarr *pa = NULL;
+	while(a && (a->cl != c || a->ix != ix)) pa = a,a = a->nxt;
+
+	if(!a) {
+		a = new _itemarr(c,ix);
+		if(pa) 
+			// previous entry... extend
+			a->nxt = pa->nxt,pa->nxt = a;
+		else 
+			// new singular entry
+			_arrs[hash] = a;
+	}
+
+	return a->arr;
 }

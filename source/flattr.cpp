@@ -52,21 +52,31 @@ void flext_base::AddAttrItem(attritem *m)
 */
 
 //! Add get and set attributes
+void flext_base::AddAttrib(itemarr *aa,itemarr *ma,const char *attr,metharg tp,methfun gfun,methfun sfun)
+{
+	aa->Add(new attritem(MakeSymbol(attr),tp,gfun,sfun)); 
+	
+	if(sfun) AddMethod(ma,0,attr,(methfun)cb_SetAttrib,a_any,a_null); // SET
+	if(gfun) {
+		static char tmp[256] = "get";
+		strcpy(tmp+3,attr);
+		AddMethod(ma,0,tmp,(methfun)cb_GetAttrib,a_any,a_null); // GET
+	}
+}
+
 void flext_base::AddAttrib(const char *attr,metharg tp,methfun gfun,methfun sfun)
 {
-	if(procattr) {
-		AddAttrItem(new attritem(MakeSymbol(attr),tp,gfun,sfun)); 
-		
-		if(sfun) AddMethod(0,attr,(methfun)cb_SetAttrib,a_any,a_null); // SET
-		if(gfun) {
-			static char tmp[256] = "get";
-			strcpy(tmp+3,attr);
-			AddMethod(0,tmp,(methfun)cb_GetAttrib,a_any,a_null); // GET
-		}
-	}
+	if(procattr)
+		AddAttrib(ThAttrs(),ThMeths(),attr,tp,gfun,sfun);
 	else
 		error("%s - attribute procession is not enabled!",thisName());
 }
+
+void flext_base::AddAttrib(t_class *c,const char *attr,metharg tp,methfun gfun,methfun sfun)
+{
+	AddAttrib(ClAttrs(c),ClMeths(c),attr,tp,gfun,sfun);
+}
+
 
 int flext_base::CheckAttrib(int argc,const t_atom *argv)
 {
@@ -93,12 +103,18 @@ bool flext_base::InitAttrib(int argc,const t_atom *argv)
 bool flext_base::ListAttrib()
 {
 	if(outattr) {
-		int cnt = attrhead->Count(),ccnt = clattrhead->Count();
+		int cnt = attrhead?attrhead->Count():0;
+		int ccnt = clattrhead?clattrhead->Count():0;
 		AtomList la(ccnt+cnt);
 
 		for(int i = 0,ix = 0; i <= 1; ++i) {
 			itemarr *a = i?attrhead:clattrhead;
-			
+			if(a) {
+				for(int ai = 0; ai < a->Size(); ++ai) {
+					for(item *l = a->Item(ai); l; l = l->nxt) 
+						SetSymbol(la[ix++],l->tag);
+				}
+			}
 		}
 
 		ToOutAnything(outattr,MakeSymbol("attributes"),la.Count(),la.Atoms());
@@ -167,7 +183,7 @@ bool flext_base::GetAttrib(const t_symbol *tag,int argc,const t_atom *argv)
 		post("%s - %s: arguments ignored",thisName(),GetString(tag));
 
 #ifdef FLEXT_DEBUG
-	if(strncpy(GetString(tag),"get",3)) {
+	if(strncmp(GetString(tag),"get",3)) {
 		post("%s - %s: tag has no 'get' prefix",thisName(),GetString(tag));
 		return false;
 	}
@@ -176,8 +192,8 @@ bool flext_base::GetAttrib(const t_symbol *tag,int argc,const t_atom *argv)
 	const t_symbol *mtag = MakeSymbol(GetString(tag)+3);
 	
 	// search for attribute
-	attritem *a = (attritem *)attrhead->Find(tag);
-	if(!a) a = (attritem *)clattrhead->Find(tag);	
+	attritem *a = (attritem *)attrhead->Find(mtag);
+	if(!a) a = (attritem *)clattrhead->Find(mtag);	
 
 	if(a) {
 		if(a->gfun) {

@@ -86,6 +86,7 @@ public:
 		// dirty buffer content
 		// refr = true: forces immediate graphics refresh
 		void Dirty(bool refr = false);
+		bool IsDirty() const { return isdirty; }
 		
 		// get symbol (or literal name) of buffer 
 		t_symbol *Symbol() const { return sym; }
@@ -498,6 +499,11 @@ static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,T
 #define FLEXT_CALLBACK_F(M_FUN) FLEXT_CALLBACK_1(M_FUN,float)
 #define FLEXT_CALLBACK_FF(M_FUN) FLEXT_CALLBACK_2(M_FUN,float,float)
 #define FLEXT_CALLBACK_FFF(M_FUN) FLEXT_CALLBACK_3(M_FUN,float,float,float)
+
+// for int argument(s)
+#define FLEXT_CALLBACK_I(M_FUN) FLEXT_CALLBACK_1(M_FUN,int)
+#define FLEXT_CALLBACK_II(M_FUN) FLEXT_CALLBACK_2(M_FUN,int,int)
+#define FLEXT_CALLBACK_III(M_FUN) FLEXT_CALLBACK_3(M_FUN,int,int,int)
 
 
 // Shortcuts for method arguments

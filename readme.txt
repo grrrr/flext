@@ -66,6 +66,8 @@ Version history:
 0.2.2:
 - added xgimme argument type (supplies method handlers with symbol+gimme)
 - more information on DSP system with flext_dsp object (block size,number of inputs and outputs)
+- cleaner gcc makefile
+- added IsDirty question for buffers
 
 0.2.1:
 - fixed bug in message parsing code (anything messages were not correctly mapped to inlets)

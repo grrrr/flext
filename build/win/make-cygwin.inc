@@ -1,6 +1,12 @@
+ifndef FLEXTBUILD
+INCPATH += -I$(FLEXTPATH)
+LIBPATH += -L$(FLEXTPATH)
+LIBS+=$(FLEXTPATH)/$(FLEXTNAME).a
+endif
+
 LDFLAGS += -shared -Wl,-x
 
-LIBS += -luser32 -lkernel32
+##############################################
 
 ifdef DEBUG
 CFLAGS += -g -D_DEBUG
@@ -11,60 +17,76 @@ endif
 
 ##############################################
 
-INCPATH += -I$(FLEXTPATH)
-LIBPATH += -L$(FLEXTPATH)
+ifdef FLEXTBUILD
+OUTNAME=$(FLEXTNAME)
 
 ifdef SHARED
-# --- shared ---
-DEFS += -DFLEXT_SHARED
+EXT=dll
+else
+EXT=a
+BUILDLIB=1
+endif
 
 else
-ifdef THREADED
-# --- static multi-threaded ---
-DEFS += -DFLEXT_THREADS
-
-else 
-# --- static single-threaded ---
-
-endif
+OUTNAME=$(NAME)
 endif
 
 ##############################################
 
-TARGET=$(OUTPATH)/$(NAME).$(EXT)
+TARGETPATH=$(OUTPATH)/$(OUTSUB)
+TARGET=$(TARGETPATH)/$(OUTNAME).$(EXT)
+
+##############################################
 
 CSRCS=$(patsubst %.c,$(SRCDIR)/%.c,$(filter %.c,$(SRCS)))
 CPPSRCS=$(patsubst %.cpp,$(SRCDIR)/%.cpp,$(filter %.cpp,$(SRCS)))
-COBJS=$(patsubst %.c,$(OUTPATH)/%.o,$(filter %.c,$(SRCS))) 
-CPPOBJS=$(patsubst %.cpp,$(OUTPATH)/%.opp,$(filter %.cpp,$(SRCS))) 
+COBJS=$(patsubst %.c,$(TARGETPATH)/%.o,$(filter %.c,$(SRCS))) 
+CPPOBJS=$(patsubst %.cpp,$(TARGETPATH)/%.opp,$(filter %.cpp,$(SRCS))) 
 
 # default target
-all: $(OUTPATH) $(TARGET)
+_all_: $(TARGET)
 
 $(CSRCS) $(CPPSRCS): $(patsubst %,$(SRCDIR)/%,$(HDRS))
 	touch $@
 
-$(OUTPATH):
-	mkdir $(OUTPATH)
+$(TARGETPATH):
+	-mkdir $(OUTPATH)
+	-mkdir $@
 
-$(OUTPATH)/%.opp : $(SRCDIR)/%.cpp
+$(TARGETPATH)/%.opp : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
 
-$(OUTPATH)/%.o : $(SRCDIR)/%.c
+$(TARGETPATH)/%.o : $(SRCDIR)/%.c
 	$(CC) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
 
-$(TARGET) : $(COBJS) $(CPPOBJS)
+$(TARGET) :: $(TARGETPATH) 
+
+$(TARGET) :: $(COBJS) $(CPPOBJS)
+ifdef BUILDLIB
+	$(AR) rc $@ $^
+else
 	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $^ $(LIBS)
 	chmod 755 $@
+endif
+
+##############################################
+
+_clean_:
+	rm $(COBJS) $(CPPOBJS) $(TARGET)
+
+##############################################
 
 $(INSTPATH):
-	mkdir $(INSTPATH)
+	-mkdir $@
 
-install:: $(INSTPATH)
+$(FLEXTPATH):
+	-mkdir $@
 
-install:: $(TARGET)
+_install_:: $(INSTPATH) $(FLEXTPATH)
+
+_install_:: $(TARGET)
+ifdef FLEXTBUILD
+	cp $^ $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTPATH)
+else
 	install $^ $(INSTPATH)
-
-.PHONY: clean
-clean:
-	$(RM) $(COBJS) $(CPPOBJS) $(TARGET)
+endif

@@ -4,12 +4,12 @@
 
 ifdef SHARED
 # --- shared ---
-DEFS=$(DEFS) -DFLEXT_SHARED
+DEFS+=-DFLEXT_SHARED
 
 else
 ifdef THREADED
 # --- static multi-threaded ---
-DEFS=$(DEFS) -DFLEXT_THREADS
+DEFS+=-DFLEXT_THREADS
 
 else 
 # --- static single-threaded ---
@@ -19,7 +19,7 @@ endif
 
 
 ifdef FLEXTBUILD
-DEFS=$(DEFS) -DFLEXT_EXPORTS
+DEFS+=-DFLEXT_EXPORTS
 endif
 
 ##############################################

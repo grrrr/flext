@@ -49,10 +49,10 @@ install: install-dr install-tr install-sr install-dd install-td install-sd
 clean: clean-dr clean-tr clean-sr clean-dd clean-td clean-sd
 
 
-build-dr: config
+build-sr: config
 	$(MAKE) $(OPTIONS) _all_
 
-build-dd: config
+build-sd: config
 	$(MAKE) $(OPTIONS) DEBUG=1 _all_
 
 build-tr: config
@@ -61,17 +61,17 @@ build-tr: config
 build-td: config
 	$(MAKE) $(OPTIONS) THREADED=1 DEBUG=1 _all_
 
-build-sr: config
+build-dr: config
 	$(MAKE) $(OPTIONS) SHARED=1 _all_
 
-build-sd: config
+build-dd: config
 	$(MAKE) $(OPTIONS) SHARED=1 DEBUG=1 _all_
 
 
-install-dr:
+install-sr:
 	$(MAKE) $(OPTIONS) _install_
 
-install-dd:
+install-sd:
 	$(MAKE) $(OPTIONS) DEBUG=1 _install_
 
 install-tr:
@@ -80,17 +80,17 @@ install-tr:
 install-td:
 	$(MAKE) $(OPTIONS) THREADED=1 DEBUG=1 _install_
 
-install-sr:
+install-dr:
 	$(MAKE) $(OPTIONS) SHARED=1 _install_
 
-install-sd:
+install-dd:
 	$(MAKE) $(OPTIONS) SHARED=1 DEBUG=1 _install_
 
 
-clean-dr:
+clean-sr:
 	$(MAKE) $(OPTIONS) _clean_
 
-clean-dd:
+clean-sd:
 	$(MAKE) $(OPTIONS) DEBUG=1 _clean_
 
 clean-tr:
@@ -99,10 +99,10 @@ clean-tr:
 clean-td:
 	$(MAKE) $(OPTIONS) THREADED=1 DEBUG=1 _clean_
 
-clean-sr:
+clean-dr:
 	$(MAKE) $(OPTIONS) SHARED=1 _clean_
 
-clean-sd:
+clean-dd:
 	$(MAKE) $(OPTIONS) SHARED=1 DEBUG=1 _clean_
 
 

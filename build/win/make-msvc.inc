@@ -9,8 +9,6 @@ INCPATH=$(INCPATH) /I$(MSVCPATH)\include
 LIBPATH=$(LIBPATH) /LIBPATH:$(MSVCPATH)\lib
 !endif
 
-LIBS=$(LIBS) user32.lib kernel32.lib
-
 # for VC7 - enable exception handling
 CFLAGS=$(CFLAGS) /EHsc 
 
@@ -48,14 +46,15 @@ TARGET=$(TARGETPATH)\$(OUTNAME).$(EXT)
 ##############################################
 
 # default target
-_all_: $(TARGETPATH) $(TARGET)
+_all_: $(TARGET)
 
-OBJS= $(SRCS:.c=.obj)
-OBJS= $(OBJS:.objpp=.obj)
+# convert both *.c and *.cpp
+OBJSTMP= $(SRCS:.c=.obj)
+OBJS= $(OBJSTMP:.objpp=.obj)
 
 $(TARGETPATH):
-	-mkdir $(OUTPATH) > nul
-	-mkdir $@ > nul
+	if not exist $(OUTPATH) mkdir $(OUTPATH) > nul
+	if not exist $@ mkdir $@ > nul
 
 {$(SRCDIR)}.cpp{}.obj:
 	cl /c /LD $(CFLAGS) $(DEFS) $(INCPATH) $** /Fo$(TARGETPATH)\$@
@@ -63,31 +62,37 @@ $(TARGETPATH):
 {$(SRCDIR)}.c{}.obj:
 	cl /c /LD $(CFLAGS) $(DEFS) $(INCPATH) $** /Fo$(TARGETPATH)\$@
 
-$(TARGET): $(OBJS)
+$(TARGET):: $(TARGETPATH)
+
+$(TARGET):: $(OBJS)
 	@cd $(TARGETPATH)
 !ifdef BUILDLIB
 	lib /OUT:$(@F) $**
+	cd ..
 !else
 	link /DLL $(LDFLAGS) $(LIBPATH) $** $(LIBS) /out:$(@F)
 !endif
+	cd ..
 
 ##############################################
 
 # remove build
 _clean_:
-	pushd $(TARGETPATH)
-	-del /q $(OBJS) > nul
-	-popd
 	-del /q $(TARGET) > nul
+	-cd $(TARGETPATH)
+	-del /q $(OBJS) > nul
+
+##############################################
 
 $(INSTPATH):
-	-mkdir $(INSTPATH) > nul
+	if not exist $@ mkdir $@ > nul
 
 $(FLEXTPATH):
-	-mkdir $(FLEXTPATH) > nul
+	if not exist $@ mkdir $@ > nul
 
-# install build
-_install_: $(INSTPATH) $(FLEXTPATH)
+_install_:: $(INSTPATH) $(FLEXTPATH)
+
+_install_:: $(TARGET)
 !ifdef FLEXTBUILD
 	-copy $(TARGET) $(FLEXTPATH) > nul
 	@cd $(SRCDIR)

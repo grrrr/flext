@@ -1,12 +1,15 @@
+!ifndef FLEXTBUILD
 INCPATH=$(INCPATH) -I$(FLEXTPATH)
 LIBPATH=$(LIBPATH) -L$(FLEXTPATH)
+LIBS=$(LIBS) $(FLEXTNAME).lib
+!endif
 
 !ifdef BCCPATH
 INCPATH=$(INCPATH) -I$(BCCPATH)\include 
 LIBPATH=$(LIBPATH) -L$(BCCPATH)\lib
 !endif
 
-LIBS=$(LIBS) cw32.lib import32.lib C0D32.OBJ user32.lib kernel32.lib
+LIBS=$(LIBS) cw32.lib import32.lib C0D32.OBJ
 CFLAGS=$(CFLAGS) -tWD -tWM -w-8004 -w-8027 -w-8057
 LDFLAGS=$(LDFLAGS) /C /Tpd 
 
@@ -20,66 +23,106 @@ LDFLAGS=$(LDFLAGS) /v
 CFLAGS=$(CFLAGS) $(OFLAGS) -DNDEBUG
 !endif
 
+##############################################
+
+!ifdef FLEXTBUILD
+OUTNAME=$(FLEXTNAME)
+
 !ifdef SHARED
-# --- shared ---
-DEFS=$(DEFS) -DFLEXT_SHARED
+EXT=dll
+!else
+EXT=lib
+BUILDLIB=1
+!endif
 
 !else
-!ifdef THREADED
-# --- static multi-threaded ---
-DEFS=$(DEFS) -DFLEXT_THREADS
-
-!else 
-# --- static single-threaded ---
-
-!endif
+OUTNAME=$(NAME)
 !endif
 
 ##############################################
 
-TARGET=$(OUTPATH)\$(NAME).$(EXT)
+TARGETPATH=$(OUTPATH)\$(OUTSUB)
+TARGET=$(TARGETPATH)\$(OUTNAME).$(EXT)
+
+##############################################
+
+!ifdef PDPATH
+
+$(TARGETPATH)\pd.lib : $(PDPATH)\bin\pd.dll
+	implib -a $< $**
+
+$(TARGETPATH)\pthreadVC.lib : $(PDPATH)\bin\pthreadVC.dll
+	implib -a $< $**
+
+PDTARGETS=$(TARGETPATH)\pd.lib $(TARGETPATH)\pthreadVC.lib
+
+!endif
+
+##############################################
 
 # default target
-all: $(OUTPATH) print $(TARGET)
+_all_: $(TARGET) 
 
 # convert both *.c and *.cpp
 OBJSTMP= $(SRCS:.c=.obj)
 OBJS= $(OBJSTMP:.objpp=.obj)
 
-print:
-    echo $(OBJS)
+$(TARGETPATH):
+	if not exist $(OUTPATH) mkdir $(OUTPATH) > nul
+	if not exist $@ mkdir $@ > nul
 
-$(OUTPATH):
-	@-if not exist $< mkdir $<
-
+!ifndef FLEXTBUILD
 SETUPFUNCTION=$(NAME)_setup
 
-$(OUTPATH)\$(NAME).def:
+$(TARGETPATH)\$(NAME).def:
 	@echo EXPORTS $(SETUPFUNCTION) = _$(SETUPFUNCTION) > $<
 # this next line fixes a strange problem with implib - lacking underscore?!
 	@echo IMPORTS _rtext_retext=PD.rtext_retext >> $<
 
+$(TARGET) :: $(TARGETPATH)\$(NAME).def
+!endif
+
 {$(SRCDIR)}.cpp{}.obj:
-	bcc32 -c $(CFLAGS) $(DEFS) $(INCPATH) -n$(OUTPATH) $<
+	bcc32 -c $(CFLAGS) $(DEFS) $(INCPATH) -n$(TARGETPATH) $<
 
 {$(SRCDIR)}.c{}.obj:
-	bcc32 -c $(CFLAGS) $(DEFS) $(INCPATH) -n$(OUTPATH) $<
+	bcc32 -c $(CFLAGS) $(DEFS) $(INCPATH) -n$(TARGETPATH) $<
 
-$(TARGET) :: $(OUTPATH) $(OUTPATH)\$(NAME).def
+$(TARGET) :: $(TARGETPATH) $(PDTARGETS)
 
 $(TARGET) :: $(OBJS)
-	cd $(OUTPATH)
-	ilink32 $(LDFLAGS) $(LIBPATH) $** ,..\$<,,$(LIBS),$(NAME).def
+	cd $(TARGETPATH)
+!ifdef BUILDLIB
+	-del $(<F)
+	tlib "$(<F)" +$(**: = +)
+	cd ..
+!else
+	ilink32 $(LDFLAGS) $(LIBPATH) -L. $** ,$(<F),,$(LIBS),$(NAME).def
+!endif
 	cd ..
 
+##############################################
+
+_clean_:
+	-del /q $(TARGET) > nul
+	-cd $(TARGETPATH)
+	-del /q $(OBJS) > nul
+
+##############################################
+
 $(INSTPATH):
-	-mkdir $@
+	if not exist $@ mkdir $@ > nul
 
-# remove build
-clean:
-	-del /q $(OUTPATH) > nul
-	-rmdir $(OUTPATH) > nul
+$(FLEXTPATH):
+	if not exist $@ mkdir $@ > nul
 
-# install build
-install: $(INSTPATH) $(TARGET)
+_install_ :: $(INSTPATH) $(FLEXTPATH)
+
+_install_ :: $(TARGET)
+!ifdef FLEXTBUILD
+	-copy $(TARGET) $(FLEXTPATH) > nul
+	@cd $(SRCDIR)
+	-for %%i in ($(HDRS)) do @copy %%i $(FLEXTPATH) > nul	
+!else
 	copy $(TARGET) $(INSTPATH) > nul
+!endif

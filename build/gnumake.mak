@@ -38,45 +38,81 @@ OPTIONS+=USRCONFIG=$(USRCONFIG) USRMAKE=$(USRMAKE)
 endif
 
 
-all: config
-	$(MAKE) $(OPTIONS) all
+ifdef FLEXTBUILD
+all: flext
+else
+all: build-sr
 
-all-debug: config
-	$(MAKE) $(OPTIONS) DEBUG=1 $@
-
-all-shared: config
-	$(MAKE) $(OPTIONS) SHARED=1 $@
-
-all-shared-debug: config
-	$(MAKE) $(OPTIONS) SHARED=1 DEBUG=1 $@
-
-clean install:
-	$(MAKE) $(OPTIONS) $@
-
+shared: build-tr
+endif
 
 flext: flext-release flext-debug
 
-flext-release: flext-single-release flext-threaded-release flext-shared-release
+flext-release: build-dr build-tr build-sr
 
-flext-debug: flext-single-debug flext-threaded-debug flext-shared-debug
+flext-debug: build-dd build-td build-sd
 
-flext-single-release: config
-	$(MAKE) $(OPTIONS) FLEXTBUILD=1 all
+install: install-dr install-tr install-sr install-dd install-td install-sd
 
-flext-single-debug: config
-	$(MAKE) $(OPTIONS) FLEXTBUILD=1 DEBUG=1 all
+clean: clean-dr clean-tr clean-sr clean-dd clean-td clean-sd
 
-flext-threaded-release: config
-	$(MAKE) $(OPTIONS) FLEXTBUILD=1 THREADED=1 all
 
-flext-threaded-debug: config
-	$(MAKE) $(OPTIONS) FLEXTBUILD=1 THREADED=1 DEBUG=1 all
+build-sr: config
+	$(MAKE) $(OPTIONS) _all_
 
-flext-shared-release: config
-	$(MAKE) $(OPTIONS) FLEXTBUILD=1 SHARED=1 all
+build-sd: config
+	$(MAKE) $(OPTIONS) DEBUG=1 _all_
 
-flext-shared-release: config
-	$(MAKE) $(OPTIONS) FLEXTBUILD=1 SHARED=1 DEBUG=1 all
+build-tr: config
+	$(MAKE) $(OPTIONS) THREADED=1 _all_
+
+build-td: config
+	$(MAKE) $(OPTIONS) THREADED=1 DEBUG=1 _all_
+
+build-dr: config
+	$(MAKE) $(OPTIONS) SHARED=1 _all_
+
+build-dd: config
+	$(MAKE) $(OPTIONS) SHARED=1 DEBUG=1 _all_
+
+
+install-sr:
+	$(MAKE) $(OPTIONS) _install_
+
+install-sd:
+	$(MAKE) $(OPTIONS) DEBUG=1 _install_
+
+install-tr:
+	$(MAKE) $(OPTIONS) THREADED=1 _install_
+
+install-td:
+	$(MAKE) $(OPTIONS) THREADED=1 DEBUG=1 _install_
+
+install-dr:
+	$(MAKE) $(OPTIONS) SHARED=1 _install_
+
+install-dd:
+	$(MAKE) $(OPTIONS) SHARED=1 DEBUG=1 _install_
+
+
+clean-sr:
+	$(MAKE) $(OPTIONS) _clean_
+
+clean-sd:
+	$(MAKE) $(OPTIONS) DEBUG=1 _clean_
+
+clean-tr:
+	$(MAKE) $(OPTIONS) THREADED=1 _clean_
+
+clean-td:
+	$(MAKE) $(OPTIONS) THREADED=1 DEBUG=1 _clean_
+
+clean-dr:
+	$(MAKE) $(OPTIONS) SHARED=1 _clean_
+
+clean-dd:
+	$(MAKE) $(OPTIONS) SHARED=1 DEBUG=1 _clean_
+
 
 
 config: $(USRMAKE) $(SYSCONFIG) $(USRCONFIG) 

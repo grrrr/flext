@@ -28,7 +28,7 @@
 :syntax
 
 @echo .
-@echo SYNTAX: buildext [platform] [system] [compiler] {target}
+@echo SYNTAX: build [platform] [system] [compiler] {target}
 @echo platform ... win / lnx / mac
 @echo system   ... pd / max
 @echo compiler ... msvc / gcc / mingw / cygwin / bcc / icc

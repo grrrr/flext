@@ -49,7 +49,7 @@ bool flext::PrintAtom(const t_atom &a,char *buf,int bufsz)
 //#pragma message("Not implemented")
 #endif
 	else {
-		ERRINTERNAL();
+        error("flext: atom type unknown");
 		ok = false;
 	}
 	return ok;

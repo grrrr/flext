@@ -32,7 +32,7 @@ HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h flthr.h fldsp.h flinternal.h
 IHDRS=
 
 MAKEFILE=makefile.pd-linux
-TARGET=$(TARGDIR)/$(NAME).a
+TARGET=$(TARGDIR)/$(NAME).a 
 TARGET_D=$(TARGDIR)/$(NAME)_d.a
 TARGET_T=$(TARGDIR)/$(NAME)_t.a
 TARGET_TD=$(TARGDIR)/$(NAME)_td.a

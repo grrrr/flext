@@ -2,8 +2,13 @@
 # Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 #
 
+# your c++ compiler (normally g++)
+CXX=g++-3.2
+
 # where are the PD header files?
-PDPATH=/usr/local/include
+# if it is a system include path (like /usr/local/include) 
+# you should leave it blank (as e.g. g++ 3.2 complains about it)
+PDPATH=
 
 # where should flext libraries be built?
 TARGDIR=./pd-linux

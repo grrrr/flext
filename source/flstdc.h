@@ -68,7 +68,7 @@ typedef t_float t_flint;
 
 #define newout_signal(clss) outlet_new(clss,&s_signal)
 #define newout_float(clss) outlet_new(clss,&s_float)
-#define newout_flint(clss) outlet_float(clss)
+#define newout_flint(clss) outlet_new(clss,&s_float)
 #define newout_list(clss) outlet_new(clss,&s_list)
 #define newout_symbol(clss) outlet_new(clss,&s_symbol)
 

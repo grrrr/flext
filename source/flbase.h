@@ -111,10 +111,10 @@ class EXT_EXTERN CPPExtern
     	static void callb_setup(t_class *) {}	
 
 		// to be called in object _setup function
-		static void enable_signal(t_class *classPtr,float def = 0.) {
+		static void enable_signal(t_class *classPtr,float def = 0.) 
+		{
 #ifdef PD
 			((Obj_header *)classPtr)->defsig = def;
-			CLASS_MAINSIGNALIN(classPtr, Obj_header, defsig);
 #elif defined(MAXMSP)
 			dsp_initclass();
 #endif
@@ -145,8 +145,9 @@ static void callb_free(void *data)    	    	    	\
 static void callb_setup(t_class *classPtr)  	    	\
 { PARENT_CLASS::callb_setup(classPtr);    	    	\
   NEW_CLASS::cb_setup(classPtr); }  	    	    	\
-private:    	    	    	    	    	    	    	\
-static inline NEW_CLASS *thisClass(void *data) {return((NEW_CLASS *)((Obj_header *)data)->data);} \
+private:    \
+inline t_class *thisClass() { return x_obj->te_g.g_pd; } \
+static NEW_CLASS *thisObject(V *c) { return (NEW_CLASS *)((Obj_header *)c)->data; }	    	   \
 static void cb_setup(t_class *classPtr);
 
 

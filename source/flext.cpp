@@ -52,12 +52,15 @@ BL ext_obj::SetupInOut()
 #ifdef PD
 		{
 			I ix;
-			if(cnt == 0) {;}
+			if(cnt == 0) {
+				;
+			}
 			else if(cnt >= 1) {
-				switch(list[0].tp) {
+				switch(list[0]) {
 					case xlet::tp_def:
 						break;
 					case xlet::tp_sig:
+						CLASS_MAINSIGNALIN(thisClass(), Obj_header, defsig);
 						break;
 					default:
 						error("%s: Leftmost inlet must be of type signal or default",thisName());
@@ -65,11 +68,11 @@ BL ext_obj::SetupInOut()
 				} 
 			}		
 			for(ix = 1; ix < cnt; ++ix) {
-				switch(list[ix].tp) {
+				switch(list[ix]) {
 					case xlet::tp_float:
 					case xlet::tp_flint: {
-						const sym[] = "ft?"; 
-						sym[2] = ix;  // what if ix > 9????
+						C sym[] = "ft?"; 
+						sym[2] = '0'+ix;  // what if ix > 9????
 					    inlet_new(x_obj, &x_obj->ob_pd, &s_float, gensym(sym)); 
 						break;
 					}
@@ -142,8 +145,10 @@ BL ext_obj::SetupInOut()
 		{
 			switch(list[ix]) {
 				case xlet::tp_float:
-				case xlet::tp_flint: 
 					out[ix] = newout_float(x_obj);
+					break;
+				case xlet::tp_flint: 
+					out[ix] = newout_flint(x_obj);
 					break;
 				case xlet::tp_sig:
 					out[ix] = newout_signal(x_obj);
@@ -178,11 +183,11 @@ V ext_obj::cb_setup(t_class *c)
 #endif
 }
 
-V ext_obj::cb_help(V *c) { thisClass(c)->m_help(); }	
+V ext_obj::cb_help(V *c) { thisObject(c)->m_help(); }	
 
 #ifdef MAXMSP
-V ext_obj::cb_loadbang(V *c) { thisClass(c)->m_loadbang(); }	
-V ext_obj::cb_assist(V *c,V *b,L msg,L arg,C *s) { thisClass(c)->m_assist(msg,arg,s); }
+V ext_obj::cb_loadbang(V *c) { thisObject(c)->m_loadbang(); }	
+V ext_obj::cb_assist(V *c,V *b,L msg,L arg,C *s) { thisObject(c)->m_assist(msg,arg,s); }
 #endif
 
 V ext_obj::m_help()
@@ -202,8 +207,8 @@ V dsp_obj::cb_setup(t_class *c)
 
 dsp_obj::dsp_obj(): enable(true) {}
 
-V dsp_obj::cb_dsp(V *c,t_signal **s) { thisClass(c)->m_dsp(s); }
-V dsp_obj::cb_enable(V *c,FI on) { thisClass(c)->m_enable(on != 0); }
+V dsp_obj::cb_dsp(V *c,t_signal **s) { thisObject(c)->m_dsp(s); }
+V dsp_obj::cb_enable(V *c,FI on) { thisObject(c)->m_enable(on != 0); }
 
 V dsp_obj::m_enable(BL en) { enable = en; }
 

@@ -83,7 +83,7 @@ void flext_dsp::cb_dsp(t_class *c,t_signal **sp)
 }
 
 #ifndef MAXMSP
-void flext_dsp::cb_enable(t_class *c,flint on) { thisObject(c)->m_enable(on != 0); }
+void flext_dsp::cb_enable(t_class *c,t_flint on) { thisObject(c)->m_enable(on != 0); }
 void flext_dsp::m_enable(bool en) { dspon = en; }
 #endif
 

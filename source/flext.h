@@ -11,8 +11,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __FLEXT_H
 #define __FLEXT_H
 
-#define FLEXT_VERSION 200
-#define FLEXT_VERSTR "0.2.0"
+#define FLEXT_VERSION 201
+#define FLEXT_VERSTR "0.2.1"
 
 #include <flbase.h> 
 
@@ -151,8 +151,8 @@ public:
 	// output messages (n starts with 0)
 	void ToOutFloat(outlet *o,float f); 
 	void ToOutFloat(int n,float f) { outlet *o = GetOut(n); if(o) ToOutFloat(o,f); }
-	void ToOutFlint(outlet *o,flint f); 
-	void ToOutFlint(int n,flint f) { outlet *o = GetOut(n); if(o) ToOutFlint(o,f); }
+	void ToOutFlint(outlet *o,t_flint f); 
+	void ToOutFlint(int n,t_flint f) { outlet *o = GetOut(n); if(o) ToOutFlint(o,f); }
 	void ToOutSymbol(outlet *o,const t_symbol *s); 
 	void ToOutSymbol(int n,const t_symbol *s) { outlet *o = GetOut(n); if(o) ToOutSymbol(o,const_cast<t_symbol *>(s)); }
 	void ToOutList(outlet *o,int argc,t_atom *argv); 
@@ -429,7 +429,7 @@ private:
 
 	static void cb_dsp(t_class *c,t_signal **s);
 #ifndef MAXMSP
-	static void cb_enable(t_class *c,flint on);
+	static void cb_enable(t_class *c,t_flint on);
 	bool dspon;
 #endif
 

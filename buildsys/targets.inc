@@ -49,62 +49,62 @@ clean-all-shared: clean-release-shared clean-debug-shared
 ###########################################################
 
 build-release-single: config
-	$(MAKE) $(OPTIONS) _build_
+	$(MAKE) $(OPTIONS) TARGETMODE=release TARGETTYPE=single _build_
 
 build-debug-single: config
-	$(MAKE) $(OPTIONS) DEBUG=1 _build_
+	$(MAKE) $(OPTIONS) TARGETMODE=debug TARGETTYPE=single DEBUG=1 _build_
 
 build-release-multi: config
-	$(MAKE) $(OPTIONS) THREADED=1 _build_
+	$(MAKE) $(OPTIONS) TARGETMODE=release TARGETTYPE=multi THREADED=1 _build_
 
 build-debug-multi: config
-	$(MAKE) $(OPTIONS) THREADED=1 DEBUG=1 _build_
+	$(MAKE) $(OPTIONS) TARGETMODE=debug TARGETTYPE=multi THREADED=1 DEBUG=1 _build_
 
 build-release-shared: config
-	$(MAKE) $(OPTIONS) SHARED=1 _build_
+	$(MAKE) $(OPTIONS) TARGETMODE=release TARGETTYPE=shared SHARED=1 _build_
 
 build-debug-shared: config
-	$(MAKE) $(OPTIONS) SHARED=1 DEBUG=1 _build_
+	$(MAKE) $(OPTIONS) TARGETMODE=debug TARGETTYPE=shared SHARED=1 DEBUG=1 _build_
 
 ###########################################################
 
 install-release-single: config
-	$(MAKE) $(OPTIONS) _install_
+	$(MAKE) $(OPTIONS) TARGETMODE=release TARGETTYPE=single _install_
 
 install-debug-single: config
-	$(MAKE) $(OPTIONS) DEBUG=1 _install_
+	$(MAKE) $(OPTIONS) TARGETMODE=debug TARGETTYPE=single DEBUG=1 _install_
 
 install-release-multi: config
-	$(MAKE) $(OPTIONS) THREADED=1 _install_
+	$(MAKE) $(OPTIONS) TARGETMODE=release TARGETTYPE=multi THREADED=1 _install_
 
 install-debug-multi: config
-	$(MAKE) $(OPTIONS) THREADED=1 DEBUG=1 _install_
+	$(MAKE) $(OPTIONS) TARGETMODE=debug TARGETTYPE=multi THREADED=1 DEBUG=1 _install_
 
 install-release-shared: config
-	$(MAKE) $(OPTIONS) SHARED=1 _install_
+	$(MAKE) $(OPTIONS) TARGETMODE=release TARGETTYPE=shared SHARED=1 _install_
 
 install-debug-shared: config
-	$(MAKE) $(OPTIONS) SHARED=1 DEBUG=1 _install_
+	$(MAKE) $(OPTIONS) TARGETMODE=debug TARGETTYPE=shared SHARED=1 DEBUG=1 _install_
 
 ###########################################################
 
 clean-release-single: config
-	$(MAKE) $(OPTIONS) _clean_
+	$(MAKE) $(OPTIONS) TARGETMODE=release TARGETTYPE=single _clean_
 
 clean-debug-single: config
-	$(MAKE) $(OPTIONS) DEBUG=1 _clean_
+	$(MAKE) $(OPTIONS) TARGETMODE=debug TARGETTYPE=single DEBUG=1 _clean_
 
 clean-release-multi: config
-	$(MAKE) $(OPTIONS) THREADED=1 _clean_
+	$(MAKE) $(OPTIONS) TARGETMODE=release TARGETTYPE=multi THREADED=1 _clean_
 
 clean-debug-multi: config
-	$(MAKE) $(OPTIONS) THREADED=1 DEBUG=1 _clean_
+	$(MAKE) $(OPTIONS) TARGETMODE=debug TARGETTYPE=multi THREADED=1 DEBUG=1 _clean_
 
 clean-release-shared: config
-	$(MAKE) $(OPTIONS) SHARED=1 _clean_
+	$(MAKE) $(OPTIONS) TARGETMODE=release TARGETTYPE=shared SHARED=1 _clean_
 
 clean-debug-shared: config
-	$(MAKE) $(OPTIONS) SHARED=1 DEBUG=1 _clean_
+	$(MAKE) $(OPTIONS) TARGETMODE=debug TARGETTYPE=shared SHARED=1 DEBUG=1 _clean_
 
 ###########################################################
 

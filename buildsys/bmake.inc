@@ -51,21 +51,5 @@ FLEXTNAME=flext-$(RTSYS)_s
 # product name and folder
 ##############################################
 
-!ifdef DEBUG
-TARGETMODE=debug
-!else
-TARGETMODE=release
-!endif
-
-!ifdef SHARED
-TARGETTYPE=shared
-!else
-!ifdef THREADED
-TARGETTYPE=multi
-!else
-TARGETTYPE=single
-!endif
-!endif
-
 OUTNAME=$(NAME)
 OUTSUB=$(TARGETMODE)-$(TARGETTYPE)

@@ -41,6 +41,8 @@ The package should at least compile (and is tested) with the following compilers
 
 pd - Windows:
 -------------
+For any of these compilers define "PD" and "NT".
+
 o Microsoft Visual C++ 6: edit "config-pd-msvc.txt" & run "build-pd-msvc.bat" 
 
 o Borland C++ 5.5 (free): edit "config-pd-bcc.txt" & run "build-pd-bcc.bat" 
@@ -49,14 +51,20 @@ o Cygwin: edit "config-pd-cygwin.txt" & run "sh build-pd-cygwin.sh"
 
 pd - linux:
 -----------
+Be sure to define "PD".
+
 o GCC: edit "config-pd-linux.txt" & run "sh build-pd-linux.sh" 
 
 pd - MacOSX:
 -----------
+Be sure to define "PD".
+
 o GCC: edit "config-pd-darwin.txt" & run "sh build-pd-darwin.sh" 
 
 Max/MSP - MacOS 9:
 ------------------
+Be sure to define "MAXMSP".
+
 o Metrowerks CodeWarrior V6: edit & use the "flext.cw" project file
 
 Max/MSP - MacOSX:

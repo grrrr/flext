@@ -345,11 +345,27 @@ public:
 //	static void SetPointer(t_atom &,void *) {}
 #endif
 
+#ifdef FLEXT_THREADS
+// --- thread stuff -----------------------------------------------
+	class thr_params;
+	static bool StartThread(void *(*)(thr_params *p),thr_params *p,char *methname);
+	void IncThreads() { ++thrcount; }
+	void DecThreads() { --thrcount; }
+
+	bool ShouldExit() const { return shouldexit; }
+#endif // FLEXT_THREADS
+
 // --- list creation stuff ----------------------------------------
 
 
 // --- clock stuff ------------------------------------------------
 
+
+// --- utilities --------------------------------------------------
+
+	static void CopyAtom(t_atom *dst,const t_atom *src) { *dst = *src; }
+	static t_atom *CopyList(int argc,const t_atom *argv);
+	static void Sleep(int ms);
 
 // xxx internal stuff xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
@@ -427,6 +443,19 @@ private:
 	void DescXlet(int ix,const char *desc,xlet *&root);	
 
 	methitem *mlst;
+
+#ifdef FLEXT_THREADS
+	bool shouldexit;
+	int thrcount;
+
+	class qmsg;
+	qmsg *qhead,*qtail;
+	t_clock *qclk;
+	pthread_mutex_t qmutex;
+
+	static void QTick(flext_base *th);
+	void Queue(qmsg *m);
+#endif
 
 #ifdef PD
 	// proxy object (for additional inlets) stuff

@@ -150,8 +150,8 @@ void flext_base::buffer::Frames(int fr,bool keep)
 {
 #ifdef PD
 	garray_resize(arr,(float)fr);
-#elif
-	error("buffer: resize not implemented!");
+#else
+#pragma message ("flext - Buffer resize not implemented!")
 #endif
 }
 

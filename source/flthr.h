@@ -20,7 +20,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <pthread.h>
 
-class thr_params {
+class flext_base::thr_params {
 public:
 	thr_params(flext_base *c): cl(c) {}
 

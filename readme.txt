@@ -71,10 +71,13 @@ see flext.h for the documented base classes
 
 Version history:
 
-0.2.4:
+0.3.0:
+- added threaded methods along with a message queue for ToOut* functions
 - check/update function for buffer change (resize etc.)
 - description text for inlets/outlets (e.g. for MaxMSPs assist function)
 - added buffer resize (to be implemented for MaxMSP!)
+- added some utility functions: Sleep, CopyList
+- fixed type warning for class constructors with int arguments in PD
 
 0.2.3:
 - restructured files and started usable inline documentation

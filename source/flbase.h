@@ -407,7 +407,7 @@ flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1) \
     flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
-    obj->data = new NEW_CLASS(arg1);                     \
+    obj->data = new NEW_CLASS((TYPE1)arg1);                     \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
@@ -497,7 +497,7 @@ flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1, CALLBTP(TYPE2) arg2) \
     flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
-    obj->data = new NEW_CLASS(arg1, arg2);                     \
+    obj->data = new NEW_CLASS((TYPE1)arg1, (TYPE2)arg2);                     \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
@@ -542,7 +542,7 @@ flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1,CALLBTP(TYPE2) arg2,CALLBTP(
     flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
-    obj->data = new NEW_CLASS(arg1,arg2,arg3);                     \
+    obj->data = new NEW_CLASS((TYPE1)arg1,(TYPE2)arg2,(TYPE3)arg3);                     \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
@@ -586,7 +586,7 @@ flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1,CALLBTP(TYPE2) arg2,CALLBTP(
     flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
-    obj->data = new NEW_CLASS(arg1,arg2,arg3,arg4);                     \
+    obj->data = new NEW_CLASS((TYPE1)arg1,(TYPE2)arg2,(TYPE3)arg3,(TYPE4)arg4);                     \
     flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\

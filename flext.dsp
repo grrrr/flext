@@ -130,7 +130,15 @@ SOURCE=.\flstdc.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\flthr.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\flthr.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\flutil.cpp
 # End Source File
 # End Target
 # End Project

@@ -137,10 +137,28 @@ flext_base::flext_base():
 	distmsgs(false)
 {
 	LOG("Logging is on");
+
+#ifdef FLEXT_THREAD
+	thrcount = 0;
+	shouldexit = false;
+	qhead = qtail = NULL;
+	pthread_mutex_init(&qmutex,NULL);
+	qclk = clock_new(this,(t_method)QTick);
+#endif
 }
 
 flext_base::~flext_base()
 {
+#ifdef FLEXT_THREAD
+	// wait for thread termination
+	shouldexit = true;
+	while(thrcount) Sleep(1);
+
+	while(qhead) QTick(this);
+	clock_free(qclk);
+	pthread_mutex_destroy(&qmutex);
+#endif
+
 	if(inlist) delete inlist;
 	if(outlist) delete outlist;
 	if(outlets) delete[] outlets;
@@ -430,11 +448,6 @@ bool flext_base::SetupInOut()
 				case xlet::tp_float:
 					outlets[ix] = (outlet *)newout_float(&x_obj->obj);
 					break;
-/*
-				case xlet::tp_flint: 
-					outlets[ix] = (outlet *)newout_flint(&x_obj->obj);
-					break;
-*/
 				case xlet::tp_int: 
 					outlets[ix] = (outlet *)newout_flint(&x_obj->obj);
 					break;

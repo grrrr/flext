@@ -35,7 +35,7 @@ clean install:
 	$(MAKE) $(OPTIONS) $@
 
 
-config: $(SYSCONFIG) $(USRCONFIG) $(USRMAKE)
+config: $(USRMAKE) $(SYSCONFIG) $(USRCONFIG) 
 
 
 .precious: $(SYSCONFIG) $(USRCONFIG)

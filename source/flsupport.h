@@ -34,10 +34,10 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_root) {
 public:
 // --- console output -----------------------------------------------	
 
-		//! post message to console, with line feed (limited to 1k chars!)
-		static void post(const char *fmt,...);
-		//! post error message to console (limited to 1k chars!)
-		static void error(const char *fmt,...);
+	//! post message to console, with line feed (limited to 1k chars!)
+	static void post(const char *fmt,...);
+	//! post error message to console (limited to 1k chars!)
+	static void error(const char *fmt,...);
 
 // --- memory -------------------------------------------------------	
 
@@ -45,33 +45,33 @@ public:
 		@{ 
 	*/
 
-		/*! Overloaded new memory allocation method
-			\note this uses a fast allocation method of the real-time system
-			\warning Max/MSP (or MacOS) allows only 32K in overdrive mode!
-		*/
-		void *operator new(size_t bytes);
-		//! Overloaded delete method
-		void operator delete(void *blk);
+	/*! Overloaded new memory allocation method
+		\note this uses a fast allocation method of the real-time system
+		\warning Max/MSP (or MacOS) allows only 32K in overdrive mode!
+	*/
+	void *operator new(size_t bytes);
+	//! Overloaded delete method
+	void operator delete(void *blk);
 
-		inline void *operator new(size_t,void *p) { return p; }
-		inline void operator delete(void *,void *) {}
+	inline void *operator new(size_t,void *p) { return p; }
+	inline void operator delete(void *,void *) {}
 
-		#ifndef __MRC__ // doesn't allow new[] overloading?!
-		inline void *operator new[](size_t bytes) { return operator new(bytes); }
-		inline void operator delete[](void *blk) { operator delete(blk); }
+	#ifndef __MRC__ // doesn't allow new[] overloading?!
+	inline void *operator new[](size_t bytes) { return operator new(bytes); }
+	inline void operator delete[](void *blk) { operator delete(blk); }
 
-		inline void *operator new[](size_t,void *p) { return p; }
-		inline void operator delete[](void *,void *) {}
-		#endif
+	inline void *operator new[](size_t,void *p) { return p; }
+	inline void operator delete[](void *,void *) {}
+	#endif
 
-		//! Get an aligned memory block
-		static void *NewAligned(size_t bytes,int bitalign = 128);
-		//! Free an aligned memory block
-		static void FreeAligned(void *blk);
-		//! Test for alignment
-		static bool IsAligned(void *ptr,int bitalign = 128)	{ 
-            return (reinterpret_cast<size_t>(ptr)&(bitalign-1)) == 0; 
-        }
+	//! Get an aligned memory block
+	static void *NewAligned(size_t bytes,int bitalign = 128);
+	//! Free an aligned memory block
+	static void FreeAligned(void *blk);
+	//! Test for alignment
+	static bool IsAligned(void *ptr,int bitalign = 128)	{ 
+        return (reinterpret_cast<size_t>(ptr)&(bitalign-1)) == 0; 
+    }
 	//!	@}  FLEXT_S_MEMORY  	
 };
 
@@ -139,6 +139,14 @@ public:
 
     //! Flext version string
     static const char *VersionStr();
+
+// --- special typedefs ---------------------------------------------	
+
+    typedef t_float Float;
+    typedef t_int Int;
+    typedef t_sample Sample;
+    typedef const t_symbol *Symbol;
+    typedef t_atom Atom;
 
 // --- buffer/array stuff -----------------------------------------	
 
@@ -593,16 +601,30 @@ public:
 		//! Get a pointer to the list of atoms
 		const t_atom *Atoms() const { return lst; }
 
+		//! Append an atom list to the list
+		AtomList &Append(int argc,const t_atom *argv = NULL)
+        {
+            int c = Count();
+            Alloc(c+argc,0,c);
+            Set(argc,argv,c);
+            return *this;
+        }
+
+		//! Prepend an atom list to the list
+		AtomList &Prepend(int argc,const t_atom *argv = NULL)
+        {
+            int c = Count();
+            Alloc(c+argc,0,c,argc);
+            Set(argc,argv);
+            return *this;
+        }
+
 		//! Append an atom to the list
-		AtomList &Append(const t_atom &a);
-		//! Append an atom list to the list
-		AtomList &Append(int argc,const t_atom *argv = NULL);
-		//! Append an atom list to the list
+        AtomList &Append(const t_atom &a) { return Append(1,&a); }
+        //! Append an atom list to the list
 		AtomList &Append(const AtomList &a) { return Append(a.Count(),a.Atoms()); }
 		//! Prepend an atom to the list
-		AtomList &Prepend(const t_atom &a);
-		//! Prepend an atom list to the list
-		AtomList &Prepend(int argc,const t_atom *argv = NULL);
+		AtomList &Prepend(const t_atom &a) { return Prepend(1,&a); }
 		//! Prepend an atom list to the list
 		AtomList &Prepend(const AtomList &a) { return Prepend(a.Count(),a.Atoms()); }
 
@@ -615,7 +637,7 @@ public:
 		bool Print(char *buffer,int buflen) const { return flext::PrintList(Count(),Atoms(),buffer,buflen); }
 
 	protected:
-        virtual void Alloc(int sz);
+        virtual void Alloc(int sz,int keepix = -1,int keeplen = -1,int keepto = 0);
         virtual void Free();
 
 		int cnt;
@@ -628,7 +650,7 @@ public:
     protected:
         AtomListStaticBase(int pc,t_atom *dt): precnt(pc),predata(dt) {}
         virtual ~AtomListStaticBase();
-        virtual void Alloc(int sz);
+        virtual void Alloc(int sz,int keepix = -1,int keeplen = -1,int keepto = 0);
         virtual void Free();
 
         const int precnt;
@@ -1195,12 +1217,12 @@ protected:
 
 
 // gcc doesn't like these to be included into the flext class (even if static)
-inline bool operator ==(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(flext)::CmpAtom(a,b) == 0; }
-inline bool operator !=(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(flext)::CmpAtom(a,b) != 0; }
-inline bool operator <(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(flext)::CmpAtom(a,b) < 0; }
-inline bool operator <=(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(flext)::CmpAtom(a,b) <= 0; }
-inline bool operator >(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(flext)::CmpAtom(a,b) > 0; }
-inline bool operator >=(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(flext)::CmpAtom(a,b) >= 0; }
+inline bool operator ==(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) == 0; }
+inline bool operator !=(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) != 0; }
+inline bool operator <(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) < 0; }
+inline bool operator <=(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) <= 0; }
+inline bool operator >(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) > 0; }
+inline bool operator >=(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) >= 0; }
 
 //! @} // FLEXT_SUPPORT
 

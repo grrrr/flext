@@ -48,15 +48,32 @@ t_atom *flext::CopyList(int argc,const t_atom *argv)
 	return dst;
 }
 
-void flext::AtomList::Alloc(int sz)
+static void copyatoms(int cnt,t_atom *dst,const t_atom *src)
+{
+    if(dst < src)
+        // forward
+        memcpy(dst,src,cnt*sizeof(t_atom));
+    else
+        // backwards
+        while(cnt--) dst[cnt] = src[cnt];
+}
+
+void flext::AtomList::Alloc(int sz,int keepix,int keeplen,int keepto)
 {
     if(lst) {
         if(cnt == sz) return; // no change
+
+        t_atom *l = new t_atom[sz];
+        if(keepix >= 0)
+            // keep contents
+            copyatoms(keeplen >= 0?keeplen:(cnt > sz?sz:cnt),l+keepto,lst+keepix);
         delete[] lst;
+        lst = l,cnt = sz;
     }
-    else
+    else {
         FLEXT_ASSERT(cnt == 0);
-    lst = new t_atom[cnt = sz];
+        lst = new t_atom[cnt = sz];
+    }
 }
 
 flext::AtomList::~AtomList() { Free(); }
@@ -76,10 +93,8 @@ flext::AtomList &flext::AtomList::Set(int argc,const t_atom *argv,int offs,bool 
 	int ncnt = argc+offs;
 	if(resize) Alloc(ncnt);
 
-    // argv can be NULL indepently from argc
-    if(argv)
-        for(int i = 0; i < argc; ++i) 
-            SetAtom(lst[offs+i],argv[i]);
+    // argv can be NULL independently from argc
+    if(argv) copyatoms(argc,lst+offs,argv);
 
 	return *this;
 }
@@ -88,7 +103,7 @@ int flext::AtomList::Compare(const AtomList &a) const
 {
 	if(Count() == a.Count()) {
 		for(int i = 0; i < Count(); ++i) {
-			int cmp = CmpAtom((*this)[i],a[i]);
+			int cmp = CmpAtom(lst[i],a[i]);
 			if(cmp) return cmp;
 		}
 		return 0;
@@ -99,10 +114,19 @@ int flext::AtomList::Compare(const AtomList &a) const
 
 flext::AtomListStaticBase::~AtomListStaticBase() { Free(); }
 
-void flext::AtomListStaticBase::Alloc(int sz) 
+void flext::AtomListStaticBase::Alloc(int sz,int keepix,int keeplen,int keepto)
 { 
-    if(sz < precnt) lst = predata,cnt = sz;
-    else AtomList::Alloc(sz);
+    if(sz < precnt) {
+        if(lst != predata && lst) {
+            if(keepix >= 0)
+                // keep contents
+                copyatoms(keeplen >= 0?keeplen:(cnt > sz?sz:cnt),predata+keepto,lst+keepix);
+            AtomList::Free();
+        }
+        lst = predata,cnt = sz;
+    }
+    else 
+        AtomList::Alloc(sz,keepix,keeplen,keepto);
 }
 
 void flext::AtomListStaticBase::Free() 

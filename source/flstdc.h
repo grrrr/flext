@@ -26,6 +26,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <math.h>
 #endif
 
+#ifdef FLEXT_DEBUG
+#if FLEXT_OS == FLEXT_OS_WIN
+#include <crtdbg.h>
+#endif
+#endif
+
 // PD stuff
 
 #if FLEXT_SYS == FLEXT_SYS_PD
@@ -223,15 +229,31 @@ typedef t_symbol *t_symptr;
 // -------------------------
 
 #ifdef FLEXT_LOGGING
-
 /* If FLEXT_LOGGING is defined implement logging */
+
+#if FLEXT_OS == FLEXT_OS_WIN
+#define FLEXT_LOG(s) _CrtDbgReport(_CRT_WARN,__FILE__,__LINE__,"flext",s)
+#define FLEXT_LOG1(s,v1) _CrtDbgReport(_CRT_WARN,__FILE__,__LINE__,"flext",s,v1)
+#define FLEXT_LOG2(s,v1,v2) _CrtDbgReport(_CRT_WARN,__FILE__,__LINE__,"flext",s,v1,v2)
+#define FLEXT_LOG3(s,v1,v2,v3) _CrtDbgReport(_CRT_WARN,__FILE__,__LINE__,"flext",s,v1,v2,v3)
+#define FLEXT_LOG4(s,v1,v2,v3,v4) _CrtDbgReport(_CRT_WARN,__FILE__,__LINE__,"flext",s,v1,v2,v3,v4)
+#define FLEXT_LOG5(s,v1,v2,v3,v4,v5) _CrtDbgReport(_CRT_WARN,__FILE__,__LINE__,"flext",s,v1,v2,v3,v4,v5)
+#define FLEXT_LOG6(s,v1,v2,v3,v4,v5,v6) _CrtDbgReport(_CRT_WARN,__FILE__,__LINE__,"flext",s,v1,v2,v3,v4,v5,v6)
+#define FLEXT_LOG7(s,v1,v2,v3,v4,v5,v6,v7) _CrtDbgReport(_CRT_WARN,__FILE__,__LINE__,"flext",s,v1,v2,v3,v4,v5,v6,v7)
+#define FLEXT_LOG8(s,v1,v2,v3,v4,v5,v6,v7,v8) _CrtDbgReport(_CRT_WARN,__FILE__,__LINE__,"flext",s,v1,v2,v3,v4,v5,v6,v7,v8)
+#define FLEXT_LOG9(s,v1,v2,v3,v4,v5,v6,v7,v8,v9) _CrtDbgReport(_CRT_WARN,__FILE__,__LINE__,"flext",s,v1,v2,v3,v4,v5,v6,v7,v8,v9)
+#else
 #define FLEXT_LOG(s) post(s)
 #define FLEXT_LOG1(s,v1) post(s,v1)
 #define FLEXT_LOG2(s,v1,v2) post(s,v1,v2)
 #define FLEXT_LOG3(s,v1,v2,v3) post(s,v1,v2,v3)
 #define FLEXT_LOG4(s,v1,v2,v3,v4) post(s,v1,v2,v3,v4)
 #define FLEXT_LOG5(s,v1,v2,v3,v4,v5) post(s,v1,v2,v3,v4,v5)
-
+#define FLEXT_LOG6(s,v1,v2,v3,v4,v5,v6) post(s,v1,v2,v3,v4,v5,v6)
+#define FLEXT_LOG7(s,v1,v2,v3,v4,v5,v6,v7) post(s,v1,v2,v3,v4,v5,v6,v7)
+#define FLEXT_LOG8(s,v1,v2,v3,v4,v5,v6,v7,v8) post(s,v1,v2,v3,v4,v5,v6,v7,v8)
+#define FLEXT_LOG9(s,v1,v2,v3,v4,v5,v6,v7,v8,v9) post(s,v1,v2,v3,v4,v5,v6,v7,v8,v9)
+#endif
 
 #else
 
@@ -242,13 +264,27 @@ typedef t_symbol *t_symptr;
 #define FLEXT_LOG3(s,v1,v2,v3) ((void)0)
 #define FLEXT_LOG4(s,v1,v2,v3,v4) ((void)0)
 #define FLEXT_LOG5(s,v1,v2,v3,v4,v5) ((void)0)
+#define FLEXT_LOG6(s,v1,v2,v3,v4,v5,v6) ((void)0)
+#define FLEXT_LOG7(s,v1,v2,v3,v4,v5,v6,v7) ((void)0)
+#define FLEXT_LOG8(s,v1,v2,v3,v4,v5,v6,v7,v8) ((void)0)
+#define FLEXT_LOG9(s,v1,v2,v3,v4,v5,v6,v7,v8,v9) ((void)0)
 
 #endif
 
 #ifdef FLEXT_DEBUG
+#if FLEXT_OS == FLEXT_OS_WIN
+#define FLEXT_ASSERT(b) (!(b)?_CrtDbgReport(_CRT_ASSERT,__FILE__,__LINE__,"flext",#b):1)
+#define FLEXT_WARN(str) _CrtDbgReport(_CRT_WARN,__FILE__,__LINE__,"flext",NULL)
+#define FLEXT_ERROR(str) _CrtDbgReport(_CRT_ERROR,__FILE__,__LINE__,"flext",NULL)
+#else
 #define FLEXT_ASSERT(b) (!(b)?(error("Assertion failed: " #b " - in " __FILE__ " line %i",(int)__LINE__),0):1)
+#define FLEXT_WARN(str) error("Warning: in " __FILE__ " line %i",(int)__LINE__)
+#define FLEXT_ERROR(str) error("Error: in " __FILE__ " line %i",(int)__LINE__)
+#endif
 #else
 #define FLEXT_ASSERT(b) (1)
+#define FLEXT_WARN(str) (1)
+#define FLEXT_ERROR(str) error("Error: in " __FILE__ " line %i",(int)__LINE__)
 #endif
 
 #define ERRINTERNAL() error("flext: Internal error in file " __FILE__ ", line %i - please report",(int)__LINE__)

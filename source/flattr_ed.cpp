@@ -43,53 +43,26 @@ static t_widgetbehavior widgetbehavior;
 static void (*ori_vis)(t_gobj *c, t_glist *, int vis) = NULL;
 #endif
 
-void flext_base::SetAttrEditor(t_classid c)
+//! generate the script for the property dialog
+static void tclscript()
 {
-    // widgetbehavior struct MUST be resident... (static is just ok here)
+    static bool havecode = false;
+    if(havecode) return;
+    else havecode = true;
 
-#ifndef FLEXT_CLONEWIDGET
-    ori_vis = c->c_wb->w_visfn; 
-    widgetbehavior.w_getrectfn =    c->c_wb->w_getrectfn; 
-    widgetbehavior.w_displacefn =   c->c_wb->w_displacefn; 
-    widgetbehavior.w_selectfn =     c->c_wb->w_selectfn; 
-    widgetbehavior.w_activatefn =   c->c_wb->w_activatefn; 
-    widgetbehavior.w_deletefn =     c->c_wb->w_deletefn; 
-    widgetbehavior.w_clickfn =      c->c_wb->w_clickfn;
-#else
-    widgetbehavior.w_getrectfn =    text_widgetbehavior.w_getrectfn; 
-    widgetbehavior.w_displacefn =   text_widgetbehavior.w_displacefn; 
-    widgetbehavior.w_selectfn =     text_widgetbehavior.w_selectfn; 
-    widgetbehavior.w_activatefn =   text_widgetbehavior.w_activatefn; 
-    widgetbehavior.w_deletefn =     text_widgetbehavior.w_deletefn; 
-    widgetbehavior.w_clickfn =      text_widgetbehavior.w_clickfn;
-#endif
-
-#if PD_MINOR_VERSION >= 37
-    class_setpropertiesfn(c,cb_GfxProperties);
-    class_setsavefn(c,cb_GfxSave);
-#else
-    widgetbehavior.w_propertiesfn = cb_GfxProperties;
-    widgetbehavior.w_savefn =       cb_GfxSave;
-#endif
-
-    widgetbehavior.w_visfn =        cb_GfxVis;
-    class_setwidget(c, &widgetbehavior);
-
-    // generate the script for the property dialog
-
-    sys_gui(
+    sys_vgui(
         "proc flext_escatoms {lst} {\n"
             "set tmp {}\n"
             "foreach a $lst {\n"
                 "set a [regsub {\\$} $a \\\\$]\n"  // replace $ with \$
                 "set a [regsub {,} $a \\\\,]\n"  // replace , with \,
                 "set a [regsub {;} $a \\\\\\;]\n"  // replace ; with \;
-//                "set a [regsub {%} $a %%]\n"  // replace % with \%
                 "lappend tmp $a\n"
             "}\n"
             "return $tmp\n"
         "}\n"
-
+    );
+    sys_vgui(
         "proc flext_makevalue {id ix} {\n"
             // strip "." from the TK id to make a variable name suffix
             "set vid [string trimleft $id .]\n"
@@ -123,7 +96,8 @@ void flext_base::SetAttrEditor(t_classid c)
             // return list
             "return $lst\n" 
         "}\n"
-
+    );
+    sys_vgui(
         "proc flext_apply {id ix} {\n"
             "set lst [flext_makevalue $id $ix]\n"
             "set lst [eval concat $lst]\n" // remove curly braces from character escaping
@@ -150,7 +124,8 @@ void flext_base::SetAttrEditor(t_classid c)
             "flext_applyall $id $alen\n"
             "flext_cancel $id\n"
         "}\n"
-
+    );
+    sys_vgui(
         "proc flext_help {id} {\n"
             "toplevel $id.hw\n"
             "wm title $id.hw \"Flext attribute editor help\"\n"
@@ -177,7 +152,8 @@ void flext_base::SetAttrEditor(t_classid c)
             "\"\n"
             "$id.hw.text configure -state disabled\n"
         "}\n"
-
+    );
+    sys_vgui(
         "proc flext_copyval {dst src} {\n"
             "global $src $dst\n"
             "set $dst [expr $$src]\n"
@@ -192,7 +168,8 @@ void flext_base::SetAttrEditor(t_classid c)
             "set $var $tmp\n"
             "destroy $id\n"
         "}\n"
-
+    );
+    sys_vgui(
         "proc flext_textzoom {id var title attr edit} {\n"
             "global $var\n"
             "toplevel $id.w\n"
@@ -230,7 +207,8 @@ void flext_base::SetAttrEditor(t_classid c)
             "pack $id.w.buttons.cancel -side left -expand 1\n"
             "bind $id.w {<KeyPress-Escape>} \"destroy $id.w\"\n"
         "}\n"
-
+    );
+    sys_vgui(
         "proc pdtk_flext_dialog {id title attrlist} {\n"
                 "set vid [string trimleft $id .]\n"
                 "set alen [expr [llength $attrlist] / 6 ]\n"
@@ -274,7 +252,8 @@ void flext_base::SetAttrEditor(t_classid c)
                 "frame $id.sep -relief ridge -bd 1 -height 2\n"
                 "grid config $id.sep -column 0 -columnspan 9 -row $row -pady 2 -sticky {snew}\n"
                 "incr row\n"
-
+    );
+    sys_vgui(
                 "set ix 1\n"
                 "foreach {an av ai atp asv afl} $attrlist {\n"
                     "grid rowconfigure $id $row -weight 0\n"
@@ -309,7 +288,8 @@ void flext_base::SetAttrEditor(t_classid c)
                     // attribute label
                     "label $id.label-$ix -text \"$an :\" -font {Helvetica 8 bold}\n"
                     "grid config $id.label-$ix -column 0 -row $row -padx 5 -sticky {e}\n"
-
+    );
+    sys_vgui(
                     "if { $afl != 0 } {\n"
                         // attribute is puttable
 
@@ -359,6 +339,8 @@ void flext_base::SetAttrEditor(t_classid c)
                             "radiobutton $id.b$i-$ix -value $i -foreground $c -variable $var_attr_save \n"
                             "grid config $id.b$i-$ix -column [expr $i + 6] -row $row  \n"
                         "}\n"
+    );
+    sys_vgui(
                     "} else {\n"
                         // attribute is gettable only
 
@@ -392,7 +374,8 @@ void flext_base::SetAttrEditor(t_classid c)
                     "incr ix\n"
                     "incr row\n"
                 "}\n"
-
+    );
+    sys_vgui(
                 // Separator
                 "frame $id.sep2 -relief ridge -bd 1 -height 2\n"
 //                "grid rowconfigure $id $row -weight 0\n"
@@ -422,6 +405,41 @@ void flext_base::SetAttrEditor(t_classid c)
                 "bind $id {<Shift-KeyPress-Return>} \" flext_applyall $id $alen \"\n"
         "}\n"
     );
+}
+
+void flext_base::SetAttrEditor(t_classid c)
+{
+    // widgetbehavior struct MUST be resident... (static is just ok here)
+
+#ifndef FLEXT_CLONEWIDGET
+    ori_vis = c->c_wb->w_visfn; 
+    widgetbehavior.w_getrectfn =    c->c_wb->w_getrectfn; 
+    widgetbehavior.w_displacefn =   c->c_wb->w_displacefn; 
+    widgetbehavior.w_selectfn =     c->c_wb->w_selectfn; 
+    widgetbehavior.w_activatefn =   c->c_wb->w_activatefn; 
+    widgetbehavior.w_deletefn =     c->c_wb->w_deletefn; 
+    widgetbehavior.w_clickfn =      c->c_wb->w_clickfn;
+#else
+    widgetbehavior.w_getrectfn =    text_widgetbehavior.w_getrectfn; 
+    widgetbehavior.w_displacefn =   text_widgetbehavior.w_displacefn; 
+    widgetbehavior.w_selectfn =     text_widgetbehavior.w_selectfn; 
+    widgetbehavior.w_activatefn =   text_widgetbehavior.w_activatefn; 
+    widgetbehavior.w_deletefn =     text_widgetbehavior.w_deletefn; 
+    widgetbehavior.w_clickfn =      text_widgetbehavior.w_clickfn;
+#endif
+
+#if PD_MINOR_VERSION >= 37
+    class_setpropertiesfn(c,cb_GfxProperties);
+    class_setsavefn(c,cb_GfxSave);
+#else
+    widgetbehavior.w_propertiesfn = cb_GfxProperties;
+    widgetbehavior.w_savefn =       cb_GfxSave;
+#endif
+
+    widgetbehavior.w_visfn =        cb_GfxVis;
+    class_setwidget(c, &widgetbehavior);
+
+    tclscript();
 }
 
 static size_t escapeit(char *dst,size_t maxlen,const char *src)
@@ -510,7 +528,7 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
                 char tmp[100];
                 PrintAtom(lv[i],tmp,sizeof tmp);
                 b += escapeit(b,sizeof(buf)+buf-b,tmp);
-                if(i < lv.Count()-1) { *(b++) = ' '; *(b++) = 0; }
+                if(i < lv.Count()-1) { *(b++) = ' '; *b = 0; }
             }
         }
         else {
@@ -524,10 +542,10 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
             const AtomList &lp = initdata?*initdata:lv;
 
             for(int i = 0; i < lp.Count(); ++i) {
-                char tmp[100];
+                char tmp[256];
                 PrintAtom(lp[i],tmp,sizeof(tmp)); 
                 b += escapeit(b,sizeof(buf)+buf-b,tmp);
-                if(i < lp.Count()-1) { *(b++) = ' '; *(b++) = 0; }
+                if(i < lp.Count()-1) { *(b++) = ' '; *b = 0; }
             }
         }
         else {

@@ -135,17 +135,36 @@ bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbo
 }
 
 
-bool flext_base::UnbindMethod(const t_symbol *sym,void **data)
+bool flext_base::UnbindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbol *s,int argc,t_atom *argv,void *data),void **data)
 {
     bool ok = false;
-    binditem *it = bindhead?(binditem *)bindhead->Find(sym,0):NULL;
-    void *d = NULL;
-    if(it) {
-        d = it->px->data;
-        ok = bindhead->Remove(it);
-        if(ok) delete it;
+    
+    if(bindhead) {
+        void *d = NULL;
+        binditem *it = NULL;
+        if(sym) {
+            it = (binditem *)bindhead->Find(sym,0);
+            while(it) {
+                if(it->tag == sym && (!fun || it->fun == fun)) break;
+            }
+        }
+        else {
+            int sz = bindhead->Size();
+            if(!sz) sz = 1;
+
+            for(int i = 0; i < sz; ++i) {
+                for(it = (binditem *)bindhead->Item(0); it; it = (binditem *)it->nxt) {
+                    if(it->tag == sym && (!fun || it->fun == fun)) break;
+                }
+                if(it) break;
+            }
+        }
+        if(it) {
+            if(data) *data = it->px->data;
+            ok = bindhead->Remove(it);
+            if(ok) delete it;
+        }
     }
-    if(data) *data = d;
     return ok;
 }
 

@@ -24,6 +24,7 @@ Version history:
 - fixed a bug associated to attribute argument lists
 - added functions for version number and string (flext::Version and flext::VerStr, mainly for usage of a shared flext library)
 - flext_base::UnbindMethod returns user data
+- fixed compilation problem with t_symbol-type attributes
 
 0.4.3:
 - added forgotten flext_base::ToQueueString method

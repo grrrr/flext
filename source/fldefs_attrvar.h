@@ -50,7 +50,7 @@ FLEXT_ATTRSET_(VAR,int)
 //! Declare an implicite set function for a symbol attribute
 #define FLEXT_ATTRSET_S(VAR) \
 \
-FLEXT_ATTRSET_(VAR,t_symptr)
+FLEXT_ATTRSET_(VAR,const t_symbol *)
 
 //! Declare an implicite set function for a boolean attribute
 #define FLEXT_ATTRSET_B(VAR) \
@@ -86,7 +86,7 @@ FLEXT_ATTRGET_(VAR,int)
 //! Declare an implicite get function for a symbol attribute
 #define FLEXT_ATTRGET_S(VAR) \
 \
-FLEXT_ATTRGET_(VAR,t_symptr)
+FLEXT_ATTRGET_(VAR,const t_symbol *)
 
 //! Declare an implicite get function for a boolean attribute
 #define FLEXT_ATTRGET_B(VAR) \

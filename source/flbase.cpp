@@ -16,7 +16,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // --- global overloaded new/delete memory allocation methods ----
 
 
-void *operator new(size_t bytes)
+void *flext_obj::operator new(size_t bytes)
 {
 	bytes += sizeof(size_t);
 	char *blk = (char *)getbytes(bytes);
@@ -24,16 +24,19 @@ void *operator new(size_t bytes)
 	return blk+sizeof(size_t);
 }
 
-void operator delete(void *blk)
+void flext_obj::operator delete(void *blk)
 {
 	char *ori = (char *)blk-sizeof(size_t);
 	size_t bytes = *(size_t *)ori;
 	freebytes(ori,bytes);
 }
 
+
+#ifndef __MRC__
+
 #define ALIGN 128 // bit alignment
 
-void *operator new[](size_t bytes)
+void *flext_obj::operator new[](size_t bytes)
 {
 	const size_t ovh = sizeof(size_t)+sizeof(char *);
 	bytes += ovh+(ALIGN/8-1);
@@ -44,13 +47,14 @@ void *operator new[](size_t bytes)
 	return ablk;
 }
 
-void operator delete[](void *blk)
+void flext_obj::operator delete[](void *blk)
 {
 	char *ori = *(char **)((char *)blk-sizeof(size_t)-sizeof(char *));
 	size_t bytes = *(size_t *)((char *)blk-sizeof(size_t));
 	freebytes(ori,bytes);
 }
 
+#endif
 
 
 

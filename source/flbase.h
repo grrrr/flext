@@ -16,18 +16,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <flstdc.h>
 
-
-// --- global overloading of new/delete memory allocation methods ----
-
-void *operator new(size_t bytes);
-void operator delete(void *blk);
-
-// this are aligned (with some overhead)
-void *operator new[](size_t bytes); 
-void operator delete[](void *blk);
-
-
-
 class flext_obj;
 
 /*-----------------------------------------------------------------
@@ -98,6 +86,19 @@ class FLEXT_EXT flext_obj
 {
     public:
 
+		// --- overloading of new/delete memory allocation methods ----
+
+		void *operator new(size_t bytes);
+		void operator delete(void *blk);
+
+		#ifndef __MRC__ // doesn't handle new[] overload?!
+		// this are aligned (with some overhead)
+		void *operator new[](size_t bytes); 
+		void operator delete[](void *blk);
+		#endif
+
+		// ---------------------
+
         //////////
         // Constructor
     	flext_obj();
@@ -116,10 +117,6 @@ class FLEXT_EXT flext_obj
         // The object header
         flext_hdr          *x_obj;        	
 
-    	//////////
-    	// Creation callback
-    	static void callb_setup(t_class *) {}	
-
     private:
 
         //////////
@@ -127,6 +124,11 @@ class FLEXT_EXT flext_obj
         t_canvas            *m_canvas;
 
 	public:
+
+    	//////////
+    	// Creation callback
+    	static void callb_setup(t_class *) {}	
+
         //////////
         // This is a holder - don't touch it
         static flext_hdr     *m_holder;
@@ -135,7 +137,7 @@ class FLEXT_EXT flext_obj
         //////////
         // The object's name in the patcher
 		const char *m_name;
-
+		
 };
 
 // This has a dummy arg so that NT won't complain

@@ -16,13 +16,25 @@ once drifted apart in Max and PD. It is not elegant but helps.
 #ifndef __FLSTDC_H
 #define __FLSTDC_H
 
-#ifdef __cplusplus
-// namespace std {
-#endif
 
 #if !defined(PD) && !defined(MAXMSP)
 #error Either PD or MAXMSP must be defined
 #endif
+
+
+// compiler checking
+
+#if defined(__MRC__) && __MRC__ < 0x500
+#error Apples MPW MrCpp v.5.0.0 or better compiler required
+#endif
+
+#if 0
+// host namespace
+namespace flhost {
+#endif
+
+
+// PD stuff
 
 #ifdef PD
 
@@ -58,13 +70,13 @@ typedef t_float t_flint;
 #define A_FLINT A_FLOAT
 #define A_DEFFLINT A_DEFFLOAT
  
-
+// MAX stuff
 #elif defined(MAXMSP)
 
 extern "C"
 {
 #include "ext.h"
-#include "ext_strings.h"
+//#include "ext_strings.h"  // clashes with MPW
 #include "ext_user.h"
 #include "z_dsp.h"
 #include "z_atom.h"
@@ -86,8 +98,14 @@ typedef int t_atomtype;
 
 #endif
 
-
 typedef t_symbol *t_symtype;
+
+
+#if 0
+// end of host namespace
+} 
+#endif
+
 
 #ifdef _LOG
 #define LOG(s) post(s)
@@ -112,11 +130,6 @@ typedef t_symbol *t_symtype;
 #define FLEXT_EXT __declspec(dllexport)
 #else                   // other OS's
 #define FLEXT_EXT
-#endif
-
-
-#ifdef __cplusplus
-// }  // namespace std 
 #endif
 
 #endif

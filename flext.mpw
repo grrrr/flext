@@ -1,0 +1,96 @@
+#   File:       flext.mpw
+#   Target:     flext
+#   Created:    Thursday, March 21, 2002 11:19:05 PM
+
+
+MAKEFILE        = flext.make
+ÄMondoBuildÄ    = {MAKEFILE}  # Make blank to avoid rebuilds when makefile is modified
+
+OutDir          = :MPW:
+MaxSDK			= HD Daten:Prog Stuff:Max/MSP SDK:SDK Examples
+STLPort			= HD MacOS:Applications (Mac OS 9):dev:MPW-GM:Interfaces&Libraries:Interfaces:STLport-4.5.3:stlport
+Includes        = -i :,"{MaxSDK}:Max Includes","{MaxSDK}:MSP Includes","{STLPort}"
+Defines			= -d MAXMSP
+
+Sym-PPC         = -sym off
+Flags			= -includes unix
+
+PPCCPlusOptions = {Includes} {Sym-PPC} {Defines} {Flags}
+
+
+### Source Files ###
+
+SrcFiles        =  è
+				  "flbase.cpp" è
+				  "flbuf.cpp" è
+				  "flext.cpp"
+
+
+### Object Files ###
+
+ObjFiles-PPC    =  è
+				  "{OutDir}flbase.cpp.x" è
+				  "{OutDir}flbuf.cpp.x" è
+				  "{OutDir}flext.cpp.x"
+
+
+### Libraries ###
+
+LibFiles-PPC    = 
+
+
+### Default Rules ###
+
+.cpp.x  ü  .cpp  {ÄMondoBuildÄ}
+	{PPCCPlus} {depDir}{default}.cpp -o {targDir}{default}.cpp.x {PPCCPlusOptions}
+
+
+### Build Rules ###
+
+flext    üü  {OutDir}flext.o
+
+{OutDir}flext.o  üü  {ObjFiles-PPC} {LibFiles-PPC} {ÄMondoBuildÄ}
+	PPCLink è
+		-o {Targ} è
+		{ObjFiles-PPC} è
+		{LibFiles-PPC} è
+		{Sym-PPC} è
+		-mf -d è
+		-t 'XCOF' è
+		-c 'MPS ' è
+		-xm l
+
+
+
+### Required Dependencies ###
+
+"{OutDir}flbase.cpp.x"  ü  "flbase.cpp"
+"{OutDir}flbuf.cpp.x"  ü  "flbuf.cpp"
+"{OutDir}flext.cpp.x"  ü  "flext.cpp"
+
+
+### Optional Dependencies ###
+### Build this target to generate "include file" dependencies. ###
+
+Dependencies  ü  $OutOfDate
+	MakeDepend è
+		-append {MAKEFILE} è
+		-ignore "{CIncludes}" è
+		-objdir "{OutDir}" è
+		-objext .x è
+		{Includes} è
+		{SrcFiles}
+
+
+#*** Dependencies: Cut here ***
+
+:flbase.cpp.x	ü  è
+	'flbase.cpp' è
+	'flbase.h'
+
+:flbuf.cpp.x	ü  è
+	'flbuf.cpp'
+
+:flext.cpp.x	ü  è
+	'flext.cpp'è
+	'flext.h'

@@ -458,20 +458,27 @@ V flext_base::m_help()
 }
 
 
+union t_any {
+	F ft;
+	I it;
+	t_symbol *st;
+#ifdef PD
+	t_gpointer *gt;
+#endif
+};
+
 typedef V (*methfun_G)(flext_base *c,I argc,t_atom *argv);
 typedef V (*methfun_A)(flext_base *c,const t_symbol *s,I argc,t_atom *argv);
 typedef V (*methfun_0)(flext_base *c);
 
 #define MAXARGS 5
 
-// the args MUST all have 32 bits (float, t_symbol *)
 // the reference is needed for PPC processors
-typedef V (*methfun_1)(flext_base *c,I &);
-typedef V (*methfun_2)(flext_base *c,I &,I &);
-typedef V (*methfun_3)(flext_base *c,I &,I &,I &);
-typedef V (*methfun_4)(flext_base *c,I &,I &,I &,I &);
-typedef V (*methfun_5)(flext_base *c,I &,I &,I &,I &,I &);
-
+typedef V (*methfun_1)(flext_base *c,t_any &);
+typedef V (*methfun_2)(flext_base *c,t_any &,t_any &);
+typedef V (*methfun_3)(flext_base *c,t_any &,t_any &,t_any &);
+typedef V (*methfun_4)(flext_base *c,t_any &,t_any &,t_any &,t_any &);
+typedef V (*methfun_5)(flext_base *c,t_any &,t_any &,t_any &,t_any &,t_any &);
 
 BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 {
@@ -500,50 +507,31 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 				ret = true;
 			}
 			else if(argc == m->argc) {
-				I ix,iargs[MAXARGS];
+				I ix;
+				t_any aargs[MAXARGS];
 				BL ok = true;
 				for(ix = 0; ix < argc && ok; ++ix) {
 					switch(m->args[ix]) {
 					case a_float: {
-						ASSERT(sizeof(F) == sizeof(I));
-						F a;
-						if(is_float(argv[ix])) iargs[ix] = *(I *)&(a = get_float(argv[ix]));
-						else if(is_int(argv[ix])) iargs[ix] = *(I *)&(a = get_int(argv[ix]));
+						if(is_float(argv[ix])) aargs[ix].ft = get_float(argv[ix]);
+						else if(is_int(argv[ix])) aargs[ix].ft = get_int(argv[ix]);
 						else ok = false;
 						break;
 					}
 					case a_int: {
-						I a;
-						if(is_float(argv[ix])) iargs[ix] = *(I *)&(a = get_float(argv[ix]));
-						else if(is_int(argv[ix])) iargs[ix] = *(I *)&(a = get_int(argv[ix]));
+						if(is_float(argv[ix])) aargs[ix].it = get_float(argv[ix]);
+						else if(is_int(argv[ix])) aargs[ix].it = get_int(argv[ix]);
 						else ok = false;
 						break;
 					}
-/*
-					case a_bool: {
-						I a;
-						if(ISFLOAT(argv[ix])) iargs[ix] = *(I *)&(a = (argv[ix].a_w.w_float != 0));
-#ifdef MAXMSP
-						else if(ISINT(argv[ix])) iargs[ix] = *(I *)&(a = (argv[ix].a_w.w_int != 0));
-#endif
-						else ok = false;
-						break;
-					}
-*/
 					case a_symbol: {
-						ASSERT(sizeof(t_symbol *) == sizeof(I));
-
-						t_symbol *a;
-						if(is_symbol(argv[ix])) iargs[ix] = *(I *)&(a = get_symbol(argv[ix]));
+						if(is_symbol(argv[ix])) aargs[ix].st = get_symbol(argv[ix]);
 						else ok = false;
 						break;
 					}
 #ifdef PD					
 					case a_pointer: {
-						ASSERT(sizeof(t_gpointer *) == sizeof(I));
-
-						t_gpointer *a;
-						if(is_pointer(argv[ix])) iargs[ix] = *(I *)&(a = get_pointer(argv[ix]));
+						if(is_pointer(argv[ix])) aargs[ix].pt = get_pointer(argv[ix]);
 						else ok = false;
 						break;
 					}
@@ -557,11 +545,11 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 				if(ix == argc) {
 					switch(argc) {
 					case 0:	((methfun_0)m->fun)(this); break;
-					case 1:	((methfun_1)m->fun)(this,iargs[0]); break;
-					case 2:	((methfun_2)m->fun)(this,iargs[0],iargs[1]); break;
-					case 3:	((methfun_3)m->fun)(this,iargs[0],iargs[1],iargs[2]); break;
-					case 4:	((methfun_4)m->fun)(this,iargs[0],iargs[1],iargs[2],iargs[3]); break;
-					case 5:	((methfun_5)m->fun)(this,iargs[0],iargs[1],iargs[2],iargs[3],iargs[4]); break;
+					case 1:	((methfun_1)m->fun)(this,aargs[0]); break;
+					case 2:	((methfun_2)m->fun)(this,aargs[0],aargs[1]); break;
+					case 3:	((methfun_3)m->fun)(this,aargs[0],aargs[1],aargs[2]); break;
+					case 4:	((methfun_4)m->fun)(this,aargs[0],aargs[1],aargs[2],aargs[3]); break;
+					case 5:	((methfun_5)m->fun)(this,aargs[0],aargs[1],aargs[2],aargs[3],aargs[4]); break;
 					}
 					ret = true;	
 				}
@@ -599,13 +587,13 @@ V flext_base::m_method_(I inlet,const t_symbol *s,I argc,t_atom *argv) {}
 
 flext_base::methitem::methitem(I in,t_symbol *t): 
 	inlet(in),tag(t),
-	fun(NULL), //iix(false),
+	fun(NULL), 
 	argc(0),args(NULL)
 {}
 
-flext_base::methitem::methitem(I in,t_symbol *t,metharg &argl,methfun f /*,BL ixd*/): 
+flext_base::methitem::methitem(I in,t_symbol *t,metharg &argl,methfun f): 
 	inlet(in),tag(t),
-	fun(f), //iix(ixd),
+	fun(f),
 	argc(0),args(NULL)
 { 
 	va_list marker;
@@ -657,15 +645,9 @@ V flext_base::add_meth_def(I inlet,const C *tag)
 
 V flext_base::add_meth_one(I inlet,const C *tag,methfun fun,metharg tp,...)
 {
-	mlst.push_back(new methitem(inlet,gensym(const_cast<C *>(tag)),tp,fun /*,false*/));
+	mlst.push_back(new methitem(inlet,gensym(const_cast<C *>(tag)),tp,fun));
 }
 
-/*
-V flext_base::add_meth_ixd(I inlet,const C *tag,methfun fun,metharg tp,...)
-{
-	mlst.push_back(new methitem(inlet,gensym(const_cast<C *>(tag)),tp,fun,true));
-}
-*/
 
 
 V flext_base::geta_string(const t_atom &a,C *buf,I szbuf)
@@ -673,7 +655,7 @@ V flext_base::geta_string(const t_atom &a,C *buf,I szbuf)
 #ifdef PD
 	atom_string(const_cast<t_atom *>(&a),buf,szbuf);
 #else
-	if(is_symbol(a)) strcpy(buf,get_string(a));
+	if(is_symbol(a)) sprintf(buf,"%s",get_string(a));
 	else if(is_float(a)) sprintf(buf,"%f",get_float(a));
 	else if(is_int(a)) sprintf(buf,"%i",get_int(a));
 #endif
@@ -707,6 +689,7 @@ flext_dsp::~flext_dsp()
 	if(outvecs) delete[] outvecs;
 }
 
+
 t_int *flext_dsp::dspmeth(t_int *w) 
 { 
 	flext_dsp *obj = (flext_dsp *)w[1];
@@ -738,7 +721,7 @@ V flext_dsp::cb_dsp(t_class *c,t_signal **sp)
 	obj->m_dsp(sp[0]->s_n,obj->invecs,obj->outvecs);
 
 	// set the DSP function
-	dsp_add(dspmeth,2,obj,sp[0]->s_n);  
+	dsp_add((t_dspmethod)dspmeth,2,obj,sp[0]->s_n);  
 }
 
 V flext_dsp::cb_dspon(t_class *c,FI on) { thisObject(c)->m_dspon(on != 0); }

@@ -179,7 +179,7 @@ public:
 
 	enum metharg {
 		a_null = 0,
-		a_float,a_int, //a_bool,
+		a_float,a_int, 
 		a_symbol,a_pointer,
 		a_gimme
 	};
@@ -189,25 +189,6 @@ public:
 	V add_meth_def(I inlet); // call virtual function for inlet
 	V add_meth_def(I inlet,const C *tag); // call virtual function for tag && inlet
 	V add_meth_one(I inlet,const C *tag,methfun fun,metharg tp,...); 
-//	V add_meth_ixd(I inlet,const C *tag,methfun fun,metharg tp,...); 
-
-/*
-	V add_meth(I inlet,V (*m)(flext_base *,I argc,t_atom *argv)) { add_meth_one(inlet,"list",(methfun)m,a_gimme,a_null); }
-	V add_meth(I inlet,const C *tag,V (*m)(flext_base *)) { add_meth_one(inlet,tag,(methfun)m,a_null); }  // pure method
-	V add_meth(I inlet,V (*m)(flext_base *,t_symbol *s,I argc,t_atom *argv)) { add_meth_one(inlet,"anything",(methfun)m,a_gimme,a_null); } // anything
-	V add_meth(I inlet,V (*m)(flext_base *,t_symbol *s)) { add_meth_one(inlet,"symbol",(methfun)m,a_symbol,a_null); } // anything
-	V add_meth(I inlet,V (*m)(flext_base *,F)) { add_meth_one(inlet,"float",(methfun)m,a_float,a_null); }  // single float
-	V add_meth(I inlet,V (*m)(flext_base *,F,F)) { add_meth_one(inlet,"list",(methfun)m,a_float,a_float,a_null); } // list of 2 floats
-	V add_meth(I inlet,V (*m)(flext_base *,F,F,F)) { add_meth_one(inlet,"list",(methfun)m,a_float,a_float,a_float,a_null); } // list of 3 floats
-	V add_meth(I inlet,V (*m)(flext_base *,I)) { add_meth_one(inlet,"int",(methfun)m,a_int,a_null); }  // single float
-	V add_meth(I inlet,V (*m)(flext_base *,I,I)) { add_meth_one(inlet,"list",(methfun)m,a_int,a_int,a_null); } // list of 2 floats
-	V add_meth(I inlet,V (*m)(flext_base *,I,I,I)) { add_meth_one(inlet,"list",(methfun)m,a_int,a_int,a_int,a_null); } // list of 3 floats
-	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,I argc,t_atom *argv)) { add_meth_one(inlet,tag,(methfun)m,a_gimme,a_null); } // method+gimme
-//	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,BL b)) { add_meth_one(inlet,tag,(methfun)m,a_bool,a_gimme,a_null); } // method+boolean
-	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,t_symbol *s)) { add_meth_one(inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
-	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,F)) { add_meth_one(inlet,tag,(methfun)m,a_float,a_null); }  // method+float
-	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,I)) { add_meth_one(inlet,tag,(methfun)m,a_int,a_null); } // method+int
-*/
 
 	V add_meth(I inlet,V (*m)(flext_base *,I argc,t_atom *argv)) { add_meth_one(inlet,"list",(methfun)m,a_gimme,a_null); }
 	V add_meth(I inlet,const C *tag,V (*m)(flext_base *)) { add_meth_one(inlet,tag,(methfun)m,a_null); }  // pure method
@@ -220,7 +201,6 @@ public:
 	V add_meth(I inlet,V (*m)(flext_base *,I &,I &)) { add_meth_one(inlet,"list",(methfun)m,a_int,a_int,a_null); } // list of 2 floats
 	V add_meth(I inlet,V (*m)(flext_base *,I &,I &,I &)) { add_meth_one(inlet,"list",(methfun)m,a_int,a_int,a_int,a_null); } // list of 3 floats
 	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,I argc,t_atom *argv)) { add_meth_one(inlet,tag,(methfun)m,a_gimme,a_null); } // method+gimme
-//	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,BL b)) { add_meth_one(inlet,tag,(methfun)m,a_bool,a_gimme,a_null); } // method+boolean
 	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,t_symbol *s)) { add_meth_one(inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
 	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,F &)) { add_meth_one(inlet,tag,(methfun)m,a_float,a_null); }  // method+float
 	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,I &)) { add_meth_one(inlet,tag,(methfun)m,a_int,a_null); } // method+int
@@ -307,7 +287,6 @@ protected:
 	struct xlet {	
 		enum type {
 			tp_none = 0,
-//			tp_def,
 			tp_float,tp_flint,tp_sym,tp_list,tp_sig,tp_any
 		};
 
@@ -326,7 +305,7 @@ protected:
 	class methitem { 
 	public:
 		methitem(I inlet,t_symbol *t);
-		methitem(I inlet,t_symbol *t,metharg &arg,methfun fun /*,BL ixd*/);
+		methitem(I inlet,t_symbol *t,metharg &arg,methfun fun);
 		~methitem();
 
 		t_symbol *tag;
@@ -335,7 +314,6 @@ protected:
 		metharg *args;
 
 		methfun fun;
-//		BL iix; // function gets inlet index as 1st argument
 	};
 	
 	std::list<methitem *> mlst;

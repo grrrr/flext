@@ -28,15 +28,15 @@ Package files:
 The package should at least compile (and is tested) with the following compilers:
 
 - pd - Windows:
-o Borland C++ 5.5 (free): run "make -f makefile.bcc" - makefile is no real make but works (you have to edit the pd path!)
+o Borland C++ 5.5 (free): edit & run "make -f makefile.bcc" 
 o Microsoft Visual C++ 6: use the "flext.dsp" project file  - you have to edit the pd path in the project properties/C-C++/preprocessor tab!
 
 - pd - linux:
-o GCC: run "make -f makefile.pd-linux" - you have to edit the pd path!
+o GCC: edit & run "make -f makefile.pd-linux"
 
 - Max/MSP - MacOS:
 o Metrowerks CodeWarrior V6: use the "flext" project file
-
+o Apple MPW-PR with STLPort: edit & use the "flext.make" makefile
 
 
 for Max/MSP you will also need the Max/MSP SDK
@@ -116,9 +116,7 @@ TODO list:
 general:
 - documentation
 - add log messages for debugging version
-- add #defines to exclude unwanted features (should we really?)
 - exchange more preprocessor definitions for C++ base class code (esp. pd and max calls)
-- cleaner makefile for BCC
 - makefile for MS VC++ 6
 - should we use a namespace?
 - Apple MPW project

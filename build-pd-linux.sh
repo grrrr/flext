@@ -1,3 +1,5 @@
+#!/bin/sh  
+
 . config-pd-linux.txt
 
 make -f makefile.pd-linux &&

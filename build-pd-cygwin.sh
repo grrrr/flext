@@ -1,3 +1,5 @@
+#!/bin/sh
+
 . config-pd-cygwin.txt
 
 make -f makefile.pd-cygwin &&

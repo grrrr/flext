@@ -33,6 +33,9 @@ protected:
 	void m_tag();   
 	void m_tag_and_int(int i);   
 	void m_sym(t_symbol *s);   
+
+	// override default flext help function	
+	virtual void m_help();
 	
 private:
 
@@ -78,3 +81,10 @@ void simple3::m_sym(t_symbol *s)
 }
 
 
+void simple3::m_help()
+{
+	// post a help message
+	// thisName() returns a char * for the object name
+	post("%s - example for tagged messages",thisName());
+}
+	

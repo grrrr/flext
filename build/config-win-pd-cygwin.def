@@ -1,0 +1,18 @@
+# where is PD?
+# (it seems like cygwin compilation is only working if 
+# there are no pthread.h and sched.h in the PD src subfolder
+# - these are provided by cygwin )
+PDPATH=/cygdrive/c/programme/audio/pd
+
+# where should the external be installed?
+INSTPATH=$(PDPATH)/extra
+
+# where do the flext headers and libraries reside?
+FLEXTPATH=$(PDPATH)/flext
+
+# where should the external be built?
+OUTPATH=pd-cygwin
+
+# user defined compiler flags
+# (check if they match your system!)
+OFLAGS=-O2 -march=pentium4 -msse

@@ -29,6 +29,8 @@ download from: http://www.may.ie/academic/music/musictec/SndObj/main.html
 
 if you choose to compile with STK support you will need the respective package and build a library
 download from: http://ccrma-www.stanford.edu/software/stk/
+Under linux you can create such a library from the STK directory with:
+"g++ -c -pipe -I include -D __LINUX_OSS__ src/*.cpp && ar r libstk.a *.o && rm -f *.o"
 
 
 ----------------------------------------------------------------------------

@@ -245,6 +245,8 @@ public:
 
 
 	class outlet;
+	class AtomList;
+	class AtomAnything;
 
 	//! Get pointer to outlet (_after_ calling setup_inout()!)
 	outlet *GetOut(int ix) { return (outlets && ix < outcnt)?outlets[ix]:NULL; }
@@ -271,13 +273,17 @@ public:
 	//! Output string (index n starts with 0)
 	void ToOutString(int n,const char *s) { outlet *o = GetOut(n); if(o) ToOutString(o,s); }
 
-	void ToOutList(outlet *o,int argc,t_atom *argv); 
+	void ToOutList(outlet *o,int argc,const t_atom *argv); 
 	//! Output list (index n starts with 0)
-	void ToOutList(int n,int argc,t_atom *argv)  { outlet *o = GetOut(n); if(o) ToOutList(o,argc,argv); }
+	void ToOutList(int n,int argc,const t_atom *argv)  { outlet *o = GetOut(n); if(o) ToOutList(o,argc,argv); }
+	//! Output list (index n starts with 0)
+	void ToOutList(int n,const AtomList &list)  { ToOutList(n,list.Count(),list.Atoms()); }
 	
-	void ToOutAnything(outlet *o,const t_symbol *s,int argc,t_atom *argv); 
+	void ToOutAnything(outlet *o,const t_symbol *s,int argc,const t_atom *argv); 
 	//! Output anything (index n starts with 0)
-	void ToOutAnything(int n,const t_symbol *s,int argc,t_atom *argv)  { outlet *o = GetOut(n); if(o) ToOutAnything(o,const_cast<t_symbol *>(s),argc,argv); }
+	void ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv)  { outlet *o = GetOut(n); if(o) ToOutAnything(o,const_cast<t_symbol *>(s),argc,argv); }
+	//! Output anything (index n starts with 0)
+	void ToOutAnything(int n,const AtomAnything &any)  { ToOutAnything(n,any.Header(),any.Count(),any.Atoms()); }
 	
 //!		@} 
 
@@ -618,7 +624,9 @@ public:
 	{
 	public:
 		//! Construct anything
-		AtomAnything(const t_symbol *h,int argc,t_atom *argv): AtomList(argc,argv),hdr(h) {}
+		AtomAnything(const t_symbol *h = NULL,int argc = 0,t_atom *argv = NULL): AtomList(argc,argv),hdr(h) {}
+		//! Construct anything
+		AtomAnything(const char *h,int argc = 0,t_atom *argv = NULL): AtomList(argc,argv),hdr(MakeSymbol(h)) {}
 		//! Construct anything
 		AtomAnything(const AtomAnything &a): AtomList(a),hdr(a.hdr) {}
 

@@ -190,7 +190,13 @@ public:
 	class outlet;
 
 	//! Get pointer to outlet (not in the constructor!)
-	outlet *GetOut(int ix) const { return (outlets && ix < outcnt)?outlets[ix]:NULL; }
+	outlet *GetOut(int ix) const { 
+#ifdef FLEXT_DEBUG
+		return (outlets && ix < (procattr?outcnt+1:outcnt))?outlets[ix]:NULL; 
+#else
+		return outlets[ix]; 
+#endif
+	}
 #endif
 	int GetOutAttr() const { return procattr?CntOut():0; }
 

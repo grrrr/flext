@@ -277,8 +277,9 @@ bool flext_base::InitOutlets()
 	
 #if FLEXT_SYS == FLEXT_SYS_MAX
 	// for Max/MSP the rightmost outlet has to be created first
+	outlet *attrtmp = NULL;
 	if(procattr) 
-		outattr = (outlet *)newout_anything(thisHdr());
+		attrtmp = (outlet *)newout_anything(thisHdr());
 #endif
 
 	if(outlist) {
@@ -382,9 +383,13 @@ bool flext_base::InitOutlets()
 	}
 
 	if(procattr) {
+		// attribute dump outlet is the last one
+		outlets[outcnt] = 
 #if FLEXT_SYS == FLEXT_SYS_PD
 		// attribute dump outlet is the last one
-		outlets[outcnt] = (outlet *)newout_anything(&x_obj->obj);
+			(outlet *)newout_anything(&x_obj->obj);
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+			attrtmp;
 #endif
 
 	}

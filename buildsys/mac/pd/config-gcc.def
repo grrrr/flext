@@ -1,5 +1,5 @@
 # where is the PD installation including source code?
-PDPATH=/Applications/audio/Pd-0.38-0.app/Contents/Resources
+PDPATH=/Applications/Pd-0.38-0.app/Contents/Resources
 
 # where is the PD executable?
 PDBIN=$(PDPATH)/bin/pd
@@ -27,7 +27,7 @@ INSTPATH=$(PDPATH)/extra
 
 # user defined optimization flags
 # (check if they match your system!)
-UFLAGS=-maltivec -faltivec
+UFLAGS=-maltivec -faltivec -ffast-math
 
 # user defined compiler flags
 # (check if they match your system!)

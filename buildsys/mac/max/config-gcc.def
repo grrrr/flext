@@ -31,7 +31,7 @@ HELPPATH=/Applications/MaxMSP\ 4.5/max-help/flext
 
 # user defined compiler flags
 # (check if they match your system!)
-UFLAGS=-maltivec -faltivec
+UFLAGS=-maltivec -faltivec -ffast-math
 
 # user defined optimization flags
 # (check if they match your system!)

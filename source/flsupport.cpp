@@ -214,7 +214,7 @@ void flext::error(const char *fmt,...)
     va_start(ap, fmt);
 #if FLEXT_SYS == FLEXT_SYS_MAX
 	char buf[1024]; // \TODO this is quite unsafe.....
-    sprintf(buf,"error: ");
+    STD::sprintf(buf,"error: ");
     vsprintf(buf+7, fmt, ap);
 	::post(buf);
 #else

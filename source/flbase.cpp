@@ -97,9 +97,9 @@ void flext_obj::DefineHelp(t_classid c,const char *ref,const char *dir,bool addt
 
 const t_symbol *flext_obj::GetParamSym(const t_symbol *sym,t_canvas *c)
 {
+#if FLEXT_SYS == FLEXT_SYS_PD
 	if(!c) c = canvas_getcurrent();
 
-#if FLEXT_SYS == FLEXT_SYS_PD
 	const char *s = GetString(sym);
 	if((s[0] == '$' || s[0] == '#') && isdigit(s[1])) {
 		// patcher parameter detected... get value!

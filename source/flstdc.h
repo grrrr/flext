@@ -126,7 +126,7 @@ typedef t_int t_flint;
 typedef t_symbol *t_symtype;
 typedef t_object *t_thing;
 
-#if FLEXT_OS == FLEXT_OS_WIN
+#if 1 //FLEXT_OS == FLEXT_OS_WIN
 typedef void *t_qelem;  // qelem not defined in Windows SDK 
 #else
 typedef qelem t_qelem;

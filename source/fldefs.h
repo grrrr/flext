@@ -76,7 +76,6 @@ FLEXT_REALHDR_S(NEW_CLASS, PARENT_CLASS, SETUPFUN)
 	which is part of an object library (and not stand-alone).
 */
 
-
 // NO ARGUMENTS
 // ----------------------------------------
 
@@ -155,6 +154,45 @@ REAL_NEW_V(NAME,NEW_CLASS, 0,1)
 #define FLEXT_LIB_DSP_V(NAME,NEW_CLASS)	\
 \
 REAL_NEW_V(NAME,NEW_CLASS, 1,1) 
+
+
+// OBJECT NAME + VARIABLE ARGUMENT LIST
+// ----------------------------------------
+
+/*! Implementation of a flext class with its name and a variable argument list
+	\ingroup FLEXT_NEW
+*/
+#define FLEXT_NEW_NV(NAME,NEW_CLASS)			\
+\
+REAL_NEW_NV(NAME,NEW_CLASS,0,0) \
+
+/*! Implementation of a flext tilde class with its name and a variable argument list
+	\ingroup FLEXT_NEW_DSP
+*/
+#define FLEXT_NEW_DSP_NV(NAME,NEW_CLASS)	\
+\
+REAL_NEW_NV(NAME,NEW_CLASS,1,0) \
+
+/*! Implementation of a flext GUI class with its name and a variable argument list
+	\ingroup FLEXT_NEW_GUI
+*/
+#define FLEXT_NEW_GUI_NV(NAME,NEW_CLASS)	\
+\
+REAL_NEW_NV(NAME,NEW_CLASS,2,0) \
+
+/*! Implementation of a flext class (part of a library) with its name and a variable argument list
+	\ingroup FLEXT_LIB
+*/
+#define FLEXT_LIB_NV(NAME,NEW_CLASS)			\
+\
+REAL_NEW_NV(NAME,NEW_CLASS, 0,1) 
+
+/*! Implementation of a flext tilde class (part of a library) with its name and a variable argument list
+	\ingroup FLEXT_LIB_DSP
+*/
+#define FLEXT_LIB_DSP_NV(NAME,NEW_CLASS)	\
+\
+REAL_NEW_NV(NAME,NEW_CLASS, 1,1) 
 
 
 // ONE ARGUMENT

@@ -514,7 +514,6 @@ void flext_base::m_help()
 	post("%s (using flext " FLEXT_VERSTR ") - compiled on %s %s",thisName(),__DATE__,__TIME__);
 }
 
-
 union t_any {
 	float ft;
 	int it;
@@ -524,12 +523,9 @@ union t_any {
 #endif
 };
 
-typedef void (*methfun_G)(flext_base *c,int argc,t_atom *argv);
-typedef void (*methfun_XG)(flext_base *c,const t_symbol *s,int argc,t_atom *argv);
+typedef void (*methfun_V)(flext_base *c,int argc,t_atom *argv);
+typedef void (*methfun_A)(flext_base *c,const t_symbol *s,int argc,t_atom *argv);
 typedef void (*methfun_0)(flext_base *c);
-
-#define MAXARGS 5
-
 typedef void (*methfun_1)(flext_base *c,t_any &);
 typedef void (*methfun_2)(flext_base *c,t_any &,t_any &);
 typedef void (*methfun_3)(flext_base *c,t_any &,t_any &,t_any &);
@@ -549,16 +545,16 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 			LOG4("found method tag %s: inlet=%i, symbol=%s, argc=%i",m->tag->s_name,inlet,s->s_name,argc);
 
 			if(m->argc == 1 && m->args[0] == a_gimme) {
-				((methfun_G)m->fun)(this,argc,argv);
+				((methfun_V)m->fun)(this,argc,argv);
 				ret = true;
 			}
 			else if(m->argc == 1 && m->args[0] == a_xgimme) {
-				((methfun_XG)m->fun)(this,s,argc,argv);
+				((methfun_A)m->fun)(this,s,argc,argv);
 				ret = true;
 			}
 			else if(argc == m->argc) {
 				int ix;
-				t_any aargs[MAXARGS];
+				t_any aargs[FLEXT_MAXMETHARGS];
 				bool ok = true;
 				for(ix = 0; ix < argc && ok; ++ix) {
 					switch(m->args[ix]) {
@@ -623,7 +619,7 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 			// any
 			LOG4("found any method for %s: inlet=%i, symbol=%s, argc=%i",m->tag->s_name,inlet,s->s_name,argc);
 
-			((methfun_XG)m->fun)(this,s,argc,argv);
+			((methfun_A)m->fun)(this,s,argc,argv);
 			ret = true;
 		}
 	}
@@ -767,9 +763,9 @@ void flext_base::AddMethod(int inlet,const char *tag,methfun fun,metharg tp,...)
 	va_end(marker);
 	
 	if(argc > 0) {
-		if(argc > MAXARGS) {
-			error("Method %s: only %i arguments are type-checkable: use variable argument list for more",tag?tag:"?",MAXARGS);
-			argc = MAXARGS;
+		if(argc > FLEXT_MAXMETHARGS) {
+			error("Method %s: only %i arguments are type-checkable: use variable argument list for more",tag?tag:"?",FLEXT_MAXMETHARGS);
+			argc = FLEXT_MAXMETHARGS;
 		}
 
 		args = new metharg[argc];
@@ -777,9 +773,11 @@ void flext_base::AddMethod(int inlet,const char *tag,methfun fun,metharg tp,...)
 		va_start(marker,tp);
 		metharg a = tp;
 		for(int ix = 0; ix < argc; ++ix) {
+#ifdef _DEBUG
 			if(a == a_gimme && ix > 0) {
 				ERRINTERNAL();
 			}
+#endif
 #ifdef PD
 			if(a == a_pointer && flext_base::compatibility) {
 				post("Pointer arguments are not allowed in compatibility mode"); 

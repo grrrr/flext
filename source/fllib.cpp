@@ -94,13 +94,17 @@ void flext_obj::obj_add(bool lib,bool dsp,const char *name,void setupfun(t_class
 {
 	if(dsp) flext_util::chktilde(name);
 
-	t_class **cl = lib?&lib_class:new t_class *;
+	t_class **cl = 
+#ifdef MAXMSP
+		lib?&lib_class:
+#endif
+		new t_class *;
 	const t_symbol *nsym = MakeSymbol(flext_util::extract(name));
 	
 	// register object class
 #ifdef PD
     *cl = ::class_new(
-		nsym,
+		(t_symbol *)nsym,
     	(t_newmethod)obj_new,(t_method)obj_free,
      	sizeof(flext_hdr),0,A_GIMME,A_NULL);
 #elif defined(MAXMSP)
@@ -156,7 +160,7 @@ void flext_obj::obj_add(bool lib,bool dsp,const char *name,void setupfun(t_class
 #ifdef PD
 		if(ix > 0) 
 			// in PD the first name is already registered with class creation
-			::class_addcreator((t_newmethod)libfun_new,l->name,A_GIMME,A_NULL);
+			::class_addcreator((t_newmethod)obj_new,(t_symbol *)l->name,A_GIMME,A_NULL);
 #elif defined(MAXMSP)
 		if(ix > 0 || lib) 
 			// in MaxMSP the first alias gets its name from the name of the object file,
@@ -224,13 +228,26 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int argc,t_atom *argv)
 			obj = (flext_hdr *)::newobject(lo->clss);
 #endif
 		    flext_obj::m_holder = obj;
-			flext_obj::m_holdname = flext::GetString(l->name);
+			flext_obj::m_holdname = l->name;
 
 			// get actual flext object (newfun calls "new flext_obj()")
-			obj->data = lo->argc >= 0?lo->newfun(lo->argc,args):lo->newfun(argc,argv); 
+			if(lo->argc >= 0)
+				// for interpreted arguments
+				obj->data = lo->newfun(lo->argc,args);
+			else
+				// for variable argument list
+				obj->data = lo->newfun(argc,argv); 
 
 			flext_obj::m_holder = NULL;
-			if(!obj->data || !obj->data->InitOk()) { 
+			flext_obj::m_holdname = NULL;
+
+			if(!obj->data || 
+				// check constructor exit flag
+				!obj->data->InitOk() || 
+				// call virtual init function
+				!obj->data->Init()) 
+			{ 
+				// there was some init error, free object
 				lo->freefun(obj); 
 				obj = NULL; 
 			}
@@ -250,10 +267,14 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int argc,t_atom *argv)
 
 void flext_obj::obj_free(flext_hdr *hdr)
 {
-	const t_symbol *name = MakeSymbol(hdr->data->m_name);
+	const t_symbol *name = hdr->data->thisNameSym();
 	libname *l = libname::find(name);
 
 	if(l) 
+		// call virtual exit function
+		hdr->data->Exit();
+
+		// now call object destructor and deallocate
 		l->obj->freefun(hdr);
 #ifdef _DEBUG
 	else 

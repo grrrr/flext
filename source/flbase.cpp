@@ -24,8 +24,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 //
 /////////////////////////////////////////////////////////
 
-flext_hdr *flext_obj::m_holder;
-const char *flext_obj::m_holdname;
+flext_hdr *flext_obj::m_holder = NULL;
+const t_symbol *flext_obj::m_holdname = NULL;
 
 
 /////////////////////////////////////////////////////////
@@ -34,7 +34,7 @@ const char *flext_obj::m_holdname;
 /////////////////////////////////////////////////////////
 flext_obj :: flext_obj()
            : x_obj(m_holder)
-		   , m_name(flext_util::strdup(m_holdname))
+		   , m_name(m_holdname)
 		   , init_ok(true)
 {
 #ifdef PD
@@ -49,10 +49,7 @@ flext_obj :: flext_obj()
 // Destructor
 //
 /////////////////////////////////////////////////////////
-flext_obj :: ~flext_obj()
-{ 
-	if(m_name) delete[] const_cast<char *>(m_name);
-}
+flext_obj :: ~flext_obj() {}
 
 
 void flext_obj::DefineHelp(t_class *c,const char *ref,const char *dir,bool addtilde)

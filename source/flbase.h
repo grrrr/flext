@@ -118,7 +118,8 @@ class FLEXT_EXT flext_obj:
 
 		t_sigobj *thisHdr() { return &x_obj->obj; }
 		const t_sigobj *thisHdr() const { return &x_obj->obj; }
-		const char *thisName() const { return m_name; } 
+		const char *thisName() const { return GetString(m_name); } 
+		const t_symbol *thisNameSym() const { return m_name; } 
 
 #ifdef PD
 		t_class *thisClass() { return (t_class *)((t_object *)(x_obj))->te_g.g_pd; }
@@ -127,6 +128,9 @@ class FLEXT_EXT flext_obj:
 #endif
 
 		void InitProblem() { init_ok = false; }
+
+		virtual bool Init() { return true; }
+		virtual void Exit() {}
 
 // --- help -------------------------------------------------------	
 
@@ -164,10 +168,10 @@ class FLEXT_EXT flext_obj:
 		*/
         static flext_hdr     *m_holder;
 		//! Hold object's name during construction
-        static const char *m_holdname;  
+        static const t_symbol *m_holdname;  
 
         //! The object's name in the patcher
-		const char *m_name;
+		const t_symbol *m_name;
 
 		//! Check whether construction was successful
 		bool InitOk() const { return init_ok; }
@@ -192,6 +196,13 @@ namespace flext_util {
 	bool chktilde(const char *name);
 }
 //@}
+
+
+// max. 4 creation args (see the following macros)
+#define FLEXT_MAXNEWARGS 4 
+
+// max. 5 method args (see the following macros)
+#define FLEXT_MAXMETHARGS 5 
 
 // ----------------------------------------
 // These should be used in the header
@@ -309,8 +320,6 @@ cl##_tilde_setup()
 #define ARGMEMBER_t_symtype(a) GetSymbol(a)
 #define ARGCAST(arg,tp) ARGMEMBER_##tp(arg)
 
-
-#define FLEXT_MAXNEWARGS 4 // max. 4 creation args (see the following macros)
 
 #define REAL_NEW(NAME,NEW_CLASS,DSP,LIB) \
 FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB) \

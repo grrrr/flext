@@ -84,7 +84,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	#endif
 #endif
 
-#if defined(_DEBUG)
+#if defined(_DEBUG) && !defined(FLEXT_DEBUG)
 	#define FLEXT_DEBUG
 #endif
 

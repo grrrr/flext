@@ -102,9 +102,9 @@ bool flext::chktilde(const char *objname)
 // this class stands for one registered object
 // it holds the class, type flags, constructor and destructor of the object and the creation arg types
 // it will never be destroyed
-class libobject {
+class libclass {
 public:
-	libobject(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(flext_hdr *)); 
+	libclass(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(flext_hdr *)); 
 	
 	flext_obj *(*newfun)(int,t_atom *);
 	void (*freefun)(flext_hdr *c);
@@ -115,7 +115,7 @@ public:
 	int *argv;
 };
 
-libobject::libobject(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(flext_hdr *)): 
+libclass::libclass(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(flext_hdr *)): 
 	newfun(newf),freefun(freef),
 	clss(cl),
 	argc(0),argv(NULL) 
@@ -127,13 +127,13 @@ libobject::libobject(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)
 class libname {
 public:
 	const t_symbol *name;
-	libobject *obj;
+	libclass *obj;
 
 	static void add(libname *n);
-	static libname *Find(const t_symbol *s,libobject *o = NULL);
+	static libname *Find(const t_symbol *s,libclass *o = NULL);
 	
 protected:
-	libname(const t_symbol *n,libobject *o): name(n),obj(o),nxt(NULL) {}	
+	libname(const t_symbol *n,libclass *o): name(n),obj(o),nxt(NULL) {}	
 
 	static int Hash(const t_symbol *s);
 	int Hash() const { return Hash(name); }
@@ -146,9 +146,6 @@ protected:
 	static libname **root;
 };
 
-libname **libname::root = NULL;
-
-
 void libname::Add(libname *n) { if(nxt) nxt->Add(n); else nxt = n; }
 
 int libname::Hash(const t_symbol *s) 
@@ -156,7 +153,7 @@ int libname::Hash(const t_symbol *s)
 	return flext::FoldBits(reinterpret_cast<unsigned long>(s),HASHBITS);
 }
 
-libname *libname::Find(const t_symbol *s,libobject *o) 
+libname *libname::Find(const t_symbol *s,libclass *o) 
 {
 	if(!root) {
 		root = new libname *[HASHSIZE];
@@ -181,6 +178,9 @@ libname *libname::Find(const t_symbol *s,libobject *o)
 	return a;
 }
 
+libname **libname::root = NULL;
+
+
 
 // for Max/MSP, the library is represented by a special object (class) registered at startup
 // all objects in the library are clones of that library object - they share the same class
@@ -189,7 +189,7 @@ static t_class *lib_class = NULL;
 static const t_symbol *lib_name = NULL;
 
 flext_obj::t_classid flext_obj::thisClassId() const { return libname::Find(thisNameSym())->obj; }
-t_class *flext_obj::getClass(t_classid id) { return reinterpret_cast<libobject *>(id)->clss; }
+t_class *flext_obj::getClass(t_classid id) { return reinterpret_cast<libclass *>(id)->clss; }
 #endif
 
 void flext_obj::lib_init(const char *name,void setupfun(),bool attr)
@@ -254,7 +254,7 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 #endif
 
 	// make new dynamic object
-	libobject *lo = new libobject(*cl,newfun,freefun);
+	libclass *lo = new libclass(*cl,newfun,freefun);
 	lo->lib = lib;
 	lo->dsp = dsp;
 	lo->attr = process_attributes;
@@ -340,7 +340,7 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 	if(l) {
 		bool ok = true;
 		t_atom args[FLEXT_MAXNEWARGS]; 
-		libobject *lo = l->obj;
+		libclass *lo = l->obj;
 
 		int argc = _argc_;
 		if(lo->attr) {

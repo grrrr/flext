@@ -24,6 +24,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #ifdef PD
 
+#define object_new(clss) pd_new(clss)
+#define object_free(obj) pd_free(&(obj).ob_pd)
+				
+
+
 #define add_dsp(clss,meth) class_addmethod(clss, (t_method)meth,gensym("dsp"),A_NULL)
 #define add_bang(clss,meth) class_addbang(clss, (t_method)meth)
 #define add_float(clss,meth) class_addfloat(clss, (t_method)meth)
@@ -66,6 +71,9 @@ typedef _inlet t_inlet;
   
 typedef void t_outlet;
 //typedef _outlet t_outlet;
+
+#define object_new(clss) pd_new(clss)
+#define object_free(obj) freeobject((object *)obj)
 
 #define add_dsp(clss,meth) addmess((method)meth,"dsp",A_CANT,A_NOTHING)
 #define add_bang(clss,meth) addbang((method)meth)

@@ -192,11 +192,14 @@ flext_base::~flext_base()
 	if(inlets) {
 		for(int ix = 0; ix < incnt; ++ix)
 			if(inlets[ix]) {
+				object_free(inlets[ix]->obj);
+/*
 #ifdef PD
 				pd_free(&inlets[ix]->obj.ob_pd);
 #elif defined(MAXMSP)
 				freeobject((object *)inlets[ix]);
 #endif
+*/
 			}
 		delete[] inlets;
 	}
@@ -246,11 +249,14 @@ bool flext_base::SetupInOut()
 	if(inlets) { 
 		for(int ix = 0; ix < incnt; ++ix) 
 			if(inlets[ix]) {
+				object_free(inlets[ix]->obj);
+/*
 #ifdef PD
 				pd_free(&inlets[ix]->obj.ob_pd);
 #elif defined(MAXMSP)
 				freeobject(inlets[ix]);
 #endif
+*/
 			}
 		delete[] inlets; 
 		inlets = NULL; 

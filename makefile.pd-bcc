@@ -32,8 +32,8 @@ CFLAGS=-6 -O2 -OS -ff -tWD
 
 # all the source files from the package
 SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flsetup.cpp flutil.cpp flatom.cpp
-HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h
-IHDRS=flinternal.h
+HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h flinternal.h
+IHDRS=
 
 
 #default target

@@ -85,6 +85,7 @@ Version history:
 - bugfix for threaded methods with var list or anything arguments
 - added threaded method for arbitrary (void *) data structs
 - ThrMutex: added lock count functions Push() and Pop()
+- eliminated dangerous SetThing,GetThing and introduced DoBind,DoUnbind,GetBound instead
 
 0.3.1:
 - added some more functionality to the AtomList class

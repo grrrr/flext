@@ -31,6 +31,13 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 //! @}
 
 
+
+#ifdef FLEXT_THREADS
+#include <pthread.h>
+#include <sched.h>
+#endif
+
+
 // include all the flext interface definitions
 #include "fldefs.h"
 

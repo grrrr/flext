@@ -172,6 +172,9 @@ public:
 // --- atom stuff ----------------------------------------
 		
 	//! Set atom from another atom
+	static int GetType(const t_atom &a) { return a.a_type; }
+
+	//! Set atom from another atom
 	static void SetAtom(t_atom &a,const t_atom &b) { CopyAtom(&a,&b); }
 
 	//! Check whether the atom is nothing

@@ -20,10 +20,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flstdc.h"
 #include "flsupport.h"
 
-#ifdef FLEXT_THREADS
-#include <pthread.h>
-#endif
-
 class flext_obj;
 
 // ----------------------------------------------------------------------------

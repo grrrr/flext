@@ -115,11 +115,7 @@ typedef t_symbol *t_symptr;
 typedef t_symbol *t_symtype;
 typedef t_object *t_thing;
 
-#ifdef MAC_VERSION
-typedef void t_qelem;
-#else
 typedef qelem t_qelem;
-#endif
 
 typedef method t_method;
 typedef method t_newmethod;

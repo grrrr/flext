@@ -20,11 +20,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flbase.h"
 #include "flsupport.h"
 
-#ifdef FLEXT_THREADS
-#include <pthread.h>
-#include <sched.h>
-#endif
-
 #ifdef _MSC_VER
 #pragma warning(disable: 4786)
 #endif

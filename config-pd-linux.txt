@@ -23,6 +23,8 @@ TARGDIR=./pd-linux
 
 # where should flext libraries be installed?
 # (leave blank to omit installation)
+# Note: the shared libraries will also be installed there. For them to be found you have to add this folder 
+# to the path of the dynamic linker, e.g. by adding a line in /etc/ld.so.conf
 INSTDIR=/usr/local/lib/pd/flext
 
 # additional compiler flags

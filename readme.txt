@@ -49,8 +49,11 @@ With your project using flext, be sure to define "FLEXT_SYS=2".
 
 pd - linux:
 -----------
-o GCC: edit "config-pd-linux.txt" & run "sh build-pd-linux.sh" 
+o GCC,ICC: edit "config-pd-linux.txt" & run "sh build-pd-linux.sh" 
 	additional settings (e.g. target processor, compiler flags) can be made in makefile.pd-linux
+
+Several variations of the flext library will be built: release and debug version of single-threaded and multi-threaded static libraries and of a multi-threaded shared library, respectively.
+These will be installed into the flext directory given in config-pd-linux.txt. For the shared libraries to be found, be sure to specify the flext folder in the /etc/ld.so.conf.
 
 With your project using flext, be sure to define "FLEXT_SYS=2".
 

@@ -1,0 +1,18 @@
+# where is the PD installation?
+PDPATH=/usr/local/lib/pd
+
+# where is the PD executable?
+PDBIN=/usr/local/bin/pd
+
+# where should the external be installed?
+INSTPATH=$(PDPATH)/extra
+
+# where do the flext headers and libraries reside?
+FLEXTPATH=$(PDPATH)/flext
+
+# where should the external be built?
+OUTPATH=pd-darwin
+
+# user defined compiler flags
+# (check if they match your system!)
+OFLAGS=-O2 -mcpu=G4 -malign-natural -maltivec -faltivec

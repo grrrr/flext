@@ -1,4 +1,4 @@
-LDFLAGS += -shared -Wl,-x 
+LDFLAGS += -Wl,-x -framework ApplicationServices -framework vecLib
 
 ifdef DEBUG
 CFLAGS += -g -D_DEBUG
@@ -36,12 +36,11 @@ CPPSRCS=$(patsubst %.cpp,$(SRCDIR)/%.cpp,$(filter %.cpp,$(SRCS)))
 COBJS=$(patsubst %.c,$(OUTPATH)/%.o,$(filter %.c,$(SRCS))) 
 CPPOBJS=$(patsubst %.cpp,$(OUTPATH)/%.opp,$(filter %.cpp,$(SRCS))) 
 
-
 # default target
 all: $(OUTPATH) $(TARGET)
 
-#$(CSRCS) $(CPPSRCS): $(patsubst %,$(SRCDIR)/%,$(HDRS))
-#	touch $@
+$(CSRCS) $(CPPSRCS): $(patsubst %,$(SRCDIR)/%,$(HDRS))
+	touch $@
 
 $(OUTPATH):
 	mkdir $(OUTPATH)
@@ -62,7 +61,7 @@ $(INSTPATH):
 install:: $(INSTPATH)
 
 install:: $(TARGET)
-	$(CP) $^ $(INSTPATH)
+	install $^ $(INSTPATH)
 
 .PHONY: clean
 clean:

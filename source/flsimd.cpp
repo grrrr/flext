@@ -37,20 +37,19 @@ WARRANTIES, see the file, "license.txt," in this distribution.
         #include <mm3dnow.h> // 3DNow!
     #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__MWERKS__) && defined(__ALTIVEC__)
    		#if FLEXT_OSAPI == FLEXT_OSAPI_MAC_MACH
-			 #include <sys/sysctl.h> 
+			#include <sys/sysctl.h> 
+			#include <vDSP.h>
     	#else
-			 #include <Gestalt.h> 
+			#include <Gestalt.h> 
    		#endif
     
 		#pragma altivec_model on
 
     	#include <altivec.h>
-//		#include <vBasicOps.h>
 		#include <vectorOps.h>
     #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__GNUG__) && defined(__ALTIVEC__)
 		#include <sys/sysctl.h> 
-//		#include <vecLib/vBasicOps.h>
-		#include <vecLib/vectorOps.h>
+		#include <vecLib/vecLib.h>
     #endif
 
 #endif // FLEXT_USE_SIMD
@@ -334,7 +333,7 @@ inline void StoreUnaligned( vector unsigned char v, vector unsigned char *where)
 	vec_st( high, 16, where );
 }
 
-inline vector float LoadUnaligned(float *v )
+inline vector float LoadUnaligned(const float *v )
 {
 	return (vector float)LoadUnaligned((vector unsigned char *)v);
 }
@@ -347,6 +346,11 @@ inline void StoreUnaligned( vector float v,float *where)
 inline bool IsVectorAligned(const void *where) 
 {
 	return reinterpret_cast<unsigned long>(where)&(sizeof(vector float)-1) == 0; 
+}
+
+inline vector float LoadValue(const float &f)
+{
+	return IsVectorAligned(&f)?vec_splat(vec_ld(0,(vector float *)&f),0):LoadUnaligned(&f);
 }
 #endif
 
@@ -479,7 +483,7 @@ loopuu:
        	while(cnt--) *(dst++) = *(src++); 
     }
     else
-#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__) && defined(__VECTOROPS__)
+#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VECTOROPS__)
     {
    	    int n = cnt>>2,n4 = n<<2;
         cnt -= n4;
@@ -558,11 +562,11 @@ loopu:
       	while(cnt--) *(dst++) = s; 
     }
     else
-#elif 0 //FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
+#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__ALTIVEC__)
     if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(dst)) {
-		vector float svec = IsVectorAligned(&s)?vec_splat(vec_ld(0,(vector float *)&s),0):LoadUnaligned(&s);
-   	    int n = cnt>>4,n4 = n<<4;
-        cnt -= n4;
+		vector float svec = LoadValue(s);
+   	    int n = cnt>>4;
+        cnt -= n<<4;
 
 		while(n--) {
 			vec_st(svec,0,dst);
@@ -688,19 +692,32 @@ loopu:
 	    while(cnt--) *(dst++) = *(src++)*op; 
     }
     else
-#elif 0 //FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
+#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VDSP__)
+    {
+		vsmul(src,1,&op,dst,1,cnt);
+	}
+#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__ALTIVEC__)
     if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(dst)) {
-		vector float opvec = IsVectorAligned(&op)?vec_splat(vec_ld(0,(vector float *)&op),0):LoadUnaligned(&op);
-		vector float addvec = (vector float)vec_splat_u32(0);
-   	    int n = cnt>>4,n4 = n<<4;
-        cnt -= n4;
+		const vector float arg = LoadValue(op);
+		const vector float zero = (vector float)(0);
+   	    int n = cnt>>4;
+        cnt -= n<<4;
 
-		while(n--) {
-			vec_st(vec_madd(vec_ld( 0,src),opvec,addvec), 0,dst);
-			vec_st(vec_madd(vec_ld(16,src),opvec,addvec),16,dst);
-			vec_st(vec_madd(vec_ld(32,src),opvec,addvec),32,dst);
-			vec_st(vec_madd(vec_ld(48,src),opvec,addvec),48,dst);
-			src += 64,dst += 64;
+		for(; n--; src += 16,dst += 16) {
+			vector float a1 = vec_ld( 0,src);
+			vector float a2 = vec_ld(16,src);
+			vector float a3 = vec_ld(32,src);
+			vector float a4 = vec_ld(48,src);
+			
+			a1 = vec_madd(a1,arg,zero);
+			a2 = vec_madd(a2,arg,zero);
+			a3 = vec_madd(a3,arg,zero);
+			a4 = vec_madd(a4,arg,zero);
+
+			vec_st(a1, 0,dst);
+			vec_st(a2,16,dst);
+			vec_st(a3,32,dst);
+			vec_st(a4,48,dst);
 		}
 
        	while(cnt--) *(dst++) = *(src++)*op; 
@@ -924,8 +941,33 @@ loopuu:
 	    while(cnt--) *(dst++) = *(src++) * *(op++); 
     }
     else
-#elif 0 // FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
-    if(GetSIMDCapabilities()&simd_sse) {
+#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VDSP__)
+    {
+		vmul(src,1,op,1,dst,1,cnt);
+	}
+#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__ALTIVEC__)
+    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(op) && IsVectorAligned(dst)) {
+	    const vector float zero = (vector float)(0);
+   	    int n = cnt>>4;
+        cnt -= n<<4;
+	   
+		for(; n--; src += 16,op += 16,dst += 16) {
+			vector float a1 = vec_ld( 0,src),b1 = vec_ld( 0,op);
+			vector float a2 = vec_ld(16,src),b2 = vec_ld(16,op);
+			vector float a3 = vec_ld(32,src),b3 = vec_ld(32,op);
+			vector float a4 = vec_ld(48,src),b4 = vec_ld(48,op);
+			
+			a1 = vec_madd(a1,b1,zero);
+			a2 = vec_madd(a2,b2,zero);
+			a3 = vec_madd(a3,b3,zero);
+			a4 = vec_madd(a4,b4,zero);
+
+			vec_st(a1, 0,dst);
+			vec_st(a2,16,dst);
+			vec_st(a3,32,dst);
+			vec_st(a4,48,dst);
+		}
+	    while(cnt--) *(dst++) = *(src++) * *(op++); 
 	}
 	else
 #endif // _MSC_VER
@@ -1054,8 +1096,30 @@ loopu:
 	    while(cnt--) *(dst++) = *(src++)+op; 
     }
     else
-#elif 0 //FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
-    if(GetSIMDCapabilities()&simd_altivec) {
+#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__ALTIVEC__)
+    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(dst)) {
+		const vector float arg = LoadValue(op);
+   	    int n = cnt>>4;
+        cnt -= n<<4;
+
+		for(; n--; src += 16,dst += 16) {
+			vector float a1 = vec_ld( 0,src);
+			vector float a2 = vec_ld(16,src);
+			vector float a3 = vec_ld(32,src);
+			vector float a4 = vec_ld(48,src);
+			
+			a1 = vec_add(a1,arg);
+			a2 = vec_add(a2,arg);
+			a3 = vec_add(a3,arg);
+			a4 = vec_add(a4,arg);
+
+			vec_st(a1, 0,dst);
+			vec_st(a2,16,dst);
+			vec_st(a3,32,dst);
+			vec_st(a4,48,dst);
+		}
+
+       	while(cnt--) *(dst++) = *(src++)+op; 
 	}
 	else
 #endif // _MSC_VER
@@ -1277,9 +1341,34 @@ void flext::AddSamples(t_sample *dst,const t_sample *src,const t_sample *op,int 
 	    while(cnt--) *(dst++) = *(src++) + *(op++); 
     }
     else
-#elif 0 //FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
+#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VDSP__)
     {
+		vadd(src,1,op,1,dst,1,cnt);
 	}
+#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__ALTIVEC__)
+    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(op) && IsVectorAligned(dst)) {
+   	    int n = cnt>>4;
+        cnt -= n<<4;
+	   
+		for(; n--; src += 16,op += 16,dst += 16) {
+			vector float a1 = vec_ld( 0,src),b1 = vec_ld( 0,op);
+			vector float a2 = vec_ld(16,src),b2 = vec_ld(16,op);
+			vector float a3 = vec_ld(32,src),b3 = vec_ld(32,op);
+			vector float a4 = vec_ld(48,src),b4 = vec_ld(48,op);
+			
+			a1 = vec_add(a1,b1);
+			a2 = vec_add(a2,b2);
+			a3 = vec_add(a3,b3);
+			a4 = vec_add(a4,b4);
+
+			vec_st(a1, 0,dst);
+			vec_st(a2,16,dst);
+			vec_st(a3,32,dst);
+			vec_st(a4,48,dst);
+		}
+	    while(cnt--) *(dst++) = *(src++) + *(op++); 
+	}
+	else
 #endif // _MSC_VER
 #endif // FLEXT_USE_SIMD
     {
@@ -1418,8 +1507,31 @@ loopu:
 	    while(cnt--) *(dst++) = *(src++)*opmul+opadd; 
     }
     else
-#elif 0 //FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
-    if(GetSIMDCapabilities()&simd_altivec) {
+#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__ALTIVEC__)
+    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(dst)) {
+		const vector float argmul = LoadValue(opmul);
+		const vector float argadd = LoadValue(opadd);
+   	    int n = cnt>>4;
+        cnt -= n<<4;
+
+		for(; n--; src += 16,dst += 16) {
+			vector float a1 = vec_ld( 0,src);
+			vector float a2 = vec_ld(16,src);
+			vector float a3 = vec_ld(32,src);
+			vector float a4 = vec_ld(48,src);
+			
+			a1 = vec_madd(a1,argmul,argadd);
+			a2 = vec_madd(a2,argmul,argadd);
+			a3 = vec_madd(a3,argmul,argadd);
+			a4 = vec_madd(a4,argmul,argadd);
+
+			vec_st(a1, 0,dst);
+			vec_st(a2,16,dst);
+			vec_st(a3,32,dst);
+			vec_st(a4,48,dst);
+		}
+
+	    while(cnt--) *(dst++) = *(src++)*opmul+opadd; 
 	}
 	else
 #endif // _MSC_VER

@@ -32,7 +32,7 @@ CFLAGS_S=-DFLEXT_SHARED -DFLEXT_EXPORTS
 LSHFLAGS= -dylib -dynamic -flat_namespace -undefined suppress
 
 # frameworks
-FRAMEWORKS=Carbon veclib
+#FRAMEWORKS=Carbon veclib
 
 
 # ----------------------------------------------

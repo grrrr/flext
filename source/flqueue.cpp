@@ -85,7 +85,7 @@ static void QWork(bool qlock,bool syslock)
 		if(!qc) break;
 
 	#ifdef FLEXT_QTHR
-		if(syslock) pd_lock();
+		if(syslock) sys_lock();
 	#endif
 
 		for(int i = 0; i < qc && qhead; ++i) {
@@ -160,7 +160,7 @@ static void QWork(bool qlock,bool syslock)
 		} // inner loop
 
 	#ifdef FLEXT_QTHR
-		if(syslock) pd_unlock();
+		if(syslock) sys_unlock();
 	#endif
 
 	} // for(;;)

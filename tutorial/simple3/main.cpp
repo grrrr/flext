@@ -25,7 +25,7 @@ class simple3:
 	FLEXT_HEADER(simple3,flext_base)
  
 public:
-	// constructor with variable argument list
+	// constructor with no arguments
 	simple3();
 
 protected:
@@ -39,7 +39,7 @@ protected:
 private:
 
 	FLEXT_CALLBACK(m_tag);  // callback for method "m_tag" (no arguments)
-	FLEXT_CALLBACK_I(m_tag_and_int);  // callback for method "m_tag" (int arguments)
+	FLEXT_CALLBACK_I(m_tag_and_int);  // callback for method "m_tag_and_int" (int arguments)
 	FLEXT_CALLBACK_S(m_sym);  // callback for method "m_sym" (with one symbol argument)
 };
 

@@ -40,7 +40,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 
-class FLEXT_EXT flext_base: 
+class FLEXT_SHARE flext_base: 
 	public flext_obj
 {
 	FLEXT_HEADER_S(flext_base,flext_obj,Setup)

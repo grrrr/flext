@@ -20,7 +20,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flstdc.h"
 #include "flsupport.h"
 
-class FLEXT_EXT flext_obj;
+class FLEXT_SHARE flext_obj;
 
 // ----------------------------------------------------------------------------
 /*! \brief The obligatory PD or Max/MSP object header
@@ -32,7 +32,7 @@ class FLEXT_EXT flext_obj;
 */
 // ----------------------------------------------------------------------------
 
-struct FLEXT_EXT flext_hdr
+struct FLEXT_SHARE flext_hdr
 {
 	/*!	\defgroup FLEXT_OBJHEADER Actual PD or Max/MSP object
 		\internal
@@ -85,7 +85,7 @@ struct FLEXT_EXT flext_hdr
 */
 // ----------------------------------------------------------------------------
 
-class FLEXT_EXT flext_obj:
+class FLEXT_SHARE flext_obj:
 	public flext
 {
     public:
@@ -113,7 +113,7 @@ class FLEXT_EXT flext_obj:
 		/*! \brief Enable/disable attribute procession (default = false)
 			\note Use that in the static class setup function (also library setup function)
 		*/
-		static void ProcessAttributes(bool attr) { process_attributes = attr; }
+		static void ProcessAttributes(bool attr); //{ process_attributes = attr; }
 
 		//! Virtual function called at creation time (but after the constructor)
 		// this also guarantees that there are no instances of flext_obj
@@ -134,7 +134,7 @@ class FLEXT_EXT flext_obj:
 	*/
 
         //! Get the object's canvas
-        t_canvas *thisCanvas() { return(m_canvas); }
+        t_canvas *thisCanvas() { return m_canvas; }
 
         //! Get the PD or Max/MSP object
 		t_sigobj *thisHdr() { return &x_obj->obj; }

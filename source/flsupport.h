@@ -17,7 +17,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "flstdc.h"
 
-class FLEXT_EXT flext_base;
+class FLEXT_SHARE flext_base;
 
 /*! \brief Flext support class
 	A number of methods (most are static functions) are defined here for convenience.
@@ -26,7 +26,7 @@ class FLEXT_EXT flext_base;
 	Examples are the overloaded memory allocation, atom and atom list functions,
 	thread functions and classes, the sample buffer class and others.
 */
-class FLEXT_EXT flext {
+class FLEXT_SHARE flext {
 
 	/*!	\defgroup FLEXT_SUPPORT Flext support class
 		@{ 
@@ -65,7 +65,7 @@ public:
 	*/
 
 	//! Class for platform independent buffer handling
-	class buffer
+	class FLEXT_SHARE buffer
 	{
 	public:
 		/*! \brief Construct buffer.
@@ -310,7 +310,7 @@ public:
 // --- atom list stuff -------------------------------------------
 
 	//! Class representing a list of atoms
-	class AtomList
+	class FLEXT_SHARE AtomList
 	{
 	public:
 		//! Construct list
@@ -370,7 +370,7 @@ public:
 
 
 	//! Class representing an "anything"
-	class AtomAnything: 
+	class FLEXT_SHARE AtomAnything: 
 		public AtomList
 	{
 	public:
@@ -584,7 +584,7 @@ public:
 	/*! \brief Thread mutex
 		\sa pthreads documentation
 	*/
-	class FLEXT_EXT ThrMutex 
+	class FLEXT_SHARE ThrMutex 
 #if FLEXT_THREADS == FLEXT_THR_POSIX
 	{
 	public:
@@ -638,7 +638,7 @@ public:
 	/*! \brief Thread conditional
 		\sa pthreads documentation
 	*/
-	class FLEXT_EXT ThrCond
+	class FLEXT_SHARE ThrCond
 #if FLEXT_THREADS == FLEXT_THR_POSIX
 		:public ThrMutex
 	{

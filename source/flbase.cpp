@@ -31,6 +31,8 @@ int flext_obj::m_holdaargc = 0;
 const t_atom *flext_obj::m_holdaargv = NULL;
 bool flext_obj::process_attributes = false;
 
+void flext_obj::ProcessAttributes(bool attr) { process_attributes = attr; }
+
 /////////////////////////////////////////////////////////
 // Constructor
 //

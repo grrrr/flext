@@ -18,7 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #undef NOPTHREAD
 
 
-class flext_sndobj:
+class FLEXT_SHARE flext_sndobj:
 	public flext_dsp
 {
 	FLEXT_HEADER(flext_sndobj,flext_dsp)

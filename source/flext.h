@@ -25,12 +25,14 @@ public:
 	flext_base();
 	virtual ~flext_base();
 	
+	// called on "help" message: should post some text
 	virtual V m_help();
 	
-#ifdef MAXMSP
+	// called on patcher load (Max/MSP only)
 	virtual V m_loadbang() {}
-	virtual V m_assist(L msg,L arg,C *s) = 0;
-#endif	
+
+	// quickhelp for inlets/outlets (Max/MSP only)
+	virtual V m_assist(L msg,L arg,C *s) {}
 
 	// class for platform independent buffer handling
 	class buffer
@@ -73,25 +75,28 @@ public:
 protected:
 
 	// inlets/outlets - all (also default) inlets must be defined
-
 	V Inlet_def() { AddInlet(xlet::tp_def,1); }
 	V Inlet_float(I m = 1) { AddInlet(xlet::tp_float,m); }
 	V Inlet_flint(I m = 1) { AddInlet(xlet::tp_flint,m); }
-	V Inlet_signal(I m = 1) { AddInlet(xlet::tp_sig,m); }
+	V Inlet_symbol(I m = 1) { AddInlet(xlet::tp_sym,m); }
 	
 	V Outlet_float(I m = 1) { AddOutlet(xlet::tp_float,m); }
 	V Outlet_flint(I m = 1) { AddOutlet(xlet::tp_flint,m); }
-	V Outlet_sym(I m = 1) { AddOutlet(xlet::tp_sym,m); }
+	V Outlet_symbol(I m = 1) { AddOutlet(xlet::tp_sym,m); }
 	V Outlet_list(I m = 1) { AddOutlet(xlet::tp_list,m); }
-	V Outlet_signal(I m = 1) { AddOutlet(xlet::tp_sig,m); }
 	
-	// must be called to actually set up the defined inlets/outlets
+	// must be called to actually set up the defined inlets/outlets 
+	// only ONCE!!!
 	BL SetupInOut(); 
 
-	// get pointer _after_wards	
-	t_outlet *Outlet(I ix) { return (out && ix < outcnt)?out[ix]:NULL; }
+	I Inlets() const { return incnt; }
+	I Outlets() const { return outcnt; }
+	I InSignals() const { return insigs; }
+	I OutSignals() const { return outsigs; }
 
-private:
+	// get pointer _after_wards	
+	t_inlet *Inlet(I ix) { return (inlets && ix < incnt)?inlets[ix]:NULL; }
+	t_outlet *Outlet(I ix) { return (outlets && ix < outcnt)?outlets[ix]:NULL; }
 
 	struct xlet {	
 		enum type {
@@ -103,14 +108,19 @@ private:
 		
 		type tp;
 		xlet *nxt;
-	} *inlist,*outlist;
+	};
 	
-	I outcnt;
-	t_outlet **out;
-	
-	V AddXlet(xlet::type tp,I mult,xlet *&root);	
 	V AddInlet(xlet::type tp,I mult) { AddXlet(tp,mult,inlist); }
 	V AddOutlet(xlet::type tp,I mult) { AddXlet(tp,mult,outlist); }
+
+private:
+
+	xlet *inlist,*outlist;
+	I incnt,outcnt,insigs,outsigs;
+	t_inlet **inlets;
+	t_outlet **outlets;
+	
+	V AddXlet(xlet::type tp,I mult,xlet *&root);	
 
 	static V cb_help(V *c);
 
@@ -133,17 +143,38 @@ class flext_dsp:
 	
 public:
 	flext_dsp();
+	~flext_dsp();
 	
-	virtual V m_dsp(t_signal **s) = 0;
+	// called on every dsp init
+	virtual V m_dsp(I n,F *const *insigs,F *const *outsigs);
+
+	// called with every signal vector
+	virtual V m_signal(I n,F *const *insigs,F *const *outsigs) = 0;
+
+	// called with "enable" message: pauses/resumes dsp
 	virtual V m_enable(BL on);
+
+	// returns current sample rate
+	F Samplerate() const { return srate; }
 	
 protected:
-	BL enable;
 
+	// add signal inlet
+	V Inlet_signal(I m = 1) { AddInlet(xlet::tp_sig,m); }
+
+	// add signal outlet
+	V Outlet_signal(I m = 1) { AddOutlet(xlet::tp_sig,m); }
+	
 private:
+
+	F srate;
+	BL enable;
 
 	static V cb_dsp(V *c,t_signal **s);
 	static V cb_enable(V *c,FI on);
+
+	static t_int *dspmeth(t_int *w); 
+	F **invecs,**outvecs;
 };
 
 

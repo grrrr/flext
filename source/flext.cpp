@@ -14,14 +14,17 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 flext_base::flext_base():
 	inlist(NULL),outlist(NULL),
-	out(NULL),outcnt(0)
+	incnt(0),outcnt(0),
+	insigs(0),outsigs(0),
+	inlets(NULL),outlets(NULL)
 {}
 
 flext_base::~flext_base()
 {
 	if(inlist) delete inlist;
 	if(outlist) delete outlist;
-	if(out) delete[] out;
+	if(inlets) delete[] inlets;
+	if(outlets) delete[] outlets;
 }
 
 flext_base::xlet::~xlet() { if(nxt) delete nxt; }
@@ -40,44 +43,58 @@ BL flext_base::SetupInOut()
 {
 	BL ok = true;
 	
+	if(inlets) { 
+		delete[] inlets; inlets = NULL; 
+		incnt = insigs = 0; 
+	}
+
 	if(inlist) {
 		xlet *xi;
-		I i,cnt = 0;
-		for(xi = inlist; xi; xi = xi->nxt) ++cnt;
-		xlet::type *list = new xlet::type[cnt];
+		incnt = 0;
+		for(xi = inlist; xi; xi = xi->nxt) ++incnt;
+		xlet::type *list = new xlet::type[incnt];
+		I i;
 		for(xi = inlist,i = 0; xi; xi = xi->nxt,++i) list[i] = xi->tp;
 		delete inlist; inlist = NULL;
 		
+		inlets = new t_inlet *[incnt];
+
 		// type info is now in list array
 #ifdef PD
 		{
 			I ix;
-			if(cnt == 0) {
+			if(incnt == 0) {
 				;
 			}
-			else if(cnt >= 1) {
+			else if(incnt >= 1) {
 				switch(list[0]) {
 					case xlet::tp_def:
 						break;
 					case xlet::tp_sig:
 						CLASS_MAINSIGNALIN(thisClass(), Obj_header, defsig);
+						++insigs;
 						break;
 					default:
 						error("%s: Leftmost inlet must be of type signal or default",thisName());
 						ok = false;
 				} 
+				inlets[0] = NULL;
 			}		
-			for(ix = 1; ix < cnt; ++ix) {
+			for(ix = 1; ix < incnt; ++ix) {
 				switch(list[ix]) {
 					case xlet::tp_float:
 					case xlet::tp_flint: {
 						C sym[] = "ft?"; 
 						sym[2] = '0'+ix;  // what if ix > 9????
-					    inlet_new(x_obj, &x_obj->ob_pd, &s_float, gensym(sym)); 
+					    inlets[ix] = inlet_new(x_obj, &x_obj->ob_pd, &s_float, gensym(sym)); 
 						break;
 					}
+					case xlet::tp_sym: 
+					    inlets[ix] = inlet_new(x_obj, &x_obj->ob_pd, &s_symbol, &s_symbol); 
+						break;
 					case xlet::tp_sig:
-	    				inlet_new(x_obj, &x_obj->ob_pd, &s_signal, &s_signal);  
+	    				inlets[ix] = inlet_new(x_obj, &x_obj->ob_pd, &s_signal, &s_signal);  
+						++insigs;
 						break;
 					default:
 						error("%s: Wrong type for inlet #%i",thisName(),ix);
@@ -87,17 +104,17 @@ BL flext_base::SetupInOut()
 		}
 #elif defined(MAXMSP)
 		{
-			I ix,sigs = 0;
+			I ix;
 			// count leftmost signal inlets
-			while(sigs < cnt && list[sigs] == xlet::tp_sig) ++sigs;
+			while(insigs < cnt && list[insigs] == xlet::tp_sig) ++insigs;
 			
-			for(ix = cnt-1; ix >= sigs; --ix) {
+			for(ix = cnt-1; ix >= insigs; --ix) {
 				switch(list[ix]) {
 					case xlet::tp_float:
-						floatin(x_obj,ix);  
+						inlets[ix] = floatin(x_obj,ix);  
 						break;
 					case xlet::tp_flint:
-						intin(x_obj,ix);  
+						inlets[ix] = intin(x_obj,ix);  
 						break;
 					case xlet::tp_sig:
 						error("%s: Signal inlets must be at the left side",thisName());
@@ -110,7 +127,7 @@ BL flext_base::SetupInOut()
 			}
 			
 			if(sigs) {
-				dsp_setup(x_obj,sigs); // signal inlets	
+				dsp_setup(x_obj,insigs); // signal inlets	
 			}
 			else {
 				if(cnt && list[0] != xlet::tp_def) {
@@ -123,7 +140,10 @@ BL flext_base::SetupInOut()
 		delete[] list;
 	}
 	
-	if(out) { delete[] out; out = NULL; outcnt = 0; }
+	if(outlets) { 
+		delete[] outlets; outlets = NULL; 
+		outcnt = outsigs = 0; 
+	}
 	
 	if(outlist) {
 		xlet *xi;
@@ -134,7 +154,7 @@ BL flext_base::SetupInOut()
 		for(xi = outlist,i = 0; xi; xi = xi->nxt,++i) list[i] = xi->tp;
 		delete outlist; outlist = NULL;
 		
-		out = new t_outlet *[outcnt];
+		outlets = new t_outlet *[outcnt];
 
 		// type info is now in list array
 #ifdef PD
@@ -145,19 +165,20 @@ BL flext_base::SetupInOut()
 		{
 			switch(list[ix]) {
 				case xlet::tp_float:
-					out[ix] = newout_float(x_obj);
+					outlets[ix] = newout_float(x_obj);
 					break;
 				case xlet::tp_flint: 
-					out[ix] = newout_flint(x_obj);
+					outlets[ix] = newout_flint(x_obj);
 					break;
 				case xlet::tp_sig:
-					out[ix] = newout_signal(x_obj);
+					outlets[ix] = newout_signal(x_obj);
+					++outsigs;
 					break;
 				case xlet::tp_sym:
-					out[ix] = newout_symbol(x_obj);
+					outlets[ix] = newout_symbol(x_obj);
 					break;
 				case xlet::tp_list:
-					out[ix] = newout_list(x_obj);
+					outlets[ix] = newout_list(x_obj);
 					break;
 				default:
 					error("%s: Wrong type for outlet #%i",thisName(),ix);
@@ -193,7 +214,7 @@ V flext_base::cb_assist(V *c,V *b,L msg,L arg,C *s) { thisObject(c)->m_assist(ms
 V flext_base::m_help()
 {
 	// This should better be overloaded
-	post("Loaded object '%s' - compiled on %s %s",thisName(),__DATE__,__TIME__);
+	post("%s (using flext) - compiled on %s %s",thisName(),__DATE__,__TIME__);
 }
 
 // -- flext_dsp --------------------------
@@ -206,9 +227,49 @@ V flext_dsp::cb_setup(t_class *c)
 	add_method1(c,cb_enable,"enable",A_FLINT);
 }
 
-flext_dsp::flext_dsp(): enable(true) {}
+flext_dsp::flext_dsp(): 
+	enable(true),
+	srate(sys_getsr()),
+	invecs(NULL),outvecs(NULL)
+{}
 
-V flext_dsp::cb_dsp(V *c,t_signal **s) { thisObject(c)->m_dsp(s); }
+
+flext_dsp::~flext_dsp()
+{
+	if(invecs) delete[] invecs;
+	if(outvecs) delete[] outvecs;
+}
+
+t_int *flext_dsp::dspmeth(t_int *w) 
+{ 
+	flext_dsp *obj = (flext_dsp *)w[1];
+	if(obj->enable) 
+		obj->m_signal((I)w[2],obj->invecs,obj->outvecs); 
+	return w+3;
+}
+
+V flext_dsp::m_dsp(I /*n*/,F *const * /*insigs*/,F *const * /*outsigs*/) {}
+
+V flext_dsp::cb_dsp(V *c,t_signal **sp) 
+{ 
+	flext_dsp *obj = thisObject(c); 
+
+	obj->srate = sp[0]->s_sr;
+
+	I i,in = obj->InSignals(),out = obj->OutSignals();
+	if(obj->invecs) delete[] obj->invecs;
+	obj->invecs = new F *[in];
+	for(i = 0; i < in; ++i) obj->invecs[i] = sp[i]->s_vec;
+
+	if(obj->outvecs) delete[] obj->outvecs;
+	obj->outvecs = new F *[out];
+	for(i = 0; i < out; ++i) obj->outvecs[i] = sp[in+i]->s_vec;
+
+	obj->m_dsp(sp[0]->s_n,obj->invecs,obj->outvecs);
+
+	dsp_add(dspmeth,2,obj,sp[0]->s_n);  
+}
+
 V flext_dsp::cb_enable(V *c,FI on) { thisObject(c)->m_enable(on != 0); }
 
 V flext_dsp::m_enable(BL en) { enable = en; }

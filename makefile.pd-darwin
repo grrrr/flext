@@ -49,7 +49,7 @@ endif
 CFLAGS+=-framework Carbon -framework veclib -Fveclib -FCarbon
 
 MAKEFILE=makefile.pd-darwin
-ifdef V4_NAMING
+ifndef V4_NAMING
 TARGET=$(TARGDIR)/lib$(NAME).a
 TARGET_D=$(TARGDIR)/lib$(NAME)_d.a
 TARGET_T=$(TARGDIR)/lib$(NAME)_t.a

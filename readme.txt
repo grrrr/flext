@@ -41,9 +41,9 @@ The package should at least compile (and is tested) with the following compilers
 
 pd - Windows:
 -------------
-o Borland C++ 5.5 (free): edit "config-pd-bcc.txt" & run "build-pd-bcc.bat" 
-
 o Microsoft Visual C++ 6: edit "config-pd-msvc.txt" & run "build-pd-msvc.bat" 
+
+o Borland C++ 5.5 (free): edit "config-pd-bcc.txt" & run "build-pd-bcc.bat" 
 
 o Cygwin: edit "config-pd-cygwin.txt" & run "sh build-pd-cygwin.sh" 
 

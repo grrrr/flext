@@ -37,7 +37,8 @@ LIBS=
 NAME=flext
 
 # all the source files from the package
-SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flsetup.cpp flutil.cpp
+SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flsetup.cpp \
+flutil.cpp flatom.cpp
 HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h flthr.h fldsp.h
 IHDRS=flinternal.h
 

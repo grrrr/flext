@@ -133,7 +133,7 @@ bool flext::buffer::Valid() const
 #if FLEXT_SYS == FLEXT_SYS_PD
 		int frames1;
 		t_sample *data1;
-		return garray_getfloatarray(arr, &frames1, &data1) != 0;
+		return arr && garray_getfloatarray(arr, &frames1, &data1) != 0;
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 		const _buffer *p = (const _buffer *)sym->s_thing;
 		return p && p->b_valid;

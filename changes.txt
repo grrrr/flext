@@ -22,6 +22,7 @@ Version history:
 - uniform STL container for all kinds of attribute, method, class handling
 - support for MinGW
 - added flext_obj::CanvasArgs
+- fixed small problem with buffer->Valid() on startup
 
 0.4.5:
 - added some more SIMD functions

@@ -266,13 +266,29 @@ return 0; \
 
 // Shortcuts for PD/Max type arguments
 #define FLEXTTYPE_void A_NULL
+#define CALLBTYPE_void void
 #define FLEXTTYPE_float A_FLOAT
+#define CALLBTYPE_float float
 #define FLEXTTYPE_t_float A_FLOAT
-#define FLEXTTYPE_t_flint A_FLINT
+#define CALLBTYPE_t_float t_float
+
+//* #define FLEXTTYPE_t_flint A_FLINT
+
+#ifdef PD
+#define FLEXTTYPE_int A_FLOAT
+#define CALLBTYPE_int float
+#else
+#define FLEXTTYPE_int A_INT
+#define CALLBTYPE_int int
+#endif
+
 #define FLEXTTYPE_t_symptr A_SYMBOL
+#define CALLBTYPE_t_symptr t_symptr
 #define FLEXTTYPE_t_ptrtype A_POINTER
+#define CALLBTYPE_t_ptrtype t_ptrtype
 
 #define FLEXTTP(TP) FLEXTTYPE_ ## TP
+#define CALLBTP(TP) CALLBTYPE_ ## TP
 
 
 #ifdef PD
@@ -287,7 +303,7 @@ return 0; \
 
 #define newobject(CLSS) pd_new(CLSS)
 
-#define ARGMEMBER_t_flint f
+//* #define ARGMEMBER_t_flint f
 
 #elif defined(MAXMSP)
 #define FLEXT_NEWFN NULL; ::setup    // extremely ugly!!! I hope Mark Danks doesn't see that......
@@ -302,11 +318,11 @@ return 0; \
 //#define IS_PD 0
 //#define IS_MAXMSP 1
 
-#define ARGMEMBER_t_flint i
+//* #define ARGMEMBER_t_flint i
 
 #endif
 
-//#define ARGMEMBER_int i
+#define ARGMEMBER_int i //*
 #define ARGMEMBER_float f
 #define ARGMEMBER_t_symptr s
 #define ARGCAST(arg,tp) arg.ARGMEMBER_##tp
@@ -377,7 +393,7 @@ void NEW_CLASS ## SETUP_FUNCTION()   	\
 // ----------------------------------------------------
 #define REAL_INST_1(LIB,NAME,NEW_CLASS, SETUP_FUNCTION, TYPE1) \
 static t_class * NEW_CLASS ## _class;    	    	    	\
-flext_hdr* class_ ## NEW_CLASS (TYPE1 arg1) \
+flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1) \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
@@ -467,7 +483,7 @@ void NEW_CLASS ## SETUP_FUNCTION()   	\
 // ----------------------------------------------------
 #define REAL_INST_2(LIB,NAME,NEW_CLASS, SETUP_FUNCTION, TYPE1, TYPE2) \
 static t_class * NEW_CLASS ## _class;    	    	    	\
-flext_hdr* class_ ## NEW_CLASS (TYPE1 arg1, TYPE2 arg2) \
+flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1, CALLBTP(TYPE2) arg2) \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
@@ -512,7 +528,7 @@ void NEW_CLASS ## SETUP_FUNCTION()   	\
 // ----------------------------------------------------
 #define REAL_INST_3(LIB,NAME,NEW_CLASS, SETUP_FUNCTION, TYPE1,TYPE2,TYPE3) \
 static t_class * NEW_CLASS ## _class;    	    	    	\
-flext_hdr* class_ ## NEW_CLASS (TYPE1 arg1,TYPE2 arg2,TYPE3 arg3) \
+flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1,CALLBTP(TYPE2) arg2,CALLBTP(TYPE3) arg3) \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
@@ -556,7 +572,7 @@ void NEW_CLASS ## SETUP_FUNCTION()   	\
 // ----------------------------------------------------
 #define REAL_INST_4(LIB,NAME,NEW_CLASS, SETUP_FUNCTION, TYPE1,TYPE2,TYPE3,TYPE4) \
 static t_class * NEW_CLASS ## _class;    	    	    	\
-flext_hdr* class_ ## NEW_CLASS (TYPE1 arg1,TYPE2 arg2,TYPE3 arg3,TYPE4 arg4) \
+flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1,CALLBTP(TYPE2) arg2,CALLBTP(TYPE3) arg3,CALLBTP(TYPE4) arg4) \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \

@@ -73,6 +73,7 @@ Version history:
 0.2.3:
 - restructured files and started usable inline documentation
 - found that there was no means to output a bang?! Ugh! -> corrected
+- eliminated awful t_flint type and all other schizophrenic flint functions (float and int exist now equally)
 
 0.2.2:
 - added xgimme argument type (supplies method handlers with symbol+gimme)

@@ -81,23 +81,25 @@ BL flext_base::setup_inout()
 					case xlet::tp_flint: {
 						C sym[] = "ft??";
 						if(ix >= 10) { 
-#ifdef MAXMSP
-							post("%s: Only 9 float inlets possible",thisName());
-#else
 							if(compatibility)
 								// Max allows max. 9 inlets
 								post("%s: Only 9 float inlets allowed in compatibility mode",thisName());
+								ok = false;
 							else 
 								sym[2] = '0'+ix/10,sym[3] = '0'+ix%10;
-#endif
 						}
 						else 
 							sym[2] = '0'+ix,sym[3] = 0;  
-					    inlet_new(x_obj, &x_obj->ob_pd, &s_float, gensym(sym)); 
+					    if(ok) inlet_new(x_obj, &x_obj->ob_pd, &s_float, gensym(sym)); 
 						break;
 					}
 					case xlet::tp_sym: 
-					    inlet_new(x_obj, &x_obj->ob_pd, &s_symbol, &s_symbol); 
+						if(compatibility) {
+							post("%s: No symbol inlets (apart from leftmost) in compatibility mode",thisName());
+							ok = false;
+						}
+					    else
+					    	inlet_new(x_obj, &x_obj->ob_pd, &s_symbol, &s_symbol); 
 						break;
 					case xlet::tp_sig:
 	    				inlet_new(x_obj, &x_obj->ob_pd, &s_signal, &s_signal);  
@@ -118,10 +120,20 @@ BL flext_base::setup_inout()
 			for(ix = incnt-1; ix >= insigs; --ix) {
 				switch(list[ix]) {
 					case xlet::tp_float:
-						floatin(x_obj,ix);  
+						if(ix >= 10) { 
+							post("%s: Only 9 float inlets possible",thisName());
+							ok = false;
+						}
+						else
+							floatin(x_obj,ix);  
 						break;
 					case xlet::tp_flint:
-						intin(x_obj,ix);  
+						if(ix >= 10) { 
+							post("%s: Only 9 flint inlets possible",thisName());
+							ok = false;
+						}
+						else
+							intin(x_obj,ix);  
 						break;
 					case xlet::tp_sig:
 						error("%s: Signal inlets must be at the left side",thisName());
@@ -205,16 +217,16 @@ V flext_base::cb_setup(t_class *c)
 {
 	add_method(c,cb_help,"help");
 	
-#ifdef MAXMSP
 	add_loadbang(c,cb_loadbang);
+#ifdef MAXMSP
 	add_assist(c,cb_assist);
 #endif
 }
 
 V flext_base::cb_help(V *c) { thisObject(c)->m_help(); }	
 
-#ifdef MAXMSP
 V flext_base::cb_loadbang(V *c) { thisObject(c)->m_loadbang(); }	
+#ifdef MAXMSP
 V flext_base::cb_assist(V *c,V * /*b*/,L msg,L arg,C *s) { thisObject(c)->m_assist(msg,arg,s); }
 #endif
 
@@ -274,7 +286,7 @@ V flext_dsp::cb_dsp(V *c,t_signal **sp)
 	obj->outvecs = new F *[out];
 	for(i = 0; i < out; ++i) obj->outvecs[i] = sp[in+i]->s_vec;
 
-	// with the following call derived classes can do some DSP setup
+	// with the following call derived classes can do their eventual DSP setup
 	obj->m_dsp(sp[0]->s_n,obj->invecs,obj->outvecs);
 
 	// set the DSP function

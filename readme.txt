@@ -39,11 +39,19 @@ for PD you need the source code (which is most likely part of the distribution)
 
 ----------------------------------------------------------------------------
 
+Features:
+- better readability of code compared to straight C externals
+- faster development, more robust coding
+- sharing of common methods, data by using base classes
+
+
+----------------------------------------------------------------------------
+
 Version history:
 
 0.1.1:
 - more emancipation from GEM code
-- renamed virtually everything
+- virtually everything renamed
 - abstraction for dsp processing
 - makefile for BCC
 - manual call of extern_setup or main unnecessary for single objects - only in pd libraries
@@ -60,7 +68,8 @@ Platform restrictions:
 - Max does not allow external libraries -> only one FLEXT_NEW* or FLEXT_TILDE_NEW* in a project 
 
 Restrictions in compatibility mode:
-- Max allows only 9 float inlets
+- Max allows only 9 float/int inlets
+- Max allows no additional symbol inlets
 
 
 

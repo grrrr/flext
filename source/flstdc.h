@@ -16,16 +16,9 @@ once drifted apart in Max and PD. It is not elegant but helps.
 #ifndef __FLSTDC_H
 #define __FLSTDC_H
 
-#define F float 
-#define D double
-#define I int
-#define L long
-#define C char
-#define BL bool
-#define V void
-
-#define BIGFLOAT 1.e10
-#define BIGLONG 0x7fffffffL
+#ifdef __cplusplus
+// namespace std {
+#endif
 
 #if !defined(PD) && !defined(MAXMSP)
 #error Either PD or MAXMSP must be defined
@@ -70,6 +63,8 @@ typedef t_float t_flint;
 #define newout_flint(clss) outlet_new(clss,&s_float)
 #define newout_list(clss) outlet_new(clss,&s_list)
 #define newout_symbol(clss) outlet_new(clss,&s_symbol)
+
+#define outlet_flint(o,v) outlet_float(o,v)
 
 
 #elif defined(MAXMSP)
@@ -125,9 +120,9 @@ typedef _outlet t_outlet;
 #define newout_list(clss) outlet_new(clss,"list")
 #define newout_symbol(clss) outlet_new(clss,"symbol")
 
-#endif
+#define outlet_flint(o,v) outlet_int(o,v)
 
-#define FI t_flint
+#endif
 
 
 #ifdef _LOG
@@ -138,12 +133,12 @@ typedef _outlet t_outlet;
 #define LOG4(s,v1,v2,v3,v4) post(s,v1,v2,v3,v4)
 #define LOG5(s,v1,v2,v3,v4,v5) post(s,v1,v2,v3,v4,v5)
 #else
-#define LOG(s) ((V)0)
-#define LOG1(s,v1) ((V)0)
-#define LOG2(s,v1,v2) ((V)0)
-#define LOG3(s,v1,v2,v3) ((V)0)
-#define LOG4(s,v1,v2,v3,v4) ((V)0)
-#define LOG5(s,v1,v2,v3,v4,v5) ((V)0)
+#define LOG(s) ((void)0)
+#define LOG1(s,v1) ((void)0)
+#define LOG2(s,v1,v2) ((void)0)
+#define LOG3(s,v1,v2,v3) ((void)0)
+#define LOG4(s,v1,v2,v3,v4) ((void)0)
+#define LOG5(s,v1,v2,v3,v4,v5) ((void)0)
 #endif
 
 
@@ -151,6 +146,11 @@ typedef _outlet t_outlet;
 #define FLEXT_EXT __declspec(dllexport)
 #else                   // other OS's
 #define FLEXT_EXT
+#endif
+
+
+#ifdef __cplusplus
+// }  // namespace std 
 #endif
 
 #endif

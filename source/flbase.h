@@ -16,11 +16,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <flstdc.h>
 
-#ifdef __GNUC__
-#include <typeinfo>
-#else
-#include <typeinfo.h>
-#endif
 
 class flext_obj;
 
@@ -129,7 +124,7 @@ class FLEXT_EXT flext_obj
         //////////
         // This is a holder - don't touch it
         static t_sigobj     *m_holder;
-        static const char *m_holdname;
+        static const char *m_holdname;  // hold object's name during construction
 
         //////////
         // The object's name in the patcher
@@ -171,6 +166,8 @@ static void cb_setup(t_class *classPtr);
 // Shortcuts for PD/Max type arguments
 #define FLEXTTYPE_F A_FLOAT
 #define FLEXTTYPE_float A_FLOAT
+#define FLEXTTYPE_FI A_FLINT
+#define FLEXTTYPE_flint A_FLINT
 #define FLEXTTYPE_t_symbol A_SYMBOL
 #define FLEXTTYPE_t_pointer A_POINTER
 
@@ -267,7 +264,7 @@ static void cb_setup(t_class *classPtr);
 #define FLEXT_CLREF(NAME,CLASS) gensym(NAME)
 #define FLEXT_MAIN(MAINNAME) MAINNAME
 #elif defined(MAXMSP)
-#define FLEXT_NEWFN NULL; ::setup
+#define FLEXT_NEWFN NULL; ::setup    // very bad!!! I hope Mark Danks doesn't see that......
 #define FLEXT_CLREF(NAME,CLASS) (t_messlist **)&(CLASS)
 #define FLEXT_MAIN(MAINNAME) main
 #endif

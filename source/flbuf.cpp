@@ -14,7 +14,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define DIRTY_INTERVAL 0   // buffer dirty check in msec
 #endif
 
-flext_base::buffer::buffer(t_symbol *bn):
+flext_base::buffer::buffer(t_symbol *bn,BL delayed):
 	sym(NULL),data(NULL),
 	chns(0),frames(0)
 {
@@ -25,7 +25,7 @@ flext_base::buffer::buffer(t_symbol *bn):
     tick = clock_new(this,(t_method)cb_tick);
 #endif
 
-	if(bn) Set(bn);
+	if(bn) Set(bn,delayed);
 }
 
 flext_base::buffer::~buffer()
@@ -35,7 +35,7 @@ flext_base::buffer::~buffer()
 #endif
 }
 
-I flext_base::buffer::Set(t_symbol *s)
+I flext_base::buffer::Set(t_symbol *s,BL nameonly)
 {
 	I ret = 0;
 
@@ -48,7 +48,7 @@ I flext_base::buffer::Set(t_symbol *s)
 
 	if(s && *s->s_name)	sym = s;
 
-	if(sym) {
+	if(sym && !nameonly) {
 #ifdef PD
 		I frames1;
 		F *data1;
@@ -63,7 +63,7 @@ I flext_base::buffer::Set(t_symbol *s)
 		}
 		else if (!garray_getfloatarray(a, &frames1, &data1))
 		{
-    		error("%s: bad template '%s'", thisName(),sym->s_name);
+    		error("buffer: bad template '%s'", sym->s_name);
     		data = NULL;
 			frames = 0;
 			ret = -1;
@@ -79,7 +79,7 @@ I flext_base::buffer::Set(t_symbol *s)
 			const _buffer *p = (const _buffer *)sym->s_thing;
 			
 			if(NOGOOD(p)) {
-				post("%s: buffer object '%s' no good",thisName(),sym->s_name);
+				post("buffer: buffer object '%s' no good",sym->s_name);
 				ret = -1;
 			}
 			else {
@@ -92,7 +92,7 @@ I flext_base::buffer::Set(t_symbol *s)
 			}
 		}
 		else {
-    		error("%s: symbol '%s' not defined",thisName(), sym->s_name);
+    		error("buffer: symbol '%s' not defined", sym->s_name);
 			ret = -1;
 		}
 #endif
@@ -117,14 +117,14 @@ V flext_base::buffer::Dirty(BL force)
 			_buffer *p = (_buffer *)sym->s_thing;
 			
 			if(NOGOOD(p)) {
-				post("%s: buffer object '%s' no good",thisName(),sym->s_name);
+				post("buffer: buffer object '%s' no good",sym->s_name);
 			}
 			else {
 				p->b_modtime = gettime();
 			}
 		}
 		else {
-    		error("%s: symbol '%s' not defined",thisName(),sym->s_name);
+    		error("buffer: symbol '%s' not defined",sym->s_name);
 		}
 #endif 
 	}

@@ -21,7 +21,7 @@ CXXFLAGS  = @CXXFLAGS@ \
 LDFLAGS = @LDFLAGS@ \
 	$(patsubst %,-framework %,$(FRAMEWORKS))
 
-LIBS = @LIBS@ -lflext
+LIBS = @LIBS@ -lflext-pd
 
 FRAMEWORKS = @FRAMEWORKS@
 

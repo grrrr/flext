@@ -321,7 +321,7 @@ void TableAnyMap::clear()
 int TableAnyMap::size() const 
 {
     int sz = n;
-    if(sz >= max) {
+    if(sz >= tsize) {
         if(left) sz += left->size();
         if(right) sz += right->size();
     }
@@ -332,14 +332,14 @@ void TableAnyMap::_set(size_t k,void *t)
 {
     FLEXT_ASSERT(n);
 
-    if(n < max) {
+    if(n < tsize) {
         // fall through
     }
     else if(k < data[0].key) {
         _toleft(k,t);
         return;
     }
-    else if(k > data[max-1].key) {
+    else if(k > data[tsize-1].key) {
         _toright(k,t);
         return;
     }
@@ -379,8 +379,8 @@ void TableAnyMap::_set(size_t k,void *t)
     else {
         // insert new slot by shifting the higher ones
         FLEXT_ASSERT(k < dk);
-        if(n == max)
-            _toright(data[max-1]);
+        if(n == tsize)
+            _toright(data[tsize-1]);
         else
             ++n;
 
@@ -393,7 +393,7 @@ void TableAnyMap::_set(size_t k,void *t)
 void *TableAnyMap::_find(size_t k) 
 {
     FLEXT_ASSERT(n);
-    if(n < max) {
+    if(n < tsize) {
         // fall through
     }
     else if(k < data[0].key)

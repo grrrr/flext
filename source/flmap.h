@@ -94,8 +94,8 @@ protected:
         void *value;
     };
 
-    TableAnyMap(TableAnyMap *p,int mx,Data *dt,bool o)
-        : owned(o),max(mx),data(dt)
+    TableAnyMap(TableAnyMap *p,int sz,Data *dt,bool o)
+        : owned(o),tsize(sz),data(dt)
         , n(0),parent(p),left(NULL),right(NULL) 
     {}
 
@@ -143,7 +143,7 @@ protected:
     void *_find(size_t k);
 
     const bool owned;
-    const int max;
+    const int tsize;
     Data *const data;
     int n;
     TableAnyMap *parent,*left,*right;

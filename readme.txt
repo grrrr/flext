@@ -75,7 +75,7 @@ Version history:
 - added threaded methods along with a message queue for ToOut* functions
 - check/update function for buffer change (resize etc.)
 - description text for inlets/outlets (e.g. for MaxMSPs assist function)
-- added buffer resize (to be implemented for MaxMSP!)
+- added buffer resize functions flext_base::buffer::Frames(int,bool)
 - added some utility functions: Sleep, CopyAtom, CopyList
 - added List manipulation classes: AtomList, AtomAnything
 - Alias object names (simply specify with FLEXT_NEW*, separated by whitespace)
@@ -175,12 +175,14 @@ general:
 
 bugs:
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)
-- hard thread termination upon object destruction doesn't seem to work properly
+- hard thread termination upon object destruction doesn't seem to work properly -> crash
+- Max rounding bug (at least version 4.0.5) ... buffer resize could be one sample less!
 
 tests:
 - PD: figure out what "pointer" messages do and where they occur
 - some more mutexes needed for thread safety?
 - test alias names with MaxMSP
+- buffer resize: flext_base::buffer::Frames(): should we use buffer or system sample rate?
 
 features:
 - abstraction for parsing argument lists

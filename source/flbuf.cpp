@@ -149,9 +149,38 @@ bool flext_base::buffer::Update()
 void flext_base::buffer::Frames(int fr,bool keep)
 {
 #ifdef PD
-	garray_resize(arr,(float)fr);
+	::garray_resize(arr,(float)fr);
+	Update();
 #else
-#pragma message ("flext - Buffer resize not implemented!")
+	t_sample *tmp = NULL;
+	int sz = frames;
+	if(fr < sz) sz = fr;
+
+	if(keep) {
+		// copy buffer data to tmp storage
+		tmp = new t_sample[sz];
+		if(tmp)
+			BlockMoveData(data,tmp,sizeof(t_sample)*sz);
+		else
+			error("flext::buffer - not enough memory for keeping buffer~ contents");
+	}
+	
+	t_atom msg;
+	_buffer *buf = (_buffer *)sym->s_thing;
+	// b_msr reflects buffer sample rate... is this what we want?
+	// Max bug: adding 0.small value 0.001 to get right sample count
+	float ms = fr/buf->b_msr+0.001;
+	
+	SetFloat(msg,ms); 
+	::typedmess((object *)buf,gensym("size"),1,&msg);
+	
+	Update();
+
+	if(tmp) {
+		// copy data back
+		BlockMoveData(tmp,data,sizeof(t_sample)*sz);
+		delete[] tmp;
+	}
 #endif
 }
 

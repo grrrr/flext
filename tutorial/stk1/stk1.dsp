@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "..\..\source" /I "f:\prog\packs\sndobj\include" /I "f:\prog\packs\stk\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "PD" /D "FLEXT_THREADS" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "..\..\source" /I "f:\prog\audio\stk\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "PD" /D "FLEXT_THREADS" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0xc07 /d "NDEBUG"
@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib pd.lib pthreadVC.lib flext_t-pdwin.lib stk.lib /nologo /dll /machine:I386 /out:"../pd-msvc/stk1~.dll" /libpath:"..\..\pd-msvc" /libpath:"f:\prog\packs\stk\lib"
+# ADD LINK32 kernel32.lib user32.lib pd.lib pthreadVC.lib flext_t-pdwin.lib stk.lib /nologo /dll /machine:I386 /out:"../pd-msvc/stk1~.dll" /libpath:"..\..\pd-msvc" /libpath:"f:\prog\audio\stk\lib"
 
 !ELSEIF  "$(CFG)" == "stk1 - Win32 Debug"
 
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "..\..\source" /I "f:\prog\packs\sndobj\include" /I "f:\prog\packs\stk\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "PD" /D "FLEXT_THREADS" /Fr /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "..\..\source" /I "f:\prog\audio\stk\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "PD" /D "FLEXT_THREADS" /Fr /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0xc07 /d "_DEBUG"
@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib pd.lib pthreadVC.lib flext_td-pdwin.lib stk_d.lib /nologo /dll /debug /machine:I386 /out:"msvc-debug/stk1~.dll" /pdbtype:sept /libpath:"..\..\pd-msvc" /libpath:"f:\prog\packs\stk\lib"
+# ADD LINK32 kernel32.lib user32.lib pd.lib pthreadVC.lib flext_td-pdwin.lib stk_d.lib /nologo /dll /debug /machine:I386 /out:"msvc-debug/stk1~.dll" /pdbtype:sept /libpath:"..\..\pd-msvc" /libpath:"f:\prog\audio\stk\lib"
 
 !ENDIF 
 

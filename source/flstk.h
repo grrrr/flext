@@ -38,11 +38,16 @@ protected:
 	public:
 		Input(const t_sample *b,int vecsz);
 
-		MY_FLOAT lastOut() const { return (MY_FLOAT)buf[index]; }
-		MY_FLOAT tick();
+		inline MY_FLOAT lastOut() const { return (MY_FLOAT)buf[index]; }
+
+		inline MY_FLOAT tick() { 
+	        if(++index >= vecsz) index = 0; 
+	        return lastOut(); 
+        }
+
 		MY_FLOAT *tick(MY_FLOAT *vector,unsigned int vectorSize);
 
-		void SetBuf(const t_sample *b) { buf = b; }
+		inline void SetBuf(const t_sample *b) { buf = b; }
 
 	private:
 		const t_sample *buf;
@@ -56,10 +61,14 @@ protected:
 	public:
 		Output(t_sample *b,int vecsz);
 
-		void tick(MY_FLOAT sample);
+        inline void tick(MY_FLOAT s) { 
+            buf[index] = (t_sample)s; 
+            if(++index >= vecsz) index = 0; 
+        }
+
 		void tick(const MY_FLOAT *vector,unsigned int vectorSize);
 
-		void SetBuf(t_sample *b) { buf = b; }
+		inline void SetBuf(t_sample *b) { buf = b; }
 
 	private:
 		t_sample *buf;

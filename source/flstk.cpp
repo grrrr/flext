@@ -95,12 +95,6 @@ flext_stk::Input::Input(const t_sample *b,int v):
 	index(0)
 {}
 
-MY_FLOAT flext_stk::Input::tick() 
-{ 
-	if(++index >= vecsz) index = 0; 
-	return lastOut(); 
-}
-
 MY_FLOAT *flext_stk::Input::tick(MY_FLOAT *vector,unsigned int vectorSize)
 {
 	for(unsigned int i = 0; i < vectorSize; i++) vector[i] = tick();
@@ -114,12 +108,6 @@ flext_stk::Output::Output(t_sample *b,int v):
 	buf(b),vecsz(v),
 	index(0)
 {}
-
-void flext_stk::Output::tick(MY_FLOAT s) 
-{ 
-	buf[index] = (t_sample)s;
-	if(++index >= vecsz) index = 0; 
-}
 
 void flext_stk::Output::tick(const MY_FLOAT *vector,unsigned int vectorSize)
 {

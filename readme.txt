@@ -29,7 +29,10 @@ o if you choose to compile with STK support you will need the respective package
 
 ----------------------------------------------------------------------------
 
-The package should at least compile (and is tested) with the following compilers:
+
+BUILDING & INSTALLING:
+======================
+
 
 pd - Windows:
 -------------
@@ -61,20 +64,21 @@ With your project using flext, be sure to define "FLEXT_SYS=2".
 
 Max/MSP - MacOS 9:
 ------------------
-o Metrowerks CodeWarrior V6: edit & use the "flext.cw" project file
+o Metrowerks CodeWarrior: edit & use the "flext.cw" project file
 
 You must have the following "Source Trees" defined:
 "flext" - Pointing to the flext main directory
 "Cycling74" - Pointing to the Cycling 74 SDK
+"MP SDK" - Pointing to the Multiprocessing SDK (for threading support)
 
 
 With your project using flext, be sure to define "FLEXT_SYS=1" 
-- alternatively use the prefix file "flcwmax.h"
+- alternatively use the prefix file "flcwmax.h" or "flcwmax-thr.h" for threading support.
 
 
 Max/MSP - MacOSX:
 ------------------
-o Metrowerks CodeWarrior V6: edit & use the "flext.cw" project file
+o Metrowerks CodeWarrior: edit & use the "flext.cw" project file
 
 You must have the following "Source Trees" defined:
 "OS X Volume" - Pointing to your OSX boot drive

@@ -47,7 +47,7 @@ Currently, flext supports
 <ul>
 <li>PD on Windows with Microsoft Visual C++, Borland C++ and gcc(cygwin) compilers
 <li>PD on Linux with gcc
-<li>PD on Mac OSX with gcc (Project Builder to follow soon)
+<li>PD on Mac OSX with gcc (makefile or Project Builder)
 <li>Max/MSP on Mac OS9 and OSX with Metrowerks CodeWarrior
 </ul>
 

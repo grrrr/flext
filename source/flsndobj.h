@@ -29,7 +29,7 @@ public:
 	flext_sndobj();
 
 	// these have to be overridden in child classes
-	virtual void NewObjs() {}
+	virtual bool NewObjs() { return true; }
 	virtual void FreeObjs() {}
 	virtual void ProcessObjs() {}
 

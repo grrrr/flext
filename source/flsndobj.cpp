@@ -37,14 +37,16 @@ void flext_sndobj::ClearObjs()
 	FreeObjs();
 
 	if(inobj) {
-		for(int i = 0; i < inobjs; ++i) { delete inobj[i]; delete tmpobj[i]; }
+		for(int i = 0; i < inobjs; ++i) delete inobj[i]; 
 		delete[] inobj; inobj = NULL; 
+	}
+	if(tmpobj) {
+		for(int i = 0; i < inobjs; ++i) delete tmpobj[i];
 		delete[] tmpobj; tmpobj = NULL;
-		inobjs = 0;
 	}
 	if(outobj) {
 		for(int i = 0; i < outobjs; ++i) delete outobj[i];
-		delete[] outobj; outobj = NULL; outobjs = 0;
+		delete[] outobj; outobj = NULL; 
 	}
 }
 
@@ -62,16 +64,20 @@ void flext_sndobj::m_dsp(int n,t_sample *const *in,t_sample *const *out)
 		smprt = Samplerate();
 
 		// set up sndobjs for inlets and outlets
-		inobj = new Inlet *[inobjs];
-		tmpobj = new SndObj *[inobjs];
-		for(i = 0; i < inobjs; ++i) {
-			inobj[i] = new Inlet(in[i],blsz,smprt);
-			tmpobj[i] = new SndObj(NULL,blsz,smprt);
+		if(inobjs) {
+			inobj = new Inlet *[inobjs];
+			tmpobj = new SndObj *[inobjs];
+			for(i = 0; i < inobjs; ++i) {
+				inobj[i] = new Inlet(in[i],blsz,smprt);
+				tmpobj[i] = new SndObj(NULL,blsz,smprt);
+			}
 		}
-		outobj = new Outlet *[outobjs];
-		for(i = 0; i < outobjs; ++i) outobj[i] = new Outlet(out[i],blsz,smprt);
+		if(outobjs) {
+			outobj = new Outlet *[outobjs];
+			for(i = 0; i < outobjs; ++i) outobj[i] = new Outlet(out[i],blsz,smprt);
+		}
 
-		NewObjs();
+		if(!NewObjs()) ClearObjs();
 	}
 	else {
 		// assign changed input/output vectors

@@ -17,37 +17,31 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 class FLEXT_SHARE flext_stk:
 	public flext_dsp
-{
+{ 
 	FLEXT_HEADER(flext_stk,flext_dsp)
  
 public:
 	flext_stk();
 
 	// these have to be overridden in child classes
-	virtual void NewObjs() {}
+	virtual bool NewObjs() { return true; }
 	virtual void FreeObjs() {}
-	virtual void ProcessObjs() {}
+	virtual void ProcessObjs(int blocksize) {}
 
 protected:
 	virtual bool Init();
 	virtual void Exit();
 
-	virtual void m_dsp(int n,t_sample *const *in,t_sample *const *out); 
-	virtual void m_signal(int n,t_sample *const *in,t_sample *const *out); 
-
-private:
 	//! STK object for reading from inlet buffer
-	class Inlet:
+	class Input:
 		public Stk
 	{
 	public:
-		Inlet(const t_sample *b,int vecsz);
+		Input(const t_sample *b,int vecsz);
 
-		const t_sample *lastFrame() const { return buf+index; }
-		t_sample lastOut() const { return buf[index]; }
-
-		t_sample tick();
-		t_sample *tick(t_sample *vector,unsigned int vectorSize);
+		MY_FLOAT lastOut() const { return (MY_FLOAT)buf[index]; }
+		MY_FLOAT tick();
+		MY_FLOAT *tick(MY_FLOAT *vector,unsigned int vectorSize);
 
 		void SetBuf(const t_sample *b) { buf = b; }
 
@@ -57,14 +51,14 @@ private:
 	};
 
 	//! STK object for writing to outlet buffer
-	class Outlet:
+	class Output:
 		public Stk
 	{
 	public:
-		Outlet(t_sample *b,int vecsz);
+		Output(t_sample *b,int vecsz);
 
-		void tick(t_sample sample);
-		void tick(const t_sample *vector,unsigned int vectorSize);
+		void tick(MY_FLOAT sample);
+		void tick(const MY_FLOAT *vector,unsigned int vectorSize);
 
 		void SetBuf(t_sample *b) { buf = b; }
 
@@ -73,11 +67,18 @@ private:
 		int vecsz,index;
 	};
 
+	Input &Inlet(int ix) { return *inobj[ix]; }
+	Output &Outlet(int ix) { return *outobj[ix]; }
+
+private:
+	virtual void m_dsp(int n,t_sample *const *in,t_sample *const *out); 
+	virtual void m_signal(int n,t_sample *const *in,t_sample *const *out); 
+
 	void ClearObjs();
 
 	int inobjs,outobjs;
-	Inlet **inobj;
-	Outlet **outobj;
+	Input **inobj;
+	Output **outobj;
 
 	float smprt;
 	int blsz;

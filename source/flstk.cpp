@@ -37,11 +37,11 @@ void flext_stk::ClearObjs()
 
 	if(inobj) {
 		for(int i = 0; i < inobjs; ++i) delete inobj[i]; 
-		delete[] inobj; inobj = NULL; inobjs = 0;
+		delete[] inobj; inobj = NULL;
 	}
 	if(outobj) {
 		for(int i = 0; i < outobjs; ++i) delete outobj[i];
-		delete[] outobj; outobj = NULL; outobjs = 0;
+		delete[] outobj; outobj = NULL;
 	}
 }
 
@@ -61,14 +61,18 @@ void flext_stk::m_dsp(int n,t_sample *const *in,t_sample *const *out)
 		Stk::setSampleRate(smprt); 
 
 		// set up sndobjs for inlets and outlets
-		inobj = new Inlet *[inobjs];
-		for(i = 0; i < inobjs; ++i) {
-			inobj[i] = new Inlet(in[i],blsz);
+		if(inobjs) {
+			inobj = new Input *[inobjs];
+			for(i = 0; i < inobjs; ++i)
+				inobj[i] = new Input(in[i],blsz);
 		}
-		outobj = new Outlet *[outobjs];
-		for(i = 0; i < outobjs; ++i) outobj[i] = new Outlet(out[i],blsz);
+		if(outobjs) {
+			outobj = new Output *[outobjs];
+			for(i = 0; i < outobjs; ++i) 
+				outobj[i] = new Output(out[i],blsz);
+		}
 
-		NewObjs();
+		if(!NewObjs()) ClearObjs();
 	}
 	else {
 		// assign changed input/output vectors
@@ -80,24 +84,24 @@ void flext_stk::m_dsp(int n,t_sample *const *in,t_sample *const *out)
 
 void flext_stk::m_signal(int n,t_sample *const *in,t_sample *const *out)
 {
-	ProcessObjs();
+	if(inobjs || outobjs) ProcessObjs(blsz);
 }
 
 
 // inlet class
 
-flext_stk::Inlet::Inlet(const t_sample *b,int v): 
+flext_stk::Input::Input(const t_sample *b,int v): 
 	buf(b),vecsz(v),
 	index(0)
 {}
 
-t_sample flext_stk::Inlet::tick() 
+MY_FLOAT flext_stk::Input::tick() 
 { 
 	if(++index >= vecsz) index = 0; 
 	return lastOut(); 
 }
 
-t_sample *flext_stk::Inlet::tick(t_sample *vector,unsigned int vectorSize)
+MY_FLOAT *flext_stk::Input::tick(MY_FLOAT *vector,unsigned int vectorSize)
 {
 	for(unsigned int i = 0; i < vectorSize; i++) vector[i] = tick();
 	return vector;
@@ -106,18 +110,18 @@ t_sample *flext_stk::Inlet::tick(t_sample *vector,unsigned int vectorSize)
 
 // outlet class
 
-flext_stk::Outlet::Outlet(t_sample *b,int v): 
+flext_stk::Output::Output(t_sample *b,int v): 
 	buf(b),vecsz(v),
 	index(0)
 {}
 
-void flext_stk::Outlet::tick(t_sample s) 
+void flext_stk::Output::tick(MY_FLOAT s) 
 { 
-	buf[index] = s;
+	buf[index] = (t_sample)s;
 	if(++index >= vecsz) index = 0; 
 }
 
-void flext_stk::Outlet::tick(const t_sample *vector,unsigned int vectorSize)
+void flext_stk::Output::tick(const MY_FLOAT *vector,unsigned int vectorSize)
 {
 	for(unsigned int i = 0; i < vectorSize; i++) tick(vector[i]);
 }

@@ -1,0 +1,19 @@
+#N canvas 405 36 596 404 12;
+#X obj 68 266 dac~;
+#X obj 15 8 cnv 15 550 40 empty empty stk2 10 22 0 24 -260818 -1 0
+;
+#X text 175 28 http://www.parasitaere-kapazitaeten.net;
+#X text 193 140 adjust the volume;
+#X obj 194 123 hsl 128 15 0.01 1 1 0 empty empty empty -2 -6 0 8 -261681
+-1 -1 0 1;
+#X obj 68 174 *~ 0.3;
+#X text 175 8 flext tutorial \, (C)2002-2003 Thomas Grill;
+#X obj 68 126 stk2~;
+#X obj 125 174 *~ 0.3;
+#X obj 68 68 osc~ 440;
+#X connect 4 0 5 1;
+#X connect 5 0 0 0;
+#X connect 7 0 5 0;
+#X connect 7 1 8 0;
+#X connect 8 0 0 1;
+#X connect 9 0 7 0;

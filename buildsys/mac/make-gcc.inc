@@ -1,6 +1,14 @@
-LDFLAGS += -Wl,-x -framework ApplicationServices -framework vecLib
+ifndef FLEXTBUILD
+INCPATH += -I$(FLEXTPATH)
+LIBPATH += -L$(FLEXTPATH)
+LIBS+=$(FLEXTPATH)/$(FLEXTNAME).a
+endif
 
-ifdef DEBUG
+LDFLAGS += -Wl,-x -framework ApplicationServices -framework vecLib -dynamiclib -dynamic
+
+##############################################
+
+ifndef DEBUG
 CFLAGS += -g -D_DEBUG
 else
 CFLAGS += $(OFLAGS) -DNDEBUG
@@ -9,60 +17,86 @@ endif
 
 ##############################################
 
-INCPATH += -I$(FLEXTPATH)
-LIBPATH += -L$(FLEXTPATH)
+ifdef FLEXTBUILD
+OUTNAME=$(FLEXTNAME)
 
 ifdef SHARED
-# --- shared ---
-DEFS += -DFLEXT_SHARED
+EXT=dylib
+else
+EXT=a
+BUILDLIB=1
+endif
 
 else
-ifdef THREADED
-# --- static multi-threaded ---
-DEFS += -DFLEXT_THREADS
-
-else 
-# --- static single-threaded ---
-
-endif
+OUTNAME=$(NAME)
 endif
 
 ##############################################
 
-TARGET=$(OUTPATH)/$(NAME).$(EXT)
+OBJPATH=$(OUTPATH)/$(OUTSUB)
+
+ifdef FLEXTBUILD
+TARGETPATH=$(OBJPATH)
+TARGET=$(TARGETPATH)/$(OUTNAME).$(EXT)
+else
+TARGETPATH=$(OBJPATH)/$(OUTNAME).$(EXT)/Contents/MacOS
+TARGET=$(TARGETPATH)/$(OUTNAME)
+endif
+
+##############################################
 
 CSRCS=$(patsubst %.c,$(SRCDIR)/%.c,$(filter %.c,$(SRCS)))
 CPPSRCS=$(patsubst %.cpp,$(SRCDIR)/%.cpp,$(filter %.cpp,$(SRCS)))
-COBJS=$(patsubst %.c,$(OUTPATH)/%.o,$(filter %.c,$(SRCS))) 
-CPPOBJS=$(patsubst %.cpp,$(OUTPATH)/%.opp,$(filter %.cpp,$(SRCS))) 
+COBJS=$(patsubst %.c,$(OBJPATH)/%.o,$(filter %.c,$(SRCS))) 
+CPPOBJS=$(patsubst %.cpp,$(OBJPATH)/%.opp,$(filter %.cpp,$(SRCS))) 
 
 # default target
-all: $(OUTPATH) $(TARGET)
+_all_: $(TARGET)
 
 $(CSRCS) $(CPPSRCS): $(patsubst %,$(SRCDIR)/%,$(HDRS))
 	touch $@
 
-$(OUTPATH):
-	mkdir $(OUTPATH)
+$(OBJPATH):
+	-mkdir -p $@
 
-$(OUTPATH)/%.opp : $(SRCDIR)/%.cpp
+$(TARGETPATH):
+	-mkdir -p $@
+
+$(OBJPATH)/%.opp : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
 
-$(OUTPATH)/%.o : $(SRCDIR)/%.c
+$(OBJPATH)/%.o : $(SRCDIR)/%.c
 	$(CC) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
 
-$(TARGET) : $(COBJS) $(CPPOBJS)
-	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $^ $(LIBS)
+$(TARGET) :: $(OBJPATH) $(TARGETPATH)
+
+$(TARGET) :: $(COBJS) $(CPPOBJS)
+ifdef BUILDLIB
+	libtool -static -o $@ $(COBJS) $(CPPOBJS)
+else
+#	$(CXX) $(LDFLAGS) $(LIBPATH) -dylib_install_name $(INSTPATH)/$(notdir $@) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
+	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
 	chmod 755 $@
+endif
+
+##############################################
+
+_clean_:
+	rm $(COBJS) $(CPPOBJS) $(TARGET)
+
+##############################################
 
 $(INSTPATH):
-	mkdir $(INSTPATH)
+	-mkdir -p $@
 
-install:: $(INSTPATH)
+$(FLEXTPATH):
+	-mkdir -p $@
 
-install:: $(TARGET)
-	install $^ $(INSTPATH)
+_install_:: $(INSTPATH) $(FLEXTPATH)
 
-.PHONY: clean
-clean:
-	$(RM) $(COBJS) $(CPPOBJS) $(TARGET)
+_install_:: $(TARGET)
+ifdef FLEXTBUILD
+	cp $(TARGET) $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTPATH)
+else
+	install $(TARGET) $(INSTPATH)
+endif

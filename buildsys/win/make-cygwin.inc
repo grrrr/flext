@@ -50,8 +50,7 @@ $(CSRCS) $(CPPSRCS): $(patsubst %,$(SRCDIR)/%,$(HDRS))
 	touch $@
 
 $(TARGETPATH):
-	-mkdir $(OUTPATH)
-	-mkdir $@
+	-mkdir -p $@
 
 $(TARGETPATH)/%.opp : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
@@ -77,10 +76,10 @@ _clean_:
 ##############################################
 
 $(INSTPATH):
-	-mkdir $@
+	-mkdir -p $@
 
 $(FLEXTPATH):
-	-mkdir $@
+	-mkdir -p $@
 
 _install_:: $(INSTPATH) $(FLEXTPATH)
 

@@ -1,0 +1,16 @@
+# where are the Max/MSP SDK header files?
+# you should have the latest version!
+MAXSDKPATH=/Volumes/Daten/Prog/MaxMSP-SDK/4.5\ headers/c74support
+
+# where should the external be installed?
+INSTPATH=/Library/Application\ Support/Cycling\ \'74/externals
+
+# where do the flext headers and libraries reside?
+FLEXTPATH=/Library/Application\ Support/Cycling\ \'74/flext
+
+# where should the external be built?
+OUTPATH=max-darwin
+
+# user defined compiler flags
+# (check if they match your system!)
+OFLAGS=-O2 -mcpu=G4 -malign-natural -maltivec -faltivec

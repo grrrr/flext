@@ -2,7 +2,7 @@
 PDPATH=/Applications/Pd-0.38-0test10.app/Contents/Resources
 
 # where is the PD executable?
-PDBIN=/usr/local/bin/pd
+PDBIN=$(PDPATH)/bin/pd
 
 # where should the external be installed?
 INSTPATH=$(PDPATH)/extra

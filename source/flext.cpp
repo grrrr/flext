@@ -290,6 +290,7 @@ bool flext_base::SetupInOut()
 #if 1
 				switch(list[0]) {
 					case xlet::tp_sig:
+						CLASS_MAINSIGNALIN(thisClass(),flext_hdr,defsig);
 						++insigs; ++cnt;
 						break;
 					default:

@@ -21,7 +21,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 void flext_dsp::Setup(t_class *c)
 {
 #ifdef PD
-	CLASS_MAINSIGNALIN(c,flext_hdr,defsig);
+//	CLASS_MAINSIGNALIN(c,flext_hdr,defsig);
 #elif defined(MAXMSP)
 //	dsp_initclass();
 	dsp_initboxclass();

@@ -79,6 +79,7 @@ see flext.h, fldefs.h and flclass.h for the documented base definitions and clas
 Version history:
 
 0.3.3:
+- PD: fixed bug for DSP objects having no signal inlets
 - revisited priority stuff for detached threads
 - Bind/unbind functions for flext classes (in MaxMSP only one object can be bound)
 - Made "t_symtype" another synonym for "t_symbol *"

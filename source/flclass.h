@@ -83,12 +83,10 @@ public:
 	/*!	\brief Called for every incoming message.
 		All method handling is done in there
 		\return True if a handler was found and called
-		\todo Once, there should be a const modifier for argv
 	*/
 	virtual bool m_methodmain(int inlet,const t_symbol *s,int argc,const t_atom *argv);
 
 	/*! \brief Called for every unhandled message (by m_methodmain)
-		\todo Once, there should be a const modifier for argv
 	*/
 	virtual bool m_method_(int inlet,const t_symbol *s,int argc,const t_atom *argv);
 
@@ -411,8 +409,15 @@ public:
 	bool Unbind(const char *c) { return Unbind(MakeSymbol(c)); }  
 #endif
 
-	bool BindMethod(const t_symbol *s,bool (*m)(flext_base *,t_symbol *s,int,t_atom *));
+    //! Bind a method to a symbol
+	bool BindMethod(const t_symbol *s,bool (*m)(flext_base *,t_symbol *s,int argc,t_atom *argv,void *data),void *data = NULL);
+    //! Unbind a method from a symbol
 	bool UnbindMethod(const t_symbol *s);
+
+    //! Bind a method to a symbol (as string)
+    bool BindMethod(const char *c,bool (*m)(flext_base *,t_symbol *s,int argc,t_atom *argv,void *data),void *data = NULL) { return BindMethod(MakeSymbol(c),m,data); }
+    //! Unbind a method from a symbol (as string)
+    bool UnbindMethod(const char *c) { return UnbindMethod(MakeSymbol(c)); }
 
 //!		@} FLEXT_C_BIND
 
@@ -607,10 +612,10 @@ public:
 	class binditem:
 		public item { 
 	public:
-		binditem(int inlet,const t_symbol *sym,bool (*f)(flext_base *,t_symbol *s,int,t_atom *),pxbnd_object *px);
+		binditem(int inlet,const t_symbol *sym,bool (*f)(flext_base *,t_symbol *s,int,t_atom *,void *),pxbnd_object *px);
 		~binditem();
 		
-		bool (*fun)(flext_base *,t_symbol *s,int,t_atom *);
+		bool (*fun)(flext_base *,t_symbol *s,int,t_atom *,void *);
         pxbnd_object *px;
 	};
 	
@@ -763,8 +768,9 @@ private:
 		t_object obj;			// MUST reside at memory offset 0
 		flext_base *base;
 		binditem *item;
+        void *data;
 
-		void init(flext_base *b,binditem *it) { base = b; item = it; }
+		void init(flext_base *b,binditem *it,void *d) { base = b; item = it; data = d; }
 		static void px_method(pxbnd_object *c,const t_symbol *s,int argc,t_atom *argv);
 	};
 		

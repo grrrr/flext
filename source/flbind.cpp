@@ -18,12 +18,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 t_class *flext_base::pxbnd_class = NULL;
 
-flext_base::binditem::binditem(int in,const t_symbol *sym,bool (*f)(flext_base *,t_symbol *s,int,t_atom *),pxbnd_object *p):
+flext_base::binditem::binditem(int in,const t_symbol *sym,bool (*f)(flext_base *,t_symbol *s,int,t_atom *,void *data),pxbnd_object *p):
 	item(sym,0,NULL),fun(f),px(p)
 {}
 
 
-bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbol *s,int,t_atom *))
+bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbol *s,int argc,t_atom *argv,void *data),void *data)
 {
     if(!bindhead) 
         bindhead = new itemarr;
@@ -43,7 +43,7 @@ bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbo
 	    binditem *mi = new binditem(0,sym,fun,px);
 	    bindhead->Add(mi);
 
-        px->init(this,mi);
+        px->init(this,mi,data);
 
 #if FLEXT_SYS == FLEXT_SYS_PD
     	pd_bind(&px->obj.ob_pd,const_cast<t_symbol *>(sym)); 
@@ -91,5 +91,5 @@ bool flext_base::UnbindMethod(const t_symbol *sym)
 
 void flext_base::pxbnd_object::px_method(pxbnd_object *c,const t_symbol *s,int argc,t_atom *argv)
 {
-    c->item->fun(c->base,(t_symbol *)s,argc,(t_atom *)argv);
+    c->item->fun(c->base,(t_symbol *)s,argc,(t_atom *)argv,c->data);
 }

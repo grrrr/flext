@@ -283,17 +283,17 @@ REAL_NEW_3(NAME,NEW_CLASS, 1,1, TYPE1, TYPE2, TYPE3)
 	@{ 
 */
 
-/*! \brief Specify that to declare the library itself
+/*! \brief Specify that to declare the library itself.
 	\note If you have a library this is compulsory (to register all the objects of the library)
 */
 #define FLEXT_LIB_SETUP(NAME,SETUPFUN) REAL_LIB_SETUP(NAME,SETUPFUN)
 
-/*! \brief Register an object in the library
+/*! \brief Register an object in the library.
 	\note This is used in the library setup function
 */
 #define FLEXT_SETUP(cl) REAL_SETUP(cl,0)
 
-/*! \brief Register a DSP object in the library
+/*! \brief Register a DSP object in the library.
 	\note This is used in the library setup function
 */
 #define FLEXT_DSP_SETUP(cl) REAL_SETUP(cl,1)
@@ -334,8 +334,15 @@ static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,int argc,t_atom *argv) \
 static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,void *data) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(data); return true; }
 
+//! Set up a method callback for an anything argument and a data package (e.g. for symbol-bound methods).
+#define FLEXT_CALLBACK_AX(M_FUN) \
+static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,t_symbol *s,int argc,t_atom *argv,void *data) \
+{ FLEXT_CAST<thisType *>(c)->M_FUN(s,argc,argv,data); return true; }
+
 //! Set up a timer callback
-#define FLEXT_CALLBACK_T(M_FUN) FLEXT_CALLBACK_X(M_FUN)
+#define FLEXT_CALLBACK_T(M_FUN) \
+\
+FLEXT_CALLBACK_X(M_FUN)
 
 //! Set up a method callback for a boolean argument
 #define FLEXT_CALLBACK_B(M_FUN) \
@@ -471,7 +478,7 @@ static void FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	delete args; \
 } 
 
-/*! \brief Set up a threaded method callback for an arbitrary data struct
+/*! \brief Set up a threaded method callback for an arbitrary data struct.
 	\note Data is pure... no destructor is called upon delete
 */
 #define FLEXT_THREAD_X(M_FUN) \
@@ -876,17 +883,18 @@ FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,int,int,int)
 
 
 
-/*!	\defgroup FLEXT_D_BINDMETHOD Call flext methods manually
+/*!	\defgroup FLEXT_D_BINDMETHOD Bind flext methods to symbols
 	@{ 
 */
 
 /*! \brief Bind a handler for a method with an anything argument to a symbol 
 */
-#define FLEXT_BINDMETHOD(SYM,M_FUN) \
+#define FLEXT_BINDMETHOD(SYM,M_FUN,DATA) \
 \
-BindMethod(SYM,FLEXT_CALL_PRE(M_FUN))	
+BindMethod(SYM,FLEXT_CALL_PRE(M_FUN),DATA)	
 
 /*! \brief Unbind any handler for a method from a symbol 
+    \note Memory associated to the DATA parameter of FLEXT_BINDMETHOD will *not* be freed here.
 */
 #define FLEXT_UNBINDMETHOD(SYM) \
 \

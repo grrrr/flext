@@ -8,9 +8,18 @@ flext_sndobj::flext_sndobj():
 	smprt(0),blsz(0)
 {}
 
-flext_sndobj::~flext_sndobj()
+bool flext_sndobj::Init()
+{
+	bool ret = flext_dsp::Init();
+	inobjs = CntInSig();
+	outobjs = CntOutSig();
+	return ret;
+}
+
+void flext_sndobj::Exit()
 {
 	ClearObjs();
+	flext_dsp::Exit();
 }
 
 void flext_sndobj::ClearObjs()
@@ -43,13 +52,13 @@ void flext_sndobj::m_dsp(int n,t_sample *const *in,t_sample *const *out)
 		smprt = Samplerate();
 
 		// set up sndobjs for inlets and outlets
-		inobj = new Inlet *[inobjs = CntInSig()];
+		inobj = new Inlet *[inobjs];
 		tmpobj = new SndObj *[inobjs];
 		for(i = 0; i < inobjs; ++i) {
 			inobj[i] = new Inlet(in[i],blsz,smprt);
 			tmpobj[i] = new SndObj(NULL,blsz,smprt);
 		}
-		outobj = new Outlet *[outobjs = CntInSig()];
+		outobj = new Outlet *[outobjs];
 		for(i = 0; i < outobjs; ++i) outobj[i] = new Outlet(out[i],blsz,smprt);
 
 		NewObjs();

@@ -163,6 +163,22 @@ Package=<4>
 
 ###############################################################################
 
+Project: "sndobj1"=.\sndobj1\sndobj1.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    sndobj1
+    .\sndobj1
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "thread1"=.\thread1\thread1.dsp - Package Owner=<4>
 
 Package=<5>

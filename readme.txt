@@ -99,10 +99,13 @@ Version history:
 	(this is possibly only a problem for the signal2 tutorial example)
 - added flext::GetType(t_atom &), flext::ZeroMem
 - put the clock_delay for the message queue inside the thread-locked area
+	Ok for the actual object, but PD has to be thread-safe here as well
 - BACKWARDS-INCOMPATIBLE CHANGE: flext_base::m_methodmain and flext_base::m_method_ have got 
 	const modifiers.... these virtual methods are used rarely (except for example in py/pyext)
 - now MUCH cleaner platform identification... FLEXT_SYS,FLEXT_OS,FLEXT_CPU definitions
 - also FLEXT_DEBUG for debug build
+- SndObjs: virtual FreeObject routine is now called at destruction (by parent class), derived class doesn't need to call it!
+- SndObjs: fixed typo (numbers of output slots was wrong) and init bug
 
 0.4.0:
 - the use of the const keyword is enforced (e.g. the preferred type for symbols is now "const t_symbol *")

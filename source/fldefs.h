@@ -835,7 +835,7 @@ FLEXT_CALL_PRE(M_FUN)(this,ARG1,ARG2,ARG3,ARG4,ARG5)
 //! @} FLEXT_D_METHOD
 
 
-#ifdef FLEXT_ATTRIBUTES
+#if defined(FLEXT_ATTRIBUTES) && FLEXT_ATTRIBUTES == 1
 
 /*!	\defgroup FLEXT_D_ATTRIB Attribute definition
 	\note These have to reside inside the class declaration

@@ -6,8 +6,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-#ifndef FLEXT_SNDOBJ
-#define FLEXT_SNDOBJ
+#ifndef __FLSNDOBJ_H
+#define __FLSNDOBJ_H
 
 #include "flext.h"
 
@@ -25,7 +25,6 @@ class flext_sndobj:
  
 public:
 	flext_sndobj();
-	virtual ~flext_sndobj();
 
 	// these have to be overridden in child classes
 	virtual void NewObjs() {}
@@ -37,6 +36,9 @@ public:
 	SndIO &OutObj(int i) { return *outobj[i]; }
 
 protected:
+	virtual bool Init();
+	virtual void Exit();
+
 	virtual void m_dsp(int n,t_sample *const *in,t_sample *const *out); 
 	virtual void m_signal(int n,t_sample *const *in,t_sample *const *out); 
 

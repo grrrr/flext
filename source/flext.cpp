@@ -127,7 +127,8 @@ flext_base::flext_base():
 	incnt(0),outcnt(0),
 	insigs(0),outsigs(0),
 	outlets(NULL),inlets(NULL),
-	mlst(NULL)
+	mlst(NULL),
+	distmsgs(false)
 {
 	LOG("Logging is on");
 }
@@ -482,8 +483,6 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 	
 	LOG3("methodmain inlet:%i args:%i symbol:%s",inlet,argc,s?s->s_name:"");
 	
-//	LOG3("offset int=%i, float=%i, symbol=%i",(I)&((t_any *)0)->it,(I)&((t_any *)0)->ft,(I)&((t_any *)0)->st);
-	
 	for(const methitem *m = mlst; m && !ret; m = m->nxt) {
 		if(m->tag == sym_anything && m->argc == 1 && m->args[0] == a_gimme) {
 			// any
@@ -558,7 +557,7 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 		} 
 	}
 	
-	if(!ret && inlet == 0 && s == sym_list && insigs <= 1) {
+	if(!ret && distmsgs && inlet == 0 && s == sym_list && insigs <= 1) {
 		// distribute list elements over inlets (Max/MSP behavior)
 		I i = incnt;
 		if(i > argc) i = argc;
@@ -581,7 +580,12 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 	return ret; // true if appropriate handler was found and called
 }
 
-V flext_base::m_method_(I inlet,const t_symbol *s,I argc,t_atom *argv) {}
+V flext_base::m_method_(I inlet,const t_symbol *s,I argc,t_atom *argv) 
+{
+#ifdef _DEBUG
+	post("%s: message unhandled - inlet:%i args:%i symbol:%s",thisName(),inlet,argc,s?s->s_name:"");
+#endif
+}
 
 
 flext_base::methitem::methitem(I in,t_symbol *t): 

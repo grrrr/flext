@@ -203,6 +203,9 @@ public:
 	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,F &)) { add_meth_one(inlet,tag,(methfun)m,a_float,a_null); }  // method+float
 	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,I &)) { add_meth_one(inlet,tag,(methfun)m,a_int,a_null); } // method+int
 
+	// MaxMSP style of distributing list elements over (message) inlets
+	V set_dist(BL d = true) { distmsgs = d; }
+
 // --- various symbols --------------------------------------------
 
 	static const t_symbol *sym_float;
@@ -323,6 +326,7 @@ private:
 	xlet *inlist,*outlist;
 	I incnt,outcnt,insigs,outsigs;
 	outlet **outlets;
+	BL distmsgs;
 
 	V AddXlet(xlet::type tp,I mult,xlet *&root);	
 
@@ -404,7 +408,7 @@ public:
 	//   outsigs: array of output vectors  (get number with function cnt_outsig())
 	virtual V m_signal(I n,F *const *insigs,F *const *outsigs) = 0;
 
-	// called with "enable" message: pauses/resumes dsp - already defined in MaxMSP
+	// called with "enable" message: pauses/resumes dsp - implicitely defined in MaxMSP
 #ifndef MAXMSP
 	virtual V m_enable(BL on);
 #endif
@@ -507,6 +511,10 @@ static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,T
 ///////////////////////////////////////////////////////////
 // These should be the used in the class' constructor
 ///////////////////////////////////////////////////////////
+
+// enable list element distribution over inlets (if no better handler found)
+#define FLEXT_ADDDIST() \
+set_dist(true)	
 
 // add handler for bang 
 #define FLEXT_ADDBANG(IX,M_FUN) \

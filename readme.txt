@@ -35,7 +35,7 @@ o Microsoft Visual C++ 6: use the "flext.dsp" project file  - you have to edit t
 o GCC: edit & run "make -f makefile.pd-linux"
 
 - Max/MSP - MacOS:
-o Metrowerks CodeWarrior V6: use the "flext.cw" project file
+o Metrowerks CodeWarrior V6: edit & use the "flext.cw" project file
 o Apple MPW-PR: edit & use the "flext.mpw" makefile
 
 
@@ -53,7 +53,7 @@ pros:
 - any input to any inlet (with the exception of signal streams)
 
 cons:
-- introduces a small overhead to speed (esp. to messages)
+- introduces a small overhead to speed of message handling 
 - overhead in object size (due to possibly unneeded code)
 
 
@@ -76,7 +76,7 @@ Version history:
 - better graphics update behavior for PD
 - improved behavior for invalid/undefined buffers/arrays
 - 128-bit aligned memory allocation with new[] 
-- use MaxMSP internal z_disabled flag with for pausing/resuming dsp processing in flext_dsp
+- use MaxMSP internal z_disabled flag with flext_dsp for pausing/resuming dsp processing 
 - included CHECK_TILDE, a test whether a tilde object (defined as FLEXT_TILDE_*) has a trailing ~. (debug mode only)
 
 0.1.1:

@@ -863,8 +863,8 @@ private:
 	static void cb_GfxSave(t_gobj *c, t_binbuf *b);
 	static void cb_GfxSelect(t_gobj *x, struct _glist *glist, int state);
 
-    void BinbufArgs(t_binbuf *b,t_binbuf *args,bool withname);
-    void BinbufAttr(t_binbuf *b);
+    void BinbufArgs(t_binbuf *b,t_binbuf *args,bool withname,bool transdoll);
+    void BinbufAttr(t_binbuf *b,bool transdoll);
 #endif
 
 	// proxy object (for additional inlets)

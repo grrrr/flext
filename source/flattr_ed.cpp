@@ -462,19 +462,22 @@ static size_t escapeit(char *dst,size_t maxlen,const char *src)
 void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 {
     flext_base *th = thisObject(c);
-    char buf[10000],*b = buf;
+    char buf[1000];
 
-    STD::sprintf(b, "pdtk_flext_dialog %%s { "); b += strlen(b);
+     // beginning of proc
+    sys_vgui("proc pdtk_flext_dialog_%p {title} {\n",th);
 
+    sys_vgui("pdtk_flext_dialog $title {\n");
+
+    // add title
     t_text *x = (t_text *)c;
     FLEXT_ASSERT(x->te_binbuf);
 
     int argc = binbuf_getnatom(x->te_binbuf);
     t_atom *argv = binbuf_getvec(x->te_binbuf);
 
-    PrintList(argc,argv,b,sizeof(buf)+buf-b);   b += strlen(b);
-
-    STD::sprintf(b, " } { "); b += strlen(b);
+    PrintList(argc,argv,buf,sizeof(buf));
+    sys_vgui("%s } {\n",buf);
 
     AtomList la;
     th->ListAttrib(la);
@@ -520,48 +523,53 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
                 FLEXT_ASSERT(false);
         }
 
-        STD::sprintf(b,list?"%s {":"%s ",GetString(sym)); b += strlen(b);
+        sys_vgui(list?"%s {\n":"%s\n",GetString(sym));
 
         AtomList lv;
         if(gattr) { // gettable attribute is present
             // Retrieve attribute value
             th->GetAttrib(sym,gattr,lv);
 
+            char *b = buf;
             for(int i = 0; i < lv.Count(); ++i) {
                 char tmp[100];
                 PrintAtom(lv[i],tmp,sizeof tmp);
                 b += escapeit(b,sizeof(buf)+buf-b,tmp);
                 if(i < lv.Count()-1) { *(b++) = ' '; *b = 0; }
             }
+            sys_vgui("%s\n",buf);
         }
-        else {
-            strcpy(b,"{}"); b += strlen(b);
-        }
+        else
+            sys_vgui("{}\n");
 
-        strcpy(b, list?"} {":" "); b += strlen(b);
+        sys_vgui(list?"} {\n":" \n");
 
         if(pattr) {
             // if there is initialization data take this, otherwise take the current data
             const AtomList &lp = initdata?*initdata:lv;
 
+            char *b = buf;
             for(int i = 0; i < lp.Count(); ++i) {
                 char tmp[256];
                 PrintAtom(lp[i],tmp,sizeof(tmp)); 
                 b += escapeit(b,sizeof(buf)+buf-b,tmp);
                 if(i < lp.Count()-1) { *(b++) = ' '; *b = 0; }
             }
+            sys_vgui("%s\n",buf);
         }
-        else {
-            strcpy(b,"{}"); b += strlen(b);
-        }
+        else
+            sys_vgui("{}\n");
 
 
-        STD::sprintf(b, list?"} %i %i %i ":" %i %i %i ",tp,sv,pattr?(pattr->BothExist()?2:1):0); b += strlen(b);
+        sys_vgui(list?"} %i %i %i \n":" %i %i %i \n",tp,sv,pattr?(pattr->BothExist()?2:1):0);
     }
 
-    strcpy(b, " }\n");
+    sys_vgui(" } }\n"); // end of proc
 
-    gfxstub_new((t_pd *)th->thisHdr(), th->thisHdr(), buf);
+    STD::sprintf(buf,"pdtk_flext_dialog_%p %%s\n",th);
+    gfxstub_new((t_pd *)th->thisHdr(), th->thisHdr(),buf);
+
+    //! \todo delete proc in TCL space
 }
 
 //! Strip the attributes off the object command line
@@ -574,7 +582,7 @@ void flext_base::cb_GfxVis(t_gobj *c, t_glist *gl, int vis)
         FLEXT_ASSERT(x->te_binbuf);
 
         t_binbuf *b = binbuf_new();
-        th->BinbufArgs(b,x->te_binbuf,true);
+        th->BinbufArgs(b,x->te_binbuf,true,false);
 
         // delete old object box text
         binbuf_free(x->te_binbuf);
@@ -608,8 +616,8 @@ void flext_base::cb_GfxSelect(t_gobj *c, struct _glist *gl, int state)
             FLEXT_ASSERT(x->te_binbuf);
 
             t_binbuf *b = binbuf_new();
-            th->BinbufArgs(b,x->te_binbuf,true);
-            if(state) th->BinbufAttr(b);
+            th->BinbufArgs(b,x->te_binbuf,true,false);
+            if(state) th->BinbufAttr(b,false);
 
             // delete old object box text
             binbuf_free(x->te_binbuf);
@@ -636,9 +644,9 @@ void flext_base::cb_GfxSave(t_gobj *c, t_binbuf *b)
     binbuf_addv(b, "ssiis", gensym("#X"),gensym("obj"), t->te_xpix, t->te_ypix,MakeSymbol(th->thisName()));
 
     // process the object arguments
-    th->BinbufArgs(b,t->te_binbuf,false);
+    th->BinbufArgs(b,t->te_binbuf,false,true);
     // process the attributes
-    th->BinbufAttr(b);
+    th->BinbufAttr(b,true);
     // add end sign
     binbuf_addv(b, ";");
 }
@@ -711,37 +719,32 @@ bool flext_base::cb_AttrDialog(flext_base *th,int argc,const t_atom *argv)
 }
 
 
-static void BinbufAdd(t_binbuf *b,const t_atom &at)
+static void BinbufAdd(t_binbuf *b,const t_atom &at,bool transdoll)
 {
-    char tbuf[MAXPDSTRING];
-    if(flext::IsString(at))
-        binbuf_addv(b,"s",flext::GetSymbol(at));
-    else if(flext::IsFloat(at))
-        binbuf_addv(b,"f",flext::GetFloat(at));
-    else if(flext::IsInt(at))
-        binbuf_addv(b,"i",flext::GetInt(at));
-    else if(at.a_type == A_DOLLAR) {
+    if(transdoll && at.a_type == A_DOLLAR) {
+        char tbuf[MAXPDSTRING];
         sprintf(tbuf, "$%d", at.a_w.w_index);
         binbuf_addv(b,"s",flext::MakeSymbol(tbuf));
     }
-    else if(at.a_type == A_DOLLSYM) {
+    else if(transdoll && at.a_type == A_DOLLSYM) {
+        char tbuf[MAXPDSTRING];
         sprintf(tbuf, "$%s", at.a_w.w_symbol->s_name);
         binbuf_addv(b,"s",flext::MakeSymbol(tbuf));
     }
     else
-        FLEXT_ASSERT(false);
+        binbuf_add(b,1,const_cast<t_atom *>(&at));
 }
 
-void flext_base::BinbufArgs(t_binbuf *b,t_binbuf *args,bool withname)
+void flext_base::BinbufArgs(t_binbuf *b,t_binbuf *args,bool withname,bool transdoll)
 {
     int argc = binbuf_getnatom(args);
     t_atom *argv = binbuf_getvec(args);
     int i,cnt = CheckAttrib(argc,argv);
     // process the creation arguments
-    for(i = withname?0:1; i < cnt; ++i) BinbufAdd(b,argv[i]);
+    for(i = withname?0:1; i < cnt; ++i) BinbufAdd(b,argv[i],transdoll);
 }
 
-void flext_base::BinbufAttr(t_binbuf *b)
+void flext_base::BinbufAttr(t_binbuf *b,bool transdoll)
 {
     // process the attributes
     AtomList la;
@@ -794,7 +797,7 @@ void flext_base::BinbufAttr(t_binbuf *b)
             binbuf_addv(b,"s",MakeSymbol(attrname));
 
             // store value
-            for(int j = 0; j < lref->Count(); ++j) BinbufAdd(b,(*lref)[j]);
+            for(int j = 0; j < lref->Count(); ++j) BinbufAdd(b,(*lref)[j],transdoll);
         }
     }
 }

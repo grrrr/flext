@@ -141,8 +141,15 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #elif defined(__MWERKS__)
 	// Metrowerks CodeWarrior
 
-	#ifndef __CONDITIONALMACROS__
-	#include <ConditionalMacros.h>
+	#ifdef __MACH__
+		// quick fix for OSX Mach-O
+		#define TARGET_CPU_PPC 1
+		#define TARGET_OS_MAC 1
+		#define TARGET_API_MAC_OSX 1
+	#else
+		#ifndef __CONDITIONALMACROS__
+		#include <ConditionalMacros.h>
+		#endif
 	#endif
 
 	#ifndef FLEXT_CPU

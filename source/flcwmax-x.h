@@ -17,6 +17,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #define TARGET_API_MAC_CARBON 1
 #define _POSIX_C_SOURCE
+#define _POSIX_SOURCE
 
 #include "flcwmax.h"
 

@@ -2,7 +2,7 @@
 # Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
 #
  
-# your c++ compiler (if it's different than g++)
+# your c++ compiler (define only if it's different than g++)
 # CXX=g++ 
 
 # where are the PD header files? (m_pd.h, m_imp.h, g_canvas.h)

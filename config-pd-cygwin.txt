@@ -2,6 +2,9 @@
 # Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
 #
 
+# your c++ compiler (define only if it's different than g++)
+# CXX=g++
+
 # where is PD?
 PDPATH=/cygdrive/c/programme/audio/pd
 

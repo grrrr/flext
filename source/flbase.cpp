@@ -101,10 +101,11 @@ void flext_obj::FreeAligned(void *blk)
 
 
 #ifdef _DEBUG
-bool flext_obj::check_tilde(const char *objname,const char *setupfun)
+bool flext_obj::check_tilde(const char *objname)
 {
-	int stplen = strlen(setupfun);
-	bool tilde = !strncmp(setupfun,"_tilde",6);
+//	int stplen = strlen(setupfun);
+	bool tilde = true; //!strncmp(setupfun,"_tilde",6);
+
 	if((objname[strlen(objname)-1] == '~'?1:0)^(tilde?1:0)) {
 		if(tilde) 
 			error("flext_obj::check_tilde: %s (no trailing ~) is defined as a tilde object",objname);

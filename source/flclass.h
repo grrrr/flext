@@ -144,6 +144,11 @@ public:
 	};
 
 
+// --- help -------------------------------------------------------	
+
+	void DefineHelp(const char *ref);
+
+
 // --- inlet/outlet stuff -----------------------------------------	
 
 	// define inlets/outlets - all (also default) inlets must be defined

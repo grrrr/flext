@@ -12,6 +12,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <flinternal.h>
 #include <string.h>
 #include <stdarg.h>
+#include <typeinfo.h>
 
 // === proxy class for flext_base ============================
 
@@ -127,7 +128,6 @@ const t_symbol *flext_base::sym_signal = NULL;
 const t_symbol *flext_base::MakeSymbol(const char *s) { return gensym(const_cast<char *>(s)); }
 
 
-
 flext_base::flext_base():
 	inlist(NULL),outlist(NULL),
 	incnt(0),outcnt(0),
@@ -201,6 +201,14 @@ flext_base::~flext_base()
 	if(mlst) delete mlst;
 }
 
+
+void flext_base::DefineHelp(const char *ref)
+{
+#ifdef PD
+    class_sethelpsymbol(thisClass(),gensym(const_cast<char *>(ref)));
+#else
+#endif
+}
 
 #ifdef MAXMSP
 #define CRITON() short state = lockout_set(1)
@@ -630,6 +638,7 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 		}
 	}
 	
+#ifdef MAXMSP
 	// If float message is not explicitly handled: try int handler instead
 	if(!ret && argc == 1 && s == sym_float) {
 		t_atom fl;
@@ -638,7 +647,6 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 		ret = m_methodmain(inlet,sym_int,1,&fl);
 	}
 	
-#ifdef MAXMSP
 	// If int message is not explicitly handled: try float handler instead
 	if(!ret && argc == 1 && s == sym_int) {
 		t_atom fl;

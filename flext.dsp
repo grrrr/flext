@@ -4,7 +4,7 @@
 
 # TARGTYPE "Win32 (x86) Static Library" 0x0104
 
-CFG=flext - Win32 Debug
+CFG=flext - Win32 Threads Debug
 !MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
 !MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
@@ -13,12 +13,14 @@ CFG=flext - Win32 Debug
 !MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
 !MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
-!MESSAGE NMAKE /f "flext.mak" CFG="flext - Win32 Debug"
+!MESSAGE NMAKE /f "flext.mak" CFG="flext - Win32 Threads Debug"
 !MESSAGE 
 !MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
 !MESSAGE "flext - Win32 Release" (basierend auf  "Win32 (x86) Static Library")
 !MESSAGE "flext - Win32 Debug" (basierend auf  "Win32 (x86) Static Library")
+!MESSAGE "flext - Win32 Threads Debug" (basierend auf  "Win32 (x86) Static Library")
+!MESSAGE "flext - Win32 Threads Release" (basierend auf  "Win32 (x86) Static Library")
 !MESSAGE 
 
 # Begin Project
@@ -41,7 +43,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "msvc"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GR /O2 /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /D "FLEXT_THREADS" /YX /FD /c
+# ADD CPP /nologo /W3 /GR /O2 /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /YX /FD /c
 # ADD BASE RSC /l 0xc07 /d "NDEBUG"
 # ADD RSC /l 0xc07 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -64,7 +66,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "msvc-debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GR /ZI /Od /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /D "FLEXT_THREADS" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GR /ZI /Od /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0xc07 /d "_DEBUG"
 # ADD RSC /l 0xc07 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -74,12 +76,60 @@ LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
 # ADD LIB32 /nologo /out:"msvc-debug\flext-pdwin.lib"
 
+!ELSEIF  "$(CFG)" == "flext - Win32 Threads Debug"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "flext___Win32_Threads_Debug"
+# PROP BASE Intermediate_Dir "flext___Win32_Threads_Debug"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "flext___Win32_Threads_Debug"
+# PROP Intermediate_Dir "flext___Win32_Threads_Debug"
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MTd /W3 /Gm /GR /ZI /Od /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /D "FLEXT_THREADS" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GR /ZI /Od /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /D "FLEXT_THREADS" /FR /YX /FD /GZ /c
+# ADD BASE RSC /l 0xc07 /d "_DEBUG"
+# ADD RSC /l 0xc07 /d "_DEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo /out:"msvc-debug\flext-pdwin.lib"
+# ADD LIB32 /nologo /out:"msvc-debug\flext_t-pdwin.lib"
+
+!ELSEIF  "$(CFG)" == "flext - Win32 Threads Release"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "flext___Win32_Threads_Release"
+# PROP BASE Intermediate_Dir "flext___Win32_Threads_Release"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "flext___Win32_Threads_Release"
+# PROP Intermediate_Dir "flext___Win32_Threads_Release"
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MT /W3 /GR /O2 /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /D "FLEXT_THREADS" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GR /O2 /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /D "FLEXT_THREADS" /YX /FD /c
+# ADD BASE RSC /l 0xc07 /d "NDEBUG"
+# ADD RSC /l 0xc07 /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo /out:"msvc/flext-pdwin.lib"
+# ADD LIB32 /nologo /out:"msvc/flext_t-pdwin.lib"
+
 !ENDIF 
 
 # Begin Target
 
 # Name "flext - Win32 Release"
 # Name "flext - Win32 Debug"
+# Name "flext - Win32 Threads Debug"
+# Name "flext - Win32 Threads Release"
 # Begin Group "doc"
 
 # PROP Default_Filter ""
@@ -151,6 +201,10 @@ SOURCE=.\flthr.h
 # Begin Source File
 
 SOURCE=.\flutil.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\flxlet.cpp
 # End Source File
 # End Target
 # End Project

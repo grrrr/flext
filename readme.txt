@@ -26,7 +26,7 @@ Package files:
 - flmspbuffer.h: MaxMSP's inofficial buffer.h included here for conveniance
 
 > for PD you need the pd source code (which is most likely part of the distribution)
-> for Max/MSP you will also need the Max/MSP SDK and http://www.sirius.com/~cycling/objects/index.sit 
+> for Max/MSP you will also need the Max/MSP SDK (and for threading the GUSI library)
 
 ----------------------------------------------------------------------------
 
@@ -84,6 +84,7 @@ Version history:
 - fixed type warning for class constructors with int arguments in PD
 - fixed severe bug concerning symbol methods
 - MaxMSP: use critical sections for message output (for more safety in overdrive mode)
+- PD: default/manual definition of help file by flext_base::DefineHelp
 
 - introduced FLEXT_NEW_DSP* and FLEXT_LIB_DSP* for FLEXT_NEW_TILDE* and FLEXT_LIB_TILDE* (the latter become deprecated)
 - all variable argument defs (aka gimme) now have a V instead of G  (e.g. FLEXT_NEW_V)

@@ -155,7 +155,7 @@ class FLEXT_EXT flext_obj
 		
 #ifdef _DEBUG
         //! check whether the object's name has a trailing tilde
-		static bool check_tilde(const char *objname,const char *setupfun);
+		static bool check_tilde(const char *objname);
 #endif
 
 		// !check whether construction was successful
@@ -210,27 +210,33 @@ protected:    \
 static NEW_CLASS *thisObject(void *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; }	  
 
 
+// generate name of dsp/non-dsp setup function
+#define FLEXT_STPF_0(NAME) NAME##_setup
+#define FLEXT_STPF_1(NAME) NAME##_tilde_setup
+#define FLEXT_STPF_(DSP) FLEXT_STPF_##DSP
+#define FLEXT_STPF(NAME,DSP) FLEXT_STPF_(DSP)(NAME)
 
-#define REAL_NEW(NAME,NEW_CLASS,SETUP_FUNCTION) REAL_INST(0,NAME,NEW_CLASS,SETUP_FUNCTION)
-#define REAL_NEW_V(NAME,NEW_CLASS,SETUP_FUNCTION) REAL_INST_V(0,NAME,NEW_CLASS,SETUP_FUNCTION)
-#define REAL_NEW_1(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1) REAL_INST_1(0,NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1)
-#define REAL_NEW_2(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2) REAL_INST_2(0,NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2)
-#define REAL_NEW_3(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2,TYPE3) REAL_INST_3(0,NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2,TYPE3)
+
+#define REAL_NEW(NAME,NEW_CLASS,DSP) REAL_INST(0,NAME,NEW_CLASS,DSP)
+#define REAL_NEW_V(NAME,NEW_CLASS,DSP) REAL_INST_V(0,NAME,NEW_CLASS,DSP)
+#define REAL_NEW_1(NAME,NEW_CLASS,DSP,TYPE1) REAL_INST_1(0,NAME,NEW_CLASS,DSP,TYPE1)
+#define REAL_NEW_2(NAME,NEW_CLASS,DSP,TYPE1,TYPE2) REAL_INST_2(0,NAME,NEW_CLASS,DSP,TYPE1,TYPE2)
+#define REAL_NEW_3(NAME,NEW_CLASS,DSP,TYPE1,TYPE2,TYPE3) REAL_INST_3(0,NAME,NEW_CLASS,DSP,TYPE1,TYPE2,TYPE3)
 
 #ifdef PD
-#define REAL_EXT(NEW_CLASS,SETUP_FUNCTION)
-#define REAL_LIB(NAME,NEW_CLASS,SETUP_FUNCTION) REAL_INST(1,NAME,NEW_CLASS,SETUP_FUNCTION)
-#define REAL_LIB_V(NAME,NEW_CLASS,SETUP_FUNCTION) REAL_INST_V(1,NAME,NEW_CLASS,SETUP_FUNCTION)
-#define REAL_LIB_1(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1) REAL_INST_1(1,NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1)
-#define REAL_LIB_2(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2) REAL_INST_2(1,NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2)
-#define REAL_LIB_3(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2,TYPE3) REAL_INST_3(1,NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2,TYPE3)
+#define REAL_EXT(NEW_CLASS,DSP)
+#define REAL_LIB(NAME,NEW_CLASS,DSP) REAL_INST(1,NAME,NEW_CLASS,DSP)
+#define REAL_LIB_V(NAME,NEW_CLASS,DSP) REAL_INST_V(1,NAME,NEW_CLASS,DSP)
+#define REAL_LIB_1(NAME,NEW_CLASS,DSP,TYPE1) REAL_INST_1(1,NAME,NEW_CLASS,DSP,TYPE1)
+#define REAL_LIB_2(NAME,NEW_CLASS,DSP,TYPE1,TYPE2) REAL_INST_2(1,NAME,NEW_CLASS,DSP,TYPE1,TYPE2)
+#define REAL_LIB_3(NAME,NEW_CLASS,DSP,TYPE1,TYPE2,TYPE3) REAL_INST_3(1,NAME,NEW_CLASS,DSP,TYPE1,TYPE2,TYPE3)
 #else // MAXMSP
-#define REAL_EXT(NEW_CLASS,SETUP_FUNCTION) extern "C" FLEXT_EXT int main() { NEW_CLASS##SETUP_FUNCTION(); return 0; }
-#define REAL_LIB(NAME,NEW_CLASS,SETUP_FUNCTION) REAL_NEWLIB(NAME,NEW_CLASS,SETUP_FUNCTION)
-#define REAL_LIB_V(NAME,NEW_CLASS,SETUP_FUNCTION) REAL_NEWLIB_V(NAME,NEW_CLASS,SETUP_FUNCTION)
-#define REAL_LIB_1(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1) REAL_NEWLIB_1(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1)
-#define REAL_LIB_2(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2) REAL_NEWLIB_2(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2)
-#define REAL_LIB_3(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2,TYPE3) REAL_NEWLIB_3(NAME,NEW_CLASS,SETUP_FUNCTION,TYPE1,TYPE2,TYPE3)
+#define REAL_EXT(NEW_CLASS,DSP) extern "C" FLEXT_EXT int main() { FLEXT_STPF(NEW_CLASS,DSP)(); return 0; }
+#define REAL_LIB(NAME,NEW_CLASS,DSP) REAL_NEWLIB(NAME,NEW_CLASS,DSP)
+#define REAL_LIB_V(NAME,NEW_CLASS,DSP) REAL_NEWLIB_V(NAME,NEW_CLASS,DSP)
+#define REAL_LIB_1(NAME,NEW_CLASS,DSP,TYPE1) REAL_NEWLIB_1(NAME,NEW_CLASS,DSP,TYPE1)
+#define REAL_LIB_2(NAME,NEW_CLASS,DSP,TYPE1,TYPE2) REAL_NEWLIB_2(NAME,NEW_CLASS,DSP,TYPE1,TYPE2)
+#define REAL_LIB_3(NAME,NEW_CLASS,DSP,TYPE1,TYPE2,TYPE3) REAL_NEWLIB_3(NAME,NEW_CLASS,DSP,TYPE1,TYPE2,TYPE3)
 #endif
 
 
@@ -249,7 +255,7 @@ static NEW_CLASS *thisObject(void *c) { return (NEW_CLASS *)((flext_hdr *)c)->da
 extern void cl##_setup(); \
 cl##_setup()  
 
-#define FLEXT_TILDE_SETUP(cl) \
+#define FLEXT_DSP_SETUP(cl) \
 extern void cl##_tilde_setup(); \
 cl##_tilde_setup()  
 
@@ -340,9 +346,9 @@ return 0; \
 //#define EXTPROTO(LIB) EXTPROTO_ ## LIB
 
 #ifdef _DEBUG
-#define CHECK_TILDE(OBJNAME,SETUPFUN) flext_obj::check_tilde(OBJNAME,SETUPFUN)
+#define CHECK_TILDE(OBJNAME,DSP) if(DSP) flext_obj::check_tilde(OBJNAME)
 #else
-#define CHECK_TILDE(OBJNAME,SETUPFUN) ((void)0)
+#define CHECK_TILDE(OBJNAME,DSP) ((void)0)
 #endif
 
 #ifdef PD
@@ -361,6 +367,16 @@ return 0; \
 #error "No alias function defined!"
 #endif
 
+
+#define FLEXT_HELPSTR(NAME) #NAME 
+#define FLEXT_HELPSTR_DSP(NAME) #NAME "~"
+
+#ifdef PD
+#define FLEXT_DEFHELP(THIS,NEW_CLASS,DSP) ((NEW_CLASS *)THIS)->DefineHelp(DSP?FLEXT_HELPSTR_DSP(NEW_CLASS):FLEXT_HELPSTR(NEW_CLASS))
+#else
+#define FLEXT_DEFHELP(THIS,NEW_CLASS,DSP)
+#endif
+
 const char *extractname(const char *name,int ix = 0);
 
 // ----------------------------------------------------
@@ -372,7 +388,7 @@ const char *extractname(const char *name,int ix = 0);
 // ----------------------------------------------------
 // no args
 // ----------------------------------------------------
-#define REAL_INST(LIB,NAME,NEW_CLASS, SETUP_FUNCTION) \
+#define REAL_INST(LIB,NAME,NEW_CLASS, DSP) \
 static t_class * NEW_CLASS ## _class;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS () \
 {     	    	    	    	    	    	    	    	\
@@ -382,11 +398,12 @@ flext_hdr* class_ ## NEW_CLASS () \
     obj->data = new NEW_CLASS;                     \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
+	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
+FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
-	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
+	CHECK_TILDE(NAME,DSP); 	\
     NEW_CLASS ## _class = FLEXT_NEWFN(                       \
      	FLEXT_CLREF(extractname(NAME),NEW_CLASS ## _class), 	    	    	    	\
     	(t_newmethod)class_ ## NEW_CLASS,	    	\
@@ -400,7 +417,7 @@ FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
     NEW_CLASS::callb_setup(NEW_CLASS ## _class); \
 } 
 
-#define REAL_NEWLIB(NAME,NEW_CLASS, SETUP_FUNCTION) \
+#define REAL_NEWLIB(NAME,NEW_CLASS, DSP) \
 flext_hdr* class_ ## NEW_CLASS ()    \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(flext_obj::lib_class),(void *)NULL) flext_hdr; \
@@ -409,11 +426,12 @@ flext_hdr* class_ ## NEW_CLASS ()    \
     obj->data = new NEW_CLASS;      \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
+	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-void NEW_CLASS ## SETUP_FUNCTION()   	\
+void FLEXT_STPF(NEW_CLASS,DSP)()   	\
 {   	    	    	    	    	    	    	    	\
-	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
+	CHECK_TILDE(NAME,DSP); 	\
     flext_obj::libfun_add(NAME,(t_method)(class_ ## NEW_CLASS),&NEW_CLASS::callb_free,A_NULL); \
     NEW_CLASS::callb_setup(flext_obj::lib_class); \
 }   
@@ -422,7 +440,7 @@ void NEW_CLASS ## SETUP_FUNCTION()   	\
 // ----------------------------------------------------
 // variable arg list
 // ----------------------------------------------------
-#define REAL_INST_V(LIB,NAME,NEW_CLASS, SETUP_FUNCTION) \
+#define REAL_INST_V(LIB,NAME,NEW_CLASS, DSP) \
 static t_class * NEW_CLASS ## _class;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (t_symbol *,int argc,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
@@ -432,11 +450,12 @@ flext_hdr* class_ ## NEW_CLASS (t_symbol *,int argc,t_atom *argv) \
     obj->data = new NEW_CLASS(argc,argv);                     \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
+	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
+FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
-	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
+	CHECK_TILDE(NAME,DSP); 	\
     NEW_CLASS ## _class = FLEXT_NEWFN(                       \
      	FLEXT_CLREF(extractname(NAME),NEW_CLASS ## _class), 	    	    	    	\
     	(t_newmethod)class_ ## NEW_CLASS,	    	\
@@ -451,7 +470,7 @@ FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
     NEW_CLASS::callb_setup(NEW_CLASS ## _class); \
 } 
 
-#define REAL_NEWLIB_V(NAME,NEW_CLASS, SETUP_FUNCTION) \
+#define REAL_NEWLIB_V(NAME,NEW_CLASS, DSP) \
 flext_hdr* class_ ## NEW_CLASS (t_symbol *,int argc,t_atom *argv)    \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(flext_obj::lib_class),(void *)NULL) flext_hdr; \
@@ -460,11 +479,12 @@ flext_hdr* class_ ## NEW_CLASS (t_symbol *,int argc,t_atom *argv)    \
     obj->data = new NEW_CLASS(argc,argv);      \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
+	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-void NEW_CLASS ## SETUP_FUNCTION()   	\
+void FLEXT_STPF(NEW_CLASS,DSP)()   	\
 {   	    	    	    	    	    	    	    	\
-	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
+	CHECK_TILDE(NAME,DSP); 	\
     flext_obj::libfun_add(NAME,(t_method)(class_ ## NEW_CLASS),&NEW_CLASS::callb_free,A_GIMME,A_NULL); \
     NEW_CLASS::callb_setup(flext_obj::lib_class); \
 }   
@@ -473,7 +493,7 @@ void NEW_CLASS ## SETUP_FUNCTION()   	\
 // ----------------------------------------------------
 // one arg
 // ----------------------------------------------------
-#define REAL_INST_1(LIB,NAME,NEW_CLASS, SETUP_FUNCTION, TYPE1) \
+#define REAL_INST_1(LIB,NAME,NEW_CLASS, DSP, TYPE1) \
 static t_class * NEW_CLASS ## _class;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1) \
 {     	    	    	    	    	    	    	    	\
@@ -483,11 +503,12 @@ flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1) \
     obj->data = new NEW_CLASS((TYPE1)arg1);                     \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
+	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
+FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
-	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
+	CHECK_TILDE(NAME,DSP); 	\
     NEW_CLASS ## _class = FLEXT_NEWFN(                       \
      	FLEXT_CLREF(extractname(NAME),NEW_CLASS ## _class), 	    	    	    	\
     	(t_newmethod)class_ ## NEW_CLASS,	    	\
@@ -502,7 +523,7 @@ FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
     NEW_CLASS::callb_setup(NEW_CLASS ## _class); \
 } 
 
-#define REAL_NEWLIB_1(NAME,NEW_CLASS, SETUP_FUNCTION,TYPE1) \
+#define REAL_NEWLIB_1(NAME,NEW_CLASS, DSP,TYPE1) \
 flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1)    \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(flext_obj::lib_class),(void *)NULL) flext_hdr; \
@@ -511,11 +532,12 @@ flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1)    \
     obj->data = new NEW_CLASS(ARGCAST(arg1,TYPE1));      \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
+	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-void NEW_CLASS ## SETUP_FUNCTION()   	\
+void FLEXT_STPF(NEW_CLASS,DSP)()   	\
 {   	    	    	    	    	    	    	    	\
-	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
+	CHECK_TILDE(NAME,DSP); 	\
     flext_obj::libfun_add(NAME,(t_method)(class_ ## NEW_CLASS),&NEW_CLASS::callb_free,FLEXTTP(TYPE1),A_NULL); \
     NEW_CLASS::callb_setup(flext_obj::lib_class); \
 }   
@@ -524,7 +546,7 @@ void NEW_CLASS ## SETUP_FUNCTION()   	\
 // ----------------------------------------------------
 // two args
 // ----------------------------------------------------
-#define REAL_INST_2(LIB,NAME,NEW_CLASS, SETUP_FUNCTION, TYPE1, TYPE2) \
+#define REAL_INST_2(LIB,NAME,NEW_CLASS, DSP, TYPE1, TYPE2) \
 static t_class * NEW_CLASS ## _class;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1, CALLBTP(TYPE2) arg2) \
 {     	    	    	    	    	    	    	    	\
@@ -534,11 +556,12 @@ flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1, CALLBTP(TYPE2) arg2) \
     obj->data = new NEW_CLASS((TYPE1)arg1, (TYPE2)arg2);                     \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
+	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
+FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
-	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
+	CHECK_TILDE(NAME,DSP); 	\
     NEW_CLASS ## _class = FLEXT_NEWFN(                       \
      	FLEXT_CLREF(extractname(NAME),NEW_CLASS ## _class), 	    	    	    	\
     	(t_newmethod)class_ ## NEW_CLASS,	    	\
@@ -553,7 +576,7 @@ FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
     NEW_CLASS::callb_setup(NEW_CLASS ## _class); \
 } 
 
-#define REAL_NEWLIB_2(NAME,NEW_CLASS, SETUP_FUNCTION,TYPE1, TYPE2) \
+#define REAL_NEWLIB_2(NAME,NEW_CLASS, DSP,TYPE1, TYPE2) \
 flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1,const flext_obj::lib_arg &arg2)    \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(flext_obj::lib_class),(void *)NULL) flext_hdr; \
@@ -562,11 +585,12 @@ flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1,const flext_obj::
     obj->data = new NEW_CLASS(ARGCAST(arg1,TYPE1),ARGCAST(arg2,TYPE2));      \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
+	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-void NEW_CLASS ## SETUP_FUNCTION()   	\
+void FLEXT_STPF(NEW_CLASS,DSP)()   	\
 {   	    	    	    	    	    	    	    	\
-	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
+	CHECK_TILDE(NAME,DSP); 	\
     flext_obj::libfun_add(NAME,(t_method)(class_ ## NEW_CLASS),&NEW_CLASS::callb_free,FLEXTTP(TYPE1),FLEXTTP(TYPE2),A_NULL); \
     NEW_CLASS::callb_setup(flext_obj::lib_class); \
 }   
@@ -575,7 +599,7 @@ void NEW_CLASS ## SETUP_FUNCTION()   	\
 // ----------------------------------------------------
 // three args
 // ----------------------------------------------------
-#define REAL_INST_3(LIB,NAME,NEW_CLASS, SETUP_FUNCTION, TYPE1,TYPE2,TYPE3) \
+#define REAL_INST_3(LIB,NAME,NEW_CLASS, DSP, TYPE1,TYPE2,TYPE3) \
 static t_class * NEW_CLASS ## _class;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1,CALLBTP(TYPE2) arg2,CALLBTP(TYPE3) arg3) \
 {     	    	    	    	    	    	    	    	\
@@ -585,11 +609,12 @@ flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1,CALLBTP(TYPE2) arg2,CALLBTP(
     obj->data = new NEW_CLASS((TYPE1)arg1,(TYPE2)arg2,(TYPE3)arg3);                     \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
+	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
+FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
-	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
+	CHECK_TILDE(NAME,DSP); 	\
     NEW_CLASS ## _class = FLEXT_NEWFN(                       \
      	FLEXT_CLREF(extractname(NAME),NEW_CLASS ## _class), 	    	    	    	\
     	(t_newmethod)class_ ## NEW_CLASS,	    	\
@@ -604,7 +629,7 @@ FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
     NEW_CLASS::callb_setup(NEW_CLASS ## _class); \
 } 
 
-#define REAL_NEWLIB_3(NAME,NEW_CLASS, SETUP_FUNCTION,TYPE1,TYPE2,TYPE3) \
+#define REAL_NEWLIB_3(NAME,NEW_CLASS, DSP,TYPE1,TYPE2,TYPE3) \
 flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1,const flext_obj::lib_arg &arg2,const flext_obj::lib_arg &arg3)    \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(flext_obj::lib_class),(void *)NULL) flext_hdr; \
@@ -613,11 +638,12 @@ flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1,const flext_obj::
     obj->data = new NEW_CLASS(ARGCAST(arg1,TYPE1),ARGCAST(arg2,TYPE2),ARGCAST(arg3,TYPE3));      \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
+	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-void NEW_CLASS ## SETUP_FUNCTION()   	\
+void FLEXT_STPF(NEW_CLASS,DSP)()   	\
 {   	    	    	    	    	    	    	    	\
-	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
+	CHECK_TILDE(NAME,DSP); 	\
     flext_obj::libfun_add(NAME,(t_method)(class_ ## NEW_CLASS),&NEW_CLASS::callb_free,FLEXTTP(TYPE1),FLEXTTP(TYPE2),FLEXTTP(TYPE3),A_NULL); \
     NEW_CLASS::callb_setup(flext_obj::lib_class); \
 }   
@@ -625,7 +651,7 @@ void NEW_CLASS ## SETUP_FUNCTION()   	\
 // ----------------------------------------------------
 // four args
 // ----------------------------------------------------
-#define REAL_INST_4(LIB,NAME,NEW_CLASS, SETUP_FUNCTION, TYPE1,TYPE2,TYPE3,TYPE4) \
+#define REAL_INST_4(LIB,NAME,NEW_CLASS, DSP, TYPE1,TYPE2,TYPE3,TYPE4) \
 static t_class * NEW_CLASS ## _class;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1,CALLBTP(TYPE2) arg2,CALLBTP(TYPE3) arg3,CALLBTP(TYPE4) arg4) \
 {     	    	    	    	    	    	    	    	\
@@ -635,11 +661,12 @@ flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1,CALLBTP(TYPE2) arg2,CALLBTP(
     obj->data = new NEW_CLASS((TYPE1)arg1,(TYPE2)arg2,(TYPE3)arg3,(TYPE4)arg4);                     \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
+	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
+FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
-	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
+	CHECK_TILDE(NAME,DSP); 	\
     NEW_CLASS ## _class = FLEXT_NEWFN(                       \
      	FLEXT_CLREF(extractname(NAME),NEW_CLASS ## _class), 	    	    	    	\
     	(t_newmethod)class_ ## NEW_CLASS,	    	\
@@ -654,7 +681,7 @@ FLEXT_EXP(LIB) void NEW_CLASS ## SETUP_FUNCTION()   \
     NEW_CLASS::callb_setup(NEW_CLASS ## _class); \
 } 
 
-#define REAL_NEWLIB_4(NAME,NEW_CLASS, SETUP_FUNCTION,TYPE1,TYPE2,TYPE3,TYPE4) \
+#define REAL_NEWLIB_4(NAME,NEW_CLASS, DSP,TYPE1,TYPE2,TYPE3,TYPE4) \
 flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1,const flext_obj::lib_arg &arg2,const flext_obj::lib_arg &arg3,const flext_obj::lib_arg &arg4)    \
 {     	    	    	    	    	    	    	    	\
     flext_hdr *obj = new (newobject(flext_obj::lib_class),(void *)NULL) flext_hdr; \
@@ -663,11 +690,12 @@ flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1,const flext_obj::
     obj->data = new NEW_CLASS(ARGCAST(arg1,TYPE1),ARGCAST(arg2,TYPE2),ARGCAST(arg3,TYPE3),ARGCAST(arg4,TYPE4));      \
     flext_obj::m_holder = NULL;                                 \
     if(!obj->data->InitOk()) { NEW_CLASS::callb_free(obj); obj = NULL; } \
+	else FLEXT_DEFHELP(obj->data,NEW_CLASS,DSP); \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
-void NEW_CLASS ## SETUP_FUNCTION()   	\
+void FLEXT_STPF(NEW_CLASS,DSP)()   	\
 {   	    	    	    	    	    	    	    	\
-	CHECK_TILDE(NAME,#SETUP_FUNCTION); 	\
+	CHECK_TILDE(NAME,DSP); 	\
     flext_obj::libfun_add(NAME,(t_method)(class_ ## NEW_CLASS),&NEW_CLASS::callb_free,FLEXTTP(TYPE1),FLEXTTP(TYPE2),FLEXTTP(TYPE3),FLEXTTP(TYPE4),A_NULL); \
     NEW_CLASS::callb_setup(flext_obj::lib_class); \
 }   

@@ -57,21 +57,21 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 //! Implementation of a flext class with no arguments
 #define FLEXT_NEW(NAME,NEW_CLASS)		\
-REAL_NEW(NAME,NEW_CLASS, _setup)  \
-REAL_EXT(NEW_CLASS, _setup)
+REAL_NEW(NAME,NEW_CLASS,0)  \
+REAL_EXT(NEW_CLASS,0)
 
 //! Implementation of a flext tilde class with no arguments
 #define FLEXT_NEW_DSP(NAME,NEW_CLASS)	\
-REAL_NEW(NAME,NEW_CLASS, _tilde_setup) \
-REAL_EXT(NEW_CLASS, _tilde_setup)
+REAL_NEW(NAME,NEW_CLASS,1) \
+REAL_EXT(NEW_CLASS,1)
 
 //! Implementation of a flext class (part of a library) with no arguments
 #define FLEXT_LIB(NAME,NEW_CLASS) \
-REAL_LIB(NAME,NEW_CLASS, _setup) 
+REAL_LIB(NAME,NEW_CLASS,0) 
 
 //! Implementation of a flext tilde class (part of a library) with no arguments
 #define FLEXT_LIB_DSP(NAME,NEW_CLASS)	\
-REAL_LIB(NAME,NEW_CLASS, _tilde_setup) 
+REAL_LIB(NAME,NEW_CLASS,1) 
 
 
 // VARIABLE ARGUMENT LIST
@@ -79,21 +79,21 @@ REAL_LIB(NAME,NEW_CLASS, _tilde_setup)
 
 //! Implementation of a flext class with a variable argument list
 #define FLEXT_NEW_V(NAME,NEW_CLASS)			\
-REAL_NEW_V(NAME,NEW_CLASS, _setup) \
-REAL_EXT(NEW_CLASS, _setup)
+REAL_NEW_V(NAME,NEW_CLASS,0) \
+REAL_EXT(NEW_CLASS,0)
 
 //! Implementation of a flext tilde class with a variable argument list
 #define FLEXT_NEW_DSP_V(NAME,NEW_CLASS)	\
-REAL_NEW_V(NAME,NEW_CLASS,_tilde_setup) \
-REAL_EXT(NEW_CLASS, _tilde_setup)
+REAL_NEW_V(NAME,NEW_CLASS,1) \
+REAL_EXT(NEW_CLASS, 1)
 
 //! Implementation of a flext class (part of a library) with a variable argument list
 #define FLEXT_LIB_V(NAME,NEW_CLASS)			\
-REAL_LIB_V(NAME,NEW_CLASS, _setup) 
+REAL_LIB_V(NAME,NEW_CLASS, 0) 
 
 //! Implementation of a flext tilde class (part of a library) with a variable argument list
 #define FLEXT_LIB_DSP_V(NAME,NEW_CLASS)	\
-REAL_LIB_V(NAME,NEW_CLASS, _tilde_setup) 
+REAL_LIB_V(NAME,NEW_CLASS, 1) 
 
 
 // ONE ARGUMENT
@@ -101,21 +101,21 @@ REAL_LIB_V(NAME,NEW_CLASS, _tilde_setup)
 
 //! Implementation of a flext class with one argument
 #define FLEXT_NEW_1(NAME,NEW_CLASS, TYPE)		\
-REAL_NEW_1(NAME,NEW_CLASS, _setup, TYPE) \
-REAL_EXT(NEW_CLASS, _setup)
+REAL_NEW_1(NAME,NEW_CLASS, 0, TYPE) \
+REAL_EXT(NEW_CLASS, 0)
 
 //! Implementation of a flext tilde class with one argument
 #define FLEXT_NEW_DSP_1(NAME,NEW_CLASS, TYPE)	\
-REAL_NEW_1(NAME,NEW_CLASS, _tilde_setup, TYPE) \
-REAL_EXT(NEW_CLASS, _tilde_setup)
+REAL_NEW_1(NAME,NEW_CLASS, 1, TYPE) \
+REAL_EXT(NEW_CLASS, 1)
 
 //! Implementation of a flext class (part of a library) with one argument
 #define FLEXT_LIB_1(NAME,NEW_CLASS, TYPE)		\
-REAL_LIB_1(NAME,NEW_CLASS, _setup,TYPE)
+REAL_LIB_1(NAME,NEW_CLASS, 0,TYPE)
 
 //! Implementation of a flext tilde class (part of a library) with one argument
 #define FLEXT_LIB_DSP_1(NAME,NEW_CLASS, TYPE)	\
-REAL_LIB_1(NAME,NEW_CLASS, _tilde_setup, TYPE)
+REAL_LIB_1(NAME,NEW_CLASS, 1, TYPE)
 
 
 // TWO ARGUMENTS
@@ -123,21 +123,21 @@ REAL_LIB_1(NAME,NEW_CLASS, _tilde_setup, TYPE)
 
 //! Implementation of a flext class with two arguments
 #define FLEXT_NEW_2(NAME,NEW_CLASS, TYPE1, TYPE2)			\
-REAL_NEW_2(NAME,NEW_CLASS, _setup, TYPE1, TYPE2) \
-REAL_EXT(NEW_CLASS, _setup)
+REAL_NEW_2(NAME,NEW_CLASS, 0, TYPE1, TYPE2) \
+REAL_EXT(NEW_CLASS, 0)
 
 //! Implementation of a flext tilde class with one argument
 #define FLEXT_NEW_DSP_2(NAME,NEW_CLASS, TYPE1, TYPE2)	\
-REAL_NEW_2(NAME,NEW_CLASS, _tilde_setup, TYPE1, TYPE2) \
-REAL_EXT(NEW_CLASS, _tilde_setup)
+REAL_NEW_2(NAME,NEW_CLASS, 1, TYPE1, TYPE2) \
+REAL_EXT(NEW_CLASS, 1)
 
 //! Implementation of a flext class (part of a library) with two arguments
 #define FLEXT_LIB_2(NAME,NEW_CLASS, TYPE1, TYPE2)		\
-REAL_LIB_2(NAME,NEW_CLASS, _setup, TYPE1, TYPE2)
+REAL_LIB_2(NAME,NEW_CLASS, 0, TYPE1, TYPE2)
 
 //! Implementation of a flext tilde class (part of a library) with two arguments
 #define FLEXT_LIB_DSP_2(NAME,NEW_CLASS, TYPE1, TYPE2)	\
-REAL_LIB_2(NAME,NEW_CLASS, _tilde_setup, TYPE1, TYPE2)
+REAL_LIB_2(NAME,NEW_CLASS, 1, TYPE1, TYPE2)
 
 
 // THREE ARGUMENTS
@@ -145,21 +145,21 @@ REAL_LIB_2(NAME,NEW_CLASS, _tilde_setup, TYPE1, TYPE2)
 
 //! Implementation of a flext class with three arguments
 #define FLEXT_NEW_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3) \
-REAL_NEW_3(NAME,NEW_CLASS, _setup, TYPE1, TYPE2, TYPE3)  \
-REAL_EXT(NEW_CLASS, _setup)
+REAL_NEW_3(NAME,NEW_CLASS, 0, TYPE1, TYPE2, TYPE3)  \
+REAL_EXT(NEW_CLASS, 0)
 
 //! Implementation of a flext tilde class with three arguments
 #define FLEXT_NEW_DSP_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3)	\
-REAL_NEW_3(NAME,NEW_CLASS, _tilde_setup, TYPE1, TYPE2, TYPE3) \
-REAL_EXT(NEW_CLASS, _tilde_setup)
+REAL_NEW_3(NAME,NEW_CLASS, 1, TYPE1, TYPE2, TYPE3) \
+REAL_EXT(NEW_CLASS, 1)
 
 //! Implementation of a flext class (part of a library) with three arguments
 #define FLEXT_LIB_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3)		\
-REAL_LIB_3(NAME,NEW_CLASS, _setup,TYPE1, TYPE2, TYPE3)
+REAL_LIB_3(NAME,NEW_CLASS, 0,TYPE1, TYPE2, TYPE3)
 
 //! Implementation of a flext tilde class (part of a library) with three arguments
 #define FLEXT_LIB_DSP_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3)	\
-REAL_LIB_3(NAME,NEW_CLASS, _tilde_setup, TYPE1, TYPE2, TYPE3)
+REAL_LIB_3(NAME,NEW_CLASS, 1, TYPE1, TYPE2, TYPE3)
 
 
 // deprecated stuff
@@ -173,6 +173,7 @@ REAL_LIB_3(NAME,NEW_CLASS, _tilde_setup, TYPE1, TYPE2, TYPE3)
 #define FLEXT_NEW_TILDE_3 FLEXT_NEW_DSP_3
 #define FLEXT_LIB_TILDE_3 FLEXT_LIB_DSP_3
 
+// deprecated
 #define FLEXT_NEW_G FLEXT_NEW_V
 #define FLEXT_NEW_DSP_G FLEXT_NEW_DSP_V
 #define FLEXT_LIB_G FLEXT_LIB_V
@@ -201,7 +202,7 @@ static void cb_ ## M_FUN(flext_base *c) { static_cast<thisType *>(c)->M_FUN(); }
 static void cb_ ## M_FUN(flext_base *c,t_symbol *s,int argc,t_atom *argv) { static_cast<thisType *>(c)->M_FUN(s,argc,argv); }
 
 //! for gimme
-#define FLEXT_CALLBACK_G(M_FUN) \
+#define FLEXT_CALLBACK_V(M_FUN) \
 static void cb_ ## M_FUN(flext_base *c,int argc,t_atom *argv) { static_cast<thisType *>(c)->M_FUN(argc,argv); }
 
 //! for boolean argument
@@ -248,6 +249,10 @@ static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,T
 //! 1 symbol argument
 #define FLEXT_CALLBACK_S(M_FUN) FLEXT_CALLBACK_1(M_FUN,t_symptr)
 
+
+// deprecated
+#define FLEXT_CALLBACK_G FLEXT_CALLBACK_V
+
 //@} FLEXT_CALLBACKS
 
 
@@ -292,7 +297,7 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 } 
 
 //! for gimme
-#define FLEXT_THREAD_G(M_FUN) \
+#define FLEXT_THREAD_V(M_FUN) \
 static void cb_ ## M_FUN(flext_base *c,int argc,t_atom *argv) {  \
 	thr_params *p = new thr_params(c); p->set_gimme(argc,argv); \
 	StartThread(thr_ ## M_FUN,p,#M_FUN); \
@@ -461,6 +466,9 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 
 //! 1 symbol argument
 #define FLEXT_THREAD_S(M_FUN) FLEXT_THREAD_1(M_FUN,t_symptr)
+
+// deprecated
+#define FLEXT_THREAD_G FLEXT_THREAD_V
 
 #endif // FLEXT_THREADS
 

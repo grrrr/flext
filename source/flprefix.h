@@ -298,6 +298,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 // ----- set threading model -----
+// shared builds are always threaded (although this not be so....)
+#ifdef FLEXT_SHARED
+	#undef FLEXT_THREADS
+	#define	FLEXT_THREADS
+#endif
+
 #ifdef FLEXT_THREADS
 	#undef FLEXT_THREADS
 	#if FLEXT_OS == FLEXT_OS_MAC && FLEXT_SYS == FLEXT_SYS_MAX

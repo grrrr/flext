@@ -986,7 +986,6 @@ protected:
 #else
 #define FLEXT_SETUPFUNC SetupSingle
 #endif
-
 	static void FLEXT_SETUPFUNC();
 
 	static bool chktilde(const char *objname);

@@ -652,6 +652,8 @@ protected:
 		bool IsGet() const { return (flags&afl_getset) == afl_get; }
 		bool IsSet() const { return (flags&afl_getset) == afl_set; }
 		bool BothExist() const { return (flags&afl_bothexist) != 0; }
+		void SetSave(bool s) { if(s) flags  |= afl_save; else flags &= ~afl_save; }
+		bool IsSaved() const { return (flags&afl_save) != 0; }
 
 		int flags;
 		metharg argtp;
@@ -743,7 +745,7 @@ private:
 
 	itemarr *attrhead,*clattrhead;
 
-	attritem *FindAttr(const t_symbol *tag,bool get) const;
+	attritem *FindAttrib(const t_symbol *tag,bool get,bool msg = false) const;
 
 	static int CheckAttrib(int argc,const t_atom *argv);
 	bool InitAttrib(int argc,const t_atom *argv);
@@ -754,6 +756,9 @@ private:
 	bool GetAttrib(attritem *a,AtomList &l) const;
 	bool SetAttrib(const t_symbol *s,int argc,const t_atom *argv);
 	bool SetAttrib(attritem *a,int argc,const t_atom *argv);
+
+	void SetAttribSave(attritem *a,bool save);
+	bool GetAttribSave(attritem *a) const { return a->IsSaved(); }
 
 	static bool cb_ListMethods(flext_base *c,int argc,const t_atom *argv);
 	static bool cb_ListAttrib(flext_base *c) { return c->ListAttrib(); }
@@ -766,6 +771,17 @@ private:
 	static void QFlush(flext_base *th = NULL);
 
 #if FLEXT_SYS == FLEXT_SYS_PD
+
+#if !defined(FLEXT_NOATTREDIT)
+	// attribute editor
+	static void SetAttrEditor(t_classid c);
+
+	static bool cb_AttrDialog(flext_base *c,int argc,const t_atom *argv);
+	static void cb_GfxProperties(t_gobj *c, t_glist *);
+	static void cb_GfxVis(t_gobj *c, t_glist *gl, int vis);
+	static void cb_GfxSave(t_gobj *c, t_binbuf *b);
+#endif
+
 	// proxy object (for additional inlets)
 	static t_class *px_class;
 

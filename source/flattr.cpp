@@ -156,7 +156,11 @@ bool flext_base::InitAttrib(int argc,const t_atom *argv)
 			if(IsString(argv[nxt]) && *GetString(argv[nxt]) == '@') break;
 
 		const t_symbol *tag = MakeSymbol(GetString(argv[cur])+1);
-		SetAttrib(tag,nxt-cur-1,argv+cur+1);
+		attritem *attr = FindAttrib(tag,false,true);
+		if(attr) {
+			if(SetAttrib(attr,nxt-cur-1,argv+cur+1))
+				SetAttribSave(attr,true);
+		}
 	}
 	return true;
 }
@@ -193,7 +197,7 @@ bool flext_base::cb_ListMethods(flext_base *c,int argc,const t_atom *argv)
 		return false;
 }
 
-flext_base::attritem *flext_base::FindAttr(const t_symbol *tag,bool get) const
+flext_base::attritem *flext_base::FindAttrib(const t_symbol *tag,bool get,bool msg) const
 {
     // first search within object scope
 	attritem *a = (attritem *)attrhead->Find(tag);
@@ -204,19 +208,22 @@ flext_base::attritem *flext_base::FindAttr(const t_symbol *tag,bool get) const
 		a = (attritem *)clattrhead->Find(tag);	
 		while(a && (a->tag != tag || a->inlet != 0 || (get?a->IsSet():a->IsGet()))) a = (attritem *)a->nxt;
 	}
+
+	if(!a && msg) {
+		// print a message
+		error("%s - %s: attribute not found",thisName(),GetString(tag));
+	}
 	return a;
 }
 
 bool flext_base::SetAttrib(const t_symbol *tag,int argc,const t_atom *argv)
 {
 	// search for matching attribute
-	attritem *a = FindAttr(tag,false);
+	attritem *a = FindAttrib(tag,false,true);
 	if(a) 
 		return SetAttrib(a,argc,argv);
-	else {
-		error("%s - %s: attribute not found",thisName(),GetString(tag));
+	else
 		return true;
-	}
 }
 
 bool flext_base::SetAttrib(attritem *a,int argc,const t_atom *argv)
@@ -323,13 +330,25 @@ bool flext_base::GetAttrib(attritem *a)
 
 bool flext_base::GetAttrib(const t_symbol *s,AtomList &a) const
 {
-	attritem *attr = FindAttr(s,true);
+	attritem *attr = FindAttrib(s,true);
 	return attr && GetAttrib(attr,a);
 }
 
 
 bool flext_base::DumpAttrib(const t_symbol *attr) const
 {
-	attritem *item = FindAttr(attr,true);
+	attritem *item = FindAttrib(attr,true);
 	return item && const_cast<flext_base *>(this)->GetAttrib(item);
+}
+
+void flext_base::SetAttribSave(attritem *a,bool save)
+{
+	a->SetSave(save);
+	if(a->BothExist()) {
+		// find opposite attribute item
+		attritem *b = FindAttrib(a->tag,!a->IsGet());
+		FLEXT_ASSERT(b != NULL);
+
+		b->SetSave(save);
+	}
 }

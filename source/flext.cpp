@@ -157,6 +157,11 @@ void flext_base::Setup(t_classid id)
 	if(process_attributes) {
 		AddMethod(id,0,"getattributes",cb_ListAttrib);
 		AddMethod(id,0,"getmethods",cb_ListMethods);
+
+#if FLEXT_SYS == FLEXT_SYS_PD && !defined(FLEXT_NOATTREDIT)
+		AddMethod(id,0,"attributedialog",cb_AttrDialog);
+		SetAttrEditor(id);
+#endif
 	}
 
 	SetProxies(c);

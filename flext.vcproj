@@ -1203,6 +1203,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\source\flattr_ed.cpp">
+			</File>
+			<File
 				RelativePath="source\flbind.cpp">
 				<FileConfiguration
 					Name="Threads DLL Debug|Win32">

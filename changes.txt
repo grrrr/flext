@@ -15,6 +15,7 @@ Version history:
 
 0.5.0:
 - added some more SIMD functions
+- PD attributes: added a TCL/TK editor dialog ("properties") and save attributes to patcher
 - fixed wrong returned result of flext::buffer::set function
 - fix for linux static exported function name-clash (individual linker namings for exported flext base classes)
 - made message queue stuff global (static) for all flext objects

@@ -1,4 +1,4 @@
-SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flattr.cpp flsupport.cpp \
+SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flattr.cpp flattr_ed.cpp flsupport.cpp \
 flutil.cpp flatom.cpp flatom_pr.cpp flthr.cpp fltimer.cpp flsimd.cpp flout.cpp \
 flatom_app.cpp flatom_part.cpp flitem.cpp flmeth.cpp flmsg.cpp \
 flproxy.cpp flqueue.cpp flbind.cpp

@@ -144,7 +144,7 @@ public:
 
     inline Cell *Pop() 
     {
-	    cell*	v=0;
+	    Cell *v=0;
 	    __asm__ __volatile__ (
 		    "# LFPOP 					\n\t"
 		    "pushl	%%ebx				\n\t"
@@ -170,7 +170,7 @@ public:
 	    return v;
     }
 
-    inline size_t Size() 
+    inline size_t Size() const 
     {
 	    size_t n;
 	    __asm__ __volatile__ (

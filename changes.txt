@@ -24,6 +24,7 @@ Version history:
 - flext::StopThread function to terminate running threads (started with LaunchThread)
 - added flext::post() and flext::error() console printing (thread-safe)
 - added flext::CmpAtom and AtomList::operator < methods ... useful for using lists as keys for STL
+- make use of new PD thread locking (PD functions sys_lock() and sys_unlock())
 
 0.4.4:
 - fixed deadly bug for Max/MSP method-to-symbol-binding proxies

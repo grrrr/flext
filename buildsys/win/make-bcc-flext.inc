@@ -3,7 +3,7 @@
 ##############################################
 
 # default target
-build: $(TARGET)
+build: $(TARGET) 
 
 $(OUTPATH):
 	if not exist $@ mkdir $@ > nul
@@ -12,26 +12,36 @@ $(TARGETPATH): $(OUTPATH)
 	if not exist $@ mkdir $@ > nul
 
 {$(SRCDIR)}.cpp{}.obj:
-	cl /c /LD $(CFLAGS) $(DEFS) $(INCPATH) $** /Fo$(TARGETPATH)\$@
+	bcc32 -c $(CFLAGS) $(DEFS) $(INCPATH) -n$(TARGETPATH) $<
 
 {$(SRCDIR)}.c{}.obj:
-	cl /c /LD $(CFLAGS) $(DEFS) $(INCPATH) $** /Fo$(TARGETPATH)\$@
+	bcc32 -c $(CFLAGS) $(DEFS) $(INCPATH) -n$(TARGETPATH) $<
 
 
-$(TARGET):: $(TARGETPATH)
+$(TARGETPATH)\pd.lib : $(PDPATH)\bin\pd.dll
+	implib -a $< $**
 
-$(TARGET):: $(OBJS)
+$(TARGETPATH)\pthreadVC.lib : $(PDPATH)\bin\pthreadVC.dll
+	implib -a $< $**
+
+PDTARGETS=$(TARGETPATH)\pd.lib $(TARGETPATH)\pthreadVC.lib
+
+
+$(TARGET) :: $(TARGETPATH) $(PDTARGETS)
+
+$(TARGET) :: $(OBJS)
 	@cd $(TARGETPATH)
 !ifdef SHARED
-	link /DLL $(LDFLAGS) $(LIBPATH) $(OBJS) $(LIBS) /out:$(@F)
+	ilink32 $(LDFLAGS) $(LIBPATH) -L. $(OBJS) ,$(<F),,$(LIBS)
+	implib -a $(<B).lib $(<F)
 !else
-	lib /OUT:$(@F) $(OBJS)
+	-del $(<F)
+	tlib "$(<F)" +$(OBJS: = +)
 !endif
 	@cd ..\..
 
 ##############################################
 
-# remove build
 clean:
 	-del /q $(TARGET) > nul
 	-cd $(TARGETPATH)
@@ -48,12 +58,23 @@ FLEXTLIBINST=$(FLEXTLIB)
 $(FLEXTINC):
 	if not exist $@ mkdir $@ > nul
 
+#install:: $(FLEXTINC)
+
+!if "$(FLEXTINC)" != "$(FLEXTLIB)"
+$(FLEXTLIB):
+	if not exist $@ mkdir $@ > nul
+
+install:: $(FLEXTLIB)
+!endif
+
+!if "$(FLEXTLIBINST)" != "$(FLEXTLIB)" && "$(FLEXTLIBINST)" != "$(FLEXTINC)"
 $(FLEXTLIBINST):
 	if not exist $@ mkdir $@ > nul
 
-install:: $(FLEXTINC) $(FLEXTLIBINST) $(FLEXTLIB)
+install:: $(FLEXTLIBINST)
+!endif
 
-install::
+install:: $(FLEXTINC)
 	copy $(TARGET) $(FLEXTLIBINST) > nul
 !ifdef SHARED
 # copy import library
@@ -61,3 +82,5 @@ install::
 !endif
 # copy headers
 	for %%i in ($(HDRS)) do @copy $(SRCDIR)\%%i $(FLEXTINC) > nul	
+# copy import libraries
+	for %%i in ($(PDTARGETS)) do @copy %%i $(FLEXTLIBINST) > nul	

@@ -9,11 +9,8 @@ TARGETPATH=$(OUTPATH)\$(OUTSUB)
 TARGET=$(TARGETPATH)\$(OUTNAME).$(EXT)
 
 ##############################################
-
-# for VC7 - enable exception handling
-CFLAGS=$(CFLAGS) /EHsc 
-
 # use precompiled headers (automatic mode)
+
 !ifndef PRECOMPILE
 CFLAGS=$(CFLAGS) /YXflext.h
 !else
@@ -24,12 +21,36 @@ CFLAGS=$(CFLAGS) /Fp$(TARGETPATH)\precompiled.pch
 
 ##############################################
 
+# create code for DLL
+CFLAGS=$(CFLAGS) /LD
+
+# enable exception handling
+CFLAGS=$(CFLAGS) /GX
+
+##############################################
+
 !ifdef DEBUG
-CFLAGS=$(CFLAGS) /D_DEBUG /DMTd
-LDFLAGS=$(LDFLAGS) /DEBUG
+
+CFLAGS=$(CFLAGS) /D_DEBUG
+!ifdef DYNAMIC
+CFLAGS=$(CFLAGS) /MDd
 !else
-CFLAGS=$(CFLAGS) $(OFLAGS) /DNDEBUG /DMT
+CFLAGS=$(CFLAGS) /MTd
+!endif
+
+LDFLAGS=$(LDFLAGS) /DEBUG
+
+!else
+
+CFLAGS=$(CFLAGS) $(OFLAGS) /DNDEBUG
+!ifdef DYNAMIC
+CFLAGS=$(CFLAGS) /MD
+!else
+CFLAGS=$(CFLAGS) /MT
+!endif
+
 LDFLAGS=$(LDFLAGS) /INCREMENTAL:NO 
+
 !endif
 
 ##############################################

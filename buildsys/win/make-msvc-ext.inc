@@ -16,10 +16,10 @@ $(TARGETPATH): $(OUTPATH)
 	if not exist $@ mkdir $@ > nul
 
 {$(SRCDIR)}.cpp{}.obj:
-	cl /c /LD $(CFLAGS) $(DEFS) $(INCPATH) $** /Fo$(TARGETPATH)\$@
+	cl /c $(CFLAGS) $(DEFS) $(INCPATH) $** /Fo$(TARGETPATH)\$@
 
 {$(SRCDIR)}.c{}.obj:
-	cl /c /LD $(CFLAGS) $(DEFS) $(INCPATH) $** /Fo$(TARGETPATH)\$@
+	cl /c $(CFLAGS) $(DEFS) $(INCPATH) $** /Fo$(TARGETPATH)\$@
 
 $(TARGET):: $(TARGETPATH)
 
@@ -29,8 +29,8 @@ $(TARGET):: $(OBJS)
 	@cd ..\..
 
 ##############################################
-
 # remove build
+
 clean:
 	-del /q $(TARGET) > nul
 	-cd $(TARGETPATH)

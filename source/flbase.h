@@ -218,10 +218,6 @@ class FLEXT_SHARE flext_obj:
         //! Flag for successful object construction
         bool				init_ok;
 
-	    // --- proxy stuff for symbol-bound methods ----
-	    
-		static void SetupBindProxy();
-
 	public:
 
     	//! Creation callback

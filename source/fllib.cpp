@@ -192,33 +192,10 @@ flext_obj::t_classid flext_obj::thisClassId() const { return libname::Find(thisN
 t_class *flext_obj::getClass(t_classid id) { return reinterpret_cast<libobject *>(id)->clss; }
 #endif
 
-/*! \brief Set up the proxy class for symbol-bound methods
-	\note This has to take place before the main class is set up because
-	\note Max does not know which class is the current one afterwards (when methods are added)
-*/
-void flext_obj::SetupBindProxy()
-{
-	// already initialized?
-	if(!flext_base::pxbnd_class) {
-#if FLEXT_SYS == FLEXT_SYS_PD
-    	flext_base::pxbnd_class = class_new(gensym("flext_base bind proxy"),NULL,NULL,sizeof(flext_base::pxbnd_object),CLASS_PD|CLASS_NOINLET, A_NULL);
-		add_anything(flext_base::pxbnd_class,flext_base::pxbnd_object::px_method); // for symbol-bound methods
-#elif FLEXT_SYS == FLEXT_SYS_MAX
-		::setup((t_messlist **)&flext_base::pxbnd_class,NULL,NULL,sizeof(flext_base::pxbnd_object),NULL,A_NULL);
-		add_anything(flext_base::pxbnd_class,flext_base::pxbnd_object::px_method); // for symbol-bound methods
-#else
-#pragma warning("Not implemented!")
-#endif
-	}
-}
-
-
 void flext_obj::lib_init(const char *name,void setupfun(),bool attr)
 {
     flext::Setup();
 
-	SetupBindProxy();
-	
 #if FLEXT_SYS == FLEXT_SYS_MAX
 	lib_name = MakeSymbol(name);
 	::setup(
@@ -239,9 +216,6 @@ static void jmax_class_inst(t_class *cl)
 
 void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const char *names,void setupfun(t_classid),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...)
 {
-    // set up bind proxy
-	SetupBindProxy();
-	
 	// get first possible object name
 	const t_symbol *nsym = MakeSymbol(extract(names));
 	

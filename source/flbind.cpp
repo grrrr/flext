@@ -18,6 +18,44 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 t_class *flext_base::pxbnd_class = NULL;
 
+#if FLEXT_SYS == FLEXT_SYS_MAX
+t_object *px_freelist = NULL;
+t_messlist px_messlist[3];
+#endif
+
+/*! \brief Set up the proxy class for symbol-bound methods
+*/
+void flext_base::SetupBindProxy()
+{
+	// already initialized?
+	if(!pxbnd_class) {
+#if FLEXT_SYS == FLEXT_SYS_PD
+    	pxbnd_class = class_new(gensym("flext_base bind proxy"),NULL,NULL,sizeof(pxbnd_object),CLASS_PD|CLASS_NOINLET, A_NULL);
+		add_anything(pxbnd_class,pxbnd_object::px_method); // for symbol-bound methods
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+		pxbnd_class = new t_class;
+
+		pxbnd_class->c_sym = gensym("");
+		pxbnd_class->c_freelist = &px_freelist;
+		pxbnd_class->c_freefun = NULL;
+		pxbnd_class->c_size = sizeof(pxbnd_object);
+		pxbnd_class->c_tiny = 0;
+		pxbnd_class->c_noinlet = 1;
+		px_messlist[0].m_sym = (t_symbol *)pxbnd_class;
+
+		px_messlist[1].m_sym = gensym("anything");
+		px_messlist[1].m_fun = (method)pxbnd_object::px_method;
+		px_messlist[1].m_type[0] = A_GIMME;
+		px_messlist[1].m_type[1] = 0;
+
+		px_messlist[2].m_sym = 0;
+#else
+#pragma warning("Not implemented!")
+#endif
+	}
+}
+
+
 flext_base::binditem::binditem(int in,const t_symbol *sym,bool (*f)(flext_base *,t_symbol *s,int,t_atom *,void *data),pxbnd_object *p):
 	item(sym,0,NULL),fun(f),px(p)
 {}
@@ -35,9 +73,15 @@ bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbo
         }
     }
 
-    FLEXT_ASSERT(pxbnd_class); 
+    SetupBindProxy(); 
 
+#if FLEXT_SYS == FLEXT_SYS_PD
     pxbnd_object *px = (pxbnd_object *)object_new(pxbnd_class);
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+    pxbnd_object *px = (pxbnd_object *)newobject(px_messlist);
+#else
+#pragma warning("Not implemented!")
+#endif
 
     if(px) {
 	    binditem *mi = new binditem(0,sym,fun,px);

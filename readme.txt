@@ -115,6 +115,7 @@ see flext.h, fldefs.h and flclass.h for the documented base definitions and clas
 Version history:
 
 0.4.4:
+- fix deadly bug for Max/MSP method-to-symbol-binding proxies
 - some fixes for CodeWarrior Mach-O compilation 
 
 0.4.3:

@@ -774,6 +774,8 @@ private:
 		static void px_method(pxbnd_object *c,const t_symbol *s,int argc,t_atom *argv);
 	};
 		
+	static void SetupBindProxy();
+
 	// ---------
 
 	static void SetProxies(t_class *c);

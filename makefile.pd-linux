@@ -18,8 +18,8 @@ INSTDIR=/usr/lib/pd/flext
 # compiler+linker stuff ### EDIT! ###
 INCLUDES=/usr/lib/pd/include
 FLAGS=-DPD
-CFLAGS=-O6 -mpentium
-CFLAGS_D=-mpentium -g
+CFLAGS=-O6 -mcpu=pentium
+CFLAGS_D=-mcpu=pentium -g
 LIBS=
 
 # the rest can stay untouched
@@ -68,6 +68,7 @@ install:: $(TARGET) $(TARGET_D) $(HDRS)
 clean:
 	rm -f $(TARGDIR)/*.o $(TARGET) $(TARGET_D)
 	
+
 
 
 

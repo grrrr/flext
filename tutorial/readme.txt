@@ -5,13 +5,10 @@ Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
-This package seeks to encourage the development of open source software
-for the pd and Max/MSP platforms.
-
 ----------------------------------------------------------------------------
 
-These are a few examples to demonstrate some flext features
-Contribution of examples to the package are higly appreciated!
+These are a few examples to demonstrate some flext features.
+Contribution of examples to the package is higly appreciated!
 
 ----------------------------------------------------------------------------
 
@@ -33,7 +30,7 @@ Max/MSP - MacOS 9:
 ------------------
 o Metrowerks CodeWarrior V6: edit & use the several ".cw" project files
 
-o Apple MPW-PR: edit & use the "flext-tut.mpw" makefile
+o Apple MPW-PR: edit & use the several "make.mpw" makefiles
 
 ----------------------------------------------------------------------------
 

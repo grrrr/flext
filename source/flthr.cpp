@@ -43,8 +43,23 @@ bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *me
 		init = true;
 	}
 
+	// set thread priority one point below normal
+	// so thread construction won't disturb real-time audio
+	pthread_t id = pthread_self();
+	sched_param parm;
+	int policy;
+	pthread_getschedparam(id,&policy,&parm);
+	int prio = parm.sched_priority;
+	parm.sched_priority = prio-1;
+	pthread_setschedparam(id,policy,&parm);
+
 	pthread_t thrid; 
 	int ret = pthread_create (&thrid,&attr,(void *(*)(void *))meth,p);
+
+	// set thread priority back to normal
+	parm.sched_priority = prio;
+	pthread_setschedparam(id,policy,&parm);
+
 	if(ret) { 
 #ifdef _DEBUG	
 		error((char *)(ret == EAGAIN?"%s - Unsufficient resources to launch thread!":"%s - Could not launch method!"),methname); 
@@ -66,10 +81,19 @@ bool flext_base::PushThread()
 {
 	tlmutex.Lock();
 
+	// make an entry into thread list
 	thr_entry *nt = new thr_entry;
 	if(thrtail) thrtail->nxt = nt; 
 	else thrhead = nt;
 	thrtail = nt;
+
+	// set initial detached thread priority two points below normal
+	sched_param parm;
+	int policy;
+	pthread_getschedparam(nt->thrid,&policy,&parm);
+	int prio = parm.sched_priority;
+	parm.sched_priority = prio-2;
+	pthread_setschedparam(nt->thrid,policy,&parm);
 
 	tlmutex.Unlock();
 	
@@ -119,11 +143,16 @@ void flext_base::YTick(flext_base *th) {
 #endif
 
 
-bool flext_base::ChangePriority(int dp,pthread_t id)
+flext_base::thrid_t flext_base::GetThreadId() 
+{ 
+	return pthread_self(); 
+}
+
+bool flext_base::ChangePriority(int dp,thrid_t id)
 {
 	sched_param parm;
 	int policy;
-	if(pthread_getschedparam(id,&policy,&parm)) {
+	if(pthread_getschedparam(id,&policy,&parm) < 0) {
 #ifdef _DEBUG
 		post("flext - failed to get parms");
 #endif
@@ -131,7 +160,44 @@ bool flext_base::ChangePriority(int dp,pthread_t id)
 	}
 	else {
 		parm.sched_priority += dp;
-		if(pthread_setschedparam(id,policy,&parm)) {
+		if(pthread_setschedparam(id,policy,&parm) < 0) {
+#ifdef _DEBUG		
+			post("flext - failed to change priority");
+#endif
+			return false;
+		}
+	}
+	return true;
+}
+
+
+int flext_base::GetPriority(thrid_t id)
+{
+	sched_param parm;
+	int policy;
+	if(pthread_getschedparam(id,&policy,&parm) < 0) {
+#ifdef _DEBUG
+		post("flext - failed to get parms");
+#endif
+		return -1;
+	}
+	return parm.sched_priority;
+}
+
+
+bool flext_base::SetPriority(int p,thrid_t id)
+{
+	sched_param parm;
+	int policy;
+	if(pthread_getschedparam(id,&policy,&parm) < 0) {
+#ifdef _DEBUG
+		post("flext - failed to get parms");
+#endif
+		return false;
+	}
+	else {
+		parm.sched_priority = p;
+		if(pthread_setschedparam(id,policy,&parm) < 0) {
 #ifdef _DEBUG		
 			post("flext - failed to change priority");
 #endif

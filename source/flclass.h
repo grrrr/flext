@@ -491,13 +491,24 @@ public:
 	;
 #endif
 
-	/*! \brief Increase/Decrease priority of the current thread
+	typedef pthread_t thrid_t;
+
+	/*! \brief Increase/Decrease priority of a thread
 	*/
-	static bool ChangePriority(int dp,pthread_t thr = pthread_self());
+	static bool ChangePriority(int dp,thrid_t thr = GetThreadId());
+
+	/*! \brief Get priority of a thread
+	*/
+	static int GetPriority(thrid_t thr = GetThreadId());
+
+	/*! \brief Set priority of a thread
+	*/
+	static bool SetPriority(int p,thrid_t thr = GetThreadId());
 
 	/*! \brief Get current thread id
 	*/
-	static pthread_t GetThreadId() { return pthread_self(); }
+	static thrid_t GetThreadId();
+
 
 	/*! \brief Thread mutex
 		\sa pthreads documentation

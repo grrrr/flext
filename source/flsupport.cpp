@@ -20,6 +20,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #ifdef _MSC_VER
 #define vsnprintf _vsnprintf
+#define snprintf _snprintf
 #endif
 
 const t_symbol *flext::sym_float = NULL;
@@ -267,7 +268,7 @@ void flext::GetAString(const t_atom &a,char *buf,int szbuf)
 #if FLEXT_SYS == FLEXT_SYS_PD
 	atom_string(const_cast<t_atom *>(&a),buf,szbuf);
 #else
-    if(IsSymbol(a)) STD::strncpy(buf,szbuf,GetString(a));
+    if(IsSymbol(a)) STD::strncpy(buf,GetString(a),szbuf);
 	else if(IsFloat(a)) STD::snprintf(buf,szbuf,"%f",GetFloat(a));
 	else if(IsInt(a)) STD::snprintf(buf,szbuf,"%i",GetInt(a));
     else *buf = 0;
@@ -281,26 +282,6 @@ unsigned long flext::AtomHash(const t_atom &a)
 #else
 #error Not implemented
 #endif
-}
-
-
-void flext_root::print(const char *fmt, ...)
-{
-	va_list ap;
-    va_start(ap, fmt);
-
-	char buf[1024];
-    vsnprintf(buf,sizeof buf,fmt, ap);
-	buf[sizeof buf-1] = 0; // in case of full buffer
-#if FLEXT_SYS == FLEXT_SYS_PD
-	::startpost(buf); // omit line feed
-#elif FLEXT_SYS == FLEXT_SYS_MAX
-	::drawstr(buf);
-#else
-#error Not implemented
-#endif
-
-    va_end(ap);
 }
 
 void flext_root::post(const char *fmt, ...)

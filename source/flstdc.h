@@ -111,7 +111,7 @@ typedef t_int t_flint;
 typedef t_symbol *t_symtype;
 typedef t_object *t_thing;
 
-typedef qelem t_qelem;
+typedef void *t_qelem;
 
 typedef method t_method;
 typedef method t_newmethod;

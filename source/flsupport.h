@@ -35,8 +35,6 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_root) {
 public:
 // --- console output -----------------------------------------------	
 
-		//! post message to console (limited to 1k chars!)
-		static void print(const char *fmt,...);
 		//! post message to console, with line feed (limited to 1k chars!)
 		static void post(const char *fmt,...);
 		//! post error message to console (limited to 1k chars!)

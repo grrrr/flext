@@ -718,22 +718,6 @@ private:
 		static void px_method(px_object *c,const t_symbol *s,int argc,t_atom *argv);
 	};
 
-	friend struct px_object;
-
-    // proxy object for symbol-bound methods
-	static t_class *pxbnd_class;
-
-	class pxbnd_object  // no virtual table!
-	{ 
-    public:
-		t_object obj;			// MUST reside at memory offset 0
-		flext_base *base;
-		binditem *item;
-
-		void init(flext_base *b,binditem *it) { base = b; item = it; }
-		static void px_method(pxbnd_object *c,const t_symbol *s,int argc,t_atom *argv);
-	};
-
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	typedef object px_object;
 	static void cb_px_float(t_class *c,float f);
@@ -768,6 +752,25 @@ private:
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
 	static void jmax_proxy(fts_object_t *c, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at);
 #endif
+
+
+
+    // --- proxy stuff for symbol-bound methods ----
+    
+	static t_class *pxbnd_class;
+
+	class pxbnd_object  // no virtual table!
+	{ 
+    public:
+		t_object obj;			// MUST reside at memory offset 0
+		flext_base *base;
+		binditem *item;
+
+		void init(flext_base *b,binditem *it) { base = b; item = it; }
+		static void px_method(pxbnd_object *c,const t_symbol *s,int argc,t_atom *argv);
+	};
+
+	// ---------
 
 	static void SetProxies(t_class *c);
 

@@ -25,7 +25,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #if FLEXT_SYS == FLEXT_SYS_PD
 
 #define object_new(clss) pd_new(clss)
-#define object_free(obj) pd_free(&(obj).ob_pd)
+#define object_free(obj) pd_free(&(obj)->ob_pd)
 				
 
 
@@ -68,16 +68,11 @@ typedef t_perfroutine t_dspmethod;
 
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 
-/*
-typedef void _inlet;
-typedef _inlet t_inlet;
-*/
-  
 typedef void t_outlet;
-//typedef _outlet t_outlet;
 
-#define object_new(clss) pd_new(clss)
-#define object_free(obj) freeobject((object *)obj)
+
+#define object_new(clss) newobject(clss)
+#define object_free(obj) freeobject((object *)(obj))
 
 #define add_dsp(clss,meth) addmess((method)meth,"dsp",A_CANT,A_NOTHING)
 #define add_bang(clss,meth) addbang((method)meth)

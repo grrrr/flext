@@ -72,14 +72,14 @@ bool flext_base::UnbindMethod(const t_symbol *sym)
 #if FLEXT_SYS == FLEXT_SYS_PD
     	    pd_unbind(&px->obj.ob_pd,const_cast<t_symbol *>(sym)); 
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-    	    if(s->s_thing == (t_object *)px) 
-                const_cast<t_symbol *>(s)->s_thing = NULL; 
+    	    if(sym->s_thing == (t_object *)px) 
+                const_cast<t_symbol *>(sym)->s_thing = NULL; 
             else
                 error("%s - Binding not found",thisName());
 #else
 #           pragma warning("Not implemented")
 #endif
-            object_free(px->obj);
+            object_free(&px->obj);
             delete it;
         }
         return ok;

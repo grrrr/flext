@@ -61,7 +61,7 @@ REAL_NEW(NAME,NEW_CLASS, _setup)  \
 REAL_EXT(NEW_CLASS, _setup)
 
 //! Implementation of a flext tilde class with no arguments
-#define FLEXT_NEW_TILDE(NAME,NEW_CLASS)	\
+#define FLEXT_NEW_DSP(NAME,NEW_CLASS)	\
 REAL_NEW(NAME,NEW_CLASS, _tilde_setup) \
 REAL_EXT(NEW_CLASS, _tilde_setup)
 
@@ -70,8 +70,30 @@ REAL_EXT(NEW_CLASS, _tilde_setup)
 REAL_LIB(NAME,NEW_CLASS, _setup) 
 
 //! Implementation of a flext tilde class (part of a library) with no arguments
-#define FLEXT_LIB_TILDE(NAME,NEW_CLASS)	\
+#define FLEXT_LIB_DSP(NAME,NEW_CLASS)	\
 REAL_LIB(NAME,NEW_CLASS, _tilde_setup) 
+
+
+// VARIABLE ARGUMENT LIST
+// ----------------------------------------
+
+//! Implementation of a flext class with a variable argument list
+#define FLEXT_NEW_V(NAME,NEW_CLASS)			\
+REAL_NEW_V(NAME,NEW_CLASS, _setup) \
+REAL_EXT(NEW_CLASS, _setup)
+
+//! Implementation of a flext tilde class with a variable argument list
+#define FLEXT_NEW_DSP_V(NAME,NEW_CLASS)	\
+REAL_NEW_V(NAME,NEW_CLASS,_tilde_setup) \
+REAL_EXT(NEW_CLASS, _tilde_setup)
+
+//! Implementation of a flext class (part of a library) with a variable argument list
+#define FLEXT_LIB_V(NAME,NEW_CLASS)			\
+REAL_LIB_V(NAME,NEW_CLASS, _setup) 
+
+//! Implementation of a flext tilde class (part of a library) with a variable argument list
+#define FLEXT_LIB_DSP_V(NAME,NEW_CLASS)	\
+REAL_LIB_V(NAME,NEW_CLASS, _tilde_setup) 
 
 
 // ONE ARGUMENT
@@ -83,7 +105,7 @@ REAL_NEW_1(NAME,NEW_CLASS, _setup, TYPE) \
 REAL_EXT(NEW_CLASS, _setup)
 
 //! Implementation of a flext tilde class with one argument
-#define FLEXT_NEW_TILDE_1(NAME,NEW_CLASS, TYPE)	\
+#define FLEXT_NEW_DSP_1(NAME,NEW_CLASS, TYPE)	\
 REAL_NEW_1(NAME,NEW_CLASS, _tilde_setup, TYPE) \
 REAL_EXT(NEW_CLASS, _tilde_setup)
 
@@ -92,30 +114,8 @@ REAL_EXT(NEW_CLASS, _tilde_setup)
 REAL_LIB_1(NAME,NEW_CLASS, _setup,TYPE)
 
 //! Implementation of a flext tilde class (part of a library) with one argument
-#define FLEXT_LIB_TILDE_1(NAME,NEW_CLASS, TYPE)	\
+#define FLEXT_LIB_DSP_1(NAME,NEW_CLASS, TYPE)	\
 REAL_LIB_1(NAME,NEW_CLASS, _tilde_setup, TYPE)
-
-
-// GIMME ARGUMENT
-// ----------------------------------------
-
-//! Implementation of a flext class with a variable argument list
-#define FLEXT_NEW_G(NAME,NEW_CLASS)			\
-REAL_NEW_G(NAME,NEW_CLASS, _setup) \
-REAL_EXT(NEW_CLASS, _setup)
-
-//! Implementation of a flext tilde class with a variable argument list
-#define FLEXT_NEW_TILDE_G(NAME,NEW_CLASS)	\
-REAL_NEW_G(NAME,NEW_CLASS,_tilde_setup) \
-REAL_EXT(NEW_CLASS, _tilde_setup)
-
-//! Implementation of a flext class (part of a library) with a variable argument list
-#define FLEXT_LIB_G(NAME,NEW_CLASS)			\
-REAL_LIB_G(NAME,NEW_CLASS, _setup) 
-
-//! Implementation of a flext tilde class (part of a library) with a variable argument list
-#define FLEXT_LIB_TILDE_G(NAME,NEW_CLASS)	\
-REAL_LIB_G(NAME,NEW_CLASS, _tilde_setup) 
 
 
 // TWO ARGUMENTS
@@ -127,7 +127,7 @@ REAL_NEW_2(NAME,NEW_CLASS, _setup, TYPE1, TYPE2) \
 REAL_EXT(NEW_CLASS, _setup)
 
 //! Implementation of a flext tilde class with one argument
-#define FLEXT_NEW_TILDE_2(NAME,NEW_CLASS, TYPE1, TYPE2)	\
+#define FLEXT_NEW_DSP_2(NAME,NEW_CLASS, TYPE1, TYPE2)	\
 REAL_NEW_2(NAME,NEW_CLASS, _tilde_setup, TYPE1, TYPE2) \
 REAL_EXT(NEW_CLASS, _tilde_setup)
 
@@ -136,7 +136,7 @@ REAL_EXT(NEW_CLASS, _tilde_setup)
 REAL_LIB_2(NAME,NEW_CLASS, _setup, TYPE1, TYPE2)
 
 //! Implementation of a flext tilde class (part of a library) with two arguments
-#define FLEXT_LIB_TILDE_2(NAME,NEW_CLASS, TYPE1, TYPE2)	\
+#define FLEXT_LIB_DSP_2(NAME,NEW_CLASS, TYPE1, TYPE2)	\
 REAL_LIB_2(NAME,NEW_CLASS, _tilde_setup, TYPE1, TYPE2)
 
 
@@ -149,7 +149,7 @@ REAL_NEW_3(NAME,NEW_CLASS, _setup, TYPE1, TYPE2, TYPE3)  \
 REAL_EXT(NEW_CLASS, _setup)
 
 //! Implementation of a flext tilde class with three arguments
-#define FLEXT_NEW_TILDE_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3)	\
+#define FLEXT_NEW_DSP_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3)	\
 REAL_NEW_3(NAME,NEW_CLASS, _tilde_setup, TYPE1, TYPE2, TYPE3) \
 REAL_EXT(NEW_CLASS, _tilde_setup)
 
@@ -158,9 +158,25 @@ REAL_EXT(NEW_CLASS, _tilde_setup)
 REAL_LIB_3(NAME,NEW_CLASS, _setup,TYPE1, TYPE2, TYPE3)
 
 //! Implementation of a flext tilde class (part of a library) with three arguments
-#define FLEXT_LIB_TILDE_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3)	\
+#define FLEXT_LIB_DSP_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3)	\
 REAL_LIB_3(NAME,NEW_CLASS, _tilde_setup, TYPE1, TYPE2, TYPE3)
 
+
+// deprecated stuff
+// ----------------
+#define FLEXT_NEW_TILDE FLEXT_NEW_DSP
+#define FLEXT_LIB_TILDE FLEXT_LIB_DSP
+#define FLEXT_NEW_TILDE_1 FLEXT_NEW_DSP_1
+#define FLEXT_LIB_TILDE_1 FLEXT_LIB_DSP_1
+#define FLEXT_NEW_TILDE_2 FLEXT_NEW_DSP_2
+#define FLEXT_LIB_TILDE_2 FLEXT_LIB_DSP_2
+#define FLEXT_NEW_TILDE_3 FLEXT_NEW_DSP_3
+#define FLEXT_LIB_TILDE_3 FLEXT_LIB_DSP_3
+
+#define FLEXT_NEW_G FLEXT_NEW_V
+#define FLEXT_NEW_DSP_G FLEXT_NEW_DSP_V
+#define FLEXT_LIB_G FLEXT_LIB_V
+#define FLEXT_LIB_DSP_G FLEXT_LIB_DSP_V
 
 // MaxMSP doesn't seem to be able to handle more than 3 creation arguments! -> USE GIMME
 
@@ -229,6 +245,9 @@ static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,T
 //! 3 int arguments
 #define FLEXT_CALLBACK_III(M_FUN) FLEXT_CALLBACK_3(M_FUN,int,int,int)
 
+//! 1 symbol argument
+#define FLEXT_CALLBACK_S(M_FUN) FLEXT_CALLBACK_1(M_FUN,t_symptr)
+
 //@} FLEXT_CALLBACKS
 
 
@@ -245,10 +264,12 @@ static void cb_ ## M_FUN(flext_base *c) {  \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
 	thisType *th = static_cast<thisType *>(p->cl); \
-	th->PushThread(); \
+	bool ok = th->PushThread(); \
 	delete p; \
-	th->M_FUN(); \
-	th->PopThread(); \
+	if(ok) { \
+		th->M_FUN(); \
+		th->PopThread(); \
+	} \
 	return NULL; \
 } 
 
@@ -260,11 +281,13 @@ static void cb_ ## M_FUN(flext_base *c,t_symbol *s,int argc,t_atom *argv) {  \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
 	thisType *th = static_cast<thisType *>(p->cl); \
-	th->PushThread(); \
+	bool ok = th->PushThread(); \
 	t_symbol *s; int argc; t_atom argv; p->get_any(s,argc,argv); \
 	delete p; \
-	th->M_FUN(s,argc,argv); \
-	th->PopThread(); \
+	if(ok) { \
+		th->M_FUN(s,argc,argv); \
+		th->PopThread(); \
+	} \
 	return NULL; \
 } 
 
@@ -276,11 +299,13 @@ static void cb_ ## M_FUN(flext_base *c,int argc,t_atom *argv) {  \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
 	thisType *th = static_cast<thisType *>(p->cl); \
-	th->PushThread(); \
+	bool ok = th->PushThread(); \
 	int argc; t_atom argv; p->get_gimme(argc,argv); \
 	delete p; \
-	th->M_FUN(argc,argv); \
-	th->PopThread(); \
+	if(ok) { \
+		th->M_FUN(argc,argv); \
+		th->PopThread(); \
+	} \
 	return NULL; \
 } 
 
@@ -292,11 +317,13 @@ static void cb_ ## M_FUN(flext_base *c,int &arg1) {  \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
 	thisType *th = static_cast<thisType *>(p->cl); \
-	th->PushThread(); \
+	bool ok = th->PushThread(); \
 	bool b = p->var[0]; \
 	delete p; \
-	th->M_FUN(b); \
-	th->PopThread(); \
+	if(ok) { \
+		th->M_FUN(b); \
+		th->PopThread(); \
+	} \
 	return NULL; \
 } 
 
@@ -309,11 +336,13 @@ static void cb_ ## M_FUN(flext_base *c,TP1 &arg1) {  \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
 	thisType *th = static_cast<thisType *>(p->cl); \
-	th->PushThread(); \
+	bool ok = th->PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
 	delete p; \
-	th->M_FUN(v1); \
-	th->PopThread(); \
+	if(ok) { \
+		th->M_FUN(v1); \
+		th->PopThread(); \
+	} \
 	return NULL; \
 } 
 
@@ -327,12 +356,14 @@ static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2) {  \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
 	thisType *th = static_cast<thisType *>(p->cl); \
-	th->PushThread(); \
+	bool ok = th->PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
 	const TP1 v2 = p->var[1]._ ## TP2; \
 	delete p; \
-	th->M_FUN(v1,v2); \
-	th->PopThread(); \
+	if(ok) { \
+		th->M_FUN(v1,v2); \
+		th->PopThread(); \
+	} \
 	return NULL; \
 } 
 
@@ -347,13 +378,15 @@ static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3) {  \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
 	thisType *th = static_cast<thisType *>(p->cl); \
-	th->PushThread(); \
+	bool ok = th->PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
 	const TP2 v2 = p->var[1]._ ## TP2; \
 	const TP3 v3 = p->var[2]._ ## TP3; \
 	delete p; \
-	th->M_FUN(v1,v2,v3); \
-	th->PopThread(); \
+	if(ok) { \
+		th->M_FUN(v1,v2,v3); \
+		th->PopThread(); \
+	} \
 	return NULL; \
 } 
 
@@ -369,14 +402,16 @@ static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4) 
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
 	thisType *th = static_cast<thisType *>(p->cl); \
-	th->PushThread(); \
+	bool ok = th->PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
 	const TP2 v2 = p->var[1]._ ## TP2; \
 	const TP3 v3 = p->var[2]._ ## TP3; \
 	const TP4 v4 = p->var[3]._ ## TP4; \
 	delete p; \
-	th->M_FUN(v1,v2,v3,v4); \
-	th->PopThread(); \
+	if(ok) { \
+		th->M_FUN(v1,v2,v3,v4); \
+		th->PopThread(); \
+	} \
 	return NULL; \
 } 
 
@@ -393,15 +428,17 @@ static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,T
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
 	thisType *th = static_cast<thisType *>(p->cl); \
+	bool ok = th->PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
 	const TP2 v2 = p->var[1]._ ## TP2; \
 	const TP3 v3 = p->var[2]._ ## TP3; \
 	const TP4 v4 = p->var[3]._ ## TP4; \
 	const TP5 v5 = p->var[4]._ ## TP5; \
 	delete p; \
-	th->IncThreads(); \
-	th->M_FUN(v1,v2,v3,v4,v5); \
-	th->DecThreads(); \
+	if(ok) { \
+		th->M_FUN(v1,v2,v3,v4,v5); \
+		th->PopThread(); \
+	} \
 	return NULL; \
 } 
 
@@ -421,6 +458,9 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 #define FLEXT_THREAD_II(M_FUN) FLEXT_THREAD_2(M_FUN,int,int)
 //! 3 int arguments
 #define FLEXT_THREAD_III(M_FUN) FLEXT_THREAD_3(M_FUN,int,int,int)
+
+//! 1 symbol argument
+#define FLEXT_THREAD_S(M_FUN) FLEXT_THREAD_1(M_FUN,t_symptr)
 
 #endif // FLEXT_THREADS
 

@@ -30,16 +30,13 @@ const char *flext_obj::m_holdname;
 flext_obj :: flext_obj()
            : x_obj(m_holder)
 		   , m_name(m_holdname)
+		   , init_ok(true)
 {
 #ifdef PD
     m_canvas = canvas_getcurrent();
 #elif defined(MAXMSP)
     m_canvas = (t_patcher *)gensym("#P")->s_thing;
     x_obj->curinlet = 0;
-#endif
-
-#ifdef FLEXT_THREADS
-	thrid = pthread_self();
 #endif
 }
 

@@ -11,6 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifdef FLEXT_THREADS
 
 #include <flext.h>
+#include <flinternal.h>
 
 #ifdef MAXMSP
 #define SCHEDTICK 1
@@ -40,7 +41,7 @@ bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *me
 	}
 }
 
-void flext_base::PushThread()
+bool flext_base::PushThread()
 {
 	tlmutex.Lock();
 	thr_entry *nt = new thr_entry;
@@ -50,15 +51,17 @@ void flext_base::PushThread()
 	tlmutex.Unlock();
 	
 #ifdef MAXMSP
-	if(thrhead) clock_delay(yclk,SCHEDTICK);
+	clock_delay(yclk,0);
 #endif
+	return true;
 }
 
 void flext_base::PopThread()
 {
 	tlmutex.Lock();
 	thr_entry *prv = NULL,*ti;
-	for(ti = thrhead; ti && !ti->Is(); prv = ti,ti = ti->nxt);
+	for(ti = thrhead; ti; prv = ti,ti = ti->nxt)
+		if(ti->Is()) break;
 
 	if(ti) {
 		if(prv) 
@@ -73,14 +76,16 @@ void flext_base::PopThread()
 	}
 	
 	tlmutex.Unlock();
-
-#ifdef MAXMSP
-	if(!thrhead) clock_unset(&yclk);
-#endif
 }
 
 #ifdef MAXMSP
 void flext_base::Yield() { sched_yield(); }
+
+void flext_base::YTick(flext_base *th) { 
+	clock_delay(th->yclk,0); 
+	qelem_set(th->qclk); 
+	sched_yield();
+}
 #endif
 
 class flext_base::qmsg
@@ -143,11 +148,13 @@ void flext_base::QTick(flext_base *th)
 	}
 #endif
 
-	th->Yield();
-
 	th->qmutex.Lock();
 	while(th->qhead) {
 		qmsg *m = th->qhead;
+
+#ifdef MAXMSP
+		short state = lockout_set(1);
+#endif
 
 		switch(m->tp) {
 		case qmsg::tp_bang: th->ToOutBang(m->out); break;
@@ -161,16 +168,16 @@ void flext_base::QTick(flext_base *th)
 #endif
 		}
 
+#ifdef MAXMSP
+		lockout_set(state);
+#endif
+
 		th->qhead = m->nxt;
 		if(!th->qhead) th->qtail = NULL;
 		m->nxt = NULL;
 		delete m;
 	}
 	th->qmutex.Unlock();
-
-#ifdef MAXMSP
-	if(th->thrhead) clock_delay(th->yclk,SCHEDTICK);
-#endif
 }
 
 void flext_base::Queue(qmsg *m)
@@ -180,7 +187,13 @@ void flext_base::Queue(qmsg *m)
 	else qhead = m;
 	qtail = m;
 	qmutex.Unlock();
+#ifdef PD
 	clock_delay(qclk,0);
+#elif defined(MAXMSP)
+	clock_delay(yclk,0);
+#else
+#error "To implement!"
+#endif
 }
 
 void flext_base::QueueBang(outlet *o) 

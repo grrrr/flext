@@ -34,11 +34,11 @@ void flext_base::Sleep(float s)
 #elif defined MAXMSP
 	UnsignedWide tick;
 	Microseconds(&tick);
-	double target = tick.hi*((double)(1<<16)*(double)(1<<16))+tick.lo+s*1.e6; 
+	double target = tick.hi*((double)(1L<<((sizeof tick.lo)*4))*(double)(1L<<((sizeof tick.lo)*4)))+tick.lo+s*1.e6; 
 	for(;;) {
 		Microseconds(&tick);
-		if(target <= tick.hi*((double)(1<<16)*(double)(1<<16))+tick.lo) break;
-		YieldToAnyThread();
+		if(target <= tick.hi*((double)(1L<<((sizeof tick.lo)*4))*(double)(1L<<((sizeof tick.lo)*4)))+tick.lo) break;
+		YieldToAnyThread(); // should we really yield?
 	}
 #endif
 }

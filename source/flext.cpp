@@ -10,8 +10,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <flext.h>
 #include <flinternal.h>
-#include <stdarg.h>
 #include <string.h>
+#include <stdarg.h>
 
 // === proxy class for flext_base ============================
 
@@ -139,12 +139,14 @@ flext_base::flext_base():
 	LOG("Logging is on");
 
 #ifdef FLEXT_THREAD
+	thrid = pthread_self();
+
 	shouldexit = false;
 	qhead = qtail = NULL;
-	qclk = (t_clock *)(clock_new(this,(t_method)QTick));
+	qclk = (t_qelem *)(qelem_new(this,(t_method)QTick));
 	thrhead = thrtail = NULL;
 #ifdef MAXMSP
-	yclk = (t_clock *)(clock_new(this,(t_method)QTick));
+	yclk = (t_clock *)(clock_new(this,(t_method)YTick));
 #endif
 #endif
 }
@@ -174,7 +176,7 @@ flext_base::~flext_base()
 
 	// send remaining pending messages
 	while(qhead) QTick(this);
-	clock_free((object *)qclk);
+	qelem_free((t_qelem *)qclk);
 #ifdef MAXMSP
 	clock_free((object *)yclk);
 #endif
@@ -199,82 +201,29 @@ flext_base::~flext_base()
 	if(mlst) delete mlst;
 }
 
-flext_base::xlet::xlet(type t,const char *d): 
-	tp(t),nxt(NULL)
-{ 
-	if(d) {
-		int ln = strlen(d);
-		desc = new char[ln];
-		strncpy(desc,d,ln);
-	}
-	else desc = NULL;
-}
 
-flext_base::xlet::~xlet() 
-{ 
-	if(desc) delete[] desc;
-	if(nxt) delete nxt; 
-}
-
-void flext_base::AddXlet(xlet::type tp,int mult,const char *desc,xlet *&root)
-{
-	if(!root && mult) { root = new xlet(tp,desc); --mult; }
-	if(mult) {
-		xlet *xi = root; 
-		while(xi->nxt) xi = xi->nxt;
-		while(mult--) xi = xi->nxt = new xlet(tp,desc);
-	}
-}
-
-unsigned long flext_base::XletCode(xlet::type tp,...)
-{
-	unsigned long code = 0;
-
-	va_list marker;
-	va_start(marker,tp);
-	int cnt = 0;
-	xlet::type *args = NULL,arg = tp;
-	for(; arg; ++cnt) {
-#ifdef _DEBUG
-		if(cnt > 9) {
-			error("%s - Too many in/outlets defined - truncated to 9",thisName());
-			break;			
-		}
-#endif			
-
-		code = code*10+(int)arg;
-		arg = (xlet::type)va_arg(marker,int);
-	}
-	va_end(marker);
-
-	return code;
-}
-
-void flext_base::AddInlets(unsigned long code) 
-{ 
-	for(; code; code /= 10) AddInlet((xlet::type)(code%10));
-}
-
-void flext_base::AddOutlets(unsigned long code) 
-{ 
-	for(; code; code /= 10) AddOutlet((xlet::type)(code%10));
-}
-
+#ifdef MAXMSP
+#define CRITON() short state = lockout_set(1)
+#define CRITOFF() lockout_set(state) 
+#else
+#define CRITON() 
+#define CRITOFF() 
+#endif
 
 #ifndef FLEXT_THREADS
-void flext_base::ToOutBang(outlet *o) { outlet_bang((t_outlet *)o); }
-void flext_base::ToOutFloat(outlet *o,float f) { outlet_float((t_outlet *)o,f); }
-void flext_base::ToOutInt(outlet *o,int f) { outlet_flint((t_outlet *)o,f); }
-void flext_base::ToOutSymbol(outlet *o,const t_symbol *s) { outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); }
-void flext_base::ToOutList(outlet *o,int argc,t_atom *argv) { outlet_list((t_outlet *)o,gensym("list"),argc,argv); }
-void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,t_atom *argv) { outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,argv); }
+void flext_base::ToOutBang(outlet *o) { CRITON(); outlet_bang((t_outlet *)o); CRITOFF(); }
+void flext_base::ToOutFloat(outlet *o,float f) { CRITON(); outlet_float((t_outlet *)o,f); CRITOFF(); }
+void flext_base::ToOutInt(outlet *o,int f) { CRITON(); outlet_flint((t_outlet *)o,f); CRITOFF(); }
+void flext_base::ToOutSymbol(outlet *o,const t_symbol *s) { CRITON(); outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); CRITOFF(); }
+void flext_base::ToOutList(outlet *o,int argc,t_atom *argv) { CRITON(); outlet_list((t_outlet *)o,gensym("list"),argc,argv); CRITOFF(); }
+void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,t_atom *argv) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,argv); CRITOFF(); }
 #else
-void flext_base::ToOutBang(outlet *o) { if(IsSystemThread()) outlet_bang((t_outlet *)o); else QueueBang(o); }
-void flext_base::ToOutFloat(outlet *o,float f) { if(IsSystemThread()) outlet_float((t_outlet *)o,f); else QueueFloat(o,f); }
-void flext_base::ToOutInt(outlet *o,int f) { if(IsSystemThread()) outlet_flint((t_outlet *)o,f); else QueueInt(o,f); }
-void flext_base::ToOutSymbol(outlet *o,const t_symbol *s) { if(IsSystemThread()) outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); else QueueSymbol(o,s); }
-void flext_base::ToOutList(outlet *o,int argc,t_atom *argv) { if(IsSystemThread()) outlet_list((t_outlet *)o,gensym("list"),argc,argv); else QueueList(o,argc,argv); }
-void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,t_atom *argv) { if(IsSystemThread()) outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,argv); else QueueAnything(o,s,argc,argv); }
+void flext_base::ToOutBang(outlet *o) { if(IsSystemThread()) { CRITON(); outlet_bang((t_outlet *)o); CRITOFF(); } else QueueBang(o); }
+void flext_base::ToOutFloat(outlet *o,float f) { if(IsSystemThread()) { CRITON(); outlet_float((t_outlet *)o,f); CRITOFF(); } else QueueFloat(o,f); }
+void flext_base::ToOutInt(outlet *o,int f) { if(IsSystemThread()) { CRITON(); outlet_flint((t_outlet *)o,f); CRITOFF(); } else QueueInt(o,f); }
+void flext_base::ToOutSymbol(outlet *o,const t_symbol *s) { if(IsSystemThread()) { CRITON(); outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); CRITOFF(); } else QueueSymbol(o,s); }
+void flext_base::ToOutList(outlet *o,int argc,t_atom *argv) { if(IsSystemThread()) { CRITON(); outlet_list((t_outlet *)o,gensym("list"),argc,argv); CRITOFF(); } else QueueList(o,argc,argv); }
+void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,t_atom *argv) { if(IsSystemThread()) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,argv); CRITOFF(); } else QueueAnything(o,s,argc,argv); }
 #endif
 
 bool flext_base::SetupInOut()
@@ -620,7 +569,7 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 						else if(IsInt(argv[ix])) aargs[ix].ft = (float)GetInt(argv[ix]);
 						else ok = false;
 						
-//						if(ok) LOG2("int arg %i = %f",ix,aargs[ix].ft);
+						if(ok) LOG2("int arg %i = %f",ix,aargs[ix].ft);
 						break;
 					}
 					case a_int: {
@@ -628,14 +577,14 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 						else if(IsInt(argv[ix])) aargs[ix].it = GetInt(argv[ix]);
 						else ok = false;
 						
-//						if(ok) LOG2("float arg %i = %i",ix,aargs[ix].it);
+						if(ok) LOG2("float arg %i = %i",ix,aargs[ix].it);
 						break;
 					}
 					case a_symbol: {
 						if(IsSymbol(argv[ix])) aargs[ix].st = GetSymbol(argv[ix]);
 						else ok = false;
 						
-//						if(ok) LOG2("symbol arg %i = %s",ix,get_string(aargs[ix].st));
+						if(ok) LOG2("symbol arg %i = %s",ix,GetString(aargs[ix].st));
 						break;
 					}
 #ifdef PD					
@@ -664,6 +613,14 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 				}
 			}
 		} 
+		else if(m->tag == sym_symbol && !argc && (inlet == m->inlet || m->inlet < 0 )) {
+			// symbol
+			LOG3("found symbol method for %s: inlet=%i, symbol=%s",m->tag->s_name,inlet,s->s_name);
+
+			t_any sym; sym.st = const_cast<t_symbol *>(s);
+			((methfun_1)m->fun)(this,sym);
+			ret = true;
+		}
 		else if(m->tag == sym_anything && (inlet == m->inlet || m->inlet < 0) && m->argc == 1 && m->args[0] == a_xgimme) {
 			// any
 			LOG4("found any method for %s: inlet=%i, symbol=%s, argc=%i",m->tag->s_name,inlet,s->s_name,argc);
@@ -672,6 +629,23 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 			ret = true;
 		}
 	}
+	
+	// If float message is not explicitly handled: try int handler instead
+	if(!ret && argc == 1 && s == sym_float) {
+		t_atom fl;
+		SetInt(fl,GetAInt(argv[0]));
+		post("int: %i",GetInt(fl));
+		ret = m_methodmain(inlet,sym_int,1,&fl);
+	}
+	
+#ifdef MAXMSP
+	// If int message is not explicitly handled: try float handler instead
+	if(!ret && argc == 1 && s == sym_int) {
+		t_atom fl;
+		SetFloat(fl,GetAFloat(argv[0]));
+		ret = m_methodmain(inlet,sym_float,1,&fl);
+	}
+#endif
 	
 	// If float or int message is not explicitly handled: try list handler instead
 	if(!ret && argc == 1 && (s == sym_float 
@@ -778,7 +752,7 @@ void flext_base::AddMethod(int inlet,const char *tag,methfun fun,metharg tp,...)
 	
 	if(argc > 0) {
 		if(argc > MAXARGS) {
-			error("Method %s: only %i arguments are type-checkable: use GIMME for more",tag?tag:"?",MAXARGS);
+			error("Method %s: only %i arguments are type-checkable: use variable argument list for more",tag?tag:"?",MAXARGS);
 			argc = MAXARGS;
 		}
 
@@ -788,7 +762,7 @@ void flext_base::AddMethod(int inlet,const char *tag,methfun fun,metharg tp,...)
 		metharg a = tp;
 		for(int ix = 0; ix < argc; ++ix) {
 			if(a == a_gimme && ix > 0) {
-				error("GIMME argument must be the first and only one");
+				ERRINTERNAL();
 			}
 #ifdef PD
 			if(a == a_pointer && flext_base::compatibility) {

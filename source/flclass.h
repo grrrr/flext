@@ -256,10 +256,10 @@ public:
 	void AddMethodDef(int inlet,const char *tag); // call virtual function for tag && inlet
 	void AddMethod(int inlet,const char *tag,methfun fun,metharg tp,...); 
 
-	void AddMethod(int inlet,void (*m)(flext_base *,int argc,t_atom *argv)) { AddMethod(inlet,"list",(methfun)m,a_gimme,a_null); }
+	void AddMethod(int inlet,void (*m)(flext_base *,int,t_atom *)) { AddMethod(inlet,"list",(methfun)m,a_gimme,a_null); }
 	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *)) { AddMethod(inlet,tag,(methfun)m,a_null); }  // pure method
-	void AddMethod(int inlet,void (*m)(flext_base *,t_symbol *s,int argc,t_atom *argv)) { AddMethod(inlet,"anything",(methfun)m,a_xgimme,a_null); } // anything
-	void AddMethod(int inlet,void (*m)(flext_base *,t_symbol *s)) { AddMethod(inlet,"symbol",(methfun)m,a_symbol,a_null); } // anything
+	void AddMethod(int inlet,void (*m)(flext_base *,t_symbol *,int,t_atom *)) { AddMethod(inlet,"anything",(methfun)m,a_xgimme,a_null); } // anything
+	void AddMethod(int inlet,void (*m)(flext_base *,t_symbol *&)) { AddMethod(inlet,"symbol",(methfun)m,a_symbol,a_null); } // single symbol
 	void AddMethod(int inlet,void (*m)(flext_base *,float &)) { AddMethod(inlet,"float",(methfun)m,a_float,a_null); }  // single float
 	void AddMethod(int inlet,void (*m)(flext_base *,float &,float &)) { AddMethod(inlet,"list",(methfun)m,a_float,a_float,a_null); } // list of 2 floats
 	void AddMethod(int inlet,void (*m)(flext_base *,float &,float &,float &)) { AddMethod(inlet,"list",(methfun)m,a_float,a_float,a_float,a_null); } // list of 3 floats
@@ -270,9 +270,9 @@ public:
 #endif
 	void AddMethod(int inlet,void (*m)(flext_base *,int &,int &)) { AddMethod(inlet,"list",(methfun)m,a_int,a_int,a_null); } // list of 2 floats
 	void AddMethod(int inlet,void (*m)(flext_base *,int &,int &,int &)) { AddMethod(inlet,"list",(methfun)m,a_int,a_int,a_int,a_null); } // list of 3 floats
-	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,int argc,t_atom *argv)) { AddMethod(inlet,tag,(methfun)m,a_gimme,a_null); } // method+gimme
-	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,t_symbol *s,int argc,t_atom *argv)) { AddMethod(inlet,tag,(methfun)m,a_xgimme,a_null); } // method+gimme 
-	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,t_symbol *s)) { AddMethod(inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
+	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,int,t_atom *)) { AddMethod(inlet,tag,(methfun)m,a_gimme,a_null); } // method+gimme
+	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,t_symbol *,int,t_atom *)) { AddMethod(inlet,tag,(methfun)m,a_xgimme,a_null); } // method+gimme 
+	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,t_symbol *&)) { AddMethod(inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
 	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,float &)) { AddMethod(inlet,tag,(methfun)m,a_float,a_null); }  // method+float
 	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,int &)) { AddMethod(inlet,tag,(methfun)m,a_int,a_null); } // method+int
 
@@ -352,6 +352,8 @@ public:
 // --- thread stuff -----------------------------------------------
 
 	bool ShouldExit() const { return shouldexit; }
+
+	bool IsSystemThread() const { pthread_t cur = pthread_self(); return pthread_equal(cur,thrid) != 0; }
 
 	void Yield() // yield to other threads (for cooperative multitasking)
 #ifndef MAXMSP
@@ -444,7 +446,7 @@ public:
 #ifdef FLEXT_THREADS
 	class thr_params;
 	static bool StartThread(void *(*)(thr_params *p),thr_params *p,char *methname);
-	void PushThread();
+	bool PushThread();
 	void PopThread();
 #endif
 
@@ -526,13 +528,16 @@ private:
 #ifdef FLEXT_THREADS
 	bool shouldexit;
 	int thrcount;
+	
+	pthread_t thrid;  // the thread that created the object (the system thread)
 
 	class qmsg;
 	qmsg *qhead,*qtail;
-	t_clock *qclk;
+	t_qelem *qclk;
 	ThrMutex qmutex;
 #ifdef MAXMSP
 	t_clock *yclk;
+	static void YTick(flext_base *th);
 #endif
 
 	static void QTick(flext_base *th);

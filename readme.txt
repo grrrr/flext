@@ -72,14 +72,21 @@ see flext.h for the documented base classes
 Version history:
 
 0.3.0:
-- added threaded methods along with a message queue for ToOut* functions
+- added threaded methods along with a message queue for ToOut* functions (very unstable for MaxMSP!)
 - check/update function for buffer change (resize etc.)
 - description text for inlets/outlets (e.g. for MaxMSPs assist function)
 - added buffer resize functions flext_base::buffer::Frames(int,bool)
 - added some utility functions: Sleep, CopyAtom, CopyList
 - added List manipulation classes: AtomList, AtomAnything
 - Alias object names (simply specify with FLEXT_NEW*, separated by whitespace)
+- float messages - int method is called if there is no float method
+- MaxMSP: int messages - float method is called if there is no int method
 - fixed type warning for class constructors with int arguments in PD
+- fixed severe bug concerning symbol methods
+- MaxMSP: use critical sections for message output (for more safety in overdrive mode)
+
+- introduced FLEXT_NEW_DSP* and FLEXT_LIB_DSP* for FLEXT_NEW_TILDE* and FLEXT_LIB_TILDE* (the latter become deprecated)
+- all variable argument defs (aka gimme) now have a V instead of G  (e.g. FLEXT_NEW_V)
 
 0.2.3:
 - restructured files and started usable inline documentation
@@ -172,6 +179,7 @@ general:
 - should we use a namespace?
 - where to put flext source/lib in linux: /usr/local/lib,/usr/local/include ?
 - clean up headers (eliminate flstdc.h?)
+- check that SetupInOut is only called once
 
 bugs:
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)

@@ -36,13 +36,13 @@ private:
 	FLEXT_THREAD(m_blip); // define threaded callback for method m_blip
 
 	float delay;
-	bool stopit,running,blipping;
+	volatile bool stopit,running,blipping;
 	int count;
 	t_symbol *bliptxt;
 
 	ThrCond cond;
 
-	int flag;
+	volatile int flag;
 };
 
 FLEXT_NEW_2("thread2",thread2,int,t_symptr)
@@ -62,18 +62,19 @@ thread2::thread2(int del,t_symptr txt):
 
 	FLEXT_ADDMETHOD(0,m_start);
 	FLEXT_ADDMETHOD_(0,"stop",m_stop);
-}
+} 
 
 void thread2::m_start(int st)
 {
 	++flag;
 
-	post("start 1");
+	post("start 1 - thr = %x",this);
 
 	if(running) { count = st; return; }
 	running = true;
+	blipping = false;
 
-	FLEXT_CALLMETHOD(m_blip);
+//	FLEXT_CALLMETHOD(m_blip);
 
 	post("start 2");
 
@@ -90,21 +91,25 @@ void thread2::m_start(int st)
 	cond.Signal();
 	cond.Unlock();
 
-	post("start 4");
+	post("start 4 - r = %i, b = %i",running?1:0,blipping?1:0);
 }
 
 void thread2::m_stop()
 {
-	post("stop 1");
+	post("stop 1 - thr = %x",this);
 	post("flag = %i",flag);
 
-	cond.Lock();
+//	cond.Lock();
 	stopit = true;
-	while(running || blipping) cond.Wait();
+	while(*(&running) || *(&blipping)) {
+//		cond.Wait();
+		Sleep(1.f);
+		post("stop 2 - r = %i, b = %i",*(&running)?1:0,*(&blipping)?1:0);
+	}
 	stopit = false;
-	cond.Unlock();
+//	cond.Unlock();
 
-	post("stop 2");
+	post("stop 3");
 }
 
 void thread2::m_blip()

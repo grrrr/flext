@@ -51,6 +51,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 typedef t_perfroutine t_dspmethod;
 
+#define qelem_new clock_new
+#define qelem_free clock_free
+#define qelem_set clock_set
+#define qelem_unset clock_unset
 
 #elif defined(MAXMSP)
 
@@ -91,7 +95,6 @@ typedef void t_outlet;
 #define outlet_symbol(o,s) outlet_anything(o,s,0,NULL)
 
 typedef t_perfroutine t_dspmethod;
-
 
 #endif
 

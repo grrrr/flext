@@ -65,11 +65,12 @@ typedef t_gpointer *t_ptrtype;
 typedef t_float t_flint;
 typedef t_symbol *t_symptr;
 
+typedef t_clock t_qelem;
 
 #define A_NOTHING A_NULL
 #define A_FLINT A_FLOAT
 #define A_DEFFLINT A_DEFFLOAT
- 
+
 // MAX stuff
 #elif defined(MAXMSP)
 
@@ -90,6 +91,8 @@ typedef t_patcher t_canvas;
 
 typedef t_int t_flint;
 typedef t_symbol *t_symptr;
+
+typedef qelem t_qelem;
 
 typedef method t_method;
 typedef method t_newmethod;

@@ -1,38 +1,42 @@
-#N canvas 122 228 580 255 12;
-#X msg 101 124 arg \$1;
-#X obj 29 160 lib1.+ @arg 3;
-#X text 100 76 set arg;
-#X msg 284 123 arg \$1;
-#X text 283 77 set arg;
-#X msg 471 126 arg \$1;
-#X text 470 80 set arg;
-#X obj 391 164 lib1.* @arg 2;
-#X obj 209 162 lib1.- @arg 7;
-#X text 24 75 trigger;
-#X text 206 79 trigger;
-#X text 390 80 trigger;
-#X obj 16 8 cnv 15 550 40 empty empty lib1 10 22 32 24 -260818 -1 0
+#N canvas 120 205 580 295 12;
+#X msg 106 125 arg \$1;
+#X obj 34 161 lib1.+ @arg 3;
+#X text 105 77 set arg;
+#X msg 289 124 arg \$1;
+#X text 288 78 set arg;
+#X msg 476 127 arg \$1;
+#X text 475 81 set arg;
+#X obj 396 165 lib1.* @arg 2;
+#X obj 214 163 lib1.- @arg 7;
+#X text 29 76 trigger;
+#X text 211 80 trigger;
+#X text 395 81 trigger;
+#X obj 16 8 cnv 15 550 40 empty empty lib1 10 22 0 24 -260818 -1 0
 ;
 #X text 173 8 flext tutorial \, (C)2002 Thomas Grill;
 #X text 173 28 http://www.parasitaere-kapazitaeten.net;
-#X obj 29 99 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 32 12 -261681
--1 -1 -4 256;
-#X obj 100 98 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 32 12 -261681
+#X obj 34 100 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
 -1 -1 0 256;
-#X obj 211 99 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 32 12 -261681
+#X obj 105 99 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
 -1 -1 0 256;
-#X obj 283 101 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 32 12 -261681
+#X obj 216 100 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
 -1 -1 0 256;
-#X obj 393 101 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 32 12 -261681
+#X obj 288 102 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
 -1 -1 0 256;
-#X obj 471 104 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 32 12 -261681
+#X obj 398 102 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
 -1 -1 0 256;
-#X obj 29 193 nbx 7 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 32 12
--228992 -1 -1 -1 256;
-#X obj 209 193 nbx 7 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 32
-12 -228992 -1 -1 0 256;
-#X obj 391 193 nbx 7 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 32
-12 -228992 -1 -1 0 256;
+#X obj 476 105 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
+-1 -1 0 256;
+#X obj 34 194 nbx 7 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
+-228992 -1 -1 0 256;
+#X obj 214 194 nbx 7 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
+-228992 -1 -1 0 256;
+#X obj 396 194 nbx 7 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
+-228992 -1 -1 0 256;
+#X text 26 245 In order to use the objects the library must have been
+;
+#X text 27 263 loaded at PD startup (with the "-lib lib1" argument)
+;
 #X connect 0 0 1 0;
 #X connect 1 0 21 0;
 #X connect 3 0 8 0;

@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "pd-msvc\s"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /G6 /W3 /O2 /I "c:\programme\audio\pd\src" /I "f:\prog\packs\sndobj\include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D FLEXT_SYS=2 /YX"flext.h" /FD /c
+# ADD CPP /nologo /G6 /W3 /O2 /I "c:\programme\audio\pd\src" /I "f:\prog\packs\sndobj\include" /I "f:\prog\packs\stk\include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D FLEXT_SYS=2 /YX"flext.h" /FD /c
 # ADD BASE RSC /l 0xc07 /d "NDEBUG"
 # ADD RSC /l 0xc07 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -303,11 +303,11 @@ SOURCE=.\source\flsndobj.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\flstk.cpp
+SOURCE=.\source\flstk.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\flstk.h
+SOURCE=.\source\flstk.h
 # End Source File
 # End Group
 # End Target

@@ -16,13 +16,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __FLSUPPORT_H
 
 #include "flstdc.h"
-#include <time.h>
 
-#if FLEXT_OS == FLEXT_OS_WIN
-#include <sys/timeb.h>
-#elif FLEXT_OS == FLEXT_OS_LINUX
-#include <unistd.h>
-#endif
 
 class FLEXT_SHARE flext_base;
 
@@ -752,10 +746,10 @@ public:
 
 		//! Lock thread mutex
 		bool Lock() { return pthread_mutex_lock(&mutex) == 0; }
-		/*! \brief Wait to lock thread mutex.
+		/*! Wait to lock thread mutex.
 			\todo Implement!
 		*/
-		bool WaitForLock(double tm) { return pthread_mutex_lock(&mutex) == 0; }
+//		bool WaitForLock(double tm) { return pthread_mutex_lock(&mutex) == 0; }
 		//! Try to lock, but don't wait
 		bool TryLock() { return pthread_mutex_trylock(&mutex) == 0; }
 		//! Unlock thread mutex
@@ -776,7 +770,7 @@ public:
 		//! Lock thread mutex
 		bool Lock() { return MPEnterCriticalRegion(crit,kDurationForever) == noErr; }
 		//! Wait to lock thread mutex
-		bool WaitForLock(double tm) { return MPEnterCriticalRegion(crit,tm*kDurationMicrosecond*1.e6) == noErr; }
+//		bool WaitForLock(double tm) { return MPEnterCriticalRegion(crit,tm*kDurationMicrosecond*1.e6) == noErr; }
 		//! Try to lock, but don't wait
 		bool TryLock() { return MPEnterCriticalRegion(crit,kDurationImmediate) == noErr; }
 		//! Unlock thread mutex
@@ -803,58 +797,19 @@ public:
 		~ThrCond() { pthread_cond_destroy(&cond); }
 
 		//! Wait for condition 
-		bool Wait() { 
-			Lock();
-			bool ret = pthread_cond_wait(&cond,&mutex) == 0; 
-			Unlock();
-			return ret;
-		}
+		bool Wait();
 
-		/*! \brief Wait for condition (for a certain time).
+		/*! Wait for condition (for a certain time).
 			\param ftime Wait time in seconds
 			\ret 0 = signalled, 1 = timed out 
 			\remark If ftime = 0 this may suck away your cpu if used in a signalled loop.
 			\remark The time resolution of the implementation is required to be at least ms.
 		*/
-		bool TimedWait(double ftime) 
-		{ 
-			timespec tm; 
-#if FLEXT_OS == FLEXT_OS_WIN
-			_timeb tmb;
-			_ftime(&tmb);
-			tm.tv_nsec = tmb.millitm*1000000;
-			tm.tv_sec = tmb.time; 
-#else
-	#if 0 // find out when the following is defined
-			clock_gettime(CLOCK_REALTIME,tm);
-	#else
-			struct timeval tp;
-			gettimeofday(&tp, NULL);
-			tm.tv_nsec = tp.tv_usec*1000;
-			tm.tv_sec = tp.tv_sec;
-	#endif
-#endif
-			tm.tv_nsec += (long)((ftime-(long)ftime)*1.e9);
-			long nns = tm.tv_nsec%1000000000;
-			tm.tv_sec += (long)ftime+(tm.tv_nsec-nns)/1000000000; 
-			tm.tv_nsec = nns;
-
-			Lock();
-			bool ret = pthread_cond_timedwait(&cond,&mutex,&tm) == 0; 
-			Unlock();
-			return ret;
-		}
+		bool TimedWait(double ftime);
 
 		//! Signal condition
-		bool Signal() 
-		{ 
-			Lock();
-			bool ret = pthread_cond_signal(&cond) == 0; 
-			Unlock();
-			return ret;
-		}
-		//! Broadcast condition
-//		int Broadcast() { return pthread_cond_broadcast(&cond); }
+		bool Signal();
+
 	protected:
 		pthread_cond_t cond;
 	};
@@ -876,8 +831,7 @@ public:
 
 		//! Signal condition
 		bool Signal() { return MPSetEvent(ev,1) == noErr; } // one bit needs to be set at least
-		//! Broadcast condition
-//		int Broadcast() { return pthread_cond_broadcast(&cond); }
+
 	protected:
 		MPEventID ev;
 	};

@@ -17,6 +17,16 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #ifdef FLEXT_THREADS
 
+
+#include <time.h>
+
+#if FLEXT_OS == FLEXT_OS_WIN
+#include <sys/timeb.h>
+#elif FLEXT_OS == FLEXT_OS_LINUX
+#include <sys/time.h>
+#include <unistd.h>
+#endif
+
 #include <errno.h>
 
 //! Thread id of system thread
@@ -490,6 +500,54 @@ flext_base::thr_entry::thr_entry(void (*m)(thr_params *),thr_params *p,thrid_t i
 #endif
 	nxt(NULL) 
 {}
+
+
+
+#if FLEXT_THREADS == FLEXT_THR_POSIX
+bool flext::ThrCond::Wait() { 
+	Lock();
+	bool ret = pthread_cond_wait(&cond,&mutex) == 0; 
+	Unlock();
+	return ret;
+}
+
+bool flext::ThrCond::TimedWait(double ftime) 
+{ 
+	timespec tm; 
+#if FLEXT_OS == FLEXT_OS_WIN
+	_timeb tmb;
+	_ftime(&tmb);
+	tm.tv_nsec = tmb.millitm*1000000;
+	tm.tv_sec = tmb.time; 
+#else
+#if 0 // find out when the following is defined
+	clock_gettime(CLOCK_REALTIME,tm);
+#else
+	struct timeval tp;
+	gettimeofday(&tp, NULL);
+	tm.tv_nsec = tp.tv_usec*1000;
+	tm.tv_sec = tp.tv_sec;
+#endif
+#endif
+	tm.tv_nsec += (long)((ftime-(long)ftime)*1.e9);
+	long nns = tm.tv_nsec%1000000000;
+	tm.tv_sec += (long)ftime+(tm.tv_nsec-nns)/1000000000; 
+	tm.tv_nsec = nns;
+
+	Lock();
+	bool ret = pthread_cond_timedwait(&cond,&mutex,&tm) == 0; 
+	Unlock();
+	return ret;
+}
+
+bool flext::ThrCond::Signal() 
+{ 
+	Lock();
+	bool ret = pthread_cond_signal(&cond) == 0; 
+	Unlock();
+	return ret;
+}
+#endif
 
 
 #endif // FLEXT_THREADS

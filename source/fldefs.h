@@ -894,9 +894,9 @@ FLEXT_CALLSET_(SFUN,bool)
 FLEXT_CALLSET_(SFUN,TP)
 
 //! Declare a set function for a symbol attribute
-#define FLEXT_CALLSET_S(SFUN) \
-\
-FLEXT_CALLSET_(SFUN,t_symptr)
+#define FLEXT_CALLSET_S(FUN) \
+static bool FLEXT_SET_PRE(FUN)(flext_base *c,const t_symbol *&arg) \
+{ FLEXT_CAST<thisType *>(c)->FUN(arg); return true; }
 
 //! Declare a set function for a variable list attribute
 #define FLEXT_CALLSET_V(FUN) \
@@ -930,9 +930,9 @@ FLEXT_CALLGET_(GFUN,bool)
 FLEXT_CALLGET_(GFUN,TP)
 
 //! Declare a get function for a symbol attribute
-#define FLEXT_CALLGET_S(GFUN) \
-\
-FLEXT_CALLGET_(GFUN,t_symptr)
+#define FLEXT_CALLGET_S(FUN) \
+static bool FLEXT_GET_PRE(FUN)(flext_base *c,const t_symbol *&arg) \
+{ FLEXT_CAST<thisType *>(c)->FUN(arg); return true; }
 
 //! Declare a get function for a variable list attribute
 #define FLEXT_CALLGET_V(FUN) \

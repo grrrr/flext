@@ -79,7 +79,6 @@ bool flext_base::InitInlets()
 			if(incnt >= 1) {
 				switch(list[0]) {
 					case xlet::tp_sig:
-						CLASS_MAINSIGNALIN(thisClass(),flext_hdr,defsig);
 						++insigs;
 						break;
 					default:

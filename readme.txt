@@ -115,6 +115,10 @@ see flext.h, fldefs.h and flclass.h for the documented base definitions and clas
 
 Version history:
 
+0.4.2:
+- moved CLASS_MAINSIGNALIN to class scope (fixed "float method overwritten" warning)
+- unix makefiles: CXX should be commented out if standard (to enable environmental settings)
+
 0.4.1:
 - full port for Max@OSX
 - completely redesigned message and attribute handling: now hashed and much more efficient

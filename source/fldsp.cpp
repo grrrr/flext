@@ -29,6 +29,10 @@ void flext_dsp::Setup(t_classid id)
 	dsp_initboxclass();
 #endif
 	
+#if FLEXT_SYS == FLEXT_SYS_PD
+	CLASS_MAINSIGNALIN(c,flext_hdr,defsig);
+#endif
+
 	add_dsp(c,cb_dsp);
 #if FLEXT_SYS != FLEXT_SYS_MAX
 	add_method1(c,cb_enable,"enable",A_FLOAT);

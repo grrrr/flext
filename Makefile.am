@@ -3,8 +3,6 @@
 # added by tim blechmann
 #
 
-SUBDIRS = source 
+SUBDIRS = source tutorial 
 
-EXTRA_DIST = flext.doxy # examples tutorial 
-
-AUTOMAKE_OPTIONS = foreign
+EXTRA_DIST = flext.doxy

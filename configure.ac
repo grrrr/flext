@@ -7,19 +7,23 @@ dnl flext API version (current:release:age)
 API_VERSION=0:0:0
 
 AC_INIT([flext],[0.4.7],[gr@grrrr.org],[flext])
-AM_INIT_AUTOMAKE(1.6)
+AM_INIT_AUTOMAKE(1.8)
 
 
 dnl configure options
 AC_ARG_ENABLE(system, [  --enable-system         flext system (default: pd)],
     [
 	case $enableval in 
-		max) AC_DEFINE(FLEXT_SYS,1);;
-		*) AC_DEFINE(FLEXT_SYS,2);;
+		max) AC_DEFINE(FLEXT_SYS,1)
+			 TARGETDIR=maxmsp;;
+		*) AC_DEFINE(FLEXT_SYS,2)
+			 TARGETDIR=pd;;
 	esac
 	system = $enableval
 	],
-	AC_DEFINE(FLEXT_SYS,2))
+	AC_DEFINE(FLEXT_SYS,2)
+	TARGETDIR=pd
+)
 
 AC_ARG_WITH(sysdir,
 	[  --with-sysdir           path to pd or max headers],
@@ -96,29 +100,23 @@ dnl Checks for library functions.
 
 dnl system specific
 
-if test $(uname -s) == Linux ; then
+if test `uname -s` == Linux; then
 	DYNAMIC_LDFLAGS="-Wl,-Bdynamic"
-	PDEXT=pd_linux
+	EXTENSION=pd_linux
 	SOEXT=so
 fi
-if test $(uname -s) == Darwin ; then
-	DYNAMIC_LDFLAGS="-version-info $API_VERSION -release $AC_PACKAGE_VERSION -dylib -dynamic -flat_namespace -undefined suppress"
 
-	if test $system == max ; then
-		PDEXT=mxo
-		SOEXT=dylib
-		FRAMEWORKS=vecLib maxlib maxaudio
+if test `uname -s` == Darwin; then
+	DYNAMIC_LDFLAGS = "-version-info $API_VERSION -release $AC_PACKAGE_VERSION -dylib -dynamic -flat_namespace -undefined suppress"
+
+	if test $system = max; then
+		echo "what's the name in max???" #EXEEXT = ???
 	else	
-		PDEXT=pd_darwin
+		EXTENSION=pd_darwin
 		SOEXT=dylib
-		FRAMEWORKS=vecLib
+		FRAMEWORKS=???
 	fi
 fi
-
-dnl else
-dnl    echo "Platform NOT supported"
-dnl    exit 1
-dnl fi
 
 dnl todo: mingw / cygwin
 
@@ -127,10 +125,33 @@ AC_SUBST(OPT_FLAGS)
 AC_SUBST(DYNAMIC_LDFLAGS)
 AC_SUBST(stkdir)
 AC_SUBST(sndobjdir)
-AC_SUBST(PDEXT)
+AC_SUBST(EXTENSION)
 AC_SUBST(SOEXT)
+AC_SUBST(TARGETDIR)
 AC_SUBST(FRAMEWORKS) dnl for osx
 AC_OUTPUT([
 			Makefile
 			tutorial/Makefile
+			tutorial/adv1/Makefile
+			tutorial/adv2/Makefile
+			tutorial/adv3/Makefile
+			tutorial/attr1/Makefile
+			tutorial/attr2/Makefile
+			tutorial/attr3/Makefile
+			tutorial/bind1/Makefile
+			tutorial/buffer1/Makefile
+			tutorial/lib1/Makefile
+			tutorial/signal1/Makefile
+			tutorial/signal2/Makefile
+			tutorial/simple1/Makefile
+			tutorial/simple2/Makefile
+			tutorial/simple3/Makefile
+			tutorial/sndobj1/Makefile
+			tutorial/stk1/Makefile
+			tutorial/stk2/Makefile
+			tutorial/thread1/Makefile
+			tutorial/thread2/Makefile
+			tutorial/timer1/Makefile
+			tutorial/pd/Makefile
+			tutorial/maxmsp/Makefile
 			source/Makefile])

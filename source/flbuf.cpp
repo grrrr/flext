@@ -8,6 +8,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
+/*! \file flbuf.cpp
+    \brief Implementation of the buffer abstraction class.
+*/
+ 
 #include "flext.h"
 
 #ifdef MAXMSP

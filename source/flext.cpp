@@ -8,6 +8,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
+/*! \file flext.cpp
+    \brief Implementation of the flext base class.
+*/
+ 
 #include "flext.h"
 #include "flinternal.h"
 #include <string.h>

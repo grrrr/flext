@@ -10,6 +10,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 /*! \file flinternal.h
     \brief Definitions for internal flext usage
+	\internal
     
     Here, a few shortcuts for common MaxMSP or PD library calls and type definitions 
 	are declared

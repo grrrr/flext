@@ -8,6 +8,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
+/*! \file flthr.cpp
+    \brief Implementation of the flext thread functionality.
+*/
+ 
 #ifdef FLEXT_THREADS
 
 #include "flext.h"

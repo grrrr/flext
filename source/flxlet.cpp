@@ -8,6 +8,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
+/*! \file flxlet.cpp
+    \brief Implementation of the variable inlet/outlet functionality.
+*/
+ 
 #include "flext.h"
 #include "flinternal.h"
 #include <string.h>
@@ -42,7 +46,7 @@ void flext_base::AddXlet(xlet::type tp,int mult,const char *desc,xlet *&root)
 
 void flext_base::DescXlet(int ix,const char *desc,xlet *&root)
 {
-	post("flext - sorry, not implemented");
+	post("%s - sorry, not implemented",thisName());
 }
 
 unsigned long flext_base::XletCode(xlet::type tp,...)

@@ -8,6 +8,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
+/*! \file flutil.cpp
+    \brief Implementation of the various utility functions.
+*/
+ 
 #include "flext.h"
 #include <string.h>
 

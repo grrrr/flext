@@ -8,7 +8,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-// This is all derived from GEM by Mark Danks
+/*! \file flbase.cpp
+    \brief Implementation of the internal flext base classes.
+
+	\remark This is all derived from GEM by Mark Danks
+*/
  
 #include "flbase.h"
 #include "flinternal.h"

@@ -9,15 +9,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 /*! \file flsetup.cpp
-    \brief Helper functions for object setup
-    
-    !Lacking Details.!
+    \brief Implementation of helper functions for object setup.
 */
 
 #include "flext.h"
 #include <ctype.h>
 #include <string.h>
 
+//! C++ strcup function
 const char *fl_strdup(const char *t)
 {
 	if(!t) return NULL;
@@ -27,6 +26,7 @@ const char *fl_strdup(const char *t)
 	return r;
 }
 
+//! Extract space-delimited words from a string
 const char *fl_extract(const char *name,int ix)
 {
 	static char tmp[1024];
@@ -48,13 +48,8 @@ const char *fl_extract(const char *name,int ix)
 }
 
 
-/////////////////////////////////////////////////////////
-// check if tilde object's name ends with a tilde
-//
-/////////////////////////////////////////////////////////
-
-
 #ifdef _DEBUG
+//! Check if object's name ends with a tilde
 bool fl_chktilde(const char *objname)
 {
 //	int stplen = strlen(setupfun);

@@ -188,7 +188,9 @@ public:
 	
 //	void AddInDef() { AddInlet(xlet::tp_def,1); }
 
-	//! Add inlet(s) for anythings
+	/*! \brief Add inlet(s) for anythings
+		That's the one to choose for the left-most (first) inlet unless it's a signal inlet.
+	*/
 	void AddInAnything(int m = 1) { AddInlet(xlet::tp_any,m); } // leftmost or via proxy
 	void AddInAnything(const char *desc,int m = 1) { AddInlet(xlet::tp_any,m,desc); } // leftmost or via proxy
 	//! Add inlet(s) for floats
@@ -613,7 +615,7 @@ public:
 		//! Set anything
 		AtomAnything &operator()(const t_symbol *h = NULL,int argc = 0,const t_atom *argv = NULL)
 		{ 
-			hdr = h; AtomList::operator(argc,argv);	
+			hdr = h; AtomList::operator()(argc,argv);	
 			return *this; 
 		}
 

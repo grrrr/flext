@@ -8,8 +8,13 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-// this file comes from David Zicarellis inofficial package index.sit
-// The latter is not easily found so i included the original file buffer.h with flext
+/*! \file flmspbuffer.h
+    \brief Definition of the Max/MSP buffer structure
+	\internal
+    
+	This file comes from David Zicarellis inofficial package index.sit
+	The latter is not easily found so i included the original file buffer.h with flext
+*/
 
 #if defined(MAXMSP) && !defined(__FLEXT_MSPBUFFER_H)
 #define __FLEXT_MSPBUFFER_H

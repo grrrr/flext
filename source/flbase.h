@@ -148,20 +148,22 @@ class FLEXT_SHARE flext_obj:
 
 #if FLEXT_SYS == FLEXT_SYS_PD
         //! Get the class pointer
-		t_class *thisClass() { return (t_class *)((t_object *)(x_obj))->te_g.g_pd; }
+		t_class *thisClass() const { return (t_class *)((t_object *)(x_obj))->te_g.g_pd; }
 		
+		//! Typedef for unique class identifier
 		typedef t_class *t_classid;
 		//! Get unique id for object class
-		t_classid thisClassId() const { void *p = thisClass(); return reinterpret_cast<unsigned long>(p); }
+		t_classid thisClassId() const { return thisClass(); }
 		//! Get class pointer from class id
 		static t_class *getClass(t_classid c) { return c; }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
         //! Get the class pointer
-		t_class *thisClass() { return (t_class *)(((t_tinyobject *)x_obj)->t_messlist-1); } 
+		t_class *thisClass() const { return (t_class *)(((t_tinyobject *)x_obj)->t_messlist-1); } 
 
+		//! Typedef for unique class identifier
 		typedef void *t_classid;
 		//! Get unique id for object class (for Max/MSP library object share the same (t_class *)!)
-		t_classid thisClassId() const; // { return classid; }
+		t_classid thisClassId() const; 
 		//! Get class pointer from class id
 		static t_class *getClass(t_classid);
 #endif

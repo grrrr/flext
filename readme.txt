@@ -116,6 +116,7 @@ Version history:
 - full port for Max@OSX
 - completely redesigned message and attribute handling: now hashed and much more efficient
 - greatly enhanced object creation and destruction (esp. for library objects)
+- class setup functions now take t_classid type arg... this is BACKWARDS-INCOMPATIBLE for Max/MSP
 - added some prerequisites for usage of flext as a shared library
 - completed Max/MSPs inlet/outlet assist description functionality
 - Max/MSP signal objects: fixed bug of reporting wrong number of inlets

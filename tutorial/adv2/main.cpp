@@ -57,16 +57,12 @@ FLEXT_NEW("adv2",adv2)
 
 adv2::adv2()
 { 
-	post("thisClassID=%p",thisClassId()); 
-
 	// define inlets
 	AddInAnything();  // add inlet of type anything (index 0)
 } 
 
 void adv2::setup(t_classid c)
 {
-	post("ClassID=%p",c); 
-
 	// register methods:
 	// notice the naming FLEXT_CADD_METHOD* instead of FLEXT_ADD_METHOD* 
 	// there is also an additional parameter c pointing to the class definition

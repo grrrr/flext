@@ -73,6 +73,7 @@ Version history:
 
 0.2.4:
 - check/update function for buffer change (resize etc.)
+- description text for inlets/outlets (e.g. for MaxMSPs assist function)
 
 0.2.3:
 - restructured files and started usable inline documentation

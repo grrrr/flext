@@ -148,29 +148,41 @@ public:
 
 	//! add inlet(s) for anythings
 	void AddInAnything(int m = 1) { AddInlet(xlet::tp_any,m); } // leftmost or via proxy
+	void AddInAnything(const char *desc,int m = 1) { AddInlet(xlet::tp_any,m,desc); } // leftmost or via proxy
 	//! add inlet(s) for floats
 	void AddInFloat(int m = 1) { AddInlet(xlet::tp_float,m); }
+	void AddInFloat(const char *desc,int m = 1) { AddInlet(xlet::tp_float,m,desc); }
 	//! add inlet(s) for ints
 	void AddInInt(int m = 1) { AddInlet(xlet::tp_int,m); }
+	void AddInInt(const char *desc,int m = 1) { AddInlet(xlet::tp_int,m,desc); }
 	//! add inlet(s) for symbols
 	void AddInSymbol(int m = 1) { AddInlet(xlet::tp_sym,m); }
+	void AddInSymbol(const char *desc,int m = 1) { AddInlet(xlet::tp_sym,m,desc); }
 	//! add inlet(s) for bang
 	void AddInBang(int m = 1) { AddInlet(xlet::tp_sym,m); }
+	void AddInBang(const char *desc,int m = 1) { AddInlet(xlet::tp_sym,m,desc); }
 	//! add inlet(s) for lists
 	void AddInList(int m = 1) { AddInlet(xlet::tp_list,m); }  // via proxy
+	void AddInList(const char *desc,int m = 1) { AddInlet(xlet::tp_list,m,desc); }  // via proxy
 	
 	//! add outlet(s) for anythings
 	void AddOutAnything(int m = 1) { AddOutlet(xlet::tp_any,m); }
+	void AddOutAnything(const char *desc,int m = 1) { AddOutlet(xlet::tp_any,m,desc); }
 	//! add outlet(s) for floats
 	void AddOutFloat(int m = 1) { AddOutlet(xlet::tp_float,m); }
+	void AddOutFloat(const char *desc,int m = 1) { AddOutlet(xlet::tp_float,m,desc); }
 	//! add outlet(s) for ints
 	void AddOutInt(int m = 1) { AddOutlet(xlet::tp_int,m); }
+	void AddOutInt(const char *desc,int m = 1) { AddOutlet(xlet::tp_int,m,desc); }
 	//! add outlet(s) for symbols
 	void AddOutSymbol(int m = 1) { AddOutlet(xlet::tp_sym,m); }
+	void AddOutSymbol(const char *desc,int m = 1) { AddOutlet(xlet::tp_sym,m,desc); }
 	//! add outlet(s) for bangs
 	void AddOutBang(int m = 1) { AddOutlet(xlet::tp_sym,m); }
+	void AddOutBang(const char *desc,int m = 1) { AddOutlet(xlet::tp_sym,m,desc); }
 	//! add outlet(s) for lists
 	void AddOutList(int m = 1) { AddOutlet(xlet::tp_list,m); }
+	void AddOutList(const char *desc,int m = 1) { AddOutlet(xlet::tp_list,m,desc); }
 	
 	/*! \brief set up inlets and outlets
 		\remark Must be called ONCE to actually set up the defined inlets/outlets.
@@ -352,9 +364,10 @@ protected:
 			tp_float,/*tp_flint,*/ tp_int,tp_sym,tp_list,tp_sig,tp_any
 		};
 
-		xlet(type t): tp(t),nxt(NULL) {}
+		xlet(type t,const char *desc = NULL);
 		~xlet();
 		
+		char *desc;
 		type tp;
 		xlet *nxt;
 	};
@@ -362,9 +375,13 @@ protected:
 	unsigned long XletCode(xlet::type tp = xlet::tp_none,...); // end list with 0 (= tp_none) !!
 
 	void AddInlets(unsigned long code); // use XletCode to get code value
-	void AddInlet(xlet::type tp,int mult = 1) { AddXlet(tp,mult,inlist); }
+	void AddInlet(xlet::type tp,int mult = 1,const char *desc = NULL) { AddXlet(tp,mult,desc,inlist); }
 	void AddOutlets(unsigned long code); // use XletCode to get code value
-	void AddOutlet(xlet::type tp,int mult = 1) { AddXlet(tp,mult,outlist); }
+	void AddOutlet(xlet::type tp,int mult = 1,const char *desc = NULL) { AddXlet(tp,mult,desc,outlist); }
+
+	void DescInlet(int ix,const char *desc) { DescXlet(ix,desc,inlist); }
+	void DescOutlet(int ix,const char *desc) { DescXlet(ix,desc,outlist); }
+
 
 // method handling
 
@@ -395,7 +412,8 @@ private:
 	outlet **outlets;
 	bool distmsgs;
 
-	void AddXlet(xlet::type tp,int mult,xlet *&root);	
+	void AddXlet(xlet::type tp,int mult,const char *desc,xlet *&root);	
+	void DescXlet(int ix,const char *desc,xlet *&root);	
 
 	methitem *mlst;
 

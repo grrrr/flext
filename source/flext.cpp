@@ -11,6 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <flext.h>
 #include <flinternal.h>
 #include <stdarg.h>
+#include <string.h>
 
 // === proxy class for flext_base ============================
 
@@ -159,15 +160,30 @@ flext_base::~flext_base()
 	if(mlst) delete mlst;
 }
 
-flext_base::xlet::~xlet() { if(nxt) delete nxt; }
+flext_base::xlet::xlet(type t,const char *d): 
+	tp(t),nxt(NULL)
+{ 
+	if(d) {
+		int ln = strlen(d);
+		desc = new char[ln];
+		strncpy(desc,d,ln);
+	}
+	else desc = NULL;
+}
 
-void flext_base::AddXlet(xlet::type tp,int mult,xlet *&root)
+flext_base::xlet::~xlet() 
+{ 
+	if(desc) delete[] desc;
+	if(nxt) delete nxt; 
+}
+
+void flext_base::AddXlet(xlet::type tp,int mult,const char *desc,xlet *&root)
 {
-	if(!root && mult) { root = new xlet(tp); --mult; }
+	if(!root && mult) { root = new xlet(tp,desc); --mult; }
 	if(mult) {
 		xlet *xi = root; 
 		while(xi->nxt) xi = xi->nxt;
-		while(mult--) xi = xi->nxt = new xlet(tp);
+		while(mult--) xi = xi->nxt = new xlet(tp,desc);
 	}
 }
 

@@ -58,8 +58,8 @@ OBJPATH=sd
 !include make-files.txt
 
 !ifdef SNDOBJ
-SRCS=$(SRCS) flsndobj.cpp
-HDRS=$(HDRS) flsndobj.h
+SRCS=$(SRCS) $(SRCS_SNDOBJ)
+HDRS=$(HDRS) $(HDRS_SNDOBJ)
 !endif
 
 #default target
@@ -89,11 +89,9 @@ $(OUTPATH)\$(NAME)-$(TARGET).lib: $(OBJS)
 	@cd $(OUTPATH)\$(OBJPATH)
 	lib /OUT:..\$(NAME)-$(TARGET).lib $**
 	@cd ..\..
-!ifdef INSTALL
-!if "$(INSTALL)" == "yes"
+!ifdef INSTDIR
 	@-if not exist $(OBJPATH) mkdir $(INSTDIR)
 	copy $(OUTPATH)\$(NAME)-$(TARGET).lib $(INSTDIR) > nul
 	copy $(SOURCE)\*.h $(INSTDIR) > nul
-!endif
 !endif
 

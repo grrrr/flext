@@ -4,7 +4,7 @@
 
 make -f makefile.pd-cygwin &&
 {
-	if [ $INSTALL = "yes" ]; then
+	if [ $INSTDIR != "" ]; then
 		make -f makefile.pd-cygwin install
 	fi
 }

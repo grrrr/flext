@@ -81,7 +81,7 @@ bool flext::ScanAtom(t_atom &a,const char *buf)
 		break;
 #endif
 	case 1: // float
-		SetFloat(a,atof(tmp));
+		SetFloat(a,(float)atof(tmp));
 		break;
 	default: { // anything else is a symbol
 		char t = *c; *c = 0;

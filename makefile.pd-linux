@@ -30,8 +30,8 @@ NAME=flext
 include make-files.txt
 
 ifdef SNDOBJ
-_SRCS=$(SRCS) flsndobj.cpp
-_HDRS=$(HDRS) flsndobj.h
+_SRCS=$(SRCS) $(SRCS_SNDOBJ)
+_HDRS=$(HDRS) $(HDRS_SNDOBJ)
 else
 _SRCS=$(SRCS)
 _HDRS=$(HDRS)
@@ -84,10 +84,12 @@ $(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(_SRCS))
 clean:
 	rm -f $(TARGDIR)/*.{o,do,to,tdo} $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
 	
+ifdef INSTDIR
 $(INSTDIR):
 	-mkdir $(INSTDIR)
 
 install:: $(INSTDIR)
+endif
 
 install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)  $(patsubst %,source/%,$(_HDRS))
 	cp $^ $(INSTDIR)

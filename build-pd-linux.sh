@@ -4,7 +4,7 @@
 
 make -f makefile.pd-linux &&
 { 
-	if [ $INSTALL = "yes" ]; then
+	if [ $INSTDIR != "" ]; then
 		echo Now install as root
 		su -c "make -f makefile.pd-linux install"
 	fi

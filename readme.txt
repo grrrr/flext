@@ -16,12 +16,12 @@ Package files:
 - gpl.txt,license.txt: GPL license stuff
 - flext.h: main include file
 - flstdc.h: Basic definitions in classic C - some common vocabulary for the different platforms
-- flbase.h,flbase.cpp: GEM-like C++ interface
+- flbase.h,flbase.cpp: C++ interface
 - flclass.h,flext.cpp: actual base classes for message (flext_base) and dsp (flext_dsp) processing
 - fldsp.h,fldsp.cpp: code for signal externals
 - flthr.h,flthr.cpp: code for threaded methods
 - flsupport.h,flsupport.cpp: various flext support functions and classes
-- flatom.cpp: code for functions dealing with lists of atoms
+- flatom.cpp flatom-pr.cpp: code for functions dealing with lists of atoms
 - flutil.cpp: additional utility functions
 - flxlet.cpp: code for variable inlet/outlet stuff
 - flattr.cpp: code for attribute stuff
@@ -247,11 +247,12 @@ general:
 - check that SetupInOut is only called once
 - feed assist function with in/outlet description
 - MaxMSP: how to call separate help files for objects in a library?
+- MaxMSP for OSX: add support (maybe someone donates a CodeWarrior 8?)
 
 bugs:
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)
 - hard thread termination upon object destruction doesn't seem to work properly -> crash
-- Max rounding bug (at least version 4.0.5) ... buffer resize could be one sample less!
+- Max rounding bug ... buffer resize could be one sample less!
 - flext_dsp: Max/MSP doesn't correctly report in/out channel counts
 
 tests:

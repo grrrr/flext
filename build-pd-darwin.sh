@@ -4,9 +4,8 @@
 
 make -f makefile.pd-darwin &&
 { 
-	if [ $INSTALL = "yes" ]; then
-#		echo Now install as root
-#		sudo make -f makefile.pd-darwin install
-		make -f makefile.pd-darwin install
+	if [ $INSTDIR != "" ]; then
+		echo Now install as root
+		sudo make -f makefile.pd-darwin install
 	fi
 }

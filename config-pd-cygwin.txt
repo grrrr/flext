@@ -5,15 +5,14 @@
 # where is PD?
 PDPATH=/cygdrive/c/programme/audio/pd
 
-# where is the SndObj include directory? (leave blank to disable SndObj support)
+# where is the SndObj include directory? 
+# (leave blank to disable SndObj support)
 SNDOBJ=/cygdrive/f/prog/packs/sndobj/include
 
 # where should flext libraries be built?
 TARGDIR=./pd-cygwin
 
-# should the flext stuff be installed? (yes/no)
-INSTALL=yes
-
 # where should flext libraries be installed?
+# (leave blank to omit installation)
 INSTDIR=${PDPATH}/flext
 

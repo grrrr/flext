@@ -67,6 +67,13 @@ public:
 	*/
 	static bool compatibility;  
 
+// ---  attribute procession ----------------------------------------
+
+	/*! \brief Flag for attribute procession.
+		If set attributes are treated in the Max/Jitter way.
+		Set to false by default!
+	*/
+	static bool procattr;  
 //!		@} 
 
 
@@ -394,7 +401,7 @@ protected:
 
 protected:
 
-	flext_base(bool attr = false);
+	flext_base();
 	virtual ~flext_base();
 
 // inlets and outlets
@@ -488,9 +495,7 @@ private:
 	xlet *inlist,*outlist;
 	const t_symbol *curtag;
 	int incnt,outcnt,insigs,outsigs;
-	outlet **outlets;
-	bool procattr;
-	outlet *outattr;
+	outlet **outlets,*outattr;
 	bool distmsgs;
 
 	void AddXlet(xlet::type tp,int mult,const char *desc,xlet *&root);	

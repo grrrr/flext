@@ -115,16 +115,15 @@ DEF_IN_FT(9)
 // === flext_base ============================================
 
 bool flext_base::compatibility = true;
+bool flext_base::procattr = false;
 
-
-flext_base::flext_base(bool attr):
+flext_base::flext_base():
 	inlist(NULL),outlist(NULL),
 	incnt(0),outcnt(0),
 	insigs(0),outsigs(0),
 	curtag(NULL),
 	outlets(NULL),inlets(NULL),outattr(NULL),
-	methhead(NULL),attrhead(NULL),
-	procattr(attr),attrcnt(0),
+	methhead(NULL),attrhead(NULL),attrcnt(0),
 	distmsgs(false)
 {
 	LOG1("%s - flext logging is on",thisName());

@@ -39,17 +39,16 @@ void flext_base::AddAttrItem(attritem *m)
 
 void flext_base::AddAttrib(const char *attr,metharg tp,methfun gfun,methfun sfun)
 {
-	if(!procattr) {
-		error("%s - Attribute processing is not enabled",thisName());
-		return;
+	if(procattr) {
+		char tmp[1024];
+		sprintf(tmp,"get%s",attr);
+		AddAttrItem(new attritem(MakeSymbol(attr),MakeSymbol(tmp),tp,gfun,sfun));
+
+		AddMethod(0,attr,(methfun)cb_SetAttrib,a_any,a_null);
+		AddMethod(0,tmp,(methfun)cb_GetAttrib,a_any,a_null);
 	}
-
-	char tmp[1024];
-	sprintf(tmp,"get%s",attr);
-	AddAttrItem(new attritem(MakeSymbol(attr),MakeSymbol(tmp),tp,gfun,sfun));
-
-	AddMethod(0,attr,(methfun)cb_SetAttrib,a_any,a_null);
-	AddMethod(0,tmp,(methfun)cb_GetAttrib,a_any,a_null);
+	else
+		error("%s - attribute procession is not enabled!",thisName());
 }
 
 bool flext_base::InitAttrib(int argc,const t_atom *argv)
@@ -73,12 +72,16 @@ bool flext_base::InitAttrib(int argc,const t_atom *argv)
 
 bool flext_base::ListAttrib()
 {
-	AtomList la(attrcnt);
-	attritem *a = attrhead;
-	for(int i = 0; i < attrcnt; ++i,a = a->nxt) SetSymbol(la[i],a->tag);
+	if(outattr) {
+		AtomList la(attrcnt);
+		attritem *a = attrhead;
+		for(int i = 0; i < attrcnt; ++i,a = a->nxt) SetSymbol(la[i],a->tag);
 
-	ToOutAnything(outattr,thisTag(),la.Count(),la.Atoms());
-	return true;
+		ToOutAnything(outattr,thisTag(),la.Count(),la.Atoms());
+		return true;
+	}
+	else
+		return false;
 }
 
 bool flext_base::SetAttrib(const t_symbol *tag,int argc,const t_atom *argv)

@@ -201,9 +201,14 @@ class FLEXT_EXT flext_obj:
 #define FLEXT_SET_PRE(F) flext_s_##F
 
 
+#ifndef FLEXT_ATTRIBUTES
+#define FLEXT_ATTRIBUTES 0
+#endif
+
 // ----------------------------------------
 // These should be used in the header
 // ----------------------------------------
+
 
 #define FLEXT_REALHDR(NEW_CLASS, PARENT_CLASS)    	    	\
 public:     	    	    \
@@ -212,8 +217,9 @@ static flext_obj *__init__(int argc,t_atom *argv);  \
 static void __free__(flext_hdr *hdr)    	    	    	\
 { flext_obj *mydata = hdr->data; delete mydata; \
   hdr->flext_hdr::~flext_hdr(); }   	    	\
-static void __setup__(t_class *classPtr)  	    	\
-{ PARENT_CLASS::__setup__(classPtr); }  	    	    	\
+static void __setup__(t_class *classPtr) { 	    	\
+	PARENT_CLASS::__setup__(classPtr);				\
+	procattr = FLEXT_ATTRIBUTES; } \
 protected:    \
 static inline NEW_CLASS *thisObject(void *c) { return FLEXT_CAST<NEW_CLASS *>(((flext_hdr *)c)->data); } 
 
@@ -227,7 +233,8 @@ static void __free__(flext_hdr *hdr)    	    	    	\
   hdr->flext_hdr::~flext_hdr(); }   	    	\
 static void __setup__(t_class *classPtr)  	    	\
 { PARENT_CLASS::__setup__(classPtr);    	    	\
-	NEW_CLASS::SETUPFUN(classPtr); }  	    	    	\
+	procattr = FLEXT_ATTRIBUTES; \
+	NEW_CLASS::SETUPFUN(classPtr); 	}    	    	\
 protected:    \
 static inline NEW_CLASS *thisObject(void *c) { return FLEXT_CAST<NEW_CLASS *>(((flext_hdr *)c)->data); } 
 

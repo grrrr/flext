@@ -449,7 +449,7 @@ fts_module_t __##NAME##_module = {#NAME,#NAME,__##NAME##_initfun,0,0};
 
 
 #define REAL_NEW(NAME,NEW_CLASS,DSP,LIB) \
-flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
+flext_obj *NEW_CLASS::__init__(int ,t_atom *) \
 {     	    	    	    	    	    	    	    	\
     return new NEW_CLASS;                     \
 }   	    	    	    	    	    	    	    	\
@@ -471,7 +471,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
 #define REAL_NEW_1(NAME,NEW_CLASS,DSP,LIB, TYPE1) \
-flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
+flext_obj *NEW_CLASS::__init__(int ,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     return new NEW_CLASS(ARGCAST(argv[0],TYPE1));                     \
 }   	    	    	    	    	    	    	    	\
@@ -482,7 +482,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
 #define REAL_NEW_2(NAME,NEW_CLASS,DSP,LIB, TYPE1,TYPE2) \
-flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
+flext_obj *NEW_CLASS::__init__(int ,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     return new NEW_CLASS(ARGCAST(argv[0],TYPE1),ARGCAST(argv[1],TYPE2));                     \
 }   	    	    	    	    	    	    	    	\
@@ -493,7 +493,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
 #define REAL_NEW_3(NAME,NEW_CLASS,DSP,LIB, TYPE1, TYPE2, TYPE3) \
-flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
+flext_obj *NEW_CLASS::__init__(int ,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     return new NEW_CLASS(ARGCAST(argv[0],TYPE1),ARGCAST(argv[1],TYPE2),ARGCAST(argv[2],TYPE3));                     \
 }   	    	    	    	    	    	    	    	\
@@ -504,7 +504,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
 #define REAL_NEW_4(NAME,NEW_CLASS,DSP,LIB, TYPE1,TYPE2, TYPE3, TYPE4) \
-flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
+flext_obj *NEW_CLASS::__init__(int ,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     return new NEW_CLASS(ARGCAST(argv[0],TYPE1),ARGCAST(argv[1],TYPE2),ARGCAST(argv[2],TYPE3),ARGCAST(argv[3],TYPE4));                     \
 }   	    	    	    	    	    	    	    	\

@@ -34,7 +34,7 @@ class qmsg
 public:
     void Set(flext_base *t,int o,const t_symbol *s,int ac,const t_atom *av) { th = t,out = o,sym = s,argc = ac,argv = av; }
 
-    // \note PD lock must already be held by caller
+    // \note PD sys lock must already be held by caller
     void Send() const
     {
         if(out < 0)
@@ -165,9 +165,9 @@ protected:
         ahead = p >= QUEUE_ATOMS?argc:p;
     }
 
-    int qhead,qtail;
+    volatile int qhead,qtail;
     qmsg lst[QUEUE_LENGTH];
-    int ahead,atail;
+    volatile int ahead,atail;
     t_atom atoms[QUEUE_ATOMS];
 };
 
@@ -244,8 +244,7 @@ static void Trigger()
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
     #ifdef FLEXT_QTHR
-        // wake up a worker thread 
-        // (instead of triggering the clock)
+        // wake up worker thread
         qthrcond.Signal();
     #else
         clock_delay(qclk,0);

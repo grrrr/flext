@@ -8,23 +8,25 @@
 ###############################################
 # package info
 
-USRINFO=package.txt
+!ifndef PKGINFO
+PKGINFO=package.txt
+!endif
 
-!include $(USRINFO)
+!include $(PKGINFO)
 
 ###############################################
 # check variables
 
 !ifndef BUILDCLASS
-!error BUILDCLASS must be specified in $(USRINFO)
+!error BUILDCLASS must be specified in $(PKGINFO)
 !endif
 
 !ifndef BUILDMODE
-!error BUILDMODE must be specified in $(USRINFO)
+!error BUILDMODE must be specified in $(PKGINFO)
 !endif
 
 !ifndef BUILDTYPE
-!error BUILDTYPE must be specified in $(USRINFO)
+!error BUILDTYPE must be specified in $(PKGINFO)
 !endif
 
 ##############################
@@ -44,7 +46,7 @@ SYSDEFAULT=$(BUILDPATH)$(PLATFORM)\$(RTSYS)\config-$(COMPILER).def
 
 OPTIONS=-f $(BUILDPATH)nmake-sub.mak \
 	PLATFORM=$(PLATFORM) RTSYS=$(RTSYS) COMPILER=$(COMPILER) \
-	BUILDPATH=$(BUILDPATH) USRINFO=$(USRINFO)
+	BUILDPATH=$(BUILDPATH) PKGINFO=$(PKGINFO)
 
 ###############################################
 

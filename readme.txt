@@ -78,6 +78,9 @@ see flext.h for the documented base classes
 
 Version history:
 
+0.3.2:
+- doxygen generated inline documentation / functional reference
+
 0.3.1:
 - added some more functionality to the AtomList class
 - fixed forgotten Sleep implementation in pd@unix
@@ -206,6 +209,7 @@ bugs:
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)
 - hard thread termination upon object destruction doesn't seem to work properly -> crash
 - Max rounding bug (at least version 4.0.5) ... buffer resize could be one sample less!
+- flext_dsp: Max/MSP doesn't correctly report in/out channel counts
 
 tests:
 - PD: figure out what "pointer" messages do and where they occur

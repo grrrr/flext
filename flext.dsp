@@ -135,6 +135,10 @@ LIB32=link.exe -lib
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\source\fldoxygen.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\readme.txt
 # End Source File
 # End Group

@@ -29,7 +29,7 @@ class flext_obj;
 
 // ----------------------------------------------------------------------------
 /*! \struct flext_hdr
-	\brief The obligatory PD or MaxMSP object header
+	\brief The obligatory PD or Max/MSP object header
 
     This is in a separate struct to assure that obj is the very first thing.  
     If it were the first thing in flext_obj, then there could be problems with
@@ -40,8 +40,7 @@ class flext_obj;
 struct FLEXT_EXT flext_hdr
 {
     	/*! \brief The obligatory object header
-
-			MUST reside at memory offset 0
+			MUST reside at memory offset 0 (no virtual table possible)
 		*/
     	t_sigobj    	    obj;  
 
@@ -55,8 +54,7 @@ struct FLEXT_EXT flext_hdr
 		long curinlet;      
 #endif
 
-    	/*! \brief Our data structure
-
+    	/*! \brief This points to flext object class 
 			This points to the actual polymorphic C++ class
 		*/
         flext_obj           *data;
@@ -65,7 +63,7 @@ struct FLEXT_EXT flext_hdr
 
 // ----------------------------------------------------------------------------
 /*! \class flext_obj
-	\brief The mother of base classes for all externs written in C++
+	\brief The mother of base classes for all flext externs
 
     Each extern which is written in C++ needs to use the #defines at the
     end of this header file.  

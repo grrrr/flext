@@ -17,10 +17,19 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __FLEXT_H
 #define __FLEXT_H
 
-//! flext version number
+
+/*!	\defgroup FLEXT_GLOBAL Flext global definitions
+	@{
+*/
+
+//! \brief flext version number
 #define FLEXT_VERSION 301
-//! flext version string
+
+//! \brief flext version string
 #define FLEXT_VERSTR "0.3.1"
+
+//! @}
+
 
 // include all the flext interface definitions
 #include "fldefs.h"

@@ -156,15 +156,15 @@ void flext_base::Queue(qmsg *m)
 	if(qtail) qtail->nxt = m;
 	else qhead = m;
 	qtail = m;
-#ifdef FLEXT_THREADS
-	qmutex.Unlock();
-#endif
 #ifdef PD
 	clock_delay(qclk,0);
 #elif defined(MAXMSP)
 	clock_delay(yclk,0);
 #else
 	#error "To implement!"
+#endif
+#ifdef FLEXT_THREADS
+	qmutex.Unlock();
 #endif
 }
 

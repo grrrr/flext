@@ -97,8 +97,10 @@ Version history:
 0.4.1:
 - fixed crash issue in flext_dsp when there are NO signal inlets or outlets defined
 	(this is possibly only a problem for the signal2 tutorial example)
-- added flext::GetType(t_atom &)
-- added flext::ZeroMem
+- added flext::GetType(t_atom &), flext::ZeroMem
+- put the clock_delay for the message queue inside the thread-locked area
+- BACKWARDS-INCOMPATIBLE CHANGE: flext_base::m_methodmain and flext_base::m_method_ have got 
+	const modifiers.... these virtual methods are used rarely (for example in py/pyext)
 
 0.4.0:
 - the use of the const keyword is enforced (e.g. the preferred type for symbols is now "const t_symbol *")

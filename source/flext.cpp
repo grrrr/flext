@@ -509,7 +509,7 @@ void flext_base::m_help()
 /*! \brief All the message processing
 	The messages of all the inlets go here and are promoted to the registered callback functions
 */
-bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
+bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,const t_atom *argv)
 {
 	static bool trap = false;
 	bool ret = false;
@@ -524,10 +524,10 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 			LOG4("found method tag %s: inlet=%i, symbol=%s, argc=%i",m->tag->s_name,inlet,s->s_name,argc);
 
 			if(m->argc == 1 && m->args[0] == a_list) {
-				ret = ((methfun_V)m->fun)(this,argc,argv);
+				ret = ((methfun_V)m->fun)(this,argc,const_cast<t_atom *>(argv));
 			}
 			else if(m->argc == 1 && m->args[0] == a_any) {
-				ret = ((methfun_A)m->fun)(this,s,argc,argv);
+				ret = ((methfun_A)m->fun)(this,s,argc,const_cast<t_atom *>(argv));
 			}
 			else if(argc == m->argc) {
 				int ix;
@@ -594,7 +594,7 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 			// any
 			LOG4("found any method for %s: inlet=%i, symbol=%s, argc=%i",m->tag->s_name,inlet,s->s_name,argc);
 
-			ret = ((methfun_A)m->fun)(this,s,argc,argv);
+			ret = ((methfun_A)m->fun)(this,s,argc,const_cast<t_atom *>(argv));
 		}
 	}
 	
@@ -675,7 +675,7 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 	return ret; // true if appropriate handler was found and called
 }
 
-bool flext_base::m_method_(int inlet,const t_symbol *s,int argc,t_atom *argv) 
+bool flext_base::m_method_(int inlet,const t_symbol *s,int argc,const t_atom *argv) 
 {
 //#ifdef _DEBUG
 	post("%s: message unhandled - inlet:%i args:%i symbol:%s",thisName(),inlet,argc,s?s->s_name:"");

@@ -8,8 +8,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-#ifndef __CPPEXT_H
-#define __CPPEXT_H
+#ifndef _FLEXT_CPPEXT_H
+#define _FLEXT_CPPEXT_H
 
 #include <_cpp.h>
 

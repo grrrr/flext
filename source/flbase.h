@@ -11,8 +11,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // This is all borrowed from GEM by Mark Danks
 
 
-#ifndef __CPP_H
-#define __CPP_H
+#ifndef _FLEXT_CPP_H
+#define _FLEXT_CPP_H
 
 #include <flext.h>
 

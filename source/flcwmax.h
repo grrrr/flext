@@ -10,8 +10,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // This is the prefix file for CodeWarrior projects 
 
-#ifndef __CW_MAX_H
-#define __CW_MAX_H
+#ifndef _FLEXT_CW_MAX_H
+#define _FLEXT_CW_MAX_H
 
 #include <MacHeaders.h>
 

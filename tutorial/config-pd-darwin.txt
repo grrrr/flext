@@ -6,13 +6,13 @@
 # where are the PD header files?
 # if it is a system include path (like /usr/local/include) 
 # you should leave it blank (as e.g. g++ 3.2 complains about it)
-PDPATH=/usr/local/pd/src
+PDPATH=/usr/local/lib/pd/src
 
 # where is the PD executable?
-PD=/usr/local/pd/bin/pd
+PD=/usr/local/bin/pd
 
 # where do the flext libraries reside?
-FLEXTPATH=/usr/local/pd/flext
+FLEXTPATH=/usr/local/lib/pd/flext
 
 # where is the SndObj include directory? 
 # (leave blank or comment out to disable SndObj support)

@@ -295,20 +295,38 @@ void flext::CopySamples(t_sample *dst,const t_sample *src,int cnt)
         ) {
             // aligned version
     	    while(n--) {
-                _mm_store_ps(dst+0,_mm_load_ps(src+0));
-                _mm_store_ps(dst+4,_mm_load_ps(src+4));
-                _mm_store_ps(dst+8,_mm_load_ps(src+8));
-                _mm_store_ps(dst+12,_mm_load_ps(src+12));
+				__asm {
+					mov		eax,dword ptr [src]
+					mov		edx,dword ptr [dst]
+
+					movaps	xmm0,xmmword ptr[eax]
+					movaps	xmmword ptr[edx],xmm0
+					movaps	xmm1,xmmword ptr[eax+4*4]
+					movaps	xmmword ptr[edx+4*4],xmm1
+					movaps	xmm2,xmmword ptr[eax+8*4]
+					movaps	xmmword ptr[edx+8*4],xmm2
+					movaps	xmm3,xmmword ptr[eax+12*4]
+					movaps	xmmword ptr[edx+12*4],xmm3
+				}
                 src += 16,dst += 16;
             }
         }
         else {
             // unaligned version
     	    while(n--) {
-                _mm_storeu_ps(dst+0,_mm_loadu_ps(src+0));
-                _mm_storeu_ps(dst+4,_mm_loadu_ps(src+4));
-                _mm_storeu_ps(dst+8,_mm_loadu_ps(src+8));
-                _mm_storeu_ps(dst+12,_mm_loadu_ps(src+12));
+				__asm {
+					mov		eax,dword ptr [src]
+					mov		edx,dword ptr [dst]
+
+					movups	xmm0,xmmword ptr[eax]
+					movups	xmmword ptr[edx],xmm0
+					movups	xmm1,xmmword ptr[eax+4*4]
+					movups	xmmword ptr[edx+4*4],xmm1
+					movups	xmm2,xmmword ptr[eax+8*4]
+					movups	xmmword ptr[edx+8*4],xmm2
+					movups	xmm3,xmmword ptr[eax+12*4]
+					movups	xmmword ptr[edx+12*4],xmm3
+				}
                 src += 16,dst += 16;
             }
         }
@@ -329,10 +347,8 @@ void flext::CopySamples(t_sample *dst,const t_sample *src,int cnt)
 	    int n = cnt>>3;
 	    cnt -= n<<3;
 	    while(n--) {
-		    dst[0] = src[0]; dst[1] = src[1];
-		    dst[2] = src[2]; dst[3] = src[3];
-		    dst[4] = src[4]; dst[5] = src[5];
-		    dst[6] = src[6]; dst[7] = src[7];
+		    dst[0] = src[0]; dst[1] = src[1]; dst[2] = src[2]; dst[3] = src[3];
+		    dst[4] = src[4]; dst[5] = src[5]; dst[6] = src[6]; dst[7] = src[7];
 		    src += 8,dst += 8;
 	    }
     	while(cnt--) *(dst++) = *(src++); 
@@ -355,27 +371,37 @@ void flext::SetSamples(t_sample *dst,int cnt,t_sample s)
     if(GetSIMDCapabilities()&simd_sse) {
         // single precision
 
-        __m128 v = _mm_load1_ps(&s);
   	    int n = cnt>>4;
         cnt -= n<<4;
+
+        __asm {
+			movss	xmm0,xmmword ptr [s]
+			shufps	xmm0,xmm0,0
+		}
 
         if((reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0) {
             // aligned version
     	    while(n--) {
-                _mm_store_ps(dst+0,v);
-                _mm_store_ps(dst+4,v);
-                _mm_store_ps(dst+8,v);
-                _mm_store_ps(dst+12,v);
+	            __asm {
+					mov		edx,dword ptr [dst]
+					movaps	xmmword ptr[edx],xmm0
+					movaps	xmmword ptr[edx+4*4],xmm0
+					movaps	xmmword ptr[edx+8*4],xmm0
+					movaps	xmmword ptr[edx+12*4],xmm0
+				}
                 dst += 16;
             }
         }
         else {
             // unaligned version
     	    while(n--) {
-                _mm_storeu_ps(dst+0,v);
-                _mm_storeu_ps(dst+4,v);
-                _mm_storeu_ps(dst+8,v);
-                _mm_storeu_ps(dst+12,v);
+				__asm {
+					mov		edx,dword ptr [dst]
+					movups	xmmword ptr[edx],xmm0
+					movups	xmmword ptr[edx+4*4],xmm0
+					movups	xmmword ptr[edx+8*4],xmm0
+					movups	xmmword ptr[edx+12*4],xmm0
+				}
                 dst += 16;
             }
         }
@@ -402,12 +428,10 @@ void flext::MulSamples(t_sample *dst,const t_sample *src,t_sample mul,int cnt)
 {
 #ifdef FLEXT_USE_IPP
     if(sizeof(t_sample) == 4) {
-        ippsCopy_32f((const float *)src,(float *)dst,cnt); 
-        ippsMulC_32f_I((float)mul,(float *)dst,cnt); 
+        ippsMulC_32f((const float *)src,(float)mul,(float *)dst,cnt); 
     }
     else if(sizeof(t_sample) == 8) {
-        ippsCopy_64f((const double *)src,(double *)dst,cnt); 
-        ippsMulC_64f_I((double)mul,(double *)dst,cnt); 
+        ippsMulC_64f((const double *)src,(double)mul,(double *)dst,cnt); 
     }
     else
         ERRINTERNAL();
@@ -421,25 +445,62 @@ void flext::MulSamples(t_sample *dst,const t_sample *src,t_sample mul,int cnt)
    	    int n = cnt>>4;
         cnt -= n<<4;
 
+        __asm {
+			movss	xmm0,xmmword ptr [mul]
+			shufps	xmm0,xmm0,0
+		}
+
         if((reinterpret_cast<unsigned long>(src)&(__alignof(__m128)-1)) == 0
             && (reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0
         ) {
             // aligned version
     	    while(n--) {
-                _mm_store_ps(dst+0,_mm_mul_ps(a,_mm_load_ps(src+0)));
-                _mm_store_ps(dst+4,_mm_mul_ps(a,_mm_load_ps(src+4)));
-                _mm_store_ps(dst+8,_mm_mul_ps(a,_mm_load_ps(src+8)));
-                _mm_store_ps(dst+12,_mm_mul_ps(a,_mm_load_ps(src+12)));
+	            __asm {
+					mov		eax,dword ptr [src]
+					mov		edx,dword ptr [dst]
+
+					movaps	xmm1,xmmword ptr[eax]
+					mulps	xmm1,xmm0
+					movaps	xmmword ptr[edx],xmm1
+
+					movaps	xmm2,xmmword ptr[eax+4*4]
+					mulps	xmm2,xmm0
+					movaps	xmmword ptr[edx+4*4],xmm2
+
+					movaps	xmm3,xmmword ptr[eax+8*4]
+					mulps	xmm3,xmm0
+					movaps	xmmword ptr[edx+8*4],xmm3
+
+					movaps	xmm4,xmmword ptr[eax+12*4]
+					mulps	xmm4,xmm0
+					movaps	xmmword ptr[edx+12*4],xmm4
+			    }
                 src += 16,dst += 16;
             }
         }
         else {
             // unaligned version
     	    while(n--) {
-                _mm_storeu_ps(dst+0,_mm_mul_ps(a,_mm_loadu_ps(src+0)));
-                _mm_storeu_ps(dst+4,_mm_mul_ps(a,_mm_loadu_ps(src+4)));
-                _mm_storeu_ps(dst+8,_mm_mul_ps(a,_mm_loadu_ps(src+8)));
-                _mm_storeu_ps(dst+12,_mm_mul_ps(a,_mm_loadu_ps(src+12)));
+	            __asm {
+					mov		eax,dword ptr [src]
+					mov		edx,dword ptr [dst]
+
+					movups	xmm1,xmmword ptr[eax]
+					mulps	xmm1,xmm0
+					movups	xmmword ptr[edx],xmm1
+
+					movups	xmm2,xmmword ptr[eax+4*4]
+					mulps	xmm2,xmm0
+					movups	xmmword ptr[edx+4*4],xmm2
+
+					movups	xmm3,xmmword ptr[eax+8*4]
+					mulps	xmm3,xmm0
+					movups	xmmword ptr[edx+8*4],xmm3
+
+					movups	xmm4,xmmword ptr[eax+12*4]
+					mulps	xmm4,xmm0
+					movups	xmmword ptr[edx+12*4],xmm4
+			    }
                 src += 16,dst += 16;
             }
         }
@@ -455,18 +516,147 @@ void flext::MulSamples(t_sample *dst,const t_sample *src,t_sample mul,int cnt)
     {
 	    int n = cnt>>3;
 	    cnt -= n<<3;
-	    while(n--) {
-		    dst[0] = src[0]*mul; 
-		    dst[1] = src[1]*mul; 
-		    dst[2] = src[2]*mul; 
-		    dst[3] = src[3]*mul; 
-		    dst[4] = src[4]*mul; 
-		    dst[5] = src[5]*mul; 
-		    dst[6] = src[6]*mul; 
-		    dst[7] = src[7]*mul; 
-		    src += 8,dst += 8;
-	    }
-	    while(cnt--) *(dst++) = *(src++)*mul; 
+
+		if(src == dst) {
+			while(n--) {
+				dst[0] *= mul; dst[1] *= mul; dst[2] *= mul; dst[3] *= mul; 
+				dst[4] *= mul; dst[5] *= mul; dst[6] *= mul; dst[7] *= mul; 
+				dst += 8;
+			}
+			while(cnt--) *(dst++) *= mul; 
+		}
+		else {
+			while(n--) {
+				dst[0] = src[0]*mul; dst[1] = src[1]*mul; 
+				dst[2] = src[2]*mul; dst[3] = src[3]*mul; 
+				dst[4] = src[4]*mul; dst[5] = src[5]*mul; 
+				dst[6] = src[6]*mul; dst[7] = src[7]*mul; 
+				src += 8,dst += 8;
+			}
+			while(cnt--) *(dst++) = *(src++)*mul; 
+		}
+    }
+#endif
+}
+
+
+void flext::MulSamples(t_sample *dst,const t_sample *src,const t_sample *mul,int cnt) 
+{
+#ifdef FLEXT_USE_IPP
+    if(sizeof(t_sample) == 4) {
+        ippsMul_32f((const float *)src,(const float *)mul,(float *)dst,cnt); 
+    }
+    else if(sizeof(t_sample) == 8) {
+        ippsMul_32f((const double *)src,(const double *)mul,(double *)dst,cnt); 
+    }
+    else
+        ERRINTERNAL();
+#else
+#ifdef FLEXT_USE_SIMD
+#ifdef _MSC_VER
+    if(GetSIMDCapabilities()&simd_sse) {
+        // single precision
+   	    int n = cnt>>4;
+        cnt -= n<<4;
+
+        if((reinterpret_cast<unsigned long>(src)&(__alignof(__m128)-1)) == 0
+            && (reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0
+            && (reinterpret_cast<unsigned long>(mul)&(__alignof(__m128)-1)) == 0
+        ) {
+            // aligned version
+    	    while(n--) {
+	            __asm {
+					mov		eax,dword ptr [src]
+					mov		edx,dword ptr [dst]
+					mov		ecx,dword ptr [mul]
+
+					movaps	xmm0,xmmword ptr[eax]
+					movaps	xmm1,xmmword ptr[ecx]
+					mulps	xmm0,xmm1
+					movaps	xmmword ptr[edx],xmm0
+
+					movaps	xmm2,xmmword ptr[eax+4*4]
+					movaps	xmm3,xmmword ptr[ecx+4*4]
+					mulps	xmm2,xmm3
+					movaps	xmmword ptr[edx+4*4],xmm2
+
+					movaps	xmm4,xmmword ptr[eax+8*4]
+					movaps	xmm5,xmmword ptr[ecx+8*4]
+					mulps	xmm4,xmm5
+					movaps	xmmword ptr[edx+8*4],xmm4
+
+					movaps	xmm6,xmmword ptr[eax+12*4]
+					movaps	xmm7,xmmword ptr[ecx+12*4]
+					mulps	xmm6,xmm7
+					movaps	xmmword ptr[edx+12*4],xmm6
+			    }
+                src += 16,dst += 16,mul += 16;
+            }
+        }
+        else {
+            // unaligned version
+    	    while(n--) {
+	            __asm {
+					mov		eax,dword ptr [src]
+					mov		edx,dword ptr [dst]
+					mov		ecx,dword ptr [mul]
+
+					movups	xmm0,xmmword ptr[eax]
+					movups	xmm1,xmmword ptr[ecx]
+					mulps	xmm0,xmm1
+					movups	xmmword ptr[edx],xmm0
+
+					movups	xmm2,xmmword ptr[eax+4*4]
+					movups	xmm3,xmmword ptr[ecx+4*4]
+					mulps	xmm2,xmm3
+					movups	xmmword ptr[edx+4*4],xmm2
+
+					movups	xmm4,xmmword ptr[eax+8*4]
+					movups	xmm5,xmmword ptr[ecx+8*4]
+					mulps	xmm4,xmm5
+					movups	xmmword ptr[edx+8*4],xmm4
+
+					movups	xmm6,xmmword ptr[eax+12*4]
+					movups	xmm7,xmmword ptr[ecx+12*4]
+					mulps	xmm6,xmm7
+					movups	xmmword ptr[edx+12*4],xmm6
+			    }
+                src += 16,dst += 16,mul += 16;
+            }
+        }
+	    while(cnt--) *(dst++) = *(src++) * *(mul++); 
+    }
+    else
+#elif FLEXT_OS == FLEXT_OS_MAC && defined(__VEC__) && defined(__VECTOROPS__)
+	{
+		vsmul(src,1,&mul,dst,1,cnt);
+	}
+#endif // _MSC_VER
+#endif // FLEXT_USE_SIMD
+    {
+	    int n = cnt>>3;
+	    cnt -= n<<3;
+
+		if(src == dst) {
+			while(n--) {
+				dst[0] *= mul[0]; dst[1] *= mul[1]; 
+				dst[2] *= mul[2]; dst[3] *= mul[3]; 
+				dst[4] *= mul[4]; dst[5] *= mul[5]; 
+				dst[6] *= mul[6]; dst[7] *= mul[7]; 
+				dst += 8,mul += 8;
+			}
+			while(cnt--) *(dst++) *= *(mul++); 
+		}
+		else {
+			while(n--) {
+				dst[0] = src[0]*mul[0]; dst[1] = src[1]*mul[1]; 
+				dst[2] = src[2]*mul[2]; dst[3] = src[3]*mul[3]; 
+				dst[4] = src[4]*mul[4]; dst[5] = src[5]*mul[5]; 
+				dst[6] = src[6]*mul[6]; dst[7] = src[7]*mul[7]; 
+				src += 8,dst += 8,mul += 8;
+			}
+			while(cnt--) *(dst++) = *(src++) * *(mul++); 
+		}
     }
 #endif
 }
@@ -476,12 +666,10 @@ void flext::AddSamples(t_sample *dst,const t_sample *src,t_sample add,int cnt)
 {
 #ifdef FLEXT_USE_IPP
     if(sizeof(t_sample) == 4) {
-        ippsCopy_32f((const float *)src,(float *)dst,cnt); 
-        ippsAddC_32f_I((float)mul,(float *)dst,cnt); 
+        ippsAddC_32f((const float *)src,(float)mul,(float *)dst,cnt); 
     }
     else if(sizeof(t_sample) == 8) {
-        ippsCopy_64f((const double *)src,(double *)dst,cnt); 
-        ippsAddC_64f_I((double)mul,(double *)dst,cnt); 
+        ippsAddC_64f_I((const double *)src,(double)mul,(double *)dst,cnt); 
     }
     else
         ERRINTERNAL();
@@ -490,30 +678,65 @@ void flext::AddSamples(t_sample *dst,const t_sample *src,t_sample add,int cnt)
 #ifdef _MSC_VER
     if(GetSIMDCapabilities()&simd_sse) {
         // single precision
-        __m128 a = _mm_load1_ps(&add);
-
    	    int n = cnt>>4;
         cnt -= n<<4;
+
+        __asm {
+			movss	xmm0,xmmword ptr [add]
+			shufps	xmm0,xmm0,0
+		}
 
         if((reinterpret_cast<unsigned long>(src)&(__alignof(__m128)-1)) == 0
             && (reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0
         ) {
             // aligned version
     	    while(n--) {
-                _mm_store_ps(dst+0,_mm_add_ps(a,_mm_load_ps(src+0)));
-                _mm_store_ps(dst+4,_mm_add_ps(a,_mm_load_ps(src+4)));
-                _mm_store_ps(dst+8,_mm_add_ps(a,_mm_load_ps(src+8)));
-                _mm_store_ps(dst+12,_mm_add_ps(a,_mm_load_ps(src+12)));
+	            __asm {
+					mov		eax,dword ptr [src]
+					mov		edx,dword ptr [dst]
+
+					movaps	xmm1,xmmword ptr[eax]
+					addps	xmm1,xmm0
+					movaps	xmmword ptr[edx],xmm1
+
+					movaps	xmm2,xmmword ptr[eax+4*4]
+					addps	xmm2,xmm0
+					movaps	xmmword ptr[edx+4*4],xmm2
+
+					movaps	xmm3,xmmword ptr[eax+8*4]
+					addps	xmm3,xmm0
+					movaps	xmmword ptr[edx+8*4],xmm3
+
+					movaps	xmm4,xmmword ptr[eax+12*4]
+					addps	xmm4,xmm0
+					movaps	xmmword ptr[edx+12*4],xmm4
+			    }
                 src += 16,dst += 16;
             }
         }
         else {
             // unaligned version
     	    while(n--) {
-                _mm_storeu_ps(dst+0,_mm_add_ps(a,_mm_loadu_ps(src+0)));
-                _mm_storeu_ps(dst+4,_mm_add_ps(a,_mm_loadu_ps(src+4)));
-                _mm_storeu_ps(dst+8,_mm_add_ps(a,_mm_loadu_ps(src+8)));
-                _mm_storeu_ps(dst+12,_mm_add_ps(a,_mm_loadu_ps(src+12)));
+	            __asm {
+					mov		eax,dword ptr [src]
+					mov		edx,dword ptr [dst]
+
+					movups	xmm1,xmmword ptr[eax]
+					addps	xmm1,xmm0
+					movups	xmmword ptr[edx],xmm1
+
+					movups	xmm2,xmmword ptr[eax+4*4]
+					addps	xmm2,xmm0
+					movups	xmmword ptr[edx+4*4],xmm2
+
+					movups	xmm3,xmmword ptr[eax+8*4]
+					addps	xmm3,xmm0
+					movups	xmmword ptr[edx+8*4],xmm3
+
+					movups	xmm4,xmmword ptr[eax+12*4]
+					addps	xmm4,xmm0
+					movups	xmmword ptr[edx+12*4],xmm4
+			    }
                 src += 16,dst += 16;
             }
         }
@@ -535,18 +758,153 @@ void flext::AddSamples(t_sample *dst,const t_sample *src,t_sample add,int cnt)
     {
 	    int n = cnt>>3;
 	    cnt -= n<<3;
-	    while(n--) {
-		    dst[0] = src[0]+add; 
-		    dst[1] = src[1]+add; 
-		    dst[2] = src[2]+add; 
-		    dst[3] = src[3]+add; 
-		    dst[4] = src[4]+add; 
-		    dst[5] = src[5]+add; 
-		    dst[6] = src[6]+add; 
-		    dst[7] = src[7]+add; 
-		    src += 8,dst += 8;
-	    }
-	    while(cnt--) *(dst++) = *(src++)+add; 
+
+		if(src == dst) {
+			while(n--) {
+				dst[0] += add; dst[1] += add; dst[2] += add; dst[3] += add; 
+				dst[4] += add; dst[5] += add; dst[6] += add; dst[7] += add; 
+				dst += 8;
+			}
+			while(cnt--) *(dst++) += add; 
+		}
+		else {
+			while(n--) {
+				dst[0] = src[0]+add; dst[1] = src[1]+add; 
+				dst[2] = src[2]+add; dst[3] = src[3]+add; 
+				dst[4] = src[4]+add; dst[5] = src[5]+add; 
+				dst[6] = src[6]+add; dst[7] = src[7]+add; 
+				src += 8,dst += 8;
+			}
+			while(cnt--) *(dst++) = *(src++)+add; 
+		}
+    }
+#endif
+}
+
+
+void flext::AddSamples(t_sample *dst,const t_sample *src,const t_sample *add,int cnt) 
+{
+#ifdef FLEXT_USE_IPP
+    if(sizeof(t_sample) == 4) {
+        ippsAdd_32f((const float *)src,(const float *)add,(float *)dst,cnt); 
+    }
+    else if(sizeof(t_sample) == 8) {
+        ippsAdd_64f((const double *)src,(const double *)add,(double *)dst,cnt); 
+    }
+    else
+        ERRINTERNAL();
+#else
+#ifdef FLEXT_USE_SIMD
+#ifdef _MSC_VER
+    if(GetSIMDCapabilities()&simd_sse) {
+        // single precision
+   	    int n = cnt>>4;
+        cnt -= n<<4;
+
+        if((reinterpret_cast<unsigned long>(src)&(__alignof(__m128)-1)) == 0
+            && (reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0
+            && (reinterpret_cast<unsigned long>(add)&(__alignof(__m128)-1)) == 0
+        ) {
+            // aligned version
+    	    while(n--) {
+	            __asm {
+					mov		eax,dword ptr [src]
+					mov		edx,dword ptr [dst]
+					mov		ecx,dword ptr [add]
+
+					movaps	xmm0,xmmword ptr[eax]
+					movaps	xmm1,xmmword ptr[ecx]
+					addps	xmm0,xmm1
+					movaps	xmmword ptr[edx],xmm0
+
+					movaps	xmm2,xmmword ptr[eax+4*4]
+					movaps	xmm3,xmmword ptr[ecx+4*4]
+					addps	xmm2,xmm3
+					movaps	xmmword ptr[edx+4*4],xmm2
+
+					movaps	xmm4,xmmword ptr[eax+8*4]
+					movaps	xmm5,xmmword ptr[ecx+8*4]
+					addps	xmm4,xmm5
+					movaps	xmmword ptr[edx+8*4],xmm4
+
+					movaps	xmm6,xmmword ptr[eax+12*4]
+					movaps	xmm7,xmmword ptr[ecx+12*4]
+					addps	xmm6,xmm7
+					movaps	xmmword ptr[edx+12*4],xmm6
+			    }
+                src += 16,dst += 16,add += 16;
+            }
+        }
+        else {
+            // unaligned version
+    	    while(n--) {
+	            __asm {
+					mov		eax,dword ptr [src]
+					mov		edx,dword ptr [dst]
+					mov		ecx,dword ptr [add]
+
+					movups	xmm0,xmmword ptr[eax]
+					movups	xmm1,xmmword ptr[ecx]
+					addps	xmm0,xmm1
+					movups	xmmword ptr[edx],xmm0
+
+					movups	xmm2,xmmword ptr[eax+4*4]
+					movups	xmm3,xmmword ptr[ecx+4*4]
+					addps	xmm2,xmm3
+					movups	xmmword ptr[edx+4*4],xmm2
+
+					movups	xmm4,xmmword ptr[eax+8*4]
+					movups	xmm5,xmmword ptr[ecx+8*4]
+					addps	xmm4,xmm5
+					movups	xmmword ptr[edx+8*4],xmm4
+
+					movups	xmm6,xmmword ptr[eax+12*4]
+					movups	xmm7,xmmword ptr[ecx+12*4]
+					addps	xmm6,xmm7
+					movups	xmmword ptr[edx+12*4],xmm6
+			    }
+                src += 16,dst += 16,add += 16;
+            }
+        }
+	    while(cnt--) *(dst++) = *(src++) + *(add++); 
+    }
+    else
+/*
+#elif FLEXT_OS == FLEXT_OS_MAC && defined(__VEC__) && defined(__VECTOROPS__)
+	{
+   	    int n = cnt>>2,n4 = n<<2;
+        cnt -= n4;
+		vScopy(n4,src,dst);
+		src += n4,dst += n4;
+       	while(cnt--) *(dst++) = *(src++); 
+	}
+*/
+#endif // _MSC_VER
+#endif // FLEXT_USE_SIMD
+    {
+	    int n = cnt>>3;
+	    cnt -= n<<3;
+
+		if(dst == src) {
+			while(n--) {
+				dst[0] += add[0]; dst[1] += add[1]; 
+				dst[2] += add[2]; dst[3] += add[3]; 
+				dst[4] += add[4]; dst[5] += add[5]; 
+				dst[6] += add[6]; dst[7] += add[7]; 
+				dst += 8,add += 8;
+			}
+			while(cnt--) *(dst++) += *(add++); 
+		}
+		else {
+			while(n--) {
+				dst[0] = src[0]+add[0]; dst[1] = src[1]+add[1]; 
+				dst[2] = src[2]+add[2]; dst[3] = src[3]+add[3]; 
+				dst[4] = src[4]+add[4]; dst[5] = src[5]+add[5]; 
+				dst[6] = src[6]+add[6]; dst[7] = src[7]+add[7]; 
+				src += 8,dst += 8,add += 8;
+			}
+			while(cnt--) *(dst++) = *(src++) + *(add++); 
+		}
     }
 #endif
 }
@@ -556,13 +914,11 @@ void flext::ScaleSamples(t_sample *dst,const t_sample *src,t_sample mul,t_sample
 {
 #ifdef FLEXT_USE_IPP
     if(sizeof(t_sample) == 4) {
-        ippsCopy_32f((const float *)src,(float *)dst,cnt); 
-        ippsMulC_32f_I((float)mul,(float *)dst,cnt); 
+        ippsMulC_32f((const float *)src,(float)mul,(float *)dst,cnt); 
         ippsAddC_32f_I((float)add,(float *)dst,cnt); 
     }
     else if(sizeof(t_sample) == 8) {
-        ippsCopy_64f((const double *)src,(double *)dst,cnt); 
-        ippsMulC_64f_I((double)mul,(double *)dst,cnt); 
+        ippsMulC_64f((const double *)src,(double)mul,(double *)dst,cnt); 
         ippsAddC_64f_I((double)add,(double *)dst,cnt); 
     }
     else
@@ -572,31 +928,75 @@ void flext::ScaleSamples(t_sample *dst,const t_sample *src,t_sample mul,t_sample
 #ifdef _MSC_VER
     if(GetSIMDCapabilities()&simd_sse) {
         // single precision
-        __m128 a = _mm_load1_ps(&add);
-        __m128 m = _mm_load1_ps(&mul);
-
    	    int n = cnt>>4;
         cnt -= n<<4;
+
+        __asm {
+			movss	xmm0,xmmword ptr [add]
+			shufps	xmm0,xmm0,0
+			movss	xmm1,xmmword ptr [mul]
+			shufps	xmm1,xmm1,0
+		}
 
         if((reinterpret_cast<unsigned long>(src)&(__alignof(__m128)-1)) == 0
             && (reinterpret_cast<unsigned long>(dst)&(__alignof(__m128)-1)) == 0
         ) {
             // aligned version
     	    while(n--) {
-                _mm_store_ps(dst+0,_mm_add_ps(a,_mm_mul_ps(m,_mm_load_ps(src+0))));
-                _mm_store_ps(dst+4,_mm_add_ps(a,_mm_mul_ps(m,_mm_load_ps(src+4))));
-                _mm_store_ps(dst+8,_mm_add_ps(a,_mm_mul_ps(m,_mm_load_ps(src+8))));
-                _mm_store_ps(dst+12,_mm_add_ps(a,_mm_mul_ps(m,_mm_load_ps(src+12))));
+	            __asm {
+					mov		eax,dword ptr [src]
+					mov		edx,dword ptr [dst]
+
+					movaps	xmm2,xmmword ptr[eax]
+					mulps	xmm2,xmm1
+					addps	xmm2,xmm0
+					movaps	xmmword ptr[edx],xmm2
+
+					movaps	xmm3,xmmword ptr[eax+4*4]
+					mulps	xmm3,xmm1
+					addps	xmm3,xmm0
+					movaps	xmmword ptr[edx+4*4],xmm3
+
+					movaps	xmm4,xmmword ptr[eax+8*4]
+					mulps	xmm4,xmm1
+					addps	xmm4,xmm0
+					movaps	xmmword ptr[edx+8*4],xmm4
+
+					movaps	xmm5,xmmword ptr[eax+12*4]
+					mulps	xmm5,xmm1
+					addps	xmm5,xmm0
+					movaps	xmmword ptr[edx+12*4],xmm5
+			    }
                 src += 16,dst += 16;
             }
         }
         else {
             // unaligned version
     	    while(n--) {
-                _mm_storeu_ps(dst+0,_mm_add_ps(a,_mm_mul_ps(m,_mm_loadu_ps(src+0))));
-                _mm_storeu_ps(dst+4,_mm_add_ps(a,_mm_mul_ps(m,_mm_loadu_ps(src+4))));
-                _mm_storeu_ps(dst+8,_mm_add_ps(a,_mm_mul_ps(m,_mm_loadu_ps(src+8))));
-                _mm_storeu_ps(dst+12,_mm_add_ps(a,_mm_mul_ps(m,_mm_loadu_ps(src+12))));
+	            __asm {
+					mov		eax,dword ptr [src]
+					mov		edx,dword ptr [dst]
+
+					movups	xmm2,xmmword ptr[eax]
+					mulps	xmm2,xmm1
+					addps	xmm2,xmm0
+					movups	xmmword ptr[edx],xmm2
+
+					movups	xmm3,xmmword ptr[eax+4*4]
+					mulps	xmm3,xmm1
+					addps	xmm3,xmm0
+					movups	xmmword ptr[edx+4*4],xmm3
+
+					movups	xmm4,xmmword ptr[eax+8*4]
+					mulps	xmm4,xmm1
+					addps	xmm4,xmm0
+					movups	xmmword ptr[edx+8*4],xmm4
+
+					movups	xmm5,xmmword ptr[eax+12*4]
+					mulps	xmm5,xmm1
+					addps	xmm5,xmm0
+					movups	xmmword ptr[edx+12*4],xmm5
+			    }
                 src += 16,dst += 16;
             }
         }
@@ -619,14 +1019,10 @@ void flext::ScaleSamples(t_sample *dst,const t_sample *src,t_sample mul,t_sample
 	    int n = cnt>>3;
 	    cnt -= n<<3;
 	    while(n--) {
-		    dst[0] = src[0]*mul+add; 
-		    dst[1] = src[1]*mul+add; 
-		    dst[2] = src[2]*mul+add; 
-		    dst[3] = src[3]*mul+add; 
-		    dst[4] = src[4]*mul+add; 
-		    dst[5] = src[5]*mul+add; 
-		    dst[6] = src[6]*mul+add; 
-		    dst[7] = src[7]*mul+add; 
+		    dst[0] = src[0]*mul+add; dst[1] = src[1]*mul+add; 
+		    dst[2] = src[2]*mul+add; dst[3] = src[3]*mul+add; 
+		    dst[4] = src[4]*mul+add; dst[5] = src[5]*mul+add; 
+		    dst[6] = src[6]*mul+add; dst[7] = src[7]*mul+add; 
 		    src += 8,dst += 8;
 	    }
 	    while(cnt--) *(dst++) = *(src++)*mul+add; 

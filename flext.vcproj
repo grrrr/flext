@@ -425,7 +425,7 @@
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
-				DebugInformationFormat="0"
+				DebugInformationFormat="3"
 				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
@@ -434,6 +434,7 @@
 				AdditionalDependencies="pd.lib pthreadVC.lib stk.lib sndobj.lib"
 				OutputFile=".\pd-msvc\flext_l.dll"
 				AdditionalLibraryDirectories="f:\prog\packs\pthreads;&quot;f:\prog\pd\pd-cvs\bin&quot;;F:\prog\audio\stk\lib;F:\prog\audio\sndobj\lib"
+				GenerateDebugInformation="TRUE"
 				OptimizeReferences="1"
 				ImportLibrary="./pd-msvc/flext_l.lib"/>
 			<Tool

@@ -258,7 +258,7 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 	gfxstub_new((t_pd *)th->thisHdr(), th->thisHdr(), buf);
 }
 
-
+//! Strip the attributes off the object command line
 void flext_base::cb_GfxVis(t_gobj *c, t_glist *gl, int vis)
 {
 	flext_base *th = thisObject(c);
@@ -283,13 +283,27 @@ void flext_base::cb_GfxSave(t_gobj *c, t_binbuf *b)
 {
 	flext_base *th = thisObject(c);
 	t_text *t = (t_text *)c;
-	binbuf_addv(b, "ssiis", gensym("#X"),gensym("obj"),
-		t->te_xpix, t->te_xpix,MakeSymbol(th->thisName())
-		// here the arguments
-	);
+	binbuf_addv(b, "ssiis", gensym("#X"),gensym("obj"),	t->te_xpix, t->te_ypix,MakeSymbol(th->thisName()));
 
+	int argc = binbuf_getnatom(t->te_binbuf);
+	t_atom *argv = binbuf_getvec(t->te_binbuf);
+	int cnt = CheckAttrib(argc,argv);
+
+	// process the creation arguments
+	for(int i = 1; i < cnt; ++i) {
+		if(IsString(argv[i]))
+			binbuf_addv(b,"s",GetSymbol(argv[i]));
+		else if(IsFloat(argv[i]))
+			binbuf_addv(b,"f",GetFloat(argv[i]));
+		else if(IsInt(argv[i]))
+			binbuf_addv(b,"i",GetInt(argv[i]));
+		else
+			FLEXT_ASSERT(false);
+	}
+
+	// process the attributes
 	AtomList la;
-	int cnt = th->ListAttrib(la);
+	cnt = th->ListAttrib(la);
 	char attrname[100];
 	*attrname= '@';
 

@@ -24,23 +24,22 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 class flext_base::thr_params 
 {
 public:
-	thr_params(flext_base *c): cl(c) {}
+	thr_params(flext_base *c,int n = 1);
+	~thr_params();
 
-	void set_any(t_symbol *s,int argc,t_atom *argv) { var[0]._any.s = s; var[0]._any.argc = argc; var[0]._any.argv = argv; }
-	void get_any(t_symbol *&s,int &argc,t_atom *&argv) { s = var[0]._any.s; argc = var[0]._any.argc; argv = var[0]._any.argv; }
-
-	void set_gimme(int argc,t_atom *argv) { var[0]._gimme.argc = argc; var[0]._gimme.argv = argv; }
-	void get_gimme(int &argc,t_atom *&argv) { argc = var[0]._gimme.argc; argv = var[0]._gimme.argv; }
+	void set_any(const t_symbol *s,int argc,t_atom *argv);
+	void set_list(int argc,t_atom *argv);
 
 	flext_base *cl;
-	union {
+	union _data {
 		bool _bool;
 		float _float;
 		int _int;
 		t_symptr _t_symptr;
-		struct { t_symbol *s; int argc; t_atom *argv; } _any;
-		struct { int argc; t_atom *argv; } _gimme;
-	} var[5];
+		struct { AtomAnything *args; } _any;
+		struct { AtomList *args; } _list;
+		struct { void *data; } _ext;
+	} *var;
 };
 
 class flext_base::thr_entry 

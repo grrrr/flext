@@ -80,8 +80,11 @@ Version history:
 
 0.3.2:
 - doxygen generated inline documentation / functional reference
-- added FLEXT_ADDMETHOD_V (for var arg lists) and FLEXT_ADDMETHOD_A (anythings)... just for clarity
+// - added FLEXT_ADDMETHOD_V (for var arg lists) and FLEXT_ADDMETHOD_A (anythings)... just for clarity
 - added some more functionality to the AtomAnything class
+- bugfix for threaded methods with var list or anything arguments
+- added threaded method for arbitrary (void *) data structs
+- ThrMutex: added lock count functions Push() and Pop()
 
 0.3.1:
 - added some more functionality to the AtomList class

@@ -273,13 +273,18 @@ static void cb_ ## M_FUN(flext_base *c) \
 
 //! Set up a method callback for an anything argument
 #define FLEXT_CALLBACK_A(M_FUN) \
-static void cb_ ## M_FUN(flext_base *c,t_symbol *s,int argc,t_atom *argv) \
+static void cb_ ## M_FUN(flext_base *c,const t_symbol *s,int argc,t_atom *argv) \
 { static_cast<thisType *>(c)->M_FUN(s,argc,argv); }
 
 //! Set up a method callback for a variable argument list
 #define FLEXT_CALLBACK_V(M_FUN) \
 static void cb_ ## M_FUN(flext_base *c,int argc,t_atom *argv) \
 { static_cast<thisType *>(c)->M_FUN(argc,argv); }
+
+//! Set up a method callback for a data package (void *) argument
+#define FLEXT_CALLBACK_X(M_FUN) \
+static void cb_ ## M_FUN(flext_base *c,void *data) \
+{ static_cast<thisType *>(c)->M_FUN(data); }
 
 //! Set up a method callback for a boolean argument
 #define FLEXT_CALLBACK_B(M_FUN) \
@@ -383,35 +388,58 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 
 //! Set up a threaded method callback for an anything argument
 #define FLEXT_THREAD_A(M_FUN) \
-static void cb_ ## M_FUN(flext_base *c,t_symbol *s,int argc,t_atom *argv) {  \
+static void cb_ ## M_FUN(flext_base *c,const t_symbol *s,int argc,t_atom *argv) {  \
 	thr_params *p = new thr_params(c); p->set_any(s,argc,argv); \
 	StartThread(thr_ ## M_FUN,p,#M_FUN); \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
 	thisType *th = static_cast<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
-	t_symbol *s; int argc; t_atom argv; p->get_any(s,argc,argv); \
+	AtomAnything *args = p->var[0]._any.args; \
 	delete p; \
 	if(ok) { \
-		th->M_FUN(s,argc,argv); \
+		th->M_FUN(args->Header(),args->Count(),args->Atoms()); \
 		th->PopThread(); \
 	} \
+	delete args; \
 	return NULL; \
 } 
 
 //! Set up a threaded method callback for a variable argument list
 #define FLEXT_THREAD_V(M_FUN) \
 static void cb_ ## M_FUN(flext_base *c,int argc,t_atom *argv) {  \
-	thr_params *p = new thr_params(c); p->set_gimme(argc,argv); \
+	thr_params *p = new thr_params(c); p->set_list(argc,argv); \
 	StartThread(thr_ ## M_FUN,p,#M_FUN); \
 } \
 static void *thr_ ## M_FUN(thr_params *p) {  \
 	thisType *th = static_cast<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
-	int argc; t_atom argv; p->get_gimme(argc,argv); \
+	AtomList *args = p->var[0]._list.args; \
 	delete p; \
 	if(ok) { \
-		th->M_FUN(argc,argv); \
+		th->M_FUN(args->Count(),args->Atoms()); \
+		th->PopThread(); \
+	} \
+	delete args; \
+	return NULL; \
+} 
+
+/*! \brief Set up a threaded method callback for an arbitrary data struct
+	\note Pointer of data struct is only borrowed ... no destruction is done
+	\note This can be done in the called method
+*/
+#define FLEXT_THREAD_X(M_FUN) \
+static void cb_ ## M_FUN(flext_base *c,void *data) {  \
+	thr_params *p = new thr_params(c); p->var[0]._ext.data = data; \
+	StartThread(thr_ ## M_FUN,p,#M_FUN); \
+} \
+static void *thr_ ## M_FUN(thr_params *p) {  \
+	thisType *th = static_cast<thisType *>(p->cl); \
+	bool ok = th->PushThread(); \
+	void *data = p->var[0]._ext.data; \
+	delete p; \
+	if(ok) { \
+		th->M_FUN(data); \
 		th->PopThread(); \
 	} \
 	return NULL; \
@@ -438,7 +466,7 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 //! Set up a threaded method callback for 1 argument
 #define FLEXT_THREAD_1(M_FUN,TP1) \
 static void cb_ ## M_FUN(flext_base *c,TP1 &arg1) {  \
-	thr_params *p = new thr_params(c); \
+	thr_params *p = new thr_params(c,1); \
 	p->var[0]._ ## TP1 = arg1; \
 	StartThread(thr_ ## M_FUN,p,#M_FUN); \
 } \
@@ -457,7 +485,7 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 //! Set up a threaded method callback for 2 arguments
 #define FLEXT_THREAD_2(M_FUN,TP1,TP2) \
 static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2) {  \
-	thr_params *p = new thr_params(c); \
+	thr_params *p = new thr_params(c,2); \
 	p->var[0]._ ## TP1 = arg1; \
 	p->var[1]._ ## TP2 = arg2; \
 	StartThread(thr_ ## M_FUN,p,#M_FUN); \
@@ -478,7 +506,7 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 //! Set up a threaded method callback for 3 arguments
 #define FLEXT_THREAD_3(M_FUN,TP1,TP2,TP3) \
 static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3) {  \
-	thr_params *p = new thr_params(c); \
+	thr_params *p = new thr_params(c,3); \
 	p->var[0]._ ## TP1 = arg1; \
 	p->var[1]._ ## TP2 = arg2; \
 	p->var[2]._ ## TP3 = arg3; \
@@ -501,7 +529,7 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 //! Set up a threaded method callback for 4 arguments
 #define FLEXT_THREAD_4(M_FUN,TP1,TP2,TP3,TP4) \
 static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4) {  \
-	thr_params *p = new thr_params(c); \
+	thr_params *p = new thr_params(c,4); \
 	p->var[0]._ ## TP1 = arg1; \
 	p->var[1]._ ## TP2 = arg2; \
 	p->var[2]._ ## TP3 = arg3; \
@@ -526,7 +554,7 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 //! Set up a threaded method callback for 5 arguments
 #define FLEXT_THREAD_5(M_FUN,TP1,TP2,TP3,TP4,TP5) \
 static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,TP5 &arg5) {  \
-	thr_params *p = new thr_params(c); \
+	thr_params *p = new thr_params(c,5); \
 	p->var[0]._ ## TP1 = arg1; \
 	p->var[1]._ ## TP2 = arg2; \
 	p->var[2]._ ## TP3 = arg3; \
@@ -718,6 +746,21 @@ FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,int,int,int)
 #define FLEXT_CALLMETHOD(M_FUN) \
 \
 cb_ ## M_FUN(this)
+
+//! Call a (already defined) method with variable list arguments
+#define FLEXT_CALLMETHOD_V(M_FUN,ARGC,ARGV) \
+\
+cb_ ## M_FUN(this,ARGC,ARGV)
+
+//! Call a (already defined) method with anything arguments
+#define FLEXT_CALLMETHOD_A(M_FUN,HDR,ARGC,ARGV) \
+\
+cb_ ## M_FUN(this,HDR,ARGC,ARGV)
+
+//! Call a (already defined) method with a data package (void *)
+#define FLEXT_CALLMETHOD_X(M_FUN,DATA) \
+\
+cb_ ## M_FUN(this,DATA)
 
 //! Call a (already defined) method with 1 enum type argument
 #define FLEXT_CALLMETHOD_E(M_FUN,ARG) \

@@ -60,7 +60,7 @@ flext_obj :: ~flext_obj()
 // overloaded new/delete memory allocation methods
 //
 /////////////////////////////////////////////////////////
-
+/*
 void *flext_obj::operator new(size_t bytes)
 {
 	bytes += sizeof(size_t);
@@ -75,7 +75,7 @@ void flext_obj::operator delete(void *blk)
 	size_t bytes = *(size_t *)ori;
 	freebytes(ori,bytes);
 }
-
+*/
 
 void *flext_obj::NewAligned(size_t bytes,int bitalign)
 {

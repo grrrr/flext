@@ -297,4 +297,13 @@ void flext_base::QueueAnything(outlet *o,const t_symbol *s,int argc,t_atom *argv
 	Queue(m);
 }
 
+
+
+flext_base::thr_params::thr_params(flext_base *c,int n): cl(c),var(new _data[n]) {}
+flext_base::thr_params::~thr_params() { delete[] var; }
+
+void flext_base::thr_params::set_any(const t_symbol *s,int argc,t_atom *argv) { var[0]._any.args = new AtomAnything(s,argc,argv); }
+void flext_base::thr_params::set_list(int argc,t_atom *argv) { var[0]._list.args = new AtomList(argc,argv); }
+
+
 #endif // FLEXT_THREADS

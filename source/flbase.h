@@ -90,7 +90,7 @@ class FLEXT_EXT flext_obj
 
 		// --- overloading of new/delete memory allocation methods ----
 		// MaxMSP allows only 16K in overdrive mode!
-
+/*
 		void *operator new(size_t bytes);
 		void operator delete(void *blk);
 
@@ -98,7 +98,7 @@ class FLEXT_EXT flext_obj
 		void *operator new[](size_t bytes) { return operator new(bytes); }
 		void operator delete[](void *blk) { operator delete(blk); }
 		#endif
-
+*/
 		// these are aligned 
 		static void *NewAligned(size_t bytes,int bitalign = 128);
 		static void FreeAligned(void *blk);
@@ -175,8 +175,6 @@ class FLEXT_EXT flext_obj
 #endif
 };
 
-//! \remark This has a dummy arg so that NT won't complain
-inline void *operator new(size_t, void *location, void *) { return location; }
 
 //@{
 //! Some utility functions for class setup 
@@ -189,8 +187,6 @@ bool fl_chktilde(const char *name);
 // These should be used in the header
 // ----------------------------------------
 
-//#define FLEXT_CLASSNAME(NEW_CLASS) __class__
-
 #define FLEXT_REALHDR(NEW_CLASS, PARENT_CLASS)    	    	\
 public:     	    	    \
 static t_class *__class__; \
@@ -202,8 +198,6 @@ static void callb_setup(t_class *classPtr)  	    	\
 { PARENT_CLASS::callb_setup(classPtr); }  	    	    	\
 protected:    \
 static inline NEW_CLASS *thisObject(void *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; } 
-
-//static inline t_class *thisClass() { return __class__; }
 
 
 
@@ -219,8 +213,6 @@ static void callb_setup(t_class *classPtr)  	    	\
 	NEW_CLASS::SETUPFUN(classPtr); }  	    	    	\
 protected:    \
 static inline NEW_CLASS *thisObject(void *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; } 
-
-//static inline t_class *thisClass() { return __class__; }
 
 
 // generate name of dsp/non-dsp setup function
@@ -396,6 +388,7 @@ return 0; \
 //
 // ----------------------------------------------------
 
+
 // ----------------------------------------------------
 // no args
 // ----------------------------------------------------
@@ -403,7 +396,7 @@ return 0; \
 t_class * NEW_CLASS::__class__ = NULL;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS () \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(NEW_CLASS::__class__),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = (flext_hdr *)newobject(NEW_CLASS::__class__); \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = fl_extract(NAME);                         \
     obj->data = new NEW_CLASS;                     \
@@ -431,7 +424,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 #define REAL_NEWLIB(NAME,NEW_CLASS, DSP) \
 flext_hdr* class_ ## NEW_CLASS ()    \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(flext_obj::lib_class),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = (flext_hdr *)newobject(flext_obj::lib_class); \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = fl_extract(NAME);                         \
     obj->data = new NEW_CLASS;      \
@@ -456,7 +449,7 @@ void FLEXT_STPF(NEW_CLASS,DSP)()   	\
 t_class * NEW_CLASS::__class__ = NULL;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (t_symbol *,int argc,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(NEW_CLASS::__class__),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = (flext_hdr *)newobject(NEW_CLASS::__class__); \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = fl_extract(NAME);                         \
     obj->data = new NEW_CLASS(argc,argv);                     \
@@ -485,7 +478,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 #define REAL_NEWLIB_V(NAME,NEW_CLASS, DSP) \
 flext_hdr* class_ ## NEW_CLASS (t_symbol *,int argc,t_atom *argv)    \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(flext_obj::lib_class),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = (flext_hdr *)newobject(flext_obj::lib_class); \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = fl_extract(NAME);                         \
     obj->data = new NEW_CLASS(argc,argv);      \
@@ -510,7 +503,7 @@ void FLEXT_STPF(NEW_CLASS,DSP)()   	\
 t_class * NEW_CLASS::__class__ = NULL;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1) \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(NEW_CLASS::__class__),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = (flext_hdr *)newobject(NEW_CLASS::__class__); \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = fl_extract(NAME);                         \
     obj->data = new NEW_CLASS((TYPE1)arg1);                     \
@@ -539,7 +532,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 #define REAL_NEWLIB_1(NAME,NEW_CLASS, DSP,TYPE1) \
 flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1)    \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(flext_obj::lib_class),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = (flext_hdr *)newobject(flext_obj::lib_class); \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = fl_extract(NAME);                         \
     obj->data = new NEW_CLASS(ARGCAST(arg1,TYPE1));      \
@@ -564,7 +557,7 @@ void FLEXT_STPF(NEW_CLASS,DSP)()   	\
 t_class * NEW_CLASS::__class__ = NULL;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1, CALLBTP(TYPE2) arg2) \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(NEW_CLASS::__class__),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = (flext_hdr *)newobject(NEW_CLASS::__class__); \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = fl_extract(NAME);                         \
     obj->data = new NEW_CLASS((TYPE1)arg1, (TYPE2)arg2);                     \
@@ -593,7 +586,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 #define REAL_NEWLIB_2(NAME,NEW_CLASS, DSP,TYPE1, TYPE2) \
 flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1,const flext_obj::lib_arg &arg2)    \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(flext_obj::lib_class),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = (flext_hdr *)newobject(flext_obj::lib_class); \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = fl_extract(NAME);                         \
     obj->data = new NEW_CLASS(ARGCAST(arg1,TYPE1),ARGCAST(arg2,TYPE2));      \
@@ -618,7 +611,7 @@ void FLEXT_STPF(NEW_CLASS,DSP)()   	\
 t_class * NEW_CLASS::__class__ = NULL;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1,CALLBTP(TYPE2) arg2,CALLBTP(TYPE3) arg3) \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(NEW_CLASS::__class__),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = (flext_hdr *)newobject(NEW_CLASS::__class__); \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = fl_extract(NAME);                         \
     obj->data = new NEW_CLASS((TYPE1)arg1,(TYPE2)arg2,(TYPE3)arg3);                     \
@@ -647,7 +640,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 #define REAL_NEWLIB_3(NAME,NEW_CLASS, DSP,TYPE1,TYPE2,TYPE3) \
 flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1,const flext_obj::lib_arg &arg2,const flext_obj::lib_arg &arg3)    \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(flext_obj::lib_class),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = (flext_hdr *)newobject(flext_obj::lib_class); \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = fl_extract(NAME);                         \
     obj->data = new NEW_CLASS(ARGCAST(arg1,TYPE1),ARGCAST(arg2,TYPE2),ARGCAST(arg3,TYPE3));      \
@@ -671,7 +664,7 @@ void FLEXT_STPF(NEW_CLASS,DSP)()   	\
 t_class * NEW_CLASS::__class__ = NULL;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (CALLBTP(TYPE1) arg1,CALLBTP(TYPE2) arg2,CALLBTP(TYPE3) arg3,CALLBTP(TYPE4) arg4) \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(NEW_CLASS::__class__),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = (flext_hdr *)newobject(NEW_CLASS::__class__); \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = fl_extract(NAME);                         \
     obj->data = new NEW_CLASS((TYPE1)arg1,(TYPE2)arg2,(TYPE3)arg3,(TYPE4)arg4);                     \
@@ -700,7 +693,7 @@ FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 #define REAL_NEWLIB_4(NAME,NEW_CLASS, DSP,TYPE1,TYPE2,TYPE3,TYPE4) \
 flext_hdr* class_ ## NEW_CLASS (const flext_obj::lib_arg &arg1,const flext_obj::lib_arg &arg2,const flext_obj::lib_arg &arg3,const flext_obj::lib_arg &arg4)    \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(flext_obj::lib_class),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = (flext_hdr *)newobject(flext_obj::lib_class); \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = fl_extract(NAME);                         \
     obj->data = new NEW_CLASS(ARGCAST(arg1,TYPE1),ARGCAST(arg2,TYPE2),ARGCAST(arg3,TYPE3),ARGCAST(arg4,TYPE4));      \

@@ -256,14 +256,14 @@ public:
 	static void CopyAtom(t_atom *dst,const t_atom *src) { *dst = *src; }
 
 	//! Print an atom
-	static bool PrintAtom(const t_atom &a,char *buf,int bufsz);
+	static bool PrintAtom(const t_atom &a,char *buf,size_t bufsz);
 	//! Scan an atom
 	static bool ScanAtom(t_atom &a,const char *buf);
 
 	//! Copy a list of atoms
 	static t_atom *CopyList(int argc,const t_atom *argv);
 	//! Print an atom list
-	static bool PrintList(int argc,const t_atom *argv,char *buf,int bufsz);
+	static bool PrintList(int argc,const t_atom *argv,char *buf,size_t bufsz);
 
 	//! Copy a memory region
 	static void CopyMem(void *dst,const void *src,int bytes);
@@ -412,7 +412,7 @@ public:
 	//! Access the string value (without type check)
 	static const char *GetString(const t_atom &a) { t_symbol *s = GetSymbol(a); return s?GetString(s):NULL; }  
 	//! Check for a string and get its value 
-	static void GetAString(const t_atom &a,char *buf,int szbuf);
+	static void GetAString(const t_atom &a,char *buf,size_t szbuf);
 	//! Set the atom to represent a string
 	static void SetString(t_atom &a,const char *c) { SetSymbol(a,MakeSymbol(c)); }
 

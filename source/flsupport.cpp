@@ -168,7 +168,7 @@ void flext_root::operator delete(void *blk)
 void *flext_root::NewAligned(size_t bytes,int bitalign)
 {
 	const size_t ovh = sizeof(size_t)+sizeof(char *);
-	const unsigned long alignovh = bitalign/8-1;
+	const size_t alignovh = bitalign/8-1;
 	bytes += ovh+alignovh;
 
     char *blk;
@@ -236,7 +236,7 @@ void flext_root::FreeAligned(void *blk)
 /*! \todo there is probably also a shortcut for Max and jMax
     \todo size checking
 */
-void flext::GetAString(const t_atom &a,char *buf,int szbuf)
+void flext::GetAString(const t_atom &a,char *buf,size_t szbuf)
 { 
 #if FLEXT_SYS == FLEXT_SYS_PD
 	atom_string(const_cast<t_atom *>(&a),buf,szbuf);
@@ -287,5 +287,5 @@ void flext_root::error(const char *fmt,...)
 
 AnyMap::AnyMap() {}
 AnyMap::~AnyMap() {}
-AnyMap::iterator AnyMap::find(unsigned int k) { return Parent::find(k); }
-unsigned int &AnyMap::operator [](unsigned int k) { return Parent::operator [](k); }
+AnyMap::iterator AnyMap::find(AnyMapType k) { return Parent::find(k); }
+AnyMapType &AnyMap::operator [](AnyMapType k) { return Parent::operator [](k); }

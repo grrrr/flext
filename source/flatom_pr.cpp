@@ -23,7 +23,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 // \TODO take bufsz into account!
-bool flext::PrintAtom(const t_atom &a,char *buf,int bufsz)
+bool flext::PrintAtom(const t_atom &a,char *buf,size_t bufsz)
 {
     bool ok = true;
     if(IsFloat(a)) {
@@ -37,7 +37,7 @@ bool flext::PrintAtom(const t_atom &a,char *buf,int bufsz)
             *buf = 0;
         else {
             const char *c = GetString(a);
-            int len = strlen(c);
+            size_t len = strlen(c);
             if(len < bufsz) {
                 memcpy(buf,c,len); buf[len] = 0;
                 ok = true;
@@ -70,14 +70,14 @@ bool flext::PrintAtom(const t_atom &a,char *buf,int bufsz)
     return ok;
 }
 
-bool flext::PrintList(int argc,const t_atom *argv,char *buf,int bufsz)
+bool flext::PrintList(int argc,const t_atom *argv,char *buf,size_t bufsz)
 {
     bool ok = true;
     for(int i = 0; ok && i < argc && bufsz > 0; ++i) {
         if(i) { *(buf++) = ' '; --bufsz; } // prepend space
 
         if(PrintAtom(argv[i],buf,bufsz)) {
-            int len = strlen(buf);
+            size_t len = strlen(buf);
             buf += len,bufsz -= len;
         }
         else

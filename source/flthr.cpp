@@ -65,6 +65,12 @@ bool flext::StartHelper()
 #endif
 	if(!ok)
 		error("flext - Could not launch helper thread!"); 
+    else {
+        // now we have to wait for thread helper to initialize
+        while(!thrhelpid || !thrhelpcond) Sleep(0.001);
+
+        // we are reading for threading now!
+    }
 	return ok;
 }
 

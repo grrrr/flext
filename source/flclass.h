@@ -441,6 +441,11 @@ public:
 	//! Check for an integer and get its value 
 	static int GetAInt(const t_atom &a) { return (int)GetAFlint(a); }
 
+	//! Check whether the atom can be represented as a boolean
+	static bool CanbeBool(const t_atom &a) { return CanbeInt(a); }
+	//! Check for an boolean and get its value 
+	static bool GetABool(const t_atom &a) { return GetAInt(a) != 0; }
+
 	//! Check whether the atom is a float or integer (depending on the system)
 	static bool IsFlint(const t_atom &a) { return IsFloat(a) || IsInt(a); }
 	//! Check for a float or integer and get its value 

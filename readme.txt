@@ -82,6 +82,7 @@ Version history:
 - SndObj interface now also available for cygwin and BCC 
 - added Makefiles for OSX/darwin (originally done by Adam T. Lindsay)
 - added prepend and append functions to AtomList class
+- added CanbeBool and GetABool function
 
 0.3.3:
 - PD: fixed bug for DSP objects having no signal inlets

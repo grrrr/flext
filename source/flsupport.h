@@ -17,7 +17,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "flstdc.h"
 #include <new>
-#include <map>
 
 /*!	\defgroup FLEXT_SUPPORT Flext support classes
 	@{
@@ -1148,50 +1147,6 @@ inline bool operator <(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(
 inline bool operator <=(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(flext)::CmpAtom(a,b) <= 0; }
 inline bool operator >(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(flext)::CmpAtom(a,b) > 0; }
 inline bool operator >=(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(flext)::CmpAtom(a,b) >= 0; }
-
-
-class AnyMap:
-    public std::map<unsigned int,unsigned int>
-{
-    typedef std::map<unsigned int,unsigned int> Parent;
-public:
-    AnyMap();
-    ~AnyMap();
-    iterator find(unsigned int k);
-    unsigned int &operator [](unsigned int k);
-
-    typedef std::pair<unsigned int,unsigned int> pair;
-};
-
-template <class K,class T>
-class DataMap:
-    public AnyMap
-{
-public:
-    class iterator:
-        public AnyMap::iterator
-    {
-    public:
-        iterator() {}
-        iterator(AnyMap::iterator it): AnyMap::iterator(it) {}
-
-        inline K &key() const { return *(K *)&((*this)->first); }
-        inline T &data() const { return *(T *)&((*this)->second); }
-    };
-
-    class pair:
-        public AnyMap::pair
-    {
-	public:
-        inline K &key() const { return *(K *)&first; }
-        inline T &data() const { return *(T *)&second; }
-	};
-
-    inline iterator find(K k) { return AnyMap::find(*(unsigned int *)&k); }
-    inline T &operator [](K k) { return *(T *)&(AnyMap::operator [](*(unsigned int *)&k)); }
-    inline void erase(K k) { AnyMap::erase(*(unsigned int *)&k); }
-};
-
 
 //! @} // FLEXT_SUPPORT
 

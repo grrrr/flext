@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -26,7 +26,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define FLEXT_VERSION 406
 
 //! \brief flext version string
-#define FLEXT_VERSTR "0.4.6pre"
+#define FLEXT_VERSTR "0.4.6"
 
 //! @}
 

@@ -19,6 +19,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // include the header file declaring the base classes
 #include "flbase.h"
 #include "flsupport.h"
+#include "flmap.h"
 
 #ifdef _MSC_VER
 #pragma warning(disable: 4786)

@@ -11,7 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __FLEXT_H
 #define __FLEXT_H
 
-#define FLEXT_VERSION 102
+#define FLEXT_VERSION 200
 
 #include <flbase.h> 
 
@@ -180,34 +180,49 @@ protected:
 #if 1
 	typedef V (*methfun)(t_class *c);
 
-	class method { 
+	class methitem { 
 	public:
-		method(I inlet,t_symbol *t,I a = 0);
-		~method();
+		methitem(I inlet,t_symbol *t,I a = 0);
+		~methitem();
 
 		t_symbol *tag;
 		I inlet;
 		I argc,*args;
 
 		methfun fun;
+		BL iix; // function gets inlet index as 1st argument
+	};
+	
+	enum metharg {
+		a_null = 0,
+		a_symbol,
+		a_float,a_int,a_bool,
+		a_pointer,
+		a_gimme
 	};
 
-	std::list<method *> mlst;
+	std::list<methitem *> mlst;
 
 	V add_meth_def(I inlet); // call virtual function for inlet
 	V add_meth_def(I inlet,const C *tag); // call virtual function for tag && inlet
-	V add_meth_n(I inlet,const C *tag,methfun fun,t_atomtype tp,...); 
+	V add_meth_one(I inlet,const C *tag,methfun fun,metharg tp,...); 
+	V add_meth_ixd(I inlet,const C *tag,methfun fun,metharg tp,...); 
 
-	V add_meth(I inlet,const C *tag,V (*m)(t_class *)) { add_meth_n(inlet,tag,(methfun)m,A_NULL); }
-	V add_meth(I inlet,const C *tag,V (*m)(t_class *,I argc,t_atom *argv)) { add_meth_n(inlet,tag,(methfun)m,A_GIMME,A_NULL); } // list
-	V add_meth(I inlet,const C *tag,V (*m)(t_class *,t_symbol *s,I argc,t_atom *argv)) { add_meth_n(inlet,tag,(methfun)m,A_SYMBOL,A_GIMME,A_NULL); } // anything
-	V add_meth(I inlet,const C *tag,V (*m)(t_class *,t_symbol *s)) { add_meth_n(inlet,tag,(methfun)m,A_SYMBOL,A_NULL); } // symbol
-	V add_meth(I inlet,const C *tag,V (*m)(t_class *,F)) { add_meth_n(inlet,tag,(methfun)m,A_FLOAT,A_NULL); }  // float
-	V add_meth(I inlet,const C *tag,V (*m)(t_class *,F,F)) { add_meth_n(inlet,tag,(methfun)m,A_FLOAT,A_FLOAT,A_NULL); } // list of 2 floats
-	V add_meth(I inlet,const C *tag,V (*m)(t_class *,F,F,F)) { add_meth_n(inlet,tag,(methfun)m,A_FLOAT,A_FLOAT,A_NULL); } // list of 3 floats
+	V add_meth(I inlet,V (*m)(t_class *,I argc,t_atom *argv)) { add_meth_one(inlet,"list",(methfun)m,a_gimme); }
+	V add_meth(I inlet,const C *tag,V (*m)(t_class *)) { add_meth_one(inlet,tag,(methfun)m,a_null); }  // pure method
+	V add_meth(I inlet,V (*m)(t_class *,t_symbol *s,I argc,t_atom *argv)) { add_meth_one(inlet,NULL,(methfun)m,a_symbol,a_gimme); } // anything
+	V add_meth(I inlet,V (*m)(t_class *,F)) { add_meth_one(inlet,"float",(methfun)m,a_null); }  // single float
+	V add_meth(I inlet,V (*m)(t_class *,F,F)) { add_meth_one(inlet,"list",(methfun)m,a_float,a_float,a_null); } // list of 2 floats
+	V add_meth(I inlet,V (*m)(t_class *,F,F,F)) { add_meth_one(inlet,"list",(methfun)m,a_float,a_float,a_float,a_null); } // list of 3 floats
+	V add_meth(I inlet,const C *tag,V (*m)(t_class *,I argc,t_atom *argv)) { add_meth_one(inlet,tag,(methfun)m,a_gimme); } // method+gimme
+	V add_meth(I inlet,const C *tag,V (*m)(t_class *,BL b)) { add_meth_one(inlet,tag,(methfun)m,a_bool,a_gimme); } // method+boolean
+	V add_meth(I inlet,const C *tag,V (*m)(t_class *,I i)) { add_meth_one(inlet,tag,(methfun)m,a_int,a_gimme); } // method+int
+	V add_meth(I inlet,const C *tag,V (*m)(t_class *,t_symbol *s)) { add_meth_one(inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
+	V add_meth(I inlet,const C *tag,V (*m)(t_class *,F)) { add_meth_one(inlet,tag,(methfun)m,a_float,a_null); }  // method+float
+	V add_meth(I inlet,const C *tag,V (*m)(t_class *,F,F)) { add_meth_one(inlet,tag,(methfun)m,a_float,a_float,a_null); } // method+2 floats
 #endif
 
-	virtual V m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv);
+	virtual BL m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv);
 
 private:
 

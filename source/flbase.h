@@ -184,7 +184,7 @@ static void cb_setup(t_class *classPtr);
 #define FLEXTTP(TP) FLEXTTYPE_ ## TP
 
 
-// No support for default arguments (A_DEFFLOAT,A_DEFSYMBOL), use GIMME instead
+// No support for PD default arguments (A_DEFFLOAT,A_DEFSYMBOL), use GIMME instead
 
 //
 // NO ARGUMENTS
@@ -469,7 +469,8 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 
 #if defined(MAXMSP) 
 // determine if it is the default inlet
-#define ISDEFIN(o) ((((flext_hdr *)o->x_obj)->curinlet) != 0)
+//#define ISDEFIN(o) ((((flext_hdr *)o->x_obj)->curinlet) != 0)
+#define ISDEFIN(o) true
 #else
 #define ISDEFIN(o) true
 #endif
@@ -503,6 +504,8 @@ static void cb_ ## M_FUN(t_class *c,TP1 arg1,TP2 arg2,TP3 arg3.TP4 arg4) { thisT
 #define FLEXT_CALLBACK_5(M_FUN,TP1,TP2,TP3,TP4,TP5) \
 static void cb_ ## M_FUN(t_class *c,TP1 arg1,TP2 arg2,TP3 arg3.TP4 arg4,TP5 arg5) { thisType *o = thisObject(c); if(ISDEFIN(o)) o->M_FUN(arg1,arg2,arg3,arg4,arg5); }
 
+
+#if 0
 
 ///////////////////////////////////////////////////////////
 // These should be the used in the class' cb_setup function
@@ -567,6 +570,63 @@ add_method4(CLASS,cb_ ## M_FUN,M_NAME,FLEXTTP(TP1),FLEXTTP(TP2),FLEXTTP(TP3),FLE
 // add handler for method with 5 args
 #define FLEXT_ADDMETHOD_5(CLASS,M_NAME,M_FUN,TP1,TP2,TP3,TP4,TP5) \
 add_method5(CLASS,cb_ ## M_FUN,M_NAME,FLEXTTP(TP1),FLEXTTP(TP2),FLEXTTP(TP3),FLEXTTP(TP4),FLEXTTP(TP5))
+
+#else
+
+
+// Shortcuts for method arguments
+#define FLEXTARG_float a_float
+#define FLEXTARG_int a_int
+#define FLEXTARG_bool a_bool
+#define FLEXTARG_t_float a_float
+#define FLEXTARG_t_flint a_int
+#define FLEXTARG_t_symtype a_symbol
+#define FLEXTARG_t_ptrtype a_pointer
+
+#define FLEXTARG(TP) FLEXTARG_ ## TP
+
+
+///////////////////////////////////////////////////////////
+// These should be the used in the class' constructor
+///////////////////////////////////////////////////////////
+
+// add handler for bang 
+#define FLEXT_ADDBANG(IX,M_FUN) \
+add_meth(IX,"bang",cb_ ## M_FUN)	
+
+// add handler for method with no args
+#define FLEXT_ADDMETHOD(IX,M_FUN) \
+add_meth(IX,cb_ ## M_FUN)	
+
+// add handler for method with no args
+#define FLEXT_ADDMETHOD_0(IX,M_TAG,M_FUN) \
+add_meth(IX,M_TAG,cb_ ## M_FUN)	
+
+// add handler for method with 1 enum type arg
+#define FLEXT_ADDMETHOD_E(IX,M_TAG,M_FUN) \
+add_meth_one(IX,M_TAG,(methfun)(cb_ ## M_FUN),a_int,a_null)
+
+// add handler for method with 1 arg
+#define FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,TP1) \
+add_meth_one(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),a_null)	
+
+// add handler for method with 2 args
+#define FLEXT_ADDMETHOD_2(IX,M_TAG,M_FUN,TP1,TP2) \
+add_meth_one(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),a_null)
+
+// add handler for method with 3 args
+#define FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,TP1,TP2,TP3) \
+add_meth_one(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),a_null)
+
+// add handler for method with 4 args
+#define FLEXT_ADDMETHOD_4(IX,M_TAG,M_FUN,TP1,TP2,TP3,TP4) \
+add_meth_one(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),a_null)
+
+// add handler for method with 5 args
+#define FLEXT_ADDMETHOD_5(IX,M_TAG,M_FUN,TP1,TP2,TP3,TP4,TP5) \
+add_meth_one(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),FLEXTARG(TP5),a_null)
+
+#endif
 
 
 #endif

@@ -71,6 +71,11 @@ V flext_base::cb_px_float(t_class *c,F v)
 V flext_base::cb_px_in ## IX(t_class *c,I v) { L &ci = ((flext_hdr *)thisObject(c)->x_obj)->curinlet; ci = IX; cb_px_int(c,v); ci = 0; } \
 V flext_base::cb_px_ft ## IX(t_class *c,F v) { L &ci = ((flext_hdr *)thisObject(c)->x_obj)->curinlet; ci = IX; cb_px_float(c,v); ci = 0; }
 
+#define ADD_IN_FT(IX) \
+add_method1(c,cb_px_in ## IX,"in" #IX,A_INT); \
+add_method1(c,cb_px_ft ## IX,"ft" #IX,A_FLOAT)
+
+
 DEF_IN_FT(1)
 DEF_IN_FT(2)
 DEF_IN_FT(3)
@@ -208,17 +213,7 @@ BL flext_base::setup_inout()
 						break;
 					}
 					case xlet::tp_sym: 
-						if(compatibility) {
-							// is this still true for proxy inlets?
-							post("%s: No symbol inlets (apart from leftmost) in compatibility mode",thisName());
-							ok = false;
-						}
-					    else
-					    	inlet_new(x_obj, &x_obj->ob_pd, &s_symbol, &s_symbol); 
-						break;
-					case xlet::tp_sig:
-	    				inlet_new(x_obj, &x_obj->ob_pd, &s_signal, &s_signal);  
-						++insigs;
+				    	inlet_new(x_obj, &x_obj->ob_pd, &s_symbol, &s_symbol); 
 						break;
 					case xlet::tp_list:
 					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
@@ -227,6 +222,10 @@ BL flext_base::setup_inout()
 					case xlet::tp_any:
 					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
 						inlet_new(x_obj,&inlets[ix]->x_obj.ob_pd, 0, 0);  
+						break;
+					case xlet::tp_sig:
+	    				inlet_new(x_obj, &x_obj->ob_pd, &s_signal, &s_signal);  
+						++insigs;
 						break;
 					default:
 						error("%s: Wrong type for inlet #%i",thisName(),ix);
@@ -242,6 +241,10 @@ BL flext_base::setup_inout()
 			
 			for(ix = incnt-1; ix >= insigs; --ix) {
 				switch(list[ix]) {
+					case xlet::tp_sig:
+						error("%s: All signal inlets must be at the left side",thisName());
+						ok = false;
+						break;
 					case xlet::tp_float:
 						if(ix >= 10) { 
 							post("%s: Only 9 float inlets possible",thisName());
@@ -257,10 +260,6 @@ BL flext_base::setup_inout()
 						}
 						else
 							intin(x_obj,ix);  
-						break;
-					case xlet::tp_sig:
-						error("%s: All signal inlets must be at the left side",thisName());
-						ok = false;
 						break;
 					case xlet::tp_sym:
 					case xlet::tp_any:
@@ -359,28 +358,18 @@ V flext_base::cb_setup(t_class *c)
 #elif defined(MAXMSP) 
 	add_anything(c,cb_px_anything);
 	add_bang(c,cb_px_bang);
-	add_method1(c,cb_px_int,"int",A_INT);  // does this interfere with other int inlets?
-	add_method1(c,cb_px_float,"float",A_FLOAT);  // does this interfere with other float inlets?
-
-	add_method1(c,cb_px_ft1,"ft1",A_FLOAT); 
-	add_method1(c,cb_px_ft2,"ft2",A_FLOAT);  
-	add_method1(c,cb_px_ft3,"ft3",A_FLOAT); 
-	add_method1(c,cb_px_ft4,"ft4",A_FLOAT);  
-	add_method1(c,cb_px_ft5,"ft5",A_FLOAT);
-	add_method1(c,cb_px_ft6,"ft6",A_FLOAT); 
-	add_method1(c,cb_px_ft7,"ft7",A_FLOAT);  
-	add_method1(c,cb_px_ft8,"ft8",A_FLOAT);  
-	add_method1(c,cb_px_ft9,"ft9",A_FLOAT); 
+	add_method1(c,cb_px_int,"int",A_INT);  
+	add_method1(c,cb_px_float,"float",A_FLOAT);  
 	
-	add_method1(c,cb_px_in1,"in1",A_INT); 
-	add_method1(c,cb_px_in2,"in2",A_INT);  
-	add_method1(c,cb_px_in3,"in3",A_INT); 
-	add_method1(c,cb_px_in4,"in4",A_INT);  
-	add_method1(c,cb_px_in5,"in5",A_INT);
-	add_method1(c,cb_px_in6,"in6",A_INT); 
-	add_method1(c,cb_px_in7,"in7",A_INT);  
-	add_method1(c,cb_px_in8,"in8",A_INT);  
-	add_method1(c,cb_px_in9,"in9",A_INT); 
+	ADD_IN_FT(1);
+	ADD_IN_FT(2);
+	ADD_IN_FT(3);
+	ADD_IN_FT(4);
+	ADD_IN_FT(5);
+	ADD_IN_FT(6);
+	ADD_IN_FT(7);
+	ADD_IN_FT(8);
+	ADD_IN_FT(9);
 #endif
 }
 
@@ -397,28 +386,29 @@ V flext_base::m_help()
 	post("%s (using flext) - compiled on %s %s",thisName(),__DATE__,__TIME__);
 }
 
-V flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
+BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 {
-
-
-#if 1
-	std::list<method *>::const_iterator it(mlst.begin());
+	BL ret = false;
+	
+	std::list<methitem *>::const_iterator it(mlst.begin());
 	for(;;) {
-		const method *m = *it;
+		const methitem *m = *it;
 		if(!m) break;
 		if(m->tag == s) {
 			// tag fits
 			post("found method tag %s: inlet=%i, symbol=%s, argc=%i",m->tag->s_name,inlet,s->s_name,argc);
+			ret = true;
+			// break;
 		} 
 		if(it == mlst.end()) break;
 		else ++it;
 	}
-#endif
+	
+	return ret;
 }
 
 
-#if 1
-flext_base::method::method(I in,t_symbol *t,I a): 
+flext_base::methitem::methitem(I in,t_symbol *t,I a): 
 	inlet(in),tag(t),fun(NULL) 
 { 
 	if(a > 0) {
@@ -432,29 +422,40 @@ flext_base::method::method(I in,t_symbol *t,I a):
 	}
 }
 
-flext_base::method::~method() { if(args) delete[] args; }
+flext_base::methitem::~methitem() { if(args) delete[] args; }
 
 V flext_base::add_meth_def(I inlet)
 {
-	mlst.push_back(new method(inlet,NULL));
+	mlst.push_back(new methitem(inlet,NULL));
 }
 
 V flext_base::add_meth_def(I inlet,const C *tag)
 {
-	mlst.push_back(new method(inlet,gensym(const_cast<C *>(tag))));
+	mlst.push_back(new methitem(inlet,gensym(const_cast<C *>(tag))));
 }
 
-V flext_base::add_meth_n(I inlet,const C *tag,methfun fun,t_atomtype tp,...)
+V flext_base::add_meth_one(I inlet,const C *tag,methfun fun,metharg tp,...)
 {
-	method *meth = new method(inlet,gensym(const_cast<C *>(tag)));
+	methitem *meth = new methitem(inlet,gensym(const_cast<C *>(tag)));
 
 	// add args here !!!!!
 
 	meth->fun = (methfun)fun;
+	meth->iix = false;
 	mlst.push_back(meth);
 }
 
-#endif
+V flext_base::add_meth_ixd(I inlet,const C *tag,methfun fun,metharg tp,...)
+{
+	methitem *meth = new methitem(inlet,gensym(const_cast<C *>(tag)));
+
+	// add args here !!!!!
+
+	meth->fun = (methfun)fun;
+	meth->iix = true;
+	mlst.push_back(meth);
+}
+
 
 // === flext_dsp ==============================================
 

@@ -1,5 +1,5 @@
 flext - C++ layer for Max/MSP and pd (pure data) externals
-version 0.1.2
+version 0.2.0
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -60,14 +60,14 @@ see flext.h for the documented base classes
 
 Version history:
 
-0.1.2:
+0.2.0:
 - defines for callback-to-method functions and method setup (FLEXT_CALLBACK*, FLEXT_ADD*)
 - deprecated support for default arguments (A_DEFFLOAT and A_DEFSYMBOL).. use GIMME instead!
 - uses PD's or Max's memory allocation functions (for safety in Max's overdrive)
 - added outlets for anythings
 - better graphics update behavior for PD
 - changed "enable" message for DSP objects to "dspon" ("enable" is reserved in Max/MSP)
-- proxy objects for any non-leftmost inlets
+- internal proxy objects for any non-leftmost inlets
 - improved behavior for invalid/undefined buffers/arrays
 - 128-bit aligned memory allocation with new[] 
 

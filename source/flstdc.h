@@ -102,6 +102,7 @@ typedef _outlet t_outlet;
 
 #define t_method method
 #define t_newmethod method
+typedef int t_atomtype;
 
 #define A_NULL A_NOTHING
 #define A_FLINT A_INT

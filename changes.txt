@@ -295,6 +295,10 @@ Porting to new compilers/platforms:
 
 TODO list:
 
+for 0.4.7:
+- SIMD for gcc
+- individual apply buttons for each attribute in the attribute editor
+
 general:
 - documentation
 - add log messages for debugging version
@@ -308,6 +312,7 @@ general:
 - PD: with DSP objects all float messages to left input are currently converted to signal
 		there should be a way to avoid this
 
+- flext::post and flext::error should print via a worker thread (and should be unlimited in characters)
 
 bugs:
 - attributes and attribute editor saving with patcher arguments (like $0-gugu )
@@ -317,16 +322,12 @@ bugs:
 - Max rounding bug ... buffer resize could be one sample less!
 - flext_dsp: Max/MSP doesn't correctly report in/out channel counts
 
-- linker problems between MFC libraries and global new and delete overloadings
-- flext::post and flext::error should print via a worker thread (and should be unlimited in characters)
+- can't use MFC libraries because of global new and delete overloadings
 
 
 tests:
 - PD: figure out what "pointer" messages do and where they occur
 - buffer resize: flext_base::buffer::Frames(): should we use buffer or system sample rate?
-
-- what about FLEXT_ADDMETHOD_V (for var arg lists) and FLEXT_ADDMETHOD_A (anythings)... nonsense?
-	-> yes, these definitions obscure the meaning of _ as an indication for usage of a message tag
 
 - check whether m_dsp gets called upon deletion of a used buffer (PD and MaxMSP may behave differently).
 

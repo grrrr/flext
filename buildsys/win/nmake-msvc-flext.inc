@@ -3,7 +3,7 @@
 ##############################################
 
 # default target
-build: $(TARGET)
+_build_: $(TARGET)
 
 $(OUTPATH):
 	if not exist $@ mkdir $@ > nul
@@ -32,7 +32,7 @@ $(TARGET):: $(OBJS)
 ##############################################
 
 # remove build
-clean:
+_clean_:
 	-del /q $(TARGET) > nul
 	-cd $(TARGETPATH)
 	-del /q $(OBJS) > nul
@@ -54,9 +54,9 @@ $(FLEXTLIB):
 $(FLEXTLIBINST):
 	if not exist $@ mkdir $@ > nul
 
-install:: $(FLEXTINC) $(FLEXTLIB) $(FLEXTLIBINST)
+_install_:: $(FLEXTINC) $(FLEXTLIB) $(FLEXTLIBINST)
 
-install::
+_install_::
 	copy $(TARGET) $(FLEXTLIBINST) > nul
 !ifdef SHARED
 # copy import library

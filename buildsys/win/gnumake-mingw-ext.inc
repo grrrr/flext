@@ -1,15 +1,13 @@
 # build class specific settings
 
-ifndef FLEXTBUILD
-INCPATH += -I$(FLEXTPATH)
-LIBPATH += -L$(FLEXTPATH)
-LIBS+=$(FLEXTPATH)/$(FLEXTNAME).lib
-endif
+INCPATH += -I$(FLEXTINC)
+LIBPATH += -L$(FLEXTLIB)
+LIBS+=$(FLEXTLIB)/$(FLEXTNAME).lib
 
 ##############################################
 
 # default target
-build: $(TARGET)
+_build_: $(TARGET)
 
 #$(CSRCS) $(CPPSRCS): $(patsubst %,$(SRCDIR)/%,$(HDRS))
 #	touch $@
@@ -33,7 +31,7 @@ $(TARGET) :: $(COBJS) $(CPPOBJS)
 
 ##############################################
 
-clean:
+_clean_:
 	-del $(subst /,\,$(COBJS) $(CPPOBJS) $(TARGET))
 
 ##############################################
@@ -41,5 +39,5 @@ clean:
 $(INSTPATH):
 	-mkdir $(subst /,\,$@)
 
-install:: $(INSTPATH)
+_install_: $(INSTPATH)
 	copy $(subst /,\,$(TARGET) $(INSTPATH))

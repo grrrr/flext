@@ -3,7 +3,7 @@
 ##############################################
 
 # default target
-build: $(TARGET)
+_build_: $(TARGET)
 
 $(CSRCS) $(CPPSRCS): $(patsubst %,$(SRCDIR)/%,$(HDRS))
 	touch $@
@@ -32,7 +32,7 @@ endif
 
 ##############################################
 
-clean:
+_clean_:
 	rm $(COBJS) $(CPPOBJS) $(TARGET)
 
 ##############################################
@@ -49,6 +49,6 @@ $(FLEXTINC):
 $(FLEXTLIBINST):
 	-mkdir -p $@
 
-install: $(FLEXTINC) $(FLEXTLIBINST)
+_install_: $(FLEXTINC) $(FLEXTLIBINST)
 	install $(TARGET) $(FLEXTLIBINST)
 	install $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTINC)

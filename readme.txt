@@ -78,6 +78,11 @@ see flext.h, fldefs.h and flclass.h for the documented base definitions and clas
 
 Version history:
 
+0.3.4:
+- SndObj interface now also available for cygwin and BCC 
+- added Makefiles for OSX/darwin (originally done by Adam T. Lindsay)
+- added prepend and append functions to AtomList class
+
 0.3.3:
 - PD: fixed bug for DSP objects having no signal inlets
 - revisited priority stuff for detached threads

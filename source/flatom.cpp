@@ -37,7 +37,9 @@ flext_base::AtomList &flext_base::AtomList::operator()(int argc,const t_atom *ar
 		lst = new t_atom[cnt];
 
 		if(argv) {
-			for(int i = 0; i < argc; ++i) {
+			for(int i = 0; i < argc; ++i) SetAtom(lst[i],argv[i]);
+/*			
+			{
 				switch(lst[i].a_type = argv[i].a_type) {
 				case A_FLOAT:
 					lst[i].a_w.w_float = argv[i].a_w.w_float;
@@ -61,10 +63,64 @@ flext_base::AtomList &flext_base::AtomList::operator()(int argc,const t_atom *ar
 					break;
 				}
 			}
+*/
 		}
 	}
 	return *this;
 }
 
 
+flext_base::AtomList &flext_base::AtomList::Append(const t_atom &a)
+{
+	t_atom *nlst = new t_atom[cnt+1];
+	for(int i = 0; i < cnt; ++i) SetAtom(nlst[i],lst[i]);
+	SetAtom(nlst[cnt],a);
+	
+	lst = nlst;
+	++cnt;
+	delete[] lst;
+
+	return *this;
+}
+
+flext_base::AtomList &flext_base::AtomList::Append(const AtomList &a)
+{
+	t_atom *nlst = new t_atom[cnt+a.Count()];
+	int i;
+	for(i = 0; i < cnt; ++i) SetAtom(nlst[i],lst[i]);
+	for(i = 0; i < a.Count(); ++i) SetAtom(nlst[cnt+i],a.Atoms()[i]);
+	
+	lst = nlst;
+	cnt += a.Count();
+	delete[] lst;
+
+	return *this;
+}
+
+flext_base::AtomList &flext_base::AtomList::Prepend(const t_atom &a)
+{
+	t_atom *nlst = new t_atom[cnt+1];
+	for(int i = 0; i < cnt; ++i) SetAtom(nlst[i+1],lst[i]);
+	SetAtom(nlst[0],a);
+	
+	lst = nlst;
+	++cnt;
+	delete[] lst;
+
+	return *this;
+}
+
+flext_base::AtomList &flext_base::AtomList::Prepend(const AtomList &a)
+{
+	t_atom *nlst = new t_atom[cnt+a.Count()];
+	int i;
+	for(i = 0; i < a.Count(); ++i) SetAtom(nlst[i],a.Atoms()[i]);
+	for(i = 0; i < cnt; ++i) SetAtom(nlst[a.Count()+i],lst[i]);
+	
+	lst = nlst;
+	cnt += a.Count();
+	delete[] lst;
+
+	return *this;
+}
 

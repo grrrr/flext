@@ -626,7 +626,16 @@ public:
 		t_atom *Atoms() { return lst; }
 		//! Get a pointer to the list of atoms
 		const t_atom *Atoms() const { return lst; }
-		
+
+		//! Append an atom to the list
+		AtomList &Append(const t_atom &a);
+		//! Append an atom list to the list
+		AtomList &Append(const AtomList &a);	
+		//! Prepend an atom to the list
+		AtomList &Prepend(const t_atom &a);
+		//! Prepend an atom list to the list
+		AtomList &Prepend(const AtomList &a);
+
 	protected:
 		int cnt;
 		t_atom *lst;
@@ -688,6 +697,7 @@ public:
 
 	//! Copy an atom
 	static void CopyAtom(t_atom *dst,const t_atom *src) { *dst = *src; }
+
 	//! Copy a list of atoms
 	static t_atom *CopyList(int argc,const t_atom *argv);
 	//! Copy a memory region

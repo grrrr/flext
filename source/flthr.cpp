@@ -50,6 +50,29 @@ static bool thrhelpexit = false;
 static flext::ThrCond *thrhelpcond = NULL;
 
 
+#if defined(FLEXT_THREADS) && FLEXT_SYS == FLEXT_SYS_MAX && FLEXT_OS == FLEXT_OS_MAC && FLEXT_THREADS == FLEXT_THR_POSIX
+//	utility code taken from from Apple's CFM_MachO_CFM example:
+//
+//	This function allocates a block of CFM glue code which contains the instructions to call CFM routines
+//
+(void (*)(void *))MachOFunctionPointerForCFMFunctionPointer( (void (*)(void *))cfmfp )
+{
+	// Apple utility code for CFM callback glue
+	static const UInt32 tmpl[6] = {0x3D800000, 0x618C0000, 0x800C0000, 0x804C0004, 0x7C0903A6, 0x4E800420};
+    UInt32	*mfp = (UInt32*) NewPtr( sizeof(tmpl) );		//	Must later dispose of allocated memory
+    															//	(this is freed with app heap in this object)
+    mfp[0] = tmpl[0] | ((UInt32)cfmfp >> 16);
+    mfp[1] = tmpl[1] | ((UInt32)cfmfp & 0xFFFF);
+    mfp[2] = tmpl[2];
+    mfp[3] = tmpl[3];
+    mfp[4] = tmpl[4];
+    mfp[5] = tmpl[5];
+    MakeDataExecutable( mfp, sizeof(tmpl) );
+    return (void (*)(void *))mfp;
+}
+#endif
+
+
 flext::thrid_t flext::GetSysThreadId() { return thrid; }
 
 
@@ -77,7 +100,12 @@ bool flext::StartHelper()
 	pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);
 
 	thrhelpexit = false;
+#if FLEXT_SYS == FLEXT_SYS_MAX && FLEXT_OS == FLEXT_OS_MAC
+	void (*CFMThrHelper)(void *) = MachOFunctionPointerForCFMFunctionPointer(ThrHelper);
+	int ret = pthread_create (&thrhelpid,&attr,(void *(*)(void *))CFMThrHelper,NULL);
+#else
 	int ret = pthread_create (&thrhelpid,&attr,(void *(*)(void *))ThrHelper,NULL);
+#endif
 	ok = !ret;
 #elif FLEXT_THREADS == FLEXT_THR_MP
 	if(!MPLibraryIsLoaded())
@@ -99,6 +127,10 @@ bool flext::StartHelper()
 
         // we are ready for threading now!
     }
+    
+#if FLEXT_THREADS == FLEXT_THR_POSIX
+	pthread_attr_destroy(&attr);
+#endif    
 	return ok;
 }
 
@@ -190,6 +222,10 @@ void flext::ThrHelper(void *)
 
 	delete thrhelpcond;
 	thrhelpcond = NULL;
+	
+#if FLEXT_THREADS == FLEXT_THR_POSIX
+	pthread_attr_destroy(&attr);
+#endif
 }
 
 

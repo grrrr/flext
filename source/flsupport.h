@@ -649,6 +649,41 @@ public:
 		@{ 
 	*/
 
+#if FLEXT_SYS == FLEXT_SYS_MAX && FLEXT_OS == FLEXT_OS_MAC && FLEXT_THREADS == FLEXT_THR_POSIX
+	// These are function pointers of MachO functions imported to the CFM world
+
+	static pthread_t (*pthread_self)();
+	static int (*pthread_equal)(pthread_t,pthread_t);
+	static int (*pthread_create)(pthread_t *,const pthread_attr_t *,void *(*)(void *),void *);
+	static int (*pthread_cancel)(pthread_t);
+	static void (*pthread_testcancel)(void);
+	static int (*pthread_join)(pthread_t,void **);
+	static void (*pthread_exit)(void *);
+
+	static int (*pthread_attr_init)(pthread_attr_t *);
+	static int (*pthread_attr_destroy)(pthread_attr_t *);
+	static int (*pthread_attr_setdetachstate)(pthread_attr_t *,int);
+
+	static int (*pthread_getschedparam)(pthread_t,int *,struct sched_param *);
+	static int (*pthread_setschedparam)(pthread_t,int,const struct sched_param *);
+
+	static int (*pthread_mutex_init)(pthread_mutex_t *,const pthread_mutexattr_t *);
+	static int (*pthread_mutex_destroy)(pthread_mutex_t *);
+	static int (*pthread_mutex_lock)(pthread_mutex_t *);
+	static int (*pthread_mutex_unlock)(pthread_mutex_t *);
+	static int (*pthread_mutex_trylock)(pthread_mutex_t *);
+
+	static int (*pthread_cond_init)(pthread_cond_t *,const pthread_condattr_t *);
+	static int (*pthread_cond_destroy)(pthread_cond_t *);
+	static int (*pthread_cond_signal)(pthread_cond_t *);
+	static int (*pthread_cond_wait)(pthread_cond_t *,pthread_mutex_t *);
+	static int (*pthread_cond_timedwait)(pthread_cond_t *,pthread_mutex_t *,const struct timespec *);
+
+	static int (*sched_yield)(void);
+	static int (*sched_get_priority_min)(int);
+	static int (*sched_get_priority_max)(int);
+#endif
+
 	//! thread type
 #if FLEXT_THREADS == FLEXT_THR_MP
 	typedef MPTaskID thrid_t;

@@ -13,6 +13,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
  
 #include "flext.h"
+#include <string.h> // for memcpy
 
 #if FLEXT_SYS != FLEXT_SYS_JMAX
 int flext::CmpAtom(const t_atom &a,const t_atom &b)

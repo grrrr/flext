@@ -18,7 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "flext.h"
 #include "flinternal.h"
-
+#include <string.h> // for memcpy
 
 #ifdef FLEXT_THREADS
 //! Thread id of message queue thread

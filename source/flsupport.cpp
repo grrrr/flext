@@ -57,6 +57,7 @@ void flext::Setup()
 	sym_bang = gensym("bang");
 	sym_list = gensym("list");
 	sym_signal = gensym("signal");
+	sym_int = gensym("int");
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	sym_int = gensym("int");
 	sym_float = gensym("float");

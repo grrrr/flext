@@ -25,6 +25,7 @@ Version history:
 - fixed small problem with buffer->Valid() on startup
 - fixed buffer overrun problems with flext::post, flext::error... (but still to improve)
 - improved handling of patcher arguments
+- also initialize flext::sym_int as MakeSymbol("int") for PD (since the variable is there anyhow)
 
 0.4.5:
 - added some more SIMD functions

@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -20,6 +20,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flinternal.h"
 #include <string.h> // for memcpy
 
+FLEXT_BEGIN
+
 #ifdef FLEXT_THREADS
 //! Thread id of message queue thread
 flext::thrid_t flext::thrmsgid = 0;
@@ -31,7 +33,7 @@ flext::thrid_t flext::thrmsgid = 0;
 class qmsg
 {
 public:
-    void Set(flext_base *t,int o,const t_symbol *s,int ac,const t_atom *av) 
+    void Set(Flext *t,int o,const t_symbol *s,int ac,const t_atom *av) 
     { 
         th = t; out = o;
         sym = s,argc = ac,argv = av; 
@@ -51,7 +53,7 @@ public:
     int Args() const { return argc; }
 
 private:
-    flext_base *th;
+    Flext *th;
     int out;
     const t_symbol *sym; 
     int argc; 
@@ -59,8 +61,7 @@ private:
 };
 
 // _should_ work without locks.... have yet to check if it really does....
-class Queue:
-    public flext
+class Queue
 {
 public:
     Queue()
@@ -85,19 +86,19 @@ public:
         qhead = (qhead+1)%QUEUE_LENGTH;
     }
 
-    void Push(flext_base *th,int o) // bang
+    void Push(Flext *th,int o) // bang
     { 
         Set(th,o,sym_bang,0,NULL); 
     }
 
-    void Push(flext_base *th,int o,float dt) 
+    void Push(Flext *th,int o,float dt) 
     { 
         t_atom *at = GetAtoms(1); 
         SetFloat(*at,dt);
         Set(th,o,sym_float,1,at); 
     }
 
-    void Push(flext_base *th,int o,int dt) 
+    void Push(Flext *th,int o,int dt) 
     { 
         t_atom *at = GetAtoms(1); 
         SetInt(*at,dt);
@@ -112,14 +113,14 @@ public:
         Set(th,o,sym,1,at); 
     }
 
-    void Push(flext_base *th,int o,const t_symbol *dt) 
+    void Push(Flext *th,int o,const t_symbol *dt) 
     { 
         t_atom *at = GetAtoms(1); 
         SetSymbol(*at,dt);
         Set(th,o,sym_symbol,1,at); 
     }
 
-    void Push(flext_base *th,int o,const t_atom &a) 
+    void Push(Flext *th,int o,const t_atom &a) 
     { 
         t_atom *at = GetAtoms(1); 
         *at = a;
@@ -143,14 +144,14 @@ public:
         Set(th,o,sym,1,at); 
     }
 
-    void Push(flext_base *th,int o,int argc,const t_atom *argv) 
+    void Push(Flext *th,int o,int argc,const t_atom *argv) 
     {
         t_atom *at = GetAtoms(argc);
         memcpy(at,argv,argc*sizeof(t_atom));
         Set(th,o,sym_list,argc,at); 
     }
 
-    void Push(flext_base *th,int o,const t_symbol *sym,int argc,const t_atom *argv) 
+    void Push(Flext *th,int o,const t_symbol *sym,int argc,const t_atom *argv) 
     { 
         t_atom *at = GetAtoms(argc);
         memcpy(at,argv,argc*sizeof(t_atom));
@@ -158,7 +159,7 @@ public:
     }
 
 protected:
-    void Set(flext_base *th,int o,const t_symbol *sym,int argc,const t_atom *argv)
+    void Set(Flext *th,int o,const t_symbol *sym,int argc,const t_atom *argv)
     {
         FLEXT_ASSERT(Count() < QUEUE_LENGTH-1);
         lst[qtail].Set(th,o,sym,argc,argv);
@@ -243,7 +244,7 @@ static void QWork(bool syslock)
 static void QTick(fts_object_t *c,int winlet, fts_symbol_t s, int ac, const fts_atom_t *at)
 {
 #else
-static void QTick(flext_base *c)
+static void QTick(Flext *c)
 {
 #endif
 #ifdef FLEXT_THREADS
@@ -268,7 +269,7 @@ static t_int QTick(t_int *)
 It would be sufficient to only flush messages belonging to object th
 But then the order of sent messages is not as intended
 */
-void flext_base::QFlush(flext_base *th)
+void Flext::QFlush(Flext *th)
 {
 #ifdef FLEXT_THREADS
     if(!IsSystemThread()) {
@@ -306,7 +307,7 @@ static void Trigger()
 }
 
 #if FLEXT_QMODE == 2
-void flext_base::QWorker(thr_params *)
+void Flext::QWorker(thr_params *)
 {
     thrmsgid = GetThreadId();
     for(;;) {
@@ -316,7 +317,7 @@ void flext_base::QWorker(thr_params *)
 }
 #endif
 
-void flext_base::StartQueue()
+void Flext::StartQueue()
 {
     static bool started = false;
     if(started) return;
@@ -335,44 +336,46 @@ void flext_base::StartQueue()
 #endif
 }
 
-void flext_base::ToQueueBang(int o) const 
+void Flext::ToQueueBang(int o) const 
 {
-    queue.Push(const_cast<flext_base *>(this),o);
+    queue.Push(const_cast<Flext *>(this),o);
     Trigger();
 }
 
-void flext_base::ToQueueFloat(int o,float f) const
+void Flext::ToQueueFloat(int o,float f) const
 {
-    queue.Push(const_cast<flext_base *>(this),o,f);
+    queue.Push(const_cast<Flext *>(this),o,f);
     Trigger();
 }
 
-void flext_base::ToQueueInt(int o,int f) const
+void Flext::ToQueueInt(int o,int f) const
 {
-    queue.Push(const_cast<flext_base *>(this),o,f);
+    queue.Push(const_cast<Flext *>(this),o,f);
     Trigger();
 }
 
-void flext_base::ToQueueSymbol(int o,const t_symbol *s) const
+void Flext::ToQueueSymbol(int o,const t_symbol *s) const
 {
-    queue.Push(const_cast<flext_base *>(this),o,s);
+    queue.Push(const_cast<Flext *>(this),o,s);
     Trigger();
 }
 
-void flext_base::ToQueueAtom(int o,const t_atom &at) const
+void Flext::ToQueueAtom(int o,const t_atom &at) const
 {
-    queue.Push(const_cast<flext_base *>(this),o,at);
+    queue.Push(const_cast<Flext *>(this),o,at);
     Trigger();
 }
 
-void flext_base::ToQueueList(int o,int argc,const t_atom *argv) const
+void Flext::ToQueueList(int o,int argc,const t_atom *argv) const
 {
-    queue.Push(const_cast<flext_base *>(this),o,argc,argv);
+    queue.Push(const_cast<Flext *>(this),o,argc,argv);
     Trigger();
 }
 
-void flext_base::ToQueueAnything(int o,const t_symbol *s,int argc,const t_atom *argv) const
+void Flext::ToQueueAnything(int o,const t_symbol *s,int argc,const t_atom *argv) const
 {
-    queue.Push(const_cast<flext_base *>(this),o,s,argc,argv);
+    queue.Push(const_cast<Flext *>(this),o,s,argc,argv);
     Trigger();
 }
+
+FLEXT_END

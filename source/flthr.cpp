@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -15,7 +15,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flext.h"
 #include "flinternal.h"
 
-BEGIN_FLEXT
+FLEXT_BEGIN
 
 #ifdef FLEXT_THREADS
 
@@ -279,7 +279,7 @@ bool flext::StopThread(void (*meth)(thr_params *p),thr_params *p,bool wait)
 		return false;
 }
 
-bool flext_base::ShouldExit() const 
+bool Flext::ShouldExit() const 
 {
 	bool ret = true;
 
@@ -329,7 +329,7 @@ void flext::PopThread()
 }
 
 //! Terminate all object threads
-bool flext_base::StopThreads()
+bool Flext::StopThreads()
 {
 	thr_entry *t;
 
@@ -587,7 +587,7 @@ void thr_params::set_any(const t_symbol *s,int argc,const t_atom *argv) { var[0]
 void thr_params::set_list(int argc,const t_atom *argv) { var[0]._list.args = new AtomList(argc,argv); }
 
 
-flext_base::thr_entry::thr_entry(void (*m)(thr_params *),thr_params *p,thrid_t id): 
+thr_entry::thr_entry(void (*m)(thr_params *),thr_params *p,thrid_t id): 
 	th(p?p->cl:NULL),meth(m),params(p),thrid(id),
 	active(false),shouldexit(false),
 #if FLEXT_THREADS == FLEXT_THR_MP
@@ -642,6 +642,6 @@ bool flext::ThrCond::TimedWait(double ftm)
 }
 #endif
 
-END_FLEXT
-
 #endif // FLEXT_THREADS
+
+FLEXT_END

@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -19,7 +19,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <string.h>
 #include <ctype.h>
 
-BEGIN_FLEXT
+FLEXT_BEGIN
 
 #define ALIASDEL ','
 
@@ -109,10 +109,10 @@ bool flext::chktilde(const char *objname)
 class libclass
 {
 public:
-	libclass(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(flext_hdr *)); 
+	libclass(t_class *&cl,FlextBase *(*newf)(int,t_atom *),void (*freef)(FlextHdr *)); 
 	
-	flext_obj *(*newfun)(int,t_atom *);
-	void (*freefun)(flext_hdr *c);
+	FlextBase *(*newfun)(int,t_atom *);
+	void (*freefun)(FlextHdr *c);
 
 	t_class *const &clss;
 	bool lib,dsp,attr;
@@ -120,7 +120,7 @@ public:
 	int *argv;
 };
 
-libclass::libclass(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(flext_hdr *)): 
+libclass::libclass(t_class *&cl,FlextBase *(*newf)(int,t_atom *),void (*freef)(FlextHdr *)): 
 	newfun(newf),freefun(freef),
 	clss(cl),
 	argc(0),argv(NULL) 
@@ -151,15 +151,15 @@ static libclass *FindName(const t_symbol *s,libclass *o = NULL)
 static t_class *lib_class = NULL;
 static const t_symbol *lib_name = NULL;
 
-flext_obj::t_classid flext_obj::thisClassId() const 
+FlextBase::t_classid FlextBase::thisClassId() const 
 { 
     return FindName(thisNameSym()); 
 }
 
-t_class *flext_obj::getClass(t_classid id) { return reinterpret_cast<libclass *>(id)->clss; }
+t_class *FlextBase::getClass(t_classid id) { return reinterpret_cast<libclass *>(id)->clss; }
 #endif
 
-void flext_obj::lib_init(const char *name,void setupfun(),bool attr)
+void FlextBase::lib_init(const char *name,void setupfun(),bool attr)
 {
     flext::Setup();
 
@@ -168,7 +168,7 @@ void flext_obj::lib_init(const char *name,void setupfun(),bool attr)
 	::setup(
 		(t_messlist **)&lib_class,
 		(t_newmethod)obj_new,(t_method)obj_free,
-		sizeof(flext_hdr),NULL,A_GIMME,A_NULL);
+		sizeof(FlextHdr),NULL,A_GIMME,A_NULL);
 #endif
 	process_attributes = attr;
 
@@ -189,11 +189,11 @@ void flext_obj::lib_init(const char *name,void setupfun(),bool attr)
 #if FLEXT_SYS == FLEXT_SYS_JMAX
 static void jmax_class_inst(t_class *cl) 
 {
-	fts_class_init(cl, sizeof(flext_hdr),flext_obj::obj_new,flext_obj::obj_free);
+	fts_class_init(cl, sizeof(FlextHdr),FlextBase::obj_new,FlextBase::obj_free);
 }
 #endif
 
-void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const char *names,void setupfun(t_classid),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...)
+void FlextBase::obj_add(bool lib,bool dsp,bool attr,const char *idname,const char *names,void setupfun(t_classid),FlextBase *(*newfun)(int,t_atom *),void (*freefun)(FlextHdr *),int argtp1,...)
 {
 	// get first possible object name
 	const t_symbol *nsym = MakeSymbol(extract(names));
@@ -216,13 +216,13 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
     *cl = ::class_new(
 		(t_symbol *)nsym,
     	(t_newmethod)obj_new,(t_method)obj_free,
-     	sizeof(flext_hdr),CLASS_DEFAULT,A_GIMME,A_NULL);
+     	sizeof(FlextHdr),CLASS_DEFAULT,A_GIMME,A_NULL);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	if(!lib) {
 		::setup(
 			(t_messlist **)cl,
     		(t_newmethod)obj_new,(t_method)obj_free,
-     		sizeof(flext_hdr),NULL,A_GIMME,A_NULL);
+     		sizeof(FlextHdr),NULL,A_GIMME,A_NULL);
      	// attention: in Max/MSP the *cl variable is not initialized after that call.
      	// just the address is stored, the initialization then occurs with the first object instance!
 	}
@@ -272,7 +272,7 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 #endif
 
 	// make help reference
-	flext_obj::DefineHelp(clid,idname,extract(names,-1),dsp);
+	FlextBase::DefineHelp(clid,idname,extract(names,-1),dsp);
 
 	for(int ix = 0; ; ++ix) {
 		// in this loop register all the possible aliases of the object
@@ -318,20 +318,20 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 
 #define NEWARGS 256 // must be larger than FLEXT_NEWARGS = 5
 
-typedef flext_obj *(*libfun)(int,t_atom *);
+typedef FlextBase *(*libfun)(int,t_atom *);
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-void flext_obj::obj_new(fts_object_t *o, int, fts_symbol_t s, int _argc_, const fts_atom_t *argv)
+void FlextBase::obj_new(fts_object_t *o, int, fts_symbol_t s, int _argc_, const fts_atom_t *argv)
 {
-	flext_hdr *obj = (flext_hdr *)o;
+	FlextHdr *obj = (FlextHdr *)o;
 #else
 #if FLEXT_SYS == FLEXT_SYS_MAX
-flext_hdr *flext_obj::obj_new(const t_symbol *s,short _argc_,t_atom *argv)
+FlextHdr *FlextBase::obj_new(const t_symbol *s,short _argc_,t_atom *argv)
 #else
-flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
+FlextHdr *FlextBase::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 #endif
 {
-	flext_hdr *obj = NULL;
+	FlextHdr *obj = NULL;
 #endif
 	libclass *lo = FindName(s);
 	if(lo) {
@@ -340,7 +340,7 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 
 		int argc = _argc_;
 		if(lo->attr) {
-			argc = flext_base::CheckAttrib(argc,argv);
+			argc = Flext::CheckAttrib(argc,argv);
 		}
 
 		if(lo->argc >= 0) {
@@ -401,30 +401,30 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 			    clid = lo->clss;
-			    obj = (flext_hdr *)::pd_new(lo->clss);
+			    obj = (FlextHdr *)::pd_new(lo->clss);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 			    clid = lo;
-			    obj = (flext_hdr *)::newobject(lo->clss);
+			    obj = (FlextHdr *)::newobject(lo->clss);
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
 			    clid = lo->clss;
 #else
 #error
 #endif
 
-                flext_obj::m_holder = obj;
-			    flext_obj::m_holdname = s;
-			    flext_obj::m_holdattr = lo->attr;
-                flext_obj::initing = true;
+                FlextBase::m_holder = obj;
+			    FlextBase::m_holdname = s;
+			    FlextBase::m_holdattr = lo->attr;
+                FlextBase::initing = true;
 
-			    // get actual flext object (newfun calls "new flext_obj()")
+			    // get actual flext object (newfun calls "new FlextBase()")
 			    if(lo->argc >= 0)
 				    obj->data = lo->newfun(lo->argc,args); 
 			    else
 				    obj->data = lo->newfun(argc,argv); 
     	
-			    flext_obj::m_holder = NULL;
-			    flext_obj::m_holdname = NULL;
-			    flext_obj::m_holdattr = false;
+			    FlextBase::m_holder = NULL;
+			    FlextBase::m_holdname = NULL;
+			    FlextBase::m_holdattr = false;
 
 			    ok = obj->data &&
 				    // check constructor exit flag
@@ -435,26 +435,26 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 					    // DON'T convert eventual patcher args here... this is done by the actual attribute stuff
 					    // so that the initial $- or #- be preserved!
 
-					    // store creation args for attribute initialization (inside flext_base::Init())
-					    flext_obj::m_holdaargc = _argc_-argc;
-					    flext_obj::m_holdaargv = argv+argc;
+					    // store creation args for attribute initialization (inside Flext::Init())
+					    FlextBase::m_holdaargc = _argc_-argc;
+					    FlextBase::m_holdaargv = argv+argc;
 				    }
 				    else {
-					    flext_obj::m_holdaargc = 0;
-					    flext_obj::m_holdaargv = NULL;
+					    FlextBase::m_holdaargc = 0;
+					    FlextBase::m_holdaargv = NULL;
 				    }
 
 				    // call virtual init function 
 				    // here, inlets, outlets, methods and attributes can be set up
 				    ok = obj->data->Init();
 
-                    flext_obj::initing = false;
+                    FlextBase::initing = false;
 
 				    // call another virtual init function 
 				    if(ok) ok = obj->data->Finalize();
 
-				    flext_obj::m_holdaargc = 0;
-				    flext_obj::m_holdaargv = NULL;
+				    FlextBase::m_holdaargc = 0;
+				    FlextBase::m_holdaargv = NULL;
 			    }
 
             } //try
@@ -471,7 +471,7 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
                 ok = false;
             }
 
-            flext_obj::initing = false;
+            FlextBase::initing = false;
 
             if(!ok) { 
 				// there was some init error, free object
@@ -495,18 +495,18 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 }
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-void flext_obj::obj_free(fts_object_t *h, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at)
+void FlextBase::obj_free(fts_object_t *h, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at)
 #else
-void flext_obj::obj_free(flext_hdr *h)
+void FlextBase::obj_free(FlextHdr *h)
 #endif
 {
-	flext_hdr *hdr = (flext_hdr *)h;
+	FlextHdr *hdr = (FlextHdr *)h;
 	const t_symbol *name = hdr->data->thisNameSym();
 	libclass *lcl = FindName(name);
 
 	if(lcl) {
         try {
-            flext_obj::exiting = true;
+            FlextBase::exiting = true;
 
 		    // call virtual exit function
 		    hdr->data->Exit();
@@ -524,7 +524,7 @@ void flext_obj::obj_free(flext_hdr *h)
     		error("%s - Unknown exception while destroying object",GetString(name));
         }
 
-        flext_obj::exiting = false;
+        FlextBase::exiting = false;
     }
 #ifdef FLEXT_DEBUG
 	else 
@@ -536,6 +536,6 @@ void flext_obj::obj_free(flext_hdr *h)
 #endif
 }
 
-END_FLEXT
+FLEXT_END
 
 

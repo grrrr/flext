@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -23,7 +23,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define snprintf _snprintf
 #endif
 
-BEGIN_FLEXT
+FLEXT_BEGIN
 
 const t_symbol *flext::sym__ = NULL;
 const t_symbol *flext::sym_float = NULL;
@@ -287,10 +287,9 @@ void error(const char *fmt,...)
 }
 
 
+FLEXT_END
+
 AnyMap::AnyMap() {}
 AnyMap::~AnyMap() {}
 AnyMap::iterator AnyMap::find(AnyMapType k) { return Parent::find(k); }
 AnyMapType &AnyMap::operator [](AnyMapType k) { return Parent::operator [](k); }
-
-END_FLEXT
-

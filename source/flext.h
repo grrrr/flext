@@ -68,6 +68,16 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // include the flext dsp class
 #include "fldsp.h"
 
+
+#define flext_base FLEXT::Flext
+#define flext_dsp FLEXT::FlextDsp
+
+using FLEXT::AtomList;
+using FLEXT::AtomAnything;
+using FLEXT::Timer;
+using FLEXT::ThrCond;
+using FLEXT::ThrMutex;
+
 /*
 #if FLEXT_SYS == FLEXT_SYS_MAX && FLEXT_OS == FLEXT_OS_WIN
 #pragma pack(pop)

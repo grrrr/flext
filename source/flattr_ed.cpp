@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -15,8 +15,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flext.h"
 
 #if FLEXT_SYS == FLEXT_SYS_PD && !defined(FLEXT_NOATTREDIT)
-
-BEGIN_FLEXT
 
 /*
 #ifdef PD_DEVEL_VERSION
@@ -38,6 +36,9 @@ BEGIN_FLEXT
 
 #include <string.h>
 #include <stdio.h>
+
+
+FLEXT_BEGIN
 
 static t_widgetbehavior widgetbehavior; 
 
@@ -410,7 +411,7 @@ static void tclscript()
     );
 }
 
-void flext_base::SetAttrEditor(t_classid c)
+void Flext::SetAttrEditor(t_classid c)
 {
     // widgetbehavior struct MUST be resident... (static is just ok here)
 
@@ -459,9 +460,9 @@ static size_t escapeit(char *dst,size_t maxlen,const char *src)
     return d-dst;
 }
 
-void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
+void Flext::cb_GfxProperties(t_gobj *c, t_glist *)
 {
-    flext_base *th = thisObject(c);
+    Flext *th = thisObject(c);
     char buf[1000];
 
      // beginning of proc
@@ -573,11 +574,11 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 }
 
 //! Strip the attributes off the object command line
-void flext_base::cb_GfxVis(t_gobj *c, t_glist *gl, int vis)
+void Flext::cb_GfxVis(t_gobj *c, t_glist *gl, int vis)
 {
     // show object if it's not a GOP
     if(!gl->gl_isgraph || gl->gl_havewindow) {
-        flext_base *th = thisObject(c);
+        Flext *th = thisObject(c);
         t_text *x = (t_text *)c;
         FLEXT_ASSERT(x->te_binbuf);
 
@@ -601,7 +602,7 @@ void flext_base::cb_GfxVis(t_gobj *c, t_glist *gl, int vis)
    }
 }
 
-void flext_base::cb_GfxSelect(t_gobj *c, struct _glist *gl, int state)
+void Flext::cb_GfxSelect(t_gobj *c, struct _glist *gl, int state)
 {
     // show object if it's not a GOP
     if(!gl->gl_isgraph || gl->gl_havewindow) {
@@ -611,7 +612,7 @@ void flext_base::cb_GfxSelect(t_gobj *c, struct _glist *gl, int state)
             // ->  since object will not be recreated we have to get rid
             //     of the attribute text
 
-            flext_base *th = thisObject(c);
+            Flext *th = thisObject(c);
             t_text *x = (t_text *)c;
             FLEXT_ASSERT(x->te_binbuf);
 
@@ -637,9 +638,9 @@ void flext_base::cb_GfxSelect(t_gobj *c, struct _glist *gl, int state)
     }
 }
 
-void flext_base::cb_GfxSave(t_gobj *c, t_binbuf *b)
+void Flext::cb_GfxSave(t_gobj *c, t_binbuf *b)
 {
-    flext_base *th = thisObject(c);
+    Flext *th = thisObject(c);
     t_text *t = (t_text *)c;
     binbuf_addv(b, "ssiis", gensym("#X"),gensym("obj"), t->te_xpix, t->te_ypix,MakeSymbol(th->thisName()));
 
@@ -651,7 +652,7 @@ void flext_base::cb_GfxSave(t_gobj *c, t_binbuf *b)
     binbuf_addv(b, ";");
 }
 
-bool flext_base::cb_AttrDialog(flext_base *th,int argc,const t_atom *argv)
+bool Flext::cb_AttrDialog(Flext *th,int argc,const t_atom *argv)
 {
     for(int i = 0; i < argc; ) {
         FLEXT_ASSERT(IsSymbol(argv[i]));
@@ -735,7 +736,7 @@ static void BinbufAdd(t_binbuf *b,const t_atom &at,bool transdoll)
         binbuf_add(b,1,const_cast<t_atom *>(&at));
 }
 
-void flext_base::BinbufArgs(t_binbuf *b,t_binbuf *args,bool withname,bool transdoll)
+void Flext::BinbufArgs(t_binbuf *b,t_binbuf *args,bool withname,bool transdoll)
 {
     int argc = binbuf_getnatom(args);
     t_atom *argv = binbuf_getvec(args);
@@ -744,7 +745,7 @@ void flext_base::BinbufArgs(t_binbuf *b,t_binbuf *args,bool withname,bool transd
     for(i = withname?0:1; i < cnt; ++i) BinbufAdd(b,argv[i],transdoll);
 }
 
-void flext_base::BinbufAttr(t_binbuf *b,bool transdoll)
+void Flext::BinbufAttr(t_binbuf *b,bool transdoll)
 {
     // process the attributes
     AtomList la;
@@ -802,7 +803,7 @@ void flext_base::BinbufAttr(t_binbuf *b,bool transdoll)
     }
 }
 
-END_FLEXT
+FLEXT_END
 
 #endif // FLEXT_SYS_PD
 

@@ -24,13 +24,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #define FLEXT FLEXT_CLASSDEF(flext)
 
-#define BEGIN_FLEXT namespace FLEXT {
-#define END_FLEXT }
-
-BEGIN_FLEXT
-END_FLEXT
-
-namespace flext = FLEXT;
+#define FLEXT_BEGIN namespace FLEXT {
+#define FLEXT_END }
 
 /*! \brief Flext root support class
 
@@ -38,14 +33,14 @@ namespace flext = FLEXT;
     contained in flext can use them
 */
 
-BEGIN_FLEXT
+FLEXT_BEGIN
 
 // --- console output -----------------------------------------------	
 
-		//! post message to console, with line feed (limited to 1k chars!)
-		void post(const char *fmt,...);
-		//! post error message to console (limited to 1k chars!)
-		void error(const char *fmt,...);
+	//! post message to console, with line feed (limited to 1k chars!)
+	FLEXT_SHARE void post(const char *fmt,...);
+	//! post error message to console (limited to 1k chars!)
+	FLEXT_SHARE void error(const char *fmt,...);
 
 // --- memory -------------------------------------------------------	
 
@@ -53,28 +48,29 @@ BEGIN_FLEXT
 		@{ 
 	*/
 
-		/*! Overloaded new memory allocation method
-			\note this uses a fast allocation method of the real-time system
-			\warning Max/MSP (or MacOS) allows only 32K in overdrive mode!
-		*/
-		void *operator new(size_t bytes);
-		//! Overloaded delete method
-		void operator delete(void *blk);
+	/*! Overloaded new memory allocation method
+		\note this uses a fast allocation method of the real-time system
+		\warning Max/MSP (or MacOS) allows only 32K in overdrive mode!
+	*/
+	FLEXT_SHARE void *operator new(size_t bytes);
+	//! Overloaded delete method
+	FLEXT_SHARE void operator delete(void *blk);
 
-		#ifndef __MRC__ // doesn't allow new[] overloading?!
-		inline void *operator new[](size_t bytes) { return operator new(bytes); }
-		inline void operator delete[](void *blk) { operator delete(blk); }
-		#endif
+	#ifndef __MRC__ // doesn't allow new[] overloading?!
+	inline void *operator new[](size_t bytes) { return operator new(bytes); }
+	inline void operator delete[](void *blk) { operator delete(blk); }
+	#endif
 
-		//! Get an aligned memory block
-		void *NewAligned(size_t bytes,int bitalign = 128);
-		//! Free an aligned memory block
-		void FreeAligned(void *blk);
-		//! Test for alignment
-		inline bool IsAligned(void *ptr,int bitalign = 128)	{ 
-            return (reinterpret_cast<size_t>(ptr)&(bitalign-1)) == 0; 
-        }
-	//!	@}  FLEXT_S_MEMORY  	
+	//! Get an aligned memory block
+	FLEXT_SHARE void *NewAligned(size_t bytes,int bitalign = 128);
+	//! Free an aligned memory block
+	FLEXT_SHARE void FreeAligned(void *blk);
+	//! Test for alignment
+	inline bool IsAligned(void *ptr,int bitalign = 128)	{ 
+        return (reinterpret_cast<size_t>(ptr)&(bitalign-1)) == 0; 
+    }
+
+    //!	@}  FLEXT_S_MEMORY  	
 
 #if 0 //ndef FLEXT_NOGLOBALNEW
     /************************************************************************/
@@ -101,8 +97,7 @@ BEGIN_FLEXT
 
 /************************************************************************/
 
-
-class FLEXT_SHARE flext_base;
+class FLEXT_SHARE Flext;
 
 /*! \brief Flext support class
 
@@ -130,10 +125,10 @@ class FLEXT_SHARE flext_base;
         For statically linked flext this is identical to the header definition FLEXT_VERSION,
         otherwise it reflects the version number of the shared flext library.
     */
-    int Version();    
+    FLEXT_SHARE int Version();    
 
     //! Flext version string
-    const char *VersionStr();    
+    FLEXT_SHARE const char *VersionStr();    
 
 // --- utilities --------------------------------------------------
 
@@ -142,32 +137,32 @@ class FLEXT_SHARE flext_base;
 	*/
 
 	//! Copy an atom
-	void CopyAtom(t_atom *dst,const t_atom *src) { *dst = *src; }
+	FLEXT_SHARE inline void CopyAtom(t_atom *dst,const t_atom *src) { *dst = *src; }
 
 	//! Print an atom
-	bool PrintAtom(const t_atom &a,char *buf,size_t bufsz);
+	FLEXT_SHARE bool PrintAtom(const t_atom &a,char *buf,size_t bufsz);
 	//! Scan an atom
-	bool ScanAtom(t_atom &a,const char *buf);
+	FLEXT_SHARE bool ScanAtom(t_atom &a,const char *buf);
 
 	//! Copy a list of atoms
-	t_atom *CopyList(int argc,const t_atom *argv);
+	FLEXT_SHARE t_atom *CopyList(int argc,const t_atom *argv);
 	//! Print an atom list
-	bool PrintList(int argc,const t_atom *argv,char *buf,size_t bufsz);
+	FLEXT_SHARE bool PrintList(int argc,const t_atom *argv,char *buf,size_t bufsz);
 
 	//! Copy a memory region
-	void CopyMem(void *dst,const void *src,int bytes);
+	FLEXT_SHARE void CopyMem(void *dst,const void *src,int bytes);
 	//! Copy a sample array
-	void CopySamples(t_sample *dst,const t_sample *src,int cnt);
+	FLEXT_SHARE void CopySamples(t_sample *dst,const t_sample *src,int cnt);
 	//! Set a memory region
-	void ZeroMem(void *dst,int bytes);
+	FLEXT_SHARE void ZeroMem(void *dst,int bytes);
 	//! Set a sample array to a fixed value
-	void SetSamples(t_sample *dst,int cnt,t_sample s);
+	FLEXT_SHARE void SetSamples(t_sample *dst,int cnt,t_sample s);
 	//! Set a sample array to 0
-	void ZeroSamples(t_sample *dst,int cnt) { SetSamples(dst,cnt,0); }	
+	FLEXT_SHARE inline void ZeroSamples(t_sample *dst,int cnt) { SetSamples(dst,cnt,0); }	
 
 
 	//! Get a 32 bit hash value from an atom
-	unsigned long AtomHash(const t_atom &a);
+	FLEXT_SHARE unsigned long AtomHash(const t_atom &a);
 
 //!		@} FLEXT_S_UTIL
 
@@ -178,217 +173,217 @@ class FLEXT_SHARE flext_base;
 	*/
 
 	//! Symbol constant for ""
-	extern const t_symbol *sym__;
+	extern FLEXT_SHARE const t_symbol *sym__;
 	//! Symbol constant for "float"
-	extern const t_symbol *sym_float;
+	extern FLEXT_SHARE const t_symbol *sym_float;
 	//! Symbol constant for "symbol"
-	extern const t_symbol *sym_symbol;
+	extern FLEXT_SHARE const t_symbol *sym_symbol;
 	//! Symbol constant for "bang"
-	extern const t_symbol *sym_bang;
+	extern FLEXT_SHARE const t_symbol *sym_bang;
 	//! Symbol constant for "list"
-	extern const t_symbol *sym_list;
+	extern FLEXT_SHARE const t_symbol *sym_list;
 	//! Symbol constant for "anything"
-	extern const t_symbol *sym_anything;
+	extern FLEXT_SHARE const t_symbol *sym_anything;
 
 	/*! \brief Symbol constant for "int"
 		\note Only the Max/MSP system has this defined as an internal type
 	*/
-	extern const t_symbol *sym_int;
+	extern FLEXT_SHARE const t_symbol *sym_int;
 
 	/*! Symbol constant for "pointer" 
 		\note Only PD has this defined as an internal type
 	*/
-	extern const t_symbol *sym_pointer;
+	extern FLEXT_SHARE const t_symbol *sym_pointer;
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 	/*! \brief Symbol constant for "signal"
 		\note PD only
 	*/
-	extern const t_symbol *sym_signal;
+	extern FLEXT_SHARE const t_symbol *sym_signal;
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
 	//! Make a symbol from a string
-	const t_symbol *MakeSymbol(const char *s) { return ::fts_new_symbol(s); }
+	FLEXT_SHARE inline const t_symbol *MakeSymbol(const char *s) { return ::fts_new_symbol(s); }
 	//! Get symbol string
-	const char *GetString(const t_symbol *s); // ** TODO **
+	FLEXT_SHARE const char *GetString(const t_symbol *s); // ** TODO **
 #else
 	//! Make a symbol from a string
-	const t_symbol *MakeSymbol(const char *s) { return ::gensym(const_cast<char *>(s)); }
+	FLEXT_SHARE inline const t_symbol *MakeSymbol(const char *s) { return ::gensym(const_cast<char *>(s)); }
 	//! Get symbol string
-	const char *GetString(const t_symbol *s) { return s->s_name; }  
+	FLEXT_SHARE inline const char *GetString(const t_symbol *s) { return s->s_name; }  
 #endif
 	//! Check for symbol and get string
-	const char *GetAString(const t_symbol *s,const char *def = "") { return s?GetString(s):def; }
+	FLEXT_SHARE inline const char *GetAString(const t_symbol *s,const char *def = "") { return s?GetString(s):def; }
 
 // --- atom stuff ----------------------------------------
 		
 	//! Set atom from another atom
-	void SetAtom(t_atom &a,const t_atom &b) { CopyAtom(&a,&b); }
+	FLEXT_SHARE inline void SetAtom(t_atom &a,const t_atom &b) { CopyAtom(&a,&b); }
 	//! Compare two atoms
-	int CmpAtom(const t_atom &a,const t_atom &b);
+	FLEXT_SHARE int CmpAtom(const t_atom &a,const t_atom &b);
 
 	// there are some more comparison functions for t_atom types outside the class
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
 	//! Set atom from another atom
-	int GetType(const t_atom &a); // ** TODO **
+	FLEXT_SHARE int GetType(const t_atom &a); // ** TODO **
 
 	//! Check whether the atom is nothing
-	bool IsNothing(const t_atom &a) { return fts_is_a(&a,fts_void_class); }
+	FLEXT_SHARE inline bool IsNothing(const t_atom &a) { return fts_is_a(&a,fts_void_class); }
 	//! Set the atom to represent nothing
-	void SetNothing(t_atom &a) { fts_set_void(&a); }
+	FLEXT_SHARE inline void SetNothing(t_atom &a) { fts_set_void(&a); }
 
 	//! Check whether the atom is a float
-	bool IsFloat(const t_atom &a) { return fts_is_a(&a,fts_float_class); }
+	FLEXT_SHARE inline bool IsFloat(const t_atom &a) { return fts_is_a(&a,fts_float_class); }
 #else
 	//! Set atom from another atom
-	int GetType(const t_atom &a) { return a.a_type; }
+	FLEXT_SHARE inline int GetType(const t_atom &a) { return a.a_type; }
 
 	//! Check whether the atom is nothing
-	bool IsNothing(const t_atom &a) { return a.a_type == A_NULL; }
+	FLEXT_SHARE inline bool IsNothing(const t_atom &a) { return a.a_type == A_NULL; }
 	//! Set the atom to represent nothing
-	void SetNothing(t_atom &a) { a.a_type = A_NULL; }
+	FLEXT_SHARE inline void SetNothing(t_atom &a) { a.a_type = A_NULL; }
 
 	//! Check whether the atom is a float
-	bool IsFloat(const t_atom &a) { return a.a_type == A_FLOAT; }
+	FLEXT_SHARE inline bool IsFloat(const t_atom &a) { return a.a_type == A_FLOAT; }
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
 	//! Access the float value (without type check)
-	float GetFloat(const t_atom &a) { return fts_get_float(&a); }
+	FLEXT_SHARE inline float GetFloat(const t_atom &a) { return fts_get_float(&a); }
 	//! Set the atom to represent a float 
-	void SetFloat(t_atom &a,float v) { fts_set_float(&a,v); }
+	FLEXT_SHARE inline void SetFloat(t_atom &a,float v) { fts_set_float(&a,v); }
 
 	//! Check whether the atom is a symbol
-	bool IsSymbol(const t_atom &a) { return fts_is_a(&a,fts_symbol_class); }
+	FLEXT_SHARE inline bool IsSymbol(const t_atom &a) { return fts_is_a(&a,fts_symbol_class); }
 #else
 	//! Access the float value (without type check)
-	float GetFloat(const t_atom &a) { return a.a_w.w_float; }
+	FLEXT_SHARE inline float GetFloat(const t_atom &a) { return a.a_w.w_float; }
 	//! Set the atom to represent a float 
-	void SetFloat(t_atom &a,float v) { a.a_type = A_FLOAT; a.a_w.w_float = v; }
+	FLEXT_SHARE inline void SetFloat(t_atom &a,float v) { a.a_type = A_FLOAT; a.a_w.w_float = v; }
 
 	//! Check whether the atom is a symbol
-	bool IsSymbol(const t_atom &a) { return a.a_type == A_SYMBOL; }
+	FLEXT_SHARE inline bool IsSymbol(const t_atom &a) { return a.a_type == A_SYMBOL; }
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 	//! Access the symbol value (without type check)
-	t_symbol *GetSymbol(const t_atom &a) { return a.a_w.w_symbol; }
+	FLEXT_SHARE inline t_symbol *GetSymbol(const t_atom &a) { return a.a_w.w_symbol; }
 	//! Set the atom to represent a symbol
-	void SetSymbol(t_atom &a,const t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_symbol = const_cast<t_symbol *>(s); }
+	FLEXT_SHARE inline void SetSymbol(t_atom &a,const t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_symbol = const_cast<t_symbol *>(s); }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	//! Access the symbol value (without type check)
-	t_symbol *GetSymbol(const t_atom &a) { return a.a_w.w_sym; }
+	FLEXT_SHARE inline t_symbol *GetSymbol(const t_atom &a) { return a.a_w.w_sym; }
 	//! Set the atom to represent a symbol
-	void SetSymbol(t_atom &a,const t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_sym = const_cast<t_symbol *>(s); }
+	FLEXT_SHARE inline void SetSymbol(t_atom &a,const t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_sym = const_cast<t_symbol *>(s); }
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
 	//! Access the symbol value (without type check)
-	t_symbol *GetSymbol(const t_atom &a); // ** TODO **
+	FLEXT_SHARE t_symbol *GetSymbol(const t_atom &a); // ** TODO **
 	//! Set the atom to represent a symbol
-	void SetSymbol(t_atom &a,const t_symbol *s) { fts_set_symbol(&a,s); }
+	FLEXT_SHARE inline void SetSymbol(t_atom &a,const t_symbol *s) { fts_set_symbol(&a,s); }
 #else
 #error
 #endif
 	//! Check for a symbol and get its value 
-	t_symbol *GetASymbol(const t_atom &a,t_symbol *def = NULL) { return IsSymbol(a)?GetSymbol(a):def; }  // NULL or empty symbol?
+	FLEXT_SHARE inline t_symbol *GetASymbol(const t_atom &a,t_symbol *def = NULL) { return IsSymbol(a)?GetSymbol(a):def; }  // NULL or empty symbol?
 
 	//! Check whether the atom is a string
-	bool IsString(const t_atom &a) { return IsSymbol(a); }
+	FLEXT_SHARE inline bool IsString(const t_atom &a) { return IsSymbol(a); }
 	//! Access the string value (without type check)
-	const char *GetString(const t_atom &a) { t_symbol *s = GetSymbol(a); return s?GetString(s):NULL; }  
+	FLEXT_SHARE inline const char *GetString(const t_atom &a) { t_symbol *s = GetSymbol(a); return s?GetString(s):NULL; }  
 	//! Check for a string and get its value 
-	void GetAString(const t_atom &a,char *buf,size_t szbuf);
+	FLEXT_SHARE void GetAString(const t_atom &a,char *buf,size_t szbuf);
 	//! Set the atom to represent a string
-	void SetString(t_atom &a,const char *c) { SetSymbol(a,MakeSymbol(c)); }
+	FLEXT_SHARE inline void SetString(t_atom &a,const char *c) { SetSymbol(a,MakeSymbol(c)); }
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 	//! Check for a float and get its value 
-	float GetAFloat(const t_atom &a,float def = 0) { return IsFloat(a)?GetFloat(a):def; }
+	FLEXT_SHARE inline float GetAFloat(const t_atom &a,float def = 0) { return IsFloat(a)?GetFloat(a):def; }
 
 	//! Check whether the atom is an integer
-	bool IsInt(const t_atom &) { return false; }
+	FLEXT_SHARE inline bool IsInt(const t_atom &) { return false; }
 	//! Access the integer value (without type check)
-	int GetInt(const t_atom &a) { return (int)GetFloat(a); }
+	FLEXT_SHARE inline int GetInt(const t_atom &a) { return (int)GetFloat(a); }
 	//! Check for an integer and get its value 
-	int GetAInt(const t_atom &a,int def = 0) { return (int)GetAFloat(a,(float)def); }
+	FLEXT_SHARE inline int GetAInt(const t_atom &a,int def = 0) { return (int)GetAFloat(a,(float)def); }
 	//! Set the atom to represent a integer (depending on the system)
-	void SetInt(t_atom &a,int v) { a.a_type = A_FLOAT; a.a_w.w_float = (float)v; }
+	FLEXT_SHARE inline void SetInt(t_atom &a,int v) { a.a_type = A_FLOAT; a.a_w.w_float = (float)v; }
 
 	//! Check whether the atom strictly is a pointer
-	bool IsPointer(const t_atom &a) { return a.a_type == A_POINTER; }
+	FLEXT_SHARE inline bool IsPointer(const t_atom &a) { return a.a_type == A_POINTER; }
 	//! Check whether the atom can be a pointer
-	bool CanbePointer(const t_atom &a) { return IsPointer(a); }
+	FLEXT_SHARE inline bool CanbePointer(const t_atom &a) { return IsPointer(a); }
 	//! Access the pointer value (without type check)
-	t_gpointer *GetPointer(const t_atom &a) { return a.a_w.w_gpointer; }
+	FLEXT_SHARE inline t_gpointer *GetPointer(const t_atom &a) { return a.a_w.w_gpointer; }
 	//! Check for a pointer and get its value 
-	t_gpointer *GetAPointer(const t_atom &a,t_gpointer *def = NULL) { return IsPointer(a)?GetPointer(a):def; }
+	FLEXT_SHARE inline t_gpointer *GetAPointer(const t_atom &a,t_gpointer *def = NULL) { return IsPointer(a)?GetPointer(a):def; }
 	//! Set the atom to represent a pointer
-	void SetPointer(t_atom &a,t_gpointer *p) { a.a_type = A_POINTER; a.a_w.w_gpointer = (t_gpointer *)p; }
+	FLEXT_SHARE inline void SetPointer(t_atom &a,t_gpointer *p) { a.a_type = A_POINTER; a.a_w.w_gpointer = (t_gpointer *)p; }
 
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	//! Check for a float and get its value 
-	float GetAFloat(const t_atom &a,float def = 0) { return IsFloat(a)?GetFloat(a):(IsInt(a)?GetInt(a):def); }
+	FLEXT_SHARE inline float GetAFloat(const t_atom &a,float def = 0) { return IsFloat(a)?GetFloat(a):(IsInt(a)?GetInt(a):def); }
 
 	//! Check whether the atom is an int
-	bool IsInt(const t_atom &a) { return a.a_type == A_INT; }
+	FLEXT_SHARE inline bool IsInt(const t_atom &a) { return a.a_type == A_INT; }
 	//! Access the integer value (without type check)
-	int GetInt(const t_atom &a) { return a.a_w.w_long; }
+	FLEXT_SHARE inline int GetInt(const t_atom &a) { return a.a_w.w_long; }
 	//! Check for an integer and get its value 
-	int GetAInt(const t_atom &a,int def = 0) { return IsInt(a)?GetInt(a):(IsFloat(a)?(int)GetFloat(a):def); }
+	FLEXT_SHARE inline int GetAInt(const t_atom &a,int def = 0) { return IsInt(a)?GetInt(a):(IsFloat(a)?(int)GetFloat(a):def); }
 	//! Set the atom to represent an integer
-	void SetInt(t_atom &a,int v) { a.a_type = A_INT; a.a_w.w_long = v; }
+	FLEXT_SHARE inline void SetInt(t_atom &a,int v) { a.a_type = A_INT; a.a_w.w_long = v; }
 
 	//! Check whether the atom strictly is a pointer
-	bool IsPointer(const t_atom &) { return false; }
+	FLEXT_SHARE inline bool IsPointer(const t_atom &) { return false; }
 	//! Check whether the atom can be a pointer
-	bool CanbePointer(const t_atom &a) { return IsInt(a); }
+	FLEXT_SHARE inline bool CanbePointer(const t_atom &a) { return IsInt(a); }
 	//! Access the pointer value (without type check)
-	void *GetPointer(const t_atom &) { return NULL; }
+	FLEXT_SHARE inline void *GetPointer(const t_atom &) { return NULL; }
 	//! Check for a pointer and get its value 
-	void *GetAPointer(const t_atom &a,void *def = NULL) { return IsInt(a)?(void *)GetInt(a):def; }
+	FLEXT_SHARE inline void *GetAPointer(const t_atom &a,void *def = NULL) { return IsInt(a)?(void *)GetInt(a):def; }
 	//! Set the atom to represent a pointer
-	void SetPointer(t_atom &a,void *p) { SetInt(a,(int)p); }
+	FLEXT_SHARE inline void SetPointer(t_atom &a,void *p) { SetInt(a,(int)p); }
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
 	//! Check for a float and get its value 
-	float GetAFloat(const t_atom &a,float def = 0) { return IsFloat(a)?GetFloat(a):(IsInt(a)?GetInt(a):def); }
+	FLEXT_SHARE inline float GetAFloat(const t_atom &a,float def = 0) { return IsFloat(a)?GetFloat(a):(IsInt(a)?GetInt(a):def); }
 
 	//! Check whether the atom is an int
-	bool IsInt(const t_atom &a) { return fts_is_a(&a,fts_int_class); }
+	FLEXT_SHARE inline bool IsInt(const t_atom &a) { return fts_is_a(&a,fts_int_class); }
 	//! Access the integer value (without type check)
-	int GetInt(const t_atom &a) { return fts_get_int(&a); }
+	FLEXT_SHARE inline int GetInt(const t_atom &a) { return fts_get_int(&a); }
 	//! Check for an integer and get its value 
-	int GetAInt(const t_atom &a,int def = 0) { return IsInt(a)?GetInt(a):(IsFloat(a)?(int)GetFloat(a):def); }
+	FLEXT_SHARE inline int GetAInt(const t_atom &a,int def = 0) { return IsInt(a)?GetInt(a):(IsFloat(a)?(int)GetFloat(a):def); }
 	//! Set the atom to represent an integer
-	void SetInt(t_atom &a,int v) { fts_set_int(&a,v); }
+	FLEXT_SHARE inline void SetInt(t_atom &a,int v) { fts_set_int(&a,v); }
 
 	//! Check whether the atom strictly is a pointer
-	bool IsPointer(const t_atom &a) { return fts_is_a(&a,fts_pointer_class); }
+	FLEXT_SHARE inline bool IsPointer(const t_atom &a) { return fts_is_a(&a,fts_pointer_class); }
 	//! Check whether the atom can be a pointer
-	bool CanbePointer(const t_atom &a) { return IsPointer(a); }
+	FLEXT_SHARE inline bool CanbePointer(const t_atom &a) { return IsPointer(a); }
 	//! Access the pointer value (without type check)
-	void *GetPointer(const t_atom &a) { return fts_get_pointer(&a); }
+	FLEXT_SHARE inline void *GetPointer(const t_atom &a) { return fts_get_pointer(&a); }
 	//! Check for a pointer and get its value 
-	void *GetAPointer(const t_atom &a,void *def = NULL) { return IsPointer(a)?GetPointer(a):def; }
+	FLEXT_SHARE inline void *GetAPointer(const t_atom &a,void *def = NULL) { return IsPointer(a)?GetPointer(a):def; }
 	//! Set the atom to represent a pointer
-	void SetPointer(t_atom &a,void *p) { fts_set_pointer(&a,p); }
+	FLEXT_SHARE inline void SetPointer(t_atom &a,void *p) { fts_set_pointer(&a,p); }
 #else
 #error "Platform not supported"
 #endif
 
 	//! Check whether the atom can be represented as a float
-	bool CanbeFloat(const t_atom &a) { return IsFloat(a) || IsInt(a); }
+	FLEXT_SHARE inline bool CanbeFloat(const t_atom &a) { return IsFloat(a) || IsInt(a); }
 	//! Check whether the atom can be represented as an integer
-	bool CanbeInt(const t_atom &a) { return IsFloat(a) || IsInt(a); }
+	FLEXT_SHARE inline bool CanbeInt(const t_atom &a) { return IsFloat(a) || IsInt(a); }
 
     //! Set the atom to represent a boolean
-	void SetBool(t_atom &a,bool v) { SetInt(a,v?1:0); }
+	FLEXT_SHARE inline void SetBool(t_atom &a,bool v) { SetInt(a,v?1:0); }
 	//! Check whether the atom can be represented as a boolean
-	bool CanbeBool(const t_atom &a) { return CanbeInt(a); }
+	FLEXT_SHARE inline bool CanbeBool(const t_atom &a) { return CanbeInt(a); }
 	//! Check for an boolean and get its value 
-	bool GetABool(const t_atom &a) { return GetAInt(a) != 0; }
+	FLEXT_SHARE inline bool GetABool(const t_atom &a) { return GetAInt(a) != 0; }
 	//! Check for an boolean and get its value 
-	bool GetBool(const t_atom &a) { return GetInt(a) != 0; }
+	FLEXT_SHARE inline bool GetBool(const t_atom &a) { return GetInt(a) != 0; }
 
 // --- atom list stuff -------------------------------------------
 
@@ -459,7 +454,7 @@ class FLEXT_SHARE flext_base;
 		AtomList &Part(int offs,int len) { return (*this = GetPart(offs,len)); }
 
 		//! Represent as a string
-		bool Print(char *buffer,int buflen) const { return flext::PrintList(Count(),Atoms(),buffer,buflen); }
+		bool Print(char *buffer,int buflen) const { return PrintList(Count(),Atoms(),buffer,buflen); }
 
 	protected:
 		int cnt;
@@ -516,15 +511,15 @@ class FLEXT_SHARE flext_base;
 	*/
 
     //! Send a message to a symbol (bound to an object)
-    bool Forward(const t_symbol *sym,const t_symbol *s,int argc,const t_atom *argv);
+    FLEXT_SHARE bool Forward(const t_symbol *sym,const t_symbol *s,int argc,const t_atom *argv);
 
-    bool Forward(const t_symbol *sym,AtomAnything &args) { return Forward(sym,args.Header(),args.Count(),args.Atoms()); }
-    bool Forward(const char *sym,AtomAnything &args) { return Forward(MakeSymbol(sym),args.Header(),args.Count(),args.Atoms()); }
+    FLEXT_SHARE inline bool Forward(const t_symbol *sym,AtomAnything &args) { return Forward(sym,args.Header(),args.Count(),args.Atoms()); }
+    FLEXT_SHARE inline bool Forward(const char *sym,AtomAnything &args) { return Forward(MakeSymbol(sym),args.Header(),args.Count(),args.Atoms()); }
 
-    bool Forward(const t_symbol *sym,int argc,const t_atom *argv) { return Forward(sym,sym_list,argc,argv); }
+    FLEXT_SHARE inline bool Forward(const t_symbol *sym,int argc,const t_atom *argv) { return Forward(sym,sym_list,argc,argv); }
 
-    bool Forward(const t_symbol *sym,AtomList &args) { return Forward(sym,args.Count(),args.Atoms()); }
-    bool Forward(const char *sym,AtomList &args) { return Forward(MakeSymbol(sym),args.Count(),args.Atoms()); }
+    FLEXT_SHARE inline bool Forward(const t_symbol *sym,AtomList &args) { return Forward(sym,args.Count(),args.Atoms()); }
+    FLEXT_SHARE inline bool Forward(const char *sym,AtomList &args) { return Forward(MakeSymbol(sym),args.Count(),args.Atoms()); }
 
 //!		@} FLEXT_S_MSG
 
@@ -538,17 +533,17 @@ class FLEXT_SHARE flext_base;
 
 #if FLEXT_SYS == FLEXT_SYS_PD
     #if PD_MINOR_VERSION >= 38 || (PD_MINOR_VERSION >= 37 && defined(PD_DEVEL_VERSION))
-        void Lock() { sys_lock(); }
-        void Unlock() { sys_unlock(); }
+        FLEXT_SHARE inline void Lock() { sys_lock(); }
+        FLEXT_SHARE inline void Unlock() { sys_unlock(); }
     #else
         // no system locking for old PD versions
-        void Lock() {}
-        void Unlock() {}
+        FLEXT_SHARE inline void Lock() {}
+        FLEXT_SHARE inline void Unlock() {}
     #endif
 #elif FLEXT_SYS == FLEXT_SYS_MAX
     // Max 4.2 upwards!
-    void Lock() { critical_enter(0); }
-    void Unlock() { critical_exit(0); }
+    FLEXT_SHARE inline void Lock() { critical_enter(0); }
+    FLEXT_SHARE inline void Unlock() { critical_exit(0); }
 #else
 #error
 #endif
@@ -573,7 +568,7 @@ class FLEXT_SHARE flext_base;
 
 	/*! \brief Get current thread id
 	*/
-	thrid_t GetThreadId() { 
+	FLEXT_SHARE inline thrid_t GetThreadId() { 
 #if FLEXT_THREADS == FLEXT_THR_POSIX
 		return pthread_self(); 
 #elif FLEXT_THREADS == FLEXT_THR_MP
@@ -587,10 +582,10 @@ class FLEXT_SHARE flext_base;
 
 	/*! \brief Get system thread id
 	*/
-	thrid_t GetSysThreadId();
+	FLEXT_SHARE thrid_t GetSysThreadId();
 	
 	//! Check if current thread is the realtime system's thread
-	bool IsThread(thrid_t t,thrid_t ref = GetThreadId()) { 
+	FLEXT_SHARE inline bool IsThread(thrid_t t,thrid_t ref = GetThreadId()) { 
 #if FLEXT_THREADS == FLEXT_THR_POSIX
 		return pthread_equal(ref,t) != 0; 
 #elif FLEXT_THREADS == FLEXT_THR_WIN32
@@ -601,7 +596,7 @@ class FLEXT_SHARE flext_base;
 	}
 
 	//! Check if current thread is the realtime system's thread
-	bool IsSystemThread() { return IsThread(GetSysThreadId()); }
+	FLEXT_SHARE inline bool IsSystemThread() { return IsThread(GetSysThreadId()); }
 
 
 	/*! \brief Thread parameters
@@ -616,7 +611,7 @@ class FLEXT_SHARE flext_base;
 		void set_any(const t_symbol *s,int argc,const t_atom *argv);
 		void set_list(int argc,const t_atom *argv);
 
-		flext_base *cl;
+		Flext *cl;
 		union _data {
 			bool _bool;
 			float _float;
@@ -639,10 +634,10 @@ class FLEXT_SHARE flext_base;
 		//! \brief Check if this class represents the current thread
 		bool Is(thrid_t id = GetThreadId()) const { return IsThread(thrid,id); }
 
-		flext_base *This() const { return th; }
+		Flext *This() const { return th; }
 		thrid_t Id() const { return thrid; }
 
-		flext_base *th;
+		Flext *th;
 		void (*meth)(thr_params *);
 		thr_params *params;
 		thrid_t thrid;
@@ -670,7 +665,7 @@ class FLEXT_SHARE flext_base;
 	/*! \brief Yield to other threads
 		\remark A call to this is only needed for systems with cooperative multitasking like MacOS<=9
 	*/
-	void ThrYield() { 
+	FLEXT_SHARE inline void ThrYield() {
 #if FLEXT_THREADS == FLEXT_THR_POSIX
 		// for a preemptive system this should do nothing
 		sched_yield(); 
@@ -685,7 +680,7 @@ class FLEXT_SHARE flext_base;
 
 	/*! \brief Query whether task is preemptive
 	*/
-	bool IsThreadPreemptive(thrid_t t = GetThreadId()) {
+	FLEXT_SHARE inline bool IsThreadPreemptive(thrid_t t = GetThreadId()) {
 #if FLEXT_THREADS == FLEXT_THR_POSIX || FLEXT_THREADS == FLEXT_THR_WIN32
 		return true;
 #elif FLEXT_THREADS == FLEXT_THR_MP
@@ -698,15 +693,15 @@ class FLEXT_SHARE flext_base;
 
 	/*! \brief Increase/Decrease priority of a thread
 	*/
-	bool RelPriority(int dp,thrid_t ref = GetSysThreadId(),thrid_t thr = GetThreadId());
+	FLEXT_SHARE bool RelPriority(int dp,thrid_t ref = GetSysThreadId(),thrid_t thr = GetThreadId());
 
 	/*! \brief Get priority of a thread
 	*/
-	int GetPriority(thrid_t thr = GetThreadId());
+	FLEXT_SHARE int GetPriority(thrid_t thr = GetThreadId());
 
 	/*! \brief Set priority of a thread
 	*/
-	bool SetPriority(int p,thrid_t thr = GetThreadId());
+	FLEXT_SHARE bool SetPriority(int p,thrid_t thr = GetThreadId());
 
 	/*! \brief Thread mutex
 		\sa pthreads documentation
@@ -866,19 +861,19 @@ class FLEXT_SHARE flext_base;
 		\return true on success
 		\internal
 	*/
-	bool PushThread();
+	FLEXT_SHARE bool PushThread();
 
 	/*! \brief Remove current thread from list of active threads.
 		\internal
 	*/
-	void PopThread();
+	FLEXT_SHARE void PopThread();
 
 	/*! \brief Launch a thread.
 		\param meth Thread function
 		\param params Parameters to pass to the thread, may be NULL if not needed.
 		\return Thread id on success, NULL on failure
 	*/
-	bool LaunchThread(void (*meth)(thr_params *p),thr_params *params = NULL);
+	FLEXT_SHARE bool LaunchThread(void (*meth)(thr_params *p),thr_params *params = NULL);
 
 	/*! \brief Terminate a thread.
 		\param meth Thread function
@@ -887,7 +882,7 @@ class FLEXT_SHARE flext_base;
 		\remark Terminates all running threads with matching meth and params.
         \note Function doesn NOT wait for termination
 	*/
-	bool StopThread(void (*meth)(thr_params *p),thr_params *params = NULL,bool wait = false);
+	FLEXT_SHARE bool StopThread(void (*meth)(thr_params *p),thr_params *params = NULL,bool wait = false);
 
 //!		@} FLEXT_S_THREAD
 
@@ -908,22 +903,22 @@ class FLEXT_SHARE flext_base;
 		\note This is not the time of the operating system but of the real-time system.
 		\note It depends on the time source the system is synchronized to.
 	*/
-	double GetTime();
+	FLEXT_SHARE double GetTime();
 	
 	/*! \brief Get time granularity of the GetTime function.
 		\note This can be zero if not determined.
 	*/
-	double GetTimeGrain();
+	FLEXT_SHARE double GetTimeGrain();
 
 	/*! \brief Get operating system time since flext startup.
 	*/
-	double GetOSTime();
+	FLEXT_SHARE double GetOSTime();
 	
 	/*! \brief Sleep for an amount of time.
 		\remark The OS clock is used for that.
 		\note Clearly in a real-time system this should only be used in a detached thread.
 	*/
-	void Sleep(double s);
+	FLEXT_SHARE void Sleep(double s);
 
 	/*! \brief Class encapsulating a timer with callback functionality.
 		This class can either be used with FLEXT_ADDTIMER or used as a base class with an overloaded virtual Work function.
@@ -937,7 +932,7 @@ class FLEXT_SHARE flext_base;
 		//! Set timer callback function.
 		void SetCallback(void (*cb)(void *data)) { clss = NULL,cback = cb; }
 		//! Set timer callback function (with class pointer).
-		void SetCallback(flext_base &th,bool (*cb)(flext_base *th,void *data)) { clss = &th,cback = (void (*)(void *))cb; }
+		void SetCallback(Flext &th,bool (*cb)(Flext *th,void *data)) { clss = &th,cback = (void (*)(void *))cb; }
 
 		//! Clear timer.
 		bool Reset();
@@ -968,7 +963,7 @@ class FLEXT_SHARE flext_base;
 
 		const bool queued;
 		void (*cback)(void *data);
-		flext_base *clss;
+		Flext *clss;
 		void *userdata;
 		double period;
 	};
@@ -978,28 +973,28 @@ class FLEXT_SHARE flext_base;
 // --- SIMD functionality -----------------------------------------------
 
 /*!	\defgroup FLEXT_S_SIMD Cross platform SIMD support for modern CPUs 
-		@{ 
+	@{ 
 */		
-		enum simd_type {
-			simd_none = 0,
-			simd_mmx = 0x01,
-			simd_3dnow = 0x02,
-			simd_sse = 0x04,
-			simd_sse2 = 0x08,
-			simd_altivec = 0x10
-		};
-		
-		/*! Check for SIMD capabilities of the CPU */
-		unsigned long GetSIMDCapabilities();
+	enum simd_type {
+		simd_none = 0,
+		simd_mmx = 0x01,
+		simd_3dnow = 0x02,
+		simd_sse = 0x04,
+		simd_sse2 = 0x08,
+		simd_altivec = 0x10
+	};
+	
+	/*! Check for SIMD capabilities of the CPU */
+	FLEXT_SHARE unsigned long GetSIMDCapabilities();
 
 
-        void MulSamples(t_sample *dst,const t_sample *src,t_sample mul,int cnt);
-        void MulSamples(t_sample *dst,const t_sample *src,const t_sample *mul,int cnt);
-        void AddSamples(t_sample *dst,const t_sample *src,t_sample add,int cnt);
-        void AddSamples(t_sample *dst,const t_sample *src,const t_sample *add,int cnt);
-        void ScaleSamples(t_sample *dst,const t_sample *src,t_sample mul,t_sample add,int cnt);
+    FLEXT_SHARE void MulSamples(t_sample *dst,const t_sample *src,t_sample mul,int cnt);
+    FLEXT_SHARE void MulSamples(t_sample *dst,const t_sample *src,const t_sample *mul,int cnt);
+    FLEXT_SHARE void AddSamples(t_sample *dst,const t_sample *src,t_sample add,int cnt);
+    FLEXT_SHARE void AddSamples(t_sample *dst,const t_sample *src,const t_sample *add,int cnt);
+    FLEXT_SHARE void ScaleSamples(t_sample *dst,const t_sample *src,t_sample mul,t_sample add,int cnt);
 
-//!		@} FLEXT_S_SIMD
+//!	@} FLEXT_S_SIMD
 
 // --- buffer/array stuff -----------------------------------------	
 
@@ -1149,21 +1144,23 @@ class FLEXT_SHARE flext_base;
 		
 //!		@} FLEXT_SUPPORT
 
-	void Setup();
+	FLEXT_SHARE void Setup();
 
-	bool chktilde(const char *objname);
+	FLEXT_SHARE bool chktilde(const char *objname);
 
-	extern unsigned long simdcaps;
+	extern FLEXT_SHARE unsigned long simdcaps;
 
     // gcc doesn't like these to be included into the flext class (even if static)
-    inline bool operator ==(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) == 0; }
-    inline bool operator !=(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) != 0; }
-    inline bool operator <(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) < 0; }
-    inline bool operator <=(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) <= 0; }
-    inline bool operator >(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) > 0; }
-    inline bool operator >=(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) >= 0; }
+    FLEXT_SHARE inline bool operator ==(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) == 0; }
+    FLEXT_SHARE inline bool operator !=(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) != 0; }
+    FLEXT_SHARE inline bool operator <(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) < 0; }
+    FLEXT_SHARE inline bool operator <=(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) <= 0; }
+    FLEXT_SHARE inline bool operator >(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) > 0; }
+    FLEXT_SHARE inline bool operator >=(const t_atom &a,const t_atom &b) { return CmpAtom(a,b) >= 0; }
 
-END_FLEXT
+FLEXT_END
+
+namespace flext = FLEXT;
 
 //! @} // FLEXT_SUPPORT
 

@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -16,13 +16,15 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flinternal.h"
 #include <string.h>
 
-// === flext_dsp ==============================================
+FLEXT_BEGIN
+
+// === FlextDsp ==============================================
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-const t_symbol *flext_dsp::dspsym = MakeSymbol("__flext_dspfun__");
+const t_symbol *FlextDsp::dspsym = MakeSymbol("__flext_dspfun__");
 #endif
 
-void flext_dsp::Setup(t_classid id)
+void FlextDsp::Setup(t_classid id)
 {
     t_class *c = getClass(id);
 
@@ -31,7 +33,7 @@ void flext_dsp::Setup(t_classid id)
 //    dsp_initboxclass();
     add_dsp(c,cb_dsp);
 #elif FLEXT_SYS == FLEXT_SYS_PD
-    CLASS_MAINSIGNALIN(c,flext_hdr,defsig); // float messages going into the left inlet are converted to signal
+    CLASS_MAINSIGNALIN(c,FlextHdr,defsig); // float messages going into the left inlet are converted to signal
     add_dsp(c,cb_dsp);
     add_method1(c,cb_enable,"enable",A_FLOAT);
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
@@ -41,7 +43,7 @@ void flext_dsp::Setup(t_classid id)
 #endif
 }
 
-flext_dsp::FLEXT_CLASSDEF(flext_dsp)(): 
+FlextDsp::FlextDsp(): 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
     srate(fts_dsp_get_sample_rate()),  // should we set it?
     blksz(fts_dsp_get_tick_size()),
@@ -60,7 +62,7 @@ flext_dsp::FLEXT_CLASSDEF(flext_dsp)():
 }
 
 
-flext_dsp::~FLEXT_CLASSDEF(flext_dsp)()
+FlextDsp::~FlextDsp()
 {
 #if FLEXT_SYS == FLEXT_SYS_JMAX
     fts_dsp_object_delete(thisHdr());
@@ -83,13 +85,13 @@ flext_dsp::~FLEXT_CLASSDEF(flext_dsp)()
 }
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-void flext_dsp::dspmeth(fts_word_t *w) 
+void FlextDsp::dspmeth(fts_word_t *w) 
 { 
 }
 #else
-t_int *flext_dsp::dspmeth(t_int *w) 
+t_int *FlextDsp::dspmeth(t_int *w) 
 { 
-    flext_dsp *obj = (flext_dsp *)w[1];
+    FlextDsp *obj = (FlextDsp *)w[1];
 /*
 #ifdef FLEXT_DEBUG
     if(!obj->thisHdr()) {
@@ -110,14 +112,14 @@ t_int *flext_dsp::dspmeth(t_int *w)
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-void flext_dsp::cb_dsp(fts_object_t *c, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at)
+void FlextDsp::cb_dsp(fts_object_t *c, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at)
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-void flext_dsp::cb_dsp(t_class *c,t_signal **sp,short *count) 
+void FlextDsp::cb_dsp(t_class *c,t_signal **sp,short *count) 
 #else
-void flext_dsp::cb_dsp(t_class *c,t_signal **sp) 
+void FlextDsp::cb_dsp(t_class *c,t_signal **sp) 
 #endif
 { 
-    flext_dsp *obj = thisObject(c); 
+    FlextDsp *obj = thisObject(c); 
 
     if(obj->CntInSig()+obj->CntOutSig() == 0) return;
 
@@ -176,21 +178,21 @@ void flext_dsp::cb_dsp(t_class *c,t_signal **sp)
 
 /*
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-void flext_dsp::cb_dsp_init(fts_object_t *c, int winlet, fts_symbol_t *s, int ac, const fts_atom_t *at)
+void FlextDsp::cb_dsp_init(fts_object_t *c, int winlet, fts_symbol_t *s, int ac, const fts_atom_t *at)
 {
     fts_dsp_add_object(c);
 }
 
-void flext_dsp::cb_dsp_delete(fts_object_t *c, int winlet, fts_symbol_t *s, int ac, const fts_atom_t *at)
+void FlextDsp::cb_dsp_delete(fts_object_t *c, int winlet, fts_symbol_t *s, int ac, const fts_atom_t *at)
 {
     fts_dsp_remove_object(c);
 }
 #endif
 */
 
-void flext_dsp::m_dsp(int /*n*/,t_signalvec const * /*insigs*/,t_signalvec const * /*outsigs*/) {}
+void FlextDsp::m_dsp(int /*n*/,t_signalvec const * /*insigs*/,t_signalvec const * /*outsigs*/) {}
 
-void flext_dsp::m_signal(int n,t_sample *const * /*insigs*/,t_sample *const *outs) 
+void FlextDsp::m_signal(int n,t_sample *const * /*insigs*/,t_sample *const *outs) 
 {
     for(int i = 0; i < CntOutSig(); ++i) ZeroSamples(outs[i],n);
 }
@@ -198,12 +200,13 @@ void flext_dsp::m_signal(int n,t_sample *const * /*insigs*/,t_sample *const *out
 #if FLEXT_SYS != FLEXT_SYS_MAX
 
 #if FLEXT_SYS == FLEXT_SYS_PD
-void flext_dsp::cb_enable(t_class *c,t_float on) { thisObject(c)->m_enable(on != 0); }
+void FlextDsp::cb_enable(t_class *c,t_float on) { thisObject(c)->m_enable(on != 0); }
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
-void flext_dsp::cb_enable(fts_object_t *c, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at) 
+void FlextDsp::cb_enable(fts_object_t *c, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at) 
 { thisObject(c)->m_enable(fts_get_int(at+0) != 0); }
 #endif
 
-void flext_dsp::m_enable(bool en) { dspon = en; }
+void FlextDsp::m_enable(bool en) { dspon = en; }
 #endif
 
+FLEXT_END

@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -26,7 +26,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 /*! \brief Plain flext class header
 	\param NEW_CLASS name of the current C++ class
-	\param PARENT_CLASS name of the base C++ class (e.g. flext_base or flext_dsp)
+	\param PARENT_CLASS name of the base C++ class (e.g. FLEXT::Flext or FLEXT::FlextDsp)
 */
 #define FLEXT_HEADER(NEW_CLASS,PARENT_CLASS) \
 \
@@ -34,7 +34,7 @@ FLEXT_REALHDR(NEW_CLASS, PARENT_CLASS)
 
 /*! \brief Flext class header with setup function
 	\param NEW_CLASS name of the current C++ class
-	\param PARENT_CLASS name of the base C++ class (e.g. flext_base or flext_dsp)
+	\param PARENT_CLASS name of the base C++ class (e.g. FLEXT::Flext or FLEXT::FlextDsp)
 	\param SETUPFUN setup function, of type "void (*setupfn)(t_class *)"
 
 	The setup function is called after class creation. It corresponds to the

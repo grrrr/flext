@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -26,52 +26,52 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 //! Set up a threaded method callback with no arguments
 #define FLEXT_THREAD(M_FUN) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c) {  \
-	thr_params *p = new thr_params; \
+static bool FLEXT_CALL_PRE(M_FUN)(FLEXT::Flext *c) {  \
+	FLEXT::thr_params *p = new FLEXT::thr_params; \
 	return c->StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
-static void FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
+static void FLEXT_THR_PRE(M_FUN)(FLEXT::thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
-	bool ok = th->PushThread(); \
+	bool ok = FLEXT::PushThread(); \
 	delete p; \
 	if(ok) { \
 		th->M_FUN(); \
-		th->PopThread(); \
+		FLEXT::PopThread(); \
 	} \
 } 
 
 //! Set up a threaded method callback for an anything argument
 #define FLEXT_THREAD_A(M_FUN) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,t_symbol *s,int argc,t_atom *argv) {  \
-	thr_params *p = new thr_params; p->set_any(s,argc,argv); \
+static bool FLEXT_CALL_PRE(M_FUN)(FLEXT::Flext *c,t_symbol *s,int argc,t_atom *argv) {  \
+	FLEXT::thr_params *p = new FLEXT::thr_params; p->set_any(s,argc,argv); \
 	return c->StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
-static void FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
+static void FLEXT_THR_PRE(M_FUN)(FLEXT::thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
-	bool ok = th->PushThread(); \
+	bool ok = FLEXT::PushThread(); \
 	AtomAnything *args = p->var[0]._any.args; \
 	delete p; \
 	if(ok) { \
 		th->M_FUN(args->Header(),args->Count(),args->Atoms()); \
-		th->PopThread(); \
+		FLEXT::PopThread(); \
 	} \
 	delete args; \
 } 
 
 //! Set up a threaded method callback for a variable argument list
 #define FLEXT_THREAD_V(M_FUN) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,int argc,t_atom *argv) {  \
-	thr_params *p = new thr_params; p->set_list(argc,argv); \
+static bool FLEXT_CALL_PRE(M_FUN)(FLEXT::Flext *c,int argc,t_atom *argv) {  \
+	FLEXT::thr_params *p = new FLEXT::thr_params; p->set_list(argc,argv); \
 	return c->StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
-static void FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
+static void FLEXT_THR_PRE(M_FUN)(FLEXT::thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
-	bool ok = th->PushThread(); \
+	bool ok = FLEXT::PushThread(); \
 	AtomList *args = p->var[0]._list.args; \
 	delete p; \
 	if(ok) { \
 		th->M_FUN(args->Count(),args->Atoms()); \
-		th->PopThread(); \
+		FLEXT::PopThread(); \
 	} \
 	delete args; \
 } 
@@ -80,112 +80,112 @@ static void FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	\note Data is pure... no destructor is called upon delete
 */
 #define FLEXT_THREAD_X(M_FUN) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,void *data) {  \
-	thr_params *p = new thr_params; p->var[0]._ext.data = data; \
+static bool FLEXT_CALL_PRE(M_FUN)(FLEXT::Flext *c,void *data) {  \
+	FLEXT::thr_params *p = new FLEXT::thr_params; p->var[0]._ext.data = data; \
 	return c->StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
-static void FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
+static void FLEXT_THR_PRE(M_FUN)(FLEXT::thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
-	bool ok = th->PushThread(); \
+    bool ok = FLEXT::PushThread(); \
 	void *data = p->var[0]._ext.data; \
 	delete p; \
 	if(ok) { \
 		th->M_FUN(data); \
-		th->PopThread(); \
+		FLEXT::PopThread(); \
 	} \
 	/* delete (char *)data; */ \
 } 
 
 //! Set up a threaded method callback for a boolean argument
 #define FLEXT_THREAD_B(M_FUN) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,int &arg1) {  \
-	thr_params *p = new thr_params; p->var[0]._bool = arg1 != 0; \
+static bool FLEXT_CALL_PRE(M_FUN)(FLEXT::Flext *c,int &arg1) {  \
+	FLEXT::thr_params *p = new FLEXT::thr_params; p->var[0]._bool = arg1 != 0; \
 	return c->StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
-static void FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
+static void FLEXT_THR_PRE(M_FUN)(FLEXT::thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
-	bool ok = th->PushThread(); \
+	bool ok = FLEXT::PushThread(); \
 	bool b = p->var[0]._bool; \
 	delete p; \
 	if(ok) { \
 		th->M_FUN(b); \
-		th->PopThread(); \
+		FLEXT::PopThread(); \
 	} \
 } 
 
 //! Set up a threaded method callback for 1 argument
 #define FLEXT_THREAD_1(M_FUN,TP1) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1) {  \
-	thr_params *p = new thr_params(1); \
+static bool FLEXT_CALL_PRE(M_FUN)(FLEXT::Flext *c,TP1 &arg1) {  \
+	FLEXT::thr_params *p = new FLEXT::thr_params(1); \
 	p->var[0]._ ## TP1 = arg1; \
 	return c->StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
-static void FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
+static void FLEXT_THR_PRE(M_FUN)(FLEXT::thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
-	bool ok = th->PushThread(); \
+	bool ok = FLEXT::PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
 	delete p; \
 	if(ok) { \
 		th->M_FUN(v1); \
-		th->PopThread(); \
+		FLEXT::PopThread(); \
 	} \
 } 
 
 //! Set up a threaded method callback for 2 arguments
 #define FLEXT_THREAD_2(M_FUN,TP1,TP2) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2) {  \
-	thr_params *p = new thr_params(2); \
+static bool FLEXT_CALL_PRE(M_FUN)(FLEXT::Flext *c,TP1 &arg1,TP2 &arg2) {  \
+	FLEXT::thr_params *p = new FLEXT::thr_params(2); \
 	p->var[0]._ ## TP1 = arg1; \
 	p->var[1]._ ## TP2 = arg2; \
 	return c->StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
-static void FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
+static void FLEXT_THR_PRE(M_FUN)(FLEXT::thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
-	bool ok = th->PushThread(); \
+	bool ok = FLEXT::PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
 	const TP1 v2 = p->var[1]._ ## TP2; \
 	delete p; \
 	if(ok) { \
 		th->M_FUN(v1,v2); \
-		th->PopThread(); \
+		FLEXT::PopThread(); \
 	} \
 } 
 
 //! Set up a threaded method callback for 3 arguments
 #define FLEXT_THREAD_3(M_FUN,TP1,TP2,TP3) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3) {  \
-	thr_params *p = new thr_params(3); \
+static bool FLEXT_CALL_PRE(M_FUN)(FLEXT::Flext *c,TP1 &arg1,TP2 &arg2,TP3 &arg3) {  \
+	FLEXT::thr_params *p = new FLEXT::thr_params(3); \
 	p->var[0]._ ## TP1 = arg1; \
 	p->var[1]._ ## TP2 = arg2; \
 	p->var[2]._ ## TP3 = arg3; \
 	return c->StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
-static void FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
+static void FLEXT_THR_PRE(M_FUN)(FLEXT::thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
-	bool ok = th->PushThread(); \
+	bool ok = FLEXT::PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
 	const TP2 v2 = p->var[1]._ ## TP2; \
 	const TP3 v3 = p->var[2]._ ## TP3; \
 	delete p; \
 	if(ok) { \
 		th->M_FUN(v1,v2,v3); \
-		th->PopThread(); \
+		FLEXT::PopThread(); \
 	} \
 } 
 
 //! Set up a threaded method callback for 4 arguments
 #define FLEXT_THREAD_4(M_FUN,TP1,TP2,TP3,TP4) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4) {  \
-	thr_params *p = new thr_params(4); \
+static bool FLEXT_CALL_PRE(M_FUN)(FLEXT::Flext *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4) {  \
+	FLEXT::thr_params *p = new FLEXT::thr_params(4); \
 	p->var[0]._ ## TP1 = arg1; \
 	p->var[1]._ ## TP2 = arg2; \
 	p->var[2]._ ## TP3 = arg3; \
 	p->var[3]._ ## TP4 = arg4; \
 	return c->StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
-static void FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
+static void FLEXT_THR_PRE(M_FUN)(FLEXT::thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
-	bool ok = th->PushThread(); \
+	bool ok = FLEXT::PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
 	const TP2 v2 = p->var[1]._ ## TP2; \
 	const TP3 v3 = p->var[2]._ ## TP3; \
@@ -193,14 +193,14 @@ static void FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	delete p; \
 	if(ok) { \
 		th->M_FUN(v1,v2,v3,v4); \
-		th->PopThread(); \
+		FLEXT::PopThread(); \
 	} \
 } 
 
 //! Set up a threaded method callback for 5 arguments
 #define FLEXT_THREAD_5(M_FUN,TP1,TP2,TP3,TP4,TP5) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,TP5 &arg5) {  \
-	thr_params *p = new thr_params(5); \
+static bool FLEXT_CALL_PRE(M_FUN)(FLEXT::Flext *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,TP5 &arg5) {  \
+	FLEXT::thr_params *p = new FLEXT::thr_params(5); \
 	p->var[0]._ ## TP1 = arg1; \
 	p->var[1]._ ## TP2 = arg2; \
 	p->var[2]._ ## TP3 = arg3; \
@@ -208,9 +208,9 @@ static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP
 	p->var[4]._ ## TP5 = arg5; \
 	return c->StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
-static void FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
+static void FLEXT_THR_PRE(M_FUN)(FLEXT::thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
-	bool ok = th->PushThread(); \
+	bool ok = FLEXT::PushThread(); \
 	const TP1 v1 = p->var[0]._ ## TP1; \
 	const TP2 v2 = p->var[1]._ ## TP2; \
 	const TP3 v3 = p->var[2]._ ## TP3; \
@@ -219,7 +219,7 @@ static void FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	delete p; \
 	if(ok) { \
 		th->M_FUN(v1,v2,v3,v4,v5); \
-		th->PopThread(); \
+		FLEXT::PopThread(); \
 	} \
 } 
 

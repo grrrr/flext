@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -17,8 +17,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <string.h>
 #include <stdarg.h>
 
+FLEXT_BEGIN
 
-flext_base::xlet::xlet(type t,const char *d): 
+Flext::xlet::xlet(type t,const char *d): 
     tp(t),nxt(NULL)
 { 
     if(d) {
@@ -30,13 +31,13 @@ flext_base::xlet::xlet(type t,const char *d):
     else desc = NULL;
 }
 
-flext_base::xlet::~xlet() 
+Flext::xlet::~xlet() 
 { 
     if(desc) delete[] desc;
     if(nxt) delete nxt; 
 }
 
-void flext_base::AddXlet(xlet::type tp,int mult,const char *desc,xlet *&root)
+void Flext::AddXlet(xlet::type tp,int mult,const char *desc,xlet *&root)
 {
     if(!root && mult) { root = new xlet(tp,desc); --mult; }
     if(mult) {
@@ -46,7 +47,7 @@ void flext_base::AddXlet(xlet::type tp,int mult,const char *desc,xlet *&root)
     }
 }
 
-void flext_base::DescXlet(int ix,const char *d,xlet *&root)
+void Flext::DescXlet(int ix,const char *d,xlet *&root)
 {
     xlet *xi = root; 
     for(int i = 0; xi && i < ix; xi = xi->nxt,++i) {}
@@ -60,7 +61,7 @@ void flext_base::DescXlet(int ix,const char *d,xlet *&root)
     }
 }
 
-unsigned long flext_base::XletCode(xlet::type tp,...)
+unsigned long Flext::XletCode(xlet::type tp,...)
 {
     unsigned long code = 0;
 
@@ -84,13 +85,14 @@ unsigned long flext_base::XletCode(xlet::type tp,...)
     return code;
 }
 
-void flext_base::AddInlets(unsigned long code) 
+void Flext::AddInlets(unsigned long code) 
 { 
     for(; code; code /= 10) AddInlet((xlet::type)(code%10));
 }
 
-void flext_base::AddOutlets(unsigned long code) 
+void Flext::AddOutlets(unsigned long code) 
 { 
     for(; code; code /= 10) AddOutlet((xlet::type)(code%10));
 }
 
+FLEXT_END

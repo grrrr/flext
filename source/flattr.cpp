@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -18,7 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <set>
 
-BEGIN_FLEXT
+FLEXT_BEGIN
 
 #ifdef __MWERKS__
 #define STD std
@@ -26,7 +26,7 @@ BEGIN_FLEXT
 #define STD
 #endif
 
-flext_base::AttrItem::AttrItem(const t_symbol *t,metharg tp,methfun f,int fl):
+Flext::AttrItem::AttrItem(const t_symbol *t,metharg tp,methfun f,int fl):
 	Item(NULL),index(0),
 	flags(fl|afl_shown),
 	argtp(tp),fun(f),
@@ -34,9 +34,9 @@ flext_base::AttrItem::AttrItem(const t_symbol *t,metharg tp,methfun f,int fl):
 {}
 
 
-flext_base::AttrDataCont::AttrDataCont() {}
+Flext::AttrDataCont::AttrDataCont() {}
 
-flext_base::AttrDataCont::~AttrDataCont()
+Flext::AttrDataCont::~AttrDataCont()
 {
 	for(iterator it = begin(); it != end(); ++it)
 		if(it.data()) delete it.data();
@@ -44,7 +44,7 @@ flext_base::AttrDataCont::~AttrDataCont()
 
 
 //! Add get and set attributes
-void flext_base::AddAttrib(ItemCont *aa,ItemCont *ma,const char *attr,metharg tp,methfun gfun,methfun sfun)
+void Flext::AddAttrib(ItemCont *aa,ItemCont *ma,const char *attr,metharg tp,methfun gfun,methfun sfun)
 {
 	const t_symbol *asym = MakeSymbol(attr);
 	AttrItem *a,*b;
@@ -88,7 +88,7 @@ void flext_base::AddAttrib(ItemCont *aa,ItemCont *ma,const char *attr,metharg tp
 	}
 }
 
-void flext_base::AddAttrib(const char *attr,metharg tp,methfun gfun,methfun sfun)
+void Flext::AddAttrib(const char *attr,metharg tp,methfun gfun,methfun sfun)
 {
 	if(procattr)
 		AddAttrib(ThAttrs(),ThMeths(),attr,tp,gfun,sfun);
@@ -96,12 +96,12 @@ void flext_base::AddAttrib(const char *attr,metharg tp,methfun gfun,methfun sfun
 		error("%s - attribute procession is not enabled!",thisName());
 }
 
-void flext_base::AddAttrib(t_classid c,const char *attr,metharg tp,methfun gfun,methfun sfun)
+void Flext::AddAttrib(t_classid c,const char *attr,metharg tp,methfun gfun,methfun sfun)
 {
 	AddAttrib(ClAttrs(c),ClMeths(c),attr,tp,gfun,sfun);
 }
 
-void flext_base::ListAttrib(AtomList &la) const
+void Flext::ListAttrib(AtomList &la) const
 {
 	typedef DataMap<int,const t_symbol *> AttrList;
 	AttrList list[2];
@@ -129,7 +129,7 @@ void flext_base::ListAttrib(AtomList &la) const
 			SetSymbol(la[ix++],it.data());
 }
 
-int flext_base::CheckAttrib(int argc,const t_atom *argv)
+int Flext::CheckAttrib(int argc,const t_atom *argv)
 {
 	int offs = 0;
 	for(; offs < argc; ++offs)
@@ -137,7 +137,7 @@ int flext_base::CheckAttrib(int argc,const t_atom *argv)
 	return offs;
 }
 
-bool flext_base::InitAttrib(int argc,const t_atom *argv)
+bool Flext::InitAttrib(int argc,const t_atom *argv)
 {
 	int cur,nxt;
 	for(cur = 0; cur < argc; cur = nxt) {
@@ -170,7 +170,7 @@ bool flext_base::InitAttrib(int argc,const t_atom *argv)
 	return true;
 }
 
-bool flext_base::ListAttrib() const
+bool Flext::ListAttrib() const
 {
     if(procattr) {
 		AtomList la;
@@ -182,7 +182,7 @@ bool flext_base::ListAttrib() const
 		return false;
 }
 
-flext_base::AttrItem *flext_base::FindAttrib(const t_symbol *tag,bool get,bool msg) const
+Flext::AttrItem *Flext::FindAttrib(const t_symbol *tag,bool get,bool msg) const
 {
     // first search within object scope
 	AttrItem *a = NULL;
@@ -208,7 +208,7 @@ flext_base::AttrItem *flext_base::FindAttrib(const t_symbol *tag,bool get,bool m
 	return a;
 }
 
-bool flext_base::SetAttrib(const t_symbol *tag,int argc,const t_atom *argv)
+bool Flext::SetAttrib(const t_symbol *tag,int argc,const t_atom *argv)
 {
 	// search for matching attribute
 	AttrItem *a = FindAttrib(tag,false,true);
@@ -218,7 +218,7 @@ bool flext_base::SetAttrib(const t_symbol *tag,int argc,const t_atom *argv)
 		return true;
 }
 
-bool flext_base::SetAttrib(const t_symbol *tag,AttrItem *a,int argc,const t_atom *argv)
+bool Flext::SetAttrib(const t_symbol *tag,AttrItem *a,int argc,const t_atom *argv)
 {
 	if(a->fun) {
 		bool ok = true;
@@ -280,7 +280,7 @@ bool flext_base::SetAttrib(const t_symbol *tag,AttrItem *a,int argc,const t_atom
 }
 
 
-bool flext_base::GetAttrib(const t_symbol *tag,AttrItem *a,AtomList &la) const
+bool Flext::GetAttrib(const t_symbol *tag,AttrItem *a,AtomList &la) const
 {
 	bool ok = true;
 	// main attribute tag
@@ -289,32 +289,32 @@ bool flext_base::GetAttrib(const t_symbol *tag,AttrItem *a,AtomList &la) const
 			t_any any;
 			switch(a->argtp) {
 			case a_float: {
-				((methfun_1)a->fun)(const_cast<flext_base *>(this),any);				
+				((methfun_1)a->fun)(const_cast<Flext *>(this),any);				
 				la(1);
 				SetFloat(la[0],any.ft);
 				break;
 			}
 			case a_int: {
-				((methfun_1)a->fun)(const_cast<flext_base *>(this),any);				
+				((methfun_1)a->fun)(const_cast<Flext *>(this),any);				
 				la(1);
 				SetInt(la[0],any.it);
 				break;
 			}
 			case a_bool: {
-				((methfun_1)a->fun)(const_cast<flext_base *>(this),any);				
+				((methfun_1)a->fun)(const_cast<Flext *>(this),any);				
 				la(1);
 				SetBool(la[0],any.bt);
 				break;
 			}
 			case a_symbol: {
-				((methfun_1)a->fun)(const_cast<flext_base *>(this),any);				
+				((methfun_1)a->fun)(const_cast<Flext *>(this),any);				
 				la(1);
 				SetSymbol(la[0],any.st);
 				break;
 			}
 			case a_LIST: {
 				any.vt = &la;
-				((methfun_1)a->fun)(const_cast<flext_base *>(this),any);				
+				((methfun_1)a->fun)(const_cast<Flext *>(this),any);				
 				break;
 			}
 			default:
@@ -334,14 +334,14 @@ bool flext_base::GetAttrib(const t_symbol *tag,AttrItem *a,AtomList &la) const
 	return ok;
 }
 
-bool flext_base::GetAttrib(const t_symbol *s,AtomList &a) const
+bool Flext::GetAttrib(const t_symbol *s,AtomList &a) const
 {
 	AttrItem *attr = FindAttrib(s,true);
 	return attr && GetAttrib(s,attr,a);
 }
 
 //! \param tag symbol "get[attribute]"
-bool flext_base::DumpAttrib(const t_symbol *tag,AttrItem *a) const
+bool Flext::DumpAttrib(const t_symbol *tag,AttrItem *a) const
 {
 	AtomList la;
 	bool ret = GetAttrib(tag,a,la);
@@ -351,13 +351,13 @@ bool flext_base::DumpAttrib(const t_symbol *tag,AttrItem *a) const
 	return ret;
 }
 
-bool flext_base::DumpAttrib(const t_symbol *attr) const
+bool Flext::DumpAttrib(const t_symbol *attr) const
 {
 	AttrItem *item = FindAttrib(attr,true);
 	return item && DumpAttrib(attr,item);
 }
 
-bool flext_base::BangAttrib(const t_symbol *attr,AttrItem *item)
+bool Flext::BangAttrib(const t_symbol *attr,AttrItem *item)
 {
 	AtomList val;
 	AttrItem *item2;
@@ -371,13 +371,13 @@ bool flext_base::BangAttrib(const t_symbol *attr,AttrItem *item)
 		return false;
 }
 
-bool flext_base::BangAttrib(const t_symbol *attr)
+bool Flext::BangAttrib(const t_symbol *attr)
 {
 	AttrItem *item = FindAttrib(attr,true);
 	return item && BangAttrib(attr,item);
 }
 
-bool flext_base::BangAttribAll()
+bool Flext::BangAttribAll()
 {
 	for(int i = 0; i <= 1; ++i) {
         ItemCont *a = i?attrhead:clattrhead;
@@ -394,7 +394,7 @@ bool flext_base::BangAttribAll()
 	return true;
 }
 
-bool flext_base::ShowAttrib(AttrItem *a,bool show) const
+bool Flext::ShowAttrib(AttrItem *a,bool show) const
 {
 	if(show) a->flags |= AttrItem::afl_shown;
 	else a->flags &= ~AttrItem::afl_shown;
@@ -408,10 +408,10 @@ bool flext_base::ShowAttrib(AttrItem *a,bool show) const
 	return true;
 }
 
-bool flext_base::ShowAttrib(const t_symbol *attr,bool show) const
+bool Flext::ShowAttrib(const t_symbol *attr,bool show) const
 {
 	AttrItem *item = FindAttrib(attr,true);
 	return item && ShowAttrib(item,show);
 }
 
-END_FLEXT
+FLEXT_END

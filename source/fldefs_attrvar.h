@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -21,14 +21,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     \internal
 */
 #define FLEXT_ATTRSET_(VAR,TP) \
-static bool FLEXT_SET_PRE(VAR)(flext_base *c,TP &arg) \
+static bool FLEXT_SET_PRE(VAR)(FLEXT::Flext *c,TP &arg) \
 { FLEXT_CAST<thisType *>(c)->VAR = arg; return true; }
 
 /*! \brief Declare an implicit attribute get function
     \internal
 */
 #define FLEXT_ATTRGET_(VAR,TP) \
-static bool FLEXT_GET_PRE(VAR)(flext_base *c,TP &arg) \
+static bool FLEXT_GET_PRE(VAR)(FLEXT::Flext *c,TP &arg) \
 { arg = (TP)FLEXT_CAST<thisType *>(c)->VAR; return true; }
 
 
@@ -58,7 +58,7 @@ FLEXT_ATTRSET_(VAR,const t_symbol *)
 \
 FLEXT_ATTRSET_(VAR,bool)
 /*
-static bool FLEXT_SET_PRE(VAR)(flext_base *c,int &arg) \
+static bool FLEXT_SET_PRE(VAR)(FLEXT::Flext *c,int &arg) \
 { FLEXT_CAST<thisType *>(c)->VAR = arg != 0; return true; }
 */
 
@@ -69,7 +69,7 @@ FLEXT_ATTRSET_(VAR,TP)
 
 //! Declare an implicit set function for a variable list attribute
 #define FLEXT_ATTRSET_V(VAR) \
-static bool FLEXT_SET_PRE(VAR)(flext_base *c,AtomList *&arg) \
+static bool FLEXT_SET_PRE(VAR)(FLEXT::Flext *c,AtomList *&arg) \
 { FLEXT_CAST<thisType *>(c)->VAR = *arg; return true; }
 
 //! @} FLEXT_DA_ATTRSET
@@ -99,7 +99,7 @@ FLEXT_ATTRGET_(VAR,const t_symbol *)
 \
 FLEXT_ATTRGET_(VAR,bool)
 /*
-static bool FLEXT_GET_PRE(VAR)(flext_base *c,int &arg) \
+static bool FLEXT_GET_PRE(VAR)(FLEXT::Flext *c,int &arg) \
 { arg = FLEXT_CAST<thisType *>(c)->VAR?1:0; return true; }
 */
 
@@ -110,7 +110,7 @@ FLEXT_ATTRGET_(VAR,TP)
 
 //! Declare an implicit get function for a variable list attribute
 #define FLEXT_ATTRGET_V(VAR) \
-static bool FLEXT_GET_PRE(VAR)(flext_base *c,AtomList *&arg) \
+static bool FLEXT_GET_PRE(VAR)(FLEXT::Flext *c,AtomList *&arg) \
 { *arg = FLEXT_CAST<thisType *>(c)->VAR; return true; }
 
 //! @} FLEXT_DA_ATTRGET

@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -16,13 +16,13 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flinternal.h"
 #include <string.h>
 
-BEGIN_FLEXT
+FLEXT_BEGIN
 
-// === flext_base ============================================
+// === Flext ============================================
 
-bool flext_base::compatibility = true;
+bool Flext::compatibility = true;
 
-flext_base::FLEXT_CLASSDEF(flext_base)():
+Flext::Flext():
     inlist(NULL),outlist(NULL),
     curtag(NULL),
     incnt(0),outcnt(0),
@@ -54,7 +54,7 @@ flext_base::FLEXT_CLASSDEF(flext_base)():
     }
 }
 
-flext_base::~FLEXT_CLASSDEF(flext_base)()
+Flext::~Flext()
 {
 #if FLEXT_SYS == FLEXT_SYS_PD && !defined(FLEXT_NOATTREDIT)
     // attribute editor window may still be open -> close it
@@ -122,9 +122,9 @@ flext_base::~FLEXT_CLASSDEF(flext_base)()
     \remark Creation of inlets/outlets can't be done upon declaration, as Max/MSP needs creation
     \remark in reverse.
 */
-bool flext_base::Init()
+bool Flext::Init()
 {
-    bool ok = flext_obj::Init();
+    bool ok = FlextBase::Init();
 
     if(ok) ok = InitInlets() && InitOutlets();
 
@@ -141,7 +141,7 @@ bool flext_base::Init()
 /*! Set up proxy classes and basic methods at class creation time
     This ensures that they are processed before the registered flext messages
 */
-void flext_base::Setup(t_classid id)
+void Flext::Setup(t_classid id)
 {
     t_class *c = getClass(id);
 
@@ -173,24 +173,24 @@ void flext_base::Setup(t_classid id)
 }
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-void flext_base::cb_help(fts_object_t *c,int, fts_symbol_t, int, const fts_atom_t *) { thisObject(c)->m_help(); }   
+void Flext::cb_help(fts_object_t *c,int, fts_symbol_t, int, const fts_atom_t *) { thisObject(c)->m_help(); }   
 #else
-void flext_base::cb_help(t_class *c) { thisObject(c)->m_help(); }   
-void flext_base::cb_loadbang(t_class *c) { thisObject(c)->m_loadbang(); }   
+void Flext::cb_help(t_class *c) { thisObject(c)->m_help(); }   
+void Flext::cb_loadbang(t_class *c) { thisObject(c)->m_loadbang(); }   
 #endif
 
-void flext_base::m_help()
+void Flext::m_help()
 {
     // This should better be overloaded
     post("%s (using flext " FLEXT_VERSTR ") - compiled on %s %s",thisName(),__DATE__,__TIME__);
 }
 
-void flext_base::m_loadbang() {}
+void Flext::m_loadbang() {}
 
-void flext_base::m_click() {}
+void Flext::m_click() {}
 
 #if FLEXT_SYS == FLEXT_SYS_PD
-int flext_base::cb_click(t_gobj *c, struct _glist *glist,int xpix, int ypix, int shift, int alt, int dbl, int doit)
+int Flext::cb_click(t_gobj *c, struct _glist *glist,int xpix, int ypix, int shift, int alt, int dbl, int doit)
 {
     if(doit && alt) {
         thisObject(c)->m_click();
@@ -202,14 +202,14 @@ int flext_base::cb_click(t_gobj *c, struct _glist *glist,int xpix, int ypix, int
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
-void flext_base::cb_click(t_class *c, Point pt, short mods)
+void Flext::cb_click(t_class *c, Point pt, short mods)
 {
     thisObject(c)->m_click();
 }
 
-void flext_base::cb_assist(t_class *c,void * /*b*/,long msg,long arg,char *s) 
+void Flext::cb_assist(t_class *c,void * /*b*/,long msg,long arg,char *s) 
 { 
-    flext_base *th = thisObject(c); 
+    Flext *th = thisObject(c); 
 
     switch(msg) {
     case 1: //ASSIST_INLET:
@@ -227,4 +227,4 @@ void flext_base::cb_assist(t_class *c,void * /*b*/,long msg,long arg,char *s)
 
 #endif
 
-END_FLEXT
+FLEXT_END

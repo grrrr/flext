@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -22,14 +22,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     \internal
 */
 #define FLEXT_CALLSET_(FUN,TP) \
-static bool FLEXT_SET_PRE(FUN)(flext_base *c,TP &arg) \
+static bool FLEXT_SET_PRE(FUN)(Flext *c,TP &arg) \
 { FLEXT_CAST<thisType *>(c)->FUN(arg); return true; }
 
 /*! \brief Declare a attribute get function
     \internal
 */
 #define FLEXT_CALLGET_(FUN,TP) \
-static bool FLEXT_GET_PRE(FUN)(flext_base *c,TP &arg) \
+static bool FLEXT_GET_PRE(FUN)(Flext *c,TP &arg) \
 { FLEXT_CAST<thisType *>(c)->FUN(arg); return true; }
 
 
@@ -54,7 +54,7 @@ FLEXT_CALLSET_(SFUN,int)
 \
 FLEXT_CALLSET_(SFUN,bool)
 /*
-static bool FLEXT_SET_PRE(FUN)(flext_base *c,int &arg) \
+static bool FLEXT_SET_PRE(FUN)(FLEXT::Flext *c,int &arg) \
 { bool b = arg != 0; FLEXT_CAST<thisType *>(c)->FUN(b); return true; }
 */
 
@@ -65,12 +65,12 @@ FLEXT_CALLSET_(SFUN,TP)
 
 //! Declare a set function for a symbol attribute
 #define FLEXT_CALLSET_S(FUN) \
-static bool FLEXT_SET_PRE(FUN)(flext_base *c,const t_symbol *&arg) \
+static bool FLEXT_SET_PRE(FUN)(FLEXT::Flext *c,const t_symbol *&arg) \
 { FLEXT_CAST<thisType *>(c)->FUN(arg); return true; }
 
 //! Declare a set function for a variable list attribute
 #define FLEXT_CALLSET_V(FUN) \
-static bool FLEXT_SET_PRE(FUN)(flext_base *c,AtomList *&arg) \
+static bool FLEXT_SET_PRE(FUN)(FLEXT::Flext *c,AtomList *&arg) \
 { FLEXT_CAST<thisType *>(c)->FUN(*arg); return true; }
 
 //! @} FLEXT_DA_CALLSET
@@ -95,7 +95,7 @@ FLEXT_CALLGET_(GFUN,int)
 \
 FLEXT_CALLGET_(GFUN,bool)
 /*
-static bool FLEXT_GET_PRE(FUN)(flext_base *c,int &arg) \
+static bool FLEXT_GET_PRE(FUN)(FLEXT::Flext *c,int &arg) \
 { bool b; FLEXT_CAST<thisType *>(c)->FUN(b); arg = b?1:0; return true; }
 */
 
@@ -106,12 +106,12 @@ FLEXT_CALLGET_(GFUN,TP)
 
 //! Declare a get function for a symbol attribute
 #define FLEXT_CALLGET_S(FUN) \
-static bool FLEXT_GET_PRE(FUN)(flext_base *c,const t_symbol *&arg) \
+static bool FLEXT_GET_PRE(FUN)(FLEXT::Flext *c,const t_symbol *&arg) \
 { FLEXT_CAST<thisType *>(c)->FUN(arg); return true; }
 
 //! Declare a get function for a variable list attribute
 #define FLEXT_CALLGET_V(FUN) \
-static bool FLEXT_GET_PRE(FUN)(flext_base *c,AtomList *&arg) \
+static bool FLEXT_GET_PRE(FUN)(FLEXT::Flext *c,AtomList *&arg) \
 { FLEXT_CAST<thisType *>(c)->FUN(*arg); return true; }
 
 //! @} FLEXT_DA_CALLGET

@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -28,32 +28,43 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifdef _MSC_VER
     #pragma warning (pop)
 #endif
+
+
+// this declaration is missing in m_pd.h (0.37-0 and -1)
+// but it is there in 0.37-2 (but how to tell which micro-version?)
+extern "C" 
+#ifdef _MSC_VER
+__declspec(dllimport)
+#endif
+void canvas_getargs(int *argcp, t_atom **argvp);
+
 #endif
 
+FLEXT_BEGIN
 
 /////////////////////////////////////////////////////////
 //
-// flext_obj
+// FlextBase
 //
 /////////////////////////////////////////////////////////
 
-flext_hdr *flext_obj::m_holder = NULL;
-const t_symbol *flext_obj::m_holdname = NULL;
-bool flext_obj::m_holdattr = false;
-int flext_obj::m_holdaargc = 0;
-const t_atom *flext_obj::m_holdaargv = NULL;
-bool flext_obj::process_attributes = false;
+FlextHdr *FlextBase::m_holder = NULL;
+const t_symbol *FlextBase::m_holdname = NULL;
+bool FlextBase::m_holdattr = false;
+int FlextBase::m_holdaargc = 0;
+const t_atom *FlextBase::m_holdaargv = NULL;
+bool FlextBase::process_attributes = false;
 
-bool flext_obj::initing = false;
-bool flext_obj::exiting = false;
+bool FlextBase::initing = false;
+bool FlextBase::exiting = false;
 
-void flext_obj::ProcessAttributes(bool attr) { process_attributes = attr; }
+void FlextBase::ProcessAttributes(bool attr) { process_attributes = attr; }
 
 /////////////////////////////////////////////////////////
 // Constructor
 //
 /////////////////////////////////////////////////////////
-flext_obj :: FLEXT_CLASSDEF(flext_obj)()
+FlextBase::FlextBase()
     : x_obj(m_holder)
     , procattr(m_holdattr)
     , init_ok(true)
@@ -71,16 +82,14 @@ flext_obj :: FLEXT_CLASSDEF(flext_obj)()
 // Destructor
 //
 /////////////////////////////////////////////////////////
-flext_obj :: ~FLEXT_CLASSDEF(flext_obj)() {
-    x_obj = NULL;
-}
+FlextBase::~FlextBase() { x_obj = NULL; }
 
 
-bool flext_obj::Init() { return true; }
-bool flext_obj::Finalize() { return true; }
-void flext_obj::Exit() {}
+bool FlextBase::Init() { return true; }
+bool FlextBase::Finalize() { return true; }
+void FlextBase::Exit() {}
 
-void flext_obj::DefineHelp(t_classid c,const char *ref,const char *dir,bool addtilde)
+void FlextBase::DefineHelp(t_classid c,const char *ref,const char *dir,bool addtilde)
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
     char tmp[256];
@@ -99,7 +108,7 @@ void flext_obj::DefineHelp(t_classid c,const char *ref,const char *dir,bool addt
 #endif
 }
 
-bool flext_obj::GetParamSym(t_atom &dst,const t_symbol *sym,t_canvas *c)
+bool FlextBase::GetParamSym(t_atom &dst,const t_symbol *sym,t_canvas *c)
 {
 #if FLEXT_SYS == FLEXT_SYS_PD && defined(PD_MINOR_VERSION) && PD_MINOR_VERSION >= 37
     if(!c) c = canvas_getcurrent();
@@ -135,19 +144,7 @@ bool flext_obj::GetParamSym(t_atom &dst,const t_symbol *sym,t_canvas *c)
     return true;
 }
 
-
-#if FLEXT_SYS == FLEXT_SYS_PD
-// this declaration is missing in m_pd.h (0.37-0 and -1)
-// but it is there in 0.37-2 (but how to tell which micro-version?)
-extern "C" 
-#ifdef _MSC_VER
-__declspec(dllimport)
-#endif
-void canvas_getargs(int *argcp, t_atom **argvp);
-#endif
-
-
-void flext_obj::CanvasArgs(AtomList &args) const
+void FlextBase::CanvasArgs(AtomList &args) const
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
     int argc;
@@ -160,3 +157,5 @@ void flext_obj::CanvasArgs(AtomList &args) const
     args(0);
 #endif
 }
+
+FLEXT_END

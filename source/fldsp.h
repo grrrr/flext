@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -19,16 +19,16 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // include the header file declaring the base classes
 #include "flext.h"
 
-BEGIN_FLEXT
+FLEXT_BEGIN
 
-// === flext_dsp ==================================================
+// === FlextDsp ==================================================
 
 /*! \brief Flext dsp enabled base object
 */
-class FLEXT_SHARE flext_dsp:
-	public flext_base
+class FLEXT_SHARE FlextDsp:
+	public Flext
 {
-	FLEXT_HEADER_S(flext_dsp,flext_base,Setup)
+	FLEXT_HEADER_S(FlextDsp,Flext,Setup)
 	
 public:
 
@@ -133,8 +133,8 @@ public:
 
 protected:
 	
-	flext_dsp();
-	virtual ~flext_dsp();
+	FlextDsp();
+	virtual ~FlextDsp();
 
 private:
 
@@ -178,6 +178,6 @@ private:
 	t_signalvec *invecs,*outvecs;
 };
 
-END_FLEXT
+FLEXT_END
 
 #endif

@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -24,27 +24,27 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 //! Set up a method callback with no arguments
 #define FLEXT_CALLBACK(M_FUN) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c) \
+static bool FLEXT_CALL_PRE(M_FUN)(FLEXT::Flext *c) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(); return true; }
 
 //! Set up a method callback for an anything argument
 #define FLEXT_CALLBACK_A(M_FUN) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,t_symbol *s,int argc,t_atom *argv) \
+static bool FLEXT_CALL_PRE(M_FUN)(FLEXT::Flext *c,t_symbol *s,int argc,t_atom *argv) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(s,argc,argv); return true; }
 
 //! Set up a method callback for a variable argument list
 #define FLEXT_CALLBACK_V(M_FUN) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,int argc,t_atom *argv) \
+static bool FLEXT_CALL_PRE(M_FUN)(FLEXT::Flext *c,int argc,t_atom *argv) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(argc,argv); return true; }
 
 //! Set up a method callback for a data package (void *) argument
 #define FLEXT_CALLBACK_X(M_FUN) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,void *data) \
+static bool FLEXT_CALL_PRE(M_FUN)(FLEXT::Flext *c,void *data) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(data); return true; }
 
 //! Set up a method callback for an anything argument and a data package (e.g. for symbol-bound methods).
 #define FLEXT_CALLBACK_AX(M_FUN) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,t_symbol *s,int argc,t_atom *argv,void *data) \
+static bool FLEXT_CALL_PRE(M_FUN)(FLEXT::Flext *c,t_symbol *s,int argc,t_atom *argv,void *data) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(s,argc,argv,data); return true; }
 
 //! Set up a timer callback
@@ -54,32 +54,32 @@ FLEXT_CALLBACK_X(M_FUN)
 
 //! Set up a method callback for a boolean argument
 #define FLEXT_CALLBACK_B(M_FUN) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,int &arg1) \
+static bool FLEXT_CALL_PRE(M_FUN)(FLEXT::Flext *c,int &arg1) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(arg1 != 0); return true; }
 
 //! Set up a method callback for 1 argument
 #define FLEXT_CALLBACK_1(M_FUN,TP1) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1) \
+static bool FLEXT_CALL_PRE(M_FUN)(FLEXT::Flext *c,TP1 &arg1) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(arg1); return true; }
 
 //! Set up a method callback for 2 arguments
 #define FLEXT_CALLBACK_2(M_FUN,TP1,TP2) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2) \
+static bool FLEXT_CALL_PRE(M_FUN)(FLEXT::Flext *c,TP1 &arg1,TP2 &arg2) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(arg1,arg2); return true; }
 
 //! Set up a method callback for 3 arguments
 #define FLEXT_CALLBACK_3(M_FUN,TP1,TP2,TP3) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3) \
+static bool FLEXT_CALL_PRE(M_FUN)(FLEXT::Flext *c,TP1 &arg1,TP2 &arg2,TP3 &arg3) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(arg1,arg2,arg3); return true; }
 
 //! Set up a method callback for 4 arguments
 #define FLEXT_CALLBACK_4(M_FUN,TP1,TP2,TP3,TP4) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4) \
+static bool FLEXT_CALL_PRE(M_FUN)(FLEXT::Flext *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4); return true; }
 
 //! Set up a method callback for 5 arguments
 #define FLEXT_CALLBACK_5(M_FUN,TP1,TP2,TP3,TP4,TP5) \
-static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,TP5 &arg5) \
+static bool FLEXT_CALL_PRE(M_FUN)(FLEXT::Flext *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,TP5 &arg5) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4,arg5); return true; }
 
 

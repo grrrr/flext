@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -20,7 +20,7 @@ flext_sndobj::flext_sndobj():
 
 bool flext_sndobj::Init()
 {
-    bool ret = flext_dsp::Init();
+    bool ret = FlextDsp::Init();
     inobjs = CntInSig();
     outobjs = CntOutSig();
     return ret;
@@ -29,7 +29,7 @@ bool flext_sndobj::Init()
 void flext_sndobj::Exit()
 {
     ClearObjs();
-    flext_dsp::Exit();
+    FlextDsp::Exit();
 }
 
 void flext_sndobj::ClearObjs()

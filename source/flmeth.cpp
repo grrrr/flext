@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -19,19 +19,20 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <set>
 
+FLEXT_BEGIN
 
-flext_base::MethItem::MethItem(AttrItem *conn): 
+Flext::MethItem::MethItem(AttrItem *conn): 
     Item(conn),index(0),
     argc(0),args(NULL)
     ,fun(NULL)
 {}
 
-flext_base::MethItem::~MethItem() 
+Flext::MethItem::~MethItem() 
 { 
     if(args) delete[] args; 
 }
 
-void flext_base::MethItem::SetArgs(methfun _fun,int _argc,metharg *_args)
+void Flext::MethItem::SetArgs(methfun _fun,int _argc,metharg *_args)
 {
     fun = _fun;
     if(args) delete[] args;
@@ -39,7 +40,7 @@ void flext_base::MethItem::SetArgs(methfun _fun,int _argc,metharg *_args)
 }
 
 
-void flext_base::AddMethodDef(int inlet,const char *tag)
+void Flext::AddMethodDef(int inlet,const char *tag)
 {
     const t_symbol *t = tag?MakeSymbol(tag):NULL;
     methhead->Add(new MethItem,t,inlet);
@@ -47,7 +48,7 @@ void flext_base::AddMethodDef(int inlet,const char *tag)
 
 /*! \brief Add a method to the queue
 */
-void flext_base::AddMethod(ItemCont *ma,int inlet,const char *tag,methfun fun,metharg tp,...)
+void Flext::AddMethod(ItemCont *ma,int inlet,const char *tag,methfun fun,metharg tp,...)
 {
     va_list marker; 
 
@@ -75,7 +76,7 @@ void flext_base::AddMethod(ItemCont *ma,int inlet,const char *tag,methfun fun,me
             }
 #endif
 #if FLEXT_SYS == FLEXT_SYS_PD
-            if(a == a_pointer && flext_base::compatibility) {
+            if(a == a_pointer && Flext::compatibility) {
                 post("Pointer arguments are not allowed in compatibility mode"); 
             }
 #endif
@@ -91,7 +92,7 @@ void flext_base::AddMethod(ItemCont *ma,int inlet,const char *tag,methfun fun,me
     ma->Add(mi,MakeSymbol(tag),inlet);
 }
 
-void flext_base::ListMethods(AtomList &la,int inlet) const
+void Flext::ListMethods(AtomList &la,int inlet) const
 {
     typedef DataMap<int,const t_symbol *> MethList;
     MethList list[2];
@@ -123,7 +124,7 @@ void flext_base::ListMethods(AtomList &la,int inlet) const
             SetSymbol(la[ix++],it.data());
 }
 
-bool flext_base::ListMethods(int inlet) const
+bool Flext::ListMethods(int inlet) const
 {
     static const t_symbol *sym_methods = MakeSymbol("methods");
 
@@ -137,7 +138,7 @@ bool flext_base::ListMethods(int inlet) const
         return false;
 }
 
-bool flext_base::cb_ListMethods(flext_base *c,int argc,const t_atom *argv) 
+bool Flext::cb_ListMethods(Flext *c,int argc,const t_atom *argv) 
 { 
     if(argc == 0 || (argc == 1 && CanbeInt(argv[0])))
         return c->ListMethods(argc?GetAInt(argv[0]):0); 
@@ -145,3 +146,4 @@ bool flext_base::cb_ListMethods(flext_base *c,int argc,const t_atom *argv)
         return false;
 }
 
+FLEXT_END

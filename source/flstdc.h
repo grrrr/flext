@@ -246,12 +246,12 @@ typedef t_symbol *t_symptr;
 #endif
 
 #ifdef FLEXT_DEBUG
-#define FLEXT_ASSERT(b) (!(b)?(error("Assertion failed: " #b " - in " __FILE__ " line %i",(int)__LINE__),0):1)
+#define FLEXT_ASSERT(b) (!(b)?(FLEXT::error("Assertion failed: " #b " - in " __FILE__ " line %i",(int)__LINE__),0):1)
 #else
 #define FLEXT_ASSERT(b) (1)
 #endif
 
-#define ERRINTERNAL() error("flext: Internal error in file " __FILE__ ", line %i - please report",(int)__LINE__)
+#define ERRINTERNAL() FLEXT::error("flext: Internal error in file " __FILE__ ", line %i - please report",(int)__LINE__)
 
 
 /* Set the right calling convention (and exporting) for the OS */

@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -14,7 +14,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
  
 #include "flext.h"
 
-bool flext_base::CallMeth(const MethItem &m,int argc,const t_atom *argv)
+FLEXT_BEGIN
+
+bool Flext::CallMeth(const MethItem &m,int argc,const t_atom *argv)
 {
     bool ret = false;
     int ix;
@@ -72,7 +74,7 @@ bool flext_base::CallMeth(const MethItem &m,int argc,const t_atom *argv)
     return ret;
 }
 
-bool flext_base::TryMethTag(Item *lst,const t_symbol *tag,int argc,const t_atom *argv)
+bool Flext::TryMethTag(Item *lst,const t_symbol *tag,int argc,const t_atom *argv)
 {
     for(; lst; lst = lst->nxt) {
         MethItem *m = (MethItem *)lst;
@@ -103,7 +105,7 @@ bool flext_base::TryMethTag(Item *lst,const t_symbol *tag,int argc,const t_atom 
     return false;
 }
 
-bool flext_base::TryMethSym(Item *lst,const t_symbol *s)
+bool Flext::TryMethSym(Item *lst,const t_symbol *s)
 {
     for(; lst; lst = lst->nxt) {
         MethItem *m = (MethItem *)lst;
@@ -118,7 +120,7 @@ bool flext_base::TryMethSym(Item *lst,const t_symbol *s)
     return false;
 }
 
-bool flext_base::TryMethAny(Item *lst,const t_symbol *s,int argc,const t_atom *argv)
+bool Flext::TryMethAny(Item *lst,const t_symbol *s,int argc,const t_atom *argv)
 {
     for(; lst; lst = lst->nxt) {
         MethItem *m = (MethItem *)lst;
@@ -135,7 +137,7 @@ bool flext_base::TryMethAny(Item *lst,const t_symbol *s,int argc,const t_atom *a
 /*! \brief Find a method item for a specific tag and arguments
     \remark All attributes are also stored in the method list and retrieved by a member of the method item
 */
-bool flext_base::FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *argv)
+bool Flext::FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *argv)
 {
     Item *lst;
 
@@ -160,7 +162,7 @@ bool flext_base::FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *arg
 /*! \brief All the message processing
     The messages of all the inlets go here and are promoted to the registered callback functions
 */
-bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,const t_atom *argv)
+bool Flext::m_methodmain(int inlet,const t_symbol *s,int argc,const t_atom *argv)
 {
     static bool trap = false;
 
@@ -265,7 +267,7 @@ end:
     return ret; // true if appropriate handler was found and called
 }
 
-bool flext_base::m_method_(int inlet,const t_symbol *s,int argc,const t_atom *argv) 
+bool Flext::m_method_(int inlet,const t_symbol *s,int argc,const t_atom *argv) 
 {
 //#ifdef FLEXT_DEBUG
     post("%s: message unhandled - inlet:%i args:%i symbol:%s",thisName(),inlet,argc,s?GetString(s):"");
@@ -273,3 +275,4 @@ bool flext_base::m_method_(int inlet,const t_symbol *s,int argc,const t_atom *ar
     return false;
 }
 
+FLEXT_END

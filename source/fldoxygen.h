@@ -57,7 +57,7 @@ Currently, flext supports
 Flext is covered by the GPL.
 
 flext - C++ layer for Max/MSP and pd (pure data) externals<BR>
-Copyright (C) 2001-2003 Thomas Grill
+Copyright (C) 2001-2005 Thomas Grill
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -110,13 +110,13 @@ With these lines, all the necessary definitions from the flext package have been
 
 \verbatim
 class attr1:
-    public flext_base
+    public Flext
 {
-    FLEXT_HEADER(attr1,flext_base)
+    FLEXT_HEADER(attr1,Flext)
 \endverbatim
 
-A flext class is simply defined by inheriting from the flext_base (see also \ref FLEXT_CLASS) 
-or flext_dsp (see also \ref FLEXT_DSP) classes.
+A flext class is simply defined by inheriting from the Flext (see also \ref FLEXT_CLASS) 
+or FlextDsp (see also \ref FLEXT_DSP) classes.
 Additionally some information has to be added using FLEXT_HEADER (see \ref FLEXT_D_HEADER)
 
 \verbatim

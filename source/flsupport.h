@@ -895,7 +895,7 @@ public:
 /*!	\defgroup FLEXT_S_SIMD Cross platform SIMD support for modern CPUs 
 		@{ 
 */		
-		enum {
+		enum simd_type {
 			simd_none = 0,
 			simd_mmx = 0x01,
 			simd_3dnow = 0x02,

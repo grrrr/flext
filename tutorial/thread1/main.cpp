@@ -17,8 +17,8 @@ This shows an example of a method running as a thread
 
 #include <flext.h>
 
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 301)
-#error You need at least flext version 0.3.1
+#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 400)
+#error You need at least flext version 0.4.0
 #endif
 
 
@@ -47,7 +47,6 @@ thread1::thread1()
 { 
 	AddInAnything();
 	AddOutInt(); 
-	SetupInOut();  // set up inlets and outlets
 
 	FLEXT_ADDBANG(0,m_start); // register method
 } 

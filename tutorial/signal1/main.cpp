@@ -7,8 +7,8 @@
 #include <flext.h>
 #include <math.h>
  
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 300)
-#error You need at least flext version 0.3.0
+#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 400)
+#error You need at least flext version 0.4.0
 #endif
 
 
@@ -40,9 +40,6 @@ class signal1:
 			AddInFloat();           // 1 float in
 			AddOutSignal();         // 1 audio out [ == AddOutSignal(1) ]
 			
-			SetupInOut();           // set up inlets and outlets. 
-			                        // Must be called once!
-
 			// Now we need to bind the handler function to our
 			// panning inlet, which is inlet 2 (counting all inlets
 			// from 0).  We want the function "setPan" to get

@@ -14,8 +14,8 @@ This is an example of a simple object doing a float addition
 #include <flext.h>
 
 // check for appropriate flext version
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 300)
-#error You need at least flext version 0.3.0
+#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 400)
+#error You need at least flext version 0.4.0
 #endif
 
 
@@ -55,9 +55,6 @@ simple2::simple2(float init):
 	// define outlets
 	AddOutFloat();  // one float outlet (has index 0)
 	
-	 // set up inlets and outlets - obligatory! 
-	SetupInOut(); 
-
 	// register methods
 	FLEXT_ADDMETHOD(0,m_float1);  // register method (for floats) "m_float1" for inlet 0
 	FLEXT_ADDMETHOD(1,m_float2);  // register method (for floats) "m_float2" for inlet 1

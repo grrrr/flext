@@ -14,8 +14,8 @@ This is an example of a simple object doing a float inversion
 #include <flext.h>
 
 // check for appropriate flext version
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 300)
-#error You need at least flext version 0.3.0
+#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 400)
+#error You need at least flext version 0.4.0
 #endif
 
 
@@ -53,9 +53,6 @@ simple1::simple1()
 	// define outlets:
 	AddOutFloat();  // add one float outlet (has index 0)
 	
-	 // set up inlets and outlets - obligatory! 
-	SetupInOut(); 
-
 	// register methods
 	FLEXT_ADDMETHOD(0,m_float);  // register method (for float messages) "m_float" for inlet 0
 } 

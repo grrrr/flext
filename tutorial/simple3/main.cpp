@@ -15,8 +15,8 @@ This is an example of an object digesting several "tagged" messages
 #include <flext.h>
 
 // check for appropriate flext version
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 300)
-#error You need at least flext version 0.3.0
+#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 400)
+#error You need at least flext version 0.4.0
 #endif
 
 class simple3:
@@ -51,9 +51,6 @@ simple3::simple3()
 { 
 	// define inlets
 	AddInAnything();  // add inlet of type anything (index 0)
-
-	 // set up inlets and outlets 
-	SetupInOut(); 
 
 	// register methods
 	FLEXT_ADDMETHOD_(0,"born",m_tag);  // register method for tag "born"

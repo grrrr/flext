@@ -47,9 +47,6 @@ adv1::adv1(int argc,t_atom *argv)
 	AddInAnything();  // one inlet that can receive anything 
 	AddOutAnything();  // one outlet for anything 
 	
-	 // set up inlets and outlets
-	SetupInOut(); 
-
 	// register method
 	FLEXT_ADDMETHOD(0,m_any);  // register method "m_any" for inlet 0
 	

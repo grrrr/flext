@@ -12,7 +12,11 @@ Donations for further development of the package are highly appreciated.
 ----------------------------------------------------------------------------
 
 o for PD you need the pd source code (which is most likely part of the distribution)
-o for Max/MSP you will also need the Max/MSP SDK (and for threading the Multiprocessing library)
+  download from: http://www-crca.ucsd.edu/~msp/software.html
+
+o for Max/MSP you will also need the Max/MSP SDK for OS9 (http://www.cycling74.com/products/dlmaxmsp.html) 
+  or OSX (http://www.cycling74.com/products/dlxmax.html)
+  and for threading the Multiprocessing library (download at http://developer.apple.com/sdk/)
 
 o if you choose to compile with SndObj support you will need the respective library
   download from: http://www.may.ie/academic/music/musictec/SndObj/main.html

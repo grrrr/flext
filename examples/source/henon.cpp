@@ -91,6 +91,7 @@ void henon::Setup(t_classid c)
 	FLEXT_CADDBANG(c,0,m_bang);  
 	FLEXT_CADDMETHOD_(c,0,"reset",m_reset);  
 
+    // methods for non-left inlets
 	FLEXT_CADDMETHOD(c,1,m_alpha);
 	FLEXT_CADDMETHOD(c,2,m_beta);  
 

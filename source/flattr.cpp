@@ -48,6 +48,8 @@ void flext_base::AddAttrib(ItemCont *aa,ItemCont *ma,const char *attr,metharg tp
 	const t_symbol *asym = MakeSymbol(attr);
 	AttrItem *a,*b;
 
+    FLEXT_ASSERT(asym != sym__ && asym != sym_list && asym != sym_float && asym != sym_symbol && asym != sym_anything);
+
 	if(sfun) // if commented out, there will be a warning at run-time (more user-friendly)
 	{
 		a = new AttrItem(asym,tp,sfun,AttrItem::afl_set);

@@ -26,6 +26,7 @@ Version history:
 - attribute editor: added individual apply buttons
 - attribute editor: added escaping for , and ; 
 - attribute editor: zoomed editor accepts , as newline separator
+- attribute editor: close editor window on object destruction
 
 0.4.6:
 - added a text edit window for list attributes
@@ -312,7 +313,7 @@ bugs:
 - deletion of object with open attribute editor: press apply -> crash
 
 TEST:
-- attributes and attribute editor saving with patcher arguments (like $0-gugu )
+- attributes saving with patcher arguments (like $0-gugu )
 
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)
 - hard thread termination upon object destruction doesn't seem to work properly -> crash

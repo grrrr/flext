@@ -21,11 +21,15 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 class FLEXT_SHARE flext_base;
 
 /*! \brief Flext support class
+
 	A number of methods (most are static functions) are defined here for convenience.
 	This class doesn't define any data members, hence it can be inherited to all
 	classes (not only PD objects) to profit from the cross-platform functionality.
 	Examples are the overloaded memory allocation, atom and atom list functions,
 	thread functions and classes, the sample buffer class and others.
+
+    This class can also be used for a non-object class (not representing an external object)
+    and won't give any extra burden to it.
 */
 class FLEXT_SHARE flext {
 

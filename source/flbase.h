@@ -11,7 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 /*! \file flbase.h
 	\brief Internal flext base classes
     
-	\remark This is all derived from GEM by Mark Danks
+	\remark This uses some ideas of GEM invented by Mark Danks
 */
  
 #ifndef __FLEXT_BASE_H

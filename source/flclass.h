@@ -35,6 +35,17 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // === flext_base ==================================================
 
 /*! \brief Flext message only base object
+
+    This is the base class from which typical external object derive.
+    DSP objects should use the flext_dsp class which inherits from flext_base and
+    provides the needed functionality.
+
+    For a valid external object class you would also need FLEXT_HEADER, also if it's only
+    a base class without instantiated objects again.
+    To make an instance of an object class you would typically use FLEXT_NEW or 
+    its companions.
+
+    See the flext_obj class for additional information.
 */
 
 

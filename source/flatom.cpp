@@ -44,14 +44,14 @@ flext::AtomList &flext::AtomList::Set(int argc,const t_atom *argv)
 	return *this;
 }
 
-flext::AtomList &flext::AtomList::Get(int &argc,t_atom *argv,int mxsz) 
+int flext::AtomList::Get(t_atom *argv,int mxsz) const
 {
-	argc = Count();
+	int argc = Count();
 	if(mxsz >= 0 && argc > mxsz) argc = mxsz;
 
 	for(int i = 0; i < argc; ++i) SetAtom(argv[i],lst[i]);
 
-	return *this;
+	return argc;
 }
 
 

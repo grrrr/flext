@@ -282,7 +282,7 @@ public:
 		//! Set list
 		AtomList &Set(int argc,const t_atom *argv);
 		//! Get list
-		AtomList &Get(int &argc,t_atom *argv,int mxsz = -1);
+		int Get(t_atom *argv,int mxsz = -1) const;
 
 		//! Set list
 		AtomList &operator()(int argc = 0,const t_atom *argv = NULL) { return Set(argc,argv); }

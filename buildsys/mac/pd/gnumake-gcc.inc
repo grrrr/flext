@@ -8,6 +8,6 @@ LDFLAGS += -bundle -bundle_loader $(PDBIN)
 ##############################################
 
 OBJPATH=$(OUTPATH)/$(OUTSUB)
+TARGETPATH=$(OBJPATH)
+TARGET=$(TARGETPATH)/$(OUTNAME).$(EXT)
 
-TARGETPATH=$(OBJPATH)/$(OUTNAME).$(EXT)/Contents/MacOS
-TARGET=$(TARGETPATH)/$(OUTNAME)

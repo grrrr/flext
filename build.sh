@@ -25,8 +25,7 @@ else
 	echo platform ... win / lnx / mac
 	echo system ..... pd / max
 	echo compiler ... msvc / gcc / mingw / cygwin / bcc / icc
-	echo target ..... all \(default\) / all-debug / all-shared / all-shared-debug / 
-	echo ............ clean / install
+	echo target ..... build \(default\) / clean / install
 	echo 
 	echo Please make sure that your make program and compiler can be accessed with the
 	echo system path and that all relevant environment variables are properly set.

@@ -12,10 +12,7 @@ _build_: $(TARGET)
 $(CSRCS) $(CPPSRCS): $(patsubst %,$(SRCDIR)/%,$(HDRS))
 	touch $@
 
-$(OUTPATH):
-	-mkdir -p $@
-
-$(TARGETPATH): $(OUTPATH)
+$(TARGETPATH):
 	-mkdir -p $@
 
 $(TARGETPATH)/%.opp : $(SRCDIR)/%.cpp

@@ -51,6 +51,4 @@ endif # SHARED
 # product name and folder
 ##############################################
 
-OUTNAME=$(NAME)
 OUTSUB=$(TARGETMODE)-$(TARGETTYPE)
-

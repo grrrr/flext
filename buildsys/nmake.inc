@@ -49,5 +49,4 @@ FLEXTNAME=flext-$(RTSYS)_s
 # product name and folder
 ##############################################
 
-OUTNAME=$(NAME)
 OUTSUB=$(TARGETMODE)-$(TARGETTYPE)

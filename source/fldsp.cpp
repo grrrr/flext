@@ -73,10 +73,10 @@ t_int *flext_dsp::dspmeth(t_int *w)
 
 void flext_dsp::m_dsp(int /*n*/,t_sample *const * /*insigs*/,t_sample *const * /*outsigs*/) {}
 
-void flext_dsp::m_signal(int n,t_sample *const * /*insigs*/,t_sample *const *outsigs) 
+void flext_dsp::m_signal(int n,t_sample *const * /*insigs*/,t_sample *const *outs) 
 {
 	for(int i = 0; i < CntOutSig(); ++i)
-		memset(outsigs[i],0,n*sizeof(*outsigs[i]));
+		memset(outs[i],0,n*sizeof(*outs[i]));
 }
 
 void flext_dsp::cb_dsp(t_class *c,t_signal **sp) 

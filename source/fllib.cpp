@@ -342,7 +342,7 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 			flext_obj::m_holdname = NULL;
 			flext_obj::m_holdattr = false;
 
-			bool ok = obj->data &&
+			ok = obj->data &&
 				// check constructor exit flag
 				obj->data->InitOk();
 

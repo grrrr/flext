@@ -173,7 +173,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 
 #if FLEXT_OS == FLEXT_OS_WIN
-	#pragma message("Compiling for Windows")
+//	#pragma message("Compiling for Windows")
 
 	#if FLEXT_SYS == FLEXT_SYS_MAX
 //		#define WIN_VERSION 1
@@ -182,7 +182,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 //		#define NT
 	#endif
 #elif FLEXT_OS == FLEXT_OS_LINUX
-	#pragma message("Compiling for Linux")
+//	#pragma message("Compiling for Linux")
 
 	#if FLEXT_SYS == FLEXT_SYS_PD
 //		#define PD
@@ -190,7 +190,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 		#error "Flext SYS/OS combination unknown"
 	#endif
 #elif FLEXT_OS == FLEXT_OS_IRIX
-	#pragma message("Compiling for Irix")
+//	#pragma message("Compiling for Irix")
 
 	#if FLEXT_SYS == FLEXT_SYS_PD
 //		#define PD
@@ -198,7 +198,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 		#error "Flext SYS/OS combination unknown"
 	#endif
 #elif FLEXT_OS == FLEXT_OS_MACOS
-	#pragma message("Compiling for MacOS")
+//	#pragma message("Compiling for MacOS")
 
 	#if FLEXT_SYS == FLEXT_SYS_PD
 //		#define PD
@@ -208,9 +208,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
-	#pragma message("Compiling for Max/MSP")
+//	#pragma message("Compiling for Max/MSP")
 #elif FLEXT_SYS == FLEXT_SYS_PD
-	#pragma message("Compiling for PD")
+//	#pragma message("Compiling for PD")
 #endif
 
 #endif

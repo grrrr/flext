@@ -16,6 +16,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __MWERKS__
 	#error "This header file is for CodeWarrior only."
 #endif
+
+#define FLEXT_SYS 1
  
 #ifndef _CW_NOPRECOMP
 	#include <MacHeaders.h>

@@ -19,7 +19,7 @@ INCLUDES=${PDPATH}
 FLAGS=-DFLEXT_SYS=2 ${UFLAGS}
 
 # compiler flags for optimized build
-CFLAGS=-O6 
+CFLAGS=-O2 
 
 # compiler flags for debug build
 CFLAGS_D=-g      
@@ -31,7 +31,8 @@ CFLAGS_T=-DFLEXT_THREADS
 CFLAGS_S=-DFLEXT_SHARED -DFLEXT_EXPORTS
 
 # libraries
-LIBS=
+# it seems like libstdc++ must be defined for icc....
+LIBS=stdc++
 
 # ----------------------------------------------
 # the rest can stay untouched
@@ -59,17 +60,24 @@ endif
 
 MAKEFILE=makefile.pd-linux
 
-ifdef V4_NAMING
-TARGET=${TARGDIR}/${NAME}.a 
-TARGET_D=${TARGDIR}/${NAME}_d.a
-TARGET_T=${TARGDIR}/${NAME}_t.a
-TARGET_TD=${TARGDIR}/${NAME}_td.a
+# invoke dynamic linking
+ifeq ($(CXX),icc)
+DYNAMIC=-i_dynamic
 else
+DYNAMIC=-Wl,-Bdynamic
+endif
+
+#ifdef V4_NAMING
+#TARGET=${TARGDIR}/${NAME}.a 
+#TARGET_D=${TARGDIR}/${NAME}_d.a
+#TARGET_T=${TARGDIR}/${NAME}_t.a
+#TARGET_TD=${TARGDIR}/${NAME}_td.a
+#else
 TARGET=${TARGDIR}/lib${NAME}.a 
 TARGET_D=${TARGDIR}/lib${NAME}_d.a
 TARGET_T=${TARGDIR}/lib${NAME}_t.a
 TARGET_TD=${TARGDIR}/lib${NAME}_td.a
-endif
+#endif
 TARGET_S=${TARGDIR}/lib${NAME}.so
 TARGET_SD=${TARGDIR}/lib${NAME}_d.so
 
@@ -78,7 +86,7 @@ all: $(TARGDIR) $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD) $(TARGET_S) $(TAR
 $(TARGDIR):
 	mkdir $(TARGDIR)
 
-$(patsubst %,$(SRCDIR)/%,$(SRCS)): $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(patsubst %,$(SRCDIR)/%,$(IHDRS)) $(MAKEFILE) $(CONFIG)
+$(patsubst %,$(SRCDIR)/%,$(SRCS)): $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(patsubst %,$(SRCDIR)/%,$(IHDRS)) # $(MAKEFILE) $(CONFIG)
 	touch $@
 
 $(TARGDIR)/%.ro : $(SRCDIR)/%.cpp
@@ -94,16 +102,16 @@ $(TARGDIR)/%.tdo : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS_D) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
 $(TARGDIR)/%.sro : $(SRCDIR)/%.cpp
-	$(CXX) -c $(CFLAGS) $(CFLAGS_T) $(CFLAGS_S) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
+	$(CXX) -shared -c $(CFLAGS) $(CFLAGS_T) $(CFLAGS_S) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
 $(TARGDIR)/%.sdo : $(SRCDIR)/%.cpp
-	$(CXX) -c $(CFLAGS_D) $(CFLAGS_T) $(CFLAGS_S) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
+	$(CXX) -shared -c $(CFLAGS_D) $(CFLAGS_T) $(CFLAGS_S) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
 
 
 
 
 $(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.ro,$(SRCS)) 
-	ar rc $@ $^ 
+	ar rc $@ $^
 	chmod 644 $@
 
 $(TARGET_D) : $(patsubst %.cpp,$(TARGDIR)/%.do,$(SRCS)) 
@@ -119,11 +127,11 @@ $(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(SRCS))
 	chmod 644 $@
 
 $(TARGET_S) : $(patsubst %.cpp,$(TARGDIR)/%.sro,$(SRCS))
-	ld -shared -Bdynamic --strip-debug $(patsubst %,-L%,$(LIBPATH)) $(patsubst %,-l%,$(LIBS)) -o $@ $^
+	$(CXX) -shared $(DYNAMIC) -Wl,--strip-debug $(patsubst %,-L%,$(LIBPATH)) -o $@ $^ $(patsubst %,-l%,$(LIBS)) 
 	chmod 755 $@
 
 $(TARGET_SD) : $(patsubst %.cpp,$(TARGDIR)/%.sdo,$(SRCS))
-	ld -shared -Bdynamic $(patsubst %,-L%,$(LIBPATH)) $(patsubst %,-l%,$(LIBS)) -o $@ $^
+	$(CXX) -shared $(DYNAMIC) $(patsubst %,-L%,$(LIBPATH)) -o $@ $^ $(patsubst %,-l%,$(LIBS)) 
 	chmod 755 $@
 
 
@@ -141,6 +149,6 @@ endif
 
 install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD) $(TARGET_S) $(TARGET_SD)  $(patsubst %,$(SRCDIR)/%,$(HDRS))
 	cp $^ $(INSTDIR)
+	for i in $(foreach f,$(notdir $(filter %.a,$^)),$(patsubst lib%.a,%,$(f))); do rm -f $(INSTDIR)/$$i.a && ln -sf lib$$i.a $(INSTDIR)/$$i.a; done 
 	chmod a+r $(patsubst %,$(INSTDIR)/%,$(notdir $^))
 	chown root.users $(patsubst %,$(INSTDIR)/%,$(notdir $^))
-

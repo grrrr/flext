@@ -17,6 +17,15 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "flstdc.h"
 
+
+class FLEXT_SHARE FLEXT_CLASSDEF(flext_root);
+typedef class FLEXT_CLASSDEF(flext_root) flext_root;
+
+class FLEXT_SHARE FLEXT_CLASSDEF(flext_root) {
+public:
+};
+
+
 class FLEXT_SHARE FLEXT_CLASSDEF(flext);
 typedef class FLEXT_CLASSDEF(flext) flext;
 
@@ -34,7 +43,9 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_base);
     and won't give any extra burden to it.
 */
 
-class FLEXT_SHARE FLEXT_CLASSDEF(flext) {
+class FLEXT_SHARE FLEXT_CLASSDEF(flext):
+	public flext_root
+{
 
 	/*!	\defgroup FLEXT_SUPPORT Flext support class
 		@{ 

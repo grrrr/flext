@@ -4,9 +4,9 @@
 
 @rem first check configuration
 @call ..\build.bat %1 %2 %3 config "PKGINFO="
-@if not errorlevel 0 @goto end
+@if errorlevel 1 @goto end
 
-for /D %%i in (*) do @(
+@for /D %%i in (*) do @(
 	@pushd %%i
 	@if exist package.txt @( 
 		@call ..\..\build.bat %1 %2 %3

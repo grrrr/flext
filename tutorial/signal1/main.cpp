@@ -77,7 +77,7 @@ class signal1:
 		{ 
 			// set our private panning factor "f_pan" to the inlet
 			// value float "f" in the intervall [0,1]
-			f_pan = (f<0) ? 0.0 : (f>1) ? 1.0 : f ;	
+			f_pan = (f<0) ? 0.0f : (f>1) ? 1.0f : f ;	
 			
 			// if you want to debug if this worked, comment out the
 			// following line: 

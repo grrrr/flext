@@ -142,6 +142,7 @@ public:
 	
 	// must be called to actually set up the defined inlets/outlets 
 	// only ONCE!!!
+	// returns true on successful creation of all inlets and outlets
 	BL setup_inout(); 
 
 	I cnt_in() const { return incnt; }
@@ -208,13 +209,11 @@ public:
 	static const t_symbol *sym_bang;
 	static const t_symbol *sym_list;
 	static const t_symbol *sym_anything;
+	static const t_symbol *sym_int;
+	static const t_symbol *sym_pointer;
 
 #ifdef PD
-	static const t_symbol *sym_pointer;
 	static const t_symbol *sym_signal;
-#endif
-#ifdef MAXMSP
-	static const t_symbol *sym_int;
 #endif
 
 // --- argument list stuff ----------------------------------------

@@ -20,7 +20,7 @@ static t_class *px_class;
 
 struct flext_base::px_object  // no virtual table!
 { 
-	t_object x_obj; 
+	t_object obj;			// MUST reside at memory offset 0
 	flext_base *base;
 	I index;
 
@@ -109,18 +109,16 @@ DEF_IN_FT(9)
 BL flext_base::compatibility = true;
 
 
-const t_symbol *flext_base::sym_float;
-const t_symbol *flext_base::sym_symbol;
-const t_symbol *flext_base::sym_bang;
-const t_symbol *flext_base::sym_list;
-const t_symbol *flext_base::sym_anything;
+const t_symbol *flext_base::sym_float = NULL;
+const t_symbol *flext_base::sym_symbol = NULL;
+const t_symbol *flext_base::sym_bang = NULL;
+const t_symbol *flext_base::sym_list = NULL;
+const t_symbol *flext_base::sym_anything = NULL;
+const t_symbol *flext_base::sym_pointer = NULL;
+const t_symbol *flext_base::sym_int = NULL;
 
 #ifdef PD
-const t_symbol *flext_base::sym_pointer;
-const t_symbol *flext_base::sym_signal;
-#endif
-#ifdef MAXMSP
-const t_symbol *flext_base::sym_int;
+const t_symbol *flext_base::sym_signal = NULL;
 #endif
 
 
@@ -143,7 +141,7 @@ flext_base::~flext_base()
 		for(I ix = 0; ix < incnt; ++ix)
 			if(inlets[ix]) {
 #ifdef PD
-				pd_free(&inlets[ix]->x_obj.ob_pd);
+				pd_free(&inlets[ix]->obj.ob_pd);
 #elif defined(MAXMSP)
 				freeobject((object *)inlets[ix]);
 #endif
@@ -188,7 +186,7 @@ BL flext_base::setup_inout()
 		for(I ix = 0; ix < incnt; ++ix) 
 			if(inlets[ix]) {
 #ifdef PD
-				pd_free(&inlets[ix]->x_obj.ob_pd);
+				pd_free(&inlets[ix]->obj.ob_pd);
 #elif defined(MAXMSP)
 				freeobject(inlets[ix]);
 #endif
@@ -212,24 +210,24 @@ BL flext_base::setup_inout()
 		// type info is now in list array
 #ifdef PD
 		{
-			I ix;
-			if(incnt == 0) {
-				;
-			}
-			else if(incnt >= 1) {
+			I cnt = 0;
+
+			if(incnt >= 1) {
 				switch(list[0]) {
 					case xlet::tp_any:
 						// leftmost inlet is already there...
+						++cnt;
 						break;
 					case xlet::tp_sig:
-						++insigs;
+						++insigs; ++cnt;
 						break;
 					default:
 						error("%s: Leftmost inlet must be of type default or signal",thisName());
 						ok = false;
 				} 
 			}		
-			for(ix = 1; ix < incnt; ++ix) {
+
+			for(I ix = 1; ix < incnt; ++ix,++cnt) {
 				switch(list[ix]) {
 					case xlet::tp_float:
 					case xlet::tp_flint: {
@@ -250,33 +248,41 @@ BL flext_base::setup_inout()
 					}
 					case xlet::tp_sym: 
 					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
-						inlet_new(&x_obj->obj,&inlets[ix]->x_obj.ob_pd, &s_symbol, &s_symbol);  
+						inlet_new(&x_obj->obj,&inlets[ix]->obj.ob_pd, &s_symbol, &s_symbol);  
 						break;
 					case xlet::tp_list:
 					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
-						inlet_new(&x_obj->obj,&inlets[ix]->x_obj.ob_pd, &s_list, &s_list);  
+						inlet_new(&x_obj->obj,&inlets[ix]->obj.ob_pd, &s_list, &s_list);  
 						break;
 					case xlet::tp_any:
 					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
-						inlet_new(&x_obj->obj,&inlets[ix]->x_obj.ob_pd, 0, 0);  
+						inlet_new(&x_obj->obj,&inlets[ix]->obj.ob_pd, 0, 0);  
 						break;
 					case xlet::tp_sig:
-	    				inlet_new(&x_obj->obj, &x_obj->obj.ob_pd, &s_signal, &s_signal);  
-						++insigs;
+						if(compatibility && list[ix-1] != xlet::tp_sig) {
+							post("%s: All signal inlets must be left-aligned in compatibility mode",thisName());
+							ok = false;
+						}
+						else {
+		    				inlet_new(&x_obj->obj, &x_obj->obj.ob_pd, &s_signal, &s_signal);  
+							++insigs;
+						}
 						break;
 					default:
 						error("%s: Wrong type for inlet #%i: %i",thisName(),ix,(I)list[ix]);
 						ok = false;
 				} 
 			}
+
+			incnt = cnt;
 		}
 #elif defined(MAXMSP)
 		{
-			I ix;
+			I ix,cnt;
 			// count leftmost signal inlets
 			while(insigs < incnt && list[insigs] == xlet::tp_sig) ++insigs;
 			
-			for(ix = incnt-1; ix >= insigs; --ix) {
+			for(cnt = 0,ix = incnt-1; ix >= insigs; --ix,++cnt) {
 				if(ix == 0) {
 					if(list[ix] != xlet::tp_any) {
 						error("%s: Leftmost inlet must be of type signal or default",thisName());
@@ -321,7 +327,9 @@ BL flext_base::setup_inout()
 					} 
 				}
 			}
-			
+
+			incnt = cnt;
+	
 			if(insigs) dsp_setup(thisHdr(),insigs); // signal inlets	
 		}
 #endif
@@ -561,12 +569,11 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 		else ++it;
 	}
 	
-	if(!ret && inlet == 0 && s == sym_list) {
+	if(!ret && inlet == 0 && s == sym_list && insigs <= 1) {
 		// distribute list elements over inlets (Max/MSP behavior)
-		I a = incnt-insigs;
-		if(a > argc) a = argc;
-		
-		for(I i = a-1; i >= 0; --i) { // right to left distribution
+		I i = incnt;
+		if(i > argc) i = argc;
+		for(--i; i >= 0; --i) { // right to left distribution
 			const t_symbol *s = NULL;
 			if(is_float(argv[i])) s = sym_float;
 			else if(is_int(argv[i])) s = sym_int;

@@ -49,7 +49,7 @@ struct FLEXT_EXT flext_hdr
 {
     	//////////
     	// The obligatory object header
-    	t_sigobj    	    obj;  
+    	t_sigobj    	    obj;  // MUST reside at memory offset 0
 
 #ifdef PD
 		float defsig;			// float signal holder for pd

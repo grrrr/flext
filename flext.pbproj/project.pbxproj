@@ -115,7 +115,8 @@
 			);
 			isa = PBXGroup;
 			name = Source;
-			refType = 4;
+			path = "";
+			refType = 2;
 		};
 //080
 //081
@@ -147,152 +148,152 @@
 		};
 		F55CED7B0383E50201A80AC9 = {
 			isa = PBXFileReference;
-			name = "flatom-pr.cpp";
-			path = "../source/flatom-pr.cpp";
+			name = flatom_pr.cpp;
+			path = source/flatom_pr.cpp;
 			refType = 2;
 		};
 		F55CED7C0383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = flatom.cpp;
-			path = ../source/flatom.cpp;
+			path = source/flatom.cpp;
 			refType = 2;
 		};
 		F55CED7D0383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = flattr.cpp;
-			path = ../source/flattr.cpp;
+			path = source/flattr.cpp;
 			refType = 2;
 		};
 		F55CED7E0383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = flbase.cpp;
-			path = ../source/flbase.cpp;
+			path = source/flbase.cpp;
 			refType = 2;
 		};
 		F55CED7F0383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = flbase.h;
-			path = /Volumes/Daten/Prog/max/flext/source/flbase.h;
-			refType = 0;
+			path = source/flbase.h;
+			refType = 2;
 		};
 		F55CED800383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = flbuf.cpp;
-			path = ../source/flbuf.cpp;
+			path = source/flbuf.cpp;
 			refType = 2;
 		};
 		F55CED810383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = flclass.h;
-			path = /Volumes/Daten/Prog/max/flext/source/flclass.h;
-			refType = 0;
+			path = source/flclass.h;
+			refType = 2;
 		};
 		F55CED860383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = fldefs.h;
-			path = /Volumes/Daten/Prog/max/flext/source/fldefs.h;
-			refType = 0;
+			path = source/fldefs.h;
+			refType = 2;
 		};
 		F55CED870383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = fldoxygen.h;
-			path = /Volumes/Daten/Prog/max/flext/source/fldoxygen.h;
-			refType = 0;
+			path = source/fldoxygen.h;
+			refType = 2;
 		};
 		F55CED880383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = fldsp.cpp;
-			path = ../source/fldsp.cpp;
+			path = source/fldsp.cpp;
 			refType = 2;
 		};
 		F55CED890383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = fldsp.h;
-			path = /Volumes/Daten/Prog/max/flext/source/fldsp.h;
-			refType = 0;
+			path = source/fldsp.h;
+			refType = 2;
 		};
 		F55CED8A0383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = flext.cpp;
-			path = ../source/flext.cpp;
+			path = source/flext.cpp;
 			refType = 2;
 		};
 		F55CED8B0383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = flext.h;
-			path = /Volumes/Daten/Prog/max/flext/source/flext.h;
-			refType = 0;
+			path = source/flext.h;
+			refType = 2;
 		};
 		F55CED8C0383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = flinternal.h;
-			path = /Volumes/Daten/Prog/max/flext/source/flinternal.h;
-			refType = 0;
+			path = source/flinternal.h;
+			refType = 2;
 		};
 		F55CED8D0383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = fllib.cpp;
-			path = ../source/fllib.cpp;
+			path = source/fllib.cpp;
 			refType = 2;
 		};
 		F55CED8E0383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = flmspbuffer.h;
-			path = /Volumes/Daten/Prog/max/flext/source/flmspbuffer.h;
-			refType = 0;
+			path = source/flmspbuffer.h;
+			refType = 2;
 		};
 		F55CED8F0383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = flout.cpp;
-			path = ../source/flout.cpp;
+			path = source/flout.cpp;
 			refType = 2;
 		};
 		F55CED900383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = flsndobj.cpp;
-			path = ../source/flsndobj.cpp;
+			path = source/flsndobj.cpp;
 			refType = 2;
 		};
 		F55CED910383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = flsndobj.h;
-			path = /Volumes/Daten/Prog/max/flext/source/flsndobj.h;
-			refType = 0;
+			path = source/flsndobj.h;
+			refType = 2;
 		};
 		F55CED920383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = flstdc.h;
-			path = /Volumes/Daten/Prog/max/flext/source/flstdc.h;
-			refType = 0;
+			path = source/flstdc.h;
+			refType = 2;
 		};
 		F55CED930383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = flsupport.cpp;
-			path = ../source/flsupport.cpp;
+			path = source/flsupport.cpp;
 			refType = 2;
 		};
 		F55CED940383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = flsupport.h;
-			path = /Volumes/Daten/Prog/max/flext/source/flsupport.h;
-			refType = 0;
+			path = source/flsupport.h;
+			refType = 2;
 		};
 		F55CED950383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = flthr.cpp;
-			path = ../source/flthr.cpp;
+			path = source/flthr.cpp;
 			refType = 2;
 		};
 		F55CED960383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = flutil.cpp;
-			path = ../source/flutil.cpp;
+			path = source/flutil.cpp;
 			refType = 2;
 		};
 		F55CED970383E50201A80AC9 = {
 			isa = PBXFileReference;
 			name = flxlet.cpp;
-			path = ../source/flxlet.cpp;
+			path = source/flxlet.cpp;
 			refType = 2;
 		};
 		F55CEDB50383E50D01A80AC9 = {
@@ -311,7 +312,8 @@
 			);
 			isa = PBXGroup;
 			name = Headers;
-			refType = 4;
+			path = "";
+			refType = 2;
 		};
 		F55CEDBD0383E6E401A80AC9 = {
 			buildActionMask = 2147483647;
@@ -379,7 +381,7 @@
 				INSTALL_PATH = /usr/local/pd/flext;
 				LIBRARY_STYLE = STATIC;
 				OPTIMIZATION_CFLAGS = "-O3";
-				OTHER_CFLAGS = "-D PD -D unix";
+				OTHER_CFLAGS = "-D FLEXT_SYS=2 -Wno-reorder -Wno-switch";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -556,7 +558,7 @@
 				INSTALL_PATH = /usr/local/pd/flext;
 				LIBRARY_STYLE = STATIC;
 				OPTIMIZATION_CFLAGS = "-O3";
-				OTHER_CFLAGS = "-D PD -D unix -D FLEXT_THREADS";
+				OTHER_CFLAGS = "-D FLEXT_SYS=2 -D FLEXT_THREADS -Wno-reorder -Wno-switch";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -783,7 +785,7 @@
 				INSTALL_PATH = /usr/local/pd/flext;
 				LIBRARY_STYLE = STATIC;
 				OPTIMIZATION_CFLAGS = "-O0";
-				OTHER_CFLAGS = "-D PD -D unix -D _DEBUG";
+				OTHER_CFLAGS = "-D FLEXT_SYS=2 -D FLEXT_DEBUG -Wno-reorder -Wno-switch";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -1010,7 +1012,7 @@
 				INSTALL_PATH = /usr/local/pd/flext;
 				LIBRARY_STYLE = STATIC;
 				OPTIMIZATION_CFLAGS = "-O0";
-				OTHER_CFLAGS = "-D PD -D unix -D FLEXT_THREADS -D _DEBUG";
+				OTHER_CFLAGS = "-D FLEXT_SYS=2 -D FLEXT_THREADS -D FLEXT_DEBUG -Wno-reorder -Wno-switch";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -1275,7 +1277,7 @@
 				HEADER_SEARCH_PATHS = "\"$(SYSTEM_DEVELOPER_DIR)/Headers/FlatCarbon\" /Volumes/Daten/Prog/sdk-beta-osx/c74support/msp-includes /Volumes/Daten/Prog/sdk-beta-osx/c74support/max-includes";
 				LIBRARY_STYLE = STATIC;
 				OPTIMIZATION_CFLAGS = "-O3";
-				OTHER_CFLAGS = "-D MAXMSP -D unix -D FLEXT_THREADS -Wno-reorder -Wno-switch";
+				OTHER_CFLAGS = "-D FLEXT_SYS=1 -D FLEXT_THREADS -Wno-reorder -Wno-switch";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -1284,7 +1286,7 @@
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
 			};
-			comments = "flext for PD running on OS X (darwin)\nsingle threaded performance version";
+			comments = "flext for Max/MSP running on OS X (darwin)\nsingle threaded performance version\n\n-- NOTE -- MAX/MSP does NOT yet support Mach-o externals";
 			dependencies = (
 			);
 			isa = PBXLibraryTarget;
@@ -1501,7 +1503,7 @@
 				HEADER_SEARCH_PATHS = "\"$(SYSTEM_DEVELOPER_DIR)/Headers/FlatCarbon\" /Volumes/Daten/Prog/sdk-beta-osx/c74support/msp-includes /Volumes/Daten/Prog/sdk-beta-osx/c74support/max-includes";
 				LIBRARY_STYLE = STATIC;
 				OPTIMIZATION_CFLAGS = "-O3";
-				OTHER_CFLAGS = "-D MAXMSP -D unix";
+				OTHER_CFLAGS = "-D FLEXT_SYS=1 -Wno-reorder -Wno-switch";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -1510,7 +1512,7 @@
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
 			};
-			comments = "flext for PD running on OS X (darwin)\nsingle threaded performance version";
+			comments = "flext for Max/MSP running on OS X (darwin)\nsingle threaded performance version\n\n-- NOTE -- MAX/MSP does NOT yet support Mach-o externals";
 			dependencies = (
 			);
 			isa = PBXLibraryTarget;

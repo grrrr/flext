@@ -44,7 +44,7 @@ void flext::PrintAtom(const t_atom &a,char *buf)
 #endif
 #if FLEXT_SYS == FLEXT_SYS_PD
 	case A_POINTER:
-		STD::sprintf(buf,"%x",GetPointer(a));
+		STD::sprintf(buf,"%p",GetPointer(a));
 		break;
 #endif
 	case A_SYMBOL:

@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -69,10 +69,10 @@ public:
 	//!	@}  FLEXT_S_MEMORY  	
 };
 
-// at the moment it's a real problem that global overloading of allocators
-// clashes with MFC (e.g. in vst~)
-// therefore... try to think over it
-#if 0 
+
+/************************************************************************/
+// MFC doesn't like global overloading of allocators
+// anyway, who likes MFC
 
 #if !defined(_MSC_VER) && !defined(__BORLANDC__)
 #define NEWTHROW throw(std::bad_alloc)
@@ -90,7 +90,7 @@ inline void *operator new[](size_t bytes) NEWTHROW { return flext_root::operator
 inline void operator delete[](void *blk) DELTHROW { flext_root::operator delete[](blk); }
 #endif
 
-#endif
+/************************************************************************/
 
 
 class FLEXT_SHARE FLEXT_CLASSDEF(flext);

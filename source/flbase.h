@@ -167,6 +167,12 @@ static void cb_setup(t_class *classPtr);
 // This should be the first thing in the implementation file
 ////////////////////////////////////////
 
+// Shortcuts for PD/Max type arguments
+#define FLEXTTYPE_F A_FLOAT
+#define FLEXTTYPE_float A_FLOAT
+#define FLEXTTYPE_t_symbol A_SYMBOL
+#define FLEXTTYPE_t_pointer A_POINTER
+
 //
 // NO ARGUMENTS
 /////////////////////////////////////////////////
@@ -185,6 +191,12 @@ static void cb_setup(t_class *classPtr);
 #define FLEXT_TILDE_NEW_1ARG(NAME,NEW_CLASS, TYPE, PD_TYPE)    	    	    	    	\
     REAL_NEW_WITH_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, PD_TYPE)
 
+#define FLEXT_1ARG(NAME,NEW_CLASS, TYPE)    \
+    REAL_NEW_WITH_ARG(NAME,NEW_CLASS, _setup, _class, TYPE,FLEXTTYPE_ ## TYPE)
+
+#define FLEXT_TILDE_1ARG(NAME,NEW_CLASS, TYPE)    	    	    	    	\
+    REAL_NEW_WITH_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, FLEXTTYPE_ ## TYPE)
+
 //
 // GIMME ARGUMENT
 /////////////////////////////////////////////////
@@ -192,6 +204,12 @@ static void cb_setup(t_class *classPtr);
     REAL_NEW_WITH_GIMME(NAME,NEW_CLASS, _setup, _class)
 
 #define FLEXT_TILDE_NEW_GIMME(NAME,NEW_CLASS)  	    	    	\
+    REAL_NEW_WITH_GIMME(NAME,NEW_CLASS, _tilde_setup, _class)
+
+#define FLEXT_GIMME(NAME,NEW_CLASS)  	    	    	\
+    REAL_NEW_WITH_GIMME(NAME,NEW_CLASS, _setup, _class)
+
+#define FLEXT_TILDE_GIMME(NAME,NEW_CLASS)  	    	    	\
     REAL_NEW_WITH_GIMME(NAME,NEW_CLASS, _tilde_setup, _class)
 
 //
@@ -203,6 +221,12 @@ static void cb_setup(t_class *classPtr);
 #define FLEXT_TILDE_NEW_2ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO)	\
     REAL_NEW_WITH_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO)
 
+#define FLEXT_2ARGS(NAME,NEW_CLASS, TYPE, TTWO)	\
+    REAL_NEW_WITH_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, FLEXTTYPE_ ## TYPE, TTWO, FLEXTTYPE_ ## TTWO)
+
+#define FLEXT_TILDE_2ARGS(NAME,NEW_CLASS, TYPE, TTWO)	\
+    REAL_NEW_WITH_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, FLEXTTYPE_ ## TYPE, TTWO, FLEXTTYPE_ ## TTWO)
+
 //
 // THREE ARGUMENTS
 /////////////////////////////////////////////////
@@ -212,6 +236,12 @@ static void cb_setup(t_class *classPtr);
 #define FLEXT_TILDE_NEW_3ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE)	\
     REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE)
 
+#define FLEXT_3ARGS(NAME,NEW_CLASS, TYPE, TTWO, TTHREE)	\
+    REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, FLEXTTYPE_ ## TYPE, TTWO, FLEXTTYPE_ ## TTWO, TTHREE, FLEXTTYPE_ ## TTHREE)
+
+#define FLEXT_TILDE_3ARGS(NAME,NEW_CLASS, TYPE, TTWO, TTHREE)	\
+    REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, FLEXTTYPE_ ## TYPE, TTWO, FLEXTTYPE_ ## TTWO, TTHREE, FLEXTTYPE_ ## TTHREE)
+
 //
 // FOUR ARGUMENTS
 /////////////////////////////////////////////////
@@ -220,6 +250,12 @@ static void cb_setup(t_class *classPtr);
 
 #define FLEXT_TILDE_NEW_4ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE, TFOUR, PD_FOUR) \
     REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE, TFOUR, PD_FOUR)
+
+#define FLEXT_4ARGS(NAME,NEW_CLASS, TYPE, TTWO, TTHREE, TFOUR) \
+    REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, FLEXTTYPE_ ## TYPE, TTWO, FLEXTTYPE_ ## TTWO, TTHREE, FLEXTTYPE_ ## TTHREE, TFOUR, FLEXTTYPE_ ## TFOUR)
+
+#define FLEXT_TILDE_4ARGS(NAME,NEW_CLASS, TYPE, TTWO, TTHREE, TFOUR) \
+    REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, FLEXTTYPE_ ## TYPE, TTWO, FLEXTTYPE_ ## TTWO, TTHREE, FLEXTTYPE_ ## TTHREE, TFOUR, FLEXTTYPE_ ## TFOUR)
 
 ////////////////////////////////////////
 // These definitions are used below

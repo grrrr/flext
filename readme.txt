@@ -77,6 +77,9 @@ Version history:
 - now (finally) using type t_sample for sample values (should just be identical to float)
 - added AddInBang/AddOutBang (same as Add*Symbol - unchecked)
 - buffer class: added "bool Ok()" check function
+- switched on error posting for unhandled messages
+- added XletCode and AddInlets/AddOutlets for multiple Inlet/Outlet addition
+- if float or int message is not handled explicitly then [list float/int( is tried
 
 0.2.2:
 - added xgimme argument type (supplies method handlers with symbol+gimme)
@@ -137,6 +140,7 @@ Notes:
 
 Platform specific:
 - PD does not allow signal and message to go into the same inlet
+- PD doesn't allow a signal object to receive float messages in the leftmost inlet... these are converted to a static signal
 
 Restrictions in compatibility mode:
 - Max allows only 9 float/int inlets

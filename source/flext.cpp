@@ -82,6 +82,7 @@ void flext_base::cb_px_bang(t_class *c)
 	cb_px_anything(c,sym_bang,0,NULL);
 }
 
+
 #define DEF_IN_FT(IX) \
 void flext_base::cb_px_in ## IX(t_class *c,int v) { long &ci = ((flext_hdr *)thisObject(c)->x_obj)->curinlet; ci = IX; cb_px_int(c,v); ci = 0; } \
 void flext_base::cb_px_ft ## IX(t_class *c,float v) { long &ci = ((flext_hdr *)thisObject(c)->x_obj)->curinlet; ci = IX; cb_px_float(c,v); ci = 0; }
@@ -170,6 +171,34 @@ void flext_base::AddXlet(xlet::type tp,int mult,xlet *&root)
 	}
 }
 
+unsigned long flext_base::XletCode(xlet::type tp,...)
+{
+	unsigned long code = 0;
+
+	va_list marker;
+	va_start(marker,tp);
+	int cnt = 0;
+	xlet::type *args = NULL,arg = tp;
+	for(; arg; ++cnt) {
+		code = code*10+(int)arg;
+		arg = (xlet::type)va_arg(marker,int);
+	}
+	va_end(marker);
+
+	return code;
+}
+
+void flext_base::AddInlets(unsigned long code) 
+{ 
+	for(; code; code /= 10) AddInlet((xlet::type)(code%10));
+}
+
+void flext_base::AddOutlets(unsigned long code) 
+{ 
+	for(; code; code /= 10) AddOutlet((xlet::type)(code%10));
+}
+
+
 
 void flext_base::ToOutBang(outlet *o) { outlet_bang((t_outlet *)o); }
 void flext_base::ToOutFloat(outlet *o,float f) { outlet_float((t_outlet *)o,f); }
@@ -217,6 +246,16 @@ bool flext_base::SetupInOut()
 			int cnt = 0;
 
 			if(incnt >= 1) {
+#if 1
+				switch(list[0]) {
+					case xlet::tp_sig:
+						++insigs; ++cnt;
+						break;
+					default:
+						// leftmost inlet is already there...
+						++cnt;
+				} 
+#else
 				switch(list[0]) {
 					case xlet::tp_any:
 						// leftmost inlet is already there...
@@ -226,9 +265,10 @@ bool flext_base::SetupInOut()
 						++insigs; ++cnt;
 						break;
 					default:
-						error("%s: Leftmost inlet must be of type default or signal",thisName());
+						error("%s: Leftmost inlet must be of type anything or signal",thisName());
 						ok = false;
 				} 
+#endif
 			}		
 
 			for(int ix = 1; ix < incnt; ++ix,++cnt) {
@@ -573,8 +613,25 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 		}
 	}
 	
+	// If float or int message is not explicitly handled: try list handler instead
+	if(!ret && argc == 1 && (s == sym_float 
+#ifdef MAXMSP
+		|| s == sym_int
+#endif
+	)) {
+		t_atom list;
+		if(s == sym_float) 
+			SetFloat(list,GetFloat(argv[0]));
+#ifdef MAXMSP
+		else 
+			SetInt(list,GetInt(argv[0]));
+#endif
+		ret = m_methodmain(inlet,sym_list,1,&list);
+	}
+
+
+	// if switched on then distribute list elements over inlets (Max/MSP behavior)
 	if(!ret && distmsgs && inlet == 0 && s == sym_list && insigs <= 1) {
-		// distribute list elements over inlets (Max/MSP behavior)
 		int i = incnt;
 		if(i > argc) i = argc;
 		for(--i; i >= 0; --i) { // right to left distribution
@@ -591,16 +648,17 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 		ret = true;
 	}
 	
-	if(!ret) m_method_(inlet,s,argc,argv);
+	if(!ret) ret = m_method_(inlet,s,argc,argv);
 	
 	return ret; // true if appropriate handler was found and called
 }
 
-void flext_base::m_method_(int inlet,const t_symbol *s,int argc,t_atom *argv) 
+bool flext_base::m_method_(int inlet,const t_symbol *s,int argc,t_atom *argv) 
 {
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	post("%s: message unhandled - inlet:%i args:%i symbol:%s",thisName(),inlet,argc,s?s->s_name:"");
-#endif
+//#endif
+	return false;
 }
 
 

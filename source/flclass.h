@@ -70,7 +70,7 @@ public:
 	virtual bool m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv);
 
 	//! called for every unhandled message (by m_methodmain)
-	virtual void m_method_(int inlet,const t_symbol *s,int argc,t_atom *argv);
+	virtual bool m_method_(int inlet,const t_symbol *s,int argc,t_atom *argv);
 
 
 // --- buffer/array stuff -----------------------------------------	
@@ -353,9 +353,13 @@ protected:
 		type tp;
 		xlet *nxt;
 	};
-	
-	void AddInlet(xlet::type tp,int mult) { AddXlet(tp,mult,inlist); }
-	void AddOutlet(xlet::type tp,int mult) { AddXlet(tp,mult,outlist); }
+
+	unsigned long XletCode(xlet::type tp = xlet::tp_none,...); // end list with 0 (= tp_none) !!
+
+	void AddInlets(unsigned long code); // use XletCode to get code value
+	void AddInlet(xlet::type tp,int mult = 1) { AddXlet(tp,mult,inlist); }
+	void AddOutlets(unsigned long code); // use XletCode to get code value
+	void AddOutlet(xlet::type tp,int mult = 1) { AddXlet(tp,mult,outlist); }
 
 // method handling
 
@@ -394,12 +398,10 @@ private:
 	// proxy object (for additional inlets) stuff
 	struct px_object;
 	friend struct px_object;
-	static void cb_px_anything(t_class *c,const t_symbol *s,int argc,t_atom *argv);
 #elif defined(MAXMSP)
 	typedef object px_object;
-	static void cb_px_anything(t_class *c,const t_symbol *s,int argc,t_atom *argv);
-	static void cb_px_int(t_class *c,int v);
 	static void cb_px_float(t_class *c,float f);
+	static void cb_px_int(t_class *c,int v);
 	static void cb_px_bang(t_class *c);
 
 	static void cb_px_in1(t_class *c,int v);
@@ -412,6 +414,7 @@ private:
 	static void cb_px_in8(t_class *c,int v);
 	static void cb_px_in9(t_class *c,int v);
 #endif
+	static void cb_px_anything(t_class *c,const t_symbol *s,int argc,t_atom *argv);
 
 	static void cb_px_ft1(t_class *c,float f);
 	static void cb_px_ft2(t_class *c,float f);

@@ -25,8 +25,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define STD
 #endif
 
-flext_base::AttrItem::AttrItem(const t_symbol *t,metharg tp,methfun f,int fl):
-	Item(t,0,NULL),index(0),
+flext_base::AttrItem::AttrItem(metharg tp,methfun f,int fl):
+	Item(NULL),index(0),
 	flags(fl|afl_shown),
 	argtp(tp),fun(f),
 	counter(NULL)
@@ -46,39 +46,31 @@ void flext_base::AddAttrib(ItemCont *aa,ItemCont *ma,const char *attr,metharg tp
 
 	if(sfun) // if commented out, there will be a warning at run-time (more user-friendly)
 	{
-		a = new AttrItem(asym,tp,sfun,AttrItem::afl_set);
-
-		// set index of item to the next higher value
-		AttrItem *last = (AttrItem *)aa->Last();
-		if(last) a->index = last->index+1;
-
-		aa->Add(a); 
+		a = new AttrItem(tp,sfun,AttrItem::afl_set);
+        a->index = aa->Members();
+		aa->Add(a,asym); 
 
 		// bind attribute to a method
-		MethItem *mi = new MethItem(0,asym,a);
+		MethItem *mi = new MethItem(a);
 		mi->SetArgs(sfun,1,new metharg(tp));
-		ma->Add(mi);
+		ma->Add(mi,asym);
 	}
 	else
 		a = NULL;
 
 	if(gfun) // if commented out, there will be a warning at run-time (more user-friendly)
 	{
-		b = new AttrItem(asym,tp,gfun,AttrItem::afl_get);
-
-		// set index of item to the next higher value
-		AttrItem *last = (AttrItem *)aa->Last();
-		if(last) b->index = last->index+1;
-
-		aa->Add(b); 
+		b = new AttrItem(tp,gfun,AttrItem::afl_get);
+        b->index = aa->Members();
+		aa->Add(b,asym); 
 
 		static char tmp[256] = "get";
 		strcpy(tmp+3,attr);
 
 		// bind attribute to a method
-		MethItem *mi = new MethItem(0,MakeSymbol(tmp),b);
+		MethItem *mi = new MethItem(b);
 		mi->SetArgs(gfun,0,NULL);
-		ma->Add(mi);
+		ma->Add(mi,MakeSymbol(tmp));
 	}
 	else
 		b = NULL;
@@ -102,38 +94,22 @@ void flext_base::AddAttrib(t_classid c,const char *attr,metharg tp,methfun gfun,
 	AddAttrib(ClAttrs(c),ClMeths(c),attr,tp,gfun,sfun);
 }
 
-/*
-//! Sorting function for pure symbol atom lists (used with qsort below)
-static int sortcmp(const void *a, const void *b) 
-{ 
-	return strcmp(flext::GetString(*(t_atom *)a),flext::GetString(*(t_atom *)b)); 
-}
-*/
-
-struct attrless : public std::binary_function<flext_base::AttrItem *,flext_base::AttrItem *, bool> 
-{
-	bool operator()(const flext_base::AttrItem *l,const flext_base::AttrItem *r) const { 
-		return l->index != r->index?l->index < r->index:strcmp(flext::GetString(l->tag),flext::GetString(r->tag)) < 0; 
-	}
-};
-
 void flext_base::ListAttrib(AtomList &la) const
 {
-	typedef std::set<AttrItem *,attrless> AttrList;
+	typedef std::map<int,const t_symbol *> AttrList;
 	AttrList list[2];
 
 	int i;
 	for(i = 0; i <= 1; ++i) {
-		ItemCont *a = i?attrhead:clattrhead;
-		if(a) {
-			for(int ai = 0; ai < a->Size(); ++ai) {
-				for(Item *l = a->GetItem(ai); l; l = l->nxt) {
-					AttrItem *aa = (AttrItem *)l;
-
-					// only list once!
-					if(!aa->BothExist() || aa->IsGet()) 
-						list[i].insert(aa);
-				}
+        ItemCont *a = i?attrhead:clattrhead;
+		if(a && a->Contained(0)) {
+            ItemSet &ai = a->GetInlet();
+            for(ItemSet::iterator as = ai.begin(); as != ai.end(); ++as) {
+                for(ItemList::iterator al = as->second.begin(); al != as->second.end(); ++al) {
+					AttrItem *aa = (AttrItem *)*al;
+					list[i][aa->index] = as->first;
+                    break;
+                }
 			}
 		}
 	}
@@ -143,7 +119,7 @@ void flext_base::ListAttrib(AtomList &la) const
 	AttrList::iterator it;
 	for(i = 0; i <= 1; ++i)
 		for(it = list[i].begin(); it != list[i].end(); ++it) 
-			SetSymbol(la[ix++],(*it)->tag);
+			SetSymbol(la[ix++],it->second);
 }
 
 int flext_base::CheckAttrib(int argc,const t_atom *argv)
@@ -173,7 +149,7 @@ bool flext_base::InitAttrib(int argc,const t_atom *argv)
 			a.SetInitValue(nxt-cur-1,argv+cur+1);
 
 			// pass value to object
-			SetAttrib(attr,a.GetInitValue());
+			SetAttrib(tag,attr,a.GetInitValue());
 		}
 	}
 	return true;
@@ -194,16 +170,29 @@ bool flext_base::ListAttrib() const
 flext_base::AttrItem *flext_base::FindAttrib(const t_symbol *tag,bool get,bool msg) const
 {
     // first search within object scope
-	AttrItem *a = (AttrItem *)attrhead->Find(tag);
-	while(a && (a->tag != tag || a->inlet != 0 || (get?a->IsSet():a->IsGet()))) a = (AttrItem *)a->nxt;
+	AttrItem *a = NULL;
+    {
+        ItemList *lst = attrhead->FindList(tag);
+        if(lst) {
+            for(ItemList::iterator it = lst->begin(); it != lst->end(); ++it) {
+                AttrItem *b = (AttrItem *)*it;
+                if(get?b->IsGet():b->IsSet()) { a = b; break; }
+            }
+        }
+    }
 
     // then (if nothing found) search within class scope
 	if(!a) {
-		a = (AttrItem *)clattrhead->Find(tag);	
-		while(a && (a->tag != tag || a->inlet != 0 || (get?a->IsSet():a->IsGet()))) a = (AttrItem *)a->nxt;
+        ItemList *lst = clattrhead->FindList(tag);
+        if(lst) {
+            for(ItemList::iterator it = lst->begin(); it != lst->end(); ++it) {
+                AttrItem *b = (AttrItem *)*it;
+                if(get?b->IsGet():b->IsSet()) { a = b; break; }
+            }
+        }
 	}
 
-	if(!a && msg) {
+    if(!a && msg) {
 		// print a message
 		error("%s - %s: attribute not found",thisName(),GetString(tag));
 	}
@@ -215,12 +204,12 @@ bool flext_base::SetAttrib(const t_symbol *tag,int argc,const t_atom *argv)
 	// search for matching attribute
 	AttrItem *a = FindAttrib(tag,false,true);
 	if(a) 
-		return SetAttrib(a,argc,argv);
+		return SetAttrib(tag,a,argc,argv);
 	else
 		return true;
 }
 
-bool flext_base::SetAttrib(AttrItem *a,int argc,const t_atom *argv)
+bool flext_base::SetAttrib(const t_symbol *tag,AttrItem *a,int argc,const t_atom *argv)
 {
 	if(a->fun) {
 		bool ok = true;
@@ -272,15 +261,15 @@ bool flext_base::SetAttrib(AttrItem *a,int argc,const t_atom *argv)
 		}
 
 		if(!ok)
-			post("%s - wrong arguments for attribute %s",thisName(),GetString(a->tag));
+			post("%s - wrong arguments for attribute %s",thisName(),GetString(tag));
 	}
 	else
-		post("%s - attribute %s has no get method",thisName(),GetString(a->tag));
+		post("%s - attribute %s has no get method",thisName(),GetString(tag));
 	return true;
 }
 
 
-bool flext_base::GetAttrib(AttrItem *a,AtomList &la) const
+bool flext_base::GetAttrib(const t_symbol *tag,AttrItem *a,AtomList &la) const
 {
 	bool ok = true;
 	// main attribute tag
@@ -323,12 +312,12 @@ bool flext_base::GetAttrib(AttrItem *a,AtomList &la) const
 			}
 		}
 		else {
-			post("%s - attribute %s has no get method",thisName(),GetString(a->tag));
+			post("%s - attribute %s has no get method",thisName(),GetString(tag));
 			ok = false;
 		}
 	}
 	else {
-		error("%s - %s: attribute not found",thisName(),GetString(a->tag));
+		error("%s - %s: attribute not found",thisName(),GetString(tag));
 		ok = false;
 	}
 	return ok;
@@ -337,24 +326,24 @@ bool flext_base::GetAttrib(AttrItem *a,AtomList &la) const
 bool flext_base::GetAttrib(const t_symbol *s,AtomList &a) const
 {
 	AttrItem *attr = FindAttrib(s,true);
-	return attr && GetAttrib(attr,a);
+	return attr && GetAttrib(s,attr,a);
 }
 
-bool flext_base::DumpAttrib(AttrItem *a) const
+bool flext_base::DumpAttrib(const t_symbol *tag,AttrItem *a) const
 {
 	AtomList la;
-	bool ret = GetAttrib(a,la);
-	if(ret) ToOutAnything(GetOutAttr(),a->tag,la.Count(),la.Atoms());
+	bool ret = GetAttrib(tag,a,la);
+	if(ret) ToOutAnything(GetOutAttr(),tag,la.Count(),la.Atoms());
 	return ret;
 }
 
 bool flext_base::DumpAttrib(const t_symbol *attr) const
 {
 	AttrItem *item = FindAttrib(attr,true);
-	return item && DumpAttrib(item);
+	return item && DumpAttrib(attr,item);
 }
 
-bool flext_base::BangAttrib(AttrItem *item)
+bool flext_base::BangAttrib(const t_symbol *attr,AttrItem *item)
 {
 	AtomList val;
 	AttrItem *item2;
@@ -362,7 +351,7 @@ bool flext_base::BangAttrib(AttrItem *item)
 		item = item->Counterpart();
 	if(item) {
 		item2 = item->Counterpart();
-		return item2 && GetAttrib(item,val) && SetAttrib(item2,val);
+		return item2 && GetAttrib(attr,item,val) && SetAttrib(attr,item2,val);
 	}
 	else
 		return false;
@@ -371,26 +360,21 @@ bool flext_base::BangAttrib(AttrItem *item)
 bool flext_base::BangAttrib(const t_symbol *attr)
 {
 	AttrItem *item = FindAttrib(attr,true);
-	return item && BangAttrib(item);
+	return item && BangAttrib(attr,item);
 }
 
 bool flext_base::BangAttribAll()
 {
-	int i,cnt = clattrhead->Ready()?clattrhead->Size():2;
-	for(i = 0; i < cnt; ++i) {
-		AttrItem *a = (AttrItem *)clattrhead->GetItem(i);
-		for(; a; a = (AttrItem *)a->nxt) {
-			if(a->IsGet() && a->BothExist()) 
-				BangAttrib(a);
-		}
-	}
-
-	cnt = attrhead->Ready()?attrhead->Size():2;
-	for(i = 0; i < cnt; ++i) {
-		AttrItem *a = (AttrItem *)attrhead->GetItem(i);
-		for(; a; a = (AttrItem *)a->nxt) {
-			if(a->IsGet() && a->BothExist()) 
-				BangAttrib(a);
+	for(int i = 0; i <= 1; ++i) {
+        ItemCont *a = i?attrhead:clattrhead;
+		if(a) {
+            ItemSet &ai = a->GetInlet(); // \todo need to check for presence of inlet 0?
+            for(ItemSet::iterator as = ai.begin(); as != ai.end(); ++as) {
+                for(ItemList::iterator al = as->second.begin(); al != as->second.end(); ++al) {
+					AttrItem *a = (AttrItem *)*al;
+	        		if(a->IsGet() && a->BothExist()) BangAttrib(as->first,a);
+                }
+			}
 		}
 	}
 	return true;

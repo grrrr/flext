@@ -277,16 +277,8 @@ public:
 	static void ZeroSamples(t_sample *dst,int cnt) { SetSamples(dst,cnt,0); }	
 
 
-	//! Get a 32 bit hash value frm an atom
+	//! Get a 32 bit hash value from an atom
 	static unsigned long AtomHash(const t_atom &a);
-	
-	/*! \brief Fold value to a number of bits
-		\remark Good for hash tables
-	*/
-	static unsigned int FoldBits(unsigned long h,int bits);
-	
-	//! \brief How many bits are necessary to represent n
-	static int Int2Bits(unsigned long n);
 
 //!		@} FLEXT_S_UTIL
 

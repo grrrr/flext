@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -23,6 +23,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <map>
 #include <set>
 #include <list>
+#include <vector>
 
 #ifdef _MSC_VER
 #pragma warning(disable: 4786)
@@ -600,67 +601,56 @@ protected:
 
 	class AttrItem;
 
-    class Item:
-        public flext_root
+    class Item
     {
 	public:
-		Item(const t_symbol *t,int inl,AttrItem *a);
-		virtual ~Item();
+        Item(AttrItem *a): attr(a) {}
+        virtual ~Item() {}
 		
 		bool IsAttr() const { return attr != NULL; }
 
-		const t_symbol *tag;
-		int inlet;
 		AttrItem *attr;
-		Item *nxt;
 	};
+
+    typedef std::list<Item *> ItemList;
+
+    typedef std::map<const t_symbol *,ItemList> ItemSet;
+    typedef std::vector<ItemSet> ItemVec;
 
     //! This class holds hashed item entries
     class ItemCont:
-        public flext_root
+        private ItemVec
     {
 	public:
-		ItemCont();
-		~ItemCont();
+        typedef ItemVec::iterator iterator;
+        typedef ItemVec::const_iterator const_iterator;
+
+        ItemCont(): members(0) {}
+
+        bool Contained(int i) const { return i+1 < (int)size(); }
 
         //! Add an entry
-		void Add(Item *it);
+		void Add(Item *it,const t_symbol *tag,int inlet = 0);
         //! Remove an entry
-		bool Remove(Item *it);
-        //! Find an entry in the Item array
-		Item *Find(const t_symbol *tag,int inlet = 0) const;
+		bool Remove(Item *it,const t_symbol *tag,int inlet = 0);
+        //! Find an entry list in the Item array
+		ItemList *FindList(const t_symbol *tag,int inlet = 0);
+        //! Get list for an inlet
+        ItemSet &GetInlet(int inlet = 0) { return (*this)[inlet+1]; }
 
-        //! Create hash table out of the preliminary linked lists
-		void Finalize();
+        //! Get counter for total members (for index of new item)
+        int Members() const { return members; }
 
-		//! Get first element
-		Item *First() { return !Ready()?arr[0]:NULL; }
-		//! Get last element
-		Item *Last() { return !Ready()?arr[1]:NULL; }
-		
-        //! Query whether the array has been finalized
-		bool Ready() const { return bits >= 0; }
-        //! Number of items in the array
-		int Count() const { return cnt; }
-        //! Number of array slots (0 if not finalized)
-		int Size() const { return bits?1<<bits:0; }
-
-        //! Get an array slot
-		Item *GetItem(int ix) { return arr[ix]; }
-	
-	protected:		
-        //! Calculate a hash value
-		static int Hash(const t_symbol *,int inlet,int bits);
-	
-		Item **arr;
-		int cnt,bits;
+    protected:
+        int members;
 	};
 
-	//! \brief This represents an item of the method list
+    //! \brief This represents an item of the method list
 	class MethItem:
-		public Item { 
+		public Item 
+    { 
 	public:
-		MethItem(int inlet,const t_symbol *tg,AttrItem *conn = NULL);
+		MethItem(AttrItem *conn = NULL);
 		virtual ~MethItem();
 		
 		void SetArgs(methfun fun,int argc,metharg *args);
@@ -673,9 +663,10 @@ protected:
 	
 	//! \brief This represents an item of the attribute list
 	class AttrItem:
-		public Item { 
+		public Item 
+    { 
 	public:
-		AttrItem(const t_symbol *tag,metharg tp,methfun fun,int flags);
+		AttrItem(metharg tp,methfun fun,int flags);
 		virtual ~AttrItem();
 
 		enum { 
@@ -737,13 +728,14 @@ private:
 public:
 
 	//! \brief This represents an item of the symbol-bound method list
-	class BindItem
-		:public Item 
+    class BindItem:
+		public Item 
 	{ 
 	public:
-		BindItem(int inlet,const t_symbol *sym,bool (*f)(flext_base *,t_symbol *s,int,t_atom *,void *),pxbnd_object *px);
+		BindItem(bool (*f)(flext_base *,t_symbol *s,int,t_atom *,void *),pxbnd_object *px);
 		virtual ~BindItem();
-		
+		void Unbind(const t_symbol *s);
+
 		bool (*fun)(flext_base *,t_symbol *s,int,t_atom *,void *);
         pxbnd_object *px;
 	};
@@ -804,9 +796,9 @@ private:
 	
 	bool CallMeth(const MethItem &m,int argc,const t_atom *argv);
 	bool FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *argv);
-	bool TryMethTag(const MethItem *m,int inlet,const t_symbol *t,int argc,const t_atom *argv);
-	bool TryMethSym(const MethItem *m,int inlet,const t_symbol *t,const t_symbol *s);
-	bool TryMethAny(const MethItem *m,int inlet,const t_symbol *t,const t_symbol *s,int argc,const t_atom *argv);
+	bool TryMethTag(ItemList &lst,const t_symbol *tag,int argc,const t_atom *argv);
+	bool TryMethSym(ItemList &lst,const t_symbol *s);
+	bool TryMethAny(ItemList &lst,const t_symbol *s,int argc,const t_atom *argv);
 
 	mutable ItemCont *attrhead,*clattrhead;
 	mutable AttrDataCont *attrdata;
@@ -818,13 +810,13 @@ private:
 
 	bool ListMethods(int inlet = 0) const;
 	bool ListAttrib() const;
-	bool DumpAttrib(AttrItem *a) const;
-	bool GetAttrib(AttrItem *a,AtomList &l) const;
+	bool DumpAttrib(const t_symbol *tag,AttrItem *a) const;
+	bool GetAttrib(const t_symbol *tag,AttrItem *a,AtomList &l) const;
 	bool SetAttrib(const t_symbol *s,int argc,const t_atom *argv);
-	bool SetAttrib(AttrItem *a,int argc,const t_atom *argv);
-	bool SetAttrib(AttrItem *a,const AtomList &l) { return SetAttrib(a,l.Count(),l.Atoms()); }
+	bool SetAttrib(const t_symbol *tag,AttrItem *a,int argc,const t_atom *argv);
+	bool SetAttrib(const t_symbol *tag,AttrItem *a,const AtomList &l) { return SetAttrib(tag,a,l.Count(),l.Atoms()); }
 	// get and set the attribute
-	bool BangAttrib(AttrItem *a);
+	bool BangAttrib(const t_symbol *tag,AttrItem *a);
 	// show/hide the attribute
 	bool ShowAttrib(AttrItem *a,bool show) const;
 

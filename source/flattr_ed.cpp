@@ -466,7 +466,7 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 		AtomList lv;
 		if(gattr) { // gettable attribute is present
 			// Retrieve attribute value
-			th->GetAttrib(gattr,lv);
+			th->GetAttrib(sym,gattr,lv);
 
 			PrintList(lv.Count(),lv.Atoms(),b,sizeof(buf)+buf-b); b += strlen(b);
 		}
@@ -599,7 +599,7 @@ void flext_base::cb_GfxSave(t_gobj *c, t_binbuf *b)
 
 				// attribute must be gettable (so that the data can be retrieved) and puttable (so that the data can be inited)
 				if(attr && attr->BothExist()) {
-					th->GetAttrib(attr,lv); 
+					th->GetAttrib(sym,attr,lv); 
 					lref = &lv;
 				}
 			}
@@ -662,7 +662,7 @@ bool flext_base::cb_AttrDialog(flext_base *th,int argc,const t_atom *argv)
 		// find puttable attribute
 		AttrItem *attr = th->FindAttrib(aname,false);
 		if(attr) {
-			bool ret = th->SetAttrib(attr,ccnt,argv+coffs);
+			bool ret = th->SetAttrib(aname,attr,ccnt,argv+coffs);
 			FLEXT_ASSERT(ret);
 
 			AttrDataCont::iterator it = th->attrdata->find(aname);

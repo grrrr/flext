@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -125,67 +125,21 @@ libclass::libclass(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(f
 	argc(0),argv(NULL) 
 {}
 	
-// this class stands for one registered object name
-// it holds a pointer to the respective object
-// it will never be destroyed
-class libname:
-    public flext_root
+//! Store or retrieve registered classes
+static libclass *FindName(const t_symbol *s,libclass *o = NULL) 
 {
-public:
-	const t_symbol *name;
-	libclass *obj;
+    typedef std::map<const t_symbol *,libclass *> LibMap;
 
-	static void add(libname *n);
-	static libname *Find(const t_symbol *s,libclass *o = NULL);
-	
-protected:
-	libname(const t_symbol *n,libclass *o): name(n),obj(o),nxt(NULL) {}	
+    static LibMap libnames;
 
-	static int Hash(const t_symbol *s);
-	int Hash() const { return Hash(name); }
-
-	enum { HASHBITS=7, HASHSIZE=1<<HASHBITS };
-
-	libname *nxt;
-	void Add(libname *n);
-
-	static libname **root;
-};
-
-void libname::Add(libname *n) { if(nxt) nxt->Add(n); else nxt = n; }
-
-int libname::Hash(const t_symbol *s) 
-{
-	return flext::FoldBits(reinterpret_cast<unsigned long>(s),HASHBITS);
+    LibMap::iterator it = libnames.find(s);
+    if(it == libnames.end()) {
+        if(o) libnames[s] = o;
+        return o;
+    }
+    else
+        return it->second;
 }
-
-libname *libname::Find(const t_symbol *s,libclass *o) 
-{
-	if(!root) {
-		root = new libname *[HASHSIZE];
-		memset(root,0,HASHSIZE*sizeof(*root));
-	}
-
-	int hash = Hash(s);
-	libname *a = root[hash];
-	libname *pa = NULL;
-	while(a && a->name != s) pa = a,a = a->nxt;
-
-	if(!a && o) {
-		a = new libname(s,o);
-		if(pa) 
-			// previous entry... extend
-			a->nxt = pa->nxt,pa->nxt = a;
-		else 
-			// new singular entry
-			root[hash] = a;
-	}
-
-	return a;
-}
-
-libname **libname::root = NULL;
-
 
 
 // for Max/MSP, the library is represented by a special object (class) registered at startup
@@ -194,7 +148,11 @@ libname **libname::root = NULL;
 static t_class *lib_class = NULL;
 static const t_symbol *lib_name = NULL;
 
-flext_obj::t_classid flext_obj::thisClassId() const { return libname::Find(thisNameSym())->obj; }
+flext_obj::t_classid flext_obj::thisClassId() const 
+{ 
+    return FindName(thisNameSym()); 
+}
+
 t_class *flext_obj::getClass(t_classid id) { return reinterpret_cast<libclass *>(id)->clss; }
 #endif
 
@@ -308,19 +266,20 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 		if(!c || !*c) break;
 
 		// add to name list
-		libname *l = libname::Find(MakeSymbol(c),lo);
+        const t_symbol *lsym = MakeSymbol(c);
+		libclass *lcl = FindName(lsym,lo);
 	
 #if FLEXT_SYS == FLEXT_SYS_PD
 		if(ix > 0) 
 			// in PD the first name is already registered with class creation
-			::class_addcreator((t_newmethod)obj_new,(t_symbol *)l->name,A_GIMME,A_NULL);
+			::class_addcreator((t_newmethod)obj_new,(t_symbol *)lsym,A_GIMME,A_NULL);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 		if(ix > 0 || lib) 
 			// in Max/MSP the first alias gets its name from the name of the object file,
 			// unless it is a library (then the name can be different)
 			::alias(const_cast<char *>(c));  
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
-		if(ix > 0)  fts_class_alias(lo->clss,l->name);
+		if(ix > 0)  fts_class_alias(lo->clss,lsym);
 #else
 #error
 #endif	
@@ -346,11 +305,10 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 {
 	flext_hdr *obj = NULL;
 #endif
-	libname *l = libname::Find(s);
-	if(l) {
+	libclass *lo = FindName(s);
+	if(lo) {
 		bool ok = true;
 		t_atom args[FLEXT_MAXNEWARGS]; 
-		libclass *lo = l->obj;
 
 		int argc = _argc_;
 		if(lo->attr) {
@@ -410,7 +368,7 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 //			post("NEWINST CLID %p",clid);
 
 		    flext_obj::m_holder = obj;
-			flext_obj::m_holdname = l->name;
+			flext_obj::m_holdname = s;
 			flext_obj::m_holdattr = lo->attr;
 
 			// get actual flext object (newfun calls "new flext_obj()")
@@ -481,14 +439,14 @@ void flext_obj::obj_free(flext_hdr *h)
 {
 	flext_hdr *hdr = (flext_hdr *)h;
 	const t_symbol *name = hdr->data->thisNameSym();
-	libname *l = libname::Find(name);
+	libclass *lcl = FindName(name);
 
-	if(l) {
+	if(lcl) {
 		// call virtual exit function
 		hdr->data->Exit();
 
 		// now call object destructor and deallocate
-		l->obj->freefun(hdr);
+		lcl->freefun(hdr);
 	}
 #ifdef FLEXT_DEBUG
 	else 

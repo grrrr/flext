@@ -56,11 +56,16 @@ void flext_base::SetupBindProxy()
 }
 
 
-flext_base::BindItem::BindItem(int in,const t_symbol *sym,bool (*f)(flext_base *,t_symbol *s,int,t_atom *,void *data),pxbnd_object *p):
-	Item(sym,0,NULL),fun(f),px(p)
+flext_base::BindItem::BindItem(bool (*f)(flext_base *,t_symbol *s,int,t_atom *,void *data),pxbnd_object *p):
+	Item(NULL),fun(f),px(p)
 {}
 
 flext_base::BindItem::~BindItem()
+{
+    if(px) object_free(&px->obj);
+}
+
+void flext_base::BindItem::Unbind(const t_symbol *tag)
 {
     if(px) {
 #if FLEXT_SYS == FLEXT_SYS_PD
@@ -73,7 +78,6 @@ flext_base::BindItem::~BindItem()
 #else
 #           pragma warning("Not implemented")
 #endif
-        object_free(&px->obj);
     }
 }
 
@@ -95,20 +99,19 @@ bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbo
         bindhead = new ItemCont;
     else {
         // Search for symbol
-        flext_base::BindItem *item = (flext_base::BindItem *)bindhead->Find(sym,0);
+        ItemList *lst = bindhead->FindList(sym);
 
-        // go through all items with matching tag
-        for(; item && item->tag == sym; item = (flext_base::BindItem *)item->nxt) 
-            if(item->fun == fun) {
-                // function already registered -> bail out!
-                post("%s - Symbol already bound with this method",thisName());
-                return false;
+        if(lst)
+            for(ItemList::iterator it = lst->begin(); it != lst->end(); ++it) {
+                BindItem *item = (BindItem *)*it;
+
+                // go through all items with matching tag
+                if(item->fun == fun) {
+                    // function already registered -> bail out!
+                    post("%s - Symbol already bound with this method",thisName());
+                    return false;
+                }
             }
-    
-    	if(bindhead->Count() > 20) {
-  			// Hash it!
-  			bindhead->Finalize();
-    	}
     }
 
     SetupBindProxy(); 
@@ -122,8 +125,8 @@ bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbo
 #endif
 
     if(px) {
-	    BindItem *mi = new BindItem(0,sym,fun,px);
-	    bindhead->Add(mi);
+	    BindItem *mi = new BindItem(fun,px);
+	    bindhead->Add(mi,sym);
 
         px->init(this,mi,data);
 
@@ -149,31 +152,33 @@ bool flext_base::UnbindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_sym
 {
     bool ok = false;
     
-    if(bindhead) {
-        BindItem *it = NULL;
-        if(sym) {
-            it = (BindItem *)bindhead->Find(sym,0);
-            while(it) {
-                if(it->tag == sym && (!fun || it->fun == fun)) break;
-            }
+    if(bindhead && bindhead->Contained(0)) {
+        ItemSet &set = bindhead->GetInlet();
+        ItemSet::iterator it1,it2;
+        if(sym) { 
+            // specific tag
+            it1 = it2 = set.find(sym); it2++; 
         }
-        else {
+        else { 
             // any tag
+            it1 = set.begin(),it2 = set.end(); 
+        }
 
-            int sz = bindhead->Count();
-            if(!sz) sz = 1;
-
-            for(int i = 0; i < sz; ++i) {
-                for(it = (BindItem *)bindhead->GetItem(i); it; it = (BindItem *)it->nxt) {
-                    if(!fun || it->fun == fun) break;
-                }
-                if(it) break;
+        BindItem *it = NULL;
+        for(ItemSet::iterator si = it1; si != it2 && !it; ++si) {
+            for(ItemList::iterator i = si->second.begin(); i != si->second.end(); ++i) {
+                BindItem *item = (BindItem *)*i;
+                if(!fun || item->fun == fun) { it = item; break; }
             }
         }
+
         if(it) {
             if(data) *data = it->px->data;
-            ok = bindhead->Remove(it);
-            if(ok) delete it;
+            ok = bindhead->Remove(it,sym);
+            if(ok) {
+                it->Unbind(sym);
+                delete it;
+            }
         }
     }
     return ok;
@@ -183,13 +188,17 @@ bool flext_base::GetBoundMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_s
 {
     if(bindhead) {
         // Search for symbol
-        flext_base::BindItem *item = (flext_base::BindItem *)bindhead->Find(sym,0);
+        ItemList *lst = bindhead->FindList(sym);
 
-        // go through all items with matching tag
-        for(; item && item->tag == sym; item = (flext_base::BindItem *)item->nxt) 
-            if(item->fun == fun) {
-                data = item->px->data;
-                return true;
+        if(lst)
+            for(ItemList::iterator it = lst->begin(); it != lst->end(); ++it) {
+                BindItem *item = (BindItem *)*it;
+
+                // go through all items with matching tag
+                if(item->fun == fun) {
+                    data = item->px->data;
+                    return true;
+                }
             }
     }
     return false;
@@ -197,21 +206,20 @@ bool flext_base::GetBoundMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_s
 
 bool flext_base::UnbindAll()
 {
-//	bool memleak = false;
-
-    int sz = bindhead->Count();
-    if(!sz) sz = 1;
-
-    for(int i = 0; i < sz; ++i) {
-        for(BindItem *it = (BindItem *)bindhead->GetItem(i); it; it = (BindItem *)it->nxt) {
-//			if(it->px->data) memleak = true;
-            if(bindhead->Remove(it)) delete it;
+    if(bindhead && bindhead->Contained(0)) {
+        ItemSet &set = bindhead->GetInlet();
+        for(ItemSet::iterator si = set.begin(); si != set.end(); ++si) {
+            ItemList &lst = si->second;
+            while(!lst.empty()) {
+                // eventual allocated data in item is not freed!
+                BindItem *it = (BindItem *)lst.front();
+                it->Unbind(si->first);
+                delete it;
+                lst.pop_front();
+            }
         }
+        set.clear();
     }
-/*
-	if(memleak)
-		post("%s - Memory was not deallocated while unbinding methods",thisName());
-*/
 	return true;
 }
 

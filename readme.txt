@@ -1,5 +1,5 @@
 flext - C++ layer for Max/MSP and pd (pure data) externals
-version 0.1.1
+version 0.1.2
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -56,6 +56,9 @@ see flext.h for the documented base classes
 
 Version history:
 
+0.1.2:
+- defines for callback-to-method functions
+
 0.1.1:
 - documentation for flext.h
 - more emancipation from GEM code
@@ -96,6 +99,7 @@ general:
 - cleaner makefile for BCC
 - makefile for MS VC++ 6
 - should we use a namespace?
+- Apple MPW project
 
 bugs:
 none known

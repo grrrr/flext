@@ -163,6 +163,8 @@ static void cb_setup(t_class *classPtr);
 #define FLEXTTYPE_t_symbol A_SYMBOL
 #define FLEXTTYPE_t_pointer A_POINTER
 
+#define FLEXTTP(TP) FLEXTTYPE_ ## TP
+
 //
 // NO ARGUMENTS
 /////////////////////////////////////////////////
@@ -182,10 +184,10 @@ static void cb_setup(t_class *classPtr);
     REAL_NEW_WITH_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, PD_TYPE)
 
 #define FLEXT_1ARG(NAME,NEW_CLASS, TYPE)    \
-    REAL_NEW_WITH_ARG(NAME,NEW_CLASS, _setup, _class, TYPE,FLEXTTYPE_ ## TYPE)
+    REAL_NEW_WITH_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, FLEXTTP(TYPE))
 
 #define FLEXT_TILDE_1ARG(NAME,NEW_CLASS, TYPE)    	    	    	    	\
-    REAL_NEW_WITH_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, FLEXTTYPE_ ## TYPE)
+    REAL_NEW_WITH_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, FLEXTTP(TYPE))
 
 //
 // GIMME ARGUMENT
@@ -212,10 +214,10 @@ static void cb_setup(t_class *classPtr);
     REAL_NEW_WITH_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO)
 
 #define FLEXT_2ARGS(NAME,NEW_CLASS, TYPE, TTWO)	\
-    REAL_NEW_WITH_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, FLEXTTYPE_ ## TYPE, TTWO, FLEXTTYPE_ ## TTWO)
+    REAL_NEW_WITH_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, FLEXTTP(TYPE), TTWO, FLEXTTP(TTWO))
 
 #define FLEXT_TILDE_2ARGS(NAME,NEW_CLASS, TYPE, TTWO)	\
-    REAL_NEW_WITH_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, FLEXTTYPE_ ## TYPE, TTWO, FLEXTTYPE_ ## TTWO)
+    REAL_NEW_WITH_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, FLEXTTP(TYPE), TTWO, FLEXTTP(TTWO))
 
 //
 // THREE ARGUMENTS
@@ -227,10 +229,10 @@ static void cb_setup(t_class *classPtr);
     REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE)
 
 #define FLEXT_3ARGS(NAME,NEW_CLASS, TYPE, TTWO, TTHREE)	\
-    REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, FLEXTTYPE_ ## TYPE, TTWO, FLEXTTYPE_ ## TTWO, TTHREE, FLEXTTYPE_ ## TTHREE)
+    REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, FLEXTTP(TYPE), TTWO, FLEXTTP(TTWO), TTHREE, FLEXTTP(TTHREE))
 
 #define FLEXT_TILDE_3ARGS(NAME,NEW_CLASS, TYPE, TTWO, TTHREE)	\
-    REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, FLEXTTYPE_ ## TYPE, TTWO, FLEXTTYPE_ ## TTWO, TTHREE, FLEXTTYPE_ ## TTHREE)
+    REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, FLEXTTP(TYPE), TTWO, FLEXTTP(TTWO), TTHREE, FLEXTTP(TTHREE))
 
 //
 // FOUR ARGUMENTS
@@ -242,10 +244,10 @@ static void cb_setup(t_class *classPtr);
     REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE, TFOUR, PD_FOUR)
 
 #define FLEXT_4ARGS(NAME,NEW_CLASS, TYPE, TTWO, TTHREE, TFOUR) \
-    REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, FLEXTTYPE_ ## TYPE, TTWO, FLEXTTYPE_ ## TTWO, TTHREE, FLEXTTYPE_ ## TTHREE, TFOUR, FLEXTTYPE_ ## TFOUR)
+    REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, FLEXTTP(TYPE), TTWO, FLEXTTP(TTWO), TTHREE, FLEXTTP(TTHREE), TFOUR, FLEXTTP(TFOUR))
 
 #define FLEXT_TILDE_4ARGS(NAME,NEW_CLASS, TYPE, TTWO, TTHREE, TFOUR) \
-    REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, FLEXTTYPE_ ## TYPE, TTWO, FLEXTTYPE_ ## TTWO, TTHREE, FLEXTTYPE_ ## TTHREE, TFOUR, FLEXTTYPE_ ## TFOUR)
+    REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, _tilde_setup, _class, TYPE, FLEXTTP(TYPE), TTWO, FLEXTTP(TTWO), TTHREE, FLEXTTP(TTHREE), TFOUR, FLEXTTP(TFOUR))
 
 ////////////////////////////////////////
 // These definitions are used below
@@ -434,6 +436,67 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
     NEW_CLASS::callb_setup(NEW_CLASS ## EXTERN_NAME); \
 }   	    	    	    	    	    	    	    	\
 }
+
+
+
+#define FLEXT_CALLBACK(M_FUN) \
+static void cb_ ## M_FUN(t_class *c) { thisObject(c)->M_FUN(); }
+
+#define FLEXT_CALLBACK_G(M_FUN) \
+static void cb_ ## M_FUN(t_class *c,int argc,t_atom *argv) { thisObject(c)->M_FUN(argc,argv); }
+
+#define FLEXT_CALLBACK_1(M_FUN,TP1) \
+static void cb_ ## M_FUN(t_class *c,TP1 arg1) { thisObject(c)->M_FUN(arg1); }
+
+#define FLEXT_CALLBACK_2(M_FUN,TP1,TP2) \
+static void cb_ ## M_FUN(t_class *c,TP1 arg1,TP2 arg2) { thisObject(c)->M_FUN(arg1,arg2); }
+
+#define FLEXT_CALLBACK_3(M_FUN,TP1,TP2,TP3) \
+static void cb_ ## M_FUN(t_class *c,TP1 arg1,TP2 arg2,TP3 arg3) { thisObject(c)->M_FUN(arg1,arg2,arg3); }
+
+#define FLEXT_CALLBACK_4(M_FUN,TP1,TP2,TP3,TP4) \
+static void cb_ ## M_FUN(t_class *c,TP1 arg1,TP2 arg2,TP3 arg3.TP4 arg4) { thisObject(c)->M_FUN(arg1,arg2,arg3,arg4); }
+
+#define FLEXT_CALLBACK_5(M_FUN,TP1,TP2,TP3,TP4,TP5) \
+static void cb_ ## M_FUN(t_class *c,TP1 arg1,TP2 arg2,TP3 arg3.TP4 arg4,TP5 arg5) { thisObject(c)->M_FUN(arg1,arg2,arg3,arg4,arg5); }
+
+
+#define FLEXT_ADDBANG(CLASS,M_FUN) \
+add_bang(CLASS,cb_ ## M_FUN)	
+
+#define FLEXT_ADDLOADBANG(CLASS,M_FUN) \
+add_loadbang(CLASS,cb_ ## M_FUN)	
+
+#define FLEXT_ADDFLOAT(CLASS,M_FUN) \
+add_float(CLASS,cb_ ## M_FUN)	
+
+#define FLEXT_ADDFLOAT_N(CLASS,M_FUN,N) \
+add_floatn(CLASS,cb_ ## M_FUN,N)	
+
+#define FLEXT_ADDFLINT_N(CLASS,M_FUN,N) \
+add_flintn(CLASS,cb_ ## M_FUN,N)	
+
+#define FLEXT_ADDMETHOD(CLASS,M_NAME,M_FUN) \
+add_method(CLASS,cb_ ## M_FUN,M_NAME)	
+
+#define FLEXT_ADDMETHOD_G(CLASS,M_NAME,M_FUN) \
+add_methodG(CLASS,cb_ ## M_FUN,M_NAME)
+
+#define FLEXT_ADDMETHOD_1(CLASS,M_NAME,M_FUN,TP1) \
+add_method1(CLASS,cb_ ## M_FUN,M_NAME,FLEXTTP(TP1))	
+
+#define FLEXT_ADDMETHOD_2(CLASS,M_NAME,M_FUN,TP1,TP2) \
+add_method2(CLASS,cb_ ## M_FUN,M_NAME,FLEXTTP(TP1),FLEXTTP(TP2))
+
+#define FLEXT_ADDMETHOD_3(CLASS,M_NAME,M_FUN,TP1,TP2,TP3) \
+add_method3(CLASS,cb_ ## M_FUN,M_NAME,FLEXTTP(TP1),FLEXTTP(TP2),FLEXTTP(TP3))
+
+#define FLEXT_ADDMETHOD_4(CLASS,M_NAME,M_FUN,TP1,TP2,TP3,TP4) \
+add_method4(CLASS,cb_ ## M_FUN,M_NAME,FLEXTTP(TP1),FLEXTTP(TP2),FLEXTTP(TP3),FLEXTTP(TP4))
+
+#define FLEXT_ADDMETHOD_5(CLASS,M_NAME,M_FUN,TP1,TP2,TP3,TP4,TP5) \
+add_method5(CLASS,cb_ ## M_FUN,M_NAME,FLEXTTP(TP1),FLEXTTP(TP2),FLEXTTP(TP3),FLEXTTP(TP4),FLEXTTP(TP5))
+
 
 #endif
 

@@ -11,7 +11,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __FLEXT_H
 #define __FLEXT_H
 
-#define FLEXT_VERSION 101
+#define FLEXT_VERSION 102
 
 #include <flbase.h> 
 

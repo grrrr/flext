@@ -15,10 +15,11 @@ Donations for further development of the package are highly appreciated.
 Package files:
 - readme.txt: this one
 - gpl.txt,license.txt: GPL license stuff
-- flstdc.h: Basic definitions in classic C - Common vocabulary for the different platforms
+- flstdc.h: Basic definitions in classic C - some common vocabulary for the different platforms
 - flbase.h,flbase.cpp: GEM-like C++ interface
 - flext.h,flext.cpp: actual base classes for message (flext_base) and dsp (flext_dsp) processing
 - flbuf.cpp: buffer object handling for base classes
+- fldefs.h: definitions for internal flext use
 - flcwmax.h: trivial prefix header file for Max/MSP CodeWarrior projects
 
 
@@ -49,9 +50,11 @@ pros:
 - better readability of code compared to straight C externals
 - faster development, more robust coding
 - sharing of common methods and data by using base classes
+- any input to any inlet (with the exception of signal streams)
 
 cons:
 - introduces a small overhead to speed (esp. to messages)
+- overhead in object size (due to possibly unneeded code)
 
 
 see flext.h for the documented base classes
@@ -61,17 +64,18 @@ see flext.h for the documented base classes
 Version history:
 
 0.2.0:
-- defines for callback-to-method functions and method setup (FLEXT_CALLBACK*, FLEXT_ADD*)
-- no support for default arguments (A_DEFFLOAT and A_DEFSYMBOL).. use GIMME instead!
-- uses PD's or Max's memory allocation functions (for safety in Max's overdrive)
-- added outlets for anythings
-- better graphics update behavior for PD
-- changed "enable" message for DSP objects to "dspon" ("enable" is reserved in Max/MSP)
 - internal proxy objects for any non-leftmost inlets
-- improved behavior for invalid/undefined buffers/arrays
-- 128-bit aligned memory allocation with new[] 
 - method/argument parsing is done by flext
 - integrated more system functions into flext_base & eliminated superfluous #defines
+- distribute list (into inlet 0) elements over inlets (right to left, only if no explicit list handler defined)
+- added outlets for anythings
+- defines for callback-to-method functions and method setup (FLEXT_CALLBACK*, FLEXT_ADD*)
+- uses PD's or Max's memory allocation functions (for safety in Max's overdrive)
+- no support for default arguments (A_DEFFLOAT and A_DEFSYMBOL).. use GIMME instead!
+- better graphics update behavior for PD
+- improved behavior for invalid/undefined buffers/arrays
+- changed "enable" message for DSP objects to "dspon" ("enable" is reserved in Max/MSP)
+- 128-bit aligned memory allocation with new[] 
 
 0.1.1:
 - documentation for flext.h
@@ -123,13 +127,11 @@ bugs:
 no unfixed known
 
 tests:
-- do i have to destroy the method list elements with the list?
+- do i have to destroy the method list elements with the list? i guess so....
 
 features:
-- MAX/MSP disributes list elements over inlets (if no explicit handler defined) -> emulate this also for flext?
 - abstraction for parsing argument lists
 - abstraction for creating lists and anythings
-- simulate loadbang on object creation for PD
 - abstraction for clock functions
 - message queue? (for multithreaded operation)
 - sending messages to own inlet (passing computation to other patch objects - message queue?)

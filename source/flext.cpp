@@ -151,7 +151,11 @@ flext_base::~flext_base()
 		delete[] inlets;
 	}
 
-	// do i have to destroy the method list elements?
+	// delete method list elements
+	while(!mlst.empty()) {
+		delete mlst.back();
+		mlst.pop_back();
+	}
 }
 
 flext_base::xlet::~xlet() { if(nxt) delete nxt; }
@@ -214,7 +218,8 @@ BL flext_base::setup_inout()
 			}
 			else if(incnt >= 1) {
 				switch(list[0]) {
-					case xlet::tp_def:
+					case xlet::tp_any:
+						// leftmost inlet is already there...
 						break;
 					case xlet::tp_sig:
 						++insigs;
@@ -272,50 +277,52 @@ BL flext_base::setup_inout()
 			while(insigs < incnt && list[insigs] == xlet::tp_sig) ++insigs;
 			
 			for(ix = incnt-1; ix >= insigs; --ix) {
-				switch(list[ix]) {
-					case xlet::tp_sig:
-						error("%s: All signal inlets must be at the left side",thisName());
+				if(ix == 0) {
+					if(list[ix] != xlet::tp_any) {
+						error("%s: Leftmost inlet must be of type signal or default",thisName());
 						ok = false;
-						break;
-					case xlet::tp_float:
-						if(ix >= 10) { 
-							post("%s: Only 9 float inlets possible",thisName());
+					}
+				}
+				else {
+					switch(list[ix]) {
+						case xlet::tp_sig:
+							error("%s: All signal inlets must be at the left side",thisName());
 							ok = false;
-						}
-						else
-							floatin(x_obj,ix);  
-						break;
-					case xlet::tp_flint:
-						if(ix >= 10) { 
-							post("%s: Only 9 flint inlets possible",thisName());
+							break;
+						case xlet::tp_float:
+							if(ix >= 10) { 
+								post("%s: Only 9 float inlets possible",thisName());
+								ok = false;
+							}
+							else
+								floatin(x_obj,ix);  
+							break;
+						case xlet::tp_flint:
+							if(ix >= 10) { 
+								post("%s: Only 9 flint inlets possible",thisName());
+								ok = false;
+							}
+							else
+								intin(x_obj,ix);  
+							break;
+						case xlet::tp_any: // non-leftmost
+						case xlet::tp_sym:
+						case xlet::tp_list:
+							inlets[ix] = (px_object *)proxy_new(x_obj,ix,&((flext_hdr *)x_obj)->curinlet);  
+							break;
+	/*
+						case xlet::tp_def:
+							if(ix) error("%s: Default inlet type reserved for inlet #0",thisName());
+							break;
+	*/
+						default:
+							error("%s: Wrong type for inlet #%i: %i",thisName(),ix,(I)list[ix]);
 							ok = false;
-						}
-						else
-							intin(x_obj,ix);  
-						break;
-					case xlet::tp_sym:
-					case xlet::tp_any:
-					case xlet::tp_list:
-						inlets[ix] = (px_object *)proxy_new(x_obj,ix,&((flext_hdr *)x_obj)->curinlet);  
-						break;
-					case xlet::tp_def:
-						if(ix) error("%s: Default inlet type reserved for inlet #0",thisName());
-						break;
-					default:
-						error("%s: Wrong type for inlet #%i: %i",thisName(),ix,(I)list[ix]);
-						ok = false;
-				} 
-			}
-			
-			if(insigs) {
-				dsp_setup(thisHdr(),insigs); // signal inlets	
-			}
-			else {
-				if(incnt && list[0] != xlet::tp_def) {
-					error("%s: Leftmost inlet must be of type signal or default",thisName());
-					ok = false;
+					} 
 				}
 			}
+			
+			if(insigs) dsp_setup(thisHdr(),insigs); // signal inlets	
 		}
 #endif
 
@@ -554,10 +561,31 @@ BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 		else ++it;
 	}
 	
-	if(!ret) LOG("Did not find any method tag");
+	if(!ret && inlet == 0 && s == sym_list) {
+		// distribute list elements over inlets (Max/MSP behavior)
+		I a = incnt-insigs;
+		if(a > argc) a = argc;
+		
+		for(I i = a-1; i >= 0; --i) { // right to left distribution
+			const t_symbol *s = NULL;
+			if(is_float(argv[i])) s = sym_float;
+			else if(is_int(argv[i])) s = sym_int;
+			else if(is_symbol(argv[i])) s = sym_symbol;
+#ifdef PD
+			else if(is_pointer(argv[i])) s = sym_pointer;  // can pointer atoms occur here?
+#endif
+			if(s) m_methodmain(i,s,1,argv+i);			
+		}
+		
+		ret = true;
+	}
+	
+	if(!ret) m_method_(inlet,s,argc,argv);
 	
 	return ret; // true if appropriate handler was found and called
 }
+
+V flext_base::m_method_(I inlet,const t_symbol *s,I argc,t_atom *argv) {}
 
 
 flext_base::methitem::methitem(I in,t_symbol *t): 

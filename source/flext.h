@@ -65,8 +65,13 @@ public:
 	// quickhelp for inlets/outlets (Max/MSP only)
 	virtual V m_assist(L /*msg*/,L /*arg*/,C * /*s*/) {}
 
-	// called for every incoming message (returns true if a handler was found and called)
+	// called for every incoming message 
+	// all method handling is done in there
+	// returns true if a handler was found and called)
 	virtual BL m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv);
+
+	// called for every unhandled message (by m_methodmain)
+	virtual V m_method_(I inlet,const t_symbol *s,I argc,t_atom *argv);
 
 
 // --- buffer/array stuff -----------------------------------------	
@@ -122,18 +127,18 @@ public:
 	// define inlets/outlets - all (also default) inlets must be defined
 	// argument m specifies multiple inlet/outlet count
 	
-	V add_in_def() { AddInlet(xlet::tp_def,1); }
+//	V add_in_def() { AddInlet(xlet::tp_def,1); }
+	V add_in_anything(I m = 1) { AddInlet(xlet::tp_any,m); } // leftmost or via proxy
 	V add_in_float(I m = 1) { AddInlet(xlet::tp_float,m); }
 	V add_in_flint(I m = 1) { AddInlet(xlet::tp_flint,m); }
 	V add_in_symbol(I m = 1) { AddInlet(xlet::tp_sym,m); }
 	V add_in_list(I m = 1) { AddInlet(xlet::tp_list,m); }  // via proxy
-	V add_in_anything(I m = 1) { AddInlet(xlet::tp_any,m); } // via proxy
 	
+	V add_out_anything(I m = 1) { AddOutlet(xlet::tp_any,m); }
 	V add_out_float(I m = 1) { AddOutlet(xlet::tp_float,m); }
 	V add_out_flint(I m = 1) { AddOutlet(xlet::tp_flint,m); }
 	V add_out_symbol(I m = 1) { AddOutlet(xlet::tp_sym,m); }
 	V add_out_list(I m = 1) { AddOutlet(xlet::tp_list,m); }
-	V add_out_anything(I m = 1) { AddOutlet(xlet::tp_any,m); }
 	
 	// must be called to actually set up the defined inlets/outlets 
 	// only ONCE!!!
@@ -269,7 +274,9 @@ protected:
 		
 	struct xlet {	
 		enum type {
-			tp_none = 0,tp_def,tp_float,tp_flint,tp_sym,tp_list,tp_sig,tp_any
+			tp_none = 0,
+//			tp_def,
+			tp_float,tp_flint,tp_sym,tp_list,tp_sig,tp_any
 		};
 
 		xlet(type t): tp(t),nxt(NULL) {}

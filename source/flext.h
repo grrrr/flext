@@ -384,6 +384,13 @@ public:
 	// returns current sample rate
 	float Samplerate() const { return srate; }
 	
+	// returns current block size
+	int Blocksize() const { return blksz; }
+	
+	// returns number of overall input and output channels
+	int ChannelsIn() const { return chnsin; }
+	int ChannelsOut() const { return chnsout; }
+	
 
 // --- inheritable virtual methods --------------------------------
 
@@ -422,6 +429,8 @@ private:
 
 	// not static, could be different in different patchers..
 	float srate; 
+	int blksz;
+	int chnsin,chnsout;
 
 	// setup function
 	static void Setup(t_class *c);

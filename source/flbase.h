@@ -216,7 +216,7 @@ static NEW_CLASS *thisObject(void *c) { return (NEW_CLASS *)((flext_hdr *)c)->da
     REAL_NEW_G(NAME,NEW_CLASS, _setup)
 
 #define FLEXT_NEW_TILDE_G(NAME,NEW_CLASS)  	 \
-    REAL_NEW_G(NAME,NEW_CLASS, _tilde_setup, _class)
+    REAL_NEW_G(NAME,NEW_CLASS, _tilde_setup)
 
 //
 // TWO ARGUMENTS

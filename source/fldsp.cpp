@@ -33,6 +33,9 @@ flext_dsp::flext_dsp():
 	dspon(true),
 #endif
 	srate(sys_getsr()),  // should we set it?
+	blksz(sys_getblksize()),
+	chnsin(sys_get_inchannels()),
+	chnsout(sys_get_outchannels()),
 	invecs(NULL),outvecs(NULL)
 {}
 
@@ -62,8 +65,11 @@ void flext_dsp::cb_dsp(t_class *c,t_signal **sp)
 { 
 	flext_dsp *obj = thisObject(c); 
 
-	// store current sample rate
+	// store current dsp parameters
 	obj->srate = sp[0]->s_sr;
+	obj->blksz = sp[0]->s_n;  // is this guaranteed to be the same as sys_getblksize() ?
+	obj->chnsin = sys_get_inchannels();
+	obj->chnsout = sys_get_outchannels();
 
 	// store in and out signal vectors
 	int i,in = obj->CntInSig(),out = obj->CntOutSig();

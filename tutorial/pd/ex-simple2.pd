@@ -1,12 +1,12 @@
 #N canvas 197 285 454 304 12;
 #X obj 110 96 simple2 3;
 #X floatatom 98 51 5 0 0;
-#X floatatom 187 52 5 0 0;
+#X floatatom 199 52 5 0 0;
 #X floatatom 108 150 5 0 0;
 #X msg 11 12 help;
 #X text 90 30 triggering;
-#X text 190 31 non-triggering;
-#X text 187 95 default argument;
+#X text 202 31 non-triggering;
+#X text 196 96 default argument;
 #X connect 0 0 3 0;
 #X connect 1 0 0 0;
 #X connect 2 0 0 1;

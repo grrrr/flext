@@ -76,7 +76,9 @@ void flext_base::PopThread()
 		delete ti;
 	}
 	else {
-		post("%s - Internal error - Thread not found!",thisName());
+#ifdef _DEBUG
+		post("%s - Am i too slow? - Thread not found!",thisName());
+#endif
 	}
 	
 	tlmutex.Unlock();

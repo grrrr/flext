@@ -17,8 +17,8 @@ This shows an example of multiple threads and syncing with a thread conditional
 
 #include <flext.h>
 
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 300)
-#error You need at least flext version 0.3.0
+#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 301)
+#error You need at least flext version 0.3.1
 #endif
 
 
@@ -79,7 +79,6 @@ void thread2::m_start(int st)
 	if(running) { count = st; return; }
 
 	running = true;
-	blipping = false;
 
 	// loop until either the system exit flag or the "stopit" flag is set 
 	for(count = st; !ShouldExit() && !stopit; ++count) 
@@ -118,6 +117,7 @@ void thread2::m_text()
 
 void thread2::m_textout()
 {
+	if(blipping) return;
 	blipping = true;
 
 	while(!ShouldExit() && !stopit) {

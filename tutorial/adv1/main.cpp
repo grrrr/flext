@@ -12,8 +12,8 @@ This is an example of a simplified prepend object
 
 #include <flext.h>
 
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 300)
-#error You need at least flext version 0.3.0
+#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 301)
+#error You need at least flext version 0.3.1
 #endif
 
 
@@ -25,12 +25,11 @@ class adv1:
 public:
 	// constructor with variable argument list
 	adv1(int argc,t_atom *argv);
-	~adv1();
 
 protected:
 	void m_any(t_symbol *s,int argc,t_atom *argv);  // method which digests anything
 
-	AtomList *lst;
+	AtomList lst;
 private:
 	FLEXT_CALLBACK_A(m_any);  // callback for method "m_any" (with anything argument)	
 };
@@ -43,8 +42,7 @@ FLEXT_NEW_V("adv1 prepend",adv1)
 
 // constructor
 
-adv1::adv1(int argc,t_atom *argv):
-	lst(NULL)
+adv1::adv1(int argc,t_atom *argv)
 { 
 	AddInAnything();  // one inlet that can receive anything 
 	AddOutAnything();  // one outlet for anything 
@@ -57,7 +55,7 @@ adv1::adv1(int argc,t_atom *argv):
 	
 	if(argc != 0) { // check for arg count
 		// store arg list
-		lst = new AtomList(argc,argv);
+		lst(argc,argv);
 	}
 	else { 
 		// no args given
@@ -69,28 +67,24 @@ adv1::adv1(int argc,t_atom *argv):
 } 
 
 
-// destructor
-
-adv1::~adv1() { if(lst) delete lst; }
-
 
 // method
 
 void adv1::m_any(t_symbol *s,int argc,t_atom *argv)
 {
 	// reserve space for as many atoms as possibly necessary
-	AtomList result(lst->Count()+argc+2);
+	AtomList result(lst.Count()+argc+2);
 
 	// ix is our counter of atoms to output
 	int ix = 0; 
 
 	int i = 0;
-	if(!IsSymbol((*lst)[0])) {
+	if(!IsSymbol(lst[0])) {
 		// if first element to prepend is no symbol then make it a "list"
 		SetSymbol(result[ix++],sym_list);
 	}
 	// copy atoms to prepend to result list
-	for(; i < lst->Count(); ++i) CopyAtom(&result[ix++],&(*lst)[i]);
+	for(; i < lst.Count(); ++i) CopyAtom(&result[ix++],&lst[i]);
 
 	// if anything is no "list" or "float" then append it to result list
 	if(s != sym_list && s != sym_float)

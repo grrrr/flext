@@ -20,6 +20,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <Threads.h>
 #endif
 
+#ifdef unix
+#include <unistd.h>
+#endif
+
 t_atom *flext_base::CopyList(int argc,const t_atom *argv)
 {
 	int i;
@@ -51,6 +55,6 @@ void flext_base::Sleep(float s)
 		YieldToAnyThread(); // should we really yield?
 	}
 #else
-#pragma message("Sleep not defined")
+	usleep((long)(s*1000000));
 #endif
 }

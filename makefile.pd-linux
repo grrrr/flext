@@ -23,7 +23,7 @@ TARGDIR=./pd-linux
 
 # compiler+linker stuff 
 INCLUDES=$(PDPATH)
-FLAGS=-DPD
+FLAGS=-DPD 
 CFLAGS=-O6 -mcpu=pentiumpro
 CFLAGS_D=-mcpu=pentiumpro -g
 CFLAGS_T=-DFLEXT_THREADS
@@ -38,7 +38,7 @@ NAME=flext
 
 # all the source files from the package
 SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flsetup.cpp \
-flutil.cpp flatom.cpp
+flutil.cpp flatom.cpp flthr.cpp
 HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h flthr.h fldsp.h
 IHDRS=flinternal.h
 
@@ -89,9 +89,10 @@ $(INSTDIR):
 
 install:: $(INSTDIR)
 
-install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD) $(HDRS)
+install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)  $(patsubst %,source/%,$(HDRS))
 	cp $^ $(INSTDIR)
-	chown root.root $(patsubst %,$(INSTDIR)/%,$(notdir $^))
+	chmod 755 $(patsubst %,$(INSTDIR)/%,$(notdir $^))
+	chown root.users $(patsubst %,$(INSTDIR)/%,$(notdir $^))
 
 .PHONY: clean
 clean:

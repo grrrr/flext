@@ -17,8 +17,8 @@ This shows an example of a method running as a thread
 
 #include <flext.h>
 
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 300)
-#error You need at least flext version 0.3.0
+#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 301)
+#error You need at least flext version 0.3.1
 #endif
 
 

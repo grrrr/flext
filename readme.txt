@@ -44,11 +44,11 @@ o Borland C++ 5.5 (free): edit & run "make -f makefile.bcc"
 o Microsoft Visual C++ 6: use the "flext.dsp" project file  
 > you have to edit the pd path in the project properties/C-C++/preprocessor tab!
 
-o Cygwin: edit & run "make -f makefile.cygwin" and "make -f makefile.cygwin install"
+o Cygwin: edit "makefile.pd-cygwin" & run "sh build-pd-cygwin.sh" 
 
 pd - linux:
 -----------
-o GCC: edit & run "make -f makefile.pd-linux" and as root "make -f makefile.pd-linux install"
+o GCC: edit "makefile.pd-linux" & run "sh build-pd-linux.sh" 
 
 Max/MSP - MacOS:
 ----------------
@@ -81,6 +81,7 @@ Version history:
 
 0.3.1:
 - added some more functionality to the AtomList class
+- fixed forgotten Sleep implementation in pd@unix
 
 0.3.0:
 - added CYGWIN support
@@ -181,7 +182,7 @@ Restrictions in compatibility mode:
 - Max allows only 9 float/int inlets
 - Max allows only 3 type-checked creation arguments -> use variable argument lists for more
 
-Porting to new platforms:
+Porting to new compilers/platforms:
 - enums must be int-sized
 - compiler must support RTTI and bool type
 
@@ -205,7 +206,6 @@ bugs:
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)
 - hard thread termination upon object destruction doesn't seem to work properly -> crash
 - Max rounding bug (at least version 4.0.5) ... buffer resize could be one sample less!
-- Sleep unimplemented for pd@linux
 
 tests:
 - PD: figure out what "pointer" messages do and where they occur

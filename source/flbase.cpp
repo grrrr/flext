@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -135,7 +135,12 @@ bool flext_obj::GetParamSym(t_atom &dst,const t_symbol *sym,t_canvas *c)
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 // this declaration is missing in m_pd.h (0.37-0 and -1)
-extern "C" void canvas_getargs(int *argcp, t_atom **argvp);
+// but it is there in 0.37-2 (but how to tell which micro-version?)
+extern "C" 
+#ifdef _MSC_VER
+__declspec(dllimport)
+#endif
+void canvas_getargs(int *argcp, t_atom **argvp);
 #endif
 
 

@@ -49,8 +49,10 @@ public:
 #if defined(_MSC_VER) && (_MSC_VER < 0x1300)
         // with the MSVC6 STL implementation iterators can't be initialized...
         iterator(AnyMap::iterator &it) { static_cast<AnyMap::iterator &>(*this) = it; }
+        iterator(AnyMap::Parent::iterator &it) { static_cast<AnyMap::Parent::iterator &>(*this) = it; }
 #else
         iterator(AnyMap::iterator &it): AnyMap::iterator(it) {}
+        iterator(AnyMap::Parent::iterator &it): AnyMap::Parent::iterator(it) {}
 #endif
 
         inline K &key() const { return *(K *)&((*this)->first); }

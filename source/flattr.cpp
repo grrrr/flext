@@ -120,7 +120,7 @@ void flext_base::ListAttrib(AtomList &la) const
 		}
 	}
 
-	la(list[0].size()+list[1].size());
+	la((int)(list[0].size()+list[1].size()));
 	int ix = 0;
 	AttrList::iterator it;
 	for(i = 0; i <= 1; ++i)

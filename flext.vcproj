@@ -352,7 +352,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="copy flext to vibrez"
-				CommandLine="copy F:\prog\max\flext\pd-msvc\flext_d.dll f:\prog\vibrez\debug"/>
+				CommandLine="copy F:\pdmax\flext\pd-msvc\flext_d.dll f:\vibrez\debug"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -416,10 +416,10 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="copy flext to vibrez"
-				CommandLine="copy F:\prog\max\flext\source\*.h f:\prog\vibrez\api\include
-copy F:\prog\max\flext\pd-msvc\flext_l.lib f:\prog\vibrez\api\lib
-copy F:\prog\max\flext\pd-msvc\flext.dll f:\prog\vibrez\release
-copy F:\prog\max\flext\pd-msvc\flext.dll f:\prog\dll
+				CommandLine="copy F:\pdmax\flext\source\*.h f:\vibrez\api\include
+copy F:\pdmax\flext\pd-msvc\flext_l.lib f:\vibrez\api\lib
+copy F:\pdmax\flext\pd-msvc\flext.dll f:\vibrez\release
+copy F:\pdmax\flext\pd-msvc\flext.dll f:\prog\dll
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>

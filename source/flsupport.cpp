@@ -239,7 +239,7 @@ void flext_root::FreeAligned(void *blk)
 void flext::GetAString(const t_atom &a,char *buf,size_t szbuf)
 { 
 #if FLEXT_SYS == FLEXT_SYS_PD
-	atom_string(const_cast<t_atom *>(&a),buf,szbuf);
+	atom_string(const_cast<t_atom *>(&a),buf,(int)szbuf);
 #else
     if(IsSymbol(a)) STD::strncpy(buf,GetString(a),szbuf);
 	else if(IsFloat(a)) STD::snprintf(buf,szbuf,"%f",GetFloat(a));

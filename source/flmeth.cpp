@@ -115,7 +115,7 @@ void flext_base::ListMethods(AtomList &la,int inlet) const
         }
     }
 
-    la(list[0].size()+list[1].size());
+    la((int)list[0].size()+(int)list[1].size());
     int ix = 0;
     MethList::iterator it;
     for(i = 0; i <= 1; ++i)

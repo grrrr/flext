@@ -38,6 +38,9 @@ Package files:
 > if you choose to compile with SndObj support you will need the respective library
 > download from: http://www.may.ie/academic/music/musictec/SndObj/main.html
 
+> if you choose to compile with STK support you will need the respective package and build a library
+> download from: http://ccrma-www.stanford.edu/software/stk/
+
 ----------------------------------------------------------------------------
 
 The package should at least compile (and is tested) with the following compilers:

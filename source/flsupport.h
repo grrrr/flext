@@ -122,6 +122,7 @@ public:
 		
 		/*! \brief Set to specified buffer.
 			\param nameonly: if true sets name only, but doesn't look at buffer actually
+            \return -1 on failure, 0 on success, 1 if parameters (length, data ptr, channels) have changed
 		*/
 		int Set(const t_symbol *s = NULL,bool nameonly = false);
 		

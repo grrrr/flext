@@ -85,6 +85,7 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
 			if(valid) ret = -1;
 		}
 		else {
+            ret = 0;
 			garray_usedindsp(arr);
 			if(frames != frames1) { frames = frames1; if(!ret) ret = 1; }
 			if(data != data1) { data = data1; if(!ret) ret = 1; }

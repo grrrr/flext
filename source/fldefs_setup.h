@@ -19,8 +19,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // ====================================================================================
 
 /*!	\defgroup FLEXT_D_INSTANCE Class instantiation
-    \note The name of your class is of importance! It must be the same as the external
-    \note (excluded an eventual ~ (tilde))
+    \note For stand-alone externals (not part of a library) the name of your class 
+    \note is of importance! It must be the same as the external (excluded an eventual ~ (tilde))
+
+    There are additional parameters that can be included in the NAME field of FLEXT_NEW etc.:
+
+    - There may be additional names (aliases) appened, separated by spaces
+    - There may be a help path prepended, separated by a colon
+    - This help path doesn't work for Max/MSP. There you'll have to use a object mapping file (Max/MSP version >= 4.2)
 */
 
 

@@ -6,6 +6,8 @@
 
 !include config-pd-msvc.txt
 
+NAME=flext
+
 # source files
 SOURCE=source
 

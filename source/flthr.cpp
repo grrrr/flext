@@ -27,6 +27,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <sys/timeb.h>
 #endif
 
+#if FLEXT_THREADS == FLEXT_THR_WIN32 && WINVER < 0x0500
+#error WIN32 threads need Windows SDK version >= 0x500
+#endif
+
+
 #include <errno.h>
 
 //! Thread id of system thread

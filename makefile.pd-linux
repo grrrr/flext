@@ -1,52 +1,60 @@
-CFLAGS=-O6 -mpentium -g
-FLAGS=-DPD
+# flext - C++ layer for Max/MSP and pd (pure data) externals
+# Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
+#
+# Makefile for gcc @ linux
+#
+# usage: make -f makefile.pd-linux
+#
+# ---------------------------------------------
 
-INCLUDES=/usr/lib/pd/include .
+NAME=flext
+
+# where to build
+TARGDIR=./pd-linux
+
+# where to install
+INSTDIR=/usr/lib/pd/flext  ### EDIT! ###
+
+# compiler+linker stuff
+INCLUDES=/usr/lib/pd/include ### EDIT! ###
+FLAGS=-DPD
+CFLAGS=-O6 -mpentium -g
 LIBS=
 
-TARGDIR=./pd-linux
-TARGET=$(TARGDIR)/flext.a
+# the rest can stay untouched
+# ----------------------------------------------
+
+# all the source files from the package
 SRCS=flbase.cpp flext.cpp flbuf.cpp
+HDRS=flstdc.h flbase.h fldefs.h flext.h
+
+TARGET=$(TARGDIR)/$(NAME).a
 
 all: $(TARGDIR) $(TARGET)
 
 $(TARGDIR):
 	mkdir $(TARGDIR)
 
-flbase.cpp flext.cpp flbuf.cpp: flstdc.h flbase.h flext.h
+$(SRCS): $(HDRS)
 	touch $@
 
 $(TARGDIR)/%.o : %.cpp
-	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES)) $< -o $@
+	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) .) $< -o $@
 
 $(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS)) 
 	ar rc $@ $^ 
 	chmod 755 $@
 
-install: $(TARGET)
-	chown root.root $^ 
-	cp $^ $(PDEXTRA)
+$(INSTDIR):
+	mkdir $(INSTDIR)
+
+install: $(INSTDIR)
+
+install: $(TARGET) $(HDRS)
+	cp $< $(INSTDIR)
+	chown root.root $(INSTDIR)/$<
 
 .PHONY: clean
 clean:
 	rm -f $(TARGDIR)/*.o $(TARGET)
 	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

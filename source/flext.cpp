@@ -71,7 +71,7 @@ BL flext_base::SetupInOut()
 					case xlet::tp_def:
 						break;
 					case xlet::tp_sig:
-//						CLASS_MAINSIGNALIN(thisClass(), flext_hdr, defsig);
+						CLASS_MAINSIGNALIN(thisClass(), flext_hdr, defsig);
 						++insigs;
 						break;
 					default:
@@ -84,8 +84,10 @@ BL flext_base::SetupInOut()
 				switch(list[ix]) {
 					case xlet::tp_float:
 					case xlet::tp_flint: {
-						C sym[] = "ft?"; 
-						sym[2] = '0'+ix;  // what if ix > 9????
+						C sym[] = "ft?\0";
+						// is this correct handling for ix > 9????
+						if(ix >= 10) sym[2] = '0'+ix/10,sym[3] = '0'+ix%10;
+						else sym[2] = '0'+ix;  
 					    inlets[ix] = inlet_new(x_obj, &x_obj->ob_pd, &s_float, gensym(sym)); 
 						break;
 					}

@@ -8,7 +8,7 @@
 # where are the PD header files? (m_pd.h, m_imp.h, g_canvas.h)
 # if it is a system include path (like /usr/local/include) 
 # you should leave it blank (as e.g. g++ 3.2 complains about it)
-PDPATH=
+PDPATH=/home/thomas/prog/pd-cvs/pd/src
 
 # where is the SndObj include directory?
 # (leave blank or comment out to disable SndObj support)

@@ -18,7 +18,8 @@ FLEXTLIB=$(FLEXTPATH)/flext-pdwin.lib
 INCLUDES=$(PDPATH)/src
 LIBPATH=$(PDPATH)/bin
 FLAGS=-DFLEXT_SYS=2
-CFLAGS=-O6 -mcpu=pentiumpro
+CFLAGS=-O6 -fno-rtti
+CFLAGS+=-mcpu=pentium3 -msse  # cygwin gcc 3.2
 LIBS=m pd
 
 

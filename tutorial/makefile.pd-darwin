@@ -16,7 +16,7 @@ FLEXTLIB=$(FLEXTPATH)/flext_t.a  # take threaded library for all
 INCLUDES=$(PDPATH)
 LIBPATH=
 FLAGS=-DFLEXT_SYS=2 -DFLEXT_THREADS -Wno-unused -Wno-parentheses -Wno-switch -Wstrict-prototypes # -maltivec
-CFLAGS=-O6 
+CFLAGS=-O6 -fno-rtti
 LIBS=m
 LDFLAGS=-bundle -bundle_loader $(PD)
 

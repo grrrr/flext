@@ -15,7 +15,8 @@ include $(CONFIG)
 # compiler+linker stuff 
 INCLUDES=$(PDPATH) $(SNDOBJ) $(STK)
 FLAGS=-DFLEXT_SYS=2 
-CFLAGS=-O6 -mcpu=pentiumpro
+CFLAGS=-O6 -fno-exceptions -fno-rtti
+CFLAGS+=-mcpu=pentium3 -msse  # gcc 3.2
 CFLAGS_D=-mcpu=pentiumpro -g
 CFLAGS_T=-DFLEXT_THREADS
 LIBS=

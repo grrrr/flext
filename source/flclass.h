@@ -182,6 +182,7 @@ namespace flext {
 	inline void SetNothing(t_atom &a) { a.a_type = A_NULL; }
 
 	bool IsInt(const t_atom &);
+	int GetInt(const t_atom &a);
 	int GetAInt(const t_atom &a);
 
 	//! Check whether the atom is a float

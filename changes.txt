@@ -19,6 +19,7 @@ Version history:
 - protection for SIMD routines with count=0
 - support exceptions for setup functions, object creation and destruction, method handling
 - small fixes for MSVC6 incompatibilites
+- fixes for Max 4.5 headers
 
 0.4.6:
 - added a text edit window for list attributes

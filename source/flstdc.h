@@ -126,10 +126,12 @@ typedef t_int t_flint;
 typedef t_symbol *t_symtype;
 typedef t_object *t_thing;
 
-#if 1 //FLEXT_OS == FLEXT_OS_WIN
-typedef void *t_qelem;  // qelem not defined in Windows SDK 
-#else
+// for the following to work for Max for OSX you should have the latest SDK
+#if FLEXT_OS == FLEXT_OS_MAC && !defined(MAC_VERSION)
+// Max for OS9 SDK
 typedef qelem t_qelem;
+#else
+typedef void *t_qelem;
 #endif
 
 typedef method t_method;

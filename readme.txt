@@ -105,6 +105,9 @@ Max/MSP - MacOSX:
 ------------------
 o Metrowerks CodeWarrior: edit & use the "flext.cw" project file
 
+Be sure to have the latest Max/MSK SDK downloadable from http://www.cycling74.com
+You should use "version 4.5 headers" rather than "version 4.3 headers".
+
 You must have the following "Source Trees" (CW preferences, not project specific!) defined:
 "OS X Volume" - Pointing to your OSX boot drive
 "flext" - Pointing to the flext main directory

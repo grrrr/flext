@@ -80,46 +80,6 @@ void flext::Setup()
 #endif
 
 #ifdef FLEXT_THREADS
-
-#if FLEXT_SYS == FLEXT_SYS_MAX && FLEXT_OS == FLEXT_OS_MAC && FLEXT_THREADS == FLEXT_THR_POSIX
-	// for Max OSX/CFM MachO functions have to be imported
-    CFBundleRef bundle = NULL;
-    if (bundle = CFBundleGetBundleWithIdentifier(CFSTR("com.apple.Carbon")))
-	{
-	    //load pthread function pointers
-		pthread_self 		= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_self"));
-		pthread_equal 		= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_equal"));
-		pthread_create 		= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_create"));
-		pthread_cancel 		= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_cancel"));
-		pthread_testcancel 	= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_testcancel"));
-		pthread_join 		= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_join"));
-		pthread_exit 		= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_exit"));
-
-		pthread_attr_init	= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_attr_init"));
-		pthread_attr_destroy	= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_attr_destroy"));
-		pthread_attr_setdetachstate	= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_attr_setdetachstate"));
-
-		pthread_attr_getschedparam	= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_attr_getschedparam"));
-		pthread_attr_setschedparam	= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_attr_setschedparam"));
-
-		pthread_mutex_init	= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_mutex_init"));
-		pthread_mutex_destroy	= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_mutex_destroy"));
-		pthread_mutex_lock	= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_mutex_lock"));
-		pthread_mutex_unlock	= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_mutex_unlock"));
-		pthread_mutex_trylock	= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_mutex_trylock"));
-
-		pthread_cond_init	= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_cond_init"));
-		pthread_cond_destroy	= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_cond_destroy"));
-		pthread_cond_signal	= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_cond_signal"));
-		pthread_cond_wait	= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_cond_wait"));
-		pthread_cond_timedwait	= CFBundleGetFunctionPointerForName(bundle, CFSTR("pthread_cond_timedwait"));
-
-		sched_yield	= CFBundleGetFunctionPointerForName(bundle, CFSTR("sched_yield"));
-		sched_get_priority_min	= CFBundleGetFunctionPointerForName(bundle, CFSTR("sched_get_priority_min"));
-		sched_get_priority_max	= CFBundleGetFunctionPointerForName(bundle, CFSTR("sched_get_priority_max"));
-    }
-#endif
-
 	thrid = GetThreadId();
     StartHelper();
 #endif

@@ -278,7 +278,10 @@ bool flext::StopThread(void (*meth)(thr_params *p),thr_params *p,bool wait)
 	if(found) {
 		// signal thread helper
 		thrhelpcond->Signal();
-
+#if 0
+        // ######################
+        // i don't think we need to wait for a single thread to stop
+        // ######################
 		int cnt = 0;
 		for(int wi = 0; wi < 100; ++wi) {
 			// lock and count this object's threads
@@ -296,6 +299,8 @@ bool flext::StopThread(void (*meth)(thr_params *p),thr_params *p,bool wait)
 		}
 
 		return cnt == 0;
+#endif
+        return true;
 	}
 	else
 		return false;

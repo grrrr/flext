@@ -175,10 +175,10 @@ void flext_obj::lib_init(const char *name,void setupfun(),bool attr)
 	    setupfun();
     }
     catch(std::exception &x) {
-        error("%s - Exception at library setup: %s",name,x.what());
+        error("%s - %s",name,x.what());
     }
     catch(char *txt) {
-    	error("%s - Exception at library setup: %s",name,txt);
+    	error("%s - %s",name,txt);
     }
     catch(...) {
     	error("%s - Unknown exception at library setup",name);

@@ -84,7 +84,6 @@ void flext_base::SetAttrEditor(t_classid c)
                 "set a [regsub {\\$} $a \\\\$]\n"  // replace $ with \$
                 "set a [regsub {,} $a \\\\,]\n"  // replace , with \,
                 "set a [regsub {;} $a \\\\\\;]\n"  // replace ; with \;
-//                "set tmp [concat $tmp $a]\n"
                 "lappend tmp $a\n"
             "}\n"
             "return $tmp\n"
@@ -110,39 +109,12 @@ void flext_base::SetAttrEditor(t_classid c)
                 "lappend lst [eval concat $$var_attr_name]\n" 
 
                 // process current value
-                "set tmp [eval concat $$var_attr_val]\n"
-                "set len [llength $tmp]\n"
-                "if { $len == 1 } {\n"
-#if 0
-                    // it's an atom
-                    // if atom starts with $, replace it by # ($ can't be passed by TCL)
-                    "if { [string index $tmp 0] == \"$\" } {\n"
-                        "set tmp [string replace $tmp 0 0 #]\n" 
-                    "}\n"
-                    "lappend lst $tmp\n"
-#else
-                    "set lst [concat $lst [flext_escatoms $tmp]]\n" 
-#endif
-                "} else {\n"
-                    // it's a list
-                    "set lst [concat $lst {list} $len [flext_escatoms $tmp]]\n" 
-                "}\n"
+                "set tmp [flext_escatoms [eval concat $$var_attr_val]]\n"
+                "set lst [concat $lst [llength $tmp] $tmp]\n" 
 
                 // process init value
-                "set tmp [eval concat $$var_attr_init]\n"
-                "set len [llength $tmp]\n"
-                "if { $len == 1 } {\n"
-                    // it's an atom
-                    // if atom starts with $, replace it by # ($ can't be passed by TCL)
-                    "if { [string index $tmp 0] == \"$\" } {\n"
-                        "set tmp [string replace $tmp 0 0 #]\n" 
-                    "}\n"
-                    "lappend lst $tmp\n" 
-                "} else {\n"
-                    // it's a list
-//                    "set lst [concat $lst {list} $len $tmp]\n" 
-                    "set lst [concat $lst {list} $len [flext_escatoms $tmp]]\n" 
-                "}\n"
+                "set tmp [flext_escatoms [eval concat $$var_attr_init]]\n"
+                "set lst [concat $lst [llength $tmp] $tmp]\n" 
 
                 "lappend lst [eval concat $$var_attr_save]\n" 
             "}\n"
@@ -212,7 +184,11 @@ void flext_base::SetAttrEditor(t_classid c)
 
         "proc flext_textcopy {id idtxt var} {\n"
             "global $var\n"
-            "set $var [eval $idtxt get 0.0 end]\n"
+            "set txt [eval $idtxt get 0.0 end]\n"
+            // strip newline characters
+            "set tmp {}\n"
+            "foreach t $txt { lappend tmp [string trim $t] }\n"
+            "set $var $tmp\n"
             "destroy $id\n"
         "}\n"
 
@@ -668,10 +644,7 @@ void flext_base::cb_GfxSave(t_gobj *c, t_binbuf *b)
 
 bool flext_base::cb_AttrDialog(flext_base *th,int argc,const t_atom *argv)
 {
-    int i = 0;
-    if(GetASymbol(argv[i]) == sym_list) ++i;
-
-    for(; i < argc; ) {
+    for(int i = 0; i < argc; ) {
         FLEXT_ASSERT(IsSymbol(argv[i]));
 
         // get name
@@ -679,27 +652,17 @@ bool flext_base::cb_AttrDialog(flext_base *th,int argc,const t_atom *argv)
         i++;
 
         // get current value
+        FLEXT_ASSERT(CanbeInt(argv[i]));
         int ccnt,coffs;
-        if(IsSymbol(argv[i]) && GetSymbol(argv[i]) == sym_list) {
-            i++;
-            FLEXT_ASSERT(CanbeInt(argv[i]));
-            ccnt = GetAInt(argv[i]);
-            coffs = ++i;
-        }
-        else
-            coffs = i,ccnt = 1;
+        ccnt = GetAInt(argv[i]);
+        coffs = ++i;
         i += ccnt;
 
         // get init value
+        FLEXT_ASSERT(CanbeInt(argv[i]));
         int icnt,ioffs;
-        if(IsSymbol(argv[i]) && GetSymbol(argv[i]) == sym_list) {
-            i++;
-            FLEXT_ASSERT(CanbeInt(argv[i]));
-            icnt = GetAInt(argv[i]);
-            ioffs = ++i;
-        }
-        else
-            ioffs = i,icnt = 1;
+        icnt = GetAInt(argv[i]);
+        ioffs = ++i;
         i += icnt;
 
         FLEXT_ASSERT(i < argc);

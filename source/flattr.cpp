@@ -240,9 +240,9 @@ bool flext_base::SetAttrib(const t_symbol *tag,AttrItem *a,int argc,const t_atom
 			break;
 		case a_symbol:
 			if(argc == 1 && IsSymbol(argv[0])) {
-				// \todo shall we analyze the patcher args????
-//				any.st = const_cast<t_symbol *>(GetParamSym(GetSymbol(argv[0]),thisCanvas()));
-				any.st = GetSymbol(argv[0]);
+                t_atom at;
+                GetParamSym(at,GetSymbol(argv[0]),thisCanvas());
+				any.st = const_cast<t_symbol *>(GetSymbol(at));
 				((methfun_1)a->fun)(this,any);				
 			}
 			else ok = false;

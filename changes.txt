@@ -27,6 +27,7 @@ Version history:
 - attribute editor: added escaping for , and ; 
 - attribute editor: zoomed editor accepts , as newline separator
 - attribute editor: close editor window on object destruction
+- fixed $0-arguments in attribute saving
 
 0.4.6:
 - added a text edit window for list attributes
@@ -310,11 +311,8 @@ for 0.4.7:
 
 bugs:
 - recreation of object with different argument line forgets about eventually present attributes
-- deletion of object with open attribute editor: press apply -> crash
 
 TEST:
-- attributes saving with patcher arguments (like $0-gugu )
-
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)
 - hard thread termination upon object destruction doesn't seem to work properly -> crash
 - Max rounding bug ... buffer resize could be one sample less!

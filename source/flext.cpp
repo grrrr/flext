@@ -54,6 +54,11 @@ flext_base::FLEXT_CLASSDEF(flext_base)():
 
 flext_base::~FLEXT_CLASSDEF(flext_base)()
 {
+#if FLEXT_SYS == FLEXT_SYS_PD && !defined(FLEXT_NOATTREDIT)
+    // attribute editor window may still be open -> close it
+    gfxstub_deleteforkey(thisHdr());
+#endif
+
 #if FLEXT_SYS == FLEXT_SYS_MAX
     // according to David Z. one should do that first...
 //  if(insigs) dsp_free(thisHdr());

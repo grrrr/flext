@@ -64,9 +64,9 @@ $(TARGET) :: $(TARGETPATH)
 
 $(TARGET) :: $(COBJS) $(CPPOBJS)
 ifdef BUILDLIB
-	$(AR) rc $@ $^
+	$(AR) rc $@ $(COBJS) $(CPPOBJS)
 else
-	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $^ $(LIBS)
+	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
 endif
 
 ##############################################
@@ -86,8 +86,8 @@ _install_:: $(INSTPATH) $(FLEXTPATH)
 
 _install_:: $(TARGET)
 ifdef FLEXTBUILD
-	copy $(subst /,\,$^ $(FLEXTPATH))
+	copy $(subst /,\,$(TARGET) $(FLEXTPATH))
 	-for %%i in ($(subst /,\,$(patsubst %,$(SRCDIR)/%,$(HDRS)))) do @copy %%i $(subst /,\,$(FLEXTPATH)) > nul	
 else
-	copy $(subst /,\,$^ $(INSTPATH))
+	copy $(subst /,\,$(TARGET) $(INSTPATH))
 endif

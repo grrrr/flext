@@ -67,10 +67,11 @@ $(TARGET):: $(TARGETPATH)
 $(TARGET):: $(OBJS)
 	@cd $(TARGETPATH)
 !ifdef BUILDLIB
-	lib /OUT:$(@F) $**
+	lib /OUT:$(@F) $(OBJS)
 	cd ..
 !else
-	link /DLL $(LDFLAGS) $(LIBPATH) $** $(LIBS) /out:$(@F)
+	echo $**
+	link /DLL $(LDFLAGS) $(LIBPATH) $(OBJS) $(LIBS) /out:$(@F)
 !endif
 	cd ..
 
@@ -92,7 +93,7 @@ $(FLEXTPATH):
 
 _install_:: $(INSTPATH) $(FLEXTPATH)
 
-_install_:: $(TARGET)
+_install_::
 !ifdef FLEXTBUILD
 	-copy $(TARGET) $(FLEXTPATH) > nul
 	@cd $(SRCDIR)

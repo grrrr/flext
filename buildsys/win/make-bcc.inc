@@ -94,10 +94,10 @@ $(TARGET) :: $(OBJS)
 	cd $(TARGETPATH)
 !ifdef BUILDLIB
 	-del $(<F)
-	tlib "$(<F)" +$(**: = +)
+	tlib "$(<F)" +$(OBJS: = +)
 	cd ..
 !else
-	ilink32 $(LDFLAGS) $(LIBPATH) -L. $** ,$(<F),,$(LIBS),$(NAME).def
+	ilink32 $(LDFLAGS) $(LIBPATH) -L. $(OBJS) ,$(<F),,$(LIBS),$(NAME).def
 !endif
 	cd ..
 
@@ -118,7 +118,7 @@ $(FLEXTPATH):
 
 _install_ :: $(INSTPATH) $(FLEXTPATH)
 
-_install_ :: $(TARGET)
+_install_ ::
 !ifdef FLEXTBUILD
 	-copy $(TARGET) $(FLEXTPATH) > nul
 	@cd $(SRCDIR)

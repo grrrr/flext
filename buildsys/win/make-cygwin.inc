@@ -63,9 +63,9 @@ $(TARGET) :: $(TARGETPATH)
 
 $(TARGET) :: $(COBJS) $(CPPOBJS)
 ifdef BUILDLIB
-	$(AR) rc $@ $^
+	$(AR) rc $@ $(COBJS) $(CPPOBJS)
 else
-	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $^ $(LIBS)
+	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
 	chmod 755 $@
 endif
 
@@ -86,7 +86,7 @@ _install_:: $(INSTPATH) $(FLEXTPATH)
 
 _install_:: $(TARGET)
 ifdef FLEXTBUILD
-	cp $^ $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTPATH)
+	cp $(TARGET) $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTPATH)
 else
-	install $^ $(INSTPATH)
+	install $(TARGET) $(INSTPATH)
 endif

@@ -284,6 +284,25 @@ unsigned long flext::AtomHash(const t_atom &a)
 }
 
 
+void flext_root::print(const char *fmt, ...)
+{
+	va_list ap;
+    va_start(ap, fmt);
+
+	char buf[1024];
+    vsnprintf(buf,sizeof buf,fmt, ap);
+	buf[sizeof buf-1] = 0; // in case of full buffer
+#if FLEXT_SYS == FLEXT_SYS_PD
+	::startpost(buf); // omit line feed
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+	::drawstr(buf);
+#else
+#error Not implemented
+#endif
+
+    va_end(ap);
+}
+
 void flext_root::post(const char *fmt, ...)
 {
 	va_list ap;

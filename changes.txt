@@ -24,6 +24,7 @@ Version history:
 - added flext_obj::CanvasArgs
 - fixed small problem with buffer->Valid() on startup
 - fixed buffer overrun problems with flext::post, flext::error... (but still to improve)
+- introduced flext::print, same as flext::post but no line feed
 
 0.4.5:
 - added some more SIMD functions

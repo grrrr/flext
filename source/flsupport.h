@@ -36,9 +36,11 @@ public:
 // --- console output -----------------------------------------------	
 
 		//! post message to console (limited to 1k chars!)
-		static void post(const char *s,...);
+		static void print(const char *fmt,...);
+		//! post message to console, with line feed (limited to 1k chars!)
+		static void post(const char *fmt,...);
 		//! post error message to console (limited to 1k chars!)
-		static void error(const char *s,...);
+		static void error(const char *fmt,...);
 
 // --- memory -------------------------------------------------------	
 

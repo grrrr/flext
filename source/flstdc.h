@@ -59,8 +59,9 @@ typedef t_float t_flint;
 #define ISFLINT(atom) ISFLOAT(atom)
 */
 
-#define newobject(CLSS) pd_new(CLSS)
+//#define newobject(CLSS) pd_new(CLSS)
 
+/*
 #define add_dsp(clss,meth) class_addmethod(clss, (t_method)meth,gensym("dsp"),A_NULL)
 #define add_bang(clss,meth) class_addbang(clss, (t_method)meth)
 #define add_float(clss,meth) class_addfloat(clss, (t_method)meth)
@@ -76,6 +77,7 @@ typedef t_float t_flint;
 #define add_method5(clss,meth,text,a1,a2,a3,a5) class_addmethod(clss, (t_method)meth, gensym(text), a1,a2,a3,a4,a5,A_NULL)
 #define add_loadbang(clss,meth) class_addmethod(clss,(t_method)meth, gensym("loadbang"), A_CANT, A_NULL)
 #define add_anything(clss,meth) class_addanything(clss,meth)
+*/
 
 /*
 extern const t_symbol *const sym_pointer;
@@ -88,6 +90,7 @@ extern const t_symbol *const sym_anything;
 extern const t_symbol *const sym_signal;
 */
 
+/*
 #define newout_signal(clss) outlet_new(clss,&s_signal)
 #define newout_float(clss) outlet_new(clss,&s_float)
 #define newout_flint(clss) outlet_new(clss,&s_float)
@@ -96,6 +99,7 @@ extern const t_symbol *const sym_signal;
 #define newout_anything(clss) outlet_new(clss,&s_anything)
 
 #define outlet_flint(o,v) outlet_float(o,v)
+*/
 
 #elif defined(MAXMSP)
 
@@ -114,10 +118,12 @@ typedef t_patcher t_canvas;
 
 typedef t_int t_flint;
 
+/*
 typedef void _inlet;
 typedef _inlet t_inlet;
 typedef void _outlet;
 typedef _outlet t_outlet;
+*/
 
 #define t_method method
 #define t_newmethod method
@@ -134,6 +140,7 @@ typedef int t_atomtype;
 #define ISFLINT(atom) ISINT(atom)
 */
 
+/*
 #define add_dsp(clss,meth) addmess((method)meth,"dsp",A_CANT,A_NOTHING)
 #define add_bang(clss,meth) addbang((method)meth)
 #define add_float(clss,meth) addfloat((method)meth)
@@ -161,6 +168,7 @@ typedef int t_atomtype;
 
 #define outlet_flint(o,v) outlet_int(o,v)
 #define outlet_symbol(o,s) outlet_anything(o,s,0,NULL)
+*/
 
 /*
 extern const t_symbol *const sym_float;

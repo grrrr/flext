@@ -9,6 +9,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 #include <flext.h>
+#include <fldefs.h>
 #include <stdarg.h>
 
 // === proxy class for flext_base ============================
@@ -165,6 +166,14 @@ V flext_base::AddXlet(xlet::type tp,I mult,xlet *&root)
 	}
 }
 
+
+V flext_base::to_out_float(outlet *o,F f) { outlet_float((t_outlet *)o,f); }
+V flext_base::to_out_flint(outlet *o,FI f) { outlet_flint((t_outlet *)o,f); }
+V flext_base::to_out_symbol(outlet *o,const t_symbol *s) { outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); }
+V flext_base::to_out_list(outlet *o,I argc,t_atom *argv) { outlet_list((t_outlet *)o,gensym("list"),argc,argv); }
+V flext_base::to_out_anything(outlet *o,const t_symbol *s,I argc,t_atom *argv) { outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,argv); }
+
+
 BL flext_base::setup_inout()
 {
 	BL ok = true;
@@ -231,24 +240,23 @@ BL flext_base::setup_inout()
 						}
 						else 
 							sym[2] = '0'+ix,sym[3] = 0;  
-					    if(ok) inlet_new(x_obj, &x_obj->ob_pd, &s_float, gensym(sym)); 
+					    if(ok) inlet_new(&x_obj->obj, &x_obj->obj.ob_pd, &s_float, gensym(sym)); 
 						break;
 					}
 					case xlet::tp_sym: 
 					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
-						inlet_new(x_obj,&inlets[ix]->x_obj.ob_pd, &s_symbol, &s_symbol);  
-//				    	inlet_new(x_obj, &x_obj->ob_pd, &s_symbol, &s_symbol); 
+						inlet_new(&x_obj->obj,&inlets[ix]->x_obj.ob_pd, &s_symbol, &s_symbol);  
 						break;
 					case xlet::tp_list:
 					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
-						inlet_new(x_obj,&inlets[ix]->x_obj.ob_pd, &s_list, &s_list);  
+						inlet_new(&x_obj->obj,&inlets[ix]->x_obj.ob_pd, &s_list, &s_list);  
 						break;
 					case xlet::tp_any:
 					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
-						inlet_new(x_obj,&inlets[ix]->x_obj.ob_pd, 0, 0);  
+						inlet_new(&x_obj->obj,&inlets[ix]->x_obj.ob_pd, 0, 0);  
 						break;
 					case xlet::tp_sig:
-	    				inlet_new(x_obj, &x_obj->ob_pd, &s_signal, &s_signal);  
+	    				inlet_new(&x_obj->obj, &x_obj->obj.ob_pd, &s_signal, &s_signal);  
 						++insigs;
 						break;
 					default:
@@ -326,7 +334,7 @@ BL flext_base::setup_inout()
 		for(xi = outlist,i = 0; xi; xi = xi->nxt,++i) list[i] = xi->tp;
 		delete outlist; outlist = NULL;
 		
-		outlets = new t_outlet *[outcnt];
+		outlets = new outlet *[outcnt];
 
 		// type info is now in list array
 #ifdef PD
@@ -337,23 +345,23 @@ BL flext_base::setup_inout()
 		{
 			switch(list[ix]) {
 				case xlet::tp_float:
-					outlets[ix] = newout_float(x_obj);
+					outlets[ix] = (outlet *)newout_float(&x_obj->obj);
 					break;
 				case xlet::tp_flint: 
-					outlets[ix] = newout_flint(x_obj);
+					outlets[ix] = (outlet *)newout_flint(&x_obj->obj);
 					break;
 				case xlet::tp_sig:
-					outlets[ix] = newout_signal(x_obj);
+					outlets[ix] = (outlet *)newout_signal(&x_obj->obj);
 					++outsigs;
 					break;
 				case xlet::tp_sym:
-					outlets[ix] = newout_symbol(x_obj);
+					outlets[ix] = (outlet *)newout_symbol(&x_obj->obj);
 					break;
 				case xlet::tp_list:
-					outlets[ix] = newout_list(x_obj);
+					outlets[ix] = (outlet *)newout_list(&x_obj->obj);
 					break;
 				case xlet::tp_any:
-					outlets[ix] = newout_anything(x_obj);
+					outlets[ix] = (outlet *)newout_anything(&x_obj->obj);
 					break;
 				default:
 					error("%s: Wrong type for outlet #%i",thisName(),ix);
@@ -372,7 +380,7 @@ V flext_base::cb_setup(t_class *c)
 {
 #ifdef PD
 	sym_anything = &s_anything;
-	sym_pointer = &s_gpointer;
+	sym_pointer = &s_pointer;
 	sym_float = &s_float;
 	sym_symbol = &s_symbol;
 	sym_bang = &s_bang;

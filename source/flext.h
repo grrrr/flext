@@ -20,7 +20,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #pragma warning(disable: 4786)
 #endif
 
-#include <list> // C++ standard lists 
+#include <list> // C++ STL lists 
 
  
 // a few type definitions for the lazy
@@ -144,20 +144,23 @@ public:
 	I cnt_insig() const { return insigs; }
 	I cnt_outsig() const { return outsigs; }
 
-	// get pointer _after_wards	
-	t_outlet *get_out(I ix) { return (outlets && ix < outcnt)?outlets[ix]:NULL; }
+
+	class outlet;
+
+	// get pointer _after_ calling setup_inout()
+	outlet *get_out(I ix) { return (outlets && ix < outcnt)?outlets[ix]:NULL; }
 
 	// output messages (n starts with 0)
-	V to_out_float(t_outlet *o,F f) { outlet_float(o,f); }
-	V to_out_float(I n,F f) { t_outlet *o = get_out(n); if(o) to_out_float(o,f); }
-	V to_out_flint(t_outlet *o,FI f) { outlet_flint(o,f); }
-	V to_out_flint(I n,FI f) { t_outlet *o = get_out(n); if(o) to_out_flint(o,f); }
-	V to_out_symbol(t_outlet *o,const t_symbol *s) { outlet_symbol(o,const_cast<t_symbol *>(s)); }
-	V to_out_symbol(I n,const t_symbol *s) { t_outlet *o = get_out(n); if(o) to_out_symbol(o,const_cast<t_symbol *>(s)); }
-	V to_out_list(t_outlet *o,I argc,t_atom *argv) { outlet_list(o,gensym("list"),argc,argv); }
-	V to_out_list(I n,I argc,t_atom *argv)  { t_outlet *o = get_out(n); if(o) to_out_list(o,argc,argv); }
-	V to_out_anything(t_outlet *o,const t_symbol *s,I argc,t_atom *argv) { outlet_anything(o,const_cast<t_symbol *>(s),argc,argv); }
-	V to_out_anything(I n,const t_symbol *s,I argc,t_atom *argv)  { t_outlet *o = get_out(n); if(o) to_out_anything(o,const_cast<t_symbol *>(s),argc,argv); }
+	V to_out_float(outlet *o,F f); 
+	V to_out_float(I n,F f) { outlet *o = get_out(n); if(o) to_out_float(o,f); }
+	V to_out_flint(outlet *o,FI f); 
+	V to_out_flint(I n,FI f) { outlet *o = get_out(n); if(o) to_out_flint(o,f); }
+	V to_out_symbol(outlet *o,const t_symbol *s); 
+	V to_out_symbol(I n,const t_symbol *s) { outlet *o = get_out(n); if(o) to_out_symbol(o,const_cast<t_symbol *>(s)); }
+	V to_out_list(outlet *o,I argc,t_atom *argv); 
+	V to_out_list(I n,I argc,t_atom *argv)  { outlet *o = get_out(n); if(o) to_out_list(o,argc,argv); }
+	V to_out_anything(outlet *o,const t_symbol *s,I argc,t_atom *argv); 
+	V to_out_anything(I n,const t_symbol *s,I argc,t_atom *argv)  { outlet *o = get_out(n); if(o) to_out_anything(o,const_cast<t_symbol *>(s),argc,argv); }
 		
 		
 // --- message handling -------------------------------------------
@@ -302,7 +305,7 @@ private:
 
 	xlet *inlist,*outlist;
 	I incnt,outcnt,insigs,outsigs;
-	t_outlet **outlets;
+	outlet **outlets;
 
 	V AddXlet(xlet::type tp,I mult,xlet *&root);	
 
@@ -416,6 +419,99 @@ private:
 	static t_int *dspmeth(t_int *w); 
 	F **invecs,**outvecs;
 };
+
+
+
+
+///////////////////////////////////////////////////////////
+// These should be the used in the class definition
+/////////////////////////////////////////////////////////
+
+#define FLEXT_CALLBACK(M_FUN) \
+static void cb_ ## M_FUN(flext_base *c) { dynamic_cast<thisType *>(c)->M_FUN(); }
+
+#define FLEXT_CALLBACK_A(M_FUN) \
+static void cb_ ## M_FUN(flext_base *c,t_symbol *s,int argc,t_atom *argv) { dynamic_cast<thisType *>(c)->M_FUN(s,argc,argv); }
+
+#define FLEXT_CALLBACK_G(M_FUN) \
+static void cb_ ## M_FUN(flext_base *c,int argc,t_atom *argv) { dynamic_cast<thisType *>(c)->M_FUN(argc,argv); }
+
+// converting t_flint to bool
+#define FLEXT_CALLBACK_B(M_FUN) \
+static void cb_ ## M_FUN(flext_base *c,int arg1) { dynamic_cast<thisType *>(c)->M_FUN(arg1 != 0); }
+
+// converting t_flint to enum
+#define FLEXT_CALLBACK_E(M_FUN,TPE) \
+static void cb_ ## M_FUN(flext_base *c,int arg1) { dynamic_cast<thisType *>(c)->M_FUN((TPE)(int)arg1); }
+
+#define FLEXT_CALLBACK_1(M_FUN,TP1) \
+static void cb_ ## M_FUN(flext_base *c,TP1 arg1) { dynamic_cast<thisType *>(c)->M_FUN(arg1); }
+
+#define FLEXT_CALLBACK_2(M_FUN,TP1,TP2) \
+static void cb_ ## M_FUN(flext_base *c,TP1 arg1,TP2 arg2) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2); }
+
+#define FLEXT_CALLBACK_3(M_FUN,TP1,TP2,TP3) \
+static void cb_ ## M_FUN(flext_base *c,TP1 arg1,TP2 arg2,TP3 arg3) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3); }
+
+#define FLEXT_CALLBACK_4(M_FUN,TP1,TP2,TP3,TP4) \
+static void cb_ ## M_FUN(flext_base *c,TP1 arg1,TP2 arg2,TP3 arg3.TP4 arg4) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4); }
+
+#define FLEXT_CALLBACK_5(M_FUN,TP1,TP2,TP3,TP4,TP5) \
+static void cb_ ## M_FUN(flext_base *c,TP1 arg1,TP2 arg2,TP3 arg3.TP4 arg4,TP5 arg5) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4,arg5); }
+
+
+// Shortcuts for method arguments
+#define FLEXTARG_float a_float
+#define FLEXTARG_int a_int
+//#define FLEXTARG_bool a_bool
+#define FLEXTARG_bool a_int
+#define FLEXTARG_t_float a_float
+//#define FLEXTARG_t_flint a_int
+#define FLEXTARG_t_symtype a_symbol
+#define FLEXTARG_t_ptrtype a_pointer
+
+#define FLEXTARG(TP) FLEXTARG_ ## TP
+
+
+///////////////////////////////////////////////////////////
+// These should be the used in the class' constructor
+///////////////////////////////////////////////////////////
+
+// add handler for bang 
+#define FLEXT_ADDBANG(IX,M_FUN) \
+add_meth(IX,"bang",cb_ ## M_FUN)	
+
+// add handler for method with no args
+#define FLEXT_ADDMETHOD(IX,M_FUN) \
+add_meth(IX,cb_ ## M_FUN)	
+
+// add handler for method with no args
+#define FLEXT_ADDMETHOD_(IX,M_TAG,M_FUN) \
+add_meth(IX,M_TAG,cb_ ## M_FUN)	
+
+// add handler for method with 1 enum type arg
+#define FLEXT_ADDMETHOD_E(IX,M_TAG,M_FUN) \
+add_meth_one(IX,M_TAG,(methfun)(cb_ ## M_FUN),a_int,a_null)
+
+// add handler for method with 1 arg
+#define FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,TP1) \
+add_meth_one(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),a_null)	
+
+// add handler for method with 2 args
+#define FLEXT_ADDMETHOD_2(IX,M_TAG,M_FUN,TP1,TP2) \
+add_meth_one(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),a_null)
+
+// add handler for method with 3 args
+#define FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,TP1,TP2,TP3) \
+add_meth_one(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),a_null)
+
+// add handler for method with 4 args
+#define FLEXT_ADDMETHOD_4(IX,M_TAG,M_FUN,TP1,TP2,TP3,TP4) \
+add_meth_one(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),a_null)
+
+// add handler for method with 5 args
+#define FLEXT_ADDMETHOD_5(IX,M_TAG,M_FUN,TP1,TP2,TP3,TP4,TP5) \
+add_meth_one(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),FLEXTARG(TP5),a_null)
 
 
 #endif

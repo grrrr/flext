@@ -309,8 +309,7 @@ REAL_EXT(NEW_CLASS, _tilde_setup)
 #define FLEXT_LIB_SETUP(LIBNAME) ((void)0)
 #else // MAXMSP
 #define FLEXT_LIB_SETUP(LIBNAME) \
-static t_class *LIBNAME ## _class;  \
-::setup((t_messlist **)&LIBNAME##_class,(t_newmethod)&flext_obj::libfun_new,(t_method)flext_obj::libfun_free,sizeof(t_sigobj), 0,A_GIMME,A_NULL)
+::setup((t_messlist **)&flext_obj::lib_class,(t_newmethod)&flext_obj::libfun_new,(t_method)flext_obj::libfun_free,sizeof(flext_hdr), 0,A_GIMME,A_NULL)
 #endif
 
 ////////////////////////////////////////
@@ -374,7 +373,7 @@ static t_class *LIBNAME ## _class;  \
 static t_class * NEW_CLASS ## _class;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS ()                              \
 {     	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = new (newobject(LIB && IS_MAXMSP?flext_obj::lib_class:NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS;                                  \
@@ -404,7 +403,7 @@ extern "C" FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	\
 static t_class * NEW_CLASS ## _class;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (TYPE arg)                  \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = new (newobject(LIB && IS_MAXMSP?flext_obj::lib_class:NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS(arg);                             \
@@ -435,7 +434,7 @@ extern "C" FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()   	\
 static t_class * NEW_CLASS ## _class;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (t_symbol *, int argc, t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = new (newobject(LIB && IS_MAXMSP?flext_obj::lib_class:NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS(argc, argv);                      \
@@ -465,7 +464,7 @@ extern "C" FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	   
 static t_class * NEW_CLASS ## _class;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (ONE_TYPE arg, TWO_TYPE argtwo) \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = new (newobject(LIB && IS_MAXMSP?flext_obj::lib_class:NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS(arg, argtwo);                     \
@@ -496,7 +495,7 @@ extern "C" FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	   
 static t_class * NEW_CLASS ## _class;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (ONE_TYPE arg, TWO_TYPE argtwo, THREE_TYPE argthree) \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = new (newobject(LIB && IS_MAXMSP?flext_obj::lib_class:NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS(arg, argtwo, argthree);           \
@@ -527,7 +526,7 @@ extern "C" FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	   
 static t_class * NEW_CLASS ## _class;    	    	    	\
 flext_hdr* class_ ## NEW_CLASS (ONE_TYPE arg, TWO_TYPE argtwo, THREE_TYPE argthree, FOUR_TYPE argfour) \
 {     	    	    	    	    	    	    	    	\
-    flext_hdr *obj = new (newobject(NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
+    flext_hdr *obj = new (newobject(LIB && IS_MAXMSP?flext_obj::lib_class:NEW_CLASS ## _class),(void *)NULL) flext_hdr; \
     flext_obj::m_holder = obj;                         \
     flext_obj::m_holdname = NAME;                         \
     obj->data = new NEW_CLASS(arg, argtwo, argthree, argfour);  \

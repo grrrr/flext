@@ -109,6 +109,7 @@ Version history:
 0.4.2:
 - moved CLASS_MAINSIGNALIN to class scope (fixed "float method overwritten" warning)
 - unix makefiles: CXX should be commented out if standard (to enable environmental settings)
+- introduced default returns for the different flext::GetA* functions
 
 0.4.1:
 - full port for Max@OSX

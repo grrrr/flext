@@ -208,7 +208,7 @@ public:
 	//! Get symbol string
 	static const char *GetString(const t_symbol *s) { return s->s_name; }  
 	//! Check for symbol and get string
-	static const char *GetAString(const t_symbol *s) { return s?s->s_name:""; }  
+	static const char *GetAString(const t_symbol *s,const char *def = "") { return s?GetString(s):def; }
 
 // --- atom stuff ----------------------------------------
 		
@@ -246,7 +246,7 @@ public:
 	static void SetSymbol(t_atom &a,const t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_sym = const_cast<t_symbol *>(s); }
 #endif
 	//! Check for a symbol and get its value 
-	static t_symbol *GetASymbol(const t_atom &a) { return IsSymbol(a)?GetSymbol(a):NULL; }  // NULL or empty symbol?
+	static t_symbol *GetASymbol(const t_atom &a,t_symbol *def = NULL) { return IsSymbol(a)?GetSymbol(a):def; }  // NULL or empty symbol?
 
 	//! Check whether the atom is a string
 	static bool IsString(const t_atom &a) { return IsSymbol(a); }
@@ -269,14 +269,14 @@ public:
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 	//! Check for a float and get its value 
-	static float GetAFloat(const t_atom &a) { return IsFloat(a)?GetFloat(a):0; }
+	static float GetAFloat(const t_atom &a,float def = 0) { return IsFloat(a)?GetFloat(a):def; }
 
 	//! Check whether the atom is an integer
 	static bool IsInt(const t_atom &) { return false; }
 	//! Access the integer value (without type check)
 	static int GetInt(const t_atom &a) { return (int)GetFloat(a); }
 	//! Check for an integer and get its value 
-	static int GetAInt(const t_atom &a) { return (int)GetAFloat(a); }
+	static int GetAInt(const t_atom &a,int def = 0) { return (int)GetAFloat(a,(float)def); }
 	//! Set the atom to represent a integer (depending on the system)
 	static void SetInt(t_atom &a,int v) { a.a_type = A_FLOAT; a.a_w.w_float = (float)v; }
 
@@ -287,20 +287,20 @@ public:
 	//! Access the pointer value (without type check)
 	static t_gpointer *GetPointer(const t_atom &a) { return a.a_w.w_gpointer; }
 	//! Check for a pointer and get its value 
-	static void *GetAPointer(const t_atom &a) { return IsPointer(a)?GetPointer(a):NULL; }
+	static void *GetAPointer(const t_atom &a,void *def = NULL) { return IsPointer(a)?GetPointer(a):def; }
 	//! Set the atom to represent a pointer
 	static void SetPointer(t_atom &a,void *p) { a.a_type = A_POINTER; a.a_w.w_gpointer = (t_gpointer *)p; }
 
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	//! Check for a float and get its value 
-	static float GetAFloat(const t_atom &a) { return IsFloat(a)?GetFloat(a):(IsInt(a)?GetInt(a):0); }
+	static float GetAFloat(const t_atom &a,float def = 0) { return IsFloat(a)?GetFloat(a):(IsInt(a)?GetInt(a):def); }
 
 	//! Check whether the atom is an int
 	static bool IsInt(const t_atom &a) { return a.a_type == A_INT; }
 	//! Access the integer value (without type check)
 	static int GetInt(const t_atom &a) { return a.a_w.w_long; }
 	//! Check for an integer and get its value 
-	static int GetAInt(const t_atom &a) { return IsInt(a)?GetInt(a):(IsFloat(a)?(int)GetFloat(a):0); }
+	static int GetAInt(const t_atom &a,int def = 0) { return IsInt(a)?GetInt(a):(IsFloat(a)?(int)GetFloat(a):def); }
 	//! Set the atom to represent an integer
 	static void SetInt(t_atom &a,int v) { a.a_type = A_INT; a.a_w.w_long = v; }
 
@@ -309,7 +309,7 @@ public:
 	//! Check whether the atom can be a pointer
 	static bool CanbePointer(const t_atom &a) { return IsInt(a); }
 	//! Check for a pointer and get its value 
-	static void *GetAPointer(const t_atom &a) { return IsInt(a)?(void *)GetInt(a):NULL; }
+	static void *GetAPointer(const t_atom &a,void *def = NULL) { return IsInt(a)?(void *)GetInt(a):def; }
 	//! Set the atom to represent a pointer
 	static void SetPointer(t_atom &a,void *p) { SetInt(a,(int)p); }
 #else

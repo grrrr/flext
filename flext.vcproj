@@ -137,7 +137,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="pd-msvc/flext_td-pdwin.lib"
+				OutputFile="pd-msvc/flext-pd_td.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -188,7 +188,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="pd-msvc/flext_d-pdwin.lib"
+				OutputFile="pd-msvc/flext-pd_sd.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -238,7 +238,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="pd-msvc/flext_t-pdwin.lib"
+				OutputFile="pd-msvc/flext-pd_t.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -289,7 +289,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="pd-msvc/flext-pdwin.lib"
+				OutputFile="pd-msvc/flext-pd_s.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -341,11 +341,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="pd.lib pthreadVC.lib stk_d.lib sndobj.lib"
-				OutputFile=".\pd-msvc\flext_d.dll"
+				OutputFile=".\pd-msvc\flext-pd_d.dll"
 				AdditionalLibraryDirectories="&quot;c:\data\prog\pd\pd-cvs\bin&quot;;c:\data\prog\packs\pthreads;c:\data\prog\audio\stk\lib;c:\data\prog\audio\sndobj\lib"
 				GenerateDebugInformation="TRUE"
 				OptimizeReferences="1"
-				ImportLibrary="./pd-msvc/flext_ld.lib"
+				ImportLibrary="./pd-msvc/flext-pd_d.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -406,11 +406,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="pd.lib pthreadVC.lib stk.lib sndobj.lib"
-				OutputFile=".\pd-msvc\flext.dll"
+				OutputFile=".\pd-msvc\flext-pd.dll"
 				AdditionalLibraryDirectories="c:\data\prog\packs\pthreads;&quot;c:\data\prog\pd\pd-cvs\bin&quot;;c:\data\prog\audio\stk\lib;c:\data\prog\audio\sndobj\lib"
 				GenerateDebugInformation="FALSE"
 				OptimizeReferences="1"
-				ImportLibrary="./pd-msvc/flext_l.lib"
+				ImportLibrary="./pd-msvc/flext-pd.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -470,11 +470,11 @@ copy c:\data\pdmax\flext\pd-msvc\flext.dll c:\data\prog\dll
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="maxapi.lib maxext.lib maxaudio.lib pthreadVC.lib stk_d.lib sndobj.lib"
-				OutputFile=".\max-msvc\flext_d.max.dll"
+				OutputFile=".\max-msvc\flext-max_d.dll"
 				AdditionalLibraryDirectories="&quot;F:\prog\audio\MaxWinSDK\c74support\max-includes\win-includes\debug&quot;;&quot;F:\prog\audio\MaxWinSDK\c74support\msp-includes\win-includes\debug&quot;;f:\prog\packs\pthreads;F:\prog\audio\stk\lib;F:\prog\audio\sndobj\lib"
 				GenerateDebugInformation="TRUE"
 				OptimizeReferences="1"
-				ImportLibrary="./max-msvc/flext_ld.lib"/>
+				ImportLibrary="./max-msvc/flext-max_d.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -535,12 +535,12 @@ copy c:\data\pdmax\flext\pd-msvc\flext.dll c:\data\prog\dll
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="maxapi.lib maxext.lib maxaudio.lib  stk.lib sndobj.lib"
-				OutputFile=".\max-msvc\flext.max.dll"
+				OutputFile=".\max-msvc\flext-max.dll"
 				AdditionalLibraryDirectories="&quot;F:\prog\audio\MaxWinSDK\c74support\max-includes\win-includes\debug&quot;;&quot;F:\prog\audio\MaxWinSDK\c74support\msp-includes\win-includes\debug&quot;;f:\prog\packs\pthreads;F:\prog\audio\stk\lib;F:\prog\audio\sndobj\lib"
 				IgnoreAllDefaultLibraries="FALSE"
 				GenerateDebugInformation="FALSE"
 				OptimizeReferences="1"
-				ImportLibrary="./max-msvc/flext_l.lib"/>
+				ImportLibrary="./max-msvc/flext-max.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -605,7 +605,7 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="max-msvc/flext.lib"/>
+				OutputFile="max-msvc/flext-max_s.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -661,7 +661,7 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="max-msvc/flext_d.lib"/>
+				OutputFile="max-msvc/flext-max_sd.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -716,7 +716,7 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="max-msvc/flext_td.lib"/>
+				OutputFile="max-msvc/flext-max_td.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -771,7 +771,7 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="max-msvc/flext_t.lib"/>
+				OutputFile="max-msvc/flext-max_t.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool

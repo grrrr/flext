@@ -44,22 +44,16 @@ FLEXTLIBINST=$(FLEXTSHLIB)
 FLEXTLIBINST=$(FLEXTLIB)
 !endif
 
-$(FLEXTINC):
-	if not exist $@ mkdir $@ > nul
+_install_:
+# create folders
+	@if not exist $(FLEXTINC) mkdir $(FLEXTINC) > nul
+	@if not exist $(FLEXTLIB) mkdir $(FLEXTLIB) > nul
+	@if not exist $(FLEXTLIBINST) mkdir $(FLEXTLIBINST) > nul
 
-$(FLEXTLIB):
-	if not exist $@ mkdir $@ > nul
-
-$(FLEXTLIBINST):
-	if not exist $@ mkdir $@ > nul
-
-_install_:: $(FLEXTINC) $(FLEXTLIB) $(FLEXTLIBINST)
-
-_install_::
 	copy $(TARGET) $(FLEXTLIBINST) > nul
 !ifdef SHARED
 # copy import library
 	copy $(TARGET:.dll=.lib) $(FLEXTLIB) > nul	
 !endif
 # copy headers
-	for %%i in ($(HDRS)) do @copy $(SRCDIR)\%%i $(FLEXTINC) > nul	
+	for %%i in ($(HDRS)) do @copy $(SRCDIR)\%%i $(FLEXTINC) > nul

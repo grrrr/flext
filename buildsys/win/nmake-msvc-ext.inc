@@ -37,8 +37,7 @@ _clean_:
 
 ##############################################
 
-$(INSTPATH):
-	if not exist $@ mkdir $@ > nul
+_install_:
+	@if not exist $(INSTPATH) mkdir $(INSTPATH) > nul
 
-_install_: $(INSTPATH)
 	copy $(TARGET) $(INSTPATH) > nul

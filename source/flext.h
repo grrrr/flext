@@ -81,7 +81,7 @@ public:
 		V Dirty(BL refr = false);
 		
 		// get symbol (or literal name) of buffer 
-		t_symbol *Symbol() { return sym; }
+		t_symbol *Symbol() const { return sym; }
 		const C *Name() const { return sym?sym->s_name:""; }
 		
 		// get pointer to buffer, channel and frame count
@@ -123,6 +123,7 @@ public:
 	V add_out_flint(I m = 1) { AddOutlet(xlet::tp_flint,m); }
 	V add_out_symbol(I m = 1) { AddOutlet(xlet::tp_sym,m); }
 	V add_out_list(I m = 1) { AddOutlet(xlet::tp_list,m); }
+	V add_out_anything(I m = 1) { AddOutlet(xlet::tp_any,m); }
 	
 	// must be called to actually set up the defined inlets/outlets 
 	// only ONCE!!!
@@ -163,7 +164,7 @@ protected:
 		
 	struct xlet {	
 		enum type {
-			tp_none = 0,tp_def,tp_float,tp_flint,tp_sym,tp_list,tp_sig
+			tp_none = 0,tp_def,tp_float,tp_flint,tp_sym,tp_list,tp_sig,tp_any
 		};
 
 		xlet(type t): tp(t),nxt(NULL) {}

@@ -46,6 +46,9 @@ typedef t_float t_flint;
  
 #define atom_getflintarg atom_getfloatarg
 #define atom_getsymarg atom_getsymbolarg
+#define SETFLINT(atom,value) SETFLOAT(atom,(float)(value))
+#define ISFLINT(atom) ISFLOAT(atom)
+
 
 #define newobject(CLSS) pd_new(CLSS)
 
@@ -69,6 +72,7 @@ typedef t_float t_flint;
 #define newout_flint(clss) outlet_new(clss,&s_float)
 #define newout_list(clss) outlet_new(clss,&s_list)
 #define newout_symbol(clss) outlet_new(clss,&s_symbol)
+#define newout_anything(clss) outlet_new(clss,&s_anything)
 
 #define outlet_flint(o,v) outlet_float(o,v)
 
@@ -102,6 +106,9 @@ typedef _outlet t_outlet;
 
 #define atom_getflintarg atom_getintarg
 #define atom_getsymbolarg atom_getsymarg
+#define SETFLINT(atom,value) SETINT(atom,(int)(value))
+#define ISINT(atom) ((atom)->a_type == A_LONG)
+#define ISFLINT(atom) ISINT(atom)
 
 #define add_dsp(clss,meth) addmess((method)meth,"dsp",A_CANT,A_NOTHING)
 #define add_bang(clss,meth) addbang((method)meth)
@@ -125,6 +132,7 @@ typedef _outlet t_outlet;
 #define newout_flint(clss) outlet_new(clss,"int")
 #define newout_list(clss) outlet_new(clss,"list")
 #define newout_symbol(clss) outlet_new(clss,"symbol")
+#define newout_anything(clss) outlet_new(clss,"anything")
 
 #define outlet_flint(o,v) outlet_int(o,v)
 #define outlet_symbol(o,s) outlet_anything(o,s,0,NULL)
@@ -134,6 +142,10 @@ typedef _outlet t_outlet;
 
 typedef t_symbol *t_symtype;
 typedef t_gpointer *t_ptrtype;
+
+#define ISFLOAT(atom) ((atom).a_type == A_FLOAT)
+#define ISSYMBOL(atom) ((atom).a_type == A_SYMBOL)
+#define ISPOINTER(atom) ((atom).a_type == A_POINTER)
 
 
 #ifdef _LOG

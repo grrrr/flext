@@ -201,6 +201,9 @@ BL flext_base::setup_inout()
 				case xlet::tp_list:
 					outlets[ix] = newout_list(x_obj);
 					break;
+				case xlet::tp_any:
+					outlets[ix] = newout_anything(x_obj);
+					break;
 				default:
 					error("%s: Wrong type for outlet #%i",thisName(),ix);
 					ok = false;

@@ -51,7 +51,7 @@ void flext_base::PopThread()
 		if(prv) 
 			prv->nxt = ti->nxt;
 		else 
-			thrhead = thrtail = ti;
+			thrhead = thrtail = ti->nxt;
 		ti->nxt = NULL;
 		delete ti;
 	}

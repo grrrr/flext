@@ -175,7 +175,7 @@ general:
 
 bugs:
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)
-- introduce timed thread termination upon object destruction
+- hard thread termination upon object destruction doesn't seem to work properly
 
 tests:
 - PD: figure out what "pointer" messages do and where they occur

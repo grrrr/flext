@@ -152,6 +152,7 @@ flext_base::~flext_base()
 	// wait for thread termination
 	shouldexit = true;
 	for(int wi = 0; thrhead && wi < 100; ++wi) Sleep(0.01f);
+	qmutex.Lock(); // Lock message queue
 	tlmutex.Lock();
 	// timeout -> hard termination
 	while(thrhead) {
@@ -161,7 +162,9 @@ flext_base::~flext_base()
 		t->nxt = NULL; delete t;
 	}
 	tlmutex.Unlock();
+	qmutex.Unlock();
 
+	// send remaining pending messages
 	while(qhead) QTick(this);
 	clock_free(qclk);
 #endif

@@ -36,9 +36,6 @@ flext_base::flext_base():
 	// message queue ticker
 	qhead = qtail = NULL;
 	qclk = (t_qelem *)(qelem_new(this,(t_method)QTick));
-
-	if(procattr) 
-		AddMethod(0,"getattributes",(methfun)cb_ListAttrib);
 }
 
 flext_base::~flext_base()
@@ -97,12 +94,12 @@ bool flext_base::Init()
 	if(ok) {
 		// initialize method lists
 		if(methhead) methhead->Finalize();
-		if(clmethhead && !clmethhead->Ready()) clmethhead->Finalize();
+		if(clmethhead) clmethhead->Finalize();
 		
 		if(procattr) {
 			// initialize attribute lists
 			if(attrhead) attrhead->Finalize();
-			if(clattrhead && !clattrhead->Ready()) clattrhead->Finalize();
+			if(clattrhead) clattrhead->Finalize();
 
 			// initialize creation attributes
 			if(m_holdaargc && m_holdaargv)
@@ -123,6 +120,9 @@ void flext_base::Setup(t_class *c)
 #if FLEXT_SYS == FLEXT_SYS_MAX
 	add_assist(c,cb_assist);
 #endif
+
+	if(process_attributes) 
+		AddMethod(c,0,"getattributes",(methfun)cb_ListAttrib);
 
 	SetProxies(c);
 

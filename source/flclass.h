@@ -516,13 +516,18 @@ protected:
 
 	public:
 
+	class attritem;
+
 	class item {
 	public:
-		item(const t_symbol *t,int inl = 0);
+		item(const t_symbol *t,int inl,attritem *a);
 		~item();
 		
+		bool IsAttr() const { return attr != NULL; }
+
 		const t_symbol *tag;
 		int inlet;
+		attritem *attr;
 		item *nxt;
 	};
 
@@ -551,7 +556,7 @@ protected:
 	class methitem:
 		public item { 
 	public:
-		methitem(int inlet,const t_symbol *tg);
+		methitem(int inlet,const t_symbol *tg,attritem *conn = NULL);
 		~methitem();
 		
 		void SetArgs(methfun fun,int argc,metharg *args);
@@ -565,11 +570,12 @@ protected:
 	class attritem:
 		public item { 
 	public:
-		attritem(const t_symbol *tag,metharg tp,methfun gfun,methfun sfun);
+		attritem(const t_symbol *tag,metharg tp,methfun fun,bool get);
 		~attritem();
 
+		bool isget;
 		metharg argtp;
-		methfun gfun,sfun;
+		methfun fun;
 	};
 
 //!		@} FLEXT_CLASS
@@ -634,12 +640,14 @@ private:
 	bool InitAttrib(int argc,const t_atom *argv);
 
 	bool ListAttrib();
-	bool GetAttrib(const t_symbol *s,int argc,const t_atom *argv);
+//	bool GetAttrib(const t_symbol *s);
+	bool GetAttrib(attritem *a);
 	bool SetAttrib(const t_symbol *s,int argc,const t_atom *argv);
+	bool SetAttrib(attritem *a,int argc,const t_atom *argv);
 
 	static bool cb_ListAttrib(flext_base *c) { return c->ListAttrib(); }
-	static bool cb_GetAttrib(flext_base *c,const t_symbol *s,int argc,const t_atom *argv) { return c->GetAttrib(s,argc,argv); }
-	static bool cb_SetAttrib(flext_base *c,const t_symbol *s,int argc,const t_atom *argv) { return c->SetAttrib(s,argc,argv); }
+//	static bool cb_GetAttrib(flext_base *c,const t_symbol *s,int argc,const t_atom *argv) { return c->GetAttrib(s,argc,argv); }
+//	static bool cb_SetAttrib(flext_base *c,const t_symbol *s,int argc,const t_atom *argv) { return c->SetAttrib(s,argc,argv); }
 
 	// queue stuff
 

@@ -16,8 +16,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <string.h>
 
 
-flext_base::item::item(const t_symbol *t,int inl): 
- inlet(inl),tag(t),nxt(NULL) 
+flext_base::item::item(const t_symbol *t,int inl,attritem *a): 
+ inlet(inl),tag(t),attr(a),nxt(NULL) 
 {}
 
 flext_base::item::~item()
@@ -43,11 +43,19 @@ flext_base::itemarr::~itemarr()
 
 void flext_base::itemarr::Add(item *it)
 {
-#ifdef FLEXT_DEBUG
-	if(Ready()) ERRINTERNAL();
-	else
-#endif
-	{
+	if(Ready()) {
+		// retrieve array index
+		int ix = Hash(it->tag,it->inlet,bits);
+
+		// add to array slot
+		if(arr[ix]) {
+			item *a = arr[ix];
+			while(a->nxt) a = a->nxt;
+			a->nxt = it;
+		}
+		else arr[ix] = it;
+	}
+	else {
 //		post("ADD %i,%s",it->inlet,GetString(it->tag));			
 
 		if(arr[0]) arr[1] = arr[1]->nxt = it;
@@ -58,16 +66,11 @@ void flext_base::itemarr::Add(item *it)
 
 void flext_base::itemarr::Finalize()
 {
-#ifdef FLEXT_DEBUG
-	if(Ready()) ERRINTERNAL();
-	else
-#endif
+	if(!Ready()) 
 	{
 		bits = Int2Bits(cnt); // at least enough bits to hold all items
 		
 		int sz = Size();
-
-//		post("count=%i, bit=%i size=%i",Count(),bits,sz);
 
 		// save stored item list
 		item *lst = arr[0];
@@ -81,6 +84,8 @@ void flext_base::itemarr::Finalize()
 			lst = lst->nxt;
 			l->nxt = NULL;
 
+			Add(l);
+/*
 			// retrieve array index
 			int ix = Hash(l->tag,l->inlet,bits);
 
@@ -93,9 +98,12 @@ void flext_base::itemarr::Finalize()
 				a->nxt = l;
 			}
 			else arr[ix] = l;
+*/
 		}
 
 #if 0
+		post("count=%i, bit=%i size=%i",Count(),bits,sz);
+
 		if(Count()) {
 			static char usage[1024];
 			int c = 0,i;
@@ -104,8 +112,7 @@ void flext_base::itemarr::Finalize()
 				if(arr[i]) ++c;
 			}
 			usage[i] = 0;
-			post("USAGE %s",usage);
-			post("USAGE %i/%i ... sparseness=%i%%",c,Count(),(int)((float)c/Count()*100.));
+			post("USAGE %i/%i - sparse=%i%% %s",c,Count(),(int)((float)c/Count()*100.),usage);
 		}
 #endif
 	}
@@ -113,23 +120,19 @@ void flext_base::itemarr::Finalize()
 
 flext_base::item *flext_base::itemarr::Find(const t_symbol *tag,int inlet) const
 {
-#ifdef FLEXT_DEBUG
-	if(!Ready()) {
-		ERRINTERNAL();
-		return NULL;
-	}
-	else
-#endif
-	if(Count()) {
+	item *a;
+	if(!Ready())
+		a = arr[0];
+	else if(Count()) {
 		int ix = Hash(tag,inlet,bits);
-		item *a = arr[ix];
-
-		// Search first matching entry
-		while(a && (a->tag != tag || a->inlet != inlet)) a = (attritem *)a->nxt;
-		return a;
+		a = arr[ix];
 	}
 	else
-		return NULL;
+		a = NULL;
+
+	// Search first matching entry
+	while(a && (a->tag != tag || a->inlet != inlet)) a = a->nxt;
+	return a;
 }
 
 int flext_base::itemarr::Hash(const t_symbol *tag,int inlet,int bits)

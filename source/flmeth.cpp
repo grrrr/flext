@@ -16,8 +16,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <string.h>
 #include <stdarg.h>
 
-flext_base::methitem::methitem(int in,const t_symbol *tg): 
-	item(tg,in),
+flext_base::methitem::methitem(int in,const t_symbol *tg,attritem *conn): 
+	item(tg,in,conn),
 	argc(0),args(NULL)
 	,fun(NULL)
 {}

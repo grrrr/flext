@@ -101,8 +101,8 @@ Version history:
 
 0.4.1:
 - full port for Max@OSX
-- totally redesigned message and attribute handling: now hashed and a much more efficient
-- introduced "Finalize" virtual method, called after all "Init" methods... does inlet/outlet/method/attribute setup
+- completely redesigned message and attribute handling: now hashed and a much more efficient
+- introduced "Finalize" virtual method, called after all "Init" methods
 - fixed crash issue in flext_dsp when there are NO signal inlets or outlets defined
 	(this is possibly only a problem for the signal2 tutorial example)
 - added flext::GetType(t_atom &), flext::ZeroMem

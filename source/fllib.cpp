@@ -102,7 +102,7 @@ public:
 	void (*freefun)(flext_hdr *c);
 
 	t_class *const &clss;
-	bool lib,dsp;
+	bool lib,dsp,attr;
 	int argc;
 	int *argv;
 };
@@ -165,7 +165,7 @@ void flext_obj::lib_init(const char *name,void setupfun())
 	setupfun();
 }
 
-void flext_obj::obj_add(bool lib,bool dsp,const char *idname,const char *names,void setupfun(t_class *),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...)
+void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const char *names,void setupfun(t_class *),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...)
 {
 	// get first possible object name
 	const t_symbol *nsym = MakeSymbol(extract(names));
@@ -200,6 +200,7 @@ void flext_obj::obj_add(bool lib,bool dsp,const char *idname,const char *names,v
 	libobject *lo = new libobject(*cl,newfun,freefun);
 	lo->lib = lib;
 	lo->dsp = dsp;
+	lo->attr = attr;
 
 	// parse the argument type list and store it with the object
 	if(argtp1 == A_GIMME)
@@ -256,7 +257,7 @@ void flext_obj::obj_add(bool lib,bool dsp,const char *idname,const char *names,v
 
 typedef flext_obj *(*libfun)(int,t_atom *);
 
-flext_hdr *flext_obj::obj_new(const t_symbol *s,int argc,t_atom *argv)
+flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 {
 	flext_hdr *obj = NULL;
 	libname *l = libname::find(s);
@@ -264,6 +265,11 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int argc,t_atom *argv)
 		bool ok = true;
 		t_atom args[FLEXT_MAXNEWARGS]; 
 		libobject *lo = l->obj;
+
+		int argc = _argc_;
+		if(lo->attr) {
+			argc = flext_base::CheckAttrib(argc,argv);
+		}
 
 		if(lo->argc >= 0) {
 #ifdef _DEBUG
@@ -309,23 +315,26 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int argc,t_atom *argv)
 #endif
 		    flext_obj::m_holder = obj;
 			flext_obj::m_holdname = l->name;
-
-			if(lo->argc >= 0)
-				// for interpreted arguments
-				argc = lo->argc,argv = args;
+			flext_obj::m_holdattr = lo->attr;
 
 			// get actual flext object (newfun calls "new flext_obj()")
-			obj->data = lo->newfun(argc,argv); 
-
+			if(lo->argc >= 0)
+				// for interpreted arguments
+				obj->data = lo->newfun(lo->argc,args); 
+			else
+				obj->data = lo->newfun(argc,argv); 
+	
 			flext_obj::m_holder = NULL;
 			flext_obj::m_holdname = NULL;
+			flext_obj::m_holdattr = false;
 
 			bool ok = obj->data ||
 				// check constructor exit flag
 				obj->data->InitOk();
 
-			if(ok) // set cmdline attributes (this is a flext_base function!)
-				ok = ((flext_base *)obj->data)->InitAttrib(argc,argv);
+			if(ok && lo->attr && argc < _argc_) 
+				// set cmdline attributes (this is a flext_base function!)
+				ok = ((flext_base *)obj->data)->InitAttrib(_argc_-argc,argv+argc);
 
 			if(ok) // call virtual init function 
 				ok = obj->data->Init();

@@ -51,21 +51,24 @@ void flext_base::AddAttrib(const char *attr,metharg tp,methfun gfun,methfun sfun
 		error("%s - attribute procession is not enabled!",thisName());
 }
 
+int flext_base::CheckAttrib(int argc,const t_atom *argv)
+{
+	int offs = 0;
+	for(; offs < argc; ++offs)
+		if(IsString(argv[offs]) && *GetString(argv[offs]) == '@') break;
+	return offs;
+}
+
 bool flext_base::InitAttrib(int argc,const t_atom *argv)
 {
-	if(procattr) {
-		int nxt = 0,cur = 0;
-		while(nxt < argc) {
-			// find next @symbol
-			cur = nxt;
-			if(nxt) ++nxt;
-			for(; nxt < argc; ++nxt)
-				if(IsString(argv[nxt]) && *GetString(argv[nxt]) == '@') break;
-			if(!cur) continue;
+	int cur,nxt;
+	for(cur = 0; cur < argc; cur = nxt) {
+		// find next @symbol
+		for(nxt = cur+1; nxt < argc; ++nxt)
+			if(IsString(argv[nxt]) && *GetString(argv[nxt]) == '@') break;
 
-			const t_symbol *tag = MakeSymbol(GetString(argv[cur])+1);
-			SetAttrib(tag,nxt-cur-1,argv+cur+1);
-		}
+		const t_symbol *tag = MakeSymbol(GetString(argv[cur])+1);
+		SetAttrib(tag,nxt-cur-1,argv+cur+1);
 	}
 	return true;
 }

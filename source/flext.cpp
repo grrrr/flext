@@ -115,7 +115,6 @@ DEF_IN_FT(9)
 // === flext_base ============================================
 
 bool flext_base::compatibility = true;
-bool flext_base::procattr = false;
 
 flext_base::flext_base():
 	inlist(NULL),outlist(NULL),
@@ -140,7 +139,7 @@ flext_base::flext_base():
 #endif
 #endif
 
-	if(procattr) AddMethod(0,"getattributes",(methfun)cb_ListAttrib);
+	AddMethod(0,"getattributes",(methfun)cb_ListAttrib);
 }
 
 flext_base::~flext_base()

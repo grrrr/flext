@@ -67,16 +67,6 @@ public:
 	*/
 	static bool compatibility;  
 
-// ---  attribute procession ----------------------------------------
-
-	/*! \brief Flag for attribute procession.
-		If set attributes are treated in the Max/Jitter way.
-		Set to false by default!
-	*/
-	static bool procattr;  
-//!		@} 
-
-
 // --- inheritable virtual methods --------------------------------
 
 	/*!	\defgroup FLEXT_C_VIRTUAL Flext virtual base class functions
@@ -529,6 +519,7 @@ private:
 
 	void AddAttrib(const char *attr,metharg tp,methfun gfun,methfun sfun);
 
+	static int CheckAttrib(int argc,const t_atom *argv);
 	bool InitAttrib(int argc,const t_atom *argv);
 
 	bool ListAttrib();

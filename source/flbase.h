@@ -151,6 +151,9 @@ class FLEXT_EXT flext_obj:
         //! The object header
         flext_hdr          *x_obj;        	
 
+        //! Flag for attribute procession
+        bool				procattr;
+
     private:
 
         //! The canvas (patcher) that the object is in
@@ -171,6 +174,8 @@ class FLEXT_EXT flext_obj:
 		//! Hold object's name during construction
         static const t_symbol *m_holdname;  
 
+		static bool m_holdattr;
+
         //! The object's name in the patcher
 		const t_symbol *m_name;
 
@@ -181,7 +186,7 @@ class FLEXT_EXT flext_obj:
 		//! Definitions for library objects
 
 		static void lib_init(const char *name,void setupfun());
-		static void obj_add(bool lib,bool dsp,const char *idname,const char *names,void setupfun(t_class *),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...);
+		static void obj_add(bool lib,bool dsp,bool attr,const char *idname,const char *names,void setupfun(t_class *),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...);
 		static flext_hdr *obj_new(const t_symbol *s,int argc,t_atom *argv);
 		static void obj_free(flext_hdr *o);
 		//@}
@@ -218,8 +223,7 @@ static void __free__(flext_hdr *hdr)    	    	    	\
 { flext_obj *mydata = hdr->data; delete mydata; \
   hdr->flext_hdr::~flext_hdr(); }   	    	\
 static void __setup__(t_class *classPtr) { 	    	\
-	PARENT_CLASS::__setup__(classPtr);				\
-	procattr = FLEXT_ATTRIBUTES; } \
+	PARENT_CLASS::__setup__(classPtr); } \
 protected:    \
 static inline NEW_CLASS *thisObject(void *c) { return FLEXT_CAST<NEW_CLASS *>(((flext_hdr *)c)->data); } 
 
@@ -233,7 +237,6 @@ static void __free__(flext_hdr *hdr)    	    	    	\
   hdr->flext_hdr::~flext_hdr(); }   	    	\
 static void __setup__(t_class *classPtr)  	    	\
 { PARENT_CLASS::__setup__(classPtr);    	    	\
-	procattr = FLEXT_ATTRIBUTES; \
 	NEW_CLASS::SETUPFUN(classPtr); 	}    	    	\
 protected:    \
 static inline NEW_CLASS *thisObject(void *c) { return FLEXT_CAST<NEW_CLASS *>(((flext_hdr *)c)->data); } 
@@ -241,24 +244,18 @@ static inline NEW_CLASS *thisObject(void *c) { return FLEXT_CAST<NEW_CLASS *>(((
 
 // generate name of dsp/non-dsp setup function
 #define FLEXT_STPF_0(NAME) NAME##_setup
-#define FLEXT_STPF_2(NAME) NAME##_setup
 #define FLEXT_STPF_1(NAME) NAME##_tilde_setup
-#define FLEXT_STPF_3(NAME) NAME##_tilde_setup
-#define FLEXT_STPF_(OTP) FLEXT_STPF_##OTP
-#define FLEXT_STPF(NAME,OTP) FLEXT_STPF_(OTP)(NAME)
+#define FLEXT_STPF_(DSP) FLEXT_STPF_##DSP
+#define FLEXT_STPF(NAME,DSP) FLEXT_STPF_(DSP)(NAME)
 
 
 
 // --------------------------------------------------------------------------------------
 
 
-// --------------------------------------------------
-// This is to be called in the library setup function
-// ---------------------------------------------------
 
-#define FLEXT_EXP_0 extern "C" FLEXT_EXT
-#define FLEXT_EXP_1 
-#define FLEXT_EXP(LIB) FLEXT_EXP_##LIB
+// these can be used in library setup functions 
+// to register the individual objects in the library
 
 #define FLEXT_SETUP(cl) \
 extern void cl##_setup(); \
@@ -271,11 +268,22 @@ cl##_tilde_setup()
 // deprecated
 #define FLEXT_TILDE_SETUP FLEXT_DSP_SETUP
 
+
+// specify that to define the library itself
+
 #ifdef PD
 #define FLEXT_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT void NAME##_setup() { flext_obj::lib_init(#NAME,SETUPFUN); }
 #else // MAXMSP
 #define FLEXT_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT int main() { flext_obj::lib_init(#NAME,SETUPFUN); return 0; }
 #endif
+
+
+// --------------------------------------------------
+
+
+#define FLEXT_EXP_0 extern "C" FLEXT_EXT
+#define FLEXT_EXP_1 
+#define FLEXT_EXP(LIB) FLEXT_EXP_##LIB
 
 #ifdef PD
 #define FLEXT_OBJ_SETUP_0(NEW_CLASS,DSP)
@@ -336,7 +344,7 @@ flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
 }   	    	    	    	    	    	    	    	\
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
-    flext_obj::obj_add(LIB,DSP,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,&NEW_CLASS::__free__,A_NULL); \
+    flext_obj::obj_add(LIB,DSP,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,&NEW_CLASS::__free__,A_NULL); \
 } 
 
 #define REAL_NEW_V(NAME,NEW_CLASS,DSP,LIB) \
@@ -347,7 +355,7 @@ flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
 }   	    	    	    	    	    	    	    	\
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
-    flext_obj::obj_add(LIB,DSP,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,&NEW_CLASS::__free__,A_GIMME,A_NULL); \
+    flext_obj::obj_add(LIB,DSP,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,&NEW_CLASS::__free__,A_GIMME,A_NULL); \
 }
 
 #define REAL_NEW_1(NAME,NEW_CLASS,DSP,LIB, TYPE1) \
@@ -358,7 +366,7 @@ flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
 }   	    	    	    	    	    	    	    	\
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
-    flext_obj::obj_add(LIB,DSP,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,NEW_CLASS::__free__,FLEXTTP(TYPE1),A_NULL); \
+    flext_obj::obj_add(LIB,DSP,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,NEW_CLASS::__free__,FLEXTTP(TYPE1),A_NULL); \
 } 
 
 #define REAL_NEW_2(NAME,NEW_CLASS,DSP,LIB, TYPE1,TYPE2) \
@@ -369,7 +377,7 @@ flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
 }   	    	    	    	    	    	    	    	\
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
-    flext_obj::obj_add(LIB,DSP,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,NEW_CLASS::__free__,FLEXTTP(TYPE1),FLEXTTP(TYPE2),A_NULL); \
+    flext_obj::obj_add(LIB,DSP,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,NEW_CLASS::__free__,FLEXTTP(TYPE1),FLEXTTP(TYPE2),A_NULL); \
 } 
 
 #define REAL_NEW_3(NAME,NEW_CLASS,DSP,LIB, TYPE1, TYPE2, TYPE3) \
@@ -380,7 +388,7 @@ flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
 }   	    	    	    	    	    	    	    	\
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
-    flext_obj::obj_add(LIB,DSP,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,NEW_CLASS::__free__,FLEXTTP(TYPE1),FLEXTTP(TYPE2),FLEXTTP(TYPE3),A_NULL); \
+    flext_obj::obj_add(LIB,DSP,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,NEW_CLASS::__free__,FLEXTTP(TYPE1),FLEXTTP(TYPE2),FLEXTTP(TYPE3),A_NULL); \
 } 
 
 #define REAL_NEW_4(NAME,NEW_CLASS,DSP,LIB, TYPE1,TYPE2, TYPE3, TYPE4) \
@@ -391,7 +399,7 @@ flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
 }   	    	    	    	    	    	    	    	\
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
-    flext_obj::obj_add(LIB,DSP,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,NEW_CLASS::__free__,FLEXTTP(TYPE1),FLEXTTP(TYPE2),FLEXTTP(TYPE3),FLEXTTP(TYPE4),A_NULL); \
+    flext_obj::obj_add(LIB,DSP,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,NEW_CLASS::__free__,FLEXTTP(TYPE1),FLEXTTP(TYPE2),FLEXTTP(TYPE3),FLEXTTP(TYPE4),A_NULL); \
 } 
 
 

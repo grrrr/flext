@@ -26,6 +26,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 flext_hdr *flext_obj::m_holder = NULL;
 const t_symbol *flext_obj::m_holdname = NULL;
+bool flext_obj::m_holdattr = false;
 
 
 /////////////////////////////////////////////////////////
@@ -35,6 +36,7 @@ const t_symbol *flext_obj::m_holdname = NULL;
 flext_obj :: flext_obj()
            : x_obj(m_holder)
 		   , m_name(m_holdname)
+		   , procattr(m_holdattr)
 		   , init_ok(true)
 {
 #ifdef PD

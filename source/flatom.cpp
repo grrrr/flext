@@ -70,15 +70,17 @@ flext::AtomList &flext::AtomList::Append(const t_atom &a)
 
 flext::AtomList &flext::AtomList::Append(int argc,const t_atom *argv)
 {
-	t_atom *nlst = new t_atom[cnt+argc];
-	int i;
-	for(i = 0; i < cnt; ++i) SetAtom(nlst[i],lst[i]);
-	for(i = 0; i < argc; ++i) SetAtom(nlst[cnt+i],argv[i]);
-	
-	if(lst) delete[] lst;
-	lst = nlst;
-	cnt += argc;
-
+	if(argc) {
+		t_atom *nlst = new t_atom[cnt+argc];
+		int i;
+		for(i = 0; i < cnt; ++i) SetAtom(nlst[i],lst[i]);
+		if(argv) 
+			for(i = 0; i < argc; ++i) SetAtom(nlst[cnt+i],argv[i]);
+		
+		if(lst) delete[] lst;
+		lst = nlst;
+		cnt += argc;
+	}
 	return *this;
 }
 
@@ -97,15 +99,18 @@ flext::AtomList &flext::AtomList::Prepend(const t_atom &a)
 
 flext::AtomList &flext::AtomList::Prepend(int argc,const t_atom *argv)
 {
-	t_atom *nlst = new t_atom[cnt+argc];
-	int i;
-	for(i = 0; i < argc; ++i) SetAtom(nlst[i],argv[i]);
-	for(i = 0; i < cnt; ++i) SetAtom(nlst[argc+i],lst[i]);
-	
-	if(lst) delete[] lst;
-	lst = nlst;
-	cnt += argc;
+	if(argc) {
+		t_atom *nlst = new t_atom[cnt+argc];
+		int i;
 
+		if(argv) 
+			for(i = 0; i < argc; ++i) SetAtom(nlst[i],argv[i]);
+		for(i = 0; i < cnt; ++i) SetAtom(nlst[argc+i],lst[i]);
+		
+		if(lst) delete[] lst;
+		lst = nlst;
+		cnt += argc;
+	}
 	return *this;
 }
 

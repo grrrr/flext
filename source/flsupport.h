@@ -304,13 +304,13 @@ public:
 		//! Append an atom to the list
 		AtomList &Append(const t_atom &a);
 		//! Append an atom list to the list
-		AtomList &Append(int argc,const t_atom *argv);
+		AtomList &Append(int argc,const t_atom *argv = NULL);
 		//! Append an atom list to the list
 		AtomList &Append(const AtomList &a) { return Append(a.Count(),a.Atoms()); }
 		//! Prepend an atom to the list
 		AtomList &Prepend(const t_atom &a);
 		//! Prepend an atom list to the list
-		AtomList &Prepend(int argc,const t_atom *argv);
+		AtomList &Prepend(int argc,const t_atom *argv = NULL);
 		//! Prepend an atom list to the list
 		AtomList &Prepend(const AtomList &a) { return Prepend(a.Count(),a.Atoms()); }
 

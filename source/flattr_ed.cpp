@@ -251,46 +251,45 @@ static void tclscript()
                 "wm title $id $title\n" 
                 "wm protocol $id WM_DELETE_WINDOW [concat flext_cancel $id]\n"
 
+                "frame $id.frame\n"
                 "set row 0\n"
 
                 // set grow parameters
-                "grid columnconfigure $id 0 -weight 1\n"  // label
-                "grid columnconfigure $id {1 4} -weight 3\n" // value entry
-                "grid columnconfigure $id {2 3} -weight 0\n"  // copy buttons
-                "grid columnconfigure $id 5 -weight 1\n"  // apply button
-                "grid columnconfigure $id {6 7 8} -weight 0\n" // radio buttons
+                "grid columnconfigure $id.frame 0 -weight 1\n"  // label
+                "grid columnconfigure $id.frame {1 4} -weight 3\n" // value entry
+                "grid columnconfigure $id.frame {2 3} -weight 0\n"  // copy buttons
+                "grid columnconfigure $id.frame 5 -weight 1\n"  // apply button
+                "grid columnconfigure $id.frame {6 7 8} -weight 0\n" // radio buttons
 
-//                "grid rowconfigure $id {0 1 2} -weight 0\n"
+                "grid rowconfigure $id.frame {0 1} -weight 0\n"
 
                 // set column labels
-                "label $id.label -text {attribute} -height 2 -font {Helvetica 9 bold}\n"
-                "label $id.init  -text {initial value} -height 2 -font {Helvetica 9 bold}\n"
-                "label $id.copy  -text {copy} -height 2 -font {Helvetica 9 bold}\n"
-                "label $id.val   -text {current value} -height 2 -font {Helvetica 9 bold}\n"
-                "label $id.apply -text {} -height 2 -font {Helvetica 9 bold}\n" // why must this be empty?
+                "label $id.frame.label -text {attribute} -font {Helvetica 9 bold}\n"
+                "label $id.frame.init  -text {initial value} -font {Helvetica 9 bold}\n"
+                "label $id.frame.copy  -text {copy} -font {Helvetica 9 bold}\n"
+                "label $id.frame.val   -text {current value} -font {Helvetica 9 bold}\n"
+                "label $id.frame.apply -text {} -font {Helvetica 9 bold}\n" // why must this be empty?
                 "foreach {i txt} {0 {don't\rsave} 1 {do\rinit} 2 {always\rsave} } {\n"
-                    "label $id.b$i -text $txt -height 2 -font {Helvetica 9 bold}\n"
+                    "label $id.frame.b$i -text $txt -font {Helvetica 7 bold}\n"
                 "}\n"
-//              "label $id.options -text {options} -height 2\n"
 
-                "grid config $id.label -column 0 -row $row \n"
-                "grid config $id.init  -column 1 -row $row \n"
-                "grid config $id.copy  -column 2 -columnspan 2 -row $row \n"
-                "grid config $id.val   -column 4 -row $row \n"
-                "grid config $id.apply  -column 5 -row $row \n"
-                "foreach i {0 1 2} { grid config $id.b$i -column [expr $i + 6] -row $row }\n"
-//              "grid config $id.options -column 3 -row 0 \n"
+                "grid config $id.frame.label -column 0 -row $row \n"
+                "grid config $id.frame.init  -column 1 -row $row \n"
+                "grid config $id.frame.copy  -column 2 -columnspan 2 -row $row \n"
+                "grid config $id.frame.val   -column 4 -row $row \n"
+                "grid config $id.frame.apply  -column 5 -row $row \n"
+                "foreach i {0 1 2} { grid config $id.frame.b$i -column [expr $i + 6] -row $row }\n"
                 "incr row\n"
 
                 // Separator
-                "frame $id.sep -relief ridge -bd 1 -height 2\n"
-                "grid config $id.sep -column 0 -columnspan 9 -row $row -pady 2 -sticky {snew}\n"
+                "frame $id.frame.sep -relief ridge -bd 1 -height 2\n"
+                "grid config $id.frame.sep -column 0 -columnspan 9 -row $row -pady 2 -sticky {snew}\n"
                 "incr row\n"
     );
     sys_vgui(
                 "set ix 1\n"
                 "foreach {an av ai atp asv afl} $attrlist {\n"
-                    "grid rowconfigure $id $row -weight 0\n"
+                    "grid rowconfigure $id.frame $row -weight 1\n"
 
                     // get attribute name
                     "set var_attr_name [concat [concat var_name_$ix]_$vid ]\n"
@@ -320,8 +319,8 @@ static void tclscript()
                     // add dialog elements to window
 
                     // attribute label
-                    "label $id.label-$ix -text \"$an :\" -font {Helvetica 8 bold}\n"
-                    "grid config $id.label-$ix -column 0 -row $row -padx 5 -sticky {e}\n"
+                    "label $id.frame.label-$ix -text \"$an :\" -font {Helvetica 8 bold}\n"
+                    "grid config $id.frame.label-$ix -column 0 -row $row -padx 5 -sticky {e}\n"
     );
     sys_vgui(
                     "if { $afl != 0 } {\n"
@@ -333,45 +332,42 @@ static void tclscript()
                         // choose entry field type
                         "switch $atp {\n"
                             "0 - 1 {\n"  // int or float
-                                "entry $id.init-$ix -textvariable $var_attr_init\n"
-                                "entry $id.val-$ix -textvariable $var_attr_val\n"
+                                "entry $id.frame.init-$ix -textvariable $var_attr_init\n"
+                                "entry $id.frame.val-$ix -textvariable $var_attr_val\n"
                             "}\n"
                             "2 {\n"  // boolean
-                                "checkbutton $id.init-$ix -variable $var_attr_init\n"
-                                "checkbutton $id.val-$ix -variable $var_attr_val\n"
+                                "checkbutton $id.frame.init-$ix -variable $var_attr_init\n"
+                                "checkbutton $id.frame.val-$ix -variable $var_attr_val\n"
                             "}\n"
                             "3 {\n"  // symbol
-                                "entry $id.init-$ix -textvariable $var_attr_init\n"
-                                "entry $id.val-$ix -textvariable $var_attr_val\n"
+                                "entry $id.frame.init-$ix -textvariable $var_attr_init\n"
+                                "entry $id.frame.val-$ix -textvariable $var_attr_val\n"
                             "}\n"
                             "4 - 5 {\n"  // list or unknown
-                                "entry $id.init-$ix -textvariable $var_attr_init\n"
-                                "bind $id.init-$ix {<Control-Button-1>} \" flext_textzoom $id.init-$ix $var_attr_init { $title } $an 1\"\n"
-                                "entry $id.val-$ix -textvariable $var_attr_val\n"
-                                "bind $id.val-$ix {<Control-Button-1>} \" flext_textzoom $id.val-$ix $var_attr_val { $title } $an 1\"\n"
+                                "entry $id.frame.init-$ix -textvariable $var_attr_init\n"
+                                "bind $id.frame.init-$ix {<Control-Button-1>} \" flext_textzoom $id.frame.init-$ix $var_attr_init { $title } $an 1\"\n"
+                                "entry $id.frame.val-$ix -textvariable $var_attr_val\n"
+                                "bind $id.frame.val-$ix {<Control-Button-1>} \" flext_textzoom $id.frame.val-$ix $var_attr_val { $title } $an 1\"\n"
                             "}\n"
                         "}\n"
 
-                        "grid config $id.init-$ix  -column 1 -row $row -padx 5 -sticky {ew}\n"
-                        "grid config $id.val-$ix   -column 4 -row $row -padx 5 -sticky {ew}\n"
+                        "grid config $id.frame.init-$ix  -column 1 -row $row -padx 5 -sticky {ew}\n"
+                        "grid config $id.frame.val-$ix   -column 4 -row $row -padx 5 -sticky {ew}\n"
 
                         // copy buttons
-                        "button $id.b2i-$ix -text {<-} -height 1 -command \" flext_copyval $var_attr_init $var_attr_val \"\n"
-                        "grid config $id.b2i-$ix  -column 2 -row $row  -sticky {ew}\n"
-                        "button $id.b2c-$ix -text {->} -height 1 -command \" flext_copyval $var_attr_val $var_attr_init \"\n"
-                        "grid config $id.b2c-$ix  -column 3 -row $row  -sticky {ew}\n"
+                        "button $id.frame.b2i-$ix -text {<-} -height 1 -command \" flext_copyval $var_attr_init $var_attr_val \"\n"
+                        "grid config $id.frame.b2i-$ix  -column 2 -row $row  -sticky {ew}\n"
+                        "button $id.frame.b2c-$ix -text {->} -height 1 -command \" flext_copyval $var_attr_val $var_attr_init \"\n"
+                        "grid config $id.frame.b2c-$ix  -column 3 -row $row  -sticky {ew}\n"
 
                         // apply button
-                        "button $id.apply-$ix -text {Apply} -height 1 -command \" flext_apply $id $ix \"\n"
-                        "grid config $id.apply-$ix  -column 5 -row $row  -sticky {ew}\n"
-
-    //                  "tk_optionMenu $id.opt-$ix $var_attr_save {don't save} {initialize} {always save}\n"
-    //                  "grid config $id.opt-$ix -column 5 -row $ix \n"
+                        "button $id.frame.apply-$ix -text {Apply} -height 1 -command \" flext_apply $id $ix \"\n"
+                        "grid config $id.frame.apply-$ix -column 5 -row $row  -sticky {ew}\n"
 
                         // radiobuttons
                         "foreach {i c} {0 black 1 blue 2 red} {\n"
-                            "radiobutton $id.b$i-$ix -value $i -foreground $c -variable $var_attr_save \n"
-                            "grid config $id.b$i-$ix -column [expr $i + 6] -row $row  \n"
+                            "radiobutton $id.frame.b$i-$ix -value $i -foreground $c -variable $var_attr_save \n"
+                            "grid config $id.frame.b$i-$ix -column [expr $i + 6] -row $row  \n"
                         "}\n"
     );
     sys_vgui(
@@ -383,55 +379,58 @@ static void tclscript()
                         // choose display field type
                         "switch $atp {\n"
                             "0 - 1 {\n"  // int or float
-                                "entry $id.val-$ix -textvariable $var_attr_val -state disabled\n"
+                                "entry $id.frame.val-$ix -textvariable $var_attr_val -state disabled\n"
                             "}\n"
                             "2 {\n"  // boolean
-                                "checkbutton $id.val-$ix -variable $var_attr_val -state disabled\n"
+                                "checkbutton $id.frame.val-$ix -variable $var_attr_val -state disabled\n"
                             "}\n"
                             "3 {\n"  // symbol
-                                "entry $id.val-$ix -textvariable $var_attr_val -state disabled\n"
+                                "entry $id.frame.val-$ix -textvariable $var_attr_val -state disabled\n"
                             "}\n"
                             "4 - 5 {\n"  // list or unknown
-                                "entry $id.val-$ix -textvariable $var_attr_val -state disabled\n"
-                                "bind $id.val-$ix {<Control-Button-1>} \" flext_textzoom $id.val-$ix $var_attr_val { $title } $an 0\"\n"
+                                "entry $id.frame.val-$ix -textvariable $var_attr_val -state disabled\n"
+                                "bind $id.frame.val-$ix {<Control-Button-1>} \" flext_textzoom $id.frame.val-$ix $var_attr_val { $title } $an 0\"\n"
                             "}\n"
                         "}\n"
 
-//                      "entry $id.val-$ix -textvariable $var_attr_val -state disabled\n"
-                        "grid config $id.val-$ix -column 4 -row $row -padx 5 -sticky {ew}\n"
+//                      "entry $id.fval.val-$ix -textvariable $var_attr_val -state disabled\n"
+                        "grid config $id.frame.val-$ix -column 4 -row $row -padx 5 -sticky {ew}\n"
 
-                        "label $id.readonly-$ix -text \"read-only\"\n"
-                        "grid config $id.readonly-$ix -column 6 -columnspan 3 -row $row -padx 5 -sticky {ew}\n"
+                        "label $id.frame.readonly-$ix -text \"read-only\"\n"
+                        "grid config $id.frame.readonly-$ix -column 6 -columnspan 3 -row $row -padx 5 -sticky {ew}\n"
                     "}\n"
 
                     // increase counter
                     "incr ix\n"
                     "incr row\n"
                 "}\n"
+
+                // empty space
+                "grid rowconfigure $id.frame $row -weight 1\n"
+                "frame $id.frame.dummy\n"
+                "grid config $id.frame.dummy -column 0 -columnspan 9 -row $row\n"
+                "incr row\n"
     );
     sys_vgui(
                 // Separator
                 "frame $id.sep2 -relief ridge -bd 1 -height 2\n"
-//                "grid rowconfigure $id $row -weight 0\n"
-                "grid config $id.sep2 -column 0 -columnspan 9 -row $row -pady 5 -sticky {snew}\n"
-                "incr row\n"
 
                 // Buttons
                 "frame $id.buttonframe\n"
-                "pack $id.buttonframe -side bottom -fill x\n"
 
                 "button $id.buttonframe.cancel -text {Leave} -width 20 -command \" flext_cancel $id \"\n"
                 "button $id.buttonframe.apply -text {Apply all} -width 20 -command \" flext_applyall $id $alen \"\n"
                 "button $id.buttonframe.ok -text {Apply & Leave} -width 20 -command \" flext_ok $id $alen \"\n"
                 "button $id.buttonframe.help -text {Help} -width 10 -command \" flext_help $id \"\n"
 
-                "pack $id.buttonframe.cancel -side left -expand 1\n"
-                "pack $id.buttonframe.apply -side left -expand 1\n"
-                "pack $id.buttonframe.ok -side left -expand 1\n"
-                "pack $id.buttonframe.help -side left -expand 1\n"
+                "grid columnconfigure $id.buttonframe {0 1 2 3} -weight 1\n"
+                "grid config $id.buttonframe.cancel $id.buttonframe.apply $id.buttonframe.ok $id.buttonframe.help -padx 2 -sticky {snew}\n"
 
-//                "grid rowconfigure $id $row -weight 0\n"
-                "grid config $id.buttonframe -column 0 -columnspan 9 -row $row -pady 5 -sticky {ew}\n"
+//                "scrollbar $id.scroll -command \"$id.frame yview\"\n"
+
+                "pack $id.buttonframe $id.sep2 -pady 2 -expand 0 -side bottom -fill x\n"
+//                "pack $id.scroll -side right -fill y\n"
+                "pack $id.frame -expand 1 -side top -fill both\n"
 
                 // Key bindings
                 "bind $id {<KeyPress-Escape>} \" flext_cancel $id \"\n"
@@ -539,7 +538,7 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
                 FLEXT_ASSERT(false);
         }
 
-        sys_vgui(const_cast<char *>(list?"%s {\n":"%s\n"),GetString(sym));
+        sys_vgui(const_cast<char *>(list?"%s {":"%s "),GetString(sym));
 
         AtomList lv;
         if(gattr) { // gettable attribute is present
@@ -553,12 +552,12 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
                 b += escapeit(b,sizeof(buf)+buf-b,tmp);
                 if(i < lv.Count()-1) { *(b++) = ' '; *b = 0; }
             }
-            sys_vgui("%s\n",buf);
+            sys_vgui("%s",buf);
         }
         else
-            sys_vgui("{}\n");
+            sys_vgui("{}");
 
-        sys_vgui(const_cast<char *>(list?"} {\n":" \n"));
+        sys_vgui(const_cast<char *>(list?"} {":" "));
 
         if(pattr) {
             // if there is initialization data take this, otherwise take the current data
@@ -571,10 +570,10 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
                 b += escapeit(b,sizeof(buf)+buf-b,tmp);
                 if(i < lp.Count()-1) { *(b++) = ' '; *b = 0; }
             }
-            sys_vgui("%s\n",buf);
+            sys_vgui("%s",buf);
         }
         else
-            sys_vgui("{}\n");
+            sys_vgui("{}");
 
 
         sys_vgui(const_cast<char *>(list?"} %i %i %i \n":" %i %i %i \n"),tp,sv,pattr?(pattr->BothExist()?2:1):0);

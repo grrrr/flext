@@ -82,6 +82,9 @@ class ThrFinder:
     public T
 {
 public:
+    void Push(thr_entry *e) { T::Push(e); }
+    thr_entry *Pop() { return T::Pop(); }
+
     thr_entry *Find(flext::thrid_t id,bool pop = false) 
     {
         TypedLifo<thr_entry> qutmp;

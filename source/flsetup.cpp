@@ -17,7 +17,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <string.h>
 
 //! C++ strcup function
-const char *fl_strdup(const char *t)
+char *flext::strdup(const char *t)
 {
 	if(!t) return NULL;
 	int len = strlen(t);
@@ -27,7 +27,7 @@ const char *fl_strdup(const char *t)
 }
 
 //! Extract space-delimited words from a string
-const char *fl_extract(const char *name,int ix)
+const char *flext::extract(const char *name,int ix)
 {
 	static char tmp[1024];
 	const char *n = name;
@@ -36,7 +36,7 @@ const char *fl_extract(const char *name,int ix)
 			char *t;
 			for(t = tmp; *n && !isspace(*n); ++t,++n) *t = *n;
 			*t = 0;
-			return *tmp?fl_strdup(tmp):NULL;
+			return *tmp?flext::strdup(tmp):NULL;
 		}
 		else {
 			while(*n && !isspace(*n)) ++n;
@@ -50,7 +50,7 @@ const char *fl_extract(const char *name,int ix)
 
 #ifdef _DEBUG
 //! Check if object's name ends with a tilde
-bool fl_chktilde(const char *objname)
+bool flext::chktilde(const char *objname)
 {
 //	int stplen = strlen(setupfun);
 	bool tilde = true; //!strncmp(setupfun,"_tilde",6);

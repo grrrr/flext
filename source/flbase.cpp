@@ -33,7 +33,7 @@ const char *flext_obj::m_holdname;
 /////////////////////////////////////////////////////////
 flext_obj :: flext_obj()
            : x_obj(m_holder)
-		   , m_name(fl_strdup(m_holdname))
+		   , m_name(flext::strdup(m_holdname))
 		   , init_ok(true)
 {
 #ifdef PD

@@ -367,10 +367,12 @@ public:
 	//! Check for symbol and get string
 	static const char *GetAString(const t_symbol *s) { return s?s->s_name:""; }  
 	
-	//! Access data bound to a symbol
-	static void *GetThing(const t_symbol *s) { return s->s_thing; }  
-	//! Set data bound to a symbol
-	static void SetThing(t_symbol *s,void *dt) { s->s_thing = (t_thing)dt; }  
+	//! Bind object to a symbol
+	static void DoUnbind(t_symbol *s,flext_obj *o);
+	//! Unbind object from a symbol
+	static void DoBind(const t_symbol *s,flext_obj *o);
+	//! Get bound object of a symbol
+	static t_class **GetBound(const t_symbol *s) { return (t_class **)s->s_thing; }
 
 // --- atom stuff ----------------------------------------
 		

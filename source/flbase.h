@@ -8,7 +8,7 @@
 #pragma warning (disable:4091)
 extern "C" {	    	    	    	    	    	    	\
 
-#include <m_imp.h>
+//#include <m_imp.h>
 
 }
 #pragma warning (pop)
@@ -165,38 +165,38 @@ static void cb_setup(t_class *classPtr);
 //
 // NO ARGUMENTS
 /////////////////////////////////////////////////
-#define CPPEXTERN_NEW(NEW_CLASS)    	    	    	    	\
-    REAL_NEW(NEW_CLASS, _setup, _class)
+#define CPPEXTERN_NEW(NAME,NEW_CLASS)    	    	    	    	\
+    REAL_NEW(NAME,NEW_CLASS, _setup, _class)
 
 //
 // ONE ARGUMENT
 /////////////////////////////////////////////////
-#define CPPEXTERN_NEW_WITH_ONE_ARG(NEW_CLASS, TYPE, PD_TYPE)    \
-    REAL_NEW_WITH_ARG(NEW_CLASS, _setup, _class, TYPE, PD_TYPE)
+#define CPPEXTERN_NEW_WITH_ONE_ARG(NAME,NEW_CLASS, TYPE, PD_TYPE)    \
+    REAL_NEW_WITH_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, PD_TYPE)
 
 //
 // GIMME ARGUMENT
 /////////////////////////////////////////////////
-#define CPPEXTERN_NEW_WITH_GIMME(NEW_CLASS)  	    	    	\
-    REAL_NEW_WITH_GIMME(NEW_CLASS, _setup, _class)
+#define CPPEXTERN_NEW_WITH_GIMME(NAME,NEW_CLASS)  	    	    	\
+    REAL_NEW_WITH_GIMME(NAME,NEW_CLASS, _setup, _class)
 
 //
 // TWO ARGUMENTS
 /////////////////////////////////////////////////
-#define CPPEXTERN_NEW_WITH_TWO_ARGS(NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO)	\
-    REAL_NEW_WITH_ARG_ARG(NEW_CLASS, _setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO)
+#define CPPEXTERN_NEW_WITH_TWO_ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO)	\
+    REAL_NEW_WITH_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO)
 
 //
 // THREE ARGUMENTS
 /////////////////////////////////////////////////
-#define CPPEXTERN_NEW_WITH_THREE_ARGS(NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE)	\
-    REAL_NEW_WITH_ARG_ARG_ARG(NEW_CLASS, _setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE)
+#define CPPEXTERN_NEW_WITH_THREE_ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE)	\
+    REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE)
 
 //
 // FOUR ARGUMENTS
 /////////////////////////////////////////////////
-#define CPPEXTERN_NEW_WITH_FOUR_ARGS(NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE, TFOUR, PD_FOUR) \
-    REAL_NEW_WITH_ARG_ARG_ARG_ARG(NEW_CLASS, _setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE, TFOUR, PD_FOUR)
+#define CPPEXTERN_NEW_WITH_FOUR_ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE, TFOUR, PD_FOUR) \
+    REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE, TFOUR, PD_FOUR)
 
 ////////////////////////////////////////
 // These definitions are used below
@@ -204,10 +204,10 @@ static void cb_setup(t_class *classPtr);
 
 #ifdef PD
 #define CPPEXTERN_NEWFN ::class_new
-#define CPPEXTERN_CLREF(NEW_CLASS,CLASS_EXT) gensym(#NEW_CLASS)
+#define CPPEXTERN_CLREF(NAME,CLASS) gensym(NAME)
 #elif defined(MAX)
 #define CPPEXTERN_NEWFN NULL; ::setup
-#define CPPEXTERN_CLREF(NEW_CLASS,CLASS_EXT) (t_messlist **)&(NEW_CLASS ## CLASS_EXT)
+#define CPPEXTERN_CLREF(NAME,CLASS) (t_messlist **)&(CLASS)
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -220,7 +220,7 @@ static void cb_setup(t_class *classPtr);
 ///////////////////////////////////////////////////////////////////////////////
 // no args
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW(NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME)        \
+#define REAL_NEW(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME)        \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS ()                              \
 {     	    	    	    	    	    	    	    	\
@@ -234,7 +234,7 @@ extern "C" {	    	    	    	    	    	    	\
 void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
     NEW_CLASS ## EXTERN_NAME = CPPEXTERN_NEWFN(                       \
-    	     	CPPEXTERN_CLREF(NEW_CLASS,EXTERN_NAME), 	    	    	     	\
+    	     	CPPEXTERN_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(Obj_header), 0,                          \
@@ -246,7 +246,7 @@ void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 ///////////////////////////////////////////////////////////////////////////////
 // one arg
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW_WITH_ARG(NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, VAR_TYPE, PD_TYPE) \
+#define REAL_NEW_WITH_ARG(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, VAR_TYPE, PD_TYPE) \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (VAR_TYPE arg)                  \
 {     	    	    	    	    	    	    	    	\
@@ -260,7 +260,7 @@ extern "C" {	    	    	    	    	    	    	\
 void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
     NEW_CLASS ## EXTERN_NAME = CPPEXTERN_NEWFN(                       \
-    	     	CPPEXTERN_CLREF(NEW_CLASS,EXTERN_NAME), 	    	    	    	\
+    	     	CPPEXTERN_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(Obj_header), 0,                          \
@@ -273,7 +273,7 @@ void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 ///////////////////////////////////////////////////////////////////////////////
 // gimme arg
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW_WITH_GIMME(NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME) \
+#define REAL_NEW_WITH_GIMME(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME) \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (t_symbol *, int argc, t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
@@ -287,7 +287,7 @@ extern "C" {	    	    	    	    	    	    	\
 void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
     NEW_CLASS ## EXTERN_NAME = CPPEXTERN_NEWFN(                       \
-    	     	CPPEXTERN_CLREF(NEW_CLASS,EXTERN_NAME), 	    	    	    	\
+    	     	CPPEXTERN_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(Obj_header), 0,                          \
@@ -300,7 +300,7 @@ void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 ///////////////////////////////////////////////////////////////////////////////
 // two args
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW_WITH_ARG_ARG(NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, ONE_VAR_TYPE, ONE_PD_TYPE, TWO_VAR_TYPE, TWO_PD_TYPE) \
+#define REAL_NEW_WITH_ARG_ARG(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, ONE_VAR_TYPE, ONE_PD_TYPE, TWO_VAR_TYPE, TWO_PD_TYPE) \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo) \
 {     	    	    	    	    	    	    	    	\
@@ -314,7 +314,7 @@ extern "C" {	    	    	    	    	    	    	\
 void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
     NEW_CLASS ## EXTERN_NAME = CPPEXTERN_NEWFN(                       \
-    	     	CPPEXTERN_CLREF(NEW_CLASS,EXTERN_NAME), 	    	    	    	\
+    	     	CPPEXTERN_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(Obj_header), 0,                          \
@@ -327,7 +327,7 @@ void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 ///////////////////////////////////////////////////////////////////////////////
 // three args
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW_WITH_ARG_ARG_ARG(NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, ONE_VAR_TYPE, ONE_PD_TYPE, TWO_VAR_TYPE, TWO_PD_TYPE, THREE_VAR_TYPE, THREE_PD_TYPE) \
+#define REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, ONE_VAR_TYPE, ONE_PD_TYPE, TWO_VAR_TYPE, TWO_PD_TYPE, THREE_VAR_TYPE, THREE_PD_TYPE) \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo, THREE_VAR_TYPE argthree) \
 {     	    	    	    	    	    	    	    	\
@@ -341,7 +341,7 @@ extern "C" {	    	    	    	    	    	    	\
 void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
     NEW_CLASS ## EXTERN_NAME = CPPEXTERN_NEWFN(                       \
-    	     	CPPEXTERN_CLREF(NEW_CLASS,EXTERN_NAME), 	    	    	    	\
+    	     	CPPEXTERN_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(Obj_header), 0,                          \
@@ -354,7 +354,7 @@ void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 ///////////////////////////////////////////////////////////////////////////////
 // four args
 ///////////////////////////////////////////////////////////////////////////////
-#define REAL_NEW_WITH_ARG_ARG_ARG_ARG(NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, ONE_VAR_TYPE, ONE_PD_TYPE, TWO_VAR_TYPE, TWO_PD_TYPE, THREE_VAR_TYPE, THREE_PD_TYPE, FOUR_VAR_TYPE, FOUR_PD_TYPE) \
+#define REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, SETUP_FUNCTION, EXTERN_NAME, ONE_VAR_TYPE, ONE_PD_TYPE, TWO_VAR_TYPE, TWO_PD_TYPE, THREE_VAR_TYPE, THREE_PD_TYPE, FOUR_VAR_TYPE, FOUR_PD_TYPE) \
 static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo, THREE_VAR_TYPE argthree, FOUR_VAR_TYPE argfour) \
 {     	    	    	    	    	    	    	    	\
@@ -368,7 +368,7 @@ extern "C" {	    	    	    	    	    	    	\
 void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
     NEW_CLASS ## EXTERN_NAME = CPPEXTERN_NEWFN(                       \
-    	     	CPPEXTERN_CLREF(NEW_CLASS,EXTERN_NAME), 	    	    	    	\
+    	     	CPPEXTERN_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(Obj_header), 0,                          \

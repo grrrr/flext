@@ -60,8 +60,7 @@ protected:
 
 	t_symbol *bufname;
 	F *buf;
-	I bufchns;
-	L buflen;
+	I bufchns,buflen;
 };
 
 

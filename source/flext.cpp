@@ -63,7 +63,7 @@ V buf_obj::setbuf(t_symbol *s)
 		}
 		else {
 			garray_usedindsp(a);
-			bchns = 1;
+			bufchns = 1;
 		}
 #elif defined(MAX)
 		if(bufname->s_thing) {

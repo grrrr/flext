@@ -12,7 +12,7 @@
 
 !include config-pd-msvc.txt
 
-all: flext flext_t flext_d flext_td # flext_s flext_sd
+all: flext flext_t flext_d flext_td flext_s flext_sd
 
 flext:
 	nmake /f make-inc.pd-msvc  NAME=$* 

@@ -285,6 +285,7 @@
 				PrecompiledHeaderThrough="flext.h"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="3"
 				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
@@ -397,7 +398,7 @@
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
-				DebugInformationFormat="3"
+				DebugInformationFormat="0"
 				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
@@ -532,7 +533,7 @@ copy F:\prog\max\flext\pd-msvc\flext.dll f:\prog\dll
 				AdditionalDependencies="maxapi.lib maxext.lib maxaudio.lib  stk.lib sndobj.lib"
 				OutputFile=".\max-msvc\flext.max.dll"
 				AdditionalLibraryDirectories="&quot;F:\prog\audio\MaxWinSDK\c74support\max-includes\win-includes\debug&quot;;&quot;F:\prog\audio\MaxWinSDK\c74support\msp-includes\win-includes\debug&quot;;f:\prog\packs\pthreads;F:\prog\audio\stk\lib;F:\prog\audio\sndobj\lib"
-				IgnoreAllDefaultLibraries="TRUE"
+				IgnoreAllDefaultLibraries="FALSE"
 				GenerateDebugInformation="FALSE"
 				OptimizeReferences="1"
 				ImportLibrary="./max-msvc/flext_l.lib"/>

@@ -223,7 +223,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	#ifndef FLEXT_OS
 		#if defined(linux) || defined(__linux__)
 			#define FLEXT_OS FLEXT_OS_LINUX
-		#elif defined(__CYGWIN__) || defined(__CYGWIN32__)
+		#elif defined(__CYGWIN__) || defined(__CYGWIN32__) || defined(__MINGW32__)
 			#define FLEXT_OS FLEXT_OS_WIN
 		#elif defined(__APPLE__) && defined(__MACH__)
 			#define FLEXT_OS FLEXT_OS_MAC

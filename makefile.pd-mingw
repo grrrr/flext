@@ -1,23 +1,23 @@
 # flext - C++ layer for Max/MSP and pd (pure data) externals
 # Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
 #
-# Makefile for gcc @ cygwin
+# Makefile for gcc @ mingw
 #
 # usage:
-# to build run "make -f makefile.pd-cygwin"
+# to build run "make -f makefile.pd-mingw"
 #
 # ---------------------------------------------
 #
 # compiling for threaded usage is not supported
 #
 
-CONFIG=config-pd-cygwin.txt
+CONFIG=config-pd-mingw.txt
 
 include $(CONFIG)
 
 
 # compiler+linker stuff
-INCLUDES=$(PDPATH)/src # /usr/include 
+INCLUDES=$(PDPATH)/src  # /usr/include 
 
 FLAGS=-DFLEXT_SYS=2 $(UFLAGS)
 CFLAGS=-O2
@@ -50,24 +50,22 @@ SRCS+=$(SRCS_STK)
 HDRS+=$(HDRS_STK)
 endif
 
-MAKEFILE=makefile.pd-cygwin
+MAKEFILE=makefile.pd-mingw
 TARGET=$(TARGDIR)/$(NAME)-pdwin.lib
 TARGET_D=$(TARGDIR)/$(NAME)_d-pdwin.lib
 TARGET_T=$(TARGDIR)/$(NAME)_t-pdwin.lib
 TARGET_TD=$(TARGDIR)/$(NAME)_td-pdwin.lib
-TARGET_S=$(TARGDIR)/$(NAME).dll
-TARGET_SD=$(TARGDIR)/$(NAME)_d.dll
 
-TARGETS=$(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD) # $(TARGET_S) $(TARGET_SD)
+TARGETS=$(TARGET) $(TARGET_D) # $(TARGET_T) $(TARGET_TD) $(TARGET_S) $(TARGET_SD)
 
 
 all: $(TARGDIR) $(TARGETS)
-
 $(TARGDIR):
 	-mkdir $(TARGDIR)
 
 $(SRCS): $(HDRS) $(IHDRS) $(MAKEFILE) $(CONFIG)
 	touch $@
+
 
 $(TARGDIR)/%.o : $(SRCDIR)/%.cpp
 	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
@@ -126,3 +124,13 @@ endif
 
 install:: $(TARGETS) $(patsubst %,$(SRCDIR)/%,$(HDRS)) 
 	cp $^ $(INSTDIR)
+
+
+
+
+
+
+
+
+
+

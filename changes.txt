@@ -19,6 +19,8 @@ Version history:
 - fixed entry of local variables with attribute editor
 - help window for attribute editor
 - appended lacking ~ for tilde object help patches
+- STL containers for all kinds of attribute, method, class handling
+- support for MinGW
 
 0.4.5:
 - added some more SIMD functions
@@ -288,6 +290,8 @@ general:
 - add signal in/out connection query function
 
 - support for Max qelem style
+
+- unify STL containers so that there's only one code template
 
 
 bugs:

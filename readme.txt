@@ -1,6 +1,6 @@
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -43,12 +43,17 @@ o Microsoft Visual C++ 6 or 7:
 	run "build-pd-msvc.bat" 
 
 o Borland C++ 5.5 (free): 
-	edit "config-pd-bcc.txt"
-	run "build-pd-bcc.bat" 
+	edit "config-pd-bcc.txt" and run "build-pd-bcc.bat" 
+	BCC++ currently supports non-threaded static flext libraries only
 
 o Cygwin: edit "config-pd-cygwin.txt" & run "sh build-pd-cygwin.sh" 
 	additional settings (e.g. target processor, compiler flags) can be made in makefile.pd-cygwin
 
+o MinGW: edit "config-pd-mingw.txt" & run "build-pd-mingw.bat" 
+	the MinGW binaries have to be in the PATH
+	additional settings (e.g. target processor, compiler flags) can be made in makefile.pd-mingw
+	MinGW currently supports non-threaded static flext libraries only
+	
 
 With your project using flext, be sure to define "FLEXT_SYS=2".
 

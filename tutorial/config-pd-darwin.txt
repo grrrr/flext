@@ -10,7 +10,7 @@ PDPATH=/usr/local/include
 FLEXTPATH=/usr/local/lib/pd/flext
 
 # where should the examples be built? (relative path)
-OUTPATH=./pd-linux
+OUTPATH=./pd-darwin
 
 # where should the examples be installed?
 # (leave blank to omit installation)

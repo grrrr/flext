@@ -1,0 +1,49 @@
+#N canvas 364 29 567 438 12;
+#X msg 21 84 help;
+#X msg 23 119 getattributes;
+#X text 260 348 there is one additional outlet;
+#X text 260 363 for all attribute-enabled objects;
+#X obj 247 389 print;
+#X msg 23 162 getarg;
+#X text 67 84 get some help;
+#X text 20 314 trigger output;
+#X msg 23 222 arg \$1;
+#X text 140 120 query object attributes (watch console);
+#X msg 88 162 getop;
+#X obj 159 330 attr2 @op +;
+#X text 229 160 query attributes;
+#X text 328 210 set attributes;
+#X msg 169 200 op +;
+#X msg 168 225 op -;
+#X msg 214 200 op *;
+#X msg 259 224 op **;
+#X msg 259 200 op =;
+#X msg 214 224 op /;
+#X msg 143 162 getresult;
+#X obj 16 8 cnv 15 500 40 empty empty attr2 10 22 0 24 -260818 -1 0
+;
+#X text 197 8 flext tutorial \, (C)2002 Thomas Grill;
+#X text 197 28 http://www.parasitaere-kapazitaeten.net;
+#X text 91 391 result;
+#X obj 23 336 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
+-1 -1 0 256;
+#X obj 23 201 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
+-1 -1 0 256;
+#X obj 151 391 nbx 7 16 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
+12 -228992 -1 -1 0 256;
+#X connect 0 0 11 0;
+#X connect 1 0 11 0;
+#X connect 5 0 11 0;
+#X connect 8 0 11 0;
+#X connect 10 0 11 0;
+#X connect 11 0 27 0;
+#X connect 11 1 4 0;
+#X connect 14 0 11 0;
+#X connect 15 0 11 0;
+#X connect 16 0 11 0;
+#X connect 17 0 11 0;
+#X connect 18 0 11 0;
+#X connect 19 0 11 0;
+#X connect 20 0 11 0;
+#X connect 25 0 11 0;
+#X connect 26 0 8 0;

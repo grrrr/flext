@@ -21,6 +21,7 @@ This is an example of a simple object doing a float inversion
 
 // define the class that stands for a pd/Max object
 // Attention: the class name must be the same as the object name!! (without an eventual ~)
+// Special names are possible with the usage of libraries (see the lib1 tutorial example)
 
 class simple1:
 	// inherit from basic flext class

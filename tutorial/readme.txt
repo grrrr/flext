@@ -26,11 +26,20 @@ pd - linux:
 -----------
 o GCC: edit "config-pd-linux.txt" & run "sh build-pd-linux.sh" 
 
+pd - MacOSX:
+-----------
+o GCC: edit "config-pd-darwin.txt" & run "sh build-pd-darwin.sh" 
+
+
 Max/MSP - MacOS 9:
 ------------------
 o Metrowerks CodeWarrior V6: edit & use the several ".cw" project files
 
 o Apple MPW-PR: edit & use the several "make.mpw" makefiles
+
+Max/MSP - MacOSX:
+------------------
+... sorry, not yet... would someone please donate me a CodeWarrior V8 ?
 
 ----------------------------------------------------------------------------
 

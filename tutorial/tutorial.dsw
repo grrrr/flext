@@ -1,5 +1,5 @@
 Microsoft Developer Studio Workspace File, Format Version 6.00
-# WARNUNG: DIESE ARBEITSBEREICHSDATEI DARF NICHT BEARBEITET ODER GEL…SCHT WERDEN!
+# WARNUNG: DIESE ARBEITSBEREICHSDATEI DARF NICHT BEARBEITET ODER GELÖSCHT WERDEN!
 
 ###############################################################################
 
@@ -19,6 +19,38 @@ Package=<4>
 
 ###############################################################################
 
+Project: "attr1"=.\attr1\attr1.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    attr1
+    .\attr1
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "attr2"=.\attr2\attr2.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    attr2
+    .\attr2
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "flext"=..\flext.dsp - Package Owner=<4>
 
 Package=<5>
@@ -26,6 +58,22 @@ Package=<5>
     begin source code control
     max/flext
     ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "lib1"=.\lib1\lib1.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    lib1
+    .\lib1
     end source code control
 }}}
 

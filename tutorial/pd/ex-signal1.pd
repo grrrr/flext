@@ -1,16 +1,25 @@
-#N canvas 335 232 452 302 10;
-#X obj 233 98 hsl 128 15 0 1 0 0 empty empty empty 20 8 0 8 -260818
+#N canvas 335 232 545 331 12;
+#X obj 137 137 hsl 128 15 0 1 0 0 empty empty empty 20 8 0 8 -261681
 -1 -1 0 1;
-#X obj 117 46 osc~ 440;
-#X obj 155 173 *~ 0.6;
-#X obj 147 218 dac~;
-#X obj 184 47 osc~ 880;
-#X floatatom 210 80 5 0 0;
-#X obj 155 139 signal1~;
-#X connect 0 0 6 2;
-#X connect 1 0 6 0;
-#X connect 2 0 3 0;
-#X connect 2 0 3 1;
-#X connect 4 0 6 1;
-#X connect 5 0 6 2;
-#X connect 6 0 2 0;
+#X obj 31 92 osc~ 440;
+#X obj 34 279 dac~;
+#X obj 109 93 osc~ 880;
+#X obj 44 206 signal1~;
+#X obj 16 8 cnv 15 500 40 empty empty signal1 10 22 0 24 -260818 -1
+0;
+#X text 197 8 flext tutorial \, (C)2002 Thomas Grill;
+#X text 197 28 http://www.parasitaere-kapazitaeten.net;
+#X text 276 151 control the mixing;
+#X text 104 242 adjust the volume;
+#X obj 44 240 *~ 0.5;
+#X text 28 73 source 1;
+#X text 111 73 source 2;
+#X obj 135 159 nbx 5 16 0 1 0 0 empty empty empty 0 -6 0 12 -261681
+-1 -1 0 256;
+#X connect 0 0 13 0;
+#X connect 1 0 4 0;
+#X connect 3 0 4 1;
+#X connect 4 0 10 0;
+#X connect 10 0 2 0;
+#X connect 10 0 2 1;
+#X connect 13 0 4 2;

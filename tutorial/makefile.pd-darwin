@@ -1,24 +1,22 @@
 # flext tutorial examples
 #
-# Makefile for gcc @ cygwin
+# Makefile for gcc @ darwin (OSX)
 #
-# usage: make -f makefile.pd-cygwin
-#
-# -----------------------------------------------------
-#
-# note: the thread examples don't compile with cygwin
+# usage: make -f makefile.pd-darwin
 #
 # -----------------------------------------------------
 
-include config-pd-cygwin.txt
+include config-pd-darwin.txt
 
-FLEXTLIB=$(FLEXTPATH)/flext-pdwin.lib
+FLEXTLIB=$(FLEXTPATH)/flext_t.a  # take threaded library for all
 
+
+# compiler+linker stuff	### EDIT! ###
 INCLUDES=$(PDPATH)/src
-LIBPATH=$(PDPATH)/bin
-FLAGS=-DPD -DNT
-CFLAGS=-O6 -mcpu=pentiumpro
-LIBS=m pd
+LIBPATH=
+FLAGS=-DPD -DFLEXT_THREADS
+CFLAGS=-O6 
+LIBS=m
 
 
 # the rest can stay untouched
@@ -26,29 +24,29 @@ LIBS=m pd
 
 # all the source files from the package
 
-EXAMPLES=simple1 simple2 simple3 adv1 attr1 attr2 signal1~ signal2~ lib1   # thread1 thread2
+EXAMPLES=simple1 simple2 simple3 adv1 attr1 attr2 signal1~ signal2~ lib1 thread1 thread2
 
-TARGETS=$(patsubst %,$(OUTPATH)/%.dll,$(EXAMPLES))
+
+TARGETS=$(patsubst %,$(OUTPATH)/%.pd_linux,$(EXAMPLES))
 
 # default target
 all: $(OUTPATH) $(TARGETS)
 
 
-$(OUTPATH)/%~.dll : $(OUTPATH)/%.dll 
+$(OUTPATH)/%~.pd_darwin: $(OUTPATH)/%.pd_darwin
 	mv $^ $@
 
 $(SRCS): $(HDRS)
 	touch $@
 
 $(OUTPATH):
-	-mkdir $(OUTPATH)
+	mkdir $(OUTPATH)
 
 $(OUTPATH)/%.o : %/main.cpp
 	$(CXX) -c $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(FLEXTPATH)) $< -o $@
 
-$(OUTPATH)/%.dll : $(OUTPATH)/%.o $(FLEXTLIB)
+$(OUTPATH)/%.pd_darwin : $(OUTPATH)/%.o $(FLEXTLIB)
 	$(CXX) $(LDFLAGS) -shared $(patsubst %,-L%,$(LIBPATH)) $^ $(patsubst %,-l%,$(LIBS)) -o $@
-	rm $<
 	chmod 755 $@
 
 
@@ -56,3 +54,4 @@ $(OUTPATH)/%.dll : $(OUTPATH)/%.o $(FLEXTLIB)
 clean:
 	rm -f $(OUTPATH)/*.o $(TARGETS)
 	
+

@@ -54,9 +54,15 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // --- definitions for FLEXT_OS_API ---------------------
 #define FLEXT_OSAPI_UNKNOWN	0
-#define FLEXT_OSAPI_MAC_CLASSIC 1
-#define FLEXT_OSAPI_MAC_CARBON 2
-#define FLEXT_OSAPI_MAC_OSX 3
+
+#define FLEXT_OSAPI_UNIX_POSIX 1
+
+#define FLEXT_OSAPI_MAC_CLASSIC 2
+#define FLEXT_OSAPI_MAC_CARBON 3
+#define FLEXT_OSAPI_MAC_OSX 4
+
+#define FLEXT_OSAPI_WIN_NATIVE 5  // WIN32 Platform
+#define FLEXT_OSAPI_WIN_POSIX 6	   // POSIX API (e.g. cygwin)
 
 // --- definitions for FLEXT_CPU ---------------------
 #define FLEXT_CPU_UNKNOWN	0
@@ -120,12 +126,13 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	#ifndef FLEXT_OS
 		#if defined(_WIN32)
 			#define FLEXT_OS FLEXT_OS_WIN
+			#define FLEXT_OSAPI FLEXT_OSAPI_WIN_NATIVE
 		#else
 			#define FLEXT_OS FLEXT_OS_UNKNOWN
+			#define FLEXT_OSAPI FLEXT_OSAPI_UNKNOWN
 		#endif
 	#endif
 
-	#define FLEXT_OSAPI FLEXT_OSAPI_UNKNOWN
 
 #elif defined(__BORLANDC__) 
 	// Borland C++
@@ -135,9 +142,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	#endif
 	#ifndef FLEXT_OS
 		#define FLEXT_OS FLEXT_OS_WIN
+		#define FLEXT_OSAPI FLEXT_OSAPI_WIN_NATIVE
+	#else	
+		#define FLEXT_OSAPI FLEXT_OSAPI_UNKNOWN
 	#endif
 
-	#define FLEXT_OSAPI FLEXT_OSAPI_UNKNOWN
 
 #elif defined(__MWERKS__)
 	// Metrowerks CodeWarrior
@@ -224,14 +233,21 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 		#endif
 	#endif
 
-	#if FLEXT_OS == FLEXT_OS_MAC
-		#define FLEXT_OSAPI FLEXT_OSAPI_MAC_OSX
-	#else
-		#define FLEXT_OSAPI FLEXT_OSAPI_UNKNOWN
+	#ifndef FLEXT_OSAPI
+		#if FLEXT_OS == FLEXT_OS_MAC
+			#define FLEXT_OSAPI FLEXT_OSAPI_MAC_OSX
+		#elif FLEXT_OS == FLEXT_OS_WIN
+			#define FLEXT_OSAPI FLEXT_OSAPI_WIN_POSIX
+		#elif FLEXT_OS == FLEXT_OS_LINUX || FLEXT_OS == FLEXT_OS_IRIX
+			#define FLEXT_OSAPI FLEXT_OSAPI_UNIX_POSIX
+		#else
+			#define FLEXT_OSAPI FLEXT_OSAPI_UNKNOWN
+		#endif
 	#endif
 
 #elif defined(__MRC__) && defined(MPW_CPLUS)
 	// Apple MPW MrCpp
+
 	#if __MRC__ < 0x500
 		#error Apple MPW MrCpp v.5.0.0 or better compiler required
 	#endif
@@ -252,9 +268,16 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 		#endif
 	#endif
 
-	#define FLEXT_OSAPI FLEXT_OSAPI_UNKNOWN
-
+	#ifndef FLEXT_OSAPI
+		#if FLEXT_OS == FLEXT_OS_MAC
+			#define FLEXT_OSAPI FLEXT_OSAPI_MAC_CLASSIC
+		#else
+			#define FLEXT_OSAPI FLEXT_OSAPI_UNKNOWN
+		#endif
+	#endif
 #endif
+
+
 
 #if FLEXT_OS == FLEXT_OS_WIN
 //	#pragma message("Compiling for Windows")
@@ -333,6 +356,16 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 		#error FLEXT_PDLOCK can only be defined with PD
 	#endif
 #endif
+
+// ----- macros for class names -----
+#if defined(FLEXT_SHARED)
+	#define FLEXT_CLASSDEF(CL) CL##_shared
+#elif defined(FLEXT_THREADS)
+	#define FLEXT_CLASSDEF(CL) CL##_multi
+#else
+	#define FLEXT_CLASSDEF(CL) CL##_single
+#endif
+
 
 // std namespace
 #ifdef __MWERKS__

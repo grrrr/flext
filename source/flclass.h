@@ -36,9 +36,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 /*! \brief Flext message only base object
 
-    This is the base class from which typical external object derive.
+    This is the base class from which typical external objects derive.
     DSP objects should use the flext_dsp class which inherits from flext_base and
-    provides the needed functionality.
+    provides the necessary functionality.
 
     For a valid external object class you would also need FLEXT_HEADER, also if it's only
     a base class without instantiated objects again.
@@ -49,12 +49,15 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 
-class FLEXT_SHARE flext_base: 
+class FLEXT_SHARE FLEXT_CLASSDEF(flext_base);
+typedef class FLEXT_SHARE FLEXT_CLASSDEF(flext_base) flext_base;
+
+class FLEXT_SHARE FLEXT_CLASSDEF(flext_base): 
 	public flext_obj
 {
-	FLEXT_HEADER_S(flext_base,flext_obj,Setup)
+	FLEXT_HEADER_S(FLEXT_CLASSDEF(flext_base),flext_obj,Setup)
 	
-	friend class flext_obj;
+	friend class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj);
 
 	/*!	\defgroup FLEXT_CLASS Flext base class
 		@{ 
@@ -469,8 +472,8 @@ public:
 
 protected:
 
-	flext_base();
-	virtual ~flext_base();
+	FLEXT_CLASSDEF(flext_base)();
+	virtual ~FLEXT_CLASSDEF(flext_base)();
 
 	/*! \brief Set up inlets and outlets, method and attribute lists
 	*/

@@ -5,8 +5,9 @@
 # where is PD?
 PDPATH=c:\programme\audio\pd		
 
-# where is MS VC++?
-MSVCPATH="c:\programme\prog\microsoft visual studio\VC98"
+# where is MS VC++? 
+# (should be commented out when called from the Visual Studio Command prompt)
+# MSVCPATH="c:\programme\prog\microsoft visual studio\VC98"
 
 # where is the SndObj include directory?
 # (leave blank or comment out to disable SndObj support)

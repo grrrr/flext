@@ -16,7 +16,7 @@ Version history:
 0.5.0:
 - added some more SIMD functions
 - fixed wrong returned result of flext::buffer::set function
-- fix for linux static exported function name-clash (flext::Setup() single- vs. multi-threading)
+- fix for linux static exported function name-clash (individual linker namings for exported flext base classes)
 - made message queue stuff global (static) for all flext objects
 - added flext_base::DumpAttrib to send an attribute value to the attribute outlet
 - added "getmethods" message (for attribute-enabled externals) to list methods for a specified inlet (default = 0)
@@ -25,6 +25,7 @@ Version history:
 - added flext::post() and flext::error() console printing (thread-safe)
 - added flext::CmpAtom and AtomList::operator < methods ... useful for using lists as keys for STL
 - make use of new PD thread locking (PD functions sys_lock() and sys_unlock())
+- better FLEXT_OSAPI resolution
 
 0.4.4:
 - fixed deadly bug for Max/MSP method-to-symbol-binding proxies
@@ -265,6 +266,8 @@ general:
 - documentation
 - add log messages for debugging version
 - use PD's t_float and t_int types (or comparable for 32-Bit safety)
+
+- make links flext.a -> libflext.a for compatibility
 
 bugs:
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)

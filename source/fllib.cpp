@@ -194,7 +194,7 @@ t_class *flext_obj::getClass(t_classid id) { return reinterpret_cast<libclass *>
 
 void flext_obj::lib_init(const char *name,void setupfun(),bool attr)
 {
-    flext::FLEXT_SETUPFUNC();
+    flext::Setup();
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
 	lib_name = MakeSymbol(name);

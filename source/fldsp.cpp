@@ -43,7 +43,7 @@ void flext_dsp::Setup(t_classid id)
 #endif
 }
 
-flext_dsp::flext_dsp(): 
+flext_dsp::FLEXT_CLASSDEF(flext_dsp)(): 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
 	srate(fts_dsp_get_sample_rate()),  // should we set it?
 	blksz(fts_dsp_get_tick_size()),
@@ -74,7 +74,7 @@ flext_dsp::flext_dsp():
 }
 
 
-flext_dsp::~flext_dsp()
+flext_dsp::~FLEXT_CLASSDEF(flext_dsp)()
 {
 #if FLEXT_SYS == FLEXT_SYS_JMAX
 	fts_dsp_object_delete(thisHdr());

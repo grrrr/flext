@@ -37,7 +37,7 @@ void flext_obj::ProcessAttributes(bool attr) { process_attributes = attr; }
 // Constructor
 //
 /////////////////////////////////////////////////////////
-flext_obj :: flext_obj()
+flext_obj :: FLEXT_CLASSDEF(flext_obj)()
            : x_obj(m_holder)
 		   , procattr(m_holdattr)
 		   , init_ok(true)
@@ -55,7 +55,7 @@ flext_obj :: flext_obj()
 // Destructor
 //
 /////////////////////////////////////////////////////////
-flext_obj :: ~flext_obj() {
+flext_obj :: ~FLEXT_CLASSDEF(flext_obj)() {
 	x_obj = NULL;
 }
 

@@ -18,7 +18,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flstdc.h"
 
 
-class FLEXT_SHARE flext_base;
+class FLEXT_SHARE FLEXT_CLASSDEF(flext);
+typedef class FLEXT_CLASSDEF(flext) flext;
+
+class FLEXT_SHARE FLEXT_CLASSDEF(flext_base);
 
 /*! \brief Flext support class
 
@@ -31,7 +34,8 @@ class FLEXT_SHARE flext_base;
     This class can also be used for a non-object class (not representing an external object)
     and won't give any extra burden to it.
 */
-class FLEXT_SHARE flext {
+
+class FLEXT_SHARE FLEXT_CLASSDEF(flext) {
 
 	/*!	\defgroup FLEXT_SUPPORT Flext support class
 		@{ 
@@ -644,7 +648,7 @@ public:
 		void set_any(const t_symbol *s,int argc,const t_atom *argv);
 		void set_list(int argc,const t_atom *argv);
 
-		flext_base *cl;
+		FLEXT_CLASSDEF(flext_base) *cl;
 		union _data {
 			bool _bool;
 			float _float;
@@ -667,10 +671,10 @@ public:
 		//! \brief Check if this class represents the current thread
 		bool Is(thrid_t id = GetThreadId()) const { return IsThread(thrid,id); }
 
-		flext_base *This() const { return th; }
+		FLEXT_CLASSDEF(flext_base) *This() const { return th; }
 		thrid_t Id() const { return thrid; }
 
-		flext_base *th;
+		FLEXT_CLASSDEF(flext_base) *th;
 		void (*meth)(thr_params *);
 		thr_params *params;
 		thrid_t thrid;
@@ -913,7 +917,7 @@ public:
 		//! Set timer callback function.
 		void SetCallback(void (*cb)(void *data)) { clss = NULL,cback = cb; }
 		//! Set timer callback function (with class pointer).
-		void SetCallback(flext_base &th,bool (*cb)(flext_base *th,void *data)) { clss = &th,cback = (void (*)(void *))cb; }
+		void SetCallback(FLEXT_CLASSDEF(flext_base) &th,bool (*cb)(FLEXT_CLASSDEF(flext_base) *th,void *data)) { clss = &th,cback = (void (*)(void *))cb; }
 
 		//! Clear timer.
 		bool Reset();
@@ -944,7 +948,7 @@ public:
 
 		const bool queued;
 		void (*cback)(void *data);
-		flext_base *clss;
+		FLEXT_CLASSDEF(flext_base) *clss;
 		void *userdata;
 		double period;
 	};
@@ -990,12 +994,16 @@ protected:
         As single- and multi-threaded to different initializations the function names have
         to be different as well.
 */
+
+/*
 #ifdef FLEXT_THREADS
 #define FLEXT_SETUPFUNC SetupMulti
 #else
 #define FLEXT_SETUPFUNC SetupSingle
 #endif
 	static void FLEXT_SETUPFUNC();
+*/
+	static void Setup();
 
 	static bool chktilde(const char *objname);
 
@@ -1004,12 +1012,12 @@ protected:
 
 
 // gcc doesn't like these to be included into the flext class (even if static)
-inline bool operator ==(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) == 0; }
-inline bool operator !=(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) != 0; }
-inline bool operator <(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) < 0; }
-inline bool operator <=(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) <= 0; }
-inline bool operator >(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) > 0; }
-inline bool operator >=(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) >= 0; }
+inline bool operator ==(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(flext)::CmpAtom(a,b) == 0; }
+inline bool operator !=(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(flext)::CmpAtom(a,b) != 0; }
+inline bool operator <(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(flext)::CmpAtom(a,b) < 0; }
+inline bool operator <=(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(flext)::CmpAtom(a,b) <= 0; }
+inline bool operator >(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(flext)::CmpAtom(a,b) > 0; }
+inline bool operator >=(const t_atom &a,const t_atom &b) { return FLEXT_CLASSDEF(flext)::CmpAtom(a,b) >= 0; }
 
 
 

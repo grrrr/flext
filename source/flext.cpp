@@ -20,7 +20,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 bool flext_base::compatibility = true;
 
-flext_base::flext_base():
+flext_base::FLEXT_CLASSDEF(flext_base)():
 	inlist(NULL),outlist(NULL),
 	curtag(NULL),
 	incnt(0),outcnt(0),
@@ -49,7 +49,7 @@ flext_base::flext_base():
 		attrhead = clattrhead = NULL;
 }
 
-flext_base::~flext_base()
+flext_base::~FLEXT_CLASSDEF(flext_base)()
 {
 #if FLEXT_SYS == FLEXT_SYS_MAX
     // according to David Z. one should do that first...

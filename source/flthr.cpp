@@ -20,11 +20,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <time.h>
 
-#if FLEXT_OS == FLEXT_OS_WIN
-#include <sys/timeb.h>
-#elif FLEXT_OS == FLEXT_OS_LINUX
+#if FLEXT_OSAPI == FLEXT_OSAPI_UNIX_POSIX || FLEXT_OSAPI == FLEXT_OSAPI_WIN_POSIX
 #include <sys/time.h>
 #include <unistd.h>
+#elif FLEXT_OS == FLEXT_OS_WIN
+#include <sys/timeb.h>
 #endif
 
 #include <errno.h>
@@ -514,12 +514,12 @@ bool flext::ThrCond::Wait() {
 bool flext::ThrCond::TimedWait(double ftime) 
 { 
 	timespec tm; 
-#if FLEXT_OS == FLEXT_OS_WIN
+#if FLEXT_OS == FLEXT_OS_WIN && FLEXT_OSAPI == FLEXT_OSAPI_WIN_NATIVE
 	_timeb tmb;
 	_ftime(&tmb);
 	tm.tv_nsec = tmb.millitm*1000000;
 	tm.tv_sec = tmb.time; 
-#else
+#else // POSIX
 #if 0 // find out when the following is defined
 	clock_gettime(CLOCK_REALTIME,tm);
 #else
@@ -529,6 +529,7 @@ bool flext::ThrCond::TimedWait(double ftime)
 	tm.tv_sec = tp.tv_sec;
 #endif
 #endif
+
 	tm.tv_nsec += (long)((ftime-(long)ftime)*1.e9);
 	long nns = tm.tv_nsec%1000000000;
 	tm.tv_sec += (long)ftime+(tm.tv_nsec-nns)/1000000000; 

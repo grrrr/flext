@@ -22,12 +22,16 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // === flext_dsp ==================================================
 
+class FLEXT_SHARE FLEXT_CLASSDEF(flext_dsp);
+typedef class FLEXT_SHARE FLEXT_CLASSDEF(flext_dsp) flext_dsp;
+
+
 /*! \brief Flext dsp enabled base object
 */
-class FLEXT_SHARE flext_dsp:
+class FLEXT_SHARE FLEXT_CLASSDEF(flext_dsp):
 	public flext_base
 {
-	FLEXT_HEADER_S(flext_dsp,flext_base,Setup)
+	FLEXT_HEADER_S(FLEXT_CLASSDEF(flext_dsp),flext_base,Setup)
 	
 public:
 
@@ -132,8 +136,8 @@ public:
 
 protected:
 	
-	flext_dsp();
-	virtual ~flext_dsp();
+	FLEXT_CLASSDEF(flext_dsp)();
+	virtual ~FLEXT_CLASSDEF(flext_dsp)();
 
 private:
 

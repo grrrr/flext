@@ -181,8 +181,11 @@ public:
 	static void Sleep(double s);
 
 
+	//! Get a 32 bit hash value frm an atom
+	static unsigned long AtomHash(const t_atom &a);
+	
 	/*! \brief Fold value to a number of bits
-		\remark Good for hash generation
+		\remark Good for hash tables
 	*/
 	static unsigned int FoldBits(unsigned long h,int bits);
 	

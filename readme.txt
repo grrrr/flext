@@ -21,7 +21,7 @@ Package files:
 - fldsp.h,fldsp.cpp: code for signal externals
 - flthr.h,flthr.cpp: code for threaded methods
 - flsupport.h,flsupport.cpp: various flext support functions and classes
-- flatom.cpp flatom-pr.cpp: code for functions dealing with lists of atoms
+- flatom.cpp flatom_pr.cpp: code for functions dealing with lists of atoms
 - flutil.cpp: additional utility functions
 - flxlet.cpp: code for variable inlet/outlet stuff
 - flattr.cpp: code for attribute stuff

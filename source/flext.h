@@ -11,8 +11,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #ifndef __FLEXT_H
 #define __FLEXT_H
 
-#define FLEXT_VERSION 201
-#define FLEXT_VERSTR "0.2.1"
+#define FLEXT_VERSION 202
+#define FLEXT_VERSTR "0.2.2"
 
 #include <flbase.h> 
 
@@ -167,7 +167,7 @@ public:
 		a_null = 0,
 		a_float,a_int, 
 		a_symbol,a_pointer,
-		a_gimme
+		a_gimme,a_xgimme
 	};
 
 	typedef void (*methfun)(t_class *c);
@@ -178,7 +178,7 @@ public:
 
 	void AddMethod(int inlet,void (*m)(flext_base *,int argc,t_atom *argv)) { AddMethod(inlet,"list",(methfun)m,a_gimme,a_null); }
 	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *)) { AddMethod(inlet,tag,(methfun)m,a_null); }  // pure method
-	void AddMethod(int inlet,void (*m)(flext_base *,t_symbol *s,int argc,t_atom *argv)) { AddMethod(inlet,"anything",(methfun)m,a_gimme,a_null); } // anything
+	void AddMethod(int inlet,void (*m)(flext_base *,t_symbol *s,int argc,t_atom *argv)) { AddMethod(inlet,"anything",(methfun)m,a_xgimme,a_null); } // anything
 	void AddMethod(int inlet,void (*m)(flext_base *,t_symbol *s)) { AddMethod(inlet,"symbol",(methfun)m,a_symbol,a_null); } // anything
 	void AddMethod(int inlet,void (*m)(flext_base *,float &)) { AddMethod(inlet,"float",(methfun)m,a_float,a_null); }  // single float
 	void AddMethod(int inlet,void (*m)(flext_base *,float &,float &)) { AddMethod(inlet,"list",(methfun)m,a_float,a_float,a_null); } // list of 2 floats
@@ -187,6 +187,7 @@ public:
 	void AddMethod(int inlet,void (*m)(flext_base *,int &,int &)) { AddMethod(inlet,"list",(methfun)m,a_int,a_int,a_null); } // list of 2 floats
 	void AddMethod(int inlet,void (*m)(flext_base *,int &,int &,int &)) { AddMethod(inlet,"list",(methfun)m,a_int,a_int,a_int,a_null); } // list of 3 floats
 	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,int argc,t_atom *argv)) { AddMethod(inlet,tag,(methfun)m,a_gimme,a_null); } // method+gimme
+	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,t_symbol *s,int argc,t_atom *argv)) { AddMethod(inlet,tag,(methfun)m,a_xgimme,a_null); } // method+gimme 
 	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,t_symbol *s)) { AddMethod(inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
 	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,float &)) { AddMethod(inlet,tag,(methfun)m,a_float,a_null); }  // method+float
 	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,int &)) { AddMethod(inlet,tag,(methfun)m,a_int,a_null); } // method+int

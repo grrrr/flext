@@ -466,7 +466,7 @@ union t_any {
 };
 
 typedef void (*methfun_G)(flext_base *c,int argc,t_atom *argv);
-typedef void (*methfun_A)(flext_base *c,const t_symbol *s,int argc,t_atom *argv);
+typedef void (*methfun_XG)(flext_base *c,const t_symbol *s,int argc,t_atom *argv);
 typedef void (*methfun_0)(flext_base *c);
 
 #define MAXARGS 5
@@ -490,6 +490,10 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 
 			if(m->argc == 1 && m->args[0] == a_gimme) {
 				((methfun_G)m->fun)(this,argc,argv);
+				ret = true;
+			}
+			else if(m->argc == 1 && m->args[0] == a_xgimme) {
+				((methfun_XG)m->fun)(this,s,argc,argv);
 				ret = true;
 			}
 			else if(argc == m->argc) {
@@ -547,11 +551,11 @@ bool flext_base::m_methodmain(int inlet,const t_symbol *s,int argc,t_atom *argv)
 				}
 			}
 		} 
-		else if(m->tag == sym_anything && (inlet == m->inlet || m->inlet < 0) && m->argc == 1 && m->args[0] == a_gimme) {
+		else if(m->tag == sym_anything && (inlet == m->inlet || m->inlet < 0) && m->argc == 1 && m->args[0] == a_xgimme) {
 			// any
 			LOG4("found any method for %s: inlet=%i, symbol=%s, argc=%i",m->tag->s_name,inlet,s->s_name,argc);
 
-			((methfun_A)m->fun)(this,s,argc,argv);
+			((methfun_XG)m->fun)(this,s,argc,argv);
 			ret = true;
 		}
 	}

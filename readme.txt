@@ -1,5 +1,5 @@
 flext - C++ layer for Max/MSP and pd (pure data) externals
-version 0.2.0
+version 0.2.2
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -63,6 +63,9 @@ see flext.h for the documented base classes
 
 Version history:
 
+0.2.2:
+- added xgimme argument type (supplies method handlers with symbol+gimme)
+
 0.2.1:
 - fixed bug in message parsing code (anything messages were not correctly mapped to inlets)
 - changed t_symtype to t_symptr (= t_symbol *), needed for method argument lists
@@ -85,7 +88,7 @@ Version history:
 - changed notation of flext functions from to_out_float like to ToOutFloat like
 - eliminated trivial shortcuts (F,I,V,...) for built-in types
 - MaxMSP is only capable of 3 creation arguments... that should be sufficient - otherwise use GIMME
-- Methods for aligned memory
+- Methods for aligned memory (NewAligned, FreeAligned)
 
 0.1.1:
 - documentation for flext.h

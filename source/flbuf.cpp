@@ -1,6 +1,6 @@
 /* 
 
-flext - C++ compatibility layer for Max/MSP and pd (pure data) externals
+flext - C++ layer for Max/MSP and pd (pure data) externals
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -57,7 +57,7 @@ I flext_base::buffer::Set(t_symbol *s,BL nameonly)
 		if(!a)
 		{
     		if (*sym->s_name)
-    			error("%s: no such array '%s'",thisName(), sym->s_name);
+    			error("buffer: no such array '%s'",sym->s_name);
     		sym = NULL;
 			ret = -1;
 		}

@@ -1,6 +1,6 @@
 /* 
 
-flext - C++ compatibility layer for Max/MSP and pd (pure data) externals
+flext - C++ layer for Max/MSP and pd (pure data) externals
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -38,9 +38,10 @@ struct FLEXT_EXT flext_hdr
 {
     	//////////
     	// The obligatory object header
-    	t_sigobj    	    pd_obj;  // default signal
+    	t_sigobj    	    pd_obj;  
+
 #ifdef PD
-		F defsig;
+		float defsig;			// float signal holder for pd
 #endif
 
     	//////////
@@ -104,16 +105,6 @@ class FLEXT_EXT flext_obj
     	// Creation callback
     	static void callb_setup(t_class *) {}	
 
-		// to be called in object _setup function
-		static void enable_signal(t_class *classPtr,float def = 0.) 
-		{
-#ifdef PD
-			((flext_hdr *)classPtr)->defsig = def;
-#elif defined(MAXMSP)
-			dsp_initclass();
-#endif
-		}
-
     private:
 
         //////////
@@ -129,6 +120,7 @@ class FLEXT_EXT flext_obj
         //////////
         // The object's name in the patcher
 		const char *m_name;
+
 };
 
 // This has a dummy arg so that NT won't complain
@@ -167,7 +159,7 @@ static void cb_setup(t_class *classPtr);
 #define FLEXTTYPE_F A_FLOAT
 #define FLEXTTYPE_float A_FLOAT
 #define FLEXTTYPE_FI A_FLINT
-#define FLEXTTYPE_flint A_FLINT
+#define FLEXTTYPE_t_flint A_FLINT
 #define FLEXTTYPE_t_symbol A_SYMBOL
 #define FLEXTTYPE_t_pointer A_POINTER
 

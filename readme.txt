@@ -1,10 +1,11 @@
-flext - Compatibility library for Max/MSP and pd (pure data) externals
+flext - C++ layer for Max/MSP and pd (pure data) externals
 version 0.1.1
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
+Donations for further development of the package are highly appreciated.
 
 ----------------------------------------------------------------------------
 
@@ -23,39 +24,45 @@ Package files:
 The package should at least compile (and is tested) with the following compilers:
 
 - pd - Windows:
-o Borland C++ 5.5 (free): ok - makefile is no real make but works
-o Microsoft Visual C++ 6: no makefile yet
+o Borland C++ 5.5 (free): makefile.bcc - makefile is no real make but works (you have to edit the pd path!)
+o Microsoft Visual C++ 6: flext.dsp - project file (you have to edit the pd path in the project properties/C-C++/preprocessor tab!)
 
 - pd - linux:
-o GCC: no makefile yet
+o GCC: makefile.gcc - (you have to edit the pd path!)
 
 - Max/MSP - MacOS:
-o Metrowerks CodeWarrior V6: ok
+o Metrowerks CodeWarrior V6: flext - CodeWarrior project file
 
 
 
 for Max/MSP you will also need the Max/MSP SDK
-for PD you need the source code (which is most likely part of the distribution)
+for PD you need the pd source code (which is most likely part of the distribution)
 
 ----------------------------------------------------------------------------
 
-Features:
+Goals/features of the package:
+
 - better readability of code compared to straight C externals
 - faster development, more robust coding
-- sharing of common methods, data by using base classes
+- sharing of common methods and data by using base classes
 
+
+see flext.h for the documented base classes
 
 ----------------------------------------------------------------------------
 
 Version history:
 
 0.1.1:
+- documentation for flext.h
 - more emancipation from GEM code
 - virtually everything renamed
 - abstraction for dsp processing
 - makefile for BCC
 - manual call of extern_setup or main unnecessary for single objects - only in pd libraries
-
+- delayed buffer init (only name is set beforehand)
+- loadbang also in PD
+- introduced "compatibility mode" which denies platform-specific features 
 
 0.1.0: 
 - max-pd 0.2 became flext 0.1.0
@@ -76,15 +83,19 @@ Restrictions in compatibility mode:
 ----------------------------------------------------------------------------
 
 TODO list:
-- documentation
-- add warning messages for debugging version
-- exchange more preprocessor definitions for C++ base class code
-- cleaner makefiles
-- makefile and project for MS VC++ 6
-- flext project and example template for CodeWarrior
-- better function names
 
-- prevent buffer warning message at max patcher load (wait for loadbang)
-- abstraction for parsing GIMME args
-- abstraction for creating lists
+general:
+- documentation
+- add log messages for debugging version
+- exchange more preprocessor definitions for C++ base class code
+- cleaner makefile for BCC
+- makefile for MS VC++ 6
+- should we use a namespace?
+
+bugs:
+- "float method overwritten" warning in pd
+
+features:
+- abstraction for parsing argument lists
+- abstraction for creating lists and anythings
 

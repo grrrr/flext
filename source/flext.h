@@ -1,6 +1,6 @@
 /* 
 
-flext - C++ compatibility layer for Max/MSP and pd (pure data) externals
+flext - C++ layer for Max/MSP and pd (pure data) externals
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -10,6 +10,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #ifndef __FLEXT_H
 #define __FLEXT_H
+
+#define FLEXT_VERSION 101
 
 #include <flbase.h> 
 
@@ -160,10 +162,6 @@ protected:
 	flext_base();
 	virtual ~flext_base();
 		
-private:
-
-	friend class flext_dsp;
-
 	struct xlet {	
 		enum type {
 			tp_none = 0,tp_def,tp_float,tp_flint,tp_sym,tp_list,tp_sig
@@ -178,6 +176,8 @@ private:
 	
 	V AddInlet(xlet::type tp,I mult) { AddXlet(tp,mult,inlist); }
 	V AddOutlet(xlet::type tp,I mult) { AddXlet(tp,mult,outlist); }
+
+private:
 
 	xlet *inlist,*outlist;
 	I incnt,outcnt,insigs,outsigs;
@@ -214,10 +214,16 @@ public:
 
 // --- inheritable virtual methods --------------------------------
 
-	// called on every dsp init
+	// called on every dsp init (don't expect valid data in the signal vectors!)
+	//   n: frames (aka samples) in one signal vector
+	//   insigs: array of input vectors  (get number with function cnt_insig())
+	//   outsigs: array of output vectors  (get number with function cnt_outsig())
 	virtual V m_dsp(I n,F *const *insigs,F *const *outsigs);
 
-	// called with every signal vector
+	// called with every signal vector (here you do the dsp calculation)
+	//   n: frames (aka samples) in one signal vector
+	//   insigs: array of input vectors  (get number with function cnt_insig())
+	//   outsigs: array of output vectors  (get number with function cnt_outsig())
 	virtual V m_signal(I n,F *const *insigs,F *const *outsigs) = 0;
 
 	// called with "enable" message: pauses/resumes dsp

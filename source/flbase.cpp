@@ -1,6 +1,6 @@
 /* 
 
-flext - C++ compatibility layer for Max/MSP and pd (pure data) externals
+flext - C++ layer for Max/MSP and pd (pure data) externals
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL

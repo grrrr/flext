@@ -1,6 +1,6 @@
 /* 
 
-flext - C++ compatibility layer for Max/MSP and pd (pure data) externals
+flext - C++ layer for Max/MSP and pd (pure data) externals
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -28,7 +28,11 @@ once drifted apart in Max and PD. It is not elegant but helps.
 #pragma warning (push)
 #pragma warning (disable:4091)
 extern "C" {	    	    	    	    	    	    	
+#ifdef _DEBUG
 #include <m_pd.h>
+#else
+#include <m_imp.h>  // for easier debugging
+#endif
 }
 #pragma warning (pop)
 
@@ -57,6 +61,7 @@ typedef t_float t_flint;
 #define add_method3(clss,meth,text,a1,a2,a3) class_addmethod(clss, (t_method)meth, gensym(text), a1,a2,a3,A_NULL)
 #define add_method4(clss,meth,text,a1,a2,a3,a4) class_addmethod(clss, (t_method)meth, gensym(text), a1,a2,a3,a4,A_NULL)
 #define add_method5(clss,meth,text,a1,a2,a3,a5) class_addmethod(clss, (t_method)meth, gensym(text), a1,a2,a3,a4,a5,A_NULL)
+#define add_loadbang(clss,meth) class_addmethod(clss,(t_method)meth, gensym("loadbang"), A_CANT, A_NULL)
 
 #define newout_signal(clss) outlet_new(clss,&s_signal)
 #define newout_float(clss) outlet_new(clss,&s_float)

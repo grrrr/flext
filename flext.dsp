@@ -80,6 +80,14 @@ LIB32=link.exe -lib
 
 # Name "flext - Win32 Release"
 # Name "flext - Win32 Debug"
+# Begin Group "doc"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\readme.txt
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\flbase.cpp

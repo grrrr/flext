@@ -1,6 +1,6 @@
 /* 
 
-flext - C++ compatibility layer for Max/MSP and pd (pure data) externals
+flext - C++ layer for Max/MSP and pd (pure data) externals
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -10,7 +10,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <flext.h>
 
-// -- flext_base --------------------------
+
+// === flext_base ============================================
 
 BL flext_base::compatibility = true;
 
@@ -67,7 +68,6 @@ BL flext_base::setup_inout()
 					case xlet::tp_def:
 						break;
 					case xlet::tp_sig:
-						CLASS_MAINSIGNALIN(thisClass(), flext_hdr, defsig);
 						++insigs;
 						break;
 					default:
@@ -81,10 +81,11 @@ BL flext_base::setup_inout()
 					case xlet::tp_flint: {
 						C sym[] = "ft??";
 						if(ix >= 10) { 
-							if(compatibility)
+							if(compatibility) {
 								// Max allows max. 9 inlets
 								post("%s: Only 9 float inlets allowed in compatibility mode",thisName());
 								ok = false;
+							}
 							else 
 								sym[2] = '0'+ix/10,sym[3] = '0'+ix%10;
 						}
@@ -236,11 +237,16 @@ V flext_base::m_help()
 	post("%s (using flext) - compiled on %s %s",thisName(),__DATE__,__TIME__);
 }
 
-// -- flext_dsp --------------------------
+
+// === flext_dsp ==============================================
 
 V flext_dsp::cb_setup(t_class *c)
 {
-	enable_signal(c);
+#ifdef PD
+	CLASS_MAINSIGNALIN(c,flext_hdr,defsig);
+#elif defined(MAXMSP)
+	dsp_initclass();
+#endif
 	
 	add_dsp(c,cb_dsp);
 	add_method1(c,cb_enable,"enable",A_FLINT);

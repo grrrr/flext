@@ -33,7 +33,7 @@ bool flext::PrintAtom(const t_atom &a,char *buf,int bufsz)
 	}
 	else if(IsPointer(a)) {
 		STD::sprintf(buf,"%p",GetPointer(a));
-	}	
+	}
 #if FLEXT_SYS == FLEXT_SYS_PD
 	else if(a.a_type == A_DOLLAR) {
 		STD::sprintf(buf,"$%d",a.a_w.w_index);
@@ -41,6 +41,12 @@ bool flext::PrintAtom(const t_atom &a,char *buf,int bufsz)
 	else if(a.a_type == A_DOLLSYM) {
 		STD::sprintf(buf,"$%s",GetString(a));
 	}
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+	else if(a.a_type == A_DOLLAR) {
+		STD::sprintf(buf,"$%d",a.a_w.w_long);
+	}
+#else
+//#pragma message("Not implemented")
 #endif
 	else {
 		ERRINTERNAL();

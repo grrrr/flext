@@ -114,7 +114,7 @@ const t_symbol *flext_obj::GetParamSym(const t_symbol *sym,t_canvas *c)
 	}
 	else
 #else
-	#pragma warning("Not implemented")
+	#pragma message("Not implemented")
 #endif
 	return sym;
 }

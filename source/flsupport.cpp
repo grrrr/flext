@@ -161,6 +161,8 @@ void *flext_root::operator new(size_t bytes)
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
     	blk = (char *)::fts_malloc(bytes);
+#elif defined(FLEXT_USECMEM)
+	    blk = (char *)::malloc(bytes);
 #else
 	    blk = (char *)::getbytes(bytes);
 #endif
@@ -194,6 +196,8 @@ void flext_root::operator delete(void *blk)
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
         ::fts_free(ori);
+#elif defined(FLEXT_USECMEM)
+	    ::free(ori);
 #else
 	    ::freebytes(ori,bytes);
 #endif
@@ -222,6 +226,8 @@ void *flext_root::NewAligned(size_t bytes,int bitalign)
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
     	blk = (char *)::fts_malloc(bytes);
+#elif defined(FLEXT_USECMEM)
+	    blk = (char *)::malloc(bytes);
 #else
 	    blk = (char *)::getbytes(bytes);
 #endif
@@ -256,6 +262,8 @@ void flext_root::FreeAligned(void *blk)
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
         ::fts_free(ori);
+#elif defined(FLEXT_USECMEM)
+	    ::free(ori);
 #else
 	    ::freebytes(ori,bytes);
 #endif

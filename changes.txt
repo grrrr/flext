@@ -18,6 +18,7 @@ Version history:
 - added bool to usable types for creation arguments
 - protection for SIMD routines with count=0
 - support exceptions for setup functions, object creation and destruction, method handling
+- small fixes for MSVC6 incompatibilites
 
 0.4.6:
 - added a text edit window for list attributes

@@ -750,7 +750,6 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				HEADER_SEARCH_PATHS = /usr/local/pd/src;
-				INSTALL_PATH = /usr/local/pd/flext;
 				LIBRARY_STYLE = STATIC;
 				OPTIMIZATION_CFLAGS = "-O3";
 				OTHER_CFLAGS = "-D FLEXT_SYS=2 -Wno-switch -Wno-long-double";
@@ -767,7 +766,6 @@
 			);
 			isa = PBXLibraryTarget;
 			name = "PD@OSX single";
-			productInstallPath = /usr/local/pd/flext;
 			productName = "PD@OSX";
 			productReference = F55CEDC20383E6E401A80AC9;
 			shouldUseHeadermap = 0;

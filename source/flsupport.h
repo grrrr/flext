@@ -883,7 +883,7 @@ public:
 	{
 	public:
 		Timer(bool queued = false);
-		~Timer();
+		virtual ~Timer();
 
 		//! Set timer callback function
 		void SetCallback(void (*cb)(void *data)) { clss = NULL,cback = cb; }

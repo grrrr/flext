@@ -307,7 +307,7 @@ public:
 
 	typedef bool (*methfun)(flext_base *c);
 
-	/*!	\defgroup FLEXT_C_ADDMETHOD Method handling
+	/*!	\defgroup FLEXT_C_ADDMETHOD Method handling (object scope)
 		\internal
 		@{ 
 	*/
@@ -342,6 +342,16 @@ public:
 	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,float &)) { AddMethod(ThMeths(),inlet,tag,(methfun)m,a_float,a_null); }  // method+float
 	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,int &)) { AddMethod(ThMeths(),inlet,tag,(methfun)m,a_int,a_null); } // method+int
 
+	//! Set Max/MSP style of distributing list elements over (message) inlets
+	void SetDist(bool d = true) { distmsgs = d; }
+
+//!		@} FLEXT_C_ADDMETHOD
+
+	/*!	\defgroup FLEXT_C_CADDMETHOD Method handling (class scope)
+		\internal
+		@{ 
+	*/
+
 	static void AddMethod(t_class *c,int inlet,bool (*m)(flext_base *,int,t_atom *)) { AddMethod(ClMeths(c),inlet,"list",(methfun)m,a_list,a_null); }
 	static void AddMethod(t_class *c,int inlet,bool (*m)(flext_base *,int,const t_atom *)) { AddMethod(ClMeths(c),inlet,"list",(methfun)m,a_list,a_null); }
 	static void AddMethod(t_class *c,int inlet,const char *tag,bool (*m)(flext_base *)) { AddMethod(ClMeths(c),inlet,tag,(methfun)m,a_null); }  // pure method
@@ -370,11 +380,7 @@ public:
 	static void AddMethod(t_class *c,int inlet,const char *tag,bool (*m)(flext_base *,float &)) { AddMethod(ClMeths(c),inlet,tag,(methfun)m,a_float,a_null); }  // method+float
 	static void AddMethod(t_class *c,int inlet,const char *tag,bool (*m)(flext_base *,int &)) { AddMethod(ClMeths(c),inlet,tag,(methfun)m,a_int,a_null); } // method+int
 
-
-	//! Set Max/MSP style of distributing list elements over (message) inlets
-	void SetDist(bool d = true) { distmsgs = d; }
-
-//!		@} FLEXT_C_ADDMETHOD
+//!		@} FLEXT_C_CADDMETHOD
 
 // --- bind/unbind ---------------------------------------
 
@@ -461,7 +467,7 @@ protected:
 		xlet *nxt;
 	};
 
-	/*!	\defgroup FLEXT_C_ATTR Attribute handling methods
+	/*!	\defgroup FLEXT_C_ATTR Attribute handling methods (object scope)
 		@{ 
 	*/
 
@@ -472,6 +478,12 @@ protected:
 	void AddAttrib(const char *attr,bool (*get)(flext_base *,AtomList *&),bool (*set)(flext_base *,AtomList *&)) { AddAttrib(attr,a_LIST,(methfun)get,(methfun)set); }
 	void AddAttrib(const char *attr,bool (*get)(flext_base *,AtomAnything *&),bool (*set)(flext_base *,AtomAnything *&)) { AddAttrib(attr,a_ANY,(methfun)get,(methfun)set); }
 
+//!		@} FLEXT_C_ATTR
+
+	/*!	\defgroup FLEXT_C_CATTR Attribute handling methods (class scope)
+		@{ 
+	*/
+
 	static void AddAttrib(t_class *c,const char *attr,bool (*get)(flext_base *,float &),bool (*set)(flext_base *,float &)) { AddAttrib(c,attr,a_float,(methfun)get,(methfun)set); }
 	static void AddAttrib(t_class *c,const char *attr,bool (*get)(flext_base *,int &),bool (*set)(flext_base *,int &)) { AddAttrib(c,attr,a_int,(methfun)get,(methfun)set); }
 	static void AddAttrib(t_class *c,const char *attr,bool (*get)(flext_base *,const t_symbol *&),bool (*set)(flext_base *,const t_symbol *&)) { AddAttrib(c,attr,a_symbol,(methfun)get,(methfun)set); }
@@ -479,7 +491,7 @@ protected:
 	static void AddAttrib(t_class *c,const char *attr,bool (*get)(flext_base *,AtomList *&),bool (*set)(flext_base *,AtomList *&)) { AddAttrib(c,attr,a_LIST,(methfun)get,(methfun)set); }
 	static void AddAttrib(t_class *c,const char *attr,bool (*get)(flext_base *,AtomAnything *&),bool (*set)(flext_base *,AtomAnything *&)) { AddAttrib(c,attr,a_ANY,(methfun)get,(methfun)set); }
 
-//!		@} FLEXT_C_ATTR
+//!		@} FLEXT_C_CATTR
 
 	/*!	\addtogroup FLEXT_C_INOUT 
 		@{ 

@@ -19,12 +19,45 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 class FLEXT_EXT flext_base;
 
+/*! \brief Flext support class
+	A number of methods (most are static functions) are defined here for convenience.
+	This class doesn't define any data members, hence it can be inherited to all
+	classes (not only PD objects) to profit from the cross-platform functionality.
+	Examples are the overloaded memory allocation, atom and atom list functions,
+	thread functions and classes, the sample buffer class and others.
+*/
 class FLEXT_EXT flext {
 
 	/*!	\defgroup FLEXT_SUPPORT Flext support class
 		@{ 
 	*/
 public:
+
+// --- memory -------------------------------------------------------	
+
+	/*!	\defgroup FLEXT_S_MEMORY Memory allocation functions
+		@{ 
+	*/
+
+		/*! Overloaded new memory allocation method
+			\warning Max/MSP (or MacOS) allows only 16K in overdrive mode!
+		*/
+		void *operator new(size_t bytes);
+		//! Overloaded delete method
+		void operator delete(void *blk);
+
+		#ifndef __MRC__ // doesn't allow new[] overloading?!
+		void *operator new[](size_t bytes) { return operator new(bytes); }
+		void operator delete[](void *blk) { operator delete(blk); }
+		#endif
+
+		//! Get an aligned memory block
+		static void *NewAligned(size_t bytes,int bitalign = 128);
+		//! Free an aligned memory block
+		static void FreeAligned(void *blk);
+		
+	//!	@}  FLEXT_S_MEMORY  	
+
 // --- buffer/array stuff -----------------------------------------	
 
 	/*!	\defgroup FLEXT_S_BUFFER Buffer handling

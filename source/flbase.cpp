@@ -79,46 +79,6 @@ void flext_obj::DefineHelp(t_class *c,const char *ref,const char *dir,bool addti
 }
 
 
-/////////////////////////////////////////////////////////
-// overloaded new/delete memory allocation methods
-//
-/////////////////////////////////////////////////////////
-
-void *flext_obj::operator new(size_t bytes)
-{
-	bytes += sizeof(size_t);
-	char *blk = (char *)getbytes(bytes);
-	*(size_t *)blk = bytes;
-	return blk+sizeof(size_t);
-}
-
-void flext_obj::operator delete(void *blk)
-{
-	char *ori = (char *)blk-sizeof(size_t);
-	size_t bytes = *(size_t *)ori;
-	freebytes(ori,bytes);
-}
-
-void *flext_obj::NewAligned(size_t bytes,int bitalign)
-{
-	const size_t ovh = sizeof(size_t)+sizeof(char *);
-	const unsigned long alignovh = bitalign/8-1;
-	bytes += ovh+alignovh;
-	char *blk = (char *)getbytes(bytes);
-	char *ablk = reinterpret_cast<char *>((reinterpret_cast<unsigned long>(blk)+ovh+alignovh) & ~alignovh);
-	*(char **)(ablk-sizeof(size_t)-sizeof(char *)) = blk;
-	*(size_t *)(ablk-sizeof(size_t)) = bytes;
-	return ablk;
-}
-
-void flext_obj::FreeAligned(void *blk)
-{
-	char *ori = *(char **)((char *)blk-sizeof(size_t)-sizeof(char *));
-	size_t bytes = *(size_t *)((char *)blk-sizeof(size_t));
-	freebytes(ori,bytes);
-}
-
-
 
 
 

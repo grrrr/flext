@@ -155,31 +155,6 @@ class FLEXT_EXT flext_obj:
 
 	//!	@}  FLEXT_O_INFO
 
-// --- memory -------------------------------------------------------	
-
-	/*!	\defgroup FLEXT_O_MEMORY Memory allocation functions
-		@{ 
-	*/
-
-		/*! Overloaded new memory allocation method
-			\warning Max/MSP (or MacOS) allows only 16K in overdrive mode!
-		*/
-		void *operator new(size_t bytes);
-		//! Overloaded delete method
-		void operator delete(void *blk);
-
-		#ifndef __MRC__ // doesn't allow new[] overloading?!
-		void *operator new[](size_t bytes) { return operator new(bytes); }
-		void operator delete[](void *blk) { operator delete(blk); }
-		#endif
-
-		//! Get an aligned memory block
-		static void *NewAligned(size_t bytes,int bitalign = 128);
-		//! Free an aligned memory block
-		static void FreeAligned(void *blk);
-		
-	//!	@}  FLEXT_O_MEMORY
-    	
 // --- help -------------------------------------------------------	
 
 	/*!	\defgroup FLEXT_O_HELP Help/assistance functionality

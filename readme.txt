@@ -102,6 +102,7 @@ Version history:
 0.4.1:
 - full port for Max@OSX
 - completely redesigned message and attribute handling: now hashed and a much more efficient
+- put overloaded new/delete into flext support class
 - introduced "Finalize" virtual method, called after all "Init" methods
 - fixed crash issue in flext_dsp when there are NO signal inlets or outlets defined
 	(this is possibly only a problem for the signal2 tutorial example)

@@ -115,3 +115,4 @@ features:
 - abstraction for parsing argument lists
 - abstraction for creating lists and anythings
 - simulate loadbang on object creation for PD
+- acstraction for clock functions

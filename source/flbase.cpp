@@ -85,10 +85,11 @@ void flext_obj::DefineHelp(t_classid c,const char *ref,const char *dir,bool addt
 		strcpy(tmp,dir); 
 		strcat(tmp,"/"); 
 		strcat(tmp,ref); 
-		if(addtilde) strcat(tmp,"~"); 
 	}
 	else 
 		strcpy(tmp,ref);
+	if(addtilde) strcat(tmp,"~"); 
+
     ::class_sethelpsymbol(getClass(c),gensym(const_cast<char *>(tmp)));
 #else
 	// no solution for Max/MSP yet

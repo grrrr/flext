@@ -1,5 +1,5 @@
 # flext - C++ layer for Max/MSP and pd (pure data) externals
-# Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
+# Copyright (c) 2001-2004 Thomas Grill (xovo@gmx.net)
 #
 # ----- for internal use ----------------------
 #
@@ -23,7 +23,7 @@ LDFLAGS=$(LDFLAGS) /LIBPATH:$(MSVCPATH)\lib
 # compiler definitions and flags
 DEFS=/DFLEXT_SYS=1 $(UFLAGS)
 
-CFLAGS=/GX /GD
+CFLAGS=/GX /GD /Zp2
 OFLAGS=/Ox
 DFLAGS=/Od /Zi
 

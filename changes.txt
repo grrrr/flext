@@ -18,6 +18,7 @@ Version history:
 - finally use global allocator operators (MFC doesn't like but who cares)
 - fixed entry of local variables with attribute editor
 - help window for attribute editor
+- appended lacking ~ for tilde object help patches
 
 0.4.5:
 - added some more SIMD functions

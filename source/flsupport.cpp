@@ -117,7 +117,6 @@ void flext::Setup()
 
 
 #if FLEXT_SYS == FLEXT_SYS_PD && defined(FLEXT_THREADED) && defined(FLEXT_PDLOCK)
-#error
 #define SYSLOCK() sys_lock()
 #define SYSUNLOCK() sys_unlock()
 #else

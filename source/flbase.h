@@ -443,10 +443,16 @@ fts_module_t __##NAME##_module = {#NAME,#NAME,__##NAME##_initfun,0,0};
 #define FLEXTTYPE_int FLEXTTPN_FLOAT
 #define FLEXTTYPE_int0 FLEXTTPN_DEFFLOAT
 #define CALLBTYPE_int float
+#define FLEXTTYPE_bool FLEXTTPN_FLOAT
+#define FLEXTTYPE_bool0 FLEXTTPN_DEFFLOAT
+#define CALLBTYPE_bool float
 #elif FLEXT_SYS == FLEXT_SYS_MAX || FLEXT_SYS == FLEXT_SYS_JMAX
 #define FLEXTTYPE_int FLEXTTPN_INT
 #define FLEXTTYPE_int0 FLEXTTPN_DEFINT
 #define CALLBTYPE_int int
+#define FLEXTTYPE_bool FLEXTTPN_INT
+#define FLEXTTYPE_bool0 FLEXTTPN_DEFINT
+#define CALLBTYPE_bool int
 #else
 #error
 #endif
@@ -464,6 +470,8 @@ fts_module_t __##NAME##_module = {#NAME,#NAME,__##NAME##_initfun,0,0};
 #define CALLBTP(TP) CALLBTYPE_ ## TP
 
 
+#define ARGMEMBER_bool(a) GetBool(a)
+#define ARGMEMBER_bool0(a) ARGMEMBER_bool(a)
 #define ARGMEMBER_int(a) GetInt(a)
 #define ARGMEMBER_int0(a) ARGMEMBER_int(a)
 #define ARGMEMBER_float(a) GetFloat(a)

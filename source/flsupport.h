@@ -419,13 +419,6 @@ public:
 	//! Check whether the atom can be represented as an integer
 	static bool CanbeInt(const t_atom &a) { return IsFloat(a) || IsInt(a); }
 
-	//! Set the atom to represent a boolean
-	static void SetBool(t_atom &a,bool v) { SetInt(a,v?1:0); }
-	//! Check whether the atom can be represented as a boolean
-	static bool CanbeBool(const t_atom &a) { return CanbeInt(a); }
-	//! Check for an boolean and get its value 
-	static bool GetABool(const t_atom &a) { return GetAInt(a) != 0; }
-
 #if FLEXT_SYS == FLEXT_SYS_PD
 	//! Check for a float and get its value 
 	static float GetAFloat(const t_atom &a,float def = 0) { return IsFloat(a)?GetFloat(a):def; }
@@ -499,6 +492,15 @@ public:
 #else
 #error "Platform not supported"
 #endif
+
+	//! Set the atom to represent a boolean
+	static void SetBool(t_atom &a,bool v) { SetInt(a,v?1:0); }
+	//! Check whether the atom can be represented as a boolean
+	static bool CanbeBool(const t_atom &a) { return CanbeInt(a); }
+	//! Check for an boolean and get its value 
+	static bool GetABool(const t_atom &a) { return GetAInt(a) != 0; }
+	//! Check for an boolean and get its value 
+	static bool GetBool(const t_atom &a) { return GetInt(a) != 0; }
 
 // --- atom list stuff -------------------------------------------
 

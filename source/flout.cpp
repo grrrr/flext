@@ -64,7 +64,8 @@ bool flext_base::InitInlets()
 
 	incnt = insigs = 0; 
 
-	if(inlist) {
+    // digest inlist
+    {
 		xlet *xi;
 		incnt = 0;
 		for(xi = inlist; xi; xi = xi->nxt) ++incnt;
@@ -282,7 +283,8 @@ bool flext_base::InitOutlets()
 		attrtmp = (outlet *)newout_anything(thisHdr());
 #endif
 
-	if(outlist) {
+    // digest outlist
+	{
 		xlet *xi;
 
 		// count outlets

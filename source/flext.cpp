@@ -38,6 +38,7 @@ flext_base::flext_base():
 	t_classid clid = thisClassId();
 	clmethhead = ClMeths(clid);
 	methhead = new itemarr;
+	bindhead = NULL;
 
 	if(procattr) {
 		// initialize when attribute processing is enabled
@@ -78,6 +79,7 @@ flext_base::~flext_base()
 
 	// delete message lists
 	if(methhead) delete methhead;
+	if(bindhead) delete bindhead;
 	if(attrhead) delete attrhead;
 	
 	// destroy inlets and outlets and their proxy objects

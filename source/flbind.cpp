@@ -33,6 +33,8 @@ bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbo
         }
     }
 
+    FLEXT_ASSERT(pxbnd_class); 
+
     pxbnd_object *px = NULL;
     px = (pxbnd_object *)object_new(pxbnd_class);
 

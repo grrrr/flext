@@ -15,6 +15,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flext.h"
 #include <string.h>
 #include <stdarg.h>
+#include "flinternal.h"
 
 flext_base::methitem::methitem(int in,const t_symbol *tg,attritem *conn): 
 	item(tg,in,conn),
@@ -33,6 +34,7 @@ void flext_base::methitem::SetArgs(methfun _fun,int _argc,metharg *_args)
 	if(args) delete[] args;
 	argc = _argc,args = _args;
 }
+
 
 void flext_base::AddMethodDef(int inlet,const char *tag)
 {
@@ -85,4 +87,3 @@ void flext_base::AddMethod(itemarr *ma,int inlet,const char *tag,methfun fun,met
 
 	ma->Add(mi);
 }
-

@@ -68,6 +68,49 @@ void flext_base::itemarr::Add(item *it)
 	}
 }
 
+bool flext_base::itemarr::Remove(item *it)
+{
+	if(Ready()) {
+		// retrieve array index
+		int ix = Hash(it->tag,it->inlet,bits);
+
+		// remove from array slot
+		if(arr[ix]) {
+			item *a1 = NULL,*a = arr[ix];
+			while(a && a != it) a1 = a,a = a->nxt;
+            if(a) { // found (a == it)
+                if(a1) a1->nxt = it->nxt;
+                else arr[ix] = it->nxt;
+                it->nxt = NULL;
+                return true;
+            }
+            else
+                return false;
+		}
+		else 
+            return false;
+	}
+	else {
+        // remove from list
+		if(!arr[0]) 
+            return false;
+        else {
+			item *a1 = NULL,*a = arr[0];
+			while(a && a != it) a1 = a,a = a->nxt;
+            if(a) { // found (a == it)
+                if(a1) a1->nxt = it->nxt;
+                else arr[0] = it->nxt;
+                if(!it->nxt) arr[1] = a1;
+                it->nxt = NULL;
+        		--cnt;
+                return true;
+            }
+            else
+                return false;
+        }
+	}
+}
+
 void flext_base::itemarr::Finalize()
 {
 	if(!Ready()) 

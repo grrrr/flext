@@ -875,6 +875,28 @@ FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,int,int,int)
 //! @} FLEXT_D_ADDMETHOD
 
 
+
+/*!	\defgroup FLEXT_D_BINDMETHOD Call flext methods manually
+	@{ 
+*/
+
+/*! \brief Bind a handler for a method with an anything argument to a symbol 
+*/
+#define FLEXT_BINDMETHOD(SYM,M_FUN) \
+\
+BindMethod(SYM,FLEXT_CALL_PRE(M_FUN))	
+
+/*! \brief Unbind any handler for a method from a symbol 
+*/
+#define FLEXT_UNBINDMETHOD(SYM) \
+\
+UnbindMethod(SYM)
+
+
+//! @} FLEXT_D_BINDMETHOD
+
+
+
 /*!	\defgroup FLEXT_D_CALLMETHOD Call flext methods manually
 	@{ 
 */

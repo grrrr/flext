@@ -411,16 +411,8 @@ public:
 	bool Unbind(const char *c) { return Unbind(MakeSymbol(c)); }  
 #endif
 
-/*
-	// Low level
-
-	//! Bind object to a symbol
-	static void DoUnbind(t_symbol *s,flext_obj *o);
-	//! Unbind object from a symbol
-	static void DoBind(const t_symbol *s,flext_obj *o);
-	//! Get bound object of a symbol
-	static t_class **GetBound(const t_symbol *s) { return (t_class **)s->s_thing; }
-*/
+	bool BindMethod(const t_symbol *s,bool (*m)(flext_base *,t_symbol *s,int,t_atom *));
+	bool UnbindMethod(const t_symbol *s);
 
 //!		@} FLEXT_C_BIND
 
@@ -555,6 +547,7 @@ protected:
 		~itemarr();
 		
 		void Add(item *it);
+		bool Remove(item *it);
 		item *Find(const t_symbol *tag,int inlet = 0) const;
 		void Finalize();
 		
@@ -606,6 +599,21 @@ protected:
 		methfun fun;
 	};
 
+private:
+    class pxbnd_object;
+public:
+
+	//! \brief This represents an item of the method list
+	class binditem:
+		public item { 
+	public:
+		binditem(int inlet,const t_symbol *sym,bool (*f)(flext_base *,t_symbol *s,int,t_atom *),pxbnd_object *px);
+		~binditem();
+		
+		bool (*fun)(flext_base *,t_symbol *s,int,t_atom *);
+        pxbnd_object *px;
+	};
+	
 //!		@} FLEXT_CLASS
 
 	itemarr *ThMeths() { return methhead; }
@@ -657,6 +665,7 @@ private:
 	static itemarr *GetClassArr(t_classid,int ix);
 
 	itemarr *methhead,*clmethhead;
+	itemarr *bindhead;
 	
 	bool CallMeth(const methitem &m,int argc,const t_atom *argv);
 	bool FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *argv);
@@ -710,6 +719,21 @@ private:
 	};
 
 	friend struct px_object;
+
+    // proxy object for symbol-bound methods
+	static t_class *pxbnd_class;
+
+	class pxbnd_object  // no virtual table!
+	{ 
+    public:
+		t_object obj;			// MUST reside at memory offset 0
+		flext_base *base;
+		binditem *item;
+
+		void init(flext_base *b,binditem *it) { base = b; item = it; }
+		static void px_method(pxbnd_object *c,const t_symbol *s,int argc,t_atom *argv);
+	};
+
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	typedef object px_object;
 	static void cb_px_float(t_class *c,float f);

@@ -21,6 +21,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #if FLEXT_SYS == FLEXT_SYS_PD
 
 t_class *flext_base::px_class = NULL;
+t_class *flext_base::pxbnd_class = NULL;
 
 void flext_base::px_object::px_method(px_object *obj,const t_symbol *s,int argc,t_atom *argv)
 {
@@ -105,14 +106,20 @@ void flext_base::SetProxies(t_class *c)
 	add_anything(c,cb_px_anything); // for leftmost inlet
     px_class = class_new(gensym("flext_base proxy"),NULL,NULL,sizeof(px_object),CLASS_PD|CLASS_NOINLET, A_NULL);
 	add_anything(px_class,px_object::px_method); // for other inlets
+
+    pxbnd_class = class_new(gensym("flext_base bind proxy"),NULL,NULL,sizeof(pxbnd_object),CLASS_PD|CLASS_NOINLET, A_NULL);
+	add_anything(pxbnd_class,pxbnd_object::px_method); // for symbol-bound methods
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	add_bang(c,cb_px_bang);
 	add_method1(c,cb_px_int,"int",A_INT);  
 	add_method1(c,cb_px_float,"float",A_FLOAT);  
 	add_methodG(c,cb_px_anything,"list");  
 	add_anything(c,cb_px_anything);
+
+//    setup((t_messlist **)&pxbnd_class,NULL,NULL,sizeof(pxbnd_object),NULL,A_NULL);
+//	add_anything(pxbnd_class,pxbnd_object::px_method);
 #else
-#error
+#error Not implemented!
 #endif	
 
 	// setup non-leftmost ints and floats

@@ -124,6 +124,8 @@ Version history:
 - fixed bug for Max/MSP buffer resize with preservation of contents
 - fixed bug with thread initialization (caused PD@OSX to crash on startup)
 - flext::setup is only run once now
+- fixed creation bug with objects that have attributes but no outlets
+- added FLEXT_BINDMETHOD,FLEXT_UNBINDMETHOD to bind a method to a symbol 
 
 0.4.2:
 - started port for jMax
@@ -356,11 +358,8 @@ tests:
 
 
 features:
-- abstraction for clock functions
 - manage running threads individually (stop, isrunning?, priority etc.)
 
-premature thoughts:
-- GUI objects
 
 
 

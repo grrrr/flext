@@ -307,8 +307,10 @@ public:
 	static void *GetThing(const t_symbol *s) { return s->s_thing; }  
 	static void SetThing(t_symbol *s,void *dt) { s->s_thing = (t_thing)dt; }  
 
-// --- argument list stuff ----------------------------------------
+// --- atom stuff ----------------------------------------
 		
+	static void SetAtom(t_atom &a,const t_atom &b) { CopyAtom(&a,&b); }
+
 	static bool IsFloat(const t_atom &a) { return a.a_type == A_FLOAT; }
 	static bool CanbeFloat(const t_atom &a) { return IsFloat(a) || IsInt(a); }
 	static float GetFloat(const t_atom &a) { return a.a_w.w_float; }
@@ -414,8 +416,14 @@ public:
 	class AtomList
 	{
 	public:
-		AtomList(int argc,t_atom *argv = NULL);
+		AtomList(int argc = 0,const t_atom *argv = NULL);
+		AtomList(const AtomList &a);
 		~AtomList();
+
+		AtomList &Clear() { return operator()(); }
+
+		AtomList &operator()(int argc = 0,const t_atom *argv = NULL);
+		AtomList &operator =(const AtomList &a) { return operator()(a.Count(),a.Atoms()); }
 
 		int Count() const { return cnt; }
 		t_atom &operator [](int ix) { return lst[ix]; }

@@ -1,0 +1,10 @@
+#N canvas 197 285 460 310 12;
+#X floatatom 85 47 5 0 0;
+#X floatatom 85 142 5 0 0;
+#X msg 22 44 help;
+#X text 137 141 inverse;
+#X text 139 45 input;
+#X obj 85 90 simple1;
+#X connect 0 0 5 0;
+#X connect 2 0 5 0;
+#X connect 5 0 1 0;

@@ -1,0 +1,18 @@
+#N canvas 251 267 454 304 12;
+#X obj 89 68 signal2~;
+#X floatatom 52 117 5 0 0;
+#X floatatom 153 120 5 0 0;
+#X floatatom 251 120 5 0 0;
+#X floatatom 345 121 5 0 0;
+#X obj 90 30 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
+-1;
+#X text 29 136 sample rate;
+#X text 136 136 block size;
+#X text 242 137 channels in;
+#X text 342 137 and out;
+#X text 116 29 bang to get audio system parameters;
+#X connect 0 0 1 0;
+#X connect 0 1 2 0;
+#X connect 0 2 3 0;
+#X connect 0 3 4 0;
+#X connect 5 0 0 0;

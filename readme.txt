@@ -79,6 +79,9 @@ see flext.h for the documented base classes
 
 Version history:
 
+0.3.1:
+- added some more functionality to the AtomList class
+
 0.3.0:
 - added CYGWIN support
 
@@ -202,6 +205,7 @@ bugs:
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)
 - hard thread termination upon object destruction doesn't seem to work properly -> crash
 - Max rounding bug (at least version 4.0.5) ... buffer resize could be one sample less!
+- Sleep unimplemented for pd@linux
 
 tests:
 - PD: figure out what "pointer" messages do and where they occur

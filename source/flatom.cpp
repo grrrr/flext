@@ -14,41 +14,57 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <flext.h>
 
-flext_base::AtomList::AtomList(int argc,t_atom *argv):
-	cnt(argc)
+flext_base::AtomList::AtomList(int argc,const t_atom *argv):
+	lst(NULL),cnt(0)
 {
-	lst = new t_atom[cnt];
+	operator()(argc,argv);
+}
 
-	if(argv) {
-		for(int i = 0; i < argc; ++i) {
-			switch(lst[i].a_type = argv[i].a_type) {
-			case A_FLOAT:
-				lst[i].a_w.w_float = argv[i].a_w.w_float;
-				break;
+flext_base::AtomList::AtomList(const AtomList &a):
+	lst(NULL),cnt(0)
+{
+	operator =(a);
+}
+
+flext_base::AtomList::~AtomList() {	Clear(); }
+
+flext_base::AtomList &flext_base::AtomList::operator()(int argc,const t_atom *argv)
+{
+	if(lst && cnt != argc) { delete[] lst; lst = NULL; }
+
+	if(argc) {
+		cnt = argc;
+		lst = new t_atom[cnt];
+
+		if(argv) {
+			for(int i = 0; i < argc; ++i) {
+				switch(lst[i].a_type = argv[i].a_type) {
+				case A_FLOAT:
+					lst[i].a_w.w_float = argv[i].a_w.w_float;
+					break;
 #ifdef MAXMSP
-			case A_LONG:
-				lst[i].a_w.w_int = argv[i].a_w.w_int;
-				break;
+				case A_LONG:
+					lst[i].a_w.w_int = argv[i].a_w.w_int;
+					break;
 #endif
-			case A_SYMBOL:
-				lst[i].a_w.w_symbol = argv[i].a_w.w_symbol;
-				break;
+				case A_SYMBOL:
+					lst[i].a_w.w_symbol = argv[i].a_w.w_symbol;
+					break;
 #ifdef PD
-			case A_POINTER:
-				lst[i].a_w.w_gpointer = argv[i].a_w.w_gpointer;
-				break;
+				case A_POINTER:
+					lst[i].a_w.w_gpointer = argv[i].a_w.w_gpointer;
+					break;
 #endif
-			default:
-				post("AtomList - atom type (%i) not supported",lst[i].a_type);
-				lst[i].a_type = A_NULL;
-				break;
+				default:
+					post("AtomList - atom type (%i) not supported",lst[i].a_type);
+					lst[i].a_type = A_NULL;
+					break;
+				}
 			}
 		}
 	}
+	return *this;
 }
 
-flext_base::AtomList::~AtomList()
-{
-	if(lst) delete[] lst;
-}
+
 

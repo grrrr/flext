@@ -46,17 +46,18 @@ FLEXT_NEW("simple1",simple1)
 
 simple1::simple1()
 { 
-	// define inlets
-	AddInAnything();  // first inlet must by of type anything (or signal)
+	// define inlets:
+	// first inlet must always by of type anything (or signal for dsp objects)
+	AddInAnything();  // add one inlet for any message
 	
-	// define outlets
-	AddOutFloat();  // one float outlet (has index 0)
+	// define outlets:
+	AddOutFloat();  // add one float outlet (has index 0)
 	
-	 // set up inlets and outlets - obligatory! (do only once!!!)
+	 // set up inlets and outlets - obligatory! 
 	SetupInOut(); 
 
 	// register methods
-	FLEXT_ADDMETHOD(0,m_float);  // register method (for floats) "m_float" for inlet 0
+	FLEXT_ADDMETHOD(0,m_float);  // register method (for float messages) "m_float" for inlet 0
 } 
 
 void simple1::m_float(float f)
@@ -72,6 +73,6 @@ void simple1::m_float(float f)
 		res = 1/f;
 
 	// output value to outlet
-	ToOutFloat(0,res); // (0 stands for the outlet index 0)
+	ToOutFloat(0,res); // (0 stands for the outlet index 0 - the leftmost outlet)
 }
 

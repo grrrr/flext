@@ -3,6 +3,22 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
+Project: "adv1"=.\adv1\adv1.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    adv1
+    .\adv1
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "flext"=..\flext.dsp - Package Owner=<4>
 
 Package=<5>
@@ -31,7 +47,39 @@ Package=<4>
 
 ###############################################################################
 
+Project: "prepend"=..\..\prepend\prepend.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    prepend
+    ..\..\prepend
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "signal1"=.\signal1\signal1.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    max/flext/tutorial/signal1
+    .\signal1
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "signal2"=.\signal2\signal2.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

@@ -1,35 +1,35 @@
-# Microsoft Developer Studio Project File - Name="signal1" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="signal2" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** NICHT BEARBEITEN **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=signal1 - Win32 Debug
+CFG=signal2 - Win32 Debug
 !MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
 !MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
-!MESSAGE NMAKE /f "signal1.mak".
+!MESSAGE NMAKE /f "signal2.mak".
 !MESSAGE 
 !MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
 !MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
-!MESSAGE NMAKE /f "signal1.mak" CFG="signal1 - Win32 Debug"
+!MESSAGE NMAKE /f "signal2.mak" CFG="signal2 - Win32 Debug"
 !MESSAGE 
 !MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
-!MESSAGE "signal1 - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "signal1 - Win32 Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "signal2 - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "signal2 - Win32 Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
-# PROP Scc_ProjName "max/flext/tutorial/signal1"
-# PROP Scc_LocalPath "."
+# PROP Scc_ProjName ""
+# PROP Scc_LocalPath ""
 CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "signal1 - Win32 Release"
+!IF  "$(CFG)" == "signal2 - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -53,9 +53,9 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib pd.lib flext-pdwin.lib /nologo /dll /machine:I386 /out:"../pan~.dll" /libpath:"..\msvc" /libpath:"..\..\msvc-debug"
+# ADD LINK32 kernel32.lib user32.lib pd.lib flext-pdwin.lib /nologo /dll /machine:I386 /out:"../signal2~.dll" /libpath:"..\msvc" /libpath:"..\..\msvc-debug"
 
-!ELSEIF  "$(CFG)" == "signal1 - Win32 Debug"
+!ELSEIF  "$(CFG)" == "signal2 - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -79,14 +79,14 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib pd.lib flext-pdwin.lib /nologo /dll /debug /machine:I386 /out:"msvc-debug/pan~.dll" /pdbtype:sept /libpath:"..\msvc-debug" /libpath:"..\..\msvc-debug"
+# ADD LINK32 kernel32.lib user32.lib pd.lib flext-pdwin.lib /nologo /dll /debug /machine:I386 /out:"msvc-debug/signal2~.dll" /pdbtype:sept /libpath:"..\msvc-debug" /libpath:"..\..\msvc-debug"
 
 !ENDIF 
 
 # Begin Target
 
-# Name "signal1 - Win32 Release"
-# Name "signal1 - Win32 Debug"
+# Name "signal2 - Win32 Release"
+# Name "signal2 - Win32 Debug"
 # Begin Source File
 
 SOURCE=.\main.cpp

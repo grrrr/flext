@@ -55,7 +55,7 @@ simple2::simple2(float init):
 	// define outlets
 	AddOutFloat();  // one float outlet (has index 0)
 	
-	 // set up inlets and outlets - obligatory! (do only once!!!)
+	 // set up inlets and outlets - obligatory! 
 	SetupInOut(); 
 
 	// register methods
@@ -74,6 +74,7 @@ void simple2::m_float1(float f)
 
 void simple2::m_float2(float f)
 {
+	// store float
 	arg = f;
 }
 

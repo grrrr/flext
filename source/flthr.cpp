@@ -36,8 +36,9 @@ bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *me
 #endif
 
 	pthread_t thrid; 
-	if(pthread_create (&thrid,NULL,(void *(*)(void *))meth,p)) { 
-		error("%s - Could not launch method!",methname); 
+	int ret = pthread_create (&thrid,NULL,(void *(*)(void *))meth,p);
+	if(ret) { 
+		error(ret == EAGAIN?"%s - Unsufficient resources to launch thread!":"%s - Could not launch method!",methname); 
 		delete p; 
 		return false;
 	}

@@ -67,6 +67,8 @@ FLEXT_REALHDR_S(NEW_CLASS, PARENT_CLASS, SETUPFUN)
 // ====================================================================================
 
 /*!	\defgroup FLEXT_D_INSTANCE Class instantiation
+    \note The name of your class is of importance! It must be the same as the external
+    \note (excluded an eventual ~ (tilde))
 */
 
 

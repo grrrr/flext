@@ -120,6 +120,7 @@ Version history:
 - added functions for SIMD support
 - fixed race condition when using LaunchThread in a setup function (now waiting for thread helper to initialize)
 - added flext::Forward function to send messages to bound symbols
+- added "zero" flag to flext::buffer resize operation
 
 0.4.2:
 - started port for jMax
@@ -331,8 +332,7 @@ TODO list:
 general:
 - documentation
 - add log messages for debugging version
-- feed assist function with in/outlet description
-- MaxMSP: how to call separate help files for objects in a library?
+- MaxMSP: how to call separate help files for objects in a library? -> object mappings (in OSX)
 - use PD's t_float type for floating point values (and what about t_int?)
 
 bugs:

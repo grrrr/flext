@@ -176,20 +176,21 @@ bool flext::buffer::Update()
 #endif
 }
 
-void flext::buffer::Frames(int fr,bool keep)
+void flext::buffer::Frames(int fr,bool keep,bool zero)
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
+    // is this function guaranteed to keep memory and set rest to zero?
 	::garray_resize(arr,(float)fr);
 	Update();
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	t_sample *tmp = NULL;
-	int sz = frames;
+	int sz = frames;  
 	if(fr < sz) sz = fr;
 
 	if(keep) {
 		// copy buffer data to tmp storage
 		tmp = new t_sample[sz];
-		if(tmp)
+        if(tmp)
 			CopySamples(data,tmp,sz);
 		else
 			error("flext::buffer - not enough memory for keeping buffer~ contents");
@@ -210,7 +211,10 @@ void flext::buffer::Frames(int fr,bool keep)
 		// copy data back
 		CopySamples(tmp,data,sz);
 		delete[] tmp;
+        if(zero && sz < fr) ZeroSamples(data+sz,fr-sz);
 	}
+    else
+        if(zero) ZeroSamples(data,fr);
 #else
 #error
 #endif

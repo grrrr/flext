@@ -129,22 +129,34 @@ public:
 		//! Get frame count
 		int Frames() const { return frames; }
 		//! Set frame count
-		void Frames(int fr,bool keep = false);
+		void Frames(int fr,bool keep = false,bool zero = true);
 		
 		//! Graphic auto refresh interval
 		void SetRefrIntv(float intv);
 
 	protected:
+        //! buffer name
 		const t_symbol *sym;
+        //! array holding audio data
 		t_sample *data;
-		int chns,frames;
+        //! number of audio channels
+		int chns;
+        //! number of frames (multiplied by chns for the number of samples)
+        int frames;
 #if FLEXT_SYS == FLEXT_SYS_PD
+        //! pointer to the PD array structure
 		t_garray *arr;
+        //! update interval
 		float interval;
-		bool isdirty,ticking;
+        //! flag signaling that the data has been changed
+		bool isdirty;
+        //! flag showing that the update clock is active
+        bool ticking;
+        //! update clock
 		t_clock *tick;
 
 	private:
+        //! update clock callback
 		static void cb_tick(buffer *b);
 #endif
 	};

@@ -1,6 +1,6 @@
 /* 
 
-max-pd - compatibility library for Max/MSP and pd (pure data)
+max-pd - compatibility library for Max/MSP and pd (pure data) externals 
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -15,25 +15,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __CPP_H
 
 #include <max-pd.h>
-
-#ifdef PD
-#pragma warning (push)
-#pragma warning (disable:4091)
-extern "C" {	    	    	    	    	    	    	\
-
-//#include <m_imp.h>
-
-}
-#pragma warning (pop)
-#endif
-
-
-#ifdef _WINDOWS
-#define EXT_EXTERN __declspec(dllexport)
-#else                   // other OS's
-#define EXT_EXTERN
-#endif
-
 
 class CPPExtern;
 

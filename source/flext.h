@@ -1,6 +1,6 @@
 /* 
 
-max-pd - compatibility library for Max/MSP and pd (pure data)
+max-pd - compatibility library for Max/MSP and pd (pure data) externals
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL

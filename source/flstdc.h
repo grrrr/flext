@@ -1,6 +1,6 @@
 /* 
 
-max-pd - compatibility library for Max/MSP and pd (pure data)
+max-pd - compatibility library for Max/MSP and pd (pure data) externals
 
 Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
@@ -31,6 +31,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #pragma warning (disable:4091)
 extern "C" {	    	    	    	    	    	    	
 #include <m_pd.h>
+#include <m_imp.h>
 }
 #pragma warning (pop)
 

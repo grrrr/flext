@@ -31,7 +31,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #pragma warning (disable:4091)
 extern "C" {	    	    	    	    	    	    	
 #include <m_pd.h>
-#include <m_imp.h>
 }
 #pragma warning (pop)
 

@@ -9,15 +9,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 /*! \file flclass.h
-    \brief Declares the user accessible flext base classes
+	\brief User accessible flext base classes
     
-    !Lacking Details.!
 */
 
 #ifndef __FLCLASS_H
 #define __FLCLASS_H
 
-//! include the header file declaring the base classes
+// include the header file declaring the base classes
 #include "flbase.h"
 
 #ifdef _MSC_VER
@@ -32,12 +31,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // === flext_base ==================================================
 
-/*! \class flext_base
-	\brief message only base object
-*/
-
 //class qmsg;
 //class thr_entry;
+
+/*! \brief Flext message only base object
+*/
 
 class flext_base:
 	public flext_obj
@@ -45,6 +43,11 @@ class flext_base:
 	FLEXT_HEADER_S(flext_base,flext_obj,Setup)
 	
 public:
+
+	/*!	\defgroup FLEXT_C_BASE Flext basic class functionality
+
+		@{ 
+	*/
 
 // ---  compatibility mode ----------------------------------------
 
@@ -54,8 +57,15 @@ public:
 	*/
 	static bool compatibility;  
 
+//!		@} 
+
 
 // --- inheritable virtual methods --------------------------------
+
+	/*!	\defgroup FLEXT_C_VIRTUAL Flext virtual base class functions
+
+		@{ 
+	*/
 
 	//! called on "help" message: should post some text
 	virtual void m_help();
@@ -75,15 +85,21 @@ public:
 	//! called for every unhandled message (by m_methodmain)
 	virtual bool m_method_(int inlet,const t_symbol *s,int argc,t_atom *argv);
 
+//!		@} 
 
 // --- buffer/array stuff -----------------------------------------	
 
-	//! \class class for platform independent buffer handling
+	/*!	\defgroup FLEXT_C_BUFFER Flext buffer handling
+
+		@{ 
+	*/
+
+	//! Class for platform independent buffer handling
 	class buffer
 	{
 	public:
 		/*! \brief Construct buffer.
-			@param delayed = true: only sets name, needs another Set(NULL) to really initialize the buffer 
+			\param delayed = true: only sets name, needs another Set(NULL) to really initialize the buffer 
 			\remark As externals can be created prior to the buffer objects they are pointing to, initialization should be done at loadbang!
 		*/
 		buffer(const t_symbol *s = NULL,bool delayed = false);
@@ -100,17 +116,18 @@ public:
 		bool Update();
 		
 		/*! \brief Set to specified buffer.
-			@param nameonly: if true sets name only, but doesn't look at buffer actually
+			\param nameonly: if true sets name only, but doesn't look at buffer actually
 		*/
 		int Set(const t_symbol *s = NULL,bool nameonly = false);
 		
 		/*! \brief Declare buffer content as dirty.
-			@param refr: if true forces immediate graphics refresh
+			\param refr: if true forces immediate graphics refresh
 		*/
 		void Dirty(bool refr = false);
 		
 		//! Get symbol of buffer 
 		t_symbol *Symbol() const { return const_cast<t_symbol *>(sym); }
+
 		//! Get literal name of buffer 
 		const char *Name() const { return sym?sym->s_name:""; }
 		
@@ -118,6 +135,7 @@ public:
 			\remark Channels are interleaved
 		*/
 		t_sample *Data() { return data; }
+
 		//! Get channel count
 		int Channels() const { return chns; }
 		//! Get frame count
@@ -143,108 +161,124 @@ public:
 #endif
 	};
 
+//!		@} 
 
 // --- help -------------------------------------------------------	
 
+	/*!	\defgroup FLEXT_C_HELP Flext help/assistance functionality
+
+		@{ 
+	*/
+
 	void DefineHelp(const char *ref);
+
+//!		@} 
 
 
 // --- inlet/outlet stuff -----------------------------------------	
 
-	// define inlets/outlets - all (also default) inlets must be defined
+	/*!	\defgroup FLEXT_C_INOUT Flext in-/outlet functions
+		\note These must be called in the class' constructor
+		\note All (also default) inlets must be defined
+
+		@{ 
+	*/
+
 	// argument m specifies multiple inlet/outlet count
 	
 //	void AddInDef() { AddInlet(xlet::tp_def,1); }
 
-	//! add inlet(s) for anythings
+	//! Add inlet(s) for anythings
 	void AddInAnything(int m = 1) { AddInlet(xlet::tp_any,m); } // leftmost or via proxy
 	void AddInAnything(const char *desc,int m = 1) { AddInlet(xlet::tp_any,m,desc); } // leftmost or via proxy
-	//! add inlet(s) for floats
+	//! Add inlet(s) for floats
 	void AddInFloat(int m = 1) { AddInlet(xlet::tp_float,m); }
 	void AddInFloat(const char *desc,int m = 1) { AddInlet(xlet::tp_float,m,desc); }
-	//! add inlet(s) for ints
+	//! Add inlet(s) for ints
 	void AddInInt(int m = 1) { AddInlet(xlet::tp_int,m); }
 	void AddInInt(const char *desc,int m = 1) { AddInlet(xlet::tp_int,m,desc); }
-	//! add inlet(s) for symbols
+	//! Add inlet(s) for symbols
 	void AddInSymbol(int m = 1) { AddInlet(xlet::tp_sym,m); }
 	void AddInSymbol(const char *desc,int m = 1) { AddInlet(xlet::tp_sym,m,desc); }
-	//! add inlet(s) for bang
+	//! Add inlet(s) for bang
 	void AddInBang(int m = 1) { AddInlet(xlet::tp_sym,m); }
 	void AddInBang(const char *desc,int m = 1) { AddInlet(xlet::tp_sym,m,desc); }
-	//! add inlet(s) for lists
+	//! Add inlet(s) for lists
 	void AddInList(int m = 1) { AddInlet(xlet::tp_list,m); }  // via proxy
 	void AddInList(const char *desc,int m = 1) { AddInlet(xlet::tp_list,m,desc); }  // via proxy
 	
-	//! add outlet(s) for anythings
+	//! Add outlet(s) for anythings
 	void AddOutAnything(int m = 1) { AddOutlet(xlet::tp_any,m); }
 	void AddOutAnything(const char *desc,int m = 1) { AddOutlet(xlet::tp_any,m,desc); }
-	//! add outlet(s) for floats
+	//! Add outlet(s) for floats
 	void AddOutFloat(int m = 1) { AddOutlet(xlet::tp_float,m); }
 	void AddOutFloat(const char *desc,int m = 1) { AddOutlet(xlet::tp_float,m,desc); }
-	//! add outlet(s) for ints
+	//! Add outlet(s) for ints
 	void AddOutInt(int m = 1) { AddOutlet(xlet::tp_int,m); }
 	void AddOutInt(const char *desc,int m = 1) { AddOutlet(xlet::tp_int,m,desc); }
-	//! add outlet(s) for symbols
+	//! Add outlet(s) for symbols
 	void AddOutSymbol(int m = 1) { AddOutlet(xlet::tp_sym,m); }
 	void AddOutSymbol(const char *desc,int m = 1) { AddOutlet(xlet::tp_sym,m,desc); }
-	//! add outlet(s) for bangs
+	//! Add outlet(s) for bangs
 	void AddOutBang(int m = 1) { AddOutlet(xlet::tp_sym,m); }
 	void AddOutBang(const char *desc,int m = 1) { AddOutlet(xlet::tp_sym,m,desc); }
-	//! add outlet(s) for lists
+	//! Add outlet(s) for lists
 	void AddOutList(int m = 1) { AddOutlet(xlet::tp_list,m); }
 	void AddOutList(const char *desc,int m = 1) { AddOutlet(xlet::tp_list,m,desc); }
 	
-	/*! \brief set up inlets and outlets
+	/*! \brief Set up inlets and outlets
 		\remark Must be called ONCE to actually set up the defined inlets/outlets.
 		\return True on successful creation of all inlets and outlets
 	*/
 	bool SetupInOut(); 
 
-	//! get number of inlets
+	//! Get number of inlets
 	int CntIn() const { return incnt; }
-	//! get number of outlets
+	//! Get number of outlets
 	int CntOut() const { return outcnt; }
-	//! get number of signal inlets
+	//! Get number of signal inlets
 	int CntInSig() const { return insigs; }
-	//! get number of signal outlets
+	//! Get number of signal outlets
 	int CntOutSig() const { return outsigs; }
 
 
 	class outlet;
 
-	//! get pointer to outlet (_after_ calling setup_inout()!)
+	//! Get pointer to outlet (_after_ calling setup_inout()!)
 	outlet *GetOut(int ix) { return (outlets && ix < outcnt)?outlets[ix]:NULL; }
 
-	// output messages (index n starts with 0)
+	// output messages 
 
 	void ToOutBang(outlet *o); 
-	//! output bang (index n starts with 0)
+	//! Output bang (index n starts with 0)
 	void ToOutBang(int n) { outlet *o = GetOut(n); if(o) ToOutBang(o); }
 
 	void ToOutFloat(outlet *o,float f); 
-	//! output float (index n starts with 0)
+	//! Output float (index n starts with 0)
 	void ToOutFloat(int n,float f) { outlet *o = GetOut(n); if(o) ToOutFloat(o,f); }
 
 	void ToOutInt(outlet *o,int f); 
-	//! output int (index n starts with 0)
+	//! Output int (index n starts with 0)
 	void ToOutInt(int n,int f) { outlet *o = GetOut(n); if(o) ToOutInt(o,f); }
 	
 	void ToOutSymbol(outlet *o,const t_symbol *s); 
-	//! output symbol (index n starts with 0)
+	//! Output symbol (index n starts with 0)
 	void ToOutSymbol(int n,const t_symbol *s) { outlet *o = GetOut(n); if(o) ToOutSymbol(o,s); }
 
 	void ToOutString(outlet *o,const char *s) { ToOutSymbol(o,gensym(const_cast<char *>(s))); }
-	//! output string (index n starts with 0)
+	//! Output string (index n starts with 0)
 	void ToOutString(int n,const char *s) { outlet *o = GetOut(n); if(o) ToOutString(o,s); }
 
 	void ToOutList(outlet *o,int argc,t_atom *argv); 
-	//! output list (index n starts with 0)
+	//! Output list (index n starts with 0)
 	void ToOutList(int n,int argc,t_atom *argv)  { outlet *o = GetOut(n); if(o) ToOutList(o,argc,argv); }
 	
 	void ToOutAnything(outlet *o,const t_symbol *s,int argc,t_atom *argv); 
-	//! output anything (index n starts with 0)
+	//! Output anything (index n starts with 0)
 	void ToOutAnything(int n,const t_symbol *s,int argc,t_atom *argv)  { outlet *o = GetOut(n); if(o) ToOutAnything(o,const_cast<t_symbol *>(s),argc,argv); }
-		
+	
+//!		@} 
+
 
 // --- message handling -------------------------------------------
 
@@ -256,6 +290,12 @@ public:
 	};
 
 	typedef void (*methfun)(t_class *c);
+
+	/*!	\defgroup FLEXT_C_ADDMETHOD Flext method handling
+		\internal
+
+		@{ 
+	*/
 
 	void AddMethodDef(int inlet); // call virtual function for inlet
 	void AddMethodDef(int inlet,const char *tag); // call virtual function for tag && inlet
@@ -284,152 +324,268 @@ public:
 	//! Set MaxMSP style of distributing list elements over (message) inlets
 	void SetDist(bool d = true) { distmsgs = d; }
 
+//!		@} 
+
 // --- various symbols --------------------------------------------
 
+	/*!	\defgroup FLEXT_C_SYMBOL Flext atom/symbol handling 
+
+		@{ 
+	*/
+
+	//! Symbol constant for "float"
 	static const t_symbol *sym_float;
+	//! Symbol constant for "symbol"
 	static const t_symbol *sym_symbol;
+	//! Symbol constant for "bang"
 	static const t_symbol *sym_bang;
+	//! Symbol constant for "list"
 	static const t_symbol *sym_list;
+	//! Symbol constant for "anything"
 	static const t_symbol *sym_anything;
+	/*! \brief Symbol constant for "int"
+		\note Only the Max/MSP system has this defined as an internal type
+	*/
 	static const t_symbol *sym_int;
+	//! Symbol constant for "pointer"
 	static const t_symbol *sym_pointer;
 
 #ifdef PD
+	/*! \brief Symbol constant for "signal"
+		\note PD only
+	*/
 	static const t_symbol *sym_signal;
 #endif
 
+	//! Make a symbol from a string
 	static const t_symbol *MakeSymbol(const char *s);
 
-	// get symbol string
+	//! Get symbol string
 	static const char *GetString(const t_symbol *s) { return s->s_name; }  
+	//! Check for symbol and get string
 	static const char *GetAString(const t_symbol *s) { return s?s->s_name:""; }  
 	
+	//! Access data bound to a symbol
 	static void *GetThing(const t_symbol *s) { return s->s_thing; }  
+	//! Set data bound to a symbol
 	static void SetThing(t_symbol *s,void *dt) { s->s_thing = (t_thing)dt; }  
 
 // --- atom stuff ----------------------------------------
 		
+	//! Set atom from another atom
 	static void SetAtom(t_atom &a,const t_atom &b) { CopyAtom(&a,&b); }
 
+	//! Check whether the atom is a float
 	static bool IsFloat(const t_atom &a) { return a.a_type == A_FLOAT; }
+	//! Check whether the atom can be represented as a float
 	static bool CanbeFloat(const t_atom &a) { return IsFloat(a) || IsInt(a); }
+	//! Access the float value (without type check)
 	static float GetFloat(const t_atom &a) { return a.a_w.w_float; }
-//	static float GetAFloat(const t_atom &a) { return IsFloat(a)?GetFloat(a):0; }
+	//! Check for a float and get its value 
 	static float GetAFloat(const t_atom &a) { return GetAFlint(a); }
+	//! Set the atom to represent a float 
 	static void SetFloat(t_atom &a,float v) { a.a_type = A_FLOAT; a.a_w.w_float = v; }
 
+	//! Check whether the atom is a symbol
 	static bool IsSymbol(const t_atom &a) { return a.a_type == A_SYMBOL; }
+	//! Access the symbol value (without type check)
 	static t_symbol *GetSymbol(const t_atom &a) { return a.a_w.w_symbol; }
+	//! Check for a symbol and get its value 
 	static t_symbol *GetASymbol(const t_atom &a) { return IsSymbol(a)?GetSymbol(a):NULL; }  // NULL or empty symbol?
+	//! Set the atom to represent a symbol
 	static void SetSymbol(t_atom &a,const t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_symbol = const_cast<t_symbol *>(s); }
 
+	//! Check whether the atom is a string
 	static bool IsString(const t_atom &a) { return IsSymbol(a); }
+	//! Access the string value (without type check)
 	static const char *GetString(const t_atom &a) { t_symbol *s = GetSymbol(a); return s?GetString(s):NULL; }  
+	//! Check for a string and get its value 
 	static void GetAString(const t_atom &a,char *buf,int szbuf);
+	//! Set the atom to represent a string
 	static void SetString(t_atom &a,const char *c) { SetSymbol(a,gensym(const_cast<char *>(c))); }
 
+	//! Check whether the atom can be represented as an integer
 	static bool CanbeInt(const t_atom &a) { return IsFloat(a) || IsInt(a); }
+	//! Check for an integer and get its value 
 	static int GetAInt(const t_atom &a) { return (int)GetAFlint(a); }
 
+	//! Check whether the atom is a float or integer (depending on the system)
 	static bool IsFlint(const t_atom &a) { return IsFloat(a) || IsInt(a); }
+	//! Check for a float or integer and get its value 
 	static float GetAFlint(const t_atom &a) { return IsFloat(a)?GetFloat(a):(IsInt(a)?GetInt(a):0); }
 #ifdef PD
+	//! Check whether the atom is an integer
 	static bool IsInt(const t_atom &) { return false; }
+	//! Access the integer value (without type check)
 	static int GetInt(const t_atom &) { return 0; }
 //	static void SetInt(const t_atom &,int) { }
 
+	//! Set the atom to represent a float or integer (depending on the system)
 	static void SetFlint(t_atom &a,int v) { a.a_type = A_FLOAT; a.a_w.w_float = (float)v; }
 
+	//! Check whether the atom is a pointer
 	static bool IsPointer(const t_atom &a) { return a.a_type == A_POINTER; }
+	//! Access the pointer value (without type check)
 	static t_gpointer *GetPointer(const t_atom &a) { return a.a_w.w_gpointer; }
+	//! Check for a pointer and get its value 
 	static t_gpointer *GetAPointer(const t_atom &a) { return IsPointer(a)?GetPointer(a):NULL; }
+	//! Set the atom to represent a pointer
 	static void SetPointer(t_atom &a,t_gpointer *p) { a.a_type = A_POINTER; a.a_w.w_gpointer = p; }
 
 #elif defined(MAXMSP)
+	//! Check whether the atom is an int
 	static bool IsInt(const t_atom &a) { return a.a_type == A_INT; }
+	//! Access the integer value (without type check)
 	static int GetInt(const t_atom &a) { return a.a_w.w_long; }
+	//! Set the atom to represent an integer
 	static void SetInt(t_atom &a,int v) { a.a_type = A_INT, a.a_w.w_long = v; }
 
+	//! Set the atom to represent a float or integer (depending on the system)
 	static void SetFlint(t_atom &a,int v) { a.a_type = A_INT; a.a_w.w_long = v; }
 
+	//! Check whether the atom is a pointer
 	static bool IsPointer(const t_atom &) { return false; }
+	//! Access the pointer value (without type check)
 	static void *GetPointer(const t_atom &) { return NULL; }
+	//! Check for a pointer and get its value 
 	static void *GetAPointer(const t_atom &) { return NULL; }
 //	static void SetPointer(t_atom &,void *) {}
 #endif
 
+//!		@} 
+
+
+	/*!	\defgroup FLEXT_C_THREAD Flext thread handling 
+
+		@{ 
+	*/
+
 #ifdef FLEXT_THREADS
 // --- thread stuff -----------------------------------------------
 
+	/*! \brief Check if current thread should terminate
+		\todo Check for currently running thread
+	*/
 	bool ShouldExit() const { return shouldexit; }
 
+	//! Check if current thread is the realtime system's thread
 	bool IsSystemThread() const { pthread_t cur = pthread_self(); return pthread_equal(cur,thrid) != 0; }
 
-	void Yield() // yield to other threads (for cooperative multitasking)
-#ifndef MAXMSP
+	/*! \brief Yield to other threads
+		\remark A call to this is only needed for systems with cooperative multitasking like MacOS<=9
+	*/
+	void Yield() 
+#ifdef MAXMSP
 	{}
 #else
 	;
 #endif
 
+	/*! \brief Set current thread to normal priority
+		\bug Not working under all platforms
+	*/
 	void NormalPriority();
+	/*! \brief Set current thread to background priority
+		\bug Not working under all platforms
+	*/
 	void LowerPriority();
+	/*! \brief Set current thread to idle priority
+		\bug Not working under all platforms
+	*/
 	void LowestPriority();
 
+	/*! \brief Thread mutex
+		\sa pthreads documentation
+	*/
 	class ThrMutex 
 	{
 	public:
+		//! Construct thread mutex
 		ThrMutex() { pthread_mutex_init(&mutex,NULL); }
+		//! Destroy thread mutex
 		~ThrMutex() { pthread_mutex_destroy(&mutex); }
 
+		//! Lock thread mutex
 		int Lock() { return pthread_mutex_lock(&mutex); }
+		//! Try if thread mutex is locked
 		int TryLock() { return pthread_mutex_trylock(&mutex); }
+		//! Unlock thread mutex
 		int Unlock() { return pthread_mutex_unlock(&mutex); }
 	protected:
 		pthread_mutex_t mutex;
 	};
 
+	/*! \brief Thread conditional
+		\sa pthreads documentation
+	*/
 	class ThrCond:
 		public ThrMutex
 	{
 	public:
+		//! Construct thread conditional
 		ThrCond() { pthread_cond_init(&cond,NULL); }
+		//! Destroy thread conditional
 		~ThrCond() { pthread_cond_destroy(&cond); }
 
+		//! Wait for condition 
 		int Wait() { return pthread_cond_wait(&cond,&mutex); }
 
+		/*! \brief Wait for condition (for a certain time)
+			\param time Wait time in seconds
+		*/
 		int TimedWait(float time) 
 		{ 
 			timespec tm; tm.tv_sec = (long)time; tm.tv_nsec = (long)((time-(long)time)*1.e9);
 			return pthread_cond_timedwait(&cond,&mutex,&tm); 
 		}
 
+		//! Signal condition
 		int Signal() { return pthread_cond_signal(&cond); }
+		//! Broadcast condition
 		int Broadcast() { return pthread_cond_broadcast(&cond); }
 	protected:
 		pthread_cond_t cond;
 	};
 #endif // FLEXT_THREADS
 
+//!		@} 
+
 // --- atom list stuff -------------------------------------------
 
+	/*!	\defgroup FLEXT_C_ATOM Flext atom/list handling
+
+		@{ 
+	*/
+
+	//! Class representing a list of atoms
 	class AtomList
 	{
 	public:
+		//! Construct list
 		AtomList(int argc = 0,const t_atom *argv = NULL);
+		//! Construct list
 		AtomList(const AtomList &a);
+		//! Destroy list
 		~AtomList();
 
+		//! Clear list
 		AtomList &Clear() { return operator()(); }
 
+		//! Set list
 		AtomList &operator()(int argc = 0,const t_atom *argv = NULL);
+		//! Set list by another AtomList
 		AtomList &operator =(const AtomList &a) { return operator()(a.Count(),a.Atoms()); }
 
+		//! Get number of atoms in the list
 		int Count() const { return cnt; }
+		//! Get a reference to an indexed atom
 		t_atom &operator [](int ix) { return lst[ix]; }
+		//! Get a reference to an indexed atom
 		const t_atom &operator [](int ix) const { return lst[ix]; }
 
+		//! Get a pointer to the list of atoms
 		t_atom *Atoms() { return lst; }
+		//! Get a pointer to the list of atoms
 		const t_atom *Atoms() const { return lst; }
 		
 	protected:
@@ -438,27 +594,67 @@ public:
 	};
 
 
+	//! Class representing an "anything"
 	class AtomAnything: 
 		public AtomList
 	{
 	public:
+		//! Construct anything
 		AtomAnything(const t_symbol *h,int argc,t_atom *argv): AtomList(argc,argv),hdr(h) {}
+		//! Construct anything
+		AtomAnything(const AtomAnything &a): AtomList(a),hdr(a.hdr) {}
 
+		//! Clear anything
+		AtomAnything &Clear() { return operator()(); }
+
+		//! Get header symbol of anything
 		const t_symbol *Header() const { return hdr; }
 		
+		//! Set anything
+		AtomAnything &operator()(const t_symbol *h = NULL,int argc = 0,const t_atom *argv = NULL)
+		{ 
+			hdr = h; AtomList::operator(argc,argv);	
+			return *this; 
+		}
+
+		//! Set list by another AtomAnything
+		AtomAnything &operator =(const AtomAnything &a) { return operator()(a.Header(),a.Count(),a.Atoms()); }
+
 	protected:
 		const t_symbol *hdr;
 	};
 
+//!		@} 
+
 // --- clock stuff ------------------------------------------------
 
 
+	/*!	\defgroup FLEXT_C_CLOCK Flext clock functions
+
+		At the moment there are none
+
+		@{ 
+	*/
+
+//!		@} 
+
 // --- utilities --------------------------------------------------
 
+	/*!	\defgroup FLEXT_C_UTIL Flext utility functions
+
+		@{ 
+	*/
+
+	//! Copy an atom
 	static void CopyAtom(t_atom *dst,const t_atom *src) { *dst = *src; }
+	//! Copy a list of atoms
 	static t_atom *CopyList(int argc,const t_atom *argv);
+	//! Copy a memory region
 	static void CopyMem(void *dst,const void *src,int bytes);
+	//! Sleep for an amount of time
 	static void Sleep(float s);
+
+//!		@} 
 
 // xxx internal stuff xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
@@ -492,6 +688,11 @@ protected:
 		xlet *nxt;
 	};
 
+	/*!	\addtogroup FLEXT_C_INOUT 
+
+		@{ 
+	*/
+
 	unsigned long XletCode(xlet::type tp = xlet::tp_none,...); // end list with 0 (= tp_none) !!
 
 	void AddInlets(unsigned long code); // use XletCode to get code value
@@ -501,6 +702,8 @@ protected:
 
 	void DescInlet(int ix,const char *desc) { DescXlet(ix,desc,inlist); }
 	void DescOutlet(int ix,const char *desc) { DescXlet(ix,desc,outlist); }
+
+//!		@} 
 
 
 #ifdef FLEXT_THREADS

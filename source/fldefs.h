@@ -175,28 +175,28 @@ REAL_LIB_1(NAME,NEW_CLASS, 1, TYPE)
 // TWO ARGUMENTS
 // ----------------------------------------
 
-/*! Implementation of a flext class with two arguments
+/*! Implementation of a flext class with 2 arguments
 	\ingroup FLEXT_NEW
 */
 #define FLEXT_NEW_2(NAME,NEW_CLASS, TYPE1, TYPE2)			\
 REAL_NEW_2(NAME,NEW_CLASS, 0, TYPE1, TYPE2) \
 REAL_EXT(NEW_CLASS, 0)
 
-/*! Implementation of a flext tilde class with one argument
+/*! Implementation of a flext tilde class with 2 arguments
 	\ingroup FLEXT_NEW_DSP
 */
 #define FLEXT_NEW_DSP_2(NAME,NEW_CLASS, TYPE1, TYPE2)	\
 REAL_NEW_2(NAME,NEW_CLASS, 1, TYPE1, TYPE2) \
 REAL_EXT(NEW_CLASS, 1)
 
-/*! Implementation of a flext class (part of a library) with two arguments
+/*! Implementation of a flext class (part of a library) with 2 arguments
 	\ingroup FLEXT_LIB
 */
 #define FLEXT_LIB_2(NAME,NEW_CLASS, TYPE1, TYPE2)		\
 \
 REAL_LIB_2(NAME,NEW_CLASS, 0, TYPE1, TYPE2)
 
-/*! Implementation of a flext tilde class (part of a library) with two arguments
+/*! Implementation of a flext tilde class (part of a library) with 2 arguments
 	\ingroup FLEXT_LIB_DSP
 */
 #define FLEXT_LIB_DSP_2(NAME,NEW_CLASS, TYPE1, TYPE2)	\
@@ -207,28 +207,28 @@ REAL_LIB_2(NAME,NEW_CLASS, 1, TYPE1, TYPE2)
 // THREE ARGUMENTS
 // ----------------------------------------
 
-/*! Implementation of a flext class with three arguments
+/*! Implementation of a flext class with 3 arguments
 	\ingroup FLEXT_NEW
 */
 #define FLEXT_NEW_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3) \
 REAL_NEW_3(NAME,NEW_CLASS, 0, TYPE1, TYPE2, TYPE3)  \
 REAL_EXT(NEW_CLASS, 0)
 
-/*! Implementation of a flext tilde class with three arguments
+/*! Implementation of a flext tilde class with 3 arguments
 	\ingroup FLEXT_NEW_DSP
 */
 #define FLEXT_NEW_DSP_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3)	\
 REAL_NEW_3(NAME,NEW_CLASS, 1, TYPE1, TYPE2, TYPE3) \
 REAL_EXT(NEW_CLASS, 1)
 
-/*! Implementation of a flext class (part of a library) with three arguments
+/*! Implementation of a flext class (part of a library) with 3 arguments
 	\ingroup FLEXT_LIB
 */
 #define FLEXT_LIB_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3)		\
 \
 REAL_LIB_3(NAME,NEW_CLASS, 0,TYPE1, TYPE2, TYPE3)
 
-/*! Implementation of a flext tilde class (part of a library) with three arguments
+/*! Implementation of a flext tilde class (part of a library) with 3 arguments
 	\ingroup FLEXT_LIB_DSP
 */
 #define FLEXT_LIB_DSP_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3)	\
@@ -265,47 +265,47 @@ REAL_LIB_3(NAME,NEW_CLASS, 1, TYPE1, TYPE2, TYPE3)
 	@{ 
 */
 
-//! with no arguments
+//! Set up a method callback with no arguments
 #define FLEXT_CALLBACK(M_FUN) \
 static void cb_ ## M_FUN(flext_base *c) \
 { static_cast<thisType *>(c)->M_FUN(); }
 
-//! for anything
+//! Set up a method callback for an anything argument
 #define FLEXT_CALLBACK_A(M_FUN) \
 static void cb_ ## M_FUN(flext_base *c,t_symbol *s,int argc,t_atom *argv) \
 { static_cast<thisType *>(c)->M_FUN(s,argc,argv); }
 
-//! for gimme
+//! Set up a method callback for a variable argument list
 #define FLEXT_CALLBACK_V(M_FUN) \
 static void cb_ ## M_FUN(flext_base *c,int argc,t_atom *argv) \
 { static_cast<thisType *>(c)->M_FUN(argc,argv); }
 
-//! for boolean argument
+//! Set up a method callback for a boolean argument
 #define FLEXT_CALLBACK_B(M_FUN) \
 static void cb_ ## M_FUN(flext_base *c,int &arg1) \
 { static_cast<thisType *>(c)->M_FUN(arg1 != 0); }
 
-//! 1 argument
+//! Set up a method callback for 1 argument
 #define FLEXT_CALLBACK_1(M_FUN,TP1) \
 static void cb_ ## M_FUN(flext_base *c,TP1 &arg1) \
 { static_cast<thisType *>(c)->M_FUN(arg1); }
 
-//! 2 arguments
+//! Set up a method callback for 2 arguments
 #define FLEXT_CALLBACK_2(M_FUN,TP1,TP2) \
 static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2) \
 { static_cast<thisType *>(c)->M_FUN(arg1,arg2); }
 
-//! 3 arguments
+//! Set up a method callback for 3 arguments
 #define FLEXT_CALLBACK_3(M_FUN,TP1,TP2,TP3) \
 static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3) \
 { static_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3); }
 
-//! 4 arguments
+//! Set up a method callback for 4 arguments
 #define FLEXT_CALLBACK_4(M_FUN,TP1,TP2,TP3,TP4) \
 static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4) \
 { static_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4); }
 
-//! 5 arguments
+//! Set up a method callback for 5 arguments
 #define FLEXT_CALLBACK_5(M_FUN,TP1,TP2,TP3,TP4,TP5) \
 static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,TP5 &arg5) \
 { static_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4,arg5); }
@@ -313,37 +313,37 @@ static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,T
 
 //	Shortcuts
 
-//! 1 float argument
+//! Set up a method callback for 1 float argument
 #define FLEXT_CALLBACK_F(M_FUN) \
 \
 FLEXT_CALLBACK_1(M_FUN,float)
 
-//! 2 float arguments
+//! Set up a method callback for 2 float arguments
 #define FLEXT_CALLBACK_FF(M_FUN) \
 \
 FLEXT_CALLBACK_2(M_FUN,float,float)
 
-//! 3 float arguments
+//! Set up a method callback for 3 float arguments
 #define FLEXT_CALLBACK_FFF(M_FUN) \
 \
 FLEXT_CALLBACK_3(M_FUN,float,float,float)
 
-//! 1 int argument
+//! Set up a method callback for 1 integer argument
 #define FLEXT_CALLBACK_I(M_FUN) \
 \
 FLEXT_CALLBACK_1(M_FUN,int)
 
-//! 2 int arguments
+//! Set up a method callback for 2 integer arguments
 #define FLEXT_CALLBACK_II(M_FUN) \
 \
 FLEXT_CALLBACK_2(M_FUN,int,int)
 
-//! 3 int arguments
+//! Set up a method callback for 3 integer arguments
 #define FLEXT_CALLBACK_III(M_FUN) \
 \
 FLEXT_CALLBACK_3(M_FUN,int,int,int)
 
-//! 1 symbol argument
+//! Set up a method callback for 1 symbol argument
 #define FLEXT_CALLBACK_S(M_FUN) \
 \
 FLEXT_CALLBACK_1(M_FUN,t_symptr)
@@ -363,7 +363,7 @@ FLEXT_CALLBACK_1(M_FUN,t_symptr)
 
 #ifdef FLEXT_THREADS
 
-//! with no arguments
+//! Set up a threaded method callback with no arguments
 #define FLEXT_THREAD(M_FUN) \
 static void cb_ ## M_FUN(flext_base *c) {  \
 	thr_params *p = new thr_params(c); \
@@ -380,7 +380,7 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 	return NULL; \
 } 
 
-//! for anything
+//! Set up a threaded method callback for an anything argument
 #define FLEXT_THREAD_A(M_FUN) \
 static void cb_ ## M_FUN(flext_base *c,t_symbol *s,int argc,t_atom *argv) {  \
 	thr_params *p = new thr_params(c); p->set_any(s,argc,argv); \
@@ -398,7 +398,7 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 	return NULL; \
 } 
 
-//! for gimme
+//! Set up a threaded method callback for a variable argument list
 #define FLEXT_THREAD_V(M_FUN) \
 static void cb_ ## M_FUN(flext_base *c,int argc,t_atom *argv) {  \
 	thr_params *p = new thr_params(c); p->set_gimme(argc,argv); \
@@ -416,7 +416,7 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 	return NULL; \
 } 
 
-//! for boolean argument
+//! Set up a threaded method callback for a boolean argument
 #define FLEXT_THREAD_B(M_FUN) \
 static void cb_ ## M_FUN(flext_base *c,int &arg1) {  \
 	thr_params *p = new thr_params(c); p->var[0]._bool = arg1 != 0; \
@@ -434,7 +434,7 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 	return NULL; \
 } 
 
-//! 1 argument
+//! Set up a threaded method callback for 1 argument
 #define FLEXT_THREAD_1(M_FUN,TP1) \
 static void cb_ ## M_FUN(flext_base *c,TP1 &arg1) {  \
 	thr_params *p = new thr_params(c); \
@@ -453,7 +453,7 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 	return NULL; \
 } 
 
-//! 2 arguments
+//! Set up a threaded method callback for 2 arguments
 #define FLEXT_THREAD_2(M_FUN,TP1,TP2) \
 static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2) {  \
 	thr_params *p = new thr_params(c); \
@@ -474,7 +474,7 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 	return NULL; \
 } 
 
-//! 3 arguments
+//! Set up a threaded method callback for 3 arguments
 #define FLEXT_THREAD_3(M_FUN,TP1,TP2,TP3) \
 static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3) {  \
 	thr_params *p = new thr_params(c); \
@@ -497,7 +497,7 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 	return NULL; \
 } 
 
-//! 4 arguments
+//! Set up a threaded method callback for 4 arguments
 #define FLEXT_THREAD_4(M_FUN,TP1,TP2,TP3,TP4) \
 static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4) {  \
 	thr_params *p = new thr_params(c); \
@@ -522,7 +522,7 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 	return NULL; \
 } 
 
-//! 5 arguments
+//! Set up a threaded method callback for 5 arguments
 #define FLEXT_THREAD_5(M_FUN,TP1,TP2,TP3,TP4,TP5) \
 static void cb_ ## M_FUN(flext_base *c,TP1 &arg1,TP2 &arg2,TP3 &arg3,TP4 &arg4,TP5 &arg5) {  \
 	thr_params *p = new thr_params(c); \
@@ -552,38 +552,37 @@ static void *thr_ ## M_FUN(thr_params *p) {  \
 
 //!	Shortcuts
 
-/*! \brief 1 float argument
-*/
+//! Set up a threaded method callback for 1 float argument
 #define FLEXT_THREAD_F(M_FUN) \
 \
 FLEXT_THREAD_1(M_FUN,float)
 
-//! 2 float arguments
+//! Set up a threaded method callback for 2 float arguments
 #define FLEXT_THREAD_FF(M_FUN) \
 \
 FLEXT_THREAD_2(M_FUN,float,float)
 
-//! 3 float arguments
+//! Set up a threaded method callback for 3 float arguments
 #define FLEXT_THREAD_FFF(M_FUN) \
 \
 FLEXT_THREAD_3(M_FUN,float,float,float)
 
-//! 1 int argument
+//! Set up a threaded method callback for 1 integer argument
 #define FLEXT_THREAD_I(M_FUN) \
 \
 FLEXT_THREAD_1(M_FUN,int)
 
-//! 2 int arguments
+//! Set up a threaded method callback for 2 integer arguments
 #define FLEXT_THREAD_II(M_FUN) \
 \
 FLEXT_THREAD_2(M_FUN,int,int)
 
-//! 3 int arguments
+//! Set up a threaded method callback for 3 integer arguments
 #define FLEXT_THREAD_III(M_FUN) \
 \
 FLEXT_THREAD_3(M_FUN,int,int,int)
 
-//! 1 symbol argument
+//! Set up a threaded method callback for 1 symbol argument
 #define FLEXT_THREAD_S(M_FUN) \
 \
 FLEXT_THREAD_1(M_FUN,t_symptr)
@@ -607,61 +606,61 @@ FLEXT_THREAD_1(M_FUN,t_symptr)
 	@{ 
 */
 
-//! enable list element distribution over inlets (if no better handler found)
+//! Enable list element distribution over inlets (if no better handler found)
 #define FLEXT_ADDDIST() \
 \
 SetDist(true)	
 
-//! add handler for bang 
+//! Add a method handler for bang 
 #define FLEXT_ADDBANG(IX,M_FUN) \
 \
 AddMethod(IX,"bang",cb_ ## M_FUN)	
 
-//! add handler for method with no args
+//! Add a handler for a method with no arguments
 #define FLEXT_ADDMETHOD(IX,M_FUN) \
 AddMethod(IX,cb_ ## M_FUN)	
 
-//! add handler for method with a variable arg list
+//! Add a handler for a method with a (variable argument) list
 #define FLEXT_ADDMETHOD_V(IX,M_FUN) \
 \
 AddMethod(IX,cb_ ## M_FUN)	
 
-//! add handler for method with an anything argument
+//! Add a handler for a method with an anything argument
 #define FLEXT_ADDMETHOD_A(IX,M_FUN) \
 \
 AddMethod(IX,cb_ ## M_FUN)	
 
-//! add handler for method with implicit args
+//! Add a a handler for a method with implicit arguments
 #define FLEXT_ADDMETHOD_(IX,M_TAG,M_FUN) \
 \
 AddMethod(IX,M_TAG,cb_ ## M_FUN)	
 
-//! add handler for method with 1 enum type arg
+//! Add a handler for a method with 1 enum type argument
 #define FLEXT_ADDMETHOD_E(IX,M_TAG,M_FUN) \
 \
 AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),a_int,a_null)
 
-//! add handler for method with 1 arg
+//! Add a handler for a method with 1 argument
 #define FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,TP1) \
 \
 AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),a_null)	
 
-//! add handler for method with 2 args
+//! Add a handler for a method with 2 arguments
 #define FLEXT_ADDMETHOD_2(IX,M_TAG,M_FUN,TP1,TP2) \
 \
 AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),a_null)
 
-//! add handler for method with 3 args
+//! Add a handler for a method with 3 arguments
 #define FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,TP1,TP2,TP3) \
 \
 AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),a_null)
 
-//! add handler for method with 4 args
+//! Add a handler for a method with 4 arguments
 #define FLEXT_ADDMETHOD_4(IX,M_TAG,M_FUN,TP1,TP2,TP3,TP4) \
 \
 AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),a_null)
 
-//! add handler for method with 5 args
+//! Add a handler for a method with 5 arguments
 #define FLEXT_ADDMETHOD_5(IX,M_TAG,M_FUN,TP1,TP2,TP3,TP4,TP5) \
 \
 AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(TP3),FLEXTARG(TP4),FLEXTARG(TP5),a_null)
@@ -669,37 +668,37 @@ AddMethod(IX,M_TAG,(methfun)(cb_ ## M_FUN),FLEXTARG(TP1),FLEXTARG(TP2),FLEXTARG(
 
 //	Shortcuts
 
-//! boolean argument
+//! Add a handler for a method with a boolean argument
 #define FLEXT_ADDMETHOD_B(IX,M_TAG,M_FUN) \
 \
 FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,bool)
 
-//! 1 float argument
+//! Add a handler for a method with 1 float argument
 #define FLEXT_ADDMETHOD_F(IX,M_TAG,M_FUN) \
 \
 FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,float)
 
-//! 2 float arguments
+//! Add a handler for a method with 2 float arguments
 #define FLEXT_ADDMETHOD_FF(IX,M_TAG,M_FUN) \
 \
 FLEXT_ADDMETHOD_2(IX,M_TAG,M_FUN,float,float)
 
-//! 3 float arguments
+//! Add a handler for a method with 3 float arguments
 #define FLEXT_ADDMETHOD_FFF(IX,M_TAG,M_FUN) \
 \
 FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,float,float,float)
 
-//! 1 int argument
+//! Add a handler for a method with 1 integer argument
 #define FLEXT_ADDMETHOD_I(IX,M_TAG,M_FUN) \
 \
 FLEXT_ADDMETHOD_1(IX,M_TAG,M_FUN,int)
 
-//! 2 int arguments
+//! Add a handler for a method with 2 integer arguments
 #define FLEXT_ADDMETHOD_II(IX,M_TAG,M_FUN) \
 \
 FLEXT_ADDMETHOD_2(IX,M_TAG,M_FUN,int,int)
 
-//! 3 int arguments
+//! Add a handler for a method with 3 integer arguments
 #define FLEXT_ADDMETHOD_III(IX,M_TAG,M_FUN) \
 \
 FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,int,int,int)
@@ -714,37 +713,37 @@ FLEXT_ADDMETHOD_3(IX,M_TAG,M_FUN,int,int,int)
 	@{ 
 */
 
-//! call method with no args
+//! Call a (already defined) method with no arguments
 #define FLEXT_CALLMETHOD(M_FUN) \
 \
 cb_ ## M_FUN(this)
 
-//! call method with 1 enum type arg
+//! Call a (already defined) method with 1 enum type argument
 #define FLEXT_CALLMETHOD_E(M_FUN,ARG) \
 \
 cb_ ## M_FUN(this,ARG)
 
-//! call method with 1 arg
+//! Call a (already defined) method with 1 argument
 #define FLEXT_CALLMETHOD_1(M_FUN,ARG) \
 \
 cb_ ## M_FUN(this,ARG)
 
-//! call method with 2 args
+//! Call a (already defined) method with 2 arguments
 #define FLEXT_CALLMETHOD_2(M_FUN,ARG1,ARG2) \
 \
 cb_ ## M_FUN(this,ARG1,ARG2)
 
-//! call method with 3 args
+//! Call a (already defined) method with 3 arguments
 #define FLEXT_CALLMETHOD_3(M_FUN,ARG1,ARG2,ARG3) \
 \
 cb_ ## M_FUN(this,ARG1,ARG2,ARG3)
 
-//! call method with 4 args
+//! Call a (already defined) method with 4 arguments
 #define FLEXT_CALLMETHOD_4(M_FUN,ARG1,ARG2,ARG3,ARG4) \
 \
 cb_ ## M_FUN(this,ARG1,ARG2,ARG3,ARG4)
 
-//! call method with 5 args
+//! Call a (already defined) method with 5 arguments
 #define FLEXT_CALLMETHOD_5(M_FUN,ARG1,ARG2,ARG3,ARG4,ARG5) \
 \
 cb_ ## M_FUN(this,ARG1,ARG2,ARG3,ARG4,ARG5)

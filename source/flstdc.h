@@ -9,7 +9,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 /*! \file flstdc.h
-    \brief Definitions to unite MaxMSP and PD notions
+	\brief Definitions to unite MaxMSP and PD notions
     
 	This file contains a few definitions to unite a few of the notions that 
 	once drifted apart in Max and PD. It is not elegant but helps.

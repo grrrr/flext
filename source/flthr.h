@@ -10,6 +10,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 /*! \file flthr.h
     \brief Definitions for multithreading
+	\internal
 */
 
 #ifndef __FLEXT_THR_H

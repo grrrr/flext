@@ -11,22 +11,19 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 /*! \file fldsp.h
     \brief Declares the flext dsp class
     
-    !Lacking Details.!
 */
 
 #ifndef __FLDSP_H
 #define __FLDSP_H
 
-//! include the header file declaring the base classes
+// include the header file declaring the base classes
 #include "flext.h"
 
 
 // === flext_dsp ==================================================
 
-/*! \class flext_dsp
-	\brief dsp enabled base object
+/*! \brief Flext dsp enabled base object
 */
-
 class flext_dsp:
 	public flext_base
 {
@@ -34,48 +31,81 @@ class flext_dsp:
 	
 public:
 
+/*!	\defgroup FLEXT_C_DSP Flext basic dsp functionality
+
+	@{ 
+*/
+
 	//! returns current sample rate
 	float Samplerate() const { return srate; }
 	
-	//! returns current block size
+	//! returns current block (aka vector) size
 	int Blocksize() const { return blksz; }
 	
-	//! returns number of audio system input channels
+	/*! \brief returns number of audio system input channels
+		\bug Doesn't work in Max/MSP - is always 0
+	*/
 	int ChannelsIn() const { return chnsin; }
-	//! returns number of audio system output channels
+
+	/*! \brief returns number of audio system output channels
+		\bug Doesn't work in Max/MSP - is always 0
+	*/
 	int ChannelsOut() const { return chnsout; }
 	
+//!	@} 
+
 
 // --- inheritable virtual methods --------------------------------
 
+/*!	\defgroup FLEXT_C_VIRTUAL_DSP Flext virtual dsp functions
+
+	@{ 
+*/
 	/*! \brief Called on every dsp init.
-		\remark Don't expect any valid data in the signal vectors!
-		@param n: frames (aka samples) in one signal vector
-		@param insigs: array of input vectors  (get number with function CntInSig())
-		@param outsigs: array of output vectors  (get number with function CntOutSig())
+		\note Don't expect any valid data in the signal vectors!
+
+		\param n: frames (aka samples) in one signal vector
+		\param insigs: array of input vectors  (get number with function CntInSig())
+		\param outsigs: array of output vectors  (get number with function CntOutSig())
 	*/
 	virtual void m_dsp(int n,t_sample *const *insigs,t_sample *const *outsigs);
 
-	/*! \brief Called with every signal vector.
-		Here you do the dsp calculation
-		@param n: frames (aka samples) in one signal vector
-		@param insigs: array of input vectors  (get number with function CntInSig())
-		@param outsigs: array of output vectors  (get number with function CntOutSig())
+	/*! \brief Called with every signal vector - here you do the dsp calculation
+
+		\param n: frames (aka samples) in one signal vector
+		\param insigs: array of input vectors  (get number with function CntInSig())
+		\param outsigs: array of output vectors  (get number with function CntOutSig())
 	*/
 	virtual void m_signal(int n,t_sample *const *insigs,t_sample *const *outsigs) = 0;
 
 #ifndef MAXMSP
-	//! called with "enable" message: pauses/resumes dsp - implicitely defined in MaxMSP
+	/*! \brief called with "enable" message: pauses/resumes dsp
+		\note PD only - implicitely defined in MaxMSP
+	*/
 	virtual void m_enable(bool on);
 #endif
 
+//!	@} 
+
+
+/*!	\defgroup FLEXT_C_INOUT_DSP Flext dsp in-/outlet functions
+	\note These must be called in the class' constructor
+
+	@{ 
+*/
 // --- inlet/outlet stuff -----------------------------------------	
 
-	//! add signal inlet
+	/*! \brief Add signal inlet(s)
+		\param m Number of inlets to add
+	*/
 	void AddInSignal(int m = 1) { AddInlet(xlet::tp_sig,m); }
 
-	//! add signal outlet
+	/*! \brief Add signal outlet(s)
+		\param m Number of inlets to add
+	*/
 	void AddOutSignal(int m = 1) { AddOutlet(xlet::tp_sig,m); }
+
+//!	@} 
 
 
 protected:

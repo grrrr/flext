@@ -8,12 +8,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-// This is all derived from GEM by Mark Danks
-
 /*! \file flbase.h
-    \brief Declares the internal flext base classes
+	\brief Internal flext base classes
     
-    !Lacking Details.!
+	\remark This is all derived from GEM by Mark Danks
 */
 
 #ifndef __FLEXT_BASE_H
@@ -30,10 +28,11 @@ class flext_obj;
 // ----------------------------------------------------------------------------
 /*! \struct flext_hdr
 	\brief The obligatory PD or Max/MSP object header
+	\internal
 
     This is in a separate struct to assure that obj is the very first thing.  
     If it were the first thing in flext_obj, then there could be problems with
-    the vtable.
+    the virtual table of the C++ class.
 */
 // ----------------------------------------------------------------------------
 
@@ -64,6 +63,7 @@ struct FLEXT_EXT flext_hdr
 // ----------------------------------------------------------------------------
 /*! \class flext_obj
 	\brief The mother of base classes for all flext externs
+	\internal
 
     Each extern which is written in C++ needs to use the #defines at the
     end of this header file.  
@@ -143,19 +143,22 @@ class FLEXT_EXT flext_obj
     	//! Creation callback
     	static void callb_setup(t_class *) {}	
 
-    	// --------------------
-        // This is a temporary holder - don't touch it
+		/*! \brief This is a temporary holder
+			\warning don't touch it!
+		*/
         static flext_hdr     *m_holder;
-        static const char *m_holdname;  // hold object's name during construction
+		//! Hold object's name during construction
+        static const char *m_holdname;  
 
         //! The object's name in the patcher
 		const char *m_name;
 
-		// !check whether construction was successful
+		//! Check whether construction was successful
 		bool InitOk() const { return init_ok; }
 
 #ifdef MAXMSP
-		/*! definitions for MaxMSP external libraries */
+		//@{
+		//! Definitions for MaxMSP external libraries 
 
 		union lib_arg {
 			int i;
@@ -167,18 +170,22 @@ class FLEXT_EXT flext_obj
 		static void libfun_add(const char *name,t_method newfun,void (*freefun)(flext_hdr *),int argtp1,...);
 		static flext_hdr *libfun_new(t_symbol *s,int argc,t_atom *argv);
 		static void libfun_free(flext_hdr *o);
+		//@}
 #endif
 };
 
-//! This has a dummy arg so that NT won't complain
+//! \remark This has a dummy arg so that NT won't complain
 inline void *operator new(size_t, void *location, void *) { return location; }
 
+//@{
+//! Some utility functions for class setup 
 const char *fl_extract(const char *name,int ix = 0);
 const char *fl_strdup(const char *name);
 bool fl_chktilde(const char *name);
+//@}
 
 // ----------------------------------------
-// This should be used in the header
+// These should be used in the header
 // ----------------------------------------
 
 

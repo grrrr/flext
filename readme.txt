@@ -80,6 +80,8 @@ Version history:
 
 0.3.2:
 - doxygen generated inline documentation / functional reference
+- added FLEXT_ADDMETHOD_V (for var arg lists) and FLEXT_ADDMETHOD_A (anythings)... just for clarity
+- added some more functionality to the AtomAnything class
 
 0.3.1:
 - added some more functionality to the AtomList class

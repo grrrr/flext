@@ -46,7 +46,9 @@ bool flext_base::StartThread(void *(*meth)(thr_params *p),thr_params *p,char *me
 	pthread_t thrid; 
 	int ret = pthread_create (&thrid,&attr,(void *(*)(void *))meth,p);
 	if(ret) { 
+#ifdef _DEBUG	
 		error((char *)(ret == EAGAIN?"%s - Unsufficient resources to launch thread!":"%s - Could not launch method!"),methname); 
+#endif		
 		delete p; 
 		return false;
 	}
@@ -117,19 +119,26 @@ void flext_base::YTick(flext_base *th) {
 #endif
 
 
-void flext_base::ChangePriority(int dp,pthread_t id)
+bool flext_base::ChangePriority(int dp,pthread_t id)
 {
 	sched_param parm;
 	int policy;
 	if(pthread_getschedparam(id,&policy,&parm)) {
+#ifdef _DEBUG
 		post("flext - failed to get parms");
+#endif
+		return false;
 	}
 	else {
 		parm.sched_priority += dp;
 		if(pthread_setschedparam(id,policy,&parm)) {
+#ifdef _DEBUG		
 			post("flext - failed to change priority");
+#endif
+			return false;
 		}
 	}
+	return true;
 }
 
 

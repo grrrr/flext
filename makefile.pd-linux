@@ -42,7 +42,7 @@ all: $(TARGDIR) $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)
 $(TARGDIR):
 	mkdir $(TARGDIR)
 
-$(SRCS): $(HDRS) $(IHDRS) $(MAKEFILE)
+$(patsubst %,source/%,$(SRCS)): $(patsubst %,source/%,$(HDRS)) $(patsubst %,source/%,$(IHDRS)) $(MAKEFILE)
 	touch $@
 
 $(TARGDIR)/%.o : source/%.cpp

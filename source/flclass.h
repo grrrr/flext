@@ -297,7 +297,7 @@ public:
 		a_gimme,a_xgimme
 	};
 
-	typedef void (*methfun)(t_class *c);
+	typedef bool (*methfun)(t_class *c);
 
 	/*!	\defgroup FLEXT_C_ADDMETHOD Flext method handling
 		\internal
@@ -309,25 +309,25 @@ public:
 	void AddMethodDef(int inlet,const char *tag); // call virtual function for tag && inlet
 	void AddMethod(int inlet,const char *tag,methfun fun,metharg tp,...); 
 
-	void AddMethod(int inlet,void (*m)(flext_base *,int,t_atom *)) { AddMethod(inlet,"list",(methfun)m,a_gimme,a_null); }
-	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *)) { AddMethod(inlet,tag,(methfun)m,a_null); }  // pure method
-	void AddMethod(int inlet,void (*m)(flext_base *,const t_symbol *,int,t_atom *)) { AddMethod(inlet,"anything",(methfun)m,a_xgimme,a_null); } // anything
-	void AddMethod(int inlet,void (*m)(flext_base *,t_symbol *&)) { AddMethod(inlet,"symbol",(methfun)m,a_symbol,a_null); } // single symbol
-	void AddMethod(int inlet,void (*m)(flext_base *,float &)) { AddMethod(inlet,"float",(methfun)m,a_float,a_null); }  // single float
-	void AddMethod(int inlet,void (*m)(flext_base *,float &,float &)) { AddMethod(inlet,"list",(methfun)m,a_float,a_float,a_null); } // list of 2 floats
-	void AddMethod(int inlet,void (*m)(flext_base *,float &,float &,float &)) { AddMethod(inlet,"list",(methfun)m,a_float,a_float,a_float,a_null); } // list of 3 floats
+	void AddMethod(int inlet,bool (*m)(flext_base *,int,t_atom *)) { AddMethod(inlet,"list",(methfun)m,a_gimme,a_null); }
+	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *)) { AddMethod(inlet,tag,(methfun)m,a_null); }  // pure method
+	void AddMethod(int inlet,bool (*m)(flext_base *,const t_symbol *,int,t_atom *)) { AddMethod(inlet,"anything",(methfun)m,a_xgimme,a_null); } // anything
+	void AddMethod(int inlet,bool (*m)(flext_base *,t_symbol *&)) { AddMethod(inlet,"symbol",(methfun)m,a_symbol,a_null); } // single symbol
+	void AddMethod(int inlet,bool (*m)(flext_base *,float &)) { AddMethod(inlet,"float",(methfun)m,a_float,a_null); }  // single float
+	void AddMethod(int inlet,bool (*m)(flext_base *,float &,float &)) { AddMethod(inlet,"list",(methfun)m,a_float,a_float,a_null); } // list of 2 floats
+	void AddMethod(int inlet,bool (*m)(flext_base *,float &,float &,float &)) { AddMethod(inlet,"list",(methfun)m,a_float,a_float,a_float,a_null); } // list of 3 floats
 #ifdef PD
-	void AddMethod(int inlet,void (*m)(flext_base *,int &)) { AddMethod(inlet,"float",(methfun)m,a_int,a_null); }  // single float
+	void AddMethod(int inlet,bool (*m)(flext_base *,int &)) { AddMethod(inlet,"float",(methfun)m,a_int,a_null); }  // single float
 #else
-	void AddMethod(int inlet,void (*m)(flext_base *,int &)) { AddMethod(inlet,"int",(methfun)m,a_int,a_null); }  // single float
+	void AddMethod(int inlet,bool (*m)(flext_base *,int &)) { AddMethod(inlet,"int",(methfun)m,a_int,a_null); }  // single float
 #endif
-	void AddMethod(int inlet,void (*m)(flext_base *,int &,int &)) { AddMethod(inlet,"list",(methfun)m,a_int,a_int,a_null); } // list of 2 floats
-	void AddMethod(int inlet,void (*m)(flext_base *,int &,int &,int &)) { AddMethod(inlet,"list",(methfun)m,a_int,a_int,a_int,a_null); } // list of 3 floats
-	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,int,t_atom *)) { AddMethod(inlet,tag,(methfun)m,a_gimme,a_null); } // method+gimme
-	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,const t_symbol *,int,t_atom *)) { AddMethod(inlet,tag,(methfun)m,a_xgimme,a_null); } // method+gimme 
-	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,t_symbol *&)) { AddMethod(inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
-	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,float &)) { AddMethod(inlet,tag,(methfun)m,a_float,a_null); }  // method+float
-	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,int &)) { AddMethod(inlet,tag,(methfun)m,a_int,a_null); } // method+int
+	void AddMethod(int inlet,bool (*m)(flext_base *,int &,int &)) { AddMethod(inlet,"list",(methfun)m,a_int,a_int,a_null); } // list of 2 floats
+	void AddMethod(int inlet,bool (*m)(flext_base *,int &,int &,int &)) { AddMethod(inlet,"list",(methfun)m,a_int,a_int,a_int,a_null); } // list of 3 floats
+	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,int,t_atom *)) { AddMethod(inlet,tag,(methfun)m,a_gimme,a_null); } // method+gimme
+	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,const t_symbol *,int,t_atom *)) { AddMethod(inlet,tag,(methfun)m,a_xgimme,a_null); } // method+gimme 
+	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,t_symbol *&)) { AddMethod(inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
+	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,float &)) { AddMethod(inlet,tag,(methfun)m,a_float,a_null); }  // method+float
+	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,int &)) { AddMethod(inlet,tag,(methfun)m,a_int,a_null); } // method+int
 
 	//! Set MaxMSP style of distributing list elements over (message) inlets
 	void SetDist(bool d = true) { distmsgs = d; }
@@ -493,7 +493,7 @@ public:
 
 	/*! \brief Increase/Decrease priority of the current thread
 	*/
-	static void ChangePriority(int dp,pthread_t thr = pthread_self());
+	static bool ChangePriority(int dp,pthread_t thr = pthread_self());
 
 	/*! \brief Get current thread id
 	*/

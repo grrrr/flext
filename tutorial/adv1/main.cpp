@@ -27,7 +27,7 @@ public:
 	adv1(int argc,t_atom *argv);
 
 protected:
-	void m_any(t_symbol *s,int argc,t_atom *argv);  // method which digests anything
+	void m_any(const t_symbol *s,int argc,t_atom *argv);  // method which digests anything
 
 	AtomList lst;
 private:
@@ -70,7 +70,7 @@ adv1::adv1(int argc,t_atom *argv)
 
 // method
 
-void adv1::m_any(t_symbol *s,int argc,t_atom *argv)
+void adv1::m_any(const t_symbol *s,int argc,t_atom *argv)
 {
 	// reserve space for as many atoms as possibly necessary
 	AtomList result(lst.Count()+argc+2);

@@ -3,10 +3,106 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
+Project: "flext"=..\flext.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    max/flext
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "pd"=..\..\pd\pd.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "simple1"=.\simple1\simple1.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    simple1
+    .\simple1
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "simple2"=.\simple2\simple2.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    simple2
+    .\simple2
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "simple3"=.\simple3\simple3.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    simple3
+    .\simple3
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "thread1"=.\thread1\thread1.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    thread1
+    .\thread1
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "thread2"=.\thread2\thread2.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
+    begin source code control
+    max/flext/tutorial/thread2
+    .\thread2
+    end source code control
 }}}
 
 Package=<4>

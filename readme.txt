@@ -202,7 +202,7 @@ features:
 - abstraction for parsing argument lists
 - abstraction for clock functions
 - sending messages to own inlet (passing computation to other patch objects - message queue?)
-- manage running threads individually (stop, isrunning? etc.)
+- manage running threads individually (stop, isrunning?, priority etc.)
 
 premature thoughts:
 - explore jMax interface style

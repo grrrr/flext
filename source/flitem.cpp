@@ -15,27 +15,75 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flext.h"
 #include <string.h>
 
+
+flext_base::Item::~Item()
+{
+	if(nxt) delete nxt;
+}
+
+flext_base::ItemSet::ItemSet() {}
+
+flext_base::ItemSet::~ItemSet()
+{
+	for(iterator it = begin(); it != end(); ++it)
+		if(it.data()) delete it.data();
+}
+
+flext_base::ItemCont::ItemCont(): 
+	memsize(0),size(0),members(0),cont(NULL)
+{}
+
+flext_base::ItemCont::~ItemCont()
+{
+	if(cont) {
+		for(int i = 0; i < size; ++i) delete cont[i];
+		delete[] cont;
+	}
+}
+
+void flext_base::ItemCont::Resize(int nsz)
+{
+	if(nsz > memsize) {
+		int nmemsz = nsz+10;  // increment maximum allocation size
+		ItemSet **ncont = new ItemSet *[nmemsz]; // make new array
+		if(cont) {
+			memcpy(ncont,cont,size*sizeof(*cont)); // copy existing entries
+			delete[] cont; 
+		}
+		cont = ncont;  // set current array
+		memsize = nmemsz;  // set new allocation size
+	}
+
+	// make new items
+	while(size < nsz) cont[size++] = new ItemSet;
+}
+
 void flext_base::ItemCont::Add(Item *item,const t_symbol *tag,int inlet)
 {
-    FLEXT_ASSERT(inlet >= -1);
-    if(!Contained(inlet)) resize(inlet+2);
+    if(!Contained(inlet)) Resize(inlet+2);
     ItemSet &set = GetInlet(inlet);
-    set[tag].push_back(item);
+	Item *&lst = set[tag];
+	if(!lst) 
+		lst = item;
+	else
+		for(;;)
+			if(!lst->nxt) {	lst->nxt = item; break;	}
+			else lst = lst->nxt;
     members++;
 }
 
 bool flext_base::ItemCont::Remove(Item *item,const t_symbol *tag,int inlet)
 {
-    FLEXT_ASSERT(inlet >= -1);
     if(Contained(inlet)) {
         ItemSet &set = GetInlet(inlet);
         ItemSet::iterator it = set.find(tag);
         if(it != set.end()) {
-            ItemList &lst = it->second;
-            for(ItemList::iterator lit = lst.begin(); lit != lst.end(); ++lit) {
-                if(*lit == item) {
-                    delete *lit;
-                    lst.erase(lit);
+            for(Item *lit = it.data(),*prv = NULL; lit; prv = lit,lit = lit->nxt) {
+                if(lit == item) {
+					if(prv) prv->nxt = lit->nxt;
+					else it.data() = lit->nxt;
+				
+                    lit->nxt = NULL; delete lit;
                     return true;
                 }
             }
@@ -44,27 +92,24 @@ bool flext_base::ItemCont::Remove(Item *item,const t_symbol *tag,int inlet)
     return false;
 }
 
-flext_base::ItemList *flext_base::ItemCont::FindList(const t_symbol *tag,int inlet)
+flext_base::Item *flext_base::ItemCont::FindList(const t_symbol *tag,int inlet)
 {
-    FLEXT_ASSERT(inlet >= -1);
     if(Contained(inlet)) {
         ItemSet &ai = GetInlet(inlet);
         ItemSet::iterator as = ai.find(tag); 
-        if(as != ai.end()) return &as->second;
+        if(as != ai.end()) return as.data();
     }
     return NULL;
 }
 
 // --- class item lists (methods and attributes) ----------------
 
-typedef std::map<flext_base::t_classid,flext_base::ItemCont *> ClassMap;
-typedef std::vector<ClassMap> ClassArr;
+typedef DataMap<flext_base::t_classid,flext_base::ItemCont *> ClassMap;
 
-static ClassArr classarr;
+static ClassMap classarr[2];
 
 flext_base::ItemCont *flext_base::GetClassArr(t_classid c,int ix) 
 {
-    if(ix >= (int)classarr.size()) classarr.resize(ix+1);
     ClassMap &map = classarr[ix];
     ClassMap::iterator it = map.find(c);
     if(it == map.end()) {
@@ -73,5 +118,5 @@ flext_base::ItemCont *flext_base::GetClassArr(t_classid c,int ix)
         return cont;
     }
     else
-        return it->second;
+        return it.data();
 }

@@ -15,11 +15,11 @@ Version history:
 
 0.4.6:
 - added a text edit window for list attributes
-- finally use global allocator operators (MFC doesn't like but who cares)
+- finally use global allocator operators (MFC doesn't like it but who cares)
 - fixed entry of local variables with attribute editor
 - help window for attribute editor
 - appended lacking ~ for tilde object help patches
-- STL containers for all kinds of attribute, method, class handling
+- uniform STL container for all kinds of attribute, method, class handling
 - support for MinGW
 
 0.4.5:

@@ -436,7 +436,7 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
 		if(it == th->attrdata->end())
 			sv = 0,initdata = NULL;
 		else {
-			const AttrData &a = it->second;
+			const AttrData &a = *it.data();
 			if(a.IsSaved())
 				sv = 2;
 			else if(a.IsInit())
@@ -573,7 +573,7 @@ void flext_base::cb_GfxSave(t_gobj *c, t_binbuf *b)
 		AttrDataCont::iterator it = th->attrdata->find(sym);
 
 		if(it != th->attrdata->end()) {
-			const AttrData &a = it->second;
+			const AttrData &a = *it.data();
 			if(a.IsInit() && a.IsInitValue()) {
 				lref = &a.GetInitValue();
 /*
@@ -670,18 +670,20 @@ bool flext_base::cb_AttrDialog(flext_base *th,int argc,const t_atom *argv)
 			if(sv >= 1) {
 				// if data not present create it
 				if(it == th->attrdata->end()) {
-					AttrDataPair pair; pair.first = aname;
+					AttrDataCont::pair pair; 
+					pair.key() = aname;
+					pair.data() = new AttrData;
 					it = th->attrdata->insert(th->attrdata->begin(),pair);
 				}
 
-				AttrData &a = it->second;
+				AttrData &a = *it.data();
 				a.SetSave(sv == 2);
 				a.SetInit(true);
 				a.SetInitValue(icnt,argv+ioffs);
 			}
 			else {
 				if(it != th->attrdata->end()) {
-					AttrData &a = it->second;
+					AttrData &a = *it.data();
 					// if data is present reset flags
 					a.SetSave(false);
 					a.SetInit(false);

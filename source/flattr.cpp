@@ -32,9 +32,13 @@ flext_base::AttrItem::AttrItem(metharg tp,methfun f,int fl):
 	counter(NULL)
 {}
 
-flext_base::AttrItem::~AttrItem()
+
+flext_base::AttrDataCont::AttrDataCont() {}
+
+flext_base::AttrDataCont::~AttrDataCont()
 {
-//	if(nxt) delete nxt;
+	for(iterator it = begin(); it != end(); ++it)
+		if(it.data()) delete it.data();
 }
 
 
@@ -96,7 +100,7 @@ void flext_base::AddAttrib(t_classid c,const char *attr,metharg tp,methfun gfun,
 
 void flext_base::ListAttrib(AtomList &la) const
 {
-	typedef std::map<int,const t_symbol *> AttrList;
+	typedef DataMap<int,const t_symbol *> AttrList;
 	AttrList list[2];
 
 	int i;
@@ -105,9 +109,9 @@ void flext_base::ListAttrib(AtomList &la) const
 		if(a && a->Contained(0)) {
             ItemSet &ai = a->GetInlet();
             for(ItemSet::iterator as = ai.begin(); as != ai.end(); ++as) {
-                for(ItemList::iterator al = as->second.begin(); al != as->second.end(); ++al) {
-					AttrItem *aa = (AttrItem *)*al;
-					list[i][aa->index] = as->first;
+                for(Item *al = as.data(); al; al = al->nxt) {
+					AttrItem *aa = (AttrItem *)al;
+					list[i][aa->index] = as.key();
                     break;
                 }
 			}
@@ -119,7 +123,7 @@ void flext_base::ListAttrib(AtomList &la) const
 	AttrList::iterator it;
 	for(i = 0; i <= 1; ++i)
 		for(it = list[i].begin(); it != list[i].end(); ++it) 
-			SetSymbol(la[ix++],it->second);
+			SetSymbol(la[ix++],it.data());
 }
 
 int flext_base::CheckAttrib(int argc,const t_atom *argv)
@@ -144,7 +148,15 @@ bool flext_base::InitAttrib(int argc,const t_atom *argv)
 		AttrItem *attr = FindAttrib(tag,false,true);
 		if(attr) {
 			// make an entry (there are none beforehand...)
-			AttrData &a = (*attrdata)[tag];
+			AttrDataCont::iterator it = attrdata->find(tag);
+			if(it == attrdata->end()) {
+				AttrDataCont::pair pair; 
+				pair.key() = tag;
+				pair.data() = new AttrData;
+				it = attrdata->insert(attrdata->begin(),pair);
+			}
+
+			AttrData &a = *it.data();
 			a.SetInit(true);
 			a.SetInitValue(nxt-cur-1,argv+cur+1);
 
@@ -172,23 +184,17 @@ flext_base::AttrItem *flext_base::FindAttrib(const t_symbol *tag,bool get,bool m
     // first search within object scope
 	AttrItem *a = NULL;
     {
-        ItemList *lst = attrhead->FindList(tag);
-        if(lst) {
-            for(ItemList::iterator it = lst->begin(); it != lst->end(); ++it) {
-                AttrItem *b = (AttrItem *)*it;
-                if(get?b->IsGet():b->IsSet()) { a = b; break; }
-            }
+        for(Item *lst = attrhead->FindList(tag); lst; lst = lst->nxt) {
+            AttrItem *b = (AttrItem *)lst;
+            if(get?b->IsGet():b->IsSet()) { a = b; break; }
         }
     }
 
     // then (if nothing found) search within class scope
 	if(!a) {
-        ItemList *lst = clattrhead->FindList(tag);
-        if(lst) {
-            for(ItemList::iterator it = lst->begin(); it != lst->end(); ++it) {
-                AttrItem *b = (AttrItem *)*it;
-                if(get?b->IsGet():b->IsSet()) { a = b; break; }
-            }
+        for(Item *lst = clattrhead->FindList(tag); lst; lst = lst->nxt) {
+            AttrItem *b = (AttrItem *)lst;
+            if(get?b->IsGet():b->IsSet()) { a = b; break; }
         }
 	}
 
@@ -370,9 +376,9 @@ bool flext_base::BangAttribAll()
 		if(a) {
             ItemSet &ai = a->GetInlet(); // \todo need to check for presence of inlet 0?
             for(ItemSet::iterator as = ai.begin(); as != ai.end(); ++as) {
-                for(ItemList::iterator al = as->second.begin(); al != as->second.end(); ++al) {
-					AttrItem *a = (AttrItem *)*al;
-	        		if(a->IsGet() && a->BothExist()) BangAttrib(as->first,a);
+                for(Item *al = as.data(); al; al = al->nxt) {
+					AttrItem *a = (AttrItem *)al;
+	        		if(a->IsGet() && a->BothExist()) BangAttrib(as.key(),a);
                 }
 			}
 		}

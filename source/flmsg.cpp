@@ -72,10 +72,10 @@ bool flext_base::CallMeth(const MethItem &m,int argc,const t_atom *argv)
 	return ret;
 }
 
-bool flext_base::TryMethTag(ItemList &lst,const t_symbol *tag,int argc,const t_atom *argv)
+bool flext_base::TryMethTag(Item *lst,const t_symbol *tag,int argc,const t_atom *argv)
 {
-    for(ItemList::iterator it = lst.begin(); it != lst.end(); ++it) {
-        MethItem *m = (MethItem *)*it;
+    for(; lst; lst = lst->nxt) {
+        MethItem *m = (MethItem *)lst;
 
 //        FLEXT_LOG3("found method tag %s: inlet=%i, argc=%i",GetString(tag),m->inlet,argc);
 	
@@ -103,10 +103,10 @@ bool flext_base::TryMethTag(ItemList &lst,const t_symbol *tag,int argc,const t_a
 	return false;
 }
 
-bool flext_base::TryMethSym(ItemList &lst,const t_symbol *s)
+bool flext_base::TryMethSym(Item *lst,const t_symbol *s)
 {
-    for(ItemList::iterator it = lst.begin(); it != lst.end(); ++it) {
-        MethItem *m = (MethItem *)*it;
+    for(; lst; lst = lst->nxt) {
+        MethItem *m = (MethItem *)lst;
 
 		if(!m->IsAttr()) {
 //			FLEXT_LOG3("found symbol method for %s: inlet=%i, symbol=%s",GetString(m->tag),m->inlet,GetString(s));
@@ -118,10 +118,10 @@ bool flext_base::TryMethSym(ItemList &lst,const t_symbol *s)
 	return false;
 }
 
-bool flext_base::TryMethAny(ItemList &lst,const t_symbol *s,int argc,const t_atom *argv)
+bool flext_base::TryMethAny(Item *lst,const t_symbol *s,int argc,const t_atom *argv)
 {
-    for(ItemList::iterator it = lst.begin(); it != lst.end(); ++it) {
-        MethItem *m = (MethItem *)*it;
+    for(; lst; lst = lst->nxt) {
+        MethItem *m = (MethItem *)lst;
 
 		if(!m->IsAttr() && m->argc == 1 && m->args[0] == a_any) {
 //			FLEXT_LOG4("found any method for %s: inlet=%i, symbol=%s, argc=%i",GetString(m->tag),m->inlet,GetString(s),argc);
@@ -137,21 +137,21 @@ bool flext_base::TryMethAny(ItemList &lst,const t_symbol *s,int argc,const t_ato
 */
 bool flext_base::FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *argv)
 {
-    ItemList *lst;
+    Item *lst;
 
 	// search for exactly matching tag
-	if((lst = methhead->FindList(s,inlet)) != NULL && TryMethTag(*lst,s,argc,argv)) return true;
-	if((lst = clmethhead->FindList(s,inlet)) != NULL && TryMethTag(*lst,s,argc,argv)) return true;
+	if((lst = methhead->FindList(s,inlet)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
+	if((lst = clmethhead->FindList(s,inlet)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
 	
 	// if no list args, then search for pure symbol 
 	if(!argc) {
-		if((lst = methhead->FindList(sym_symbol,inlet)) != NULL && TryMethSym(*lst,s)) return true;
-		if((lst = clmethhead->FindList(sym_symbol,inlet)) != NULL && TryMethSym(*lst,s)) return true;
+		if((lst = methhead->FindList(sym_symbol,inlet)) != NULL && TryMethSym(lst,s)) return true;
+		if((lst = clmethhead->FindList(sym_symbol,inlet)) != NULL && TryMethSym(lst,s)) return true;
 	}
 	
 	// otherwise search for anything
-	if((lst = methhead->FindList(sym_anything,inlet)) != NULL && TryMethAny(*lst,s,argc,argv)) return true;
-	if((lst = clmethhead->FindList(sym_anything,inlet)) != NULL && TryMethAny(*lst,s,argc,argv)) return true;
+	if((lst = methhead->FindList(sym_anything,inlet)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
+	if((lst = clmethhead->FindList(sym_anything,inlet)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
 
 	// if nothing found try any inlet
 	return inlet >= 0 && FindMeth(-1,s,argc,argv);

@@ -20,11 +20,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flbase.h"
 #include "flsupport.h"
 
-#include <map>
-#include <set>
-#include <list>
-#include <vector>
-
 #ifdef _MSC_VER
 #pragma warning(disable: 4786)
 #endif
@@ -604,45 +599,61 @@ protected:
     class Item
     {
 	public:
-        Item(AttrItem *a): attr(a) {}
-        virtual ~Item() {}
+        Item(AttrItem *a): attr(a),nxt(NULL) {}
+        virtual ~Item();
 		
 		bool IsAttr() const { return attr != NULL; }
 
 		AttrItem *attr;
+		Item *nxt;
 	};
 
-    typedef std::list<Item *> ItemList;
+	class ItemSet:
+		public DataMap<const t_symbol *,Item *>
+	{
+	public:
+		ItemSet();
+		~ItemSet();
+	};
 
-    typedef std::map<const t_symbol *,ItemList> ItemSet;
-    typedef std::vector<ItemSet> ItemVec;
-
-    //! This class holds hashed item entries
-    class ItemCont:
-        private ItemVec
+    /*! This class holds hashed item entries
+		\note not thread-safe!
+	*/
+    class ItemCont
     {
 	public:
-        typedef ItemVec::iterator iterator;
-        typedef ItemVec::const_iterator const_iterator;
+        ItemCont();
+		~ItemCont();
 
-        ItemCont(): members(0) {}
+		int Min() const { return -1; }
+		int Max() const { return size-2; }
 
-        bool Contained(int i) const { return i+1 < (int)size(); }
+        bool Contained(int i) const { return i+1 < size; }
 
         //! Add an entry
 		void Add(Item *it,const t_symbol *tag,int inlet = 0);
         //! Remove an entry
 		bool Remove(Item *it,const t_symbol *tag,int inlet = 0);
         //! Find an entry list in the Item array
-		ItemList *FindList(const t_symbol *tag,int inlet = 0);
+		Item *FindList(const t_symbol *tag,int inlet = 0);
+		
         //! Get list for an inlet
-        ItemSet &GetInlet(int inlet = 0) { return (*this)[inlet+1]; }
+        ItemSet &GetInlet(int inlet = 0)
+		{ 
+			FLEXT_ASSERT(inlet >= Min() && inlet <= Max()); 
+			return *cont[inlet+1]; 
+		}
 
         //! Get counter for total members (for index of new item)
         int Members() const { return members; }
 
     protected:
+
+		void Resize(int nsz);
+
         int members;
+		int memsize,size;
+		ItemSet **cont;
 	};
 
     //! \brief This represents an item of the method list
@@ -667,7 +678,6 @@ protected:
     { 
 	public:
 		AttrItem(metharg tp,methfun fun,int flags);
-		virtual ~AttrItem();
 
 		enum { 
 			afl_get = 0x01, afl_set = 0x02, 
@@ -710,9 +720,13 @@ protected:
 		int flags;
 	};
 
-	typedef std::map<const t_symbol *,AttrData> AttrDataCont;
-	typedef std::pair<const t_symbol *,AttrData> AttrDataPair;
-
+	class AttrDataCont:
+		public DataMap<const t_symbol *,AttrData *>
+	{
+	public:
+		AttrDataCont();
+		~AttrDataCont();
+	};
 
 	// these outlet functions don't check for thread but send directly to the real-time system
 	void ToSysBang(int n) const; 
@@ -734,6 +748,7 @@ public:
 	public:
 		BindItem(bool (*f)(flext_base *,t_symbol *s,int,t_atom *,void *),pxbnd_object *px);
 		virtual ~BindItem();
+
 		void Unbind(const t_symbol *s);
 
 		bool (*fun)(flext_base *,t_symbol *s,int,t_atom *,void *);
@@ -796,9 +811,9 @@ private:
 	
 	bool CallMeth(const MethItem &m,int argc,const t_atom *argv);
 	bool FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *argv);
-	bool TryMethTag(ItemList &lst,const t_symbol *tag,int argc,const t_atom *argv);
-	bool TryMethSym(ItemList &lst,const t_symbol *s);
-	bool TryMethAny(ItemList &lst,const t_symbol *s,int argc,const t_atom *argv);
+	bool TryMethTag(Item *lst,const t_symbol *tag,int argc,const t_atom *argv);
+	bool TryMethSym(Item *lst,const t_symbol *s);
+	bool TryMethAny(Item *lst,const t_symbol *s,int argc,const t_atom *argv);
 
 	mutable ItemCont *attrhead,*clattrhead;
 	mutable AttrDataCont *attrdata;

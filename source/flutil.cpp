@@ -15,15 +15,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flext.h"
 #include <string.h>
 
-#if FLEXT_OS == FLEXT_OS_WIN
-#include <windows.h>
-#elif FLEXT_OS == FLEXT_OS_LINUX || FLEXT_OS == FLEXT_OS_IRIX || FLEXT_OSAPI == FLEXT_OSAPI_MAC_OSX
-#include <unistd.h>
-#elif FLEXT_OS == FLEXT_OS_MAC
-#include <Timer.h>
-#include <Threads.h>
-#endif
-
 void flext::CopyMem(void *dst,const void *src,int bytes) 
 {
 	memcpy(dst,src,bytes);
@@ -62,23 +53,3 @@ void flext::SetSamples(t_sample *dst,int cnt,t_sample s)
 }
 
 
-void flext::Sleep(double s)
-{
-#if FLEXT_OS == FLEXT_OS_WIN
-	::Sleep((long)(s*1000.));
-#elif FLEXT_OS == FLEXT_OS_LINUX || FLEXT_OS == FLEXT_OS_IRIX || FLEXT_OSAPI == FLEXT_OSAPI_MAC_OSX
-	usleep((long)(s*1000000.));
-#elif FLEXT_OS == FLEXT_OS_MAC
-	// that's just for OS9!
-	UnsignedWide tick;
-	Microseconds(&tick);
-	double target = tick.hi*((double)(1L<<((sizeof tick.lo)*4))*(double)(1L<<((sizeof tick.lo)*4)))+tick.lo+s*1.e6; 
-	for(;;) {
-		Microseconds(&tick);
-		if(target <= tick.hi*((double)(1L<<((sizeof tick.lo)*4))*(double)(1L<<((sizeof tick.lo)*4)))+tick.lo) break;
-		YieldToAnyThread(); // should we really yield?
-	}
-#else
-#error
-#endif
-}

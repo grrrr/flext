@@ -268,7 +268,7 @@ public:
 	//! Output string aka symbol (to appointed outlet)
 //	void ToQueueString(outlet *o,const char *s) const { ToQueueSymbol(o,MakeSymbol(s)); }
 	//! Output string aka symbol (to appointed outlet)
-	void ToQueueString(int n,const char *s) const; // { ToQueueSymbol(n,MakeSymbol(s)); }
+	void ToQueueString(int n,const char *s) const { ToQueueSymbol(n,MakeSymbol(s)); }
 
 	//! Output list (to appointed outlet)
 //	void ToQueueList(outlet *o,int argc,const t_atom *argv) const; 

@@ -171,10 +171,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	#endif
 	
 	#ifndef FLEXT_OSAPI
-		#if TARGET_API_MAC_CARBON
-			#define FLEXT_OSAPI FLEXT_OSAPI_MAC_CARBON
-		#elif TARGET_API_MAC_OSX
+		#if TARGET_API_MAC_OSX
+			// this has the precedence (OSX can also be Carbon, of course)
 			#define FLEXT_OSAPI FLEXT_OSAPI_MAC_OSX
+		#elif TARGET_API_MAC_CARBON
+			#define FLEXT_OSAPI FLEXT_OSAPI_MAC_CARBON
 		#else
 			#define FLEXT_OSAPI FLEXT_OSAPI_UNKNOWN
 		#endif

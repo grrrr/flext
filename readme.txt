@@ -114,6 +114,11 @@ see flext.h, fldefs.h and flclass.h for the documented base definitions and clas
 
 Version history:
 
+0.4.3:
+- added forgotten flext_base::ToQueueString method
+- added timer functions and flext::Timer class
+- added functions for SIMD support
+
 0.4.2:
 - started port for jMax
 - moved CLASS_MAINSIGNALIN to class scope (fixed "float method overwritten" warning)

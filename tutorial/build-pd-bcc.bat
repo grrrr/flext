@@ -36,6 +36,10 @@
 @make -f ..\makefile.pd-bcc NAME=attr3 SETUPFUNCTION=attr3_setup
 @cd ..
 
+@cd timer1
+@make -f ..\makefile.pd-bcc NAME=timer1 SETUPFUNCTION=timer1_setup
+@cd ..
+
 @cd signal1
 @make -f ..\makefile.pd-bcc NAME=signal1~ SETUPFUNCTION=signal1_tilde_setup
 @cd ..

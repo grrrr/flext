@@ -15,8 +15,8 @@ FLEXTLIB=$(FLEXTPATH)/flext_t.a  # take threaded library for all
 # compiler+linker stuff	### EDIT! ###
 INCLUDES=$(PDPATH)
 LIBPATH=
-FLAGS=-DFLEXT_SYS=2 -DFLEXT_THREADS -Wno-unused -Wno-parentheses -Wno-switch -Wstrict-prototypes # -maltivec
-CFLAGS=-O6 -fno-rtti
+FLAGS=-DFLEXT_SYS=2 -DFLEXT_THREADS -Wno-unused -Wno-parentheses -Wno-switch -Wstrict-prototypes -Wno-long-double
+CFLAGS=${UFLAGS} -O6 -fno-rtti
 LIBS=m
 LDFLAGS=-bundle -bundle_loader $(PD)
 
@@ -25,7 +25,7 @@ LDFLAGS=-bundle -bundle_loader $(PD)
 
 # all the source files from the package
 
-EXAMPLES=simple1 simple2 simple3 adv1 adv2 adv3 attr1 attr2 attr3 signal1~ signal2~ lib1 thread1 thread2 
+EXAMPLES=simple1 simple2 simple3 timer1 adv1 adv2 adv3 attr1 attr2 attr3 signal1~ signal2~ lib1 thread1 thread2 
 
 ifdef SNDOBJ
 INCLUDES+=$(SNDOBJ)

@@ -27,6 +27,7 @@ normal:
 	nmake /f make-sub.pd-msvc NAME=adv1 DIR=adv1
 	nmake /f make-sub.pd-msvc NAME=adv2 DIR=adv2
 	nmake /f make-sub.pd-msvc NAME=adv3 DIR=adv3
+	nmake /f make-sub.pd-msvc NAME=timer1 DIR=timer1
 	nmake /f make-sub.pd-msvc NAME=attr1 DIR=attr1
 	nmake /f make-sub.pd-msvc NAME=attr2 DIR=attr2
 	nmake /f make-sub.pd-msvc NAME=attr3 DIR=attr3

@@ -21,3 +21,8 @@ FLEXTPATH=${PDPATH}/flext
 
 # where should the examples be built?
 OUTPATH=./pd-cygwin
+
+# additional compiler flags
+# (check if they fit to your system!)
+UFLAGS=-mcpu=pentiumpro  # gcc 2.95
+#UFLAGS=-mcpu=pentium3 -msse  # gcc 3.2

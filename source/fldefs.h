@@ -332,6 +332,9 @@ static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,int argc,t_atom *argv) \
 static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,void *data) \
 { FLEXT_CAST<thisType *>(c)->M_FUN(data); return true; }
 
+//! Set up a timer callback
+#define FLEXT_CALLBACK_T(M_FUN) FLEXT_CALLBACK_X(M_FUN)
+
 //! Set up a method callback for a boolean argument
 #define FLEXT_CALLBACK_B(M_FUN) \
 static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,int &arg1) \
@@ -757,6 +760,11 @@ FLEXT_CADDMETHOD_3(CL,IX,M_TAG,M_FUN,int,int,int)
 	\note (in constructor or in Init() function before call to parent's Init())
 	@{ 
 */
+
+//! Set timer callback
+#define FLEXT_ADDTIMER(TMR,M_FUN) \
+\
+TMR.SetCallback(*this,FLEXT_CALL_PRE(M_FUN))
 
 //! Enable list element distribution over inlets (if no better handler found)
 #define FLEXT_ADDDIST() \

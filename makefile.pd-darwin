@@ -14,7 +14,8 @@ include ${CONFIG}
 
 # compiler+linker stuff 
 INCLUDES=${PDPATH}
-FLAGS=-DFLEXT_SYS=2 -Wno-unused -Wno-parentheses -Wshadow -Wno-switch -Wstrict-prototypes -fno-exceptions ${UFLAGS} 
+FLAGS=-DFLEXT_SYS=2 -Wno-unused -Wno-parentheses -Wno-switch -Wstrict-prototypes
+FLAGS+=${UFLAGS} -fno-exceptions
 CFLAGS=-O6 
 CFLAGS_D=-g
 CFLAGS_T=-DFLEXT_THREADS

@@ -16,13 +16,14 @@ Currently there exist two widely used modular systems for real-time audio that c
 extended by self-written objects (so called "externals"):<br>
 Max/MSP (http://www.cycling74.com) and Pure Data (http://www.pure-data.org).
 
-Both come with APIs that are not very different, but as well not quite the same.
+Both come with APIs that are not very different (as they share their origins), but as well not quite the same.
 Flext seeks to provide a unifying interface for the APIs of those real-time systems while also
 concentrating on making use of the advantages of the object orientation of the C++ language.
 
 Consequently, flext allows to write externals (or libraries of a number of these), that can
 be compiled for both systems (with various compilers on a few platforms) without changes to the
 source code.
+Flext also tries to overcome some limitations of the real-time systems and introduces new features.
 
 The advantages of flext are:
 <ul>
@@ -47,7 +48,7 @@ Currently, flext supports
 <li>PD on Windows with Microsoft Visual C++, Borland C++ and gcc(cygwin) compilers
 <li>PD on Linux with gcc
 <li>PD on Mac OSX with gcc (Project Builder to follow soon)
-<li>Max/MSP on Mac OS9 with Metrowerks CodeWarrior
+<li>Max/MSP on Mac OS9 and OSX with Metrowerks CodeWarrior
 </ul>
 
 \section LICENSE License
@@ -80,8 +81,12 @@ Alternatively, you can check out the cvs version from http://sourceforge.net/pro
 
 \section USAGE Usage
 
-As a developer, you should know the C++ language, how to use a makefile 
+As a developer, you should know the C++ language, how to use a makefile (especially necessary for linux)
 and how to steer your compiler.<br>
+Flext can be compiled as a static library which has then to be linked to the code of your external.
+For most applications you won't have to use any of the native PD or Max/MSP API functions as they are all
+encapsulated by flext.
+
 So let's come to the point... how does a typical flext object look like?
 
 This is the object "attr1", one of the flext tutorial examples:
@@ -151,7 +156,7 @@ convenient definition.
 FLEXT_NEW("attr1",attr1)
 \endverbatim
 
-With FLEXT_NEW the class is instantiated and registered for the real-time system.
+With FLEXT_NEW the class is registered for the real-time system.
 The number of creation arguments and their types must be taken into account here.
 There are several variants depending on whether a message oriented (see \ref FLEXT_D_NEW)
 or a DSP object (see \ref FLEXT_D_NEW_DSP) is created and whether it resides in a object library
@@ -181,6 +186,9 @@ This is done with the functions in \ref FLEXT_C_IO_ADD.
 
 Likewise, every method (called by a message) (see \ref FLEXT_D_ADDMETHOD) and every
 attribute (see \ref FLEXT_D_ADDATTR) exposed to the system has to be registered.
+Here the registration at instance creation is shown - there's another way by registering at
+class setup level, which is more efficient but can only be used if the methods or attributes
+used are known beforehand (see \ref FLEXT_D_CADDMETHOD and \ref FLEXT_D_CADDATTR).
 
 \verbatim
 void attr1::m_trigger(float f)

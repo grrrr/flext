@@ -17,12 +17,13 @@ The recommended order to go through the tutorial examples is the following:
 1) simple*
 2) adv*
 3) attr*
-4) signal*
-5) lib*
-6) thread*
+4) timer*
+5) signal*
+6) lib*
+7) thread*
 
 and, if needed
-7) sndobj* and/or stk*
+8) sndobj* and/or stk*
 
 if you choose to compile with SndObj support you will need the respective library
 download from: http://www.may.ie/academic/music/musictec/SndObj/main.html

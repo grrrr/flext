@@ -30,3 +30,8 @@ OUTPATH=./pd-darwin
 # where should the examples be installed?
 # (leave blank to omit installation)
 INSTPATH=${FLEXTPATH}/tutorial
+
+# additional compiler flags
+# (check if they fit to your system!)
+UFLAGS=-malign-power -maltivec
+

@@ -124,6 +124,7 @@
 				F504A67103CE39F501A80AC9,
 				F504A67203CE39F501A80AC9,
 				F504A67303CE39F501A80AC9,
+				F5B1FAC8041191190179CFEF,
 			);
 			isa = PBXGroup;
 			name = Source;
@@ -718,6 +719,7 @@
 				F504A67903CE3BE101A80AC9,
 				F504A67A03CE3BE201A80AC9,
 				F504A67B03CE3BE301A80AC9,
+				F5B1FACE0411935C0179CFEF,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -751,7 +753,7 @@
 				INSTALL_PATH = /usr/local/pd/flext;
 				LIBRARY_STYLE = STATIC;
 				OPTIMIZATION_CFLAGS = "-O3";
-				OTHER_CFLAGS = "-D FLEXT_SYS=2 -Wno-switch";
+				OTHER_CFLAGS = "-D FLEXT_SYS=2 -Wno-switch -Wno-long-double";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -928,7 +930,7 @@
 				INSTALL_PATH = /usr/local/pd/flext;
 				LIBRARY_STYLE = STATIC;
 				OPTIMIZATION_CFLAGS = "-O3";
-				OTHER_CFLAGS = "-D FLEXT_SYS_PD -D FLEXT_THREADS -Wno-switch";
+				OTHER_CFLAGS = "-D FLEXT_SYS_PD -D FLEXT_THREADS -Wno-switch  -Wno-long-double";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -1048,6 +1050,7 @@
 				F504A68003CE3BEA01A80AC9,
 				F504A68103CE3BEB01A80AC9,
 				F504A68203CE3BEB01A80AC9,
+				F5B1FACF041193680179CFEF,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1163,7 +1166,7 @@
 				INSTALL_PATH = /usr/local/pd/flext;
 				LIBRARY_STYLE = STATIC;
 				OPTIMIZATION_CFLAGS = "-O0";
-				OTHER_CFLAGS = "-D FLEXT_SYS=2 -D FLEXT_DEBUG -Wno-switch";
+				OTHER_CFLAGS = "-D FLEXT_SYS=2 -D FLEXT_DEBUG -Wno-switch  -Wno-long-double";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -1283,6 +1286,7 @@
 				F504A68703CE3BF201A80AC9,
 				F504A68803CE3BF201A80AC9,
 				F504A68903CE3BF301A80AC9,
+				F5B1FAD0041193740179CFEF,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1398,7 +1402,7 @@
 				INSTALL_PATH = /usr/local/pd/flext;
 				LIBRARY_STYLE = STATIC;
 				OPTIMIZATION_CFLAGS = "-O0";
-				OTHER_CFLAGS = "-D FLEXT_SYS=2 -D FLEXT_THREADS -D FLEXT_DEBUG  -Wno-switch";
+				OTHER_CFLAGS = "-D FLEXT_SYS=2 -D FLEXT_THREADS -D FLEXT_DEBUG  -Wno-switch  -Wno-long-double";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOL_FLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -1518,6 +1522,7 @@
 				F504A69203CE3C1501A80AC9,
 				F504A69303CE3C1601A80AC9,
 				F504A69403CE3C1701A80AC9,
+				F5B1FACD0411918B0179CFEF,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2124,6 +2129,36 @@
 			isa = PBXLibraryReference;
 			path = flext.max.a;
 			refType = 3;
+		};
+		F5B1FAC8041191190179CFEF = {
+			isa = PBXFileReference;
+			name = fltimer.cpp;
+			path = source/fltimer.cpp;
+			refType = 4;
+		};
+		F5B1FACD0411918B0179CFEF = {
+			fileRef = F5B1FAC8041191190179CFEF;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5B1FACE0411935C0179CFEF = {
+			fileRef = F5B1FAC8041191190179CFEF;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5B1FACF041193680179CFEF = {
+			fileRef = F5B1FAC8041191190179CFEF;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5B1FAD0041193740179CFEF = {
+			fileRef = F5B1FAC8041191190179CFEF;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		F5C204ED03D403B401A80AC9 = {
 			buildPhases = (

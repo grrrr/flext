@@ -23,6 +23,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define snprintf _snprintf
 #endif
 
+BEGIN_FLEXT
+
 const t_symbol *flext::sym__ = NULL;
 const t_symbol *flext::sym_float = NULL;
 const t_symbol *flext::sym_symbol = NULL;
@@ -102,7 +104,7 @@ void flext::Setup()
 
 #define LARGEALLOC 32000
 
-void *flext_root::operator new(size_t bytes)
+void *operator new(size_t bytes)
 {
 	bytes += sizeof(size_t);
 
@@ -135,7 +137,7 @@ void *flext_root::operator new(size_t bytes)
 	return blk+sizeof(size_t);
 }
 
-void flext_root::operator delete(void *blk)
+void operator delete(void *blk)
 {
 	FLEXT_ASSERT(blk);
 
@@ -165,7 +167,7 @@ void flext_root::operator delete(void *blk)
     }
 }
 
-void *flext_root::NewAligned(size_t bytes,int bitalign)
+void *NewAligned(size_t bytes,int bitalign)
 {
 	const size_t ovh = sizeof(size_t)+sizeof(char *);
 	const size_t alignovh = bitalign/8-1;
@@ -201,7 +203,7 @@ void *flext_root::NewAligned(size_t bytes,int bitalign)
 	return ablk;
 }
 
-void flext_root::FreeAligned(void *blk)
+void FreeAligned(void *blk)
 {
 	FLEXT_ASSERT(blk);
 
@@ -257,7 +259,7 @@ unsigned long flext::AtomHash(const t_atom &a)
 #endif
 }
 
-void flext_root::post(const char *fmt, ...)
+void post(const char *fmt, ...)
 {
 	va_list ap;
     va_start(ap, fmt);
@@ -270,7 +272,7 @@ void flext_root::post(const char *fmt, ...)
     va_end(ap);
 }
 
-void flext_root::error(const char *fmt,...)
+void error(const char *fmt,...)
 {
 	va_list ap;
     va_start(ap, fmt);
@@ -289,3 +291,6 @@ AnyMap::AnyMap() {}
 AnyMap::~AnyMap() {}
 AnyMap::iterator AnyMap::find(AnyMapType k) { return Parent::find(k); }
 AnyMapType &AnyMap::operator [](AnyMapType k) { return Parent::operator [](k); }
+
+END_FLEXT
+

@@ -20,9 +20,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flstdc.h"
 #include "flsupport.h"
 
-
-class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj);
-typedef class FLEXT_CLASSDEF(flext_obj) flext_obj;
+BEGIN_FLEXT
 
 // ----------------------------------------------------------------------------
 /*! \brief The obligatory PD or Max/MSP object header
@@ -33,6 +31,8 @@ typedef class FLEXT_CLASSDEF(flext_obj) flext_obj;
     the virtual table of the C++ class.
 */
 // ----------------------------------------------------------------------------
+
+class FLEXT_SHARE flext_obj;
 
 struct FLEXT_SHARE flext_hdr
 {
@@ -58,7 +58,7 @@ struct FLEXT_SHARE flext_hdr
 
     	/*! \brief This points to the actual polymorphic C++ class
 		*/
-        FLEXT_CLASSDEF(flext_obj) *data;
+        flext_obj *data;
 
 	//!	@}  FLEXT_OBJHEADER
 };
@@ -87,8 +87,7 @@ struct FLEXT_SHARE flext_hdr
 */
 // ----------------------------------------------------------------------------
 
-class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
-	public flext
+class FLEXT_SHARE flext_obj
 {
     public:
 
@@ -102,10 +101,10 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 	*/
 
         //! Constructor
-    	FLEXT_CLASSDEF(flext_obj)();
+    	flext_obj();
 
     	//! Destructor
-    	virtual ~FLEXT_CLASSDEF(flext_obj)() = 0;
+    	virtual ~flext_obj() = 0;
 
         /*! \brief Signal a construction problem
 			\note This should only be used in the constructor. Object creation will be aborted.
@@ -256,7 +255,7 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 
 		// Definitions for library objects
 		static void lib_init(const char *name,void setupfun(),bool attr);
-		static void obj_add(bool lib,bool dsp,bool attr,const char *idname,const char *names,void setupfun(t_classid),FLEXT_CLASSDEF(flext_obj) *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...);
+		static void obj_add(bool lib,bool dsp,bool attr,const char *idname,const char *names,void setupfun(t_classid),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...);
 #if FLEXT_SYS == FLEXT_SYS_JMAX
 		static void obj_new(fts_object_t *o, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at);
 		static void obj_free(fts_object_t *o, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at);
@@ -316,9 +315,9 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 #define FLEXT_REALHDR(NEW_CLASS, PARENT_CLASS)    	    	\
 public:     	    	    \
 typedef NEW_CLASS thisType;  \
-static FLEXT_CLASSDEF(flext_obj) *__init__(int argc,t_atom *argv);  \
+static FLEXT::flext_obj *__init__(int argc,t_atom *argv);  \
 static void __free__(flext_hdr *hdr)    	    	    	\
-{ FLEXT_CLASSDEF(flext_obj) *mydata = hdr->data; delete mydata; \
+{ FLEXT::flext_obj *mydata = hdr->data; delete mydata; \
   hdr->flext_hdr::~flext_hdr(); }   	    	\
 static void __setup__(t_classid classid) { 	    	\
 	PARENT_CLASS::__setup__(classid); } \
@@ -329,9 +328,9 @@ static inline NEW_CLASS *thisObject(void *c) { return FLEXT_CAST<NEW_CLASS *>(((
 #define FLEXT_REALHDR_S(NEW_CLASS, PARENT_CLASS,SETUPFUN)    	    	\
 public:     	    	    \
 typedef NEW_CLASS thisType;  \
-static FLEXT_CLASSDEF(flext_obj) *__init__(int argc,t_atom *argv);  \
+static FLEXT::flext_obj *__init__(int argc,t_atom *argv);  \
 static void __free__(flext_hdr *hdr)    	    	    	\
-{ FLEXT_CLASSDEF(flext_obj) *mydata = hdr->data; delete mydata; \
+{ FLEXT::flext_obj *mydata = hdr->data; delete mydata; \
   hdr->flext_hdr::~flext_hdr(); }   	    	\
 static void __setup__(t_classid classid)  	    	\
 { PARENT_CLASS::__setup__(classid);    	    	\
@@ -573,9 +572,6 @@ FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
 #define FLEXTARG(TP) FLEXTARG_ ## TP
 
+} // namespace
 
 #endif
-
-
-
-

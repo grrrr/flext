@@ -31,6 +31,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #pragma warn -8066 // Unreachable code
 #endif
 
+BEGIN_FLEXT
 
 // === flext_base ==================================================
 
@@ -48,16 +49,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     See the flext_obj class for additional information.
 */
 
+class FLEXT_SHARE flext_obj; 
 
-class FLEXT_SHARE FLEXT_CLASSDEF(flext_base);
-typedef class FLEXT_SHARE FLEXT_CLASSDEF(flext_base) flext_base;
-
-class FLEXT_SHARE FLEXT_CLASSDEF(flext_base): 
+class FLEXT_SHARE flext_base: 
 	public flext_obj
 {
-	FLEXT_HEADER_S(FLEXT_CLASSDEF(flext_base),flext_obj,Setup)
+	FLEXT_HEADER_S(flext_base,flext_obj,Setup)
 	
-	friend class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj);
+	friend class FLEXT_SHARE flext_obj;
 
 	/*!	\defgroup FLEXT_CLASS Flext base class
 		@{ 
@@ -490,8 +489,8 @@ public:
 
 protected:
 
-	FLEXT_CLASSDEF(flext_base)();
-	virtual ~FLEXT_CLASSDEF(flext_base)();
+	flext_base();
+	virtual ~flext_base();
 
 	/*! \brief Set up inlets and outlets, method and attribute lists
 	*/
@@ -710,8 +709,7 @@ protected:
 	};
 
 	//! Represent a data value of an attribute
-    class AttrData:
-        public flext_root
+    class AttrData
 	{
 	public:
 		AttrData(): flags(0) {}
@@ -941,8 +939,7 @@ private:
 
 	static t_class *pxbnd_class;
 
-    class pxbnd_object:
-        public flext_root
+    class pxbnd_object
         // no virtual table!
 	{ 
     public:
@@ -989,5 +986,7 @@ private:
     static void cb_click (t_class *c, Point pt, short mods);
 #endif
 };
+
+END_FLEXT
 
 #endif

@@ -19,19 +19,16 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // include the header file declaring the base classes
 #include "flext.h"
 
+BEGIN_FLEXT
 
 // === flext_dsp ==================================================
 
-class FLEXT_SHARE FLEXT_CLASSDEF(flext_dsp);
-typedef class FLEXT_SHARE FLEXT_CLASSDEF(flext_dsp) flext_dsp;
-
-
 /*! \brief Flext dsp enabled base object
 */
-class FLEXT_SHARE FLEXT_CLASSDEF(flext_dsp):
+class FLEXT_SHARE flext_dsp:
 	public flext_base
 {
-	FLEXT_HEADER_S(FLEXT_CLASSDEF(flext_dsp),flext_base,Setup)
+	FLEXT_HEADER_S(flext_dsp,flext_base,Setup)
 	
 public:
 
@@ -136,8 +133,8 @@ public:
 
 protected:
 	
-	FLEXT_CLASSDEF(flext_dsp)();
-	virtual ~FLEXT_CLASSDEF(flext_dsp)();
+	flext_dsp();
+	virtual ~flext_dsp();
 
 private:
 
@@ -180,5 +177,7 @@ private:
 #endif
 	t_signalvec *invecs,*outvecs;
 };
+
+END_FLEXT
 
 #endif

@@ -19,6 +19,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <string.h>
 #include <ctype.h>
 
+BEGIN_FLEXT
+
 #define ALIASDEL ','
 
 #define ALIASSLASHES ":/\\"
@@ -104,8 +106,7 @@ bool flext::chktilde(const char *objname)
 // this class stands for one registered object
 // it holds the class, type flags, constructor and destructor of the object and the creation arg types
 // it will never be destroyed
-class libclass:
-    public flext_root
+class libclass
 {
 public:
 	libclass(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(flext_hdr *)); 
@@ -531,8 +532,10 @@ void flext_obj::obj_free(flext_hdr *h)
 		// in Max/MSP an object with the name of the library exists, even if not explicitely declared!
 		if(name != lib_name) 
 #endif
-		error("Class %s not found in library!",name);
+            flext::error("Class %s not found in library!",name);
 #endif
 }
+
+END_FLEXT
 
 

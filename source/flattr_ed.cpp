@@ -16,6 +16,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #if FLEXT_SYS == FLEXT_SYS_PD && !defined(FLEXT_NOATTREDIT)
 
+BEGIN_FLEXT
+
 /*
 #ifdef PD_DEVEL_VERSION
 #define FLEXT_CLONEWIDGET
@@ -799,6 +801,8 @@ void flext_base::BinbufAttr(t_binbuf *b,bool transdoll)
         }
     }
 }
+
+END_FLEXT
 
 #endif // FLEXT_SYS_PD
 

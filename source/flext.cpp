@@ -16,6 +16,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flinternal.h"
 #include <string.h>
 
+BEGIN_FLEXT
+
 // === flext_base ============================================
 
 bool flext_base::compatibility = true;
@@ -222,4 +224,7 @@ void flext_base::cb_assist(t_class *c,void * /*b*/,long msg,long arg,char *s)
         break;
     }
 }
+
 #endif
+
+END_FLEXT

@@ -15,6 +15,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flext.h"
 #include "flinternal.h"
 
+BEGIN_FLEXT
+
 #ifdef FLEXT_THREADS
 
 
@@ -578,11 +580,11 @@ bool flext::SetPriority(int p,thrid_t id)
 }
 
 
-flext_base::thr_params::thr_params(int n): cl(NULL),var(new _data[n]) {}
-flext_base::thr_params::~thr_params() { if(var) delete[] var; }
+thr_params::thr_params(int n): cl(NULL),var(new _data[n]) {}
+thr_params::~thr_params() { if(var) delete[] var; }
 
-void flext_base::thr_params::set_any(const t_symbol *s,int argc,const t_atom *argv) { var[0]._any.args = new AtomAnything(s,argc,argv); }
-void flext_base::thr_params::set_list(int argc,const t_atom *argv) { var[0]._list.args = new AtomList(argc,argv); }
+void thr_params::set_any(const t_symbol *s,int argc,const t_atom *argv) { var[0]._any.args = new AtomAnything(s,argc,argv); }
+void thr_params::set_list(int argc,const t_atom *argv) { var[0]._list.args = new AtomList(argc,argv); }
 
 
 flext_base::thr_entry::thr_entry(void (*m)(thr_params *),thr_params *p,thrid_t id): 
@@ -640,5 +642,6 @@ bool flext::ThrCond::TimedWait(double ftm)
 }
 #endif
 
+END_FLEXT
 
 #endif // FLEXT_THREADS

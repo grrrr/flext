@@ -18,6 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <set>
 
+BEGIN_FLEXT
 
 #ifdef __MWERKS__
 #define STD std
@@ -412,3 +413,5 @@ bool flext_base::ShowAttrib(const t_symbol *attr,bool show) const
 	AttrItem *item = FindAttrib(attr,true);
 	return item && ShowAttrib(item,show);
 }
+
+END_FLEXT

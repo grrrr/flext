@@ -121,6 +121,7 @@ Version history:
 - fixed race condition when using LaunchThread in a setup function (now waiting for thread helper to initialize)
 - added flext::Forward function to send messages to bound symbols
 - added "zero" flag to flext::buffer resize operation
+- fixed bug for Max/MSP buffer resize with preservation of contents
 
 0.4.2:
 - started port for jMax

@@ -191,7 +191,7 @@ void flext::buffer::Frames(int fr,bool keep,bool zero)
 		// copy buffer data to tmp storage
 		tmp = new t_sample[sz];
         if(tmp)
-			CopySamples(data,tmp,sz);
+			CopySamples(tmp,data,sz);
 		else
 			error("flext::buffer - not enough memory for keeping buffer~ contents");
 	}
@@ -209,7 +209,7 @@ void flext::buffer::Frames(int fr,bool keep,bool zero)
 
 	if(tmp) {
 		// copy data back
-		CopySamples(tmp,data,sz);
+		CopySamples(data,tmp,sz);
 		delete[] tmp;
         if(zero && sz < fr) ZeroSamples(data+sz,fr-sz);
 	}

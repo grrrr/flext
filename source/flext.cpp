@@ -88,6 +88,39 @@ V buf_obj::setbuf(t_symbol *s)
 	}
 }
 
+V buf_obj::setdirty()
+{
+	if(bufname) {
+#ifdef PD
+		t_garray *a;
+    
+		if (!(a = (t_garray *)pd_findbyclass(bufname, garray_class))) {
+    		if (*bufname->s_name)
+    			error("%s: no such array '%s'",thisName(),bufname->s_name);
+		}
+		else if (!garray_getfloatarray(a, &buflen, &buf)) {
+    		error("%s: bad template '%s'",thisName(),bufname->s_name);
+		}
+		else garray_redraw(a);
+#elif defined(MAX)
+		if(bufname->s_thing) {
+			_buffer *p = (_buffer *)bufname->s_thing;
+			
+			if(NOGOOD(p)) {
+				post("%s: buffer object '%s' no good",thisName(),bufname->s_name);
+			}
+			else {
+				p->b_modtime = gettime();
+			}
+		}
+		else {
+    		error("%s: symbol '%s' not defined",thisName(),bufname->s_name);
+		}
+#endif 
+	}
+}
+
+
 
 // ----------------------------
 

@@ -56,6 +56,7 @@ public:
 	
 protected:
 	virtual V setbuf(t_symbol *s = NULL);
+	virtual V setdirty();
 
 	t_symbol *bufname;
 	F *buf;

@@ -30,7 +30,7 @@ flext_base::AtomList::~AtomList() {	Clear(); }
 
 flext_base::AtomList &flext_base::AtomList::operator()(int argc,const t_atom *argv)
 {
-	if(lst && cnt != argc) { delete[] lst; lst = NULL; }
+	if(lst && cnt != argc) { delete[] lst; lst = NULL; cnt = 0; }
 
 	if(argc) {
 		cnt = argc;

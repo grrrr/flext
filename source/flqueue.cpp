@@ -26,8 +26,8 @@ flext::thrid_t flext::thrmsgid = 0;
 #endif
 
 
-#define QUEUE_LENGTH 512
-#define QUEUE_ATOMS 1024
+#define QUEUE_LENGTH 2048
+#define QUEUE_ATOMS 8192
 
 class qmsg
 {
@@ -197,7 +197,8 @@ static void QWork(bool syslock)
         if(syslock) sys_lock();
     #endif
 
-        for(int i = 0; i < qc; ++i) {
+        // once more, because flushing in destructors could have reduced the count
+        for(qc = queue.Count(); qc--; ) {
             queue.Head().Send();
             queue.Pop();
         } // inner loop

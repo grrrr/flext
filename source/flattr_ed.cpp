@@ -617,7 +617,7 @@ void flext_base::cb_GfxVis(t_gobj *c, t_glist *gl, int vis)
    }
 }
 
-void flext_base::cb_GfxSelect(t_gobj *c, struct _glist *gl, int state)
+void flext_base::cb_GfxSelect(t_gobj *c,t_glist *gl,int state)
 {
     // show object if it's not a GOP
     if(!gl->gl_isgraph || gl->gl_havewindow) {
@@ -642,6 +642,9 @@ void flext_base::cb_GfxSelect(t_gobj *c, struct _glist *gl, int state)
 
             t_rtext *rt = glist_findrtext(gl,x);
             rtext_retext(rt);
+
+            // fix lines
+            canvas_fixlinesfor(gl,x);
         }
 
         // call original function

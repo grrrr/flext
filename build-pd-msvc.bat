@@ -1,3 +1,7 @@
-@echo --- Building flext with MS Visual C++ ---
+@echo --- Building flext with MS Visual C++ ---
+
+
 nmake -f makefile.pd-msvc clean
-nmake -f makefile.pd-msvc
+
+nmake -f makefile.pd-msvc
+

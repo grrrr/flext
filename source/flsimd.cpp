@@ -511,7 +511,7 @@ loopuu:
 
 static const vector float zero = (vector float)(0);
 
-static SetAlti(t_sample *dst,int cnt,t_sample s)
+static void SetAltivec(t_sample *dst,int cnt,t_sample s)
 {
 	vector float svec = LoadValue(s);
    	int n = cnt>>4;
@@ -628,7 +628,7 @@ static void AddAltivec(t_sample *dst,const t_sample *src,const t_sample *op,int 
 	while(cnt--) *(dst++) = *(src++) + *(op++); 
 }
 
-void ScaleAltivec(t_sample *dst,const t_sample *src,t_sample opmul,t_sample opadd,int cnt) 
+static void ScaleAltivec(t_sample *dst,const t_sample *src,t_sample opmul,t_sample opadd,int cnt) 
 {
 	const vector float argmul = LoadValue(opmul);
 	const vector float argadd = LoadValue(opadd);
@@ -1193,7 +1193,7 @@ loopu:
     else
 #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__ALTIVEC__)
     if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(dst)) 
-		AddAltivec(dst,src,cnt);
+		AddAltivec(dst,src,op,cnt);
 	else
 #endif // _MSC_VER
 #endif // FLEXT_USE_SIMD
@@ -1420,7 +1420,7 @@ void flext::AddSamples(t_sample *dst,const t_sample *src,const t_sample *op,int 
 	}
 	else
 #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__ALTIVEC__)
-    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(op) && IsVectorAligned(dst)) {
+    if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(src) && IsVectorAligned(op) && IsVectorAligned(dst))
 		AddAltivec(dst,src,op,cnt);
 	else
 #endif // _MSC_VER

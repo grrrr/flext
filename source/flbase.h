@@ -111,10 +111,19 @@ class FLEXT_EXT flext_obj
     	virtual ~flext_obj() = 0;
     	
         //! Get the object's canvas
-        t_canvas            *getCanvas()        { return(m_canvas); }
+        t_canvas            *thisCanvas()        { return(m_canvas); }
 
-    protected:
-    	
+		t_sigobj *thisHdr() { return &x_obj->obj; }
+		const char *thisName() const { return m_name; } 
+
+#ifdef PD
+		t_class *thisClass() { return (t_class *)((t_object *)(x_obj))->te_g.g_pd; }
+#elif defined(MAXMSP)
+		t_class *thisClass() { return (t_class *)(((t_tinyobject *)x_obj)->t_messlist-1); } 
+#endif
+ 
+    protected:    	
+		
         //! The object header
         flext_hdr          *x_obj;        	
 
@@ -164,12 +173,6 @@ inline void *operator new(size_t, void *location, void *) { return location; }
 // This should be used in the header
 // ----------------------------------------
 
-#ifdef PD
-#define FLEXT_GETCLASS(obj) ((t_class *)((t_object *)(obj))->te_g.g_pd)
-#elif defined(MAXMSP)
-#define FLEXT_GETCLASS(obj) ((t_class *)(((t_tinyobject *)obj)->t_messlist-1))
-#endif
-
 
 #define FLEXT_REALHDR(NEW_CLASS, PARENT_CLASS)    	    	\
 public:     	    	    \
@@ -180,9 +183,6 @@ static void callb_free(flext_hdr *hdr)    	    	    	\
 static void callb_setup(t_class *classPtr)  	    	\
 { PARENT_CLASS::callb_setup(classPtr); }  	    	    	\
 protected:    \
-inline t_sigobj *thisHdr() { return &x_obj->obj; } \
-inline t_class *thisClass() { return FLEXT_GETCLASS(x_obj); } \
-inline const char *thisName() const { return m_name; } \
 static NEW_CLASS *thisObject(void *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; }	  
 
 
@@ -196,9 +196,6 @@ static void callb_setup(t_class *classPtr)  	    	\
 { PARENT_CLASS::callb_setup(classPtr);    	    	\
 	NEW_CLASS::SETUPFUN(classPtr); }  	    	    	\
 protected:    \
-inline t_sigobj *thisHdr() { return &x_obj->obj; } \
-inline t_class *thisClass() { return FLEXT_GETCLASS(x_obj); } \
-inline const char *thisName() const { return m_name; } \
 static NEW_CLASS *thisObject(void *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; }	  
 
 

@@ -43,17 +43,39 @@ add_method1(c,cb_px_ft ## IX,"ft" #IX,A_FLOAT)
 
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 
-void flext_base::cb_px_anything(t_class *c,const t_symbol *s,int argc,t_atom *argv)
+void flext_base::cb_px_anything(t_class *c,const t_symbol *s,short argc,t_atom *argv)
 {
 	// check if inlet allows anything (or list)
 	
 	flext_base *o = thisObject(c);
 	int ci = ((flext_hdr *)o->x_obj)->curinlet;
-
 	o->m_methodmain(ci,s,argc,argv);
 }
 
-void flext_base::cb_px_int(t_class *c,int v)
+#if 0 //FLEXT_OS == FLEXT_OS_WIN
+// could also work for OSX!
+
+void flext_base::cb_px_int(t_class *c,long v)
+{
+	flext_base *o = thisObject(c);
+	int ci = proxy_getinlet((t_object *)o->x_obj);
+	// check if inlet allows int type
+	t_atom atom;
+	SetInt(atom,v);  
+	o->m_methodmain(ci,sym_int,1,&atom);
+}
+
+void flext_base::cb_px_float(t_class *c,double v)
+{
+	flext_base *o = thisObject(c);
+	int ci = proxy_getinlet((t_object *)o->x_obj);
+	// check if inlet allows float type
+	t_atom atom;
+	SetFloat(atom,v);  
+	o->m_methodmain(ci,sym_float,1,&atom);
+}
+#else
+void flext_base::cb_px_int(t_class *c,long v)
 {
 	// check if inlet allows int type
 	t_atom atom;
@@ -61,13 +83,14 @@ void flext_base::cb_px_int(t_class *c,int v)
 	cb_px_anything(c,sym_int,1,&atom);
 }
 
-void flext_base::cb_px_float(t_class *c,float v)
+void flext_base::cb_px_float(t_class *c,double v)
 {
 	// check if inlet allows float type
 	t_atom atom;
 	SetFloat(atom,v);  
 	cb_px_anything(c,sym_float,1,&atom);
 }
+#endif
 
 void flext_base::cb_px_bang(t_class *c)
 {
@@ -77,8 +100,8 @@ void flext_base::cb_px_bang(t_class *c)
 
 
 #define DEF_IN_FT(IX) \
-void flext_base::cb_px_in ## IX(t_class *c,int v) { long &ci = ((flext_hdr *)thisObject(c)->x_obj)->curinlet; ci = IX; cb_px_int(c,v); ci = 0; } \
-void flext_base::cb_px_ft ## IX(t_class *c,float v) { long &ci = ((flext_hdr *)thisObject(c)->x_obj)->curinlet; ci = IX; cb_px_float(c,v); ci = 0; }
+void flext_base::cb_px_in ## IX(t_class *c,long v) { long &ci = ((flext_hdr *)thisObject(c)->x_obj)->curinlet; ci = IX; cb_px_int(c,v); ci = 0; } \
+void flext_base::cb_px_ft ## IX(t_class *c,double v) { long &ci = ((flext_hdr *)thisObject(c)->x_obj)->curinlet; ci = IX; cb_px_float(c,v); ci = 0; }
 
 #define ADD_IN_FT(IX) \
 add_method1(c,cb_px_in ## IX,"in" #IX,A_INT); \
@@ -116,6 +139,11 @@ void flext_base::SetProxies(t_class *c)
 #error Not implemented!
 #endif	
 
+#if 0 //FLEXT_SYS == FLEXT_SYS_MAX && FLEXT_OS == FLEXT_OS_WIN
+	// could also work for OSX!
+	addint((method)cb_px_int);
+	addfloat((method)cb_px_float);
+#else
 	// setup non-leftmost ints and floats
 	ADD_IN_FT(1);
 	ADD_IN_FT(2);
@@ -126,6 +154,7 @@ void flext_base::SetProxies(t_class *c)
 	ADD_IN_FT(7);
 	ADD_IN_FT(8);
 	ADD_IN_FT(9);
+#endif
 }
 
 #elif FLEXT_SYS == FLEXT_SYS_JMAX

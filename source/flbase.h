@@ -250,7 +250,11 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 		static void obj_new(fts_object_t *o, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at);
 		static void obj_free(fts_object_t *o, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at);
 #else
+#if FLEXT_SYS == FLEXT_SYS_MAX
+		static flext_hdr *obj_new(const t_symbol *s,short argc,t_atom *argv);
+#else
 		static flext_hdr *obj_new(const t_symbol *s,int argc,t_atom *argv);
+#endif
 		static void obj_free(flext_hdr *o);
 #endif
 

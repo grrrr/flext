@@ -155,6 +155,8 @@ private:
 	static void	cb_dsp(fts_object_t *o, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at);
 //	static void	cb_dsp_init(fts_object_t *o, int winlet, fts_symbol_t *s, int ac, const fts_atom_t *at);
 //	static void	cb_dsp_delete(fts_object_t *o, int winlet, fts_symbol_t *s, int ac, const fts_atom_t *at);
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+	static void cb_dsp(t_class *c,t_signal **s,short *count);
 #else
 	static void cb_dsp(t_class *c,t_signal **s);
 #endif

@@ -50,6 +50,13 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	#endif
 #endif
 
+
+#if FLEXT_SYS == FLEXT_SYS_MAX && FLEXT_OS == FLEXT_OS_WIN
+// for wmax alignment must be 2 bytes!
+#pragma pack(2)
+#endif
+
+
 // include all the flext interface definitions
 #include "fldefs.h"
 
@@ -59,6 +66,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // include the flext dsp class
 #include "fldsp.h"
 
+/*
+#if FLEXT_SYS == FLEXT_SYS_MAX && FLEXT_OS == FLEXT_OS_WIN
+#pragma pack(pop)
+#endif
+*/
 #endif // FLEXT_H
-
-

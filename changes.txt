@@ -274,6 +274,9 @@ general:
 
 - make links flext.a -> libflext.a for compatibility
 
+- add double handlers
+- add signal in/out connection query function
+
 bugs:
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)
 - hard thread termination upon object destruction doesn't seem to work properly -> crash

@@ -122,6 +122,8 @@ t_int *flext_dsp::dspmeth(t_int *w)
 
 #if FLEXT_SYS == FLEXT_SYS_JMAX
 void flext_dsp::cb_dsp(fts_object_t *c, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at)
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+void flext_dsp::cb_dsp(t_class *c,t_signal **sp,short *count) 
 #else
 void flext_dsp::cb_dsp(t_class *c,t_signal **sp) 
 #endif

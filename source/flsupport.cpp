@@ -174,6 +174,7 @@ int flext::Int2Bits(unsigned long n)
 	return b;
 }
 
+
 void flext::post(const char *fmt, ...)
 {
 #ifdef FLEXT_THREADS
@@ -182,9 +183,15 @@ void flext::post(const char *fmt, ...)
 #endif
 	va_list ap;
     va_start(ap, fmt);
+#if FLEXT_SYS == FLEXT_SYS_MAX
+	char buf[1024]; // \TODO this is quite unsafe.....
+    vsprintf(buf, fmt, ap);
+	::post(buf);
+#else
     vfprintf(stderr, fmt, ap);
+	::post("");
+#endif
     va_end(ap);
-    putc('\n', stderr);
 #ifdef FLEXT_THREADS
 	mutex.Unlock();
 #endif
@@ -198,10 +205,17 @@ void flext::error(const char *fmt,...)
 #endif
 	va_list ap;
     va_start(ap, fmt);
+#if FLEXT_SYS == FLEXT_SYS_MAX
+	char buf[1024]; // \TODO this is quite unsafe.....
+    sprintf(buf,"error: ");
+    vsprintf(buf+7, fmt, ap);
+	::post(buf);
+#else
     fprintf(stderr, "error: ");
     vfprintf(stderr, fmt, ap);
+	::post("");
+#endif
     va_end(ap);
-    putc('\n', stderr);
 #ifdef FLEXT_THREADS
 	mutex.Unlock();
 #endif

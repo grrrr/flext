@@ -27,8 +27,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #elif FLEXT_OS == FLEXT_OS_WIN
 	#if FLEXT_SYS == FLEXT_SYS_PD
 		#define ALIASSLASH '/'
+	#elif FLEXT_SYS == FLEXT_SYS_MAX
+		#define ALIASSLASH '/'
 	#else
-	#error "Undefined"
+		#error "Undefined"
 	#endif
 #else
 	// default to "/"
@@ -332,7 +334,11 @@ void flext_obj::obj_new(fts_object_t *o, int, fts_symbol_t s, int _argc_, const 
 {
 	flext_hdr *obj = (flext_hdr *)o;
 #else
+#if FLEXT_SYS == FLEXT_SYS_MAX
+flext_hdr *flext_obj::obj_new(const t_symbol *s,short _argc_,t_atom *argv)
+#else
 flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
+#endif
 {
 	flext_hdr *obj = NULL;
 #endif

@@ -849,24 +849,6 @@ private:
 		static void px_method(px_object *c,const t_symbol *s,int argc,t_atom *argv);
 	};
 
-#elif FLEXT_SYS == FLEXT_SYS_MAX
-	typedef object px_object;
-	static void cb_px_float(t_class *c,float f);
-	static void cb_px_int(t_class *c,int v);
-	static void cb_px_bang(t_class *c);
-
-	static void cb_px_in1(t_class *c,int v);
-	static void cb_px_in2(t_class *c,int v);
-	static void cb_px_in3(t_class *c,int v);
-	static void cb_px_in4(t_class *c,int v);
-	static void cb_px_in5(t_class *c,int v);
-	static void cb_px_in6(t_class *c,int v);
-	static void cb_px_in7(t_class *c,int v);
-	static void cb_px_in8(t_class *c,int v);
-	static void cb_px_in9(t_class *c,int v);
-#endif
-
-#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
 	static void cb_px_anything(t_class *c,const t_symbol *s,int argc,t_atom *argv);
 
 	static void cb_px_ft1(t_class *c,float f);
@@ -879,6 +861,36 @@ private:
 	static void cb_px_ft8(t_class *c,float f);
 	static void cb_px_ft9(t_class *c,float f);
 
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+	typedef object px_object;
+	static void cb_px_float(t_class *c,double f);
+	static void cb_px_int(t_class *c,long v);
+	static void cb_px_bang(t_class *c);
+
+	static void cb_px_in1(t_class *c,long v);
+	static void cb_px_in2(t_class *c,long v);
+	static void cb_px_in3(t_class *c,long v);
+	static void cb_px_in4(t_class *c,long v);
+	static void cb_px_in5(t_class *c,long v);
+	static void cb_px_in6(t_class *c,long v);
+	static void cb_px_in7(t_class *c,long v);
+	static void cb_px_in8(t_class *c,long v);
+	static void cb_px_in9(t_class *c,long v);
+
+	static void cb_px_ft1(t_class *c,double f);
+	static void cb_px_ft2(t_class *c,double f);
+	static void cb_px_ft3(t_class *c,double f);
+	static void cb_px_ft4(t_class *c,double f);
+	static void cb_px_ft5(t_class *c,double f);
+	static void cb_px_ft6(t_class *c,double f);
+	static void cb_px_ft7(t_class *c,double f);
+	static void cb_px_ft8(t_class *c,double f);
+	static void cb_px_ft9(t_class *c,double f);
+
+	static void cb_px_anything(t_class *c,const t_symbol *s,short argc,t_atom *argv);
+#endif
+
+#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
 	px_object **inlets;
 #elif FLEXT_SYS == FLEXT_SYS_JMAX
 	static void jmax_proxy(fts_object_t *c, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at);

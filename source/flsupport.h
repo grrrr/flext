@@ -435,4 +435,6 @@ namespace flext {
 //!		@} 
 #endif // FLEXT_THREADS
 
+} // namespace flext
+
 #endif

@@ -10,15 +10,19 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // Code for handling of MaxMSP external libraries
 
-#ifdef MAXMSP
+//#ifdef MAXMSP
 
 #include "flbase.h"
-//#include <string.h>
+#include "flsupport.h"
+
 #include <stdarg.h>
+
+
+enum libargtp { a_null,a_int,a_float,a_sym };
 
 class libfunction {
 public:
-	libfunction(t_symbol *n,t_method newf,void (*freef)(flext_hdr *));
+	libfunction(t_symbol *n,t_newmethod newf,void (*freef)(flext_hdr *));
 	~libfunction();
 	void add(libfunction *n);
 	
@@ -45,8 +49,10 @@ void flext_obj::libfun_add(const char *name,t_newmethod newfun,void (*freefun)(f
 		const char *c = flext::extract(name,ix);
 		if(!c || !*c) break;
 
+#ifdef MAXMSP
 	 	alias(const_cast<char *>(c));  // make object name available to Max
-	
+#endif	
+
 		libfunction *l = new libfunction(gensym(const_cast<char *>(c)),newfun,freefun);
 	
 		if(argtp1 == A_GIMME)
@@ -74,7 +80,7 @@ void flext_obj::libfun_add(const char *name,t_newmethod newfun,void (*freefun)(f
 	}
 }
 
-typedef flext_hdr *(*libfunG)(t_symbol *,int,t_atom *);
+typedef flext_hdr *(*libfunV)(t_symbol *,int,t_atom *);
 typedef flext_hdr *(*libfun0)();
 typedef flext_hdr *(*libfun1)(flext_obj::lib_arg &a1);
 typedef flext_hdr *(*libfun2)(flext_obj::lib_arg &a1,flext_obj::lib_arg &a2);
@@ -90,7 +96,7 @@ flext_hdr *flext_obj::libfun_new(t_symbol *s,int argc,t_atom *argv)
 	
 	if(l) {
 		if(l->argc < 0) 
-				return ((libfunG)l->newfun)(s,argc,argv);  // A_GIMME
+				return ((libfunV)l->newfun)(s,argc,argv);  // A_GIMME
 		else {	
 			if(argc < l->argc) 
 				error("%s: Not enough creation arguments",s->s_name);
@@ -99,18 +105,20 @@ flext_hdr *flext_obj::libfun_new(t_symbol *s,int argc,t_atom *argv)
 				bool ok = true;
 				for(int i = 0; /*ok &&*/ i < l->argc; ++i) {
 					switch(l->argv[i]) {
-					case A_LONG:
-						if(argv[i].a_type == A_LONG) args[i].i = argv[i].a_w.w_long;
-						else if(argv[i].a_type == A_FLOAT) args[i].i = argv[i].a_w.w_float;
+#ifdef MAXMSP
+					case A_INT:
+						if(flext::IsInt(argv[i])) args[i].i = flext::GetInt(argv[i]);
+						else if(flext::IsFloat(argv[i])) args[i].i = (int)flext::GetFloat(argv[i]);
 						else ok = false;
 						break;
+#endif
 					case A_FLOAT:
-						if(argv[i].a_type == A_LONG) args[i].f = argv[i].a_w.w_long;
-						else if(argv[i].a_type == A_FLOAT) args[i].f = argv[i].a_w.w_float;
+						if(flext::IsInt(argv[i])) args[i].f = (float)flext::GetInt(argv[i]);
+						else if(flext::IsFloat(argv[i])) args[i].f = flext::GetFloat(argv[i]);
 						else ok = false;
 						break;
-					case A_SYM:
-						if(argv[i].a_type == A_SYM) args[i].s = argv[i].a_w.w_sym;
+					case A_SYMBOL:
+						if(flext::IsSymbol(argv[i])) args[i].s = flext::GetSymbol(argv[i]);
 						else ok = false;
 						break;
 					}
@@ -153,5 +161,5 @@ void flext_obj::libfun_free(flext_hdr *hdr)
 		if(name != lib_name) error("Class %s not found in library!",name);
 }
 
-#endif
+//#endif
 

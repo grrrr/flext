@@ -212,6 +212,10 @@ SOURCE=.\source\flstdc.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\source\flsupport.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\source\flthr.cpp
 # End Source File
 # Begin Source File

@@ -157,7 +157,7 @@ class FLEXT_EXT flext_obj
 		//! Check whether construction was successful
 		bool InitOk() const { return init_ok; }
 
-#ifdef MAXMSP
+//#ifdef MAXMSP
 		//@{
 		//! Definitions for MaxMSP external libraries 
 
@@ -169,11 +169,11 @@ class FLEXT_EXT flext_obj
 		
 		static t_class *lib_class;
 		static t_symbol *lib_name;
-		static void libfun_add(const char *name,t_method newfun,void (*freefun)(flext_hdr *),int argtp1,...);
+		static void libfun_add(const char *name,t_newmethod newfun,void (*freefun)(flext_hdr *),int argtp1,...);
 		static flext_hdr *libfun_new(t_symbol *s,int argc,t_atom *argv);
 		static void libfun_free(flext_hdr *o);
 		//@}
-#endif
+//#endif
 };
 
 

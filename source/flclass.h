@@ -413,8 +413,6 @@ public:
 	static bool CanbeFloat(const t_atom &a) { return IsFloat(a) || IsInt(a); }
 	//! Access the float value (without type check)
 	static float GetFloat(const t_atom &a) { return a.a_w.w_float; }
-	//! Check for a float and get its value 
-	static float GetAFloat(const t_atom &a) { return GetAFlint(a); }
 	//! Set the atom to represent a float 
 	static void SetFloat(t_atom &a,float v) { a.a_type = A_FLOAT; a.a_w.w_float = v; }
 
@@ -438,27 +436,24 @@ public:
 
 	//! Check whether the atom can be represented as an integer
 	static bool CanbeInt(const t_atom &a) { return IsFloat(a) || IsInt(a); }
-	//! Check for an integer and get its value 
-	static int GetAInt(const t_atom &a) { return (int)GetAFlint(a); }
 
 	//! Check whether the atom can be represented as a boolean
 	static bool CanbeBool(const t_atom &a) { return CanbeInt(a); }
 	//! Check for an boolean and get its value 
 	static bool GetABool(const t_atom &a) { return GetAInt(a) != 0; }
 
-	//! Check whether the atom is a float or integer (depending on the system)
-	static bool IsFlint(const t_atom &a) { return IsFloat(a) || IsInt(a); }
-	//! Check for a float or integer and get its value 
-	static float GetAFlint(const t_atom &a) { return IsFloat(a)?GetFloat(a):(IsInt(a)?GetInt(a):0); }
 #ifdef PD
+	//! Check for a float and get its value 
+	static float GetAFloat(const t_atom &a) { return IsFloat(a)?GetFloat(a):0; }
+
 	//! Check whether the atom is an integer
 	static bool IsInt(const t_atom &) { return false; }
 	//! Access the integer value (without type check)
-	static int GetInt(const t_atom &) { return 0; }
-//	static void SetInt(const t_atom &,int) { }
-
-	//! Set the atom to represent a float or integer (depending on the system)
-	static void SetFlint(t_atom &a,int v) { a.a_type = A_FLOAT; a.a_w.w_float = (float)v; }
+	static int GetInt(const t_atom &a) { return (int)GetFloat(a); }
+	//! Check for an integer and get its value 
+	static int GetAInt(const t_atom &a) { return (int)GetAFloat(a); }
+	//! Set the atom to represent a integer (depending on the system)
+	static void SetInt(t_atom &a,int v) { a.a_type = A_FLOAT; a.a_w.w_float = (float)v; }
 
 	//! Check whether the atom is a pointer
 	static bool IsPointer(const t_atom &a) { return a.a_type == A_POINTER; }
@@ -470,15 +465,17 @@ public:
 	static void SetPointer(t_atom &a,t_gpointer *p) { a.a_type = A_POINTER; a.a_w.w_gpointer = p; }
 
 #elif defined(MAXMSP)
+	//! Check for a float and get its value 
+	static float GetAFloat(const t_atom &a) { return IsFloat(a)?GetFloat(a):(IsInt(a)?GetInt(a):0); }
+
 	//! Check whether the atom is an int
 	static bool IsInt(const t_atom &a) { return a.a_type == A_INT; }
 	//! Access the integer value (without type check)
 	static int GetInt(const t_atom &a) { return a.a_w.w_long; }
+	//! Check for an integer and get its value 
+	static int GetAInt(const t_atom &a) { return IsInt(a)?GetInt(a):(IsFloat(a)?GetFloat(a):0); }
 	//! Set the atom to represent an integer
-	static void SetInt(t_atom &a,int v) { a.a_type = A_INT, a.a_w.w_long = v; }
-
-	//! Set the atom to represent a float or integer (depending on the system)
-	static void SetFlint(t_atom &a,int v) { a.a_type = A_INT; a.a_w.w_long = v; }
+	static void SetInt(t_atom &a,int v) { a.a_type = A_INT; a.a_w.w_long = v; }
 
 	//! Check whether the atom is a pointer
 	static bool IsPointer(const t_atom &) { return false; }
@@ -488,6 +485,22 @@ public:
 	static void *GetAPointer(const t_atom &) { return NULL; }
 //	static void SetPointer(t_atom &,void *) {}
 #endif
+
+/*
+// deprecated flint stuff
+	//! Check whether the atom is a float or integer (depending on the system)
+	static bool IsFlint(const t_atom &a) { return IsFloat(a) || IsInt(a); }
+	//! Check for a float or integer and get its value 
+	static float GetAFlint(const t_atom &a) { return IsFloat(a)?GetFloat(a):(IsInt(a)?GetInt(a):0); }
+
+#ifdef PD
+	//! Set the atom to represent a float or integer (depending on the system)
+	static void SetFlint(t_atom &a,int v) { a.a_type = A_FLOAT; a.a_w.w_float = (float)v; }
+#elif defined(MAXMSP)
+	//! Set the atom to represent a float or integer (depending on the system)
+	static void SetFlint(t_atom &a,int v) { a.a_type = A_INT; a.a_w.w_long = v; }
+#endif
+*/
 
 //!		@} 
 

@@ -83,21 +83,22 @@ Version history:
 - added Makefiles for OSX/darwin (originally done by Adam T. Lindsay)
 - added prepend and append functions to AtomList class
 - added CanbeBool and GetABool function
+- deprecated the remaining Get*Flint and Set*Flint functions - will be eliminated in flext 0.4.0
 
 0.3.3:
 - PD: fixed bug for DSP objects having no signal inlets
 - revisited priority stuff for detached threads
 - Bind/unbind functions for flext classes (in MaxMSP only one object can be bound)
-- Made "t_symtype" another synonym for "t_symbol *"
-- Added forgotten dsp_free function for MaxMSP
-- Fixed forgotten __class__ member for MaxMSP libraries
-- Changed basic MaxMSP object to t_pxbox (ok, a bit more memory is used....)
+- made "t_symtype" another synonym for "t_symbol *"
+- added forgotten dsp_free function for MaxMSP
+- fixed forgotten __class__ member for MaxMSP libraries
+- changed basic MaxMSP object to t_pxbox (ok, a bit more memory is used....)
 - MaxMSP library can now be loaded from startup folder (but can't use aliases)
 - if no handler is found for pure anything (just symbol, no args...) try list handler
-- add interface for SndObj (http://www.may.ie/academic/music/musictec/SndObj/ )
+- added interface for SndObj (http://www.may.ie/academic/music/musictec/SndObj/ )
 
 0.3.2:
-- doxygen generated inline documentation / functional reference
+- Doxygen generated inline documentation / functional reference
 - added some more functionality to the AtomAnything class
 - bugfix for threaded methods with var list or anything arguments
 - added threaded method for arbitrary (void *) data structs

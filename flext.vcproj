@@ -16,15 +16,15 @@
 			Name="Threads DLL Debug|Win32"
 			OutputDirectory=".\pd-msvc\tdl"
 			IntermediateDirectory=".\pd-msvc\tdl"
-			ConfigurationType="4"
+			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="c:\programme\audio\pd\src,f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_PD;FLEXT_THREADS;FLEXT_USE_SIMD"
+				AdditionalIncludeDirectories="f:\prog\pd\pd-cvs\src,f:\prog\packs\pthreads;f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_PD;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_PDLOCK"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
@@ -42,9 +42,11 @@
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="pd-msvc/flext_tdl-pdwin.lib"
-				SuppressStartupBanner="TRUE"/>
+				Name="VCLinkerTool"
+				AdditionalDependencies="pd.lib pthreadVC.lib stk_s.lib sndobj_s.lib"
+				OutputFile="./pd-msvc/flext_dl.dll"
+				AdditionalLibraryDirectories="F:\prog\max\pd\pd_dll\Debug;F:\prog\packs\pthreads;F:\prog\audio\sndobj\lib;F:\prog\audio\stk\lib"
+				OptimizeReferences="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -62,6 +64,8 @@
 			<Tool
 				Name="VCXMLDataGeneratorTool"/>
 			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
 				Name="VCManagedWrapperGeneratorTool"/>
 			<Tool
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
@@ -70,16 +74,19 @@
 			Name="Threads DLL Release|Win32"
 			OutputDirectory=".\pd-msvc\trl"
 			IntermediateDirectory=".\pd-msvc\trl"
-			ConfigurationType="4"
+			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="c:\programme\audio\pd\src,f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;FLEXT_SYS=2;FLEXT_THREADS;FLEXT_USE_SIMD"
+				Optimization="3"
+				GlobalOptimizations="TRUE"
+				InlineFunctionExpansion="2"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories="f:\prog\pd\pd-cvs\src,f:\prog\packs\pthreads;f:\prog\audio\sndobj\include,f:\prog\audio\stk\include"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;FLEXT_SYS=2;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_PDLOCK"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
@@ -96,9 +103,11 @@
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="pd-msvc/flext_tl-pdwin.lib"
-				SuppressStartupBanner="TRUE"/>
+				Name="VCLinkerTool"
+				AdditionalDependencies="pd.lib pthreadVC.lib stk_s.lib sndobj_s.lib"
+				OutputFile="./pd-msvc/flext_l.dll"
+				AdditionalLibraryDirectories="F:\prog\max\pd\pd_dll\release;F:\prog\packs\pthreads;F:\prog\audio\sndobj\lib;F:\prog\audio\stk\lib"
+				OptimizeReferences="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -115,6 +124,8 @@
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
 				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
 			<Tool
 				Name="VCManagedWrapperGeneratorTool"/>
 			<Tool

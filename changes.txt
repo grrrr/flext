@@ -307,12 +307,17 @@ Porting to new compilers/platforms:
 
 TODO list:
 
-for 0.4.7:
+for 0.4.8:
 - SIMD for gcc
 - Max/MSP MachO support
 
+for 0.5.0:
+- optimizations for object initialization and messaging
+
 bugs:
 - recreation of object with different argument line forgets about eventually present attributes
+
+- can't use MFC libraries because of global new and delete overloadings
 
 TEST:
 - PD: problems with timed buffer redrawing (takes a lot of cpu time)
@@ -320,7 +325,6 @@ TEST:
 - Max rounding bug ... buffer resize could be one sample less!
 - flext_dsp: Max/MSP doesn't correctly report in/out channel counts
 
-- can't use MFC libraries because of global new and delete overloadings
 
 general:
 - documentation

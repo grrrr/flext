@@ -329,6 +329,9 @@ tests:
 - what about FLEXT_ADDMETHOD_V (for var arg lists) and FLEXT_ADDMETHOD_A (anythings)... nonsense?
 	-> yes, these definitions obscure the meaning of _ as an indication for usage of a message tag
 
+- check whether m_dsp gets called upon deletion of a used buffer (PD and MaxMSP may behave differently).
+
+
 features:
 - abstraction for clock functions
 - manage running threads individually (stop, isrunning?, priority etc.)

@@ -173,7 +173,8 @@ void flext_base::AddXlet(xlet::type tp,int mult,xlet *&root)
 
 void flext_base::ToOutBang(outlet *o) { outlet_bang((t_outlet *)o); }
 void flext_base::ToOutFloat(outlet *o,float f) { outlet_float((t_outlet *)o,f); }
-void flext_base::ToOutFlint(outlet *o,t_flint f) { outlet_flint((t_outlet *)o,f); }
+//void flext_base::ToOutFlint(outlet *o,t_flint f) { outlet_flint((t_outlet *)o,f); }
+void flext_base::ToOutInt(outlet *o,int f) { outlet_flint((t_outlet *)o,f); }
 void flext_base::ToOutSymbol(outlet *o,const t_symbol *s) { outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); }
 void flext_base::ToOutList(outlet *o,int argc,t_atom *argv) { outlet_list((t_outlet *)o,gensym("list"),argc,argv); }
 void flext_base::ToOutAnything(outlet *o,const t_symbol *s,int argc,t_atom *argv) { outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,argv); }
@@ -233,7 +234,8 @@ bool flext_base::SetupInOut()
 			for(int ix = 1; ix < incnt; ++ix,++cnt) {
 				switch(list[ix]) {
 					case xlet::tp_float:
-					case xlet::tp_flint: {
+//					case xlet::tp_flint: {
+					case xlet::tp_int: {
 						char sym[] = "ft??";
 						if(ix >= 10) { 
 							if(compatibility) {
@@ -308,9 +310,10 @@ bool flext_base::SetupInOut()
 							else
 								floatin(x_obj,ix);  
 							break;
-						case xlet::tp_flint:
+//						case xlet::tp_flint:
+						case xlet::tp_int:
 							if(ix >= 10) { 
-								post("%s: Only 9 t_flint inlets possible",thisName());
+								post("%s: Only 9 int inlets possible",thisName());
 								ok = false;
 							}
 							else
@@ -367,7 +370,12 @@ bool flext_base::SetupInOut()
 				case xlet::tp_float:
 					outlets[ix] = (outlet *)newout_float(&x_obj->obj);
 					break;
+/*
 				case xlet::tp_flint: 
+					outlets[ix] = (outlet *)newout_flint(&x_obj->obj);
+					break;
+*/
+				case xlet::tp_int: 
 					outlets[ix] = (outlet *)newout_flint(&x_obj->obj);
 					break;
 				case xlet::tp_sig:

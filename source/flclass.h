@@ -141,8 +141,10 @@ public:
 	void AddInAnything(int m = 1) { AddInlet(xlet::tp_any,m); } // leftmost or via proxy
 	//! add inlet(s) for floats
 	void AddInFloat(int m = 1) { AddInlet(xlet::tp_float,m); }
+	//! add inlet(s) for ints
+	void AddInInt(int m = 1) { AddInlet(xlet::tp_int,m); }
 	//! add inlet(s) for flints
-	void AddInFlint(int m = 1) { AddInlet(xlet::tp_flint,m); }
+//	void AddInFlint(int m = 1) { AddInlet(xlet::tp_flint,m); }
 	//! add inlet(s) for symbols
 	void AddInSymbol(int m = 1) { AddInlet(xlet::tp_sym,m); }
 	//! add inlet(s) for lists
@@ -152,8 +154,10 @@ public:
 	void AddOutAnything(int m = 1) { AddOutlet(xlet::tp_any,m); }
 	//! add outlet(s) for floats
 	void AddOutFloat(int m = 1) { AddOutlet(xlet::tp_float,m); }
+	//! add outlet(s) for ints
+	void AddOutInt(int m = 1) { AddOutlet(xlet::tp_int,m); }
 	//! add outlet(s) for flints
-	void AddOutFlint(int m = 1) { AddOutlet(xlet::tp_flint,m); }
+//	void AddOutFlint(int m = 1) { AddOutlet(xlet::tp_flint,m); }
 	//! add outlet(s) for symbols
 	void AddOutSymbol(int m = 1) { AddOutlet(xlet::tp_sym,m); }
 	//! add outlet(s) for lists
@@ -190,9 +194,13 @@ public:
 	//! output float (index n starts with 0)
 	void ToOutFloat(int n,float f) { outlet *o = GetOut(n); if(o) ToOutFloat(o,f); }
 
-	void ToOutFlint(outlet *o,t_flint f); 
+//	void ToOutFlint(outlet *o,t_flint f); 
 	//! output flint (index n starts with 0)
-	void ToOutFlint(int n,t_flint f) { outlet *o = GetOut(n); if(o) ToOutFlint(o,f); }
+//	void ToOutFlint(int n,t_flint f) { outlet *o = GetOut(n); if(o) ToOutFlint(o,f); }
+	
+	void ToOutInt(outlet *o,int f); 
+	//! output int (index n starts with 0)
+	void ToOutInt(int n,int f) { outlet *o = GetOut(n); if(o) ToOutInt(o,f); }
 	
 	void ToOutSymbol(outlet *o,const t_symbol *s); 
 	//! output symbol (index n starts with 0)
@@ -229,7 +237,11 @@ public:
 	void AddMethod(int inlet,void (*m)(flext_base *,float &)) { AddMethod(inlet,"float",(methfun)m,a_float,a_null); }  // single float
 	void AddMethod(int inlet,void (*m)(flext_base *,float &,float &)) { AddMethod(inlet,"list",(methfun)m,a_float,a_float,a_null); } // list of 2 floats
 	void AddMethod(int inlet,void (*m)(flext_base *,float &,float &,float &)) { AddMethod(inlet,"list",(methfun)m,a_float,a_float,a_float,a_null); } // list of 3 floats
+#ifdef PD
+	void AddMethod(int inlet,void (*m)(flext_base *,int &)) { AddMethod(inlet,"float",(methfun)m,a_int,a_null); }  // single float
+#else
 	void AddMethod(int inlet,void (*m)(flext_base *,int &)) { AddMethod(inlet,"int",(methfun)m,a_int,a_null); }  // single float
+#endif
 	void AddMethod(int inlet,void (*m)(flext_base *,int &,int &)) { AddMethod(inlet,"list",(methfun)m,a_int,a_int,a_null); } // list of 2 floats
 	void AddMethod(int inlet,void (*m)(flext_base *,int &,int &,int &)) { AddMethod(inlet,"list",(methfun)m,a_int,a_int,a_int,a_null); } // list of 3 floats
 	void AddMethod(int inlet,const char *tag,void (*m)(flext_base *,int argc,t_atom *argv)) { AddMethod(inlet,tag,(methfun)m,a_gimme,a_null); } // method+gimme
@@ -328,7 +340,7 @@ protected:
 	struct xlet {	
 		enum type {
 			tp_none = 0,
-			tp_float,tp_flint,tp_sym,tp_list,tp_sig,tp_any
+			tp_float,/*tp_flint,*/ tp_int,tp_sym,tp_list,tp_sig,tp_any
 		};
 
 		xlet(type t): tp(t),nxt(NULL) {}

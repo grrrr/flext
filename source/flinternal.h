@@ -47,7 +47,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define newout_symbol(clss) outlet_new(clss,&s_symbol)
 #define newout_anything(clss) outlet_new(clss,&s_anything)
 
-#define outlet_flint(o,v) outlet_float(o,v)
+#define outlet_flint(o,v) outlet_float(o,(float)(v))
 
 typedef t_perfroutine t_dspmethod;
 
@@ -87,7 +87,7 @@ typedef void t_outlet;
 #define newout_symbol(clss) outlet_new(clss,"symbol")
 #define newout_anything(clss) outlet_new(clss,"anything")
 
-#define outlet_flint(o,v) outlet_int(o,v)
+#define outlet_flint(o,v) outlet_int(o,(int)(v))
 #define outlet_symbol(o,s) outlet_anything(o,s,0,NULL)
 
 typedef t_perfroutine t_dspmethod;

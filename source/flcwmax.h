@@ -16,6 +16,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <MacHeaders.h>
 
 #define MAXMSP
+ 
+#if !defined(__OPTIMIZE__) || __OPTIMIZE__ == 0
+#define _DEBUG
+#endif
 
 //#define _LOG
 

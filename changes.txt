@@ -29,9 +29,10 @@ Version history:
 - removed virtual flext_dsp::m_enable function (which wasn't present for Max/MSP)
 - added m_click method which gets called on alt-click (PD) resp. double clicks (Max) onto the object box
 - in ToOut check if we are inside dsp (and use ToQueue then...)
-- some restructuring and use symbols (rather the char *) natively for AddMethod* and AddAttrib* functions
+- some restructuring and use symbols (rather than char *) natively for AddMethod* and AddAttrib* functions
 - added some more SIMD functionality
 - fixes to flext::Timer::At method
+- eliminated misleading flext_dsp::ChannelsIn and ChannelsOut
 
 0.4.7:
 - added flext::GetBool (just because flext::GetInt has been there for a while)

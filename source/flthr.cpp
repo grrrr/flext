@@ -69,14 +69,14 @@ bool flext::StartHelper()
         // now we have to wait for thread helper to initialize
         while(!thrhelpid || !thrhelpcond) Sleep(0.001);
 
-        // we are reading for threading now!
+        // we are ready for threading now!
     }
 	return ok;
 }
 
 #if 0
 /*! \brief Stop helper thread
-	\note not called!
+	\note Never called!
 */
 bool flext::StopHelper()
 {
@@ -84,6 +84,7 @@ bool flext::StopHelper()
 	if(thrhelpcond) thrhelpcond->Signal();
 }
 #endif
+
 
 //! Static helper thread function
 void flext::ThrHelper(void *)

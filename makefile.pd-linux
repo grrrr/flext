@@ -144,6 +144,9 @@ endif
 
 install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD) $(TARGET_S) $(TARGET_SD)  $(patsubst %,$(SRCDIR)/%,$(HDRS))
 	cp $^ $(INSTDIR)
+
+	#make compatibility links for old-style naming
 	for i in $(foreach f,$(notdir $(filter %.a,$^)),$(patsubst lib%.a,%,$(f))); do rm -f $(INSTDIR)/$$i.a && ln -sf lib$$i.a $(INSTDIR)/$$i.a; done 
+
 	chmod a+r $(patsubst %,$(INSTDIR)/%,$(notdir $^))
 	chown root.users $(patsubst %,$(INSTDIR)/%,$(notdir $^))

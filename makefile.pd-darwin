@@ -14,12 +14,25 @@ include ${CONFIG}
 
 # compiler+linker stuff 
 INCLUDES=${PDPATH}
-FLAGS=-DFLEXT_SYS=2 -Wno-unused -Wno-parentheses -Wno-switch -Wstrict-prototypes
-FLAGS+=${UFLAGS}
-CFLAGS=-O6 
+FLAGS=-DFLEXT_SYS=2 ${UFLAGS}
+
+# compiler flags for optimized build
+CFLAGS=-O2
+
+# compiler flags for debug build
 CFLAGS_D=-g
+
+# additional flags for threading
 CFLAGS_T=-DFLEXT_THREADS
-LIBS=gcc 
+
+# additional flags for shared library
+CFLAGS_S=-DFLEXT_SHARED -DFLEXT_EXPORTS
+
+# flags for shared linking
+LSHFLAGS= -dylib -dynamic -flat_namespace -undefined suppress
+
+# frameworks
+FRAMEWORKS=Carbon veclib
 
 
 # ----------------------------------------------
@@ -28,7 +41,7 @@ LIBS=gcc
 
 NAME=flext
 
-SRCDIR=source
+SRCDIR=./source
 
 # all the source files from the package
 include make-files.txt
@@ -45,23 +58,16 @@ SRCS+=$(SRCS_STK)
 HDRS+=$(HDRS_STK)
 endif
 
-# for FLEXT_USE_SIMD
-CFLAGS+=-framework Carbon -framework veclib -Fveclib -FCarbon
 
 MAKEFILE=makefile.pd-darwin
-ifndef V4_NAMING
+
 TARGET=$(TARGDIR)/lib$(NAME).a
 TARGET_D=$(TARGDIR)/lib$(NAME)_d.a
 TARGET_T=$(TARGDIR)/lib$(NAME)_t.a
 TARGET_TD=$(TARGDIR)/lib$(NAME)_td.a
-else
-TARGET=$(TARGDIR)/$(NAME).a
-TARGET_D=$(TARGDIR)/$(NAME)_d.a
-TARGET_T=$(TARGDIR)/$(NAME)_t.a
-TARGET_TD=$(TARGDIR)/$(NAME)_td.a
-endif
 TARGET_S=$(TARGDIR)/lib$(NAME).dylib
 TARGET_SD=$(TARGDIR)/lib$(NAME)_d.dylib
+
 
 all: $(TARGDIR) $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD)   $(TARGET_S) $(TARGET_SD)
 
@@ -72,22 +78,22 @@ $(patsubst %,$(SRCDIR)/%,$(SRCS)): $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(patsubst 
 	touch $@
 
 $(TARGDIR)/%.o : $(SRCDIR)/%.cpp
-	$(CXX) -c -dynamic $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
+	$(CXX) -c -dynamic $(CFLAGS) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $(patsubst %,-F%,$(FRAMEWORKS)) $< -o $@
 
 $(TARGDIR)/%.do : $(SRCDIR)/%.cpp
-	$(CXX) -c -dynamic $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
+	$(CXX) -c -dynamic $(CFLAGS_D) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $(patsubst %,-F%,$(FRAMEWORKS)) $< -o $@
 
 $(TARGDIR)/%.to : $(SRCDIR)/%.cpp
-	$(CXX) -c -dynamic $(CFLAGS) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
+	$(CXX) -c -dynamic $(CFLAGS) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $(patsubst %,-F%,$(FRAMEWORKS)) $< -o $@
 
 $(TARGDIR)/%.tdo : $(SRCDIR)/%.cpp
-	$(CXX) -c -dynamic $(CFLAGS_D) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
+	$(CXX) -c -dynamic $(CFLAGS_D) $(CFLAGS_T) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $(patsubst %,-F%,$(FRAMEWORKS)) $< -o $@
 
 $(TARGDIR)/%.so : $(SRCDIR)/%.cpp
-	$(CXX) -c -dynamic $(CFLAGS) $(CFLAGS_T) $(FLAGS) -DFLEXT_SHARED $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
+	$(CXX) -c -dynamic $(CFLAGS) $(CFLAGS_T)  $(CFLAGS_S) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $(patsubst %,-F%,$(FRAMEWORKS)) $< -o $@
 
-$(TARGDIR)/%.sdo : $(SRCDIR)/%.cpp
-	$(CXX) -c -dynamic $(CFLAGS_D) $(CFLAGS_T) $(FLAGS) -DFLEXT_SHARED $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $< -o $@
+$(TARGDIR)/%.sdo : $(SRCDIR)/%.cpp 
+	$(CXX) -c -dynamic $(CFLAGS_D) $(CFLAGS_T)  $(CFLAGS_S) $(FLAGS) $(patsubst %,-I%,$(INCLUDES) $(SRCDIR)) $(patsubst %,-F%,$(FRAMEWORKS)) $< -o $@
 
 $(TARGET) : $(patsubst %.cpp,$(TARGDIR)/%.o,$(SRCS)) 
 	libtool -static -o $@ $^
@@ -102,10 +108,10 @@ $(TARGET_TD) : $(patsubst %.cpp,$(TARGDIR)/%.tdo,$(SRCS))
 	libtool -static -o $@ $^
 
 $(TARGET_S) : $(patsubst %.cpp,$(TARGDIR)/%.so,$(SRCS))
-	ld -dylib -dynamic -flat_namespace -undefined suppress -lgcc -lstdc++ -ldylib1.o -o $@ $^
+	ld $(LSHFLAGS) -o $@ $^ -ldylib1.o -lgcc -lstdc++ $(patsubst %,-framework %,$(FRAMEWORKS)) 
 
 $(TARGET_SD) : $(patsubst %.cpp,$(TARGDIR)/%.sdo,$(SRCS))
-	ld -dylib -dynamic -flat_namespace -undefined suppress -lgcc -lstdc++ -ldylib1.o -o $@ $^
+	ld $(LSHFLAGS) -o $@ $^ -ldylib1.o -lgcc -lstdc++ $(patsubst %,-framework %,$(FRAMEWORKS)) 
 
 .PHONY: clean install
 
@@ -123,6 +129,10 @@ install:: $(TARGET) $(TARGET_D) $(TARGET_T) $(TARGET_TD) $(TARGET_S) $(TARGET_SD
 	cp $^ $(INSTDIR)
 	mv $(INSTDIR)/lib*.dylib /usr/local/lib
 	ranlib $(INSTDIR)/*.a  # have to rerun ranlib at install dir ?!
+	
+	#make compatibility links for old-style naming
+	for i in $(foreach f,$(notdir $(filter %.a,$^)),$(patsubst lib%.a,%,$(f))); do rm -f $(INSTDIR)/$$i.a && ln -sf lib$$i.a $(INSTDIR)/$$i.a; done 
+
 #	chmod 755 $(patsubst %,$(INSTDIR)/%,$(notdir $^))
 #	chgrp admin $(patsubst %,$(INSTDIR)/%,$(notdir $^))
 

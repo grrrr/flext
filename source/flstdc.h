@@ -13,8 +13,8 @@ this file contains a few definitions to unite a few of the notions that
 once drifted apart in Max and PD. It is not elegant but helps.
 */
 
-#ifndef __FLEXT_H
-#define __FLEXT_H
+#ifndef __FLSTDC_H
+#define __FLSTDC_H
 
 #define F float 
 #define D double
@@ -158,9 +158,9 @@ typedef _outlet t_outlet;
 
 
 #if defined(NT)
-#define EXT_EXTERN __declspec(dllexport)
+#define FLEXT_EXT __declspec(dllexport)
 #else                   // other OS's
-#define EXT_EXTERN
+#define FLEXT_EXT
 #endif
 
 #endif

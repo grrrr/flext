@@ -8,22 +8,22 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-#ifndef _FLEXT_CPPEXT_H
-#define _FLEXT_CPPEXT_H
+#ifndef __FLEXT_H
+#define __FLEXT_H
 
-#include <_cpp.h>
+#include <flbase.h> 
 
 
 // ----------------------------
 
-class ext_obj:
-	public CPPExtern
+class flext_base:
+	public flext_obj
 {
-	CPPEXTERN_HEADER(ext_obj,CPPExtern)
+	FLEXT_HEADER(flext_base,flext_obj)
 	
 public:
-	ext_obj();
-	virtual ~ext_obj();
+	flext_base();
+	virtual ~flext_base();
 	
 	virtual V m_help();
 	
@@ -126,13 +126,13 @@ private:
 
 // ----------------------------
 
-class dsp_obj:
-	public ext_obj
+class flext_dsp:
+	public flext_base
 {
-	CPPEXTERN_HEADER(dsp_obj,ext_obj)
+	FLEXT_HEADER(flext_dsp,flext_base)
 	
 public:
-	dsp_obj();
+	flext_dsp();
 	
 	virtual V m_dsp(t_signal **s) = 0;
 	virtual V m_enable(BL on);

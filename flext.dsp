@@ -63,8 +63,8 @@ LIB32=link.exe -lib
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ  /c
-# ADD CPP /nologo /W3 /Gm /GR /GX /ZI /Od /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /YX /FD /GZ  /c
+# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GR /GX /ZI /Od /I "c:\programme\audio\pd\src" /I "." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "PD" /D "NT" /YX /FD /GZ /c
 # ADD BASE RSC /l 0xc07 /d "_DEBUG"
 # ADD RSC /l 0xc07 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -82,31 +82,31 @@ LIB32=link.exe -lib
 # Name "flext - Win32 Debug"
 # Begin Source File
 
-SOURCE=.\_cpp.cpp
+SOURCE=.\flbase.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\_cpp.h
+SOURCE=.\flbase.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\_cppext.cpp
+SOURCE=.\flbuf.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\_cppext.h
+SOURCE=.\flcwmax.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\buffer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=".\cw-max.h"
+SOURCE=.\flext.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\flext.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\flstdc.h
 # End Source File
 # End Target
 # End Project

@@ -8,25 +8,25 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-#include <_cppext.h>
+#include <flext.h>
 
-// -- ext_obj --------------------------
+// -- flext_base --------------------------
 
-ext_obj::ext_obj():
+flext_base::flext_base():
 	inlist(NULL),outlist(NULL),
 	out(NULL),outcnt(0)
 {}
 
-ext_obj::~ext_obj()
+flext_base::~flext_base()
 {
 	if(inlist) delete inlist;
 	if(outlist) delete outlist;
 	if(out) delete[] out;
 }
 
-ext_obj::xlet::~xlet() { if(nxt) delete nxt; }
+flext_base::xlet::~xlet() { if(nxt) delete nxt; }
 
-V ext_obj::AddXlet(xlet::type tp,I mult,xlet *&root)
+V flext_base::AddXlet(xlet::type tp,I mult,xlet *&root)
 {
 	if(!root && mult) { root = new xlet(tp); --mult; }
 	if(mult) {
@@ -36,7 +36,7 @@ V ext_obj::AddXlet(xlet::type tp,I mult,xlet *&root)
 	}
 }
 
-BL ext_obj::SetupInOut()
+BL flext_base::SetupInOut()
 {
 	BL ok = true;
 	
@@ -173,7 +173,7 @@ BL ext_obj::SetupInOut()
 
 
 
-V ext_obj::cb_setup(t_class *c)
+V flext_base::cb_setup(t_class *c)
 {
 	add_method0(c,cb_help,"help");
 	
@@ -183,22 +183,22 @@ V ext_obj::cb_setup(t_class *c)
 #endif
 }
 
-V ext_obj::cb_help(V *c) { thisObject(c)->m_help(); }	
+V flext_base::cb_help(V *c) { thisObject(c)->m_help(); }	
 
 #ifdef MAXMSP
-V ext_obj::cb_loadbang(V *c) { thisObject(c)->m_loadbang(); }	
-V ext_obj::cb_assist(V *c,V *b,L msg,L arg,C *s) { thisObject(c)->m_assist(msg,arg,s); }
+V flext_base::cb_loadbang(V *c) { thisObject(c)->m_loadbang(); }	
+V flext_base::cb_assist(V *c,V *b,L msg,L arg,C *s) { thisObject(c)->m_assist(msg,arg,s); }
 #endif
 
-V ext_obj::m_help()
+V flext_base::m_help()
 {
 	// This should better be overloaded
 	post("Loaded object '%s' - compiled on %s %s",thisName(),__DATE__,__TIME__);
 }
 
-// -- dsp_obj --------------------------
+// -- flext_dsp --------------------------
 
-V dsp_obj::cb_setup(t_class *c)
+V flext_dsp::cb_setup(t_class *c)
 {
 	enable_signal(c);
 	
@@ -206,10 +206,10 @@ V dsp_obj::cb_setup(t_class *c)
 	add_method1(c,cb_enable,"enable",A_FLINT);
 }
 
-dsp_obj::dsp_obj(): enable(true) {}
+flext_dsp::flext_dsp(): enable(true) {}
 
-V dsp_obj::cb_dsp(V *c,t_signal **s) { thisObject(c)->m_dsp(s); }
-V dsp_obj::cb_enable(V *c,FI on) { thisObject(c)->m_enable(on != 0); }
+V flext_dsp::cb_dsp(V *c,t_signal **s) { thisObject(c)->m_dsp(s); }
+V flext_dsp::cb_enable(V *c,FI on) { thisObject(c)->m_enable(on != 0); }
 
-V dsp_obj::m_enable(BL en) { enable = en; }
+V flext_dsp::m_enable(BL en) { enable = en; }
 

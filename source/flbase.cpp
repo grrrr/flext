@@ -10,21 +10,21 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // This is all borrowed from GEM by Mark Danks
  
-#include "_cpp.h"
+#include "flbase.h"
 
-EXT_EXTERN void *operator new(size_t, void *location, void *) {return(location);}
+FLEXT_EXT void *operator new(size_t, void *location, void *) {return(location);}
 
-t_sigobj *CPPExtern::m_holder;
+t_sigobj *flext_obj::m_holder;
 
 /////////////////////////////////////////////////////////
 //
-// CPPExtern
+// flext_obj
 //
 /////////////////////////////////////////////////////////
 // Constructor
 //
 /////////////////////////////////////////////////////////
-CPPExtern :: CPPExtern()
+flext_obj :: flext_obj()
            : x_obj(m_holder)
 {
 #ifdef PD
@@ -38,5 +38,5 @@ CPPExtern :: CPPExtern()
 // Destructor
 //
 /////////////////////////////////////////////////////////
-CPPExtern :: ~CPPExtern()
+flext_obj :: ~flext_obj()
 { }

@@ -11,10 +11,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // This is all borrowed from GEM by Mark Danks
 
 
-#ifndef _FLEXT_CPP_H
-#define _FLEXT_CPP_H
+#ifndef _FLBASE_H
+#define _FLBASE_H
 
-#include <flext.h>
+#include <flstdc.h>
 
 #ifdef __GNUC__
 #include <typeinfo>
@@ -22,7 +22,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <typeinfo.h>
 #endif
 
-class CPPExtern;
+class flext_obj;
 
 /*-----------------------------------------------------------------
 -------------------------------------------------------------------
@@ -35,11 +35,11 @@ DESCRIPTION
     
     This is in a separate struct to assure that when PD uses the
     class, the t_object is the very first thing.  If it were the 
-    first thing in CPPExtern, then there could be problems with
+    first thing in flext_obj, then there could be problems with
     the vtable.
      
 -----------------------------------------------------------------*/
-struct EXT_EXTERN Obj_header
+struct FLEXT_EXT Obj_header
 {
     	//////////
     	// The obligatory object header
@@ -50,13 +50,13 @@ struct EXT_EXTERN Obj_header
 
     	//////////
     	// Our data structure
-        CPPExtern           *data;
+        flext_obj           *data;
 };
 
 /*-----------------------------------------------------------------
 -------------------------------------------------------------------
 CLASS
-    CPPExtern
+    flext_obj
     
     The base class for all externs written in C++
 
@@ -70,26 +70,26 @@ DESCRIPTION
     
     The define
     
-        CPPEXTERN_HEADER(NEW_CLASS, PARENT_CLASS)
+        FLEXT_HEADER(NEW_CLASS, PARENT_CLASS)
     
     should be somewhere in your header file.
     One of the defines like
     
-    CPPEXTERN_NEW(NEW_CLASS)
-    CPPEXTERN_NEW_WITH_TWO_ARGS(NEW_CLASS, t_floatarg, A_FLOAT, t_floatarg, A_FLOAT)
+    FLEXT_NEW(NEW_CLASS)
+    FLEXT_NEW_WITH_TWO_ARGS(NEW_CLASS, t_floatarg, A_FLOAT, t_floatarg, A_FLOAT)
     
     should be the first thing in your implementation file.
     NEW_CLASS is the name of your class and PARENT_CLASS is the 
     parent of your class.
         
 -----------------------------------------------------------------*/
-class EXT_EXTERN CPPExtern
+class FLEXT_EXT flext_obj
 {
     public:
 
         //////////
         // Constructor
-    	CPPExtern();
+    	flext_obj();
 
         //////////
         // The object header
@@ -97,7 +97,7 @@ class EXT_EXTERN CPPExtern
 
     	//////////
     	// Destructor
-    	virtual ~CPPExtern() = 0;
+    	virtual ~flext_obj() = 0;
     	
         //////////
         // Get the object's canvas
@@ -106,6 +106,10 @@ class EXT_EXTERN CPPExtern
         //////////
         // This is a holder - don't touch it
         static t_sigobj     *m_holder;
+
+        //////////
+        // the class name (as used in a patch)
+		const char *m_name;    
 
     protected:
     	
@@ -131,29 +135,29 @@ class EXT_EXTERN CPPExtern
 };
 
 // This has a dummy arg so that NT won't complain
-EXT_EXTERN void *operator new(size_t, void *location, void *dummy);
+FLEXT_EXT void *operator new(size_t, void *location, void *dummy);
 
 ////////////////////////////////////////
 // This should be used in the header
 ////////////////////////////////////////
 
 #ifdef PD
-#define CPPEXTERN_GETCLASS(obj) ((t_class *)((t_object *)(obj))->te_g.g_pd)
+#define FLEXT_GETCLASS(obj) ((t_class *)((t_object *)(obj))->te_g.g_pd)
 #elif defined(MAXMSP)
-#define CPPEXTERN_GETCLASS(obj) ((t_class *)(((t_tinyobject *)obj)->t_messlist-1))
+#define FLEXT_GETCLASS(obj) ((t_class *)(((t_tinyobject *)obj)->t_messlist-1))
 #endif
 
-#define CPPEXTERN_HEADER(NEW_CLASS, PARENT_CLASS)    	    	\
+#define FLEXT_HEADER(NEW_CLASS, PARENT_CLASS)    	    	\
 public:     	    	    \
-const char *thisName() const { return typeid(*this).name(); /*#return NEW_CLASS;*/ } 	    	\
+const char *thisName() const { return m_name; /*#return NEW_CLASS;*/ } 	    	\
 static void callb_free(void *data)    	    	    	\
-{ CPPExtern *mydata = ((Obj_header *)data)->data; delete mydata; \
+{ flext_obj *mydata = ((Obj_header *)data)->data; delete mydata; \
   ((Obj_header *)data)->Obj_header::~Obj_header(); }   	    	\
 static void callb_setup(t_class *classPtr)  	    	\
 { PARENT_CLASS::callb_setup(classPtr);    	    	\
   NEW_CLASS::cb_setup(classPtr); }  	    	    	\
 private:    \
-inline t_class *thisClass() { return CPPEXTERN_GETCLASS(x_obj); } \
+inline t_class *thisClass() { return FLEXT_GETCLASS(x_obj); } \
 static NEW_CLASS *thisObject(V *c) { return (NEW_CLASS *)((Obj_header *)c)->data; }	    	   \
 static void cb_setup(t_class *classPtr);
 
@@ -165,37 +169,37 @@ static void cb_setup(t_class *classPtr);
 //
 // NO ARGUMENTS
 /////////////////////////////////////////////////
-#define CPPEXTERN_NEW(NAME,NEW_CLASS)    	    	    	    	\
+#define FLEXT_NEW(NAME,NEW_CLASS)    	    	    	    	\
     REAL_NEW(NAME,NEW_CLASS, _setup, _class)
 
 //
 // ONE ARGUMENT
 /////////////////////////////////////////////////
-#define CPPEXTERN_NEW_WITH_ONE_ARG(NAME,NEW_CLASS, TYPE, PD_TYPE)    \
+#define FLEXT_NEW_WITH_ONE_ARG(NAME,NEW_CLASS, TYPE, PD_TYPE)    \
     REAL_NEW_WITH_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, PD_TYPE)
 
 //
 // GIMME ARGUMENT
 /////////////////////////////////////////////////
-#define CPPEXTERN_NEW_WITH_GIMME(NAME,NEW_CLASS)  	    	    	\
+#define FLEXT_NEW_WITH_GIMME(NAME,NEW_CLASS)  	    	    	\
     REAL_NEW_WITH_GIMME(NAME,NEW_CLASS, _setup, _class)
 
 //
 // TWO ARGUMENTS
 /////////////////////////////////////////////////
-#define CPPEXTERN_NEW_WITH_TWO_ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO)	\
+#define FLEXT_NEW_WITH_TWO_ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO)	\
     REAL_NEW_WITH_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO)
 
 //
 // THREE ARGUMENTS
 /////////////////////////////////////////////////
-#define CPPEXTERN_NEW_WITH_THREE_ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE)	\
+#define FLEXT_NEW_WITH_THREE_ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE)	\
     REAL_NEW_WITH_ARG_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE)
 
 //
 // FOUR ARGUMENTS
 /////////////////////////////////////////////////
-#define CPPEXTERN_NEW_WITH_FOUR_ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE, TFOUR, PD_FOUR) \
+#define FLEXT_NEW_WITH_FOUR_ARGS(NAME,NEW_CLASS, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE, TFOUR, PD_FOUR) \
     REAL_NEW_WITH_ARG_ARG_ARG_ARG(NAME,NEW_CLASS, _setup, _class, TYPE, PD_TYPE, TTWO, PD_TWO, TTHREE, PD_THREE, TFOUR, PD_FOUR)
 
 ////////////////////////////////////////
@@ -203,11 +207,11 @@ static void cb_setup(t_class *classPtr);
 ////////////////////////////////////////
 
 #ifdef PD
-#define CPPEXTERN_NEWFN ::class_new
-#define CPPEXTERN_CLREF(NAME,CLASS) gensym(NAME)
+#define FLEXT_NEWFN ::class_new
+#define FLEXT_CLREF(NAME,CLASS) gensym(NAME)
 #elif defined(MAXMSP)
-#define CPPEXTERN_NEWFN NULL; ::setup
-#define CPPEXTERN_CLREF(NAME,CLASS) (t_messlist **)&(CLASS)
+#define FLEXT_NEWFN NULL; ::setup
+#define FLEXT_CLREF(NAME,CLASS) (t_messlist **)&(CLASS)
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -225,16 +229,17 @@ static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS ()                              \
 {     	    	    	    	    	    	    	    	\
     Obj_header *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) Obj_header; \
-    CPPExtern::m_holder = &obj->pd_obj;                         \
+    flext_obj::m_name = NAME;                         \
+    flext_obj::m_holder = &obj->pd_obj;                         \
     obj->data = new NEW_CLASS;                                  \
-    CPPExtern::m_holder = NULL;                                 \
+    flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
 void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
-    NEW_CLASS ## EXTERN_NAME = CPPEXTERN_NEWFN(                       \
-    	     	CPPEXTERN_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
+    NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
+    	     	FLEXT_CLREF(NEW_CLASS::m_name,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(Obj_header), 0,                          \
@@ -251,16 +256,16 @@ static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (VAR_TYPE arg)                  \
 {     	    	    	    	    	    	    	    	\
     Obj_header *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) Obj_header; \
-    CPPExtern::m_holder = &obj->pd_obj;                         \
+    flext_obj::m_holder = &obj->pd_obj;                         \
     obj->data = new NEW_CLASS(arg);                             \
-    CPPExtern::m_holder = NULL;                                 \
+    flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
 void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
-    NEW_CLASS ## EXTERN_NAME = CPPEXTERN_NEWFN(                       \
-    	     	CPPEXTERN_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
+    NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
+    	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(Obj_header), 0,                          \
@@ -278,16 +283,16 @@ static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (t_symbol *, int argc, t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     Obj_header *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) Obj_header; \
-    CPPExtern::m_holder = &obj->pd_obj;                         \
+    flext_obj::m_holder = &obj->pd_obj;                         \
     obj->data = new NEW_CLASS(argc, argv);                      \
-    CPPExtern::m_holder = NULL;                                 \
+    flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
 void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
-    NEW_CLASS ## EXTERN_NAME = CPPEXTERN_NEWFN(                       \
-    	     	CPPEXTERN_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
+    NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
+    	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(Obj_header), 0,                          \
@@ -305,16 +310,16 @@ static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo) \
 {     	    	    	    	    	    	    	    	\
     Obj_header *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) Obj_header; \
-    CPPExtern::m_holder = &obj->pd_obj;                         \
+    flext_obj::m_holder = &obj->pd_obj;                         \
     obj->data = new NEW_CLASS(arg, argtwo);                     \
-    CPPExtern::m_holder = NULL;                                 \
+    flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
 void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
-    NEW_CLASS ## EXTERN_NAME = CPPEXTERN_NEWFN(                       \
-    	     	CPPEXTERN_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
+    NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
+    	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(Obj_header), 0,                          \
@@ -332,16 +337,16 @@ static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo, THREE_VAR_TYPE argthree) \
 {     	    	    	    	    	    	    	    	\
     Obj_header *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) Obj_header; \
-    CPPExtern::m_holder = &obj->pd_obj;                         \
+    flext_obj::m_holder = &obj->pd_obj;                         \
     obj->data = new NEW_CLASS(arg, argtwo, argthree);           \
-    CPPExtern::m_holder = NULL;                                 \
+    flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
 void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
-    NEW_CLASS ## EXTERN_NAME = CPPEXTERN_NEWFN(                       \
-    	     	CPPEXTERN_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
+    NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
+    	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(Obj_header), 0,                          \
@@ -359,16 +364,16 @@ static t_class * NEW_CLASS ## EXTERN_NAME;    	    	    	\
 void * EXTERN_NAME ## NEW_CLASS (ONE_VAR_TYPE arg, TWO_VAR_TYPE argtwo, THREE_VAR_TYPE argthree, FOUR_VAR_TYPE argfour) \
 {     	    	    	    	    	    	    	    	\
     Obj_header *obj = new (newobject(NEW_CLASS ## EXTERN_NAME),(void *)NULL) Obj_header; \
-    CPPExtern::m_holder = &obj->pd_obj;                         \
+    flext_obj::m_holder = &obj->pd_obj;                         \
     obj->data = new NEW_CLASS(arg, argtwo, argthree, argfour);  \
-    CPPExtern::m_holder = NULL;                                 \
+    flext_obj::m_holder = NULL;                                 \
     return(obj);                                                \
 }   	    	    	    	    	    	    	    	\
 extern "C" {	    	    	    	    	    	    	\
 void NEW_CLASS ## SETUP_FUNCTION()    	    	    	    	\
 {   	    	    	    	    	    	    	    	\
-    NEW_CLASS ## EXTERN_NAME = CPPEXTERN_NEWFN(                       \
-    	     	CPPEXTERN_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
+    NEW_CLASS ## EXTERN_NAME = FLEXT_NEWFN(                       \
+    	     	FLEXT_CLREF(NAME,NEW_CLASS ## EXTERN_NAME), 	    	    	    	\
     	    	(t_newmethod)EXTERN_NAME ## NEW_CLASS,	    	\
     	    	(t_method)&NEW_CLASS::callb_free,         \
     	     	sizeof(Obj_header), 0,                          \

@@ -8,13 +8,13 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-#include <_cppext.h>
+#include <flext.h>
 
 #ifdef PD
 #define DIRTY_INTERVAL 0   // buffer dirty check in msec
 #endif
 
-ext_obj::buffer::buffer(t_symbol *bn):
+flext_base::buffer::buffer(t_symbol *bn):
 	sym(NULL),data(NULL),
 	chns(0),frames(0)
 {
@@ -28,14 +28,14 @@ ext_obj::buffer::buffer(t_symbol *bn):
 	if(bn) Set(bn);
 }
 
-ext_obj::buffer::~buffer()
+flext_base::buffer::~buffer()
 {
 #ifdef PD
     clock_free(tick);
 #endif
 }
 
-I ext_obj::buffer::Set(t_symbol *s)
+I flext_base::buffer::Set(t_symbol *s)
 {
 	I ret = 0;
 
@@ -102,7 +102,7 @@ I ext_obj::buffer::Set(t_symbol *s)
 	return ret;
 }
 
-V ext_obj::buffer::Dirty(BL force)
+V flext_base::buffer::Dirty(BL force)
 {
 	if(sym) {
 #ifdef PD
@@ -131,7 +131,7 @@ V ext_obj::buffer::Dirty(BL force)
 }
 
 #ifdef PD
-V ext_obj::buffer::cb_tick(buffer *b)
+V flext_base::buffer::cb_tick(buffer *b)
 {
 	t_garray *a = (t_garray *)pd_findbyclass(b->sym, garray_class);
 	if (a) garray_redraw(a);

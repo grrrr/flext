@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -20,6 +20,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flbase.h"
 #include "flsupport.h"
 
+
 #ifdef _MSC_VER
 #pragma warning(disable: 4786)
 #endif
@@ -32,9 +33,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 
 // === flext_base ==================================================
-
-//class qmsg;
-//class thr_entry;
 
 /*! \brief Flext message only base object
 */

@@ -1,6 +1,6 @@
 # flext - C++ layer for Max/MSP and pd (pure data) externals
 # tutorial examples
-# Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
+# Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
 #
 
 # where are the PD header files?

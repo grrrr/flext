@@ -1,5 +1,5 @@
 # flext - C++ layer for Max/MSP and pd (pure data) externals
-# Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
+# Copyright (c) 2001-2003 Thomas Grill (xovo@gmx.net)
 #
  
 # your c++ compiler (normally g++)

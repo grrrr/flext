@@ -1,0 +1,21 @@
+# flext - C++ layer for Max/MSP and pd (pure data) externals
+# Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
+#
+# Makefile for MSVC++
+#
+#
+# IMPORTANT: Adjust all paths in makefile-inc.msvc
+#
+# usage: make -f makefile.msvc
+#
+# ---------------------------------------------
+
+all: flext flext_t
+
+flext:
+	nmake /f makefile-inc.msvc  NAME=$* OUTPATH=".\msvc"
+
+flext_t:
+	nmake /f makefile-inc.msvc  NAME=$* OUTPATH=".\msvc-t" FLEXT_THREADS=
+
+

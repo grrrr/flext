@@ -1,0 +1,74 @@
+# flext - C++ layer for Max/MSP and pd (pure data) externals
+# Copyright (c) 2001,2002 Thomas Grill (xovo@gmx.net)
+#
+# Makefile for BorlandC++ 
+#
+# usage: make -f makefile.bcc
+#
+# ---------------------------------------------
+#
+# note: no threading support for BorlandC++
+#
+# ---------------------------------------------
+
+NAME=flext
+TARGET=pdwin  # appendix to lib name
+
+# where to put the build
+OUTPATH=.\bcc
+
+# paths
+BCCPATH=c:\programme\prog\bcc55		### EDIT! ##
+PDPATH=c:\programme\audio\pd		### EDIT! ##
+
+# includes
+INCPATH=-I$(BCCPATH)\include -I$(PDPATH)\src -Isource
+
+# compiler definitions and flags
+DEFS=-DPD -DNT 
+CFLAGS=-6 -O2 -OS -ff -tWD 
+
+
+
+# the rest can stay untouched
+# ----------------------------------------------
+
+# all the source files from the package
+SRCS=flbase.cpp flext.cpp flbuf.cpp fldsp.cpp fllib.cpp flxlet.cpp flsetup.cpp flutil.cpp flatom.cpp
+HDRS=flstdc.h flbase.h flclass.h fldefs.h flext.h
+IHDRS=flinternal.h
+
+
+#default target
+all: $(OUTPATH)\$(NAME)-$(TARGET).lib
+
+# remove build
+clean:
+	-del /s /q $(OUTPATH) > nul
+	rmdir $(OUTPATH)
+
+# -----------------------------------------------
+
+OBJS= $(SRCS:.cpp=.obj)
+
+.PATH.obj=$(OUTPATH)
+
+{source}.cpp.obj:
+	bcc32 -c $(CFLAGS) $(DEFS) $(INCPATH) -n$(OUTPATH) $<
+
+$(OUTPATH):
+	@if not exist $< mkdir $<
+
+$(OUTPATH)\$(NAME)-$(TARGET).lib:: $(OUTPATH)
+
+$(OUTPATH)\$(NAME)-$(TARGET).lib:: $(OBJS) 
+	@-del "$<"
+	tlib "$<" +$(**: = +)
+
+
+
+
+
+
+
+

@@ -8,7 +8,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 */
 
-// This is the prefix file for CodeWarrior projects 
+/* This is the prefix file for CodeWarrior projects  */
 
 #ifndef _FLEXT_CW_MAX_H
 #define _FLEXT_CW_MAX_H
@@ -21,6 +21,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define _DEBUG
 #endif
 
-//#define _LOG
+/* #define _LOG */
 
 #endif

@@ -22,7 +22,7 @@ flext_base::xlet::xlet(type t,const char *d):
     tp(t),nxt(NULL)
 { 
     if(d) {
-        int ln = strlen(d);
+        size_t ln = strlen(d);
         desc = new char[ln+1];
         memcpy(desc,d,ln);
         desc[ln] = 0;
@@ -53,7 +53,7 @@ void flext_base::DescXlet(int ix,const char *d,xlet *&root)
 
     if(xi) {
         if(xi->desc) delete[] xi->desc;
-        int ln = strlen(d);
+        size_t ln = strlen(d);
         xi->desc = new char[ln+1];
         memcpy(xi->desc,d,ln);
         xi->desc[ln] = 0;

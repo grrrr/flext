@@ -151,7 +151,7 @@ inline void *operator new(size_t, void *location, void *) { return location; }
 #define FLEXT_GETCLASS(obj) ((t_class *)(((t_tinyobject *)obj)->t_messlist-1))
 #endif
 
-
+/*
 #define FLEXT_HEADER(NEW_CLASS, PARENT_CLASS)    	    	\
 public:     	    	    \
 typedef NEW_CLASS thisType;  \
@@ -167,7 +167,37 @@ inline const char *thisName() const { return m_name; } \
 static NEW_CLASS *thisObject(V *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; }	  \
 private:    \
 static void cb_setup(t_class *classPtr);
+*/
 
+#define FLEXT_HEADER(NEW_CLASS, PARENT_CLASS)    	    	\
+public:     	    	    \
+typedef NEW_CLASS thisType;  \
+static void callb_free(void *data)    	    	    	\
+{ flext_obj *mydata = ((flext_hdr *)data)->data; delete mydata; \
+  ((flext_hdr *)data)->flext_hdr::~flext_hdr(); }   	    	\
+static void callb_setup(t_class *classPtr)  	    	\
+{ PARENT_CLASS::callb_setup(classPtr); }  	    	    	\
+protected:    \
+inline t_class *thisClass() { return FLEXT_GETCLASS(x_obj); } \
+inline const char *thisName() const { return m_name; } \
+static NEW_CLASS *thisObject(V *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; }	  
+
+
+#define FLEXT_HEADER_S(NEW_CLASS, PARENT_CLASS)    	    	\
+public:     	    	    \
+typedef NEW_CLASS thisType;  \
+static void callb_free(void *data)    	    	    	\
+{ flext_obj *mydata = ((flext_hdr *)data)->data; delete mydata; \
+  ((flext_hdr *)data)->flext_hdr::~flext_hdr(); }   	    	\
+static void callb_setup(t_class *classPtr)  	    	\
+{ PARENT_CLASS::callb_setup(classPtr);    	    	\
+	NEW_CLASS::cb_setup(classPtr); }  	    	    	\
+protected:    \
+inline t_class *thisClass() { return FLEXT_GETCLASS(x_obj); } \
+inline const char *thisName() const { return m_name; } \
+static NEW_CLASS *thisObject(V *c) { return (NEW_CLASS *)((flext_hdr *)c)->data; }	  \
+private:    \
+static void cb_setup(t_class *classPtr);
 
 
 ////////////////////////////////////////
@@ -467,6 +497,8 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 // These should be the used in the class definition
 /////////////////////////////////////////////////////////
 
+#if 0
+
 #if defined(MAXMSP) 
 // determine if it is the default inlet
 //#define ISDEFIN(o) ((((flext_hdr *)o->x_obj)->curinlet) != 0)
@@ -478,8 +510,13 @@ FLEXT_EXT void FLEXT_MAIN(NEW_CLASS ## SETUP_FUNCTION)()    	    	    	    	\
 #define FLEXT_CALLBACK(M_FUN) \
 static void cb_ ## M_FUN(t_class *c) { thisType *o = thisObject(c); if(ISDEFIN(o)) o->M_FUN(); }
 
+#if 1
+#define FLEXT_CALLBACK_G(M_FUN) \
+static void cb_ ## M_FUN(t_class *c,int argc,t_atom *argv) { thisType *o = thisObject(c); if(ISDEFIN(o)) o->M_FUN(argc,argv); }
+#else
 #define FLEXT_CALLBACK_G(M_FUN) \
 static void cb_ ## M_FUN(t_class *c,t_symbol *,int argc,t_atom *argv) { thisType *o = thisObject(c); if(ISDEFIN(o)) o->M_FUN(argc,argv); }
+#endif
 
 // converting t_flint to bool
 #define FLEXT_CALLBACK_B(M_FUN) \
@@ -504,8 +541,6 @@ static void cb_ ## M_FUN(t_class *c,TP1 arg1,TP2 arg2,TP3 arg3.TP4 arg4) { thisT
 #define FLEXT_CALLBACK_5(M_FUN,TP1,TP2,TP3,TP4,TP5) \
 static void cb_ ## M_FUN(t_class *c,TP1 arg1,TP2 arg2,TP3 arg3.TP4 arg4,TP5 arg5) { thisType *o = thisObject(c); if(ISDEFIN(o)) o->M_FUN(arg1,arg2,arg3,arg4,arg5); }
 
-
-#if 0
 
 ///////////////////////////////////////////////////////////
 // These should be the used in the class' cb_setup function
@@ -573,13 +608,46 @@ add_method5(CLASS,cb_ ## M_FUN,M_NAME,FLEXTTP(TP1),FLEXTTP(TP2),FLEXTTP(TP3),FLE
 
 #else
 
+#define FLEXT_CALLBACK(M_FUN) \
+static void cb_ ## M_FUN(flext_base *c) { dynamic_cast<thisType *>(c)->M_FUN(); }
+
+#define FLEXT_CALLBACK_A(M_FUN) \
+static void cb_ ## M_FUN(flext_base *c,t_symbol *s,int argc,t_atom *argv) { dynamic_cast<thisType *>(c)->M_FUN(s,argc,argv); }
+
+#define FLEXT_CALLBACK_G(M_FUN) \
+static void cb_ ## M_FUN(flext_base *c,int argc,t_atom *argv) { dynamic_cast<thisType *>(c)->M_FUN(argc,argv); }
+
+// converting t_flint to bool
+#define FLEXT_CALLBACK_B(M_FUN) \
+static void cb_ ## M_FUN(flext_base *c,int arg1) { dynamic_cast<thisType *>(c)->M_FUN(arg1 != 0); }
+
+// converting t_flint to enum
+#define FLEXT_CALLBACK_E(M_FUN,TPE) \
+static void cb_ ## M_FUN(flext_base *c,int arg1) { dynamic_cast<thisType *>(c)->M_FUN((TPE)(int)arg1); }
+
+#define FLEXT_CALLBACK_1(M_FUN,TP1) \
+static void cb_ ## M_FUN(flext_base *c,TP1 arg1) { dynamic_cast<thisType *>(c)->M_FUN(arg1); }
+
+#define FLEXT_CALLBACK_2(M_FUN,TP1,TP2) \
+static void cb_ ## M_FUN(flext_base *c,TP1 arg1,TP2 arg2) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2); }
+
+#define FLEXT_CALLBACK_3(M_FUN,TP1,TP2,TP3) \
+static void cb_ ## M_FUN(flext_base *c,TP1 arg1,TP2 arg2,TP3 arg3) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3); }
+
+#define FLEXT_CALLBACK_4(M_FUN,TP1,TP2,TP3,TP4) \
+static void cb_ ## M_FUN(flext_base *c,TP1 arg1,TP2 arg2,TP3 arg3.TP4 arg4) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4); }
+
+#define FLEXT_CALLBACK_5(M_FUN,TP1,TP2,TP3,TP4,TP5) \
+static void cb_ ## M_FUN(flext_base *c,TP1 arg1,TP2 arg2,TP3 arg3.TP4 arg4,TP5 arg5) { dynamic_cast<thisType *>(c)->M_FUN(arg1,arg2,arg3,arg4,arg5); }
+
 
 // Shortcuts for method arguments
 #define FLEXTARG_float a_float
 #define FLEXTARG_int a_int
-#define FLEXTARG_bool a_bool
+//#define FLEXTARG_bool a_bool
+#define FLEXTARG_bool a_int
 #define FLEXTARG_t_float a_float
-#define FLEXTARG_t_flint a_int
+//#define FLEXTARG_t_flint a_int
 #define FLEXTARG_t_symtype a_symbol
 #define FLEXTARG_t_ptrtype a_pointer
 
@@ -599,7 +667,7 @@ add_meth(IX,"bang",cb_ ## M_FUN)
 add_meth(IX,cb_ ## M_FUN)	
 
 // add handler for method with no args
-#define FLEXT_ADDMETHOD_0(IX,M_TAG,M_FUN) \
+#define FLEXT_ADDMETHOD_(IX,M_TAG,M_FUN) \
 add_meth(IX,M_TAG,cb_ ## M_FUN)	
 
 // add handler for method with 1 enum type arg

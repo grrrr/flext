@@ -9,6 +9,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 #include <flext.h>
+#include <stdarg.h>
+#include <assert.h>
 
 // === proxy class for flext_base ============================
 
@@ -37,6 +39,15 @@ V flext_base::cb_px_anything(t_class *c,const t_symbol *s,I argc,t_atom *argv)
 	thisObject(c)->m_methodmain(0,s,argc,argv);
 }
 
+#define DEF_IN_FT(IX) \
+V flext_base::cb_px_ft ## IX(t_class *c,F v) { \
+	t_atom atom; SETFLOAT(&atom,v);  \
+	thisObject(c)->m_methodmain(IX,&s_float,1,&atom); \
+}
+
+#define ADD_IN_FT(IX) \
+add_method1(c,cb_px_ft ## IX,"ft" #IX,A_FLOAT)
+
 #elif defined(MAXMSP)
 
 V flext_base::cb_px_anything(t_class *c,const t_symbol *s,I argc,t_atom *argv)
@@ -49,22 +60,30 @@ V flext_base::cb_px_anything(t_class *c,const t_symbol *s,I argc,t_atom *argv)
 
 V flext_base::cb_px_int(t_class *c,I v)
 {
-	static const t_symbol *sym_int = gensym("int");
+//	static const t_symbol *sym_int = gensym("int");
 
 	// check if inlet allows int type
 	t_atom atom;
 	SETINT(&atom,v);  
-	cb_px_anything(c,sym_int,1,&atom);
+	cb_px_anything(c,&s_int,1,&atom);
 }
 
 V flext_base::cb_px_float(t_class *c,F v)
 {
-	static const t_symbol *sym_float = gensym("float");
+//	static const t_symbol *sym_float = gensym("float");
 
 	// check if inlet allows float type
 	t_atom atom;
 	SETFLOAT(&atom,v);  
-	cb_px_anything(c,sym_float,1,&atom);
+	cb_px_anything(c,&s_float,1,&atom);
+}
+
+V flext_base::cb_px_bang(t_class *c)
+{
+//	static const t_symbol *sym_bang = gensym("bang");
+
+	// check if inlet allows bang
+	cb_px_anything(c,&s_bang,0,NULL);
 }
 
 #define DEF_IN_FT(IX) \
@@ -74,6 +93,8 @@ V flext_base::cb_px_ft ## IX(t_class *c,F v) { L &ci = ((flext_hdr *)thisObject(
 #define ADD_IN_FT(IX) \
 add_method1(c,cb_px_in ## IX,"in" #IX,A_INT); \
 add_method1(c,cb_px_ft ## IX,"ft" #IX,A_FLOAT)
+
+#endif // MAXMSP
 
 
 DEF_IN_FT(1)
@@ -85,16 +106,6 @@ DEF_IN_FT(6)
 DEF_IN_FT(7)
 DEF_IN_FT(8)
 DEF_IN_FT(9)
-
-V flext_base::cb_px_bang(t_class *c)
-{
-	static const t_symbol *sym_bang = gensym("bang");
-
-	// check if inlet allows bang
-	cb_px_anything(c,sym_bang,0,NULL);
-}
-
-#endif // MAXMSP
 
 
 
@@ -109,7 +120,7 @@ flext_base::flext_base():
 	insigs(0),outsigs(0),
 	outlets(NULL),inlets(NULL)
 {
-	add_meth(0,"help",cb_help);
+//	add_meth(0,"help",cb_help);
 }
 
 flext_base::~flext_base()
@@ -129,6 +140,8 @@ flext_base::~flext_base()
 			}
 		delete[] inlets;
 	}
+
+	// do i have to destroy the method list elements?
 }
 
 flext_base::xlet::~xlet() { if(nxt) delete nxt; }
@@ -213,7 +226,9 @@ BL flext_base::setup_inout()
 						break;
 					}
 					case xlet::tp_sym: 
-				    	inlet_new(x_obj, &x_obj->ob_pd, &s_symbol, &s_symbol); 
+					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
+						inlet_new(x_obj,&inlets[ix]->x_obj.ob_pd, &s_symbol, &s_symbol);  
+//				    	inlet_new(x_obj, &x_obj->ob_pd, &s_symbol, &s_symbol); 
 						break;
 					case xlet::tp_list:
 					    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
@@ -343,7 +358,7 @@ BL flext_base::setup_inout()
 
 V flext_base::cb_setup(t_class *c)
 {
-//	add_method(c,cb_help,"help");
+	add_method(c,cb_help,"help");
 	
 	add_loadbang(c,cb_loadbang);
 #ifdef MAXMSP
@@ -360,7 +375,9 @@ V flext_base::cb_setup(t_class *c)
 	add_bang(c,cb_px_bang);
 	add_method1(c,cb_px_int,"int",A_INT);  
 	add_method1(c,cb_px_float,"float",A_FLOAT);  
-	
+#endif	
+
+	// setup non-leftmost ints and floats
 	ADD_IN_FT(1);
 	ADD_IN_FT(2);
 	ADD_IN_FT(3);
@@ -370,7 +387,6 @@ V flext_base::cb_setup(t_class *c)
 	ADD_IN_FT(7);
 	ADD_IN_FT(8);
 	ADD_IN_FT(9);
-#endif
 }
 
 V flext_base::cb_help(t_class *c) { thisObject(c)->m_help(); }	
@@ -383,42 +399,160 @@ V flext_base::cb_assist(t_class *c,V * /*b*/,L msg,L arg,C *s) { thisObject(c)->
 V flext_base::m_help()
 {
 	// This should better be overloaded
-	post("%s (using flext) - compiled on %s %s",thisName(),__DATE__,__TIME__);
+	post("%s (using flext " FLEXT_VERSTR ") - compiled on %s %s",thisName(),__DATE__,__TIME__);
 }
+
+
+typedef V (*methfun_G)(flext_base *c,I argc,t_atom *argv);
+typedef V (*methfun_A)(flext_base *c,const t_symbol *s,I argc,t_atom *argv);
+typedef V (*methfun_0)(flext_base *c);
+
+#define MAXARGS 5
+
+// the args MUST all have 32 bits (float, t_symbol *)
+typedef V (*methfun_1)(flext_base *c,I);
+typedef V (*methfun_2)(flext_base *c,I,I);
+typedef V (*methfun_3)(flext_base *c,I,I,I);
+typedef V (*methfun_4)(flext_base *c,I,I,I,I);
+typedef V (*methfun_5)(flext_base *c,I,I,I,I,I);
+
 
 BL flext_base::m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv)
 {
 	BL ret = false;
 	
 	std::list<methitem *>::const_iterator it(mlst.begin());
-	for(;;) {
+	while(!ret) {
 		const methitem *m = *it;
 		if(!m) break;
-		if(m->tag == s) {
-			// tag fits
-			post("found method tag %s: inlet=%i, symbol=%s, argc=%i",m->tag->s_name,inlet,s->s_name,argc);
+		if(m->tag == &s_anything && m->argc == 1 && m->args[0] == a_gimme) {
+			// any
+			((methfun_A)m->fun)(this,s,argc,argv);
 			ret = true;
-			// break;
+		}
+		else
+		if(m->tag == s && (inlet == m->inlet || m->inlet < 0 )) {
+			// tag fits
+//			post("found method tag %s: inlet=%i, symbol=%s, argc=%i",m->tag->s_name,inlet,s->s_name,argc);
+
+			if(m->argc == 1 && m->args[0] == a_gimme) {
+				((methfun_G)m->fun)(this,argc,argv);
+				ret = true;
+			}
+			else if(argc == m->argc) {
+				I iargs[MAXARGS];
+				BL ok = true;
+				for(I ix = 0; ix < argc && ok; ++ix) {
+					switch(m->args[ix]) {
+					case a_float: {
+						assert(sizeof(F) == sizeof(I));
+
+						F a;
+						if(ISFLOAT(argv[ix])) iargs[ix] = *(I *)&(a = argv[ix].a_w.w_float);
+#ifdef MAXMSP
+						else if(ISINT(argv[ix])) iargs[ix] = *(I *)&(a = argv[ix].a_w.w_int);
+#endif
+						else ok = false;
+						break;
+					}
+					case a_int: {
+						I a;
+						if(ISFLOAT(argv[ix])) iargs[ix] = *(I *)&(a = argv[ix].a_w.w_float);
+#ifdef MAXMSP
+						else if(ISINT(argv[ix])) iargs[ix] = *(I *)&(a = argv[ix].a_w.w_int);
+#endif
+						else ok = false;
+						break;
+					}
+/*
+					case a_bool: {
+						I a;
+						if(ISFLOAT(argv[ix])) iargs[ix] = *(I *)&(a = (argv[ix].a_w.w_float != 0));
+#ifdef MAXMSP
+						else if(ISINT(argv[ix])) iargs[ix] = *(I *)&(a = (argv[ix].a_w.w_int != 0));
+#endif
+						else ok = false;
+						break;
+					}
+*/
+					case a_symbol: {
+						assert(sizeof(t_symbol *) == sizeof(I));
+
+						t_symbol *a;
+						if(ISSYMBOL(argv[ix])) iargs[ix] = *(I *)&(a = argv[ix].a_w.w_symbol);
+						else ok = false;
+						break;
+					}
+					case a_pointer: {
+						assert(sizeof(t_gpointer *) == sizeof(I));
+
+						t_gpointer *a;
+						if(ISPOINTER(argv[ix])) iargs[ix] = *(I *)&(a = argv[ix].a_w.w_gpointer);
+						else ok = false;
+						break;
+					}
+					default:
+						error("Argument type illegal");
+						ok = false;
+					}
+				}
+				if(ix == argc) {
+					switch(argc) {
+					case 0:	((methfun_0)m->fun)(this); break;
+					case 1:	((methfun_1)m->fun)(this,iargs[0]); break;
+					case 2:	((methfun_2)m->fun)(this,iargs[0],iargs[1]); break;
+					case 3:	((methfun_3)m->fun)(this,iargs[0],iargs[1],iargs[2]); break;
+					case 4:	((methfun_4)m->fun)(this,iargs[0],iargs[1],iargs[2],iargs[3]); break;
+					case 5:	((methfun_5)m->fun)(this,iargs[0],iargs[1],iargs[2],iargs[3],iargs[4]); break;
+					}
+					ret = true;	
+				}
+			}
 		} 
 		if(it == mlst.end()) break;
 		else ++it;
 	}
 	
-	return ret;
+	return ret; // true if appropriate handler was found and called
 }
 
 
-flext_base::methitem::methitem(I in,t_symbol *t,I a): 
-	inlet(in),tag(t),fun(NULL) 
+flext_base::methitem::methitem(I in,t_symbol *t): 
+	inlet(in),tag(t),
+	fun(NULL), //iix(false),
+	argc(0),args(NULL)
+{}
+
+flext_base::methitem::methitem(I in,t_symbol *t,metharg &argl,methfun f /*,BL ixd*/): 
+	inlet(in),tag(t),
+	fun(f), //iix(ixd),
+	argc(0),args(NULL)
 { 
-	if(a > 0) {
-		argc = a;
-		args = new I[a];
-		for(I i = 0; i < a; ++i) A_NULL;
-	}
-	else {
-		argc = 0;
-		args = NULL;
+	va_list marker;
+	va_start(marker,argl);
+	argc = 0;
+	metharg arg = argl;
+	for(; arg != a_null; ++argc) arg = va_arg(marker,metharg);
+	va_end(marker);
+	
+	if(argc > 0) {
+		if(argc > MAXARGS) {
+			error("Only %i arguments are type-checkable: use GIMME for more",MAXARGS);
+			argc = MAXARGS;
+		}
+
+		args = new metharg[argc];
+
+		va_start(marker,argl);
+		metharg a = argl;
+		for(I ix = 0; ix < argc; ++ix) {
+			if(a == a_gimme && ix > 0) {
+				error("GIMME argument must be the first and only one");
+			}
+			args[ix] = a;
+			a = va_arg(marker,metharg);
+		}
+		va_end(marker);
 	}
 }
 
@@ -434,27 +568,19 @@ V flext_base::add_meth_def(I inlet,const C *tag)
 	mlst.push_back(new methitem(inlet,gensym(const_cast<C *>(tag))));
 }
 
+
+
 V flext_base::add_meth_one(I inlet,const C *tag,methfun fun,metharg tp,...)
 {
-	methitem *meth = new methitem(inlet,gensym(const_cast<C *>(tag)));
-
-	// add args here !!!!!
-
-	meth->fun = (methfun)fun;
-	meth->iix = false;
-	mlst.push_back(meth);
+	mlst.push_back(new methitem(inlet,gensym(const_cast<C *>(tag)),tp,fun /*,false*/));
 }
 
+/*
 V flext_base::add_meth_ixd(I inlet,const C *tag,methfun fun,metharg tp,...)
 {
-	methitem *meth = new methitem(inlet,gensym(const_cast<C *>(tag)));
-
-	// add args here !!!!!
-
-	meth->fun = (methfun)fun;
-	meth->iix = true;
-	mlst.push_back(meth);
+	mlst.push_back(new methitem(inlet,gensym(const_cast<C *>(tag)),tp,fun,true));
 }
+*/
 
 
 // === flext_dsp ==============================================
@@ -494,7 +620,7 @@ t_int *flext_dsp::dspmeth(t_int *w)
 
 V flext_dsp::m_dsp(I /*n*/,F *const * /*insigs*/,F *const * /*outsigs*/) {}
 
-V flext_dsp::cb_dsp(V *c,t_signal **sp) 
+V flext_dsp::cb_dsp(t_class *c,t_signal **sp) 
 { 
 	flext_dsp *obj = thisObject(c); 
 
@@ -518,11 +644,9 @@ V flext_dsp::cb_dsp(V *c,t_signal **sp)
 	dsp_add(dspmeth,2,obj,sp[0]->s_n);  
 }
 
-V flext_dsp::cb_dspon(V *c,FI on) { thisObject(c)->m_dspon(on != 0); }
+V flext_dsp::cb_dspon(t_class *c,FI on) { thisObject(c)->m_dspon(on != 0); }
 
-V flext_dsp::m_dspon(BL en) { 
-	dspon = en; 
-}
+V flext_dsp::m_dspon(BL en) { dspon = en; }
 
 
 

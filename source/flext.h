@@ -12,8 +12,13 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __FLEXT_H
 
 #define FLEXT_VERSION 200
+#define FLEXT_VERSTR "0.2.0"
 
 #include <flbase.h> 
+
+#ifdef _MSC_VER
+#pragma warning(disable: 4786)
+#endif
 
 #include <list> // C++ standard lists 
 
@@ -38,7 +43,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 class flext_base:
 	public flext_obj
 {
-	FLEXT_HEADER(flext_base,flext_obj)
+	FLEXT_HEADER_S(flext_base,flext_obj)
 	
 public:
 
@@ -149,6 +154,13 @@ public:
 	V to_out_anything(t_outlet *o,const t_symbol *s,I argc,t_atom *argv) { outlet_anything(o,const_cast<t_symbol *>(s),argc,argv); }
 	V to_out_anything(I n,const t_symbol *s,I argc,t_atom *argv)  { t_outlet *o = get_out(n); if(o) to_out_anything(o,const_cast<t_symbol *>(s),argc,argv); }
 		
+	enum metharg {
+		a_null = 0,
+		a_float,a_int, //a_bool,
+		a_symbol,a_pointer,
+		a_gimme
+	};
+
 // --- argument list stuff ----------------------------------------
 		
 		
@@ -182,44 +194,38 @@ protected:
 
 	class methitem { 
 	public:
-		methitem(I inlet,t_symbol *t,I a = 0);
+		methitem(I inlet,t_symbol *t);
+		methitem(I inlet,t_symbol *t,metharg &arg,methfun fun /*,BL ixd*/);
 		~methitem();
 
 		t_symbol *tag;
 		I inlet;
-		I argc,*args;
+		I argc;
+		metharg *args;
 
 		methfun fun;
-		BL iix; // function gets inlet index as 1st argument
+//		BL iix; // function gets inlet index as 1st argument
 	};
 	
-	enum metharg {
-		a_null = 0,
-		a_symbol,
-		a_float,a_int,a_bool,
-		a_pointer,
-		a_gimme
-	};
-
 	std::list<methitem *> mlst;
 
 	V add_meth_def(I inlet); // call virtual function for inlet
 	V add_meth_def(I inlet,const C *tag); // call virtual function for tag && inlet
 	V add_meth_one(I inlet,const C *tag,methfun fun,metharg tp,...); 
-	V add_meth_ixd(I inlet,const C *tag,methfun fun,metharg tp,...); 
+//	V add_meth_ixd(I inlet,const C *tag,methfun fun,metharg tp,...); 
 
-	V add_meth(I inlet,V (*m)(t_class *,I argc,t_atom *argv)) { add_meth_one(inlet,"list",(methfun)m,a_gimme); }
-	V add_meth(I inlet,const C *tag,V (*m)(t_class *)) { add_meth_one(inlet,tag,(methfun)m,a_null); }  // pure method
-	V add_meth(I inlet,V (*m)(t_class *,t_symbol *s,I argc,t_atom *argv)) { add_meth_one(inlet,NULL,(methfun)m,a_symbol,a_gimme); } // anything
-	V add_meth(I inlet,V (*m)(t_class *,F)) { add_meth_one(inlet,"float",(methfun)m,a_null); }  // single float
-	V add_meth(I inlet,V (*m)(t_class *,F,F)) { add_meth_one(inlet,"list",(methfun)m,a_float,a_float,a_null); } // list of 2 floats
-	V add_meth(I inlet,V (*m)(t_class *,F,F,F)) { add_meth_one(inlet,"list",(methfun)m,a_float,a_float,a_float,a_null); } // list of 3 floats
-	V add_meth(I inlet,const C *tag,V (*m)(t_class *,I argc,t_atom *argv)) { add_meth_one(inlet,tag,(methfun)m,a_gimme); } // method+gimme
-	V add_meth(I inlet,const C *tag,V (*m)(t_class *,BL b)) { add_meth_one(inlet,tag,(methfun)m,a_bool,a_gimme); } // method+boolean
-	V add_meth(I inlet,const C *tag,V (*m)(t_class *,I i)) { add_meth_one(inlet,tag,(methfun)m,a_int,a_gimme); } // method+int
-	V add_meth(I inlet,const C *tag,V (*m)(t_class *,t_symbol *s)) { add_meth_one(inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
-	V add_meth(I inlet,const C *tag,V (*m)(t_class *,F)) { add_meth_one(inlet,tag,(methfun)m,a_float,a_null); }  // method+float
-	V add_meth(I inlet,const C *tag,V (*m)(t_class *,F,F)) { add_meth_one(inlet,tag,(methfun)m,a_float,a_float,a_null); } // method+2 floats
+	V add_meth(I inlet,V (*m)(flext_base *,I argc,t_atom *argv)) { add_meth_one(inlet,"list",(methfun)m,a_gimme,a_null); }
+	V add_meth(I inlet,const C *tag,V (*m)(flext_base *)) { add_meth_one(inlet,tag,(methfun)m,a_null); }  // pure method
+	V add_meth(I inlet,V (*m)(flext_base *,t_symbol *s,I argc,t_atom *argv)) { add_meth_one(inlet,"anything",(methfun)m,a_gimme,a_null); } // anything
+	V add_meth(I inlet,V (*m)(flext_base *,t_symbol *s)) { add_meth_one(inlet,"symbol",(methfun)m,a_symbol,a_null); } // anything
+	V add_meth(I inlet,V (*m)(flext_base *,F)) { add_meth_one(inlet,"float",(methfun)m,a_float,a_null); }  // single float
+	V add_meth(I inlet,V (*m)(flext_base *,F,F)) { add_meth_one(inlet,"list",(methfun)m,a_float,a_float,a_null); } // list of 2 floats
+	V add_meth(I inlet,V (*m)(flext_base *,F,F,F)) { add_meth_one(inlet,"list",(methfun)m,a_float,a_float,a_float,a_null); } // list of 3 floats
+	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,I argc,t_atom *argv)) { add_meth_one(inlet,tag,(methfun)m,a_gimme,a_null); } // method+gimme
+//	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,BL b)) { add_meth_one(inlet,tag,(methfun)m,a_bool,a_gimme,a_null); } // method+boolean
+	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,I i)) { add_meth_one(inlet,tag,(methfun)m,a_int,a_gimme,a_null); } // method+int
+	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,t_symbol *s)) { add_meth_one(inlet,tag,(methfun)m,a_symbol,a_null); } // method+symbol
+	V add_meth(I inlet,const C *tag,V (*m)(flext_base *,F)) { add_meth_one(inlet,tag,(methfun)m,a_float,a_null); }  // method+float
 #endif
 
 	virtual BL m_methodmain(I inlet,const t_symbol *s,I argc,t_atom *argv);
@@ -242,6 +248,7 @@ private:
 	static V cb_px_anything(t_class *c,const t_symbol *s,I argc,t_atom *argv);
 	static V cb_px_int(t_class *c,I v);
 	static V cb_px_float(t_class *c,F f);
+	static V cb_px_bang(t_class *c);
 
 	static V cb_px_in1(t_class *c,I v);
 	static V cb_px_in2(t_class *c,I v);
@@ -252,6 +259,8 @@ private:
 	static V cb_px_in7(t_class *c,I v);
 	static V cb_px_in8(t_class *c,I v);
 	static V cb_px_in9(t_class *c,I v);
+#endif
+
 	static V cb_px_ft1(t_class *c,F f);
 	static V cb_px_ft2(t_class *c,F f);
 	static V cb_px_ft3(t_class *c,F f);
@@ -262,8 +271,6 @@ private:
 	static V cb_px_ft8(t_class *c,F f);
 	static V cb_px_ft9(t_class *c,F f);
 
-	static V cb_px_bang(t_class *c);
-#endif
 	px_object **inlets;
 
 	// callback functions
@@ -285,7 +292,7 @@ private:
 class flext_dsp:
 	public flext_base
 {
-	FLEXT_HEADER(flext_dsp,flext_base)
+	FLEXT_HEADER_S(flext_dsp,flext_base)
 	
 public:
 
@@ -333,8 +340,8 @@ private:
 
 	// callback functions
 
-	static V cb_dsp(V *c,t_signal **s);
-	static V cb_dspon(V *c,FI on);
+	static V cb_dsp(t_class *c,t_signal **s);
+	static V cb_dspon(t_class *c,FI on);
 
 	// dsp stuff
 

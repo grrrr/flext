@@ -114,6 +114,10 @@ SOURCE=.\flext.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\flstdc.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\flstdc.h
 # End Source File
 # End Target

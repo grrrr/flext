@@ -27,13 +27,20 @@ once drifted apart in Max and PD. It is not elegant but helps.
 #ifdef PD
 #pragma warning (push)
 #pragma warning (disable:4091)
+
+#ifdef __cplusplus
 extern "C" {	    	    	    	    	    	    	
+#endif
+
 #ifdef _DEBUG
 #include <m_imp.h>  // for easier debugging
 #else
 #include <m_pd.h>
 #endif
+
+#ifdef __cplusplus
 }
+#endif
 #pragma warning (pop)
 
 typedef t_object t_sigobj;
@@ -141,6 +148,14 @@ typedef int t_atomtype;
 
 #define outlet_flint(o,v) outlet_int(o,v)
 #define outlet_symbol(o,s) outlet_anything(o,s,0,NULL)
+
+EXTERN t_symbol s_pointer;
+EXTERN t_symbol s_float;
+EXTERN t_symbol s_symbol;
+EXTERN t_symbol s_bang;
+EXTERN t_symbol s_list;
+EXTERN t_symbol s_anything;
+EXTERN t_symbol s_signal;
 
 #endif
 

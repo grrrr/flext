@@ -62,7 +62,7 @@ Version history:
 
 0.2.0:
 - defines for callback-to-method functions and method setup (FLEXT_CALLBACK*, FLEXT_ADD*)
-- deprecated support for default arguments (A_DEFFLOAT and A_DEFSYMBOL).. use GIMME instead!
+- no support for default arguments (A_DEFFLOAT and A_DEFSYMBOL).. use GIMME instead!
 - uses PD's or Max's memory allocation functions (for safety in Max's overdrive)
 - added outlets for anythings
 - better graphics update behavior for PD
@@ -70,6 +70,7 @@ Version history:
 - internal proxy objects for any non-leftmost inlets
 - improved behavior for invalid/undefined buffers/arrays
 - 128-bit aligned memory allocation with new[] 
+- method/argument parsing is done by flext
 
 0.1.1:
 - documentation for flext.h
@@ -100,7 +101,6 @@ Platform specific:
 
 Restrictions in compatibility mode:
 - Max allows only 9 float/int inlets
-- Max allows no additional symbol inlets
 
 
 
@@ -125,15 +125,17 @@ no unfixed known
 tests:
 - test loadbang upon object creation in Max/MSP
 - test effects of Max/MSP proxy objects (loadbang, assist, floatx, intx, ...)
+- do i have to destroy the method list elements with the list?
+
 
 features:
-- use anything inlets from system - do method parsing in flext_base?
 - abstraction for parsing argument lists
 - abstraction for creating lists and anythings
 - simulate loadbang on object creation for PD
 - abstraction for clock functions
 - message queue? (for multithreaded operation)
 - sending messages to own inlet (passing computation to other patch objects - message queue?)
+- adding/removing methods anytime
 
 premature thoughts:
 - explore jMax interface style

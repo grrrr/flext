@@ -142,11 +142,14 @@ public:
 
 // --- special typedefs ---------------------------------------------	
 
+// later!
+#if 0
     typedef t_float Float;
     typedef t_int Int;
     typedef t_sample Sample;
     typedef const t_symbol *Symbol;
     typedef t_atom Atom;
+#endif
 
 // --- buffer/array stuff -----------------------------------------	
 

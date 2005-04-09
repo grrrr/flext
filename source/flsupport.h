@@ -563,11 +563,11 @@ public:
 	{
 	public:
 		//! Construct list
-        AtomList(): cnt(0),lst(NULL) {}
+        explicit AtomList(): cnt(0),lst(NULL) {}
 		//! Construct list
-		AtomList(int argc,const t_atom *argv = NULL): cnt(0),lst(NULL) { operator()(argc,argv); }
+		explicit AtomList(int argc,const t_atom *argv = NULL): cnt(0),lst(NULL) { operator()(argc,argv); }
 		//! Construct list
-        AtomList(const AtomList &a): cnt(0),lst(NULL) { operator =(a); }
+        explicit AtomList(const AtomList &a): cnt(0),lst(NULL) { operator =(a); }
 		//! Destroy list
         virtual ~AtomList();
 
@@ -634,9 +634,9 @@ public:
 		AtomList &Prepend(const AtomList &a) { return Prepend(a.Count(),a.Atoms()); }
 
 		//! Get a part of the list
-		AtomList GetPart(int offs,int len) const;
+		void GetPart(int offs,int len,AtomList &ret) const;
 		//! Set to a part of the list
-		AtomList &Part(int offs,int len) { return (*this = GetPart(offs,len)); }
+		AtomList &Part(int offs,int len) { GetPart(offs,len,*this); return *this; }
 
 		//! Represent as a string
 		bool Print(char *buffer,int buflen) const { return flext::PrintList(Count(),Atoms(),buffer,buflen); }
@@ -653,7 +653,7 @@ public:
         : public AtomList
     {
     protected:
-        AtomListStaticBase(int pc,t_atom *dt): precnt(pc),predata(dt) {}
+        explicit AtomListStaticBase(int pc,t_atom *dt): precnt(pc),predata(dt) {}
         virtual ~AtomListStaticBase();
         virtual void Alloc(int sz,int keepix = -1,int keeplen = -1,int keepto = 0);
         virtual void Free();
@@ -668,14 +668,14 @@ public:
     {
     public:
 		//! Construct list
-        AtomListStatic(): AtomListStaticBase(PRE,pre) {}
+        explicit AtomListStatic(): AtomListStaticBase(PRE,pre) {}
 		//! Construct list
-		AtomListStatic(int argc,const t_atom *argv = NULL): AtomListStaticBase(PRE,pre) { operator()(argc,argv); }
+		explicit AtomListStatic(int argc,const t_atom *argv = NULL): AtomListStaticBase(PRE,pre) { operator()(argc,argv); }
 		//! Construct list
-        AtomListStatic(const AtomList &a): AtomListStaticBase(PRE,pre) { operator =(a); }
+        explicit AtomListStatic(const AtomList &a): AtomListStaticBase(PRE,pre) { AtomList::operator =(a); }
 
 		//! Set list by another AtomList
-        AtomListStatic &operator =(const AtomListStatic &a) { AtomListStaticBase::operator =(a); return *this; }
+        AtomListStatic &operator =(const AtomListStatic &a) { AtomList::operator =(a); return *this; }
     protected:
         t_atom pre[PRE];
     };
@@ -685,15 +685,15 @@ public:
 		public AtomList
 	{
 	public:
-        AtomAnything(): hdr(NULL) {}
+        explicit AtomAnything(): hdr(NULL) {}
 #if FLEXT_SYS != FLEXT_SYS_JMAX
 		//! Construct anything
-		AtomAnything(const t_symbol *h,int argc = 0,const t_atom *argv = NULL)
+		explicit AtomAnything(const t_symbol *h,int argc = 0,const t_atom *argv = NULL)
             : AtomList(argc,argv),hdr(h?h:sym__) 
         {}
 #endif
 		//! Construct anything
-		AtomAnything(const char *h,int argc = 0,const t_atom *argv = NULL)
+		explicit AtomAnything(const char *h,int argc = 0,const t_atom *argv = NULL)
             : AtomList(argc,argv),hdr(MakeSymbol(h)) 
         {}
 

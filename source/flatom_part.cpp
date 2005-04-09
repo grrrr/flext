@@ -25,13 +25,13 @@ int flext::AtomList::Get(t_atom *argv,int mxsz) const
 }
 
 
-flext::AtomList flext::AtomList::GetPart(int offs,int len) const
+void flext::AtomList::GetPart(int offs,int len,AtomList &ret) const
 {
     if(offs+len > Count()) {
         len = Count()-offs;
         if(len < 0) len = 0;
     }
 
-    return AtomList(len,Atoms()+offs);
+    ret(len,Atoms()+offs);
 }
 

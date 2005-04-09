@@ -194,7 +194,7 @@ private:
 
     const int tsize;
     Data *const data;
-    int count,n;
+    int n,count;
     TableAnyMap *parent,*left,*right;
 
     int _tryix(size_t k) const

@@ -57,7 +57,7 @@ ifdef VERNAME
 ifdef SHARED
 	/sbin/ldconfig -l $(FLEXTLIBINST)/$(VERNAME)
 else
-	-ln -sf $(FLEXTSHLIB)/$(VERNAME) $(FLEXTSHLIB)/$(TARGETNAME)
+	-ln -sf $(FLEXTLIBINST)/$(VERNAME) $(FLEXTLIBINST)/$(TARGETNAME)
 endif
 endif
 	install $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTINC)

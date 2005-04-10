@@ -1,8 +1,11 @@
 # build class specific settings
 
 ifdef SHARED
-LDFLAGS += -install_name $(FLEXTSHLIB)/$(TARGETNAME) 
+LDFLAGS += -install_name $(FLEXTSHLIB)/$(TARGETNAME)
+# PKGVERSION must be in the 0.0.0 format
 LDFLAGS += -current_version $(PKGVERSION)
+# strip last number
+LDFLAGS += -compatibility_version $(basename $(PKGVERSION))
 LDFLAGS += -preload -seg1addr 0xd0000000
 endif
 

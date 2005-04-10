@@ -55,7 +55,8 @@ endif
 # transfer build system
 	cp -rf buildsys $(FLEXTSYS)
 	install build.sh $(FLEXTSYS)
-# make link to script
+	chmod -R a+rx $(FLEXTSYS)
+# make convenience script
 	echo bash $(FLEXTSYS)/build.sh $$\* > $(FLEXTBIN)/flext-build.sh
 	chmod a+rx $(FLEXTBIN)/flext-build.sh
 	

@@ -1,13 +1,20 @@
 ##############################################
 
-FLEXTINC=$(FLEXTPREFIX)/include/flext
-FLEXTLIB=$(FLEXTPREFIX)/lib
-FLEXTSYS=$(FLEXTPREFIX)/lib/flext
-FLEXTBIN=$(FLEXTPREFIX)/bin
-
-ifneq (,$(findstring Frameworks,$(FLEXTLIB)))
-FLEXTFRAMEWORK=$(FLEXTLIB)/flext.framework
+ifneq (,$(findstring Frameworks,$(FLEXTPREFIX)))
+FLEXTFRAMEWORK=$(FLEXTPREFIX)/flext.framework
 endif
+
+ifdef FLEXTFRAMEWORK
+FLEXTLIB=$(FLEXTFRAMEWORK)
+FLEXTINC=$(FLEXTFRAMEWORK)/Headers
+FLEXTSYS=$(FLEXTFRAMEWORK)/Resources
+else
+FLEXTLIB=$(FLEXTPREFIX)/lib
+FLEXTINC=$(FLEXTPREFIX)/include/flext
+FLEXTSYS=$(FLEXTPREFIX)/lib/flext
+endif
+
+FLEXTBIN=$(FLEXTPREFIX)/bin
 
 ##############################################
 

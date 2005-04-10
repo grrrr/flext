@@ -53,8 +53,10 @@ endif
 endif
 	install $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTINC)
 # transfer build system
-	install -d buildsys $(FLEXTSYS)
+	cp -rf buildsys $(FLEXTSYS)
 	install build.sh $(FLEXTSYS)
-# make link to script
-	ln -sf S(FLEXTSYS)/build.sh $(FLEXTBIN)/flext-build.sh
+	chmod -R a+rx $(FLEXTSYS)
+# make convenience script
+	echo bash $(FLEXTSYS)/build.sh $$\* > $(FLEXTBIN)/flext-build.sh
 	chmod a+rx $(FLEXTBIN)/flext-build.sh
+	

@@ -53,7 +53,11 @@ $(FLEXTLIBINST):
 
 _install_: $(FLEXTINC) $(FLEXTLIBINST)
 	install $(TARGET) $(FLEXTLIBINST)
+ifdef VERNAME
 ifdef SHARED
 	/sbin/ldconfig -l $(FLEXTLIBINST)/$(VERNAME)
+else
+	-ln -sf $(FLEXTSHLIB)/$(VERNAME) $(FLEXTSHLIB)/$(TARGETNAME)
+endif
 endif
 	install $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTINC)

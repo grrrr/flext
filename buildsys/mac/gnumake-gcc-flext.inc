@@ -76,5 +76,7 @@ ifndef SHARED
 # have to rerun ranlib at install dir ?!
 	ranlib $(FLEXTLIBINST)/$(VERNAME)  
 endif
-	-ln -sf $(FLEXTSHLIB)/$(VERNAME) $(FLEXTSHLIB)/$(TARGETNAME)
+ifdef VERNAME
+	-ln -sf $(FLEXTLIBINST)/$(VERNAME) $(FLEXTLIBINST)/$(TARGETNAME)
+endif
 	install $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTINC)

@@ -2,16 +2,15 @@
 
 if "%1"=="" goto syntax
 if "%2"=="" goto syntax
-if "%3"=="" goto syntax
 
 rem first check configuration
-call ..\build.bat %1 %2 %3 config "PKGINFO="
+call ..\build.bat %1 %2 config "PKGINFO=" "NAME=tutorial" "SRCS=."
 if errorlevel 1 goto end
 
 for /D %%i in (*) do (
 	pushd %%i
 	if exist package.txt (
-		call ..\..\build.bat %1 %2 %3
+		call ..\..\build.bat %1 %2
 	)
 	popd
 )
@@ -22,8 +21,7 @@ rem -----------------------------------------
 :syntax
 
 echo .
-echo SYNTAX: build [platform] [system] [compiler]
-echo platform ... win / lnx / mac
+echo SYNTAX: build [system] [compiler]
 echo system   ... pd / max
 echo compiler ... msvc / gcc / mingw / cygwin / bcc / icc
 echo .

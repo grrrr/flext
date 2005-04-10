@@ -1,7 +1,7 @@
 # build class specific settings
 
 INCPATH += -I$(FLEXTINC)
-LIBPATH += -L$(FLEXTLIB) -L$(FLEXTSHLIB)
+LIBPATH += -L$(FLEXTLIB)
 LIBS += -l$(FLEXTNAME)
 
 ##############################################

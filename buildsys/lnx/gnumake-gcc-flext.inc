@@ -39,25 +39,23 @@ _clean_:
 
 ##############################################
 
-ifdef SHARED
-FLEXTLIBINST=$(FLEXTSHLIB)
-else
-FLEXTLIBINST=$(FLEXTLIB)
-endif
-
-$(FLEXTINC):
+$(FLEXTINC) $(FLEXTLIB) $(FLEXTSYS) $(FLEXTBIN):
 	-mkdir -p $@
 
-$(FLEXTLIBINST):
-	-mkdir -p $@
-
-_install_: $(FLEXTINC) $(FLEXTLIBINST)
-	install $(TARGET) $(FLEXTLIBINST)
+_install_: $(FLEXTINC) $(FLEXTLIB) $(FLEXTSYS) $(FLEXTBIN)
+	install $(TARGET) $(FLEXTLIB)
 ifdef VERNAME
 ifdef SHARED
-	/sbin/ldconfig -l $(FLEXTLIBINST)/$(VERNAME)
+	/sbin/ldconfig -l $(FLEXTLIB)/$(VERNAME)
 else
-	-ln -sf $(FLEXTLIBINST)/$(VERNAME) $(FLEXTLIBINST)/$(TARGETNAME)
+	-ln -sf $(FLEXTLIB)/$(VERNAME) $(FLEXTLIB)/$(TARGETNAME)
 endif
 endif
 	install $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTINC)
+# transfer build system
+	install -d buildsys $(FLEXTSYS)
+	install build.sh $(FLEXTSYS)
+# make link to script
+	ln -sf S(FLEXTSYS)/build.sh $(FLEXTBIN)/flext-build.sh
+	chmod a+rx $(FLEXTBIN)/flext-build.sh
+	

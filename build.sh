@@ -35,7 +35,7 @@ rtsys=$1
 compiler=$2
 target=$3
 
-# --- The subbatch knowns which make utility to use ---
+# --- The subbatch knows which make utility to use ---
 subbatch=${flext}buildsys/build-${compiler}.sh
 
 if 

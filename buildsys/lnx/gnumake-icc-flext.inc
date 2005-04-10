@@ -1,12 +1,5 @@
 # build class specific settings
 
-ifdef SHARED
-SONAME=$(OUTNAME).$(EXT)
-TARGET=$(TARGETPATH)/$(OUTNAME).$(PKGVERSION).$(EXT)
-else
-TARGET=$(TARGETPATH)/$(OUTNAME).$(EXT)
-endif
-
 ##############################################
 
 # default target
@@ -46,21 +39,22 @@ _clean_:
 
 ##############################################
 
+$(FLEXTINC) $(FLEXTLIB) $(FLEXTSYS) $(FLEXTBIN):
+	-mkdir -p $@
+
+_install_: $(FLEXTINC) $(FLEXTLIB) $(FLEXTSYS) $(FLEXTBIN)
+	install $(TARGET) $(FLEXTLIB)
+ifdef VERNAME
 ifdef SHARED
-FLEXTLIBINST=$(FLEXTSHLIB)
+	/sbin/ldconfig -l $(FLEXTLIB)/$(VERNAME)
 else
-FLEXTLIBINST=$(FLEXTLIB)
+	-ln -sf $(FLEXTLIB)/$(VERNAME) $(FLEXTLIB)/$(TARGETNAME)
 endif
-
-$(FLEXTINC):
-	-mkdir -p $@
-
-$(FLEXTLIBINST):
-	-mkdir -p $@
-
-_install_: $(FLEXTINC) $(FLEXTLIBINST)
-	install $(TARGET) $(FLEXTLIBINST)
-ifdef SHARED
-	/sbin/ldconfig -l $(TARGET)
 endif
 	install $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTINC)
+# transfer build system
+	install -d buildsys $(FLEXTSYS)
+	install build.sh $(FLEXTSYS)
+# make link to script
+	ln -sf S(FLEXTSYS)/build.sh $(FLEXTBIN)/flext-build.sh
+	chmod a+rx $(FLEXTBIN)/flext-build.sh

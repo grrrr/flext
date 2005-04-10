@@ -1,7 +1,24 @@
 ##############################################
 
+FLEXTINC=$(FLEXTPREFIX)/include/flext
+FLEXTLIB=$(FLEXTPREFIX)/lib
+FLEXTSYS=$(FLEXTPREFIX)/lib/flext
+FLEXTBIN=$(FLEXTPREFIX)/bin
+
+##############################################
+
 OBJPATH=$(OUTPATH)/$(OUTSUB)
 TARGETPATH=$(OBJPATH)
+TARGETNAME=$(OUTNAME).$(EXT)
+
+ifdef PKGVERSION
+VERNAME=$(OUTNAME).$(PKGVERSION).$(EXT)
+TARGET=$(TARGETPATH)/$(VERNAME)
+else
+TARGET=$(TARGETPATH)/$(TARGETNAME)
+endif
+
+INSTTARGET=$(TARGET)
 
 ##############################################
 

@@ -1,5 +1,12 @@
 ##############################################
 
+FLEXTINC=$(FLEXTPREFIX)/include/flext
+FLEXTLIB=$(FLEXTPREFIX)/lib
+FLEXTSYS=$(FLEXTPREFIX)/lib/flext
+FLEXTBIN=$(FLEXTPREFIX)/bin
+
+##############################################
+
 OBJPATH=$(OUTPATH)/$(OUTSUB)
 TARGETPATH=$(OBJPATH)
 TARGETNAME=$(OUTNAME).$(EXT)

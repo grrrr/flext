@@ -1,7 +1,7 @@
 # build class specific settings
 
 INCPATH += -I$(FLEXTINC)
-LIBPATH += -L$(FLEXTLIB) -L$(FLEXTSHLIB)
+LIBPATH += -L$(FLEXTLIB)
 LIBS += -l$(FLEXTNAME)
 
 # obviously header precompilation os still buggy with gcc 3.3

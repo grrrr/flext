@@ -1,16 +1,16 @@
 #! /bin/bash
 
 if 
-	[ -n "$1" -a -n "$2" -a -n "$3" ]
+	[ -n "$1" -a -n "$2" ]
 then 
 	# make config first
 	if
-		bash ../build.sh $1 $2 $3 config "PKGINFO="
+		bash ../build.sh $1 $2 config "PKGINFO=" "NAME=tutorial" "SRCS=\"\""
 	then
 		for i in * ; do
 			if [ -e $i/package.txt ] ; then
 				pushd $i
-				bash ../../build.sh $1 $2 $3
+				bash ../../build.sh $1 $2
 				popd
 			fi
 		done
@@ -18,7 +18,6 @@ then
 else
 	echo 
 	echo SYNTAX: build.sh [platform] [system] [compiler]
-	echo platform ... win / lnx / mac
 	echo system ..... pd / max
 	echo compiler ... msvc / gcc / mingw / cygwin / bcc / icc
 	echo 

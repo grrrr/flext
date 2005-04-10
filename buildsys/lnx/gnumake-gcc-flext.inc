@@ -2,10 +2,11 @@
 
 ifdef SHARED
 SONAME=$(OUTNAME).$(EXT)
-TARGET=$(TARGETPATH)/$(OUTNAME).$(PKGVERSION).$(EXT)
+VERNAME=$(OUTNAME).$(PKGVERSION).$(EXT)
 else
-TARGET=$(TARGETPATH)/$(OUTNAME).$(EXT)
+VERNAME=$(OUTNAME).$(EXT)
 endif
+TARGET=$(TARGETPATH)/$(VERNAME)
 
 ##############################################
 
@@ -61,6 +62,6 @@ $(FLEXTLIBINST):
 _install_: $(FLEXTINC) $(FLEXTLIBINST)
 	install $(TARGET) $(FLEXTLIBINST)
 ifdef SHARED
-	/sbin/ldconfig -l $(TARGET)
+	/sbin/ldconfig -l $(FLEXTLIBINST)/$(VERNAME)
 endif
 	install $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTINC)

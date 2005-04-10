@@ -73,13 +73,37 @@ $(FLEXTINC):
 $(FLEXTLIBINST):
 	-mkdir -p $@
 
+ifneq (,$(findstring Frameworks,$(FLEXTLIBINST)))
+FRAMEWORK=$(FLEXTLIBINST)/flext.framework
+endif
+
 _install_: $(FLEXTINC) $(FLEXTLIBINST)
+ifdef FRAMEWORK
+# --- install as framework ---
+ifndef PKGVERSION
+$(error Need package version)
+endif
+	mkdir -p $(FRAMEWORK)/Versions/$(basename $(PKGVERSION))/Headers
+	ln -sfh ./$(basename $(PKGVERSION)) $(FRAMEWORK)/Versions/Current
+	ln -sfh ./Versions/Current/Headers $(FRAMEWORK)/Headers
+	install $(TARGET) $(FRAMEWORK)/Versions/Current
+ifdef SHARED
+	# make link without lib... and extension
+	ln -sf ./Versions/Current/$(VERNAME) $(FRAMEWORK)/$(patsubst lib%,%,$(basename $(TARGETNAME)))
+else
+	ranlib $(FRAMEWORK)/Versions/Current/$(VERNAME) 
+	ln -sf ./Versions/Current/$(VERNAME) $(FRAMEWORK)/$(TARGETNAME)
+endif
+	install $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FRAMEWORK)/Headers
+else
+# --- install as dynamic library ---
 	install $(TARGET) $(FLEXTLIBINST)
 ifndef SHARED
 # have to rerun ranlib at install dir ?!
 	ranlib $(FLEXTLIBINST)/$(VERNAME)  
 endif
 ifdef VERNAME
-	-ln -sf $(FLEXTLIBINST)/$(VERNAME) $(FLEXTLIBINST)/$(TARGETNAME)
+	ln -sf $(FLEXTLIBINST)/$(VERNAME) $(FLEXTLIBINST)/$(TARGETNAME)
 endif
 	install $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTINC)
+endif

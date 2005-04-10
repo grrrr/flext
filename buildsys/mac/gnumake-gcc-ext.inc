@@ -67,4 +67,5 @@ $(INSTPATH):
 	-mkdir -p $(INSTPATH)
 
 _install_:: $(INSTPATH)
+# copy plain file or whole bundle
 	cp -R $(INSTTARGET) $(INSTPATH)

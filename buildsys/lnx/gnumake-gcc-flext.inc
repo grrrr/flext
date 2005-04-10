@@ -1,13 +1,5 @@
 # build class specific settings
 
-ifdef SHARED
-SONAME=$(OUTNAME).$(EXT)
-VERNAME=$(OUTNAME).$(PKGVERSION).$(EXT)
-else
-VERNAME=$(OUTNAME).$(EXT)
-endif
-TARGET=$(TARGETPATH)/$(VERNAME)
-
 ##############################################
 
 # default target
@@ -29,7 +21,7 @@ $(TARGET) :: $(TARGETPATH)
 
 $(TARGET) :: $(COBJS) $(CPPOBJS)
 ifdef SHARED
-	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ -Wl,-soname,$(SONAME) $(COBJS) $(CPPOBJS) $(LIBS)
+	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ -Wl,-soname,$(TARGETNAME) $(COBJS) $(CPPOBJS) $(LIBS)
 	chmod 755 $@
 ifndef DEBUG
 ifndef PROFILE

@@ -1,7 +1,9 @@
 # build class specific settings
 
 ifdef SHARED
-#LDFLAGS += -dylib_install_name $(FLEXTSHLIB)/$(OUTNAME).$(EXT)
+LDFLAGS += -install_name $(FLEXTSHLIB)/$(TARGETNAME) 
+LDFLAGS += -current_version $(PKGVERSION)
+LDFLAGS += -preload -seg1addr 0xd0000000
 endif
 
 ##############################################
@@ -72,6 +74,7 @@ _install_: $(FLEXTINC) $(FLEXTLIBINST)
 	install $(TARGET) $(FLEXTLIBINST)
 ifndef SHARED
 # have to rerun ranlib at install dir ?!
-	ranlib $(FLEXTLIBINST)/$(notdir $(TARGET))  
+	ranlib $(FLEXTLIBINST)/$(VERNAME)  
 endif
+	-ln -sf $(FLEXTSHLIB)/$(VERNAME) $(FLEXTSHLIB)/$(TARGETNAME)
 	install $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTINC)

@@ -1,3 +1,6 @@
+# include flext version number
+!include $(BUILDPATH)version.inc
+
 # general settings
 !include $(BUILDPATH)config-$(PLATFORM)-$(RTSYS)-$(COMPILER).txt
 

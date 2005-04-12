@@ -1,8 +1,16 @@
 # build class specific settings
 
+TARGET=$(TARGETPATH)/$(TARGETNAME)
+INSTTARGET=$(TARGET)
+
 INCPATH += -I$(FLEXTINC)
 LIBPATH += -L$(FLEXTLIB)
+
+ifdef SHARED
+LIBS += -l$(FLEXTNAME).$(FLEXTMAJOR).$(FLEXTMINOR)
+else
 LIBS += -l$(FLEXTNAME)
+endif
 
 ##############################################
 

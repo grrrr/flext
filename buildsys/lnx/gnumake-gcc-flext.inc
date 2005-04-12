@@ -1,5 +1,14 @@
 # build class specific settings
 
+CMPNAME=$(OUTNAME).$(EXT).$(FLEXTMAJOR).$(FLEXTMINOR)
+VERNAME=$(CMPNAME).$(FLEXTMICRO)
+TARGET=$(TARGETPATH)/$(VERNAME)
+INSTTARGET=$(TARGET)
+
+ifdef SHARED
+LDFLAGS += -Wl,-soname,$(CMPNAME) 
+endif
+
 ##############################################
 
 # default target
@@ -21,7 +30,7 @@ $(TARGET) :: $(TARGETPATH)
 
 $(TARGET) :: $(COBJS) $(CPPOBJS)
 ifdef SHARED
-	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ -Wl,-soname,$(TARGETNAME) $(COBJS) $(CPPOBJS) $(LIBS)
+	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
 	chmod 755 $@
 ifndef DEBUG
 ifndef PROFILE

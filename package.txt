@@ -16,8 +16,6 @@
 
 NAME=flext
 
-PKGVERSION=0.5.0
-
 BUILDCLASS=flext
 BUILDMODE=all
 BUILDTYPE=all

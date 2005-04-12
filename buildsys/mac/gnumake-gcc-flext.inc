@@ -2,10 +2,8 @@
 
 ifdef SHARED
 LDFLAGS += -install_name $(FLEXTLIB)/$(TARGETNAME)
-# PKGVERSION must be in the 0.0.0 format
-LDFLAGS += -current_version $(PKGVERSION)
-# strip last number
-LDFLAGS += -compatibility_version $(basename $(PKGVERSION))
+LDFLAGS += -current_version $(FLEXTMAJOR).$(FLEXTMINOR).$(FLEXTMICRO)
+LDFLAGS += -compatibility_version $(FLEXTMAJOR).$(FLEXTMINOR)
 LDFLAGS += -preload -seg1addr 0xd0000000
 endif
 
@@ -70,11 +68,8 @@ $(FLEXTLIB):
 _install_: $(FLEXTINC) $(FLEXTLIB)
 ifdef FLEXTFRAMEWORK
 # --- install as framework ---
-ifndef PKGVERSION
-$(error Need package version)
-endif
-	mkdir -p $(FLEXTFRAMEWORK)/Versions/$(basename $(PKGVERSION))/Headers
-	ln -sfh ./$(basename $(PKGVERSION)) $(FLEXTFRAMEWORK)/Versions/Current
+	mkdir -p $(FLEXTFRAMEWORK)/Versions/$(FLEXTMAJOR).$(FLEXTMINOR)/Headers
+	ln -sfh ./$(FLEXTMAJOR).$(FLEXTMINOR) $(FLEXTFRAMEWORK)/Versions/Current
 	ln -sfh ./Versions/Current/Headers $(FLEXTFRAMEWORK)/Headers
 	install $(TARGET) $(FLEXTFRAMEWORK)/Versions/Current
 ifdef SHARED

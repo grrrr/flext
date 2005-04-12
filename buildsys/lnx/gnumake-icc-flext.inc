@@ -1,5 +1,14 @@
 # build class specific settings
 
+CMPNAME=$(OUTNAME).$(EXT).$(FLEXTMAJOR).$(FLEXTMINOR)
+VERNAME=$(CMPNAME).$(FLEXTMICRO)
+TARGET=$(TARGETPATH)/$(VERNAME)
+INSTTARGET=$(TARGET)
+
+ifdef SHARED
+LDFLAGS += -Wl,-soname,$(CMPNAME) 
+endif
+
 ##############################################
 
 # default target

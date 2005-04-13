@@ -88,7 +88,7 @@ ifndef SHARED
 	ranlib $(FLEXTLIB)/$(VERNAME)  
 endif
 ifdef VERNAME
-	ln -sf $(FLEXTLIB)/$(VERNAME) $(FLEXTLIB)/$(TARGETNAME)
+	ln -sf $(VERNAME) $(FLEXTLIB)/$(TARGETNAME)
 endif
 	install $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTINC)
 endif

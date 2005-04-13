@@ -6,11 +6,11 @@ INSTTARGET=$(TARGET)
 INCPATH += -I$(FLEXTINC)
 LIBPATH += -L$(FLEXTLIB)
 
-ifdef SHARED
-LIBS += -l$(FLEXTNAME).$(FLEXTMAJOR).$(FLEXTMINOR)
-else
+#ifdef SHARED
+#LIBS += -l$(FLEXTNAME).$(FLEXTMAJOR).$(FLEXTMINOR)
+#else
 LIBS += -l$(FLEXTNAME)
-endif
+#endif
 
 ##############################################
 

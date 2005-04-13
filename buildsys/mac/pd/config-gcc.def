@@ -1,6 +1,6 @@
 # where is the PD installation including source code?
 # (this should point to the main folder, which has a "src" subfolder)
-PDPATH=/Applications/Pd-0.38-0.app/Contents/Resources
+PDPATH=/Applications/Pd-0.38-3.app/Contents/Resources
 
 # where is the PD executable?
 PDBIN=$(PDPATH)/bin/pd

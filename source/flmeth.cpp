@@ -89,7 +89,7 @@ void flext_base::AddMethod(ItemCont *ma,int inlet,const t_symbol *tag,methfun fu
 
 void flext_base::ListMethods(AtomList &la,int inlet) const
 {
-	typedef TablePtrMap<int,t_symbol,32> MethList;
+	typedef TablePtrMap<int,const t_symbol *,32> MethList;
     MethList list[2];
 
     int i;
@@ -102,7 +102,7 @@ void flext_base::ListMethods(AtomList &la,int inlet) const
                     MethItem *aa = (MethItem *)al;
                     // check it's not related to an attribute
                     if(!aa->IsAttr()) {
-                        list[i].insert(aa->index,const_cast<t_symbol *>(as.key()));
+                        list[i].insert(aa->index,as.key());
                         break;
                     }
                 }

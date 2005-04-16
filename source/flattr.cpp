@@ -103,7 +103,7 @@ void flext_base::AddAttrib(t_classid c,const t_symbol *attr,metharg tp,methfun g
 
 void flext_base::ListAttrib(AtomList &la) const
 {
-	typedef TablePtrMap<int,t_symbol,32> AttrList;
+	typedef TablePtrMap<int,const t_symbol *,32> AttrList;
 	AttrList list[2];
 
 	int i;
@@ -114,7 +114,7 @@ void flext_base::ListAttrib(AtomList &la) const
             for(ItemSet::iterator as(ai); as; ++as) {
                 for(Item *al = as.data(); al; al = al->nxt) {
 					AttrItem *aa = (AttrItem *)al;
-					list[i].insert(aa->index,const_cast<t_symbol *>(as.key()));
+					list[i].insert(aa->index,as.key());
                     break;
                 }
 			}

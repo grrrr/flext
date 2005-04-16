@@ -21,16 +21,6 @@ flext_base::Item::~Item()
     if(nxt) delete nxt;
 }
 
-/*
-flext_base::ItemSet::ItemSet() {}
-
-flext_base::ItemSet::~ItemSet()
-{
-    for(iterator it = begin(); it != end(); ++it)
-        if(it.data()) delete it.data();
-}
-*/
-
 flext_base::ItemCont::ItemCont(): 
     members(0),memsize(0),size(0),cont(NULL)
 {}
@@ -88,8 +78,10 @@ bool flext_base::ItemCont::Remove(Item *item,const t_symbol *tag,int inlet,bool 
                 if(prv) prv->nxt = lit->nxt;
                 else if(lit->nxt)
                     set.insert(tag,lit->nxt);
-                else
-                    set.erase(tag);
+                else {
+                    Item *l = set.remove(tag);
+                    FLEXT_ASSERT(l == lit);
+                }
 
                 lit->nxt = NULL; 
                 if(free) delete lit;
@@ -108,7 +100,7 @@ flext_base::Item *flext_base::ItemCont::FindList(const t_symbol *tag,int inlet)
 
 // --- class item lists (methods and attributes) ----------------
 
-typedef TablePtrMap<flext_base::t_classid,flext_base::ItemCont,64> ClassMap;
+typedef TablePtrMap<flext_base::t_classid,flext_base::ItemCont *,64> ClassMap;
 
 static ClassMap classarr[2];
 

@@ -659,7 +659,7 @@ protected:
 		~ItemSet();
 	};
 */
-	typedef TablePtrMapOwned<const t_symbol *,Item,8> ItemSet;
+	typedef TablePtrMapOwned<const t_symbol *,Item *,8> ItemSet;
 
     /*! This class holds hashed item entries
 		\note not thread-safe!
@@ -775,7 +775,7 @@ protected:
 		~AttrDataCont();
 	};
 */
-	typedef TablePtrMapOwned<const t_symbol *,AttrData,8> AttrDataCont;
+	typedef TablePtrMapOwned<const t_symbol *,AttrData *,8> AttrDataCont;
 
 	// these outlet functions don't check for thread but send directly to the real-time system
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX

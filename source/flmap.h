@@ -248,12 +248,12 @@ public:
 
     inline int size() const { return TableAnyMap::size(); }
 
-    inline void insert(K k,T *t) { TableAnyMap::insert(*(size_t *)&k,t); }
+    inline void insert(K k,T t) { TableAnyMap::insert(*(size_t *)&k,(void *)t); }
 
-    inline T *find(K k) const { return (T *)TableAnyMap::find(*(size_t *)&k); }
+    inline T find(K k) const { return (T)TableAnyMap::find(*(size_t *)&k); }
 
     inline void erase(K k) { TableAnyMap::erase(*(size_t *)&k); }
-    inline T *remove(K k) { return (T *)TableAnyMap::remove(*(size_t *)&k); }
+    inline T remove(K k) { return (T)TableAnyMap::remove(*(size_t *)&k); }
 
     class iterator
         : TableAnyMap::iterator
@@ -266,7 +266,7 @@ public:
         inline iterator &operator =(const iterator &it) { TableAnyMap::operator =(it); return *this; }
 
         inline operator bool() const {return TableAnyMap::iterator::operator bool(); }
-        inline T *data() const { return (T *)TableAnyMap::iterator::data(); }
+        inline T data() const { return (T)TableAnyMap::iterator::data(); }
         inline K key() const { return (K)TableAnyMap::iterator::key(); }
 
         inline iterator &operator ++() { TableAnyMap::iterator::operator ++(); return *this; }  
@@ -294,7 +294,7 @@ protected:
     virtual void Free(void *ptr) 
     { 
 //            FLEXT_ASSERT(ptr);
-        delete (T *)ptr;
+        delete (T)ptr;
     }
 
 };

@@ -62,12 +62,17 @@ flext_base::BindItem::BindItem(bool (*f)(flext_base *,t_symbol *s,int,t_atom *,v
 
 flext_base::BindItem::~BindItem()
 {
-    if(px) object_free(&px->obj);
+    if(px) {
+        FLEXT_ASSERT(!fun); // check if already unbound
+        object_free(&px->obj);
+    }
 }
 
 void flext_base::BindItem::Unbind(const t_symbol *tag)
 {
     if(px) {
+        FLEXT_ASSERT(fun);
+
 #if FLEXT_SYS == FLEXT_SYS_PD
         pd_unbind(&px->obj.ob_pd,const_cast<t_symbol *>(tag)); 
 #elif FLEXT_SYS == FLEXT_SYS_MAX
@@ -78,6 +83,8 @@ void flext_base::BindItem::Unbind(const t_symbol *tag)
 #else
 #           pragma warning("Not implemented")
 #endif
+
+        fun = NULL;
     }
 }
 

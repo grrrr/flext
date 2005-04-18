@@ -43,6 +43,13 @@ flext_base::AttrDataCont::~AttrDataCont()
 }
 */
 
+flext_base::AttrDataCont::~AttrDataCont() { clear(); }
+
+void flext_base::AttrDataCont::clear()
+{
+    for(iterator it(*this); it; ++it) delete it.data();
+    TablePtrMap<const t_symbol *,AttrData *,8>::clear();
+}
 
 //! Add get and set attributes
 void flext_base::AddAttrib(ItemCont *aa,ItemCont *ma,const t_symbol *asym,metharg tp,methfun gfun,methfun sfun)
@@ -167,7 +174,10 @@ bool flext_base::InitAttrib(int argc,const t_atom *argv)
 			SetAttrib(tag,attr,a.GetInitValue());
 */
 			AttrData *a = attrdata->find(tag);
-			if(!a) attrdata->insert(tag,a = new AttrData);
+            if(!a) {
+                AttrData *old = attrdata->insert(tag,a = new AttrData);
+                FLEXT_ASSERT(!old);
+            }
 
 			a->SetInit(true);
 			a->SetInitValue(nxt-cur-1,argv+cur+1);

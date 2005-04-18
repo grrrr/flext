@@ -15,6 +15,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flext.h"
 #include <string.h>
 
+flext_base::ItemSet::~ItemSet() { clear(); }
+
+void flext_base::ItemSet::clear()
+{
+    for(iterator it(*this); it; ++it) delete it.data();
+    TablePtrMap<const t_symbol *,Item *,8>::clear();
+}
+
 
 flext_base::Item::~Item()
 {
@@ -57,8 +65,10 @@ void flext_base::ItemCont::Add(Item *item,const t_symbol *tag,int inlet)
     if(!Contained(inlet)) Resize(inlet+2);
     ItemSet &set = GetInlet(inlet);
     Item *lst = set.find(tag);
-    if(!lst) 
-        set.insert(tag,lst = item);
+    if(!lst) { 
+        Item *old = set.insert(tag,lst = item);
+        FLEXT_ASSERT(!old);
+    }
     else
         for(;;)
             if(!lst->nxt) { lst->nxt = item; break; }
@@ -76,8 +86,10 @@ bool flext_base::ItemCont::Remove(Item *item,const t_symbol *tag,int inlet,bool 
         for(Item *prv = NULL; lit; prv = lit,lit = lit->nxt) {
             if(lit == item) {
                 if(prv) prv->nxt = lit->nxt;
-                else if(lit->nxt)
-                    set.insert(tag,lit->nxt);
+                else if(lit->nxt) {
+                    Item *old = set.insert(tag,lit->nxt);
+                    FLEXT_ASSERT(!old);
+                }
                 else {
                     Item *l = set.remove(tag);
                     FLEXT_ASSERT(l == lit);

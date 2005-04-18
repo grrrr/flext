@@ -83,8 +83,9 @@ public:
 class FLEXT_SHARE TableAnyMap
 {
 protected:
-    virtual TableAnyMap *New(TableAnyMap *parent) = 0;
-    virtual void Free(void *ptr) = 0;
+    virtual TableAnyMap *_newmap(TableAnyMap *parent) = 0;
+    virtual void _delmap(TableAnyMap *map) = 0;
+//    virtual void Free(void *ptr) = 0;
 
     struct Data {
         void operator()(size_t k,void *v) { key = k,value = v; }
@@ -96,32 +97,34 @@ protected:
 
     TableAnyMap(TableAnyMap *p,int sz,Data *dt)
         : tsize(sz),data(dt)
-        , n(0),count(0)
+        , n(0)
+//        , count(0)
         , parent(p),left(NULL),right(NULL) 
     {}
 
     virtual ~TableAnyMap();
 
-    int size() const { return count; }
+//    int size() const { return count; }
 
-    void insert(size_t k,void *t)
+    void *insert(size_t k,void *t)
     {
 //        FLEXT_ASSERT(t);
         if(n) 
-            _set(k,t);
+            return _set(k,t);
         else {
             data[n++](k,t);
-            ++count;
+//            ++count;
+            return NULL;
         }
     }
 
     void *find(size_t k) const { return n?_find(k):NULL; }
 
-    void erase(size_t k) { if(n) { void *s = _remove(k); if(s) Free(s); } }
+//    void erase(size_t k) { if(n) { void *s = _remove(k); if(s) Free(s); } }
 
     void *remove(size_t k) { return n?_remove(k):NULL; }
 
-    void clear();
+    virtual void clear();
 
     class FLEXT_SHARE iterator
     {
@@ -155,52 +158,53 @@ protected:
     };
 
 private:
-    void _init(size_t k,void *t) { data[0](k,t); n = count = 1; }
+    void _init(size_t k,void *t) { data[0](k,t); n = /*count =*/ 1; }
 
-    bool _toleft(size_t k,void *t)
+    void *_toleft(size_t k,void *t)
     {
         if(left) {
-            bool a = left->_set(k,t);
-            if(a) ++count;
+            void *a = left->_set(k,t);
+//            if(!a) ++count;
             return a;
         }
         else {
-            (left = New(this))->_init(k,t);
-            ++count;
-            return true;
+            (left = _newmap(this))->_init(k,t);
+ //           ++count;
+            return NULL;
         }
     }
 
-    bool _toright(size_t k,void *t)
+    void *_toright(size_t k,void *t)
     {
         if(right) {
-            bool a = right->_set(k,t);
-            if(a) ++count;
+            void *a = right->_set(k,t);
+//            if(!a) ++count;
             return a;
         }
         else {
-            (right = New(this))->_init(k,t);
-            ++count;
-            return true;
+            (right = _newmap(this))->_init(k,t);
+//            ++count;
+            return NULL;
         }
     }
 
-    bool _toleft(Data &v) { return _toleft(v.key,v.value); }
-    bool _toright(Data &v) { return _toright(v.key,v.value); }
+    void *_toleft(Data &v) { return _toleft(v.key,v.value); }
+    void *_toright(Data &v) { return _toright(v.key,v.value); }
 
-    bool _set(size_t k,void *t);
+    void *_set(size_t k,void *t);
     void *_find(size_t k) const;
     void *_remove(size_t k);
 
     const int tsize;
     Data *const data;
-    int n,count;
+    int n;
+//    int count;
     TableAnyMap *parent,*left,*right;
 
+    //! return index of data item with key <= k
+    //! \note index can point past the last item!
     int _tryix(size_t k) const
     {
-        //! return index of data item with key <= k
-
 //        FLEXT_ASSERT(n);
         int ix = 0;
         {
@@ -223,12 +227,12 @@ private:
         return ix;
     }
 
-    static void _eraseempty(TableAnyMap *&b)
+    void _eraseempty(TableAnyMap *&b)
     {
 //        FLEXT_ASSERT(b);
         if(!b->n) { 
             // remove empty branch
-            delete b; b = NULL; 
+            _delmap(b); b = NULL; 
         }
     }
 
@@ -241,19 +245,29 @@ class TablePtrMap
     : TableAnyMap
 {
 public:
-    TablePtrMap(): TableAnyMap(NULL,N,slots) {}
+    TablePtrMap(): TableAnyMap(NULL,N,slots),count(0) {}
     virtual ~TablePtrMap() { clear(); }
 
-    inline void clear() { TableAnyMap::clear(); }
+    virtual void clear() { TableAnyMap::clear(); count = 0; }
 
-    inline int size() const { return TableAnyMap::size(); }
+    inline int size() const { return count; }
 
-    inline void insert(K k,T t) { TableAnyMap::insert(*(size_t *)&k,(void *)t); }
+    inline T insert(K k,T t) 
+    { 
+        void *d = TableAnyMap::insert(*(size_t *)&k,(void *)t); 
+        if(!d) ++count;
+        return (T)d;
+    }
 
     inline T find(K k) const { return (T)TableAnyMap::find(*(size_t *)&k); }
 
-    inline void erase(K k) { TableAnyMap::erase(*(size_t *)&k); }
-    inline T remove(K k) { return (T)TableAnyMap::remove(*(size_t *)&k); }
+//    inline void erase(K k) { TableAnyMap::erase(*(size_t *)&k); }
+    inline T remove(K k) 
+    { 
+        void *d = TableAnyMap::remove(*(size_t *)&k); 
+        if(d) --count;
+        return (T)d;
+    }
 
     class iterator
         : TableAnyMap::iterator
@@ -274,15 +288,18 @@ public:
     };
 
 protected:
-    TablePtrMap(TableAnyMap *p): TableAnyMap(p,N,slots) {}
+    TablePtrMap(TableAnyMap *p): TableAnyMap(p,N,slots),count(0) {}
 
-    virtual TableAnyMap *New(TableAnyMap *parent) { return new TablePtrMap(parent); }
+    virtual TableAnyMap *_newmap(TableAnyMap *parent) { return new TablePtrMap(parent); }
+    virtual void _delmap(TableAnyMap *map) { delete (TablePtrMap *)map; }
 
-    virtual void Free(void *ptr) {}
+//    virtual void Free(void *ptr) {}
 
+    int count;
     Data slots[N];
 };
 
+#if 0
 template <typename K,typename T,int N = 8>
 class TablePtrMapOwned
     : public TablePtrMap<K,T,N>
@@ -291,13 +308,15 @@ public:
     virtual ~TablePtrMapOwned() { TablePtrMapOwned<K,T,N>::clear(); }
 
 protected:
+/*
     virtual void Free(void *ptr) 
     { 
 //            FLEXT_ASSERT(ptr);
         delete (T)ptr;
     }
-
+*/
 };
+#endif
 
 //! @} // FLEXT_SUPPORT
 

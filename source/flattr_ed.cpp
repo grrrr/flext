@@ -723,8 +723,10 @@ bool flext_base::cb_AttrDialog(flext_base *th,int argc,const t_atom *argv)
                 a.SetInit(true);
                 a.SetInitValue(icnt,argv+ioffs);
 */
-                if(!a)
-                    th->attrdata->insert(aname,a = new AttrData);
+                if(!a) {
+                    AttrData *old = th->attrdata->insert(aname,a = new AttrData);
+                    FLEXT_ASSERT(!old);
+                }
 
                 a->SetSave(sv == 2);
                 a->SetInit(true);

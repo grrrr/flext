@@ -308,11 +308,11 @@ TableAnyMap::~TableAnyMap() { clear(); }
 
 void TableAnyMap::clear() 
 {
-    if(left) { delete left; left = NULL; }
-    if(right) { delete right; right = NULL; }
+    if(left) { _delmap(left); left = NULL; }
+    if(right) { _delmap(right); right = NULL; }
 
-    for(int i = 0; i < n; ++i) Free(data[i].value);
-    count = n = 0;
+//    for(int i = 0; i < n; ++i) Free(data[i].value);
+    /*count = */n = 0;
 }
 
 /*
@@ -328,7 +328,7 @@ int TableAnyMap::size() const
 }
 */
 
-bool TableAnyMap::_set(size_t k,void *t)
+void *TableAnyMap::_set(size_t k,void *t)
 {
     FLEXT_ASSERT(n);
 
@@ -341,29 +341,31 @@ bool TableAnyMap::_set(size_t k,void *t)
         return _toright(k,t);
 
     int ix = _tryix(k);
-    size_t dk = data[ix].key;
-    if(k == dk) {
-        // update data in existing slot (same key)
-        Free(data[ix].value);
-        data[ix] = t;
-        return false;
-    }
-    else if(ix >= n) {
+    if(ix >= n) {
         FLEXT_ASSERT(ix == n);
         // after last entry
         data[n++](k,t);
-        ++count;
-        return true;
+//        ++count;
+        return NULL;
+    }
+
+    size_t dk = data[ix].key;
+    if(k == dk) {
+        // update data in existing slot (same key)
+        void *a = data[ix].value;
+        data[ix] = t;
+        return a;
     }
     else {
         // insert new slot by shifting the higher ones
         FLEXT_ASSERT(k < dk);
-        bool a;
+        void *a;
         if(n == tsize)
             a = _toright(data[tsize-1]);
         else {
-            ++n,++count;
-            a = true;
+            ++n;
+//            ++count;
+            a = NULL;
         }
 
         Data *tg = data+ix;
@@ -385,7 +387,7 @@ void *TableAnyMap::_find(size_t k) const
         return right?right->_find(k):NULL;
 
     const int ix = _tryix(k);
-    return data[ix].key == k?data[ix].value:NULL;
+    return ix < n && data[ix].key == k?data[ix].value:NULL;
 }
 
 void *TableAnyMap::_remove(size_t k)
@@ -398,7 +400,7 @@ void *TableAnyMap::_remove(size_t k)
         void *r = left?left->_remove(k):NULL;
         if(r) {
             _eraseempty(left);
-            --count;
+//            --count;
         }
         return r;
     }
@@ -406,13 +408,13 @@ void *TableAnyMap::_remove(size_t k)
         void *r = right?right->_remove(k):NULL;
         if(r) {
             _eraseempty(right);
-            --count;
+//            --count;
         }
         return r;
     }
 
     const int ix = _tryix(k);
-    if(data[ix].key != k)
+    if(ix >= n || data[ix].key != k)
         return NULL;
     else {
         // found key in this map
@@ -454,7 +456,7 @@ void *TableAnyMap::_remove(size_t k)
                 --n;
         }
 
-        --count;
+//        --count;
         return ret;
     }
 }
@@ -476,7 +478,7 @@ void TableAnyMap::_getbig(Data &dt)
         else
             dt = data[--n];
     }
-    --count;
+//    --count;
 }
 
 void TableAnyMap::_getsmall(Data &dt)
@@ -497,7 +499,7 @@ void TableAnyMap::_getsmall(Data &dt)
         else
             --n;
     }
-    --count;
+//    --count;
 }
 
 void TableAnyMap::iterator::forward() 

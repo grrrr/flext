@@ -56,6 +56,12 @@ public:
 	inline void *operator new(size_t,void *p) { return p; }
 	inline void operator delete(void *,void *) {}
 
+#ifdef FLEXT_DEBUGMEM
+    static bool MemCheck(void *blk);
+#else
+    static bool MemCheck(void *) { return true; }
+#endif
+
 	#ifndef __MRC__ // doesn't allow new[] overloading?!
 	inline void *operator new[](size_t bytes) { return operator new(bytes); }
 	inline void operator delete[](void *blk) { operator delete(blk); }

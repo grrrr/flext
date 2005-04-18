@@ -115,10 +115,16 @@ void flext::Setup()
 
 #define LARGEALLOC 32000
 
+#ifdef FLEXT_DEBUGMEM
+static const size_t memtest = 0x12345678L;
+#endif
+
 void *flext_root::operator new(size_t bytes)
 {
 	bytes += sizeof(size_t);
-
+#ifdef FLEXT_DEBUGMEM
+    bytes += sizeof(memtest)*2;
+#endif
     char *blk;
     if(bytes >= LARGEALLOC) {
 #if FLEXT_SYS == FLEXT_SYS_MAX && defined(_SYSMEM_H_)
@@ -145,14 +151,25 @@ void *flext_root::operator new(size_t bytes)
 	FLEXT_ASSERT(blk);
 
 	*(size_t *)blk = bytes;
+#ifdef FLEXT_DEBUGMEM
+    *(size_t *)(blk+sizeof(size_t)) = memtest;
+    *(size_t *)(blk+bytes-sizeof(memtest)) = memtest;
+	return blk+sizeof(size_t)+sizeof(memtest);
+#else
 	return blk+sizeof(size_t);
+#endif
 }
 
 void flext_root::operator delete(void *blk)
 {
 	FLEXT_ASSERT(blk);
+    FLEXT_ASSERT(MemCheck(blk));
 
-	char *ori = (char *)blk-sizeof(size_t);
+#ifdef FLEXT_DEBUGMEM
+	char *ori = (char *)blk-sizeof(size_t)-sizeof(memtest);
+#else
+    char *ori = (char *)blk-sizeof(size_t);
+#endif
 	size_t bytes = *(size_t *)ori;
 
     if(bytes >= LARGEALLOC) {
@@ -177,6 +194,18 @@ void flext_root::operator delete(void *blk)
         SYSUNLOCK();
     }
 }
+
+#ifdef FLEXT_DEBUGMEM
+bool flext_root::MemCheck(void *blk)
+{
+	char *ori = (char *)blk-sizeof(size_t)-sizeof(memtest);
+	size_t bytes = *(size_t *)ori;
+
+    return 
+        *(size_t *)((char *)ori+sizeof(size_t)) == memtest && 
+        *(size_t *)((char *)ori+bytes-sizeof(memtest)) == memtest;
+}
+#endif
 
 void *flext_root::NewAligned(size_t bytes,int bitalign)
 {
@@ -297,12 +326,6 @@ void flext_root::error(const char *fmt,...)
     va_end(ap);
 }
 
-#if 0
-AnyMap::AnyMap() {}
-AnyMap::~AnyMap() {}
-AnyMap::iterator AnyMap::find(AnyMapType k) { return Parent::find(k); }
-AnyMapType &AnyMap::operator [](AnyMapType k) { return Parent::operator [](k); }
-#endif
 
 TableAnyMap::~TableAnyMap() { clear(); }
 
@@ -310,25 +333,11 @@ void TableAnyMap::clear()
 {
     if(left) { _delmap(left); left = NULL; }
     if(right) { _delmap(right); right = NULL; }
-
-//    for(int i = 0; i < n; ++i) Free(data[i].value);
-    /*count = */n = 0;
+    n = 0;
 }
 
-/*
-int TableAnyMap::size() const 
-{
-    int sz = n;
-    if(sz >= tsize) {
-        if(left) sz += left->size();
-        if(right) sz += right->size();
-    }
-    FLEXT_ASSERT(sz == count);
-    return sz;
-}
-*/
 
-void *TableAnyMap::_set(size_t k,void *t)
+void *TableAnyMap::_set(int tsize,size_t k,void *t)
 {
     FLEXT_ASSERT(n);
 
@@ -336,16 +345,15 @@ void *TableAnyMap::_set(size_t k,void *t)
         // fall through
     }
     else if(k < data[0].key)
-        return _toleft(k,t);
+        return _toleft(tsize,k,t);
     else if(k > data[tsize-1].key)
-        return _toright(k,t);
+        return _toright(tsize,k,t);
 
     int ix = _tryix(k);
     if(ix >= n) {
         FLEXT_ASSERT(ix == n);
         // after last entry
         data[n++](k,t);
-//        ++count;
         return NULL;
     }
 
@@ -361,10 +369,9 @@ void *TableAnyMap::_set(size_t k,void *t)
         FLEXT_ASSERT(k < dk);
         void *a;
         if(n == tsize)
-            a = _toright(data[tsize-1]);
+            a = _toright(tsize,data[tsize-1]);
         else {
             ++n;
-//            ++count;
             a = NULL;
         }
 
@@ -375,41 +382,64 @@ void *TableAnyMap::_set(size_t k,void *t)
     }
 }
 
-void *TableAnyMap::_find(size_t k) const
+void *TableAnyMap::_find(int tsize,size_t k) const
 {
     FLEXT_ASSERT(n);
     if(n < tsize) {
         // fall through
     }
     else if(k < data[0].key)
-        return left?left->_find(k):NULL;
+        return left?left->_find(tsize,k):NULL;
     else if(k > data[n-1].key)
-        return right?right->_find(k):NULL;
+        return right?right->_find(tsize,k):NULL;
 
     const int ix = _tryix(k);
     return ix < n && data[ix].key == k?data[ix].value:NULL;
 }
 
-void *TableAnyMap::_remove(size_t k)
+#ifdef 0
+void TableAnyMap::_assert(int tsize)
+{
+    if(!n) 
+        post("ERR: 0");
+
+    size_t k = data[0].key;
+    for(int i = 1; i < n; ++i) {
+        size_t k2 = data[i].key;
+        if(k >= k2)
+            post("ERR: >");
+        k = k2;
+    }
+
+    if(left || right) 
+        if(n != tsize)
+            post("ERR: n");
+
+    if(left) { 
+        FLEXT_ASSERT(flext::MemCheck(left)); 
+        left->_assert(); 
+    }
+    if(right) { 
+        FLEXT_ASSERT(flext::MemCheck(right)); 
+        right->_assert(); 
+    }
+}
+#endif
+
+void *TableAnyMap::_remove(int tsize,size_t k)
 {
     FLEXT_ASSERT(n);
     if(n < tsize) {
         // fall through
     }
     else if(k < data[0].key) {
-        void *r = left?left->_remove(k):NULL;
-        if(r) {
-            _eraseempty(left);
-//            --count;
-        }
+        void *r = left?left->_remove(tsize,k):NULL;
+        if(r) _eraseempty(left);
         return r;
     }
     else if(k > data[n-1].key) {
-        void *r = right?right->_remove(k):NULL;
-        if(r) {
-            _eraseempty(right);
-//            --count;
-        }
+        void *r = right?right->_remove(tsize,k):NULL;
+        if(r) _eraseempty(right);
         return r;
     }
 
@@ -456,7 +486,6 @@ void *TableAnyMap::_remove(size_t k)
                 --n;
         }
 
-//        --count;
         return ret;
     }
 }
@@ -470,15 +499,15 @@ void TableAnyMap::_getbig(Data &dt)
         _eraseempty(right);
     }
     else {
+        dt = data[n-1];
         if(left) {
-            for(int i = n; i; --i) data[i] = data[i-1];
+            for(int i = n-1; i; --i) data[i] = data[i-1];
             left->_getbig(data[0]);
             _eraseempty(left);
         }
         else
-            dt = data[--n];
+            --n;
     }
-//    --count;
 }
 
 void TableAnyMap::_getsmall(Data &dt)
@@ -499,7 +528,6 @@ void TableAnyMap::_getsmall(Data &dt)
         else
             --n;
     }
-//    --count;
 }
 
 void TableAnyMap::iterator::forward() 

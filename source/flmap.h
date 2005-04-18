@@ -43,7 +43,7 @@ protected:
 
     virtual ~TableAnyMap();
 
-#ifdef 0
+#if 0
     void assert(int tsize) { if(n) _assert(tsize); }
 #else
     void assert(int tsize) {}

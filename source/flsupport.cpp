@@ -397,7 +397,7 @@ void *TableAnyMap::_find(int tsize,size_t k) const
     return ix < n && data[ix].key == k?data[ix].value:NULL;
 }
 
-#ifdef 0
+#if 0
 void TableAnyMap::_assert(int tsize)
 {
     if(!n) 

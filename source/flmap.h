@@ -77,7 +77,7 @@ protected:
     
         iterator &operator =(const iterator &it) { map = it.map,ix = it.ix; return *this; }
 
-        operator bool() const { return map && /*ix >= 0 &&*/ ix < map->n; }
+        operator bool() const { return map && ix < map->n; }
 
         // no checking here!
         void *data() const { return map->data[ix].value; }
@@ -101,7 +101,7 @@ protected:
 
 private:
 
-    void _init(size_t k,void *t) { data[0](k,t); n = /*count =*/ 1; }
+    void _init(size_t k,void *t) { data[0](k,t); n = 1; }
 
     void *_toleft(int tsize,size_t k,void *t)
     {
@@ -134,7 +134,6 @@ private:
     void _check(int tsize);
 #endif
 
-//    const int tsize;
     Data *const data;
     TableAnyMap *parent,*left,*right;
     short n;

@@ -397,31 +397,27 @@ void *TableAnyMap::_find(int tsize,size_t k) const
     return ix < n && data[ix].key == k?data[ix].value:NULL;
 }
 
-#if 0
-void TableAnyMap::_assert(int tsize)
+#ifdef FLEXT_DEBUG
+void TableAnyMap::_check(int tsize)
 {
-    if(!n) 
-        post("ERR: 0");
+    FLEXT_ASSERT(n);
 
     size_t k = data[0].key;
     for(int i = 1; i < n; ++i) {
         size_t k2 = data[i].key;
-        if(k >= k2)
-            post("ERR: >");
+        FLEXT_ASSERT(k < k2);
         k = k2;
     }
 
-    if(left || right) 
-        if(n != tsize)
-            post("ERR: n");
+    if(left || right) FLEXT_ASSERT(n == tsize);
 
     if(left) { 
         FLEXT_ASSERT(flext::MemCheck(left)); 
-        left->_assert(); 
+        left->_check(tsize); 
     }
     if(right) { 
         FLEXT_ASSERT(flext::MemCheck(right)); 
-        right->_assert(); 
+        right->_check(tsize); 
     }
 }
 #endif

@@ -44,9 +44,9 @@ protected:
     virtual ~TableAnyMap();
 
 #if 0
-    void assert(int tsize) { if(n) _assert(tsize); }
+    void check(int tsize) { if(n) _check(tsize); }
 #else
-    void assert(int tsize) {}
+    void check(int tsize) {}
 #endif
 
     void *insert(int tsize,size_t k,void *t)
@@ -58,13 +58,13 @@ protected:
             data[n++](k,t);
             r = NULL;
         }
-        assert(tsize);
+        check(tsize);
         return r;
     }
 
     void *find(int tsize,size_t k) const { return n?_find(tsize,k):NULL; }
 
-    void *remove(int tsize,size_t k) { void *r = n?_remove(tsize,k):NULL; assert(tsize); return r; }
+    void *remove(int tsize,size_t k) { void *r = n?_remove(tsize,k):NULL; check(tsize); return r; }
 
     virtual void clear();
 
@@ -131,7 +131,7 @@ private:
     void *_remove(int tsize,size_t k);
 
 #ifdef FLEXT_DEBUG
-    void _assert();
+    void _check(int tsize);
 #endif
 
 //    const int tsize;

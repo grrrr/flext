@@ -37,7 +37,7 @@ protected:
 
     TableAnyMap(TableAnyMap *p,Data *dt)
         : data(dt)
-        , parent(p),left(NULL),right(NULL) 
+        , parent(p),left(0),right(0) 
         , n(0)
     {}
 
@@ -56,17 +56,17 @@ protected:
             r = _set(tsize,k,t);
         else {
             data[n++](k,t);
-            r = NULL;
+            r = 0;
         }
         check(tsize);
         return r;
     }
 
-    void *find(int tsize,size_t k) const { return n?_find(tsize,k):NULL; }
+    void *find(int tsize,size_t k) const { return n?_find(tsize,k):0; }
 
     void *remove(int tsize,size_t k) 
 	{ 
-		void *r = n?_remove(tsize,k):NULL; 
+		void *r = n?_remove(tsize,k):0; 
 		check(tsize); 
 		return r; 
 	}
@@ -76,7 +76,7 @@ protected:
     class FLEXT_SHARE iterator
     {
     public:
-        iterator(): map(NULL) {}
+        iterator(): map(0) {}
         iterator(const TableAnyMap &m): map(&m),ix(0) { leftmost(); }
         iterator(iterator &it): map(it.map),ix(it.ix) {}
     
@@ -95,7 +95,7 @@ protected:
         {
             // search smallest branch (go left as far as possible)
             const TableAnyMap *nmap;
-            while((nmap = map->left) != NULL) map = nmap;
+            while((nmap = map->left) != 0) map = nmap;
         }
 
         void forward();
@@ -115,7 +115,7 @@ private:
             return left->_set(tsize,k,t);
         else {
             (left = _newmap(this))->_init(k,t);
-            return NULL;
+            return 0;
         }
     }
 
@@ -125,7 +125,7 @@ private:
             return right->_set(tsize,k,t);
         else {
             (right = _newmap(this))->_init(k,t);
-            return NULL;
+            return 0;
         }
     }
 
@@ -168,7 +168,7 @@ private:
     {
         if(!b->n) { 
             // remove empty branch
-            _delmap(b); b = NULL; 
+            _delmap(b); b = 0; 
         }
     }
 
@@ -181,7 +181,7 @@ class TablePtrMap
     : TableAnyMap
 {
 public:
-    TablePtrMap(): TableAnyMap(NULL,slots),count(0) {}
+    TablePtrMap(): TableAnyMap(0,slots),count(0) {}
     virtual ~TablePtrMap() { clear(); }
 
     virtual void clear() { TableAnyMap::clear(); count = 0; }

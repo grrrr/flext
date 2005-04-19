@@ -12,6 +12,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     \brief flext container classes.
 */
  
+#include "flext.h"
 #include "flmap.h"
 
 TableAnyMap::~TableAnyMap() { clear(); }

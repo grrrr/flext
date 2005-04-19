@@ -29,7 +29,8 @@ SRCS_FLEXT = \
 	flmsg.cpp \
 	flproxy.cpp \
 	flqueue.cpp \
-	flbind.cpp
+	flbind.cpp \
+	flmap.cpp
 
 pkginclude_HEADERS = \
 	flprefix.h \

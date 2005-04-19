@@ -7,7 +7,11 @@ CFLAGS += $(UFLAGS)
 ifdef DEBUG
 CFLAGS += -D_DEBUG $(DFLAGS)
 else
+ifdef PROFILE
 CFLAGS += -DNDEBUG $(OFLAGS)
+else
+CFLAGS += -DNDEBUG $(OFLAGS)
+endif
 endif
 
 

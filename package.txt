@@ -31,7 +31,7 @@ SRCS= \
 	flxlet.cpp flattr.cpp flattr_ed.cpp flsupport.cpp \
 	flutil.cpp flatom.cpp flatom_pr.cpp flthr.cpp fltimer.cpp flsimd.cpp flout.cpp \
 	flatom_part.cpp flitem.cpp flmeth.cpp flmsg.cpp \
-	flproxy.cpp flqueue.cpp flbind.cpp
+	flproxy.cpp flqueue.cpp flbind.cpp flmap.cpp
 HDRS= \
 	flprefix.h flstdc.h flbase.h flclass.h flext.h flsupport.h flmap.h fldsp.h flinternal.h flcontainers.h \
 	fldefs.h fldefs_hdr.h fldefs_setup.h \

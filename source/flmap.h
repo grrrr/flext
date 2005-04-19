@@ -9,7 +9,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 /*! \file flmap.h
-	\brief special map class for all 32-bit key/value-pairs   
+	\brief special map class (faster and less memory-consuming than std::map)   
 */
 
 #ifndef __FLMAP_H
@@ -43,7 +43,7 @@ protected:
 
     virtual ~TableAnyMap();
 
-#if 0
+#if 0 // set 1 for asserting the map structure (very cpu-intensive!)
     void check(int tsize) { if(n) _check(tsize); }
 #else
     void check(int tsize) {}
@@ -64,7 +64,12 @@ protected:
 
     void *find(int tsize,size_t k) const { return n?_find(tsize,k):NULL; }
 
-    void *remove(int tsize,size_t k) { void *r = n?_remove(tsize,k):NULL; check(tsize); return r; }
+    void *remove(int tsize,size_t k) 
+	{ 
+		void *r = n?_remove(tsize,k):NULL; 
+		check(tsize); 
+		return r; 
+	}
 
     virtual void clear();
 
@@ -95,6 +100,7 @@ protected:
 
         void forward();
 
+		// pointers to map and index within
         const TableAnyMap *map;
         int ix;
     };
@@ -136,30 +142,25 @@ private:
 
     Data *const data;
     TableAnyMap *parent,*left,*right;
-    short n;
+    int n;
 
     //! return index of data item with key <= k
     //! \note index can point past the last item!
-    int _tryix(size_t k) const
+    unsigned int _tryix(size_t k) const
     {
-        int ix = 0;
-        {
-            int b = n;
-            while(ix != b) {
-                const int c = (ix+b)/2;
-                const size_t dk = data[c].key;
-                if(k == dk)
-                    return c;
-                else if(k < dk)
-                    b = c;
-                else if(ix < c)
-                    ix = c;
-                else {
-                    ix = b;
-                    break;
-                }
-            }
-        }
+        unsigned int ix = 0,b = n;
+		while(ix != b) {
+			const unsigned int c = (ix+b)>>1;
+			const size_t dk = data[c].key;
+			if(k == dk)
+				return c;
+			else if(k < dk)
+				b = c;
+			else if(ix < c)
+				ix = c;
+			else
+				return b;
+		}
         return ix;
     }
 

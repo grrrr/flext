@@ -18,12 +18,19 @@ FLEXTBIN=$(FLEXTPREFIX)/bin
 
 ##############################################
 
-LDFLAGS += -dynamic -Wl,-x -framework ApplicationServices -framework vecLib
+LDFLAGS += -dynamic -framework ApplicationServices -framework vecLib
 
 ##############################################
 
 ifdef DEBUG
 CFLAGS += -g
+LDFLAGS += -g
 else
-LDFLAGS += -Wl,-S
+ifdef PROFILE
+CFLAGS += -g
+LDFLAGS += -g
+else
+LDFLAGS += -Wl,-x -Wl,-S
 endif
+endif
+

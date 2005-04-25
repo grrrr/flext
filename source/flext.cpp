@@ -175,7 +175,7 @@ void flext_base::cb_loadbang(t_class *c) { thisObject(c)->CbLoadbang(); }
 #endif
 
 void flext_base::m_loadbang() {}
-void flext_base::CbLoadbang() { return m_loadbang(); }
+void flext_base::CbLoadbang() { m_loadbang(); }
 
 void flext_base::CbClick() {}
 

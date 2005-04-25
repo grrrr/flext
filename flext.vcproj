@@ -3178,6 +3178,9 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				RelativePath=".\source\flcontainers.h">
 			</File>
 			<File
+				RelativePath=".\source\flmap.cpp">
+			</File>
+			<File
 				RelativePath=".\source\flmap.h">
 			</File>
 			<File

@@ -23,7 +23,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 class FLEXT_SHARE TableAnyMap
 {
-protected:
+public:
+
     virtual TableAnyMap *_newmap(TableAnyMap *parent) = 0;
     virtual void _delmap(TableAnyMap *map) = 0;
 
@@ -35,6 +36,9 @@ protected:
         void *value;
     };
 
+protected:
+    // constructor and destructor are protected so that they can't be directly instantiated 
+
     TableAnyMap(TableAnyMap *p,Data *dt)
         : data(dt)
         , parent(p),left(0),right(0) 
@@ -42,6 +46,8 @@ protected:
     {}
 
     virtual ~TableAnyMap();
+
+public:
 
 #if 0 // set 1 for asserting the map structure (very cpu-intensive!)
     void check(int tsize) { if(n) _check(tsize); }
@@ -104,8 +110,6 @@ protected:
         const TableAnyMap *map;
         int ix;
     };
-
-private:
 
     void _init(size_t k,void *t) { data[0](k,t); n = 1; }
 
@@ -178,7 +182,11 @@ private:
 
 template <typename K,typename T,int N = 8>
 class TablePtrMap
-    : TableAnyMap
+    : 
+#if defined(_MSC_VER) && _MSC_VER < 1300
+    public  // necessary for VC6
+#endif
+    TableAnyMap
 {
 public:
     TablePtrMap(): TableAnyMap(0,slots),count(0) {}
@@ -204,6 +212,7 @@ public:
         return (T)d;
     }
 
+
     class iterator
         : TableAnyMap::iterator
     {
@@ -212,14 +221,15 @@ public:
         iterator(const TablePtrMap &m): TableAnyMap::iterator(m) {}
         iterator(iterator &it): TableAnyMap::iterator(it) {}
 
-        inline iterator &operator =(const iterator &it) { TableAnyMap::operator =(it); return *this; }
+        // this ugly syntax (cast to parent class) is needed for MSVC6 
 
-        inline operator bool() const {return TableAnyMap::iterator::operator bool(); }
-        inline T data() const { return (T)TableAnyMap::iterator::data(); }
-        inline K key() const { return (K)TableAnyMap::iterator::key(); }
+        inline iterator &operator =(const iterator &it) { ((TableAnyMap::iterator &)*this) = it; return *this; }
 
-        inline iterator &operator ++() { TableAnyMap::iterator::operator ++(); return *this; }  
+        inline operator bool() const { return (bool)((TableAnyMap::iterator &)*this); } 
+        inline T data() const { return (T)(((TableAnyMap::iterator &)*this).data()); }
+        inline K key() const { return (K)(((TableAnyMap::iterator &)*this).key()); }
 
+        inline iterator &operator ++() { ++((TableAnyMap::iterator &)*this); return *this; }  
     };
 
 protected:

@@ -26,6 +26,13 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 flext::thrid_t flext::thrmsgid = 0;
 #endif
 
+#ifdef FLEXT_SHARED
+/*
+    For the shared version it _should_ be possible to have only one queue for all externals.
+    Yet I don't know how to do this cross-platform
+*/
+#define PERMANENTIDLE
+#endif
 
 static void Trigger();
 
@@ -196,18 +203,20 @@ static void QTick(flext_base *c)
 }
 
 #elif FLEXT_QMODE == 1
-#ifndef FLEXT_SHARED
+#ifndef PERMANENTIDLE
 static bool qtickactive = false;
 #endif
 static t_int QTick(t_int *)
 {
-#ifndef FLEXT_SHARED
+#ifndef PERMANENTIDLE
     qtickactive = false;
 #endif
+
     QWork(false);
-#ifdef FLEXT_SHARED
+
+#ifdef PERMANENTIDLE
     // will be run in the next idle cycle
-    return 2; 
+    return 2;
 #else
     // won't be run again
     // for non-shared externals assume that there's rarely a message waiting
@@ -239,7 +248,7 @@ static void Trigger()
     #if FLEXT_QMODE == 2
         // wake up worker thread
         qthrcond.Signal();
-    #elif FLEXT_QMODE == 1 && !defined(FLEXT_SHARED)
+    #elif FLEXT_QMODE == 1 && !defined(PERMANENTIDLE)
         if(!qtickactive) {
             sys_callback(QTick,NULL,0);
             qtickactive = true;
@@ -280,7 +289,7 @@ void flext_base::StartQueue()
     else started = true;
 
 #if FLEXT_QMODE == 1
-#ifdef FLEXT_SHARED
+#ifdef PERMANENTIDLE
     sys_callback(QTick,NULL,0);
 #endif
 #elif FLEXT_QMODE == 2

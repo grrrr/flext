@@ -88,7 +88,11 @@ static void tclscript()
         "proc flext_escatoms {lst} {\n"
             "set tmp {}\n"
             "foreach a $lst {\n"
+//                "set a [regsub {\\\\} $a \\\\\\\\]\n"  // replace \ with \\  ... must be first
                 "set a [regsub {\\$} $a \\\\$]\n"  // replace $ with \$
+//                "set a [regsub {\\{} $a \\\\\\{]\n"  // replace { with \{
+//                "set a [regsub {\\}} $a \\\\\\}]\n"  // replace } with \}
+//                "set a [regsub {\\ } $a \\\\\\ ]\n"  // replace space with \space
                 "set a [regsub {,} $a \\\\,]\n"  // replace , with \,
                 "set a [regsub {;} $a \\\\\\;]\n"  // replace ; with \;
                 "lappend tmp $a\n"

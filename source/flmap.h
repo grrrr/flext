@@ -84,7 +84,7 @@ public:
     public:
         iterator(): map(0) {}
         iterator(const TableAnyMap &m): map(&m),ix(0) { leftmost(); }
-        iterator(iterator &it): map(it.map),ix(it.ix) {}
+        iterator(const iterator &it): map(it.map),ix(it.ix) {}
     
         iterator &operator =(const iterator &it) { map = it.map,ix = it.ix; return *this; }
 
@@ -219,7 +219,7 @@ public:
     public:
         iterator() {}
         iterator(const TablePtrMap &m): TableAnyMap::iterator(m) {}
-        iterator(iterator &it): TableAnyMap::iterator(it) {}
+        iterator(const iterator &it): TableAnyMap::iterator(it) {}
 
         // this ugly syntax (cast to parent class) is needed for MSVC6 
 

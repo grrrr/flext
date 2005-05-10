@@ -178,6 +178,11 @@ public:
 
     void _getsmall(Data &dt);
     void _getbig(Data &dt);
+
+private:
+    // hide, so that it can't be used.....
+    explicit TableAnyMap(const TableAnyMap &): data(NULL) {}
+    TableAnyMap &operator =(const TableAnyMap &) { return *this; }
 };
 
 template <typename K,typename T,int N = 8>
@@ -240,6 +245,9 @@ protected:
 
     int count;
     Data slots[N];
+
+private:
+    explicit TablePtrMap(const TableAnyMap &p) {}
 };
 
 //! @} // FLEXT_SUPPORT

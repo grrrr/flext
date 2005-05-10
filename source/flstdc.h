@@ -26,10 +26,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <math.h>
 #endif
 
-#ifdef FLEXT_DEBUG
-#if FLEXT_OS == FLEXT_OS_WIN
+#ifdef _MSC_VER
 #include <crtdbg.h>
-#endif
 #endif
 
 // PD stuff
@@ -231,7 +229,7 @@ typedef t_symbol *t_symptr;
 #ifdef FLEXT_LOGGING
 /* If FLEXT_LOGGING is defined implement logging */
 
-#if FLEXT_OS == FLEXT_OS_WIN
+#ifdef _MSC_VER
 #define FLEXT_LOG(s) _CrtDbgReport(_CRT_WARN,__FILE__,__LINE__,"flext",s)
 #define FLEXT_LOG1(s,v1) _CrtDbgReport(_CRT_WARN,__FILE__,__LINE__,"flext",s,v1)
 #define FLEXT_LOG2(s,v1,v2) _CrtDbgReport(_CRT_WARN,__FILE__,__LINE__,"flext",s,v1,v2)
@@ -272,7 +270,7 @@ typedef t_symbol *t_symptr;
 #endif
 
 #ifdef FLEXT_DEBUG
-#if FLEXT_OS == FLEXT_OS_WIN
+#ifdef _MSC_VER
 #define FLEXT_ASSERT(b) (!(b)?_CrtDbgReport(_CRT_ASSERT,__FILE__,__LINE__,"flext",#b):1)
 #define FLEXT_WARN(str) _CrtDbgReport(_CRT_WARN,__FILE__,__LINE__,"flext",NULL)
 #define FLEXT_ERROR(str) _CrtDbgReport(_CRT_ERROR,__FILE__,__LINE__,"flext",NULL)

@@ -180,9 +180,71 @@ public:
 		    :"memory", "edx");
 	    return n;
     }
-#elif defined(__GNUC__) && FLEXT_CPU == FLEXT_CPU_X64_64
+#elif defined(__GNUC__) && FLEXT_CPU == FLEXT_CPU_X86_64
+/* attention - this only works for EMT64 or newer revisions of AMD 64-bit cpus */
 
-#error x86-64 architecture not supported yet
+    inline void Push(Cell *cl) 
+    {
+	    __asm__ __volatile__ (
+		    "# LFPUSH					\n\t"
+		    "push	%%rbx				\n\t"
+		    "push	%%rcx				\n\t"
+		    "mov 0(%%rsi), %%rax		\n\t"
+		    "mov 8(%%rsi), %%rdx		\n"	
+		    "1:                         \t"
+		    "mov %%rax, %%rbx			\n\t"
+		    "inc %%rbx					\n\t"
+		    "mov %%rdx, (%%rcx)		\n\t"
+		    SMPLOCK "cmpxchg16b (%%rsi)	\n\t"
+		    "jnz	1b					\n\t"
+		    "pop	%%rcx				\n\t"
+		    "pop	%%rbx				\n\t"
+		    :/* no output */
+		    :"S" (this), "c" (cl)
+		    :"memory", "rax", "rdx");
+    }
+
+    inline Cell *Pop() 
+    {
+	    Cell *v=0;
+	    __asm__ __volatile__ (
+		    "# LFPOP 					\n\t"
+		    "push	%%rbx				\n\t"
+		    "push	%%rcx				\n\t"
+		    "mov 	8(%%rsi), %%rdx		\n\t"
+		    "mov  	(%%rsi), %%rax		\n\t"	
+		    "test	%%rax, %%rax		\n\t"
+		    "jz		20f					\n"
+		    "10:                        \t"
+		    "mov 	(%%rax), %%rbx		\n\t"
+		    "mov	%%rdx, %%rcx		\n\t"
+		    "inc	%%rcx				\n\t"
+		    SMPLOCK "cmpxchg16b (%%rsi)	\n\t"
+		    "jz		20f					\n\t"
+		    "test	%%rax, %%rax		\n\t"
+		    "jnz	10b					\n"
+		    "20:                        \t"
+		    "pop	%%rcx				\n\t"
+		    "pop	%%rbx				\n\t"
+		    :"=a" (v)
+		    :"S" (&this->top)
+		    :"memory", "rdx");
+	    return v;
+    }
+
+    inline size_t Size() const 
+    {
+	    size_t n;
+	    __asm__ __volatile__ (
+		    "# LFSIZE					\n\t"
+		    "mov 	12(%%rsi), %%edx	\n\t"
+		    "mov  	(%%rsi), %%eax		\n\t"	
+		    "sub 	%%edx, %%eax		\n\t"
+		    :"=a" (n)
+		    :"S" (this)
+		    :"memory", "edx");
+	    return n;
+    }
 
 #elif defined(__GNUC__) && FLEXT_CPU == FLEXT_CPU_PPC
     inline void Push(register Cell *cl) 

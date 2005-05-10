@@ -237,12 +237,12 @@ public:
 	    size_t n;
 	    __asm__ __volatile__ (
 		    "# LFSIZE					\n\t"
-		    "mov 	12(%%rsi), %%edx	\n\t"
-		    "mov  	(%%rsi), %%eax		\n\t"	
-		    "sub 	%%edx, %%eax		\n\t"
+		    "mov 	16(%%rsi), %%rdx	\n\t"
+		    "mov  	(%%rsi), %%rax		\n\t"	
+		    "sub 	%%rdx, %%rax		\n\t"
 		    :"=a" (n)
 		    :"S" (this)
-		    :"memory", "edx");
+		    :"memory", "rdx");
 	    return n;
     }
 

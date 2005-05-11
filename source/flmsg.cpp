@@ -196,7 +196,7 @@ bool flext_base::CbMethodHandler(int inlet,const t_symbol *s,int argc,const t_at
 #endif
         
         // If float or int message is not explicitly handled: try list handler instead
-        if(!trap && argc == 1 && (s == sym_float
+        if(!trap && argc == 1 && (s == sym_float || s == sym_symbol
 #if FLEXT_SYS == FLEXT_SYS_MAX
             || s == sym_int
 #endif
@@ -208,6 +208,8 @@ bool flext_base::CbMethodHandler(int inlet,const t_symbol *s,int argc,const t_at
             else if(s == sym_int)
                 SetInt(list,GetInt(argv[0]));
 #endif
+            else if(s == sym_symbol)
+                SetSymbol(list,GetSymbol(argv[0]));
 
             trap = true;
             ret = CbMethodHandler(inlet,sym_list,1,&list);

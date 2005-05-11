@@ -6,7 +6,7 @@ TARGET=$(TARGETPATH)\$(OUTNAME).$(EXT)
 
 ##############################################
 
-CFLAGS += 
+CFLAGS += -mms-bitfields
 LDFLAGS += -shared
 
 ##############################################

@@ -274,14 +274,12 @@ void flext::Timer::callback(Timer *tmr)
 #endif
     }
 
-    if(tmr->cback) {
 #if FLEXT_SYS == FLEXT_SYS_MAX
-        if(tmr->queued) 
-            qelem_set(tmr->qelem);
-        else
+    if(tmr->queued) 
+        qelem_set(tmr->qelem);
+    else
 #endif
-            tmr->Work();
-    }
+        tmr->Work();
 }
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
@@ -295,9 +293,11 @@ void flext::Timer::queuefun(Timer *tmr) { tmr->Work(); }
 */
 void flext::Timer::Work()
 {
-    if(clss) 
-        ((bool (*)(flext_base *,void *))cback)(clss,userdata);
-    else
-        cback(userdata);
+    if(cback) {
+        if(clss) 
+            ((bool (*)(flext_base *,void *))cback)(clss,userdata);
+        else
+            cback(userdata);
+    }
 }
 

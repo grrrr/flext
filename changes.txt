@@ -37,6 +37,8 @@ Version history:
 - eliminated default "help" (m_help) method... should be implemented in the flext-based object
 - changed virtual callback names m_loadbang, m_method_, m_dsp, m_signal, m_click to CbLoadbang, CbMethodResort, CbDsp, CbSignal, CbClick
 - replaced memory-intensive STL maps by custom-made vector/map-monster (should be fast!)
+- fixed bug for symbol messages into non-left inlets
+- better timers for Windows
 
 0.4.7:
 - added flext::GetBool (just because flext::GetInt has been there for a while)

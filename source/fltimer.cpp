@@ -50,11 +50,20 @@ double flext::GetTimeGrain()
 #endif
 }
 
+#if FLEXT_OS == FLEXT_OS_WIN
+static double perffrq = 0;
+#endif
+
 static double getstarttime();
 static double starttime = getstarttime();
 
 static double getstarttime()
 {
+#if FLEXT_OS == FLEXT_OS_WIN
+    LARGE_INTEGER frq;
+    if(QueryPerformanceFrequency(&frq)) perffrq = (double)frq.QuadPart;
+#endif
+
     starttime = 0;
     return flext::GetOSTime();
 }
@@ -64,15 +73,15 @@ double flext::GetOSTime()
     double tm;
 
 #if FLEXT_OS == FLEXT_OS_WIN
-    LARGE_INTEGER frq,cnt;
-    if(QueryPerformanceFrequency(&frq) && QueryPerformanceCounter(&cnt))
-        tm = (double)(cnt.QuadPart)/frq.QuadPart;
+    LARGE_INTEGER cnt;
+    if(perffrq && QueryPerformanceCounter(&cnt))
+        tm = cnt.QuadPart/perffrq;
     else {
         SYSTEMTIME systm;
         FILETIME fltm;
         GetSystemTime(&systm);
         SystemTimeToFileTime(&systm,&fltm);
-        tm = (double)((LARGE_INTEGER *)&fltm)->QuadPart*0.001;
+        tm = ((LARGE_INTEGER *)&fltm)->QuadPart*1.e-7;
     }
 #elif FLEXT_OS == FLEXT_OS_LINUX || FLEXT_OS == FLEXT_OS_IRIX || FLEXT_OSAPI == FLEXT_OSAPI_MAC_MACH // POSIX
     timeval tmv;
@@ -90,8 +99,39 @@ double flext::GetOSTime()
 
 void flext::Sleep(double s)
 {
+    if(s <= 0) return;
 #if FLEXT_OS == FLEXT_OS_WIN
-    ::Sleep((long)(s*1000.));
+#if defined(_WIN32_WINNT) && _WIN32_WINNT >= 0x400
+#if 0
+    LARGE_INTEGER liDueTime;
+    liDueTime.QuadPart = (LONGLONG)(-1.e7*s);
+
+    // Create a waitable timer.
+    HANDLE hTimer = CreateWaitableTimer(NULL,TRUE,NULL);
+    if(hTimer) {
+        if(SetWaitableTimer(hTimer,&liDueTime,0,NULL,NULL,0))
+            // Wait for the timer.
+            WaitForSingleObject(hTimer,INFINITE); // != WAIT_OBJECT_0)
+        else
+            ::Sleep((long)(s*1000.));
+        CloseHandle(hTimer);
+    }
+    else
+#else
+    LARGE_INTEGER cnt;
+    if(perffrq && QueryPerformanceCounter(&cnt)) {
+        LONGLONG dst = (LONGLONG)(cnt.QuadPart+perffrq*s);
+        for(;;) {
+            SwitchToThread(); // while waiting switch to another thread
+            QueryPerformanceCounter(&cnt);
+            if(cnt.QuadPart > dst) break;
+        }
+    }
+    else
+#endif
+#endif
+        // last resort....
+        ::Sleep((long)(s*1000.));
 #elif FLEXT_OS == FLEXT_OS_LINUX || FLEXT_OS == FLEXT_OS_IRIX || FLEXT_OSAPI == FLEXT_OSAPI_MAC_MACH // POSIX
     usleep((long)(s*1000000.));
 #elif FLEXT_OS == FLEXT_OS_MAC // that's just for OS9 & Carbon!

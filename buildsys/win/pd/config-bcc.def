@@ -33,3 +33,6 @@ UFLAGS=
 # user defined optimization flags
 # (check if they match your system!)
 OFLAGS=-6 -O2 -OS -ff -d
+
+# comment if you want to compile for Windows 95/98/ME
+WINNT=1

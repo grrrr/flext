@@ -32,3 +32,6 @@ UFLAGS=-msse -mfpmath=sse -ffast-math
 OFLAGS=-O3
 # optimizations for Pentium 4
 OFLAGS+=-march=pentium4 
+
+# comment if you want to compile for Windows 95/98/ME
+WINNT=1

@@ -44,9 +44,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 	#elif FLEXT_THREADS == FLEXT_THR_MP
 		#include <multiprocessing.h>
 	#elif FLEXT_THREADS == FLEXT_THR_WIN32
-        #define _WIN32_WINNT 0x500 // must be WIN2000 at least!
-		#include <windows.h>
-        #include <process.h>
+        #if defined(_WIN32_WINNT) && _WIN32_WINNT >= 0x500
+    		#include <windows.h>
+            #include <process.h>
+        #else
+            #error "Win32 threading model only supported for Win2000/XP or newer"
+        #endif
 	#else
 		#error "Thread model not supported"
 	#endif

@@ -38,6 +38,9 @@ OFLAGS=/Ox
 # optimizations for Pentium 4
 OFLAGS=$(OFLAGS) /G6 /arch:SSE
 
+# comment if you want to compile for Windows 95/98/ME
+WINNT=1
+
 # uncomment to link against dynamic C runtime libraries
 # (don't use this if you want to distribute the built product)
 #DYNAMIC=1

@@ -216,34 +216,34 @@ void TableAnyMap::_getsmall(Data &dt)
 
 void TableAnyMap::iterator::forward() 
 { 
-    if(map || ix >= map->n) {
-        if(++ix >= map->n) {
-            TableAnyMap *nmap;
+    ASSERT(map || ix >= map->n);
+	
+	if(++ix >= map->n) {
+		TableAnyMap *nmap;
 
-            // we reached the end of the slots
-            if(map->right) {
-                // climb up one
-                map = map->right;
-                leftmost();
-                ix = 0;
-            }
-            else {
-                // fall back
-                for(;;) {
-                    nmap = map->parent;
-                    if(!nmap) break; // no parent
-                    if(nmap->left == map) {
-                        // ok, we are in front of the slots now
-                        ix = 0;
-                        map = nmap;
-                        break;
-                    }
-                    else {
-                        FLEXT_ASSERT(nmap->right == map);
-                        ix = (map = nmap)->n;
-                    }
-                }
-            }
-        }
-    }
+		// we reached the end of the slots
+		if(map->right) {
+			// climb up one
+			map = map->right;
+			leftmost();
+			ix = 0;
+		}
+		else {
+			// fall back
+			for(;;) {
+				nmap = map->parent;
+				if(!nmap) break; // no parent
+				if(nmap->left == map) {
+					// ok, we are in front of the slots now
+					ix = 0;
+					map = nmap;
+					break;
+				}
+				else {
+					FLEXT_ASSERT(nmap->right == map);
+					ix = (map = nmap)->n;
+				}
+			}
+		}
+	}
 }

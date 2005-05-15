@@ -216,7 +216,7 @@ void TableAnyMap::_getsmall(Data &dt)
 
 void TableAnyMap::iterator::forward() 
 { 
-    ASSERT(map || ix >= map->n);
+    FLEXT_ASSERT(map || ix >= map->n);
 	
 	if(++ix >= map->n) {
 		TableAnyMap *nmap;

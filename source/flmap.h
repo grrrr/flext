@@ -52,7 +52,7 @@ public:
 #if 0 // set 1 for asserting the map structure (very cpu-intensive!)
     void check(int tsize) { if(n) _check(tsize); }
 #else
-    void check(int tsize) {}
+//    void check(int tsize) {}
 #endif
 
     void *insert(int tsize,size_t k,void *t)
@@ -64,7 +64,7 @@ public:
             data[n++](k,t);
             r = 0;
         }
-        check(tsize);
+//        check(tsize);
         return r;
     }
 
@@ -73,7 +73,7 @@ public:
     void *remove(int tsize,size_t k) 
 	{ 
 		void *r = n?_remove(tsize,k):0; 
-		check(tsize); 
+//		check(tsize); 
 		return r; 
 	}
 

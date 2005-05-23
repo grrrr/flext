@@ -40,13 +40,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 flext_hdr *flext_obj::m_holder = NULL;
 const t_symbol *flext_obj::m_holdname = NULL;
-bool flext_obj::m_holdattr = false;
+flext_class *flext_obj::m_holdclass = NULL;
 int flext_obj::m_holdaargc = 0;
 const t_atom *flext_obj::m_holdaargv = NULL;
 bool flext_obj::process_attributes = false;
 
 bool flext_obj::initing = false;
 bool flext_obj::exiting = false;
+bool flext_obj::init_ok;
 
 void flext_obj::ProcessAttributes(bool attr) { process_attributes = attr; }
 
@@ -56,8 +57,7 @@ void flext_obj::ProcessAttributes(bool attr) { process_attributes = attr; }
 /////////////////////////////////////////////////////////
 flext_obj :: FLEXT_CLASSDEF(flext_obj)()
     : x_obj(m_holder)
-    , procattr(m_holdattr)
-    , init_ok(true)
+    , clss(m_holdclass)
     , m_name(m_holdname)
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
@@ -72,7 +72,8 @@ flext_obj :: FLEXT_CLASSDEF(flext_obj)()
 // Destructor
 //
 /////////////////////////////////////////////////////////
-flext_obj :: ~FLEXT_CLASSDEF(flext_obj)() {
+flext_obj :: ~FLEXT_CLASSDEF(flext_obj)() 
+{
     x_obj = NULL;
 }
 

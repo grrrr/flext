@@ -66,71 +66,52 @@ bool flext_base::InitInlets()
 {
     bool ok = true;
 
+    // incnt has number of inlets (any type)
+    // insigs should be 0
+
+    FLEXT_ASSERT(!insigs && !inlets);
+
     // ----------------------------------
     // create inlets
     // ----------------------------------
 
-    incnt = insigs = 0; 
-
-    // digest inlist
-
-    xlet *xi;
-    incnt = 0;
-    for(xi = inlist; xi; xi = xi->nxt) ++incnt;
-    xlet::type *list = new xlet::type[incnt];
-    int i;
-    for(xi = inlist,i = 0; xi; xi = xi->nxt,++i) list[i] = xi->tp;
-    
 #if FLEXT_SYS == FLEXT_SYS_MAX      
     // copy inlet descriptions
     indesc = new char *[incnt];
-    for(xi = inlist,i = 0; xi; xi = xi->nxt,++i) {
-        int l = xi->desc?strlen(xi->desc):0;
-        if(l) {
-            indesc[i] = new char[l+1];
-            memcpy(indesc[i],xi->desc,l);
-            indesc[i][l] = 0;
-        }
-        else
-            indesc[i] = NULL;
+    for(int i = 0; i < incnt; ++i) {
+        xlet &x = inlist[i];
+        indesc[i] = x.desc;
+        x.desc = NULL;
     }
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
     inlets = new px_object *[incnt];
-    for(i = 0; i < incnt; ++i) inlets[i] = NULL;
 #endif
     
     // type info is now in list array
 #if FLEXT_SYS == FLEXT_SYS_PD
     {
         int cnt = 0;
-        xi = inlist; // points to first inlet
-
         if(incnt >= 1) {
-            switch(list[0]) {
-                case xlet::tp_sig:
-                    ++insigs;
-                    break;
-                default:
-                    // leftmost inlet is already there...
-                    break;
-            } 
+            xlet &xi = inlist[0]; // points to first inlet
+            if(xi.tp == xlet_sig) ++insigs;
+            // else leftmost inlet is already there...
             ++cnt;
 
 #if PD_MINOR_VERSION >= 37 && defined(PD_DEVEL_VERSION)
             // set tooltip
-            if(xi->desc && *xi->desc) class_settip(thisClass(),gensym(xi->desc));
+            if(xi.desc && *xi.desc) class_settip(thisClass(),gensym(xi.desc));
 #endif
         }       
 
         for(int ix = 1; ix < incnt; ++ix,++cnt) {
-            xi = xi->nxt; // points to next inlet
-
+            xlet &xi = inlist[ix]; // points to first inlet
             t_inlet *in = NULL;
-            switch(list[ix]) {
-                case xlet::tp_float:
-                case xlet::tp_int: {
+            switch(xi.tp) {
+                case xlet_float:
+                case xlet_int: {
+                    inlets[ix] = NULL;
                     char sym[] = "ft??";
                     if(ix >= 10) { 
                         if(compatibility) {
@@ -149,20 +130,21 @@ bool flext_base::InitInlets()
                     if(ok) in = inlet_new(&x_obj->obj, &x_obj->obj.ob_pd, (t_symbol *)sym_float, gensym(sym)); 
                     break;
                 }
-                case xlet::tp_sym: 
+                case xlet_sym: 
                     (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
                     in = inlet_new(&x_obj->obj,&inlets[ix]->obj.ob_pd, (t_symbol *)sym_symbol, (t_symbol *)sym_symbol);  
                     break;
-                case xlet::tp_list:
+                case xlet_list:
                     (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
                     in = inlet_new(&x_obj->obj,&inlets[ix]->obj.ob_pd, (t_symbol *)sym_list, (t_symbol *)sym_list);  
                     break;
-                case xlet::tp_any:
+                case xlet_any:
                     (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
                     in = inlet_new(&x_obj->obj,&inlets[ix]->obj.ob_pd, 0, 0);  
                     break;
-                case xlet::tp_sig:
-                    if(compatibility && list[ix-1] != xlet::tp_sig) {
+                case xlet_sig:
+                    inlets[ix] = NULL;
+                    if(compatibility && inlist[ix-1].tp != xlet_sig) {
                         post("%s: All signal inlets must be left-aligned in compatibility mode",thisName());
                         ok = false;
                     }
@@ -174,13 +156,14 @@ bool flext_base::InitInlets()
                     }
                     break;
                 default:
-                    error("%s: Wrong type for inlet #%i: %i",thisName(),ix,(int)list[ix]);
+                    inlets[ix] = NULL;
+                    error("%s: Wrong type for inlet #%i: %i",thisName(),ix,(int)inlist[ix].tp);
                     ok = false;
             } 
 
 #if PD_MINOR_VERSION >= 37 && defined(PD_DEVEL_VERSION)
             // set tooltip
-            if(in && xi->desc && *xi->desc) inlet_settip(in,gensym(xi->desc));
+            if(in && xi.desc && *xi.desc) inlet_settip(in,gensym(xi.desc));
 #endif
         }
 
@@ -190,22 +173,26 @@ bool flext_base::InitInlets()
     {
         int ix,cnt;
         // count leftmost signal inlets
-        while(insigs < incnt && list[insigs] == xlet::tp_sig) ++insigs;
+        while(insigs < incnt && inlist[insigs].tp == xlet_sig) ++insigs;
         
         for(cnt = 0,ix = incnt-1; ix >= insigs; --ix,++cnt) {
+            xlet &xi = inlist[ix];
             if(ix == 0) {
-                if(list[ix] != xlet::tp_any) {
+                inlets[ix] = NULL;
+                if(xi.tp != xlet_any) {
                     error("%s: Leftmost inlet must be of type signal or anything",thisName());
                     ok = false;
                 }
             }
             else {
-                switch(list[ix]) {
-                    case xlet::tp_sig:
+                switch(xi.tp) {
+                    case xlet_sig:
+                        inlets[ix] = NULL;
                         error("%s: All signal inlets must be left-aligned",thisName());
                         ok = false;
                         break;
-                    case xlet::tp_float:
+                    case xlet_float:
+                        inlets[ix] = NULL;
                         if(ix >= 10) { 
                             post("%s: Only 9 float inlets possible",thisName());
                             ok = false;
@@ -213,7 +200,8 @@ bool flext_base::InitInlets()
                         else
                             floatin(x_obj,ix);  
                         break;
-                    case xlet::tp_int:
+                    case xlet_int:
+                        inlets[ix] = NULL;
                         if(ix >= 10) { 
                             post("%s: Only 9 int inlets possible",thisName());
                             ok = false;
@@ -221,13 +209,14 @@ bool flext_base::InitInlets()
                         else
                             intin(x_obj,ix);  
                         break;
-                    case xlet::tp_any: // non-leftmost
-                    case xlet::tp_sym:
-                    case xlet::tp_list:
+                    case xlet_any: // non-leftmost
+                    case xlet_sym:
+                    case xlet_list:
                         inlets[ix] = (px_object *)proxy_new(x_obj,ix,&((flext_hdr *)x_obj)->curinlet);  
                         break;
                     default:
-                        error("%s: Wrong type for inlet #%i: %i",thisName(),ix,(int)list[ix]);
+                        inlets[ix] = NULL;
+                        error("%s: Wrong type for inlet #%i: %i",thisName(),ix,(int)xi.tp);
                         ok = false;
                 } 
             }
@@ -236,53 +225,11 @@ bool flext_base::InitInlets()
 //          incnt = cnt;
 
         if(insigs) 
-              dsp_setup(thisHdr(),insigs); // signal inlets   
-//            dsp_setupbox(thisHdr(),insigs); // signal inlets    
-    }
-#elif FLEXT_SYS == FLEXT_SYS_JMAX
-    {
-        t_class *cl = thisClass();
-        int cnt = 0;
-        for(int ix = 0; ix < incnt; ++ix,++cnt) {
-            switch(list[ix]) {
-                case xlet::tp_float:
-                case xlet::tp_int:
-//                      fts_class_inlet_number(cl, ix, jmax_proxy);
-                    break;
-                case xlet::tp_sym: 
-//                      fts_class_inlet_symbol(cl, ix, jmax_proxy);
-                    break;
-                case xlet::tp_sig:
-                    if(compatibility && list[ix-1] != xlet::tp_sig) {
-                        post("%s: All signal inlets must be left-aligned in compatibility mode",thisName());
-                        ok = false;
-                    }
-                    else {
-                        if(!insigs) fts_dsp_declare_inlet(cl,0);                            
-                        ++insigs;
-                    }
-                    // no break -> let a signal inlet also accept any messages
-                case xlet::tp_list:
-                case xlet::tp_any:
-//                      fts_class_inlet_varargs(cl,ix, jmax_proxy);
-                    break;
-                default:
-                    error("%s: Wrong type for inlet #%i: %i",thisName(),ix,(int)list[ix]);
-                    ok = false;
-            } 
-        }
-
-        incnt = cnt;
-
-        fts_object_set_inlets_number((fts_object_t *)thisHdr(), incnt);
+            dsp_setup(thisHdr(),insigs); // signal inlets   
     }
 #else
 #error
 #endif
-
-    delete inlist; inlist = NULL;
-    
-    delete[] list;
 
     return ok;  
 }
@@ -290,13 +237,17 @@ bool flext_base::InitInlets()
 bool flext_base::InitOutlets()
 {
     bool ok = true;
+    int procattr = HasAttributes()?1:0;
+
+    // outcnt has number of inlets (any type)
+    // outsigs should be 0
+
+    FLEXT_ASSERT(outsigs == 0);
 
     // ----------------------------------
     // create outlets
     // ----------------------------------
 
-    outcnt = outsigs = 0; 
-    
 #if FLEXT_SYS == FLEXT_SYS_MAX
     // for Max/MSP the rightmost outlet has to be created first
     outlet *attrtmp = NULL;
@@ -304,104 +255,58 @@ bool flext_base::InitOutlets()
         attrtmp = (outlet *)newout_anything(thisHdr());
 #endif
 
-    // digest outlist
-    {
-        xlet *xi;
-
-        // count outlets
-        outcnt = 0;
-        for(xi = outlist; xi; xi = xi->nxt) ++outcnt;
-
-        xlet::type *list = new xlet::type[outcnt];
-        int i;
-        for(xi = outlist,i = 0; xi; xi = xi->nxt,++i) list[i] = xi->tp;
-
 #if FLEXT_SYS == FLEXT_SYS_MAX      
-        // copy outlet descriptions
-        outdesc = new char *[outcnt];
-        for(xi = outlist,i = 0; xi; xi = xi->nxt,++i) {
-            int l = xi->desc?strlen(xi->desc):0;
-            if(l) {
-                outdesc[i] = new char[l+1];
-                memcpy(outdesc[i],xi->desc,l);
-                outdesc[i][l] = 0;
-            }
-            else
-                outdesc[i] = NULL;
-        }
+    // copy outlet descriptions
+    outdesc = new char *[outcnt];
+    for(int i = 0; i < outcnt; ++i) {
+        xlet &xi = outlist[i];
+        outdesc[i] = xi.desc; 
+        xi.desc = NULL;
+    }
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
-        outlets = new outlet *[outcnt+(procattr?1:0)];
+    outlets = new outlet *[outcnt+procattr];
 
-        // type info is now in list array
+    // type info is now in list array
 #if FLEXT_SYS == FLEXT_SYS_PD
-        for(int ix = 0; ix < outcnt; ++ix) 
+    for(int ix = 0; ix < outcnt; ++ix) 
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-        for(int ix = outcnt-1; ix >= 0; --ix) 
+    for(int ix = outcnt-1; ix >= 0; --ix) 
 #else
 #error
 #endif
-        {
-            switch(list[ix]) {
-                case xlet::tp_float:
-                    outlets[ix] = (outlet *)newout_float(&x_obj->obj);
-                    break;
-                case xlet::tp_int: 
-                    outlets[ix] = (outlet *)newout_flint(&x_obj->obj);
-                    break;
-                case xlet::tp_sig:
-                    outlets[ix] = (outlet *)newout_signal(&x_obj->obj);
-                    ++outsigs;
-                    break;
-                case xlet::tp_sym:
-                    outlets[ix] = (outlet *)newout_symbol(&x_obj->obj);
-                    break;
-                case xlet::tp_list:
-                    outlets[ix] = (outlet *)newout_list(&x_obj->obj);
-                    break;
-                case xlet::tp_any:
-                    outlets[ix] = (outlet *)newout_anything(&x_obj->obj);
-                    break;
+    {
+        switch(outlist[ix].tp) {
+            case xlet_float:
+                outlets[ix] = (outlet *)newout_float(&x_obj->obj);
+                break;
+            case xlet_int: 
+                outlets[ix] = (outlet *)newout_flint(&x_obj->obj);
+                break;
+            case xlet_sig:
+                outlets[ix] = (outlet *)newout_signal(&x_obj->obj);
+                ++outsigs;
+                break;
+            case xlet_sym:
+                outlets[ix] = (outlet *)newout_symbol(&x_obj->obj);
+                break;
+            case xlet_list:
+                outlets[ix] = (outlet *)newout_list(&x_obj->obj);
+                break;
+            case xlet_any:
+                outlets[ix] = (outlet *)newout_anything(&x_obj->obj);
+                break;
 #ifdef FLEXT_DEBUG
-                default:
-                    ERRINTERNAL();
-                    ok = false;
+            default:
+                ERRINTERNAL();
+                ok = false;
 #endif
-            } 
-        }
-#elif FLEXT_SYS == FLEXT_SYS_JMAX
-        t_class *cl = thisClass();
-        for(int ix = 0; ix < outcnt; ++ix) {
-            switch(list[ix]) {
-                case xlet::tp_float:
-                case xlet::tp_int: 
-//                  fts_class_outlet_number(cl, ix);
-                    break;
-                case xlet::tp_sym:
-//                  fts_class_outlet_symbol(cl, ix);
-                    break;
-                case xlet::tp_list:
-                case xlet::tp_any:
-//                  fts_class_outlet_anything(cl, ix);
-                    break;
-                case xlet::tp_sig:
-                    if(!outsigs) fts_dsp_declare_outlet(cl,0);
-                    ++outsigs;
-                    break;
-#ifdef FLEXT_DEBUG
-                default:
-                    ERRINTERNAL();
-                    ok = false;
-#endif
-            } 
-        }
-
-        fts_object_set_outlets_number((fts_object_t *)thisHdr(), outcnt+(procattr?1:0));
-#endif
-
-        delete[] list;
+        } 
     }
+#else
+#error
+#endif
 
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
     if(procattr) {
@@ -417,8 +322,6 @@ bool flext_base::InitOutlets()
     }
 #endif
     
-    delete outlist; outlist = NULL;
-        
     return ok;
 }
 

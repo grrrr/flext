@@ -112,7 +112,8 @@ flext_base::Item *flext_base::ItemCont::FindList(const t_symbol *tag,int inlet)
 
 // --- class item lists (methods and attributes) ----------------
 
-typedef TablePtrMap<flext_base::t_classid,flext_base::ItemCont *,64> ClassMap;
+/*
+typedef TablePtrMap<flext_base::t_classid,flext_base::ItemCont *,8> ClassMap;
 
 static ClassMap classarr[2];
 
@@ -123,3 +124,4 @@ flext_base::ItemCont *flext_base::GetClassArr(t_classid c,int ix)
     if(!cont) map.insert(c,cont = new ItemCont);
     return cont;
 }
+*/

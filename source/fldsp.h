@@ -115,22 +115,22 @@ public:
 	/*! \brief Add signal inlet(s)
 		\param m Number of inlets to add
 	*/
-	void AddInSignal(int m = 1) { AddInlet(xlet::tp_sig,m); }
+	void AddInSignal(int m = 1) { AddInlet(xlet_sig,m); }
 
 	/*! \brief Add signal inlet (with description)
 		\param desc Description of inlet
 	*/
-	void AddInSignal(const char *desc) { AddInlet(xlet::tp_sig,1,desc); }
+	void AddInSignal(const char *desc) { AddInlet(xlet_sig,1,desc); }
 
 	/*! \brief Add signal outlet(s)
 		\param m Number of inlets to add
 	*/
-	void AddOutSignal(int m = 1) { AddOutlet(xlet::tp_sig,m); }
+	void AddOutSignal(int m = 1) { AddOutlet(xlet_sig,m); }
 
 	/*! \brief Add signal outlet (with description)
 		\param desc Description of outlet
 	*/
-	void AddOutSignal(const char *desc) { AddOutlet(xlet::tp_sig,1,desc); }
+	void AddOutSignal(const char *desc) { AddOutlet(xlet_sig,1,desc); }
 
 //!	@} 
 

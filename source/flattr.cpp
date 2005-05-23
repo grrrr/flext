@@ -97,7 +97,7 @@ void flext_base::AddAttrib(ItemCont *aa,ItemCont *ma,const t_symbol *asym,methar
 
 void flext_base::AddAttrib(const t_symbol *attr,metharg tp,methfun gfun,methfun sfun)
 {
-	if(procattr)
+	if(HasAttributes())
 		AddAttrib(ThAttrs(),ThMeths(),attr,tp,gfun,sfun);
 	else
 		error("%s - attribute procession is not enabled!",thisName());
@@ -112,6 +112,7 @@ void flext_base::ListAttrib(AtomList &la) const
 {
 	typedef TablePtrMap<int,const t_symbol *,32> AttrList;
 	AttrList list[2];
+    ItemCont *clattrhead = ClAttrs(thisClassId());
 
 	int i;
 	for(i = 0; i <= 1; ++i) {
@@ -191,7 +192,7 @@ bool flext_base::InitAttrib(int argc,const t_atom *argv)
 
 bool flext_base::ListAttrib() const
 {
-    if(procattr) {
+    if(HasAttributes()) {
         // defined in flsupport.cpp
         extern const t_symbol *sym_attributes;
 
@@ -206,6 +207,8 @@ bool flext_base::ListAttrib() const
 
 flext_base::AttrItem *flext_base::FindAttrib(const t_symbol *tag,bool get,bool msg) const
 {
+    ItemCont *clattrhead = ClAttrs(thisClassId());
+
     // first search within object scope
 	AttrItem *a = NULL;
     {
@@ -401,6 +404,8 @@ bool flext_base::BangAttrib(const t_symbol *attr)
 
 bool flext_base::BangAttribAll()
 {
+    ItemCont *clattrhead = ClAttrs(thisClassId());
+
 	for(int i = 0; i <= 1; ++i) {
         ItemCont *a = i?attrhead:clattrhead;
 		if(a) {

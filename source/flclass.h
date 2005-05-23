@@ -60,9 +60,6 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_base):
 	
 	friend class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj);
 
-	/*!	\defgroup FLEXT_CLASS Flext base class
-		@{ 
-	*/
 public:
 
 	/*!	\defgroup FLEXT_C_BASE Basic class functionality
@@ -121,61 +118,61 @@ public:
 
 	// argument m specifies multiple inlet/outlet count
 	
-//	void AddInDef() { AddInlet(xlet::tp_def,1); }
+//	void AddInDef() { AddInlet(xlet_def,1); }
 
 	/*! \brief Add inlet(s) for anythings
 		\remark That's the one to choose for the left-most (first) inlet unless it's a signal inlet.
 	*/
-	void AddInAnything(int m = 1) { AddInlet(xlet::tp_any,m); } 
+	void AddInAnything(int m = 1) { AddInlet(xlet_any,m); } 
 	/*! \brief Add inlet(s) for anythings (with description)
 		\remark That's the one to choose for the left-most (first) inlet unless it's a signal inlet.
 	*/
-	void AddInAnything(const char *desc,int m = 1) { AddInlet(xlet::tp_any,m,desc); } 
+	void AddInAnything(const char *desc,int m = 1) { AddInlet(xlet_any,m,desc); } 
 	//! Add inlet(s) for floats
-	void AddInFloat(int m = 1) { AddInlet(xlet::tp_float,m); }
+	void AddInFloat(int m = 1) { AddInlet(xlet_float,m); }
 	//! Add inlet(s) for floats (with description)
-	void AddInFloat(const char *desc,int m = 1) { AddInlet(xlet::tp_float,m,desc); }
+	void AddInFloat(const char *desc,int m = 1) { AddInlet(xlet_float,m,desc); }
 	//! Add inlet(s) for integers
-	void AddInInt(int m = 1) { AddInlet(xlet::tp_int,m); }
+	void AddInInt(int m = 1) { AddInlet(xlet_int,m); }
 	//! Add inlet(s) for integers (with description)
-	void AddInInt(const char *desc,int m = 1) { AddInlet(xlet::tp_int,m,desc); }
+	void AddInInt(const char *desc,int m = 1) { AddInlet(xlet_int,m,desc); }
 	//! Add inlet(s) for symbols
-	void AddInSymbol(int m = 1) { AddInlet(xlet::tp_sym,m); }
+	void AddInSymbol(int m = 1) { AddInlet(xlet_sym,m); }
 	//! Add inlet(s) for symbol (with description)
-	void AddInSymbol(const char *desc,int m = 1) { AddInlet(xlet::tp_sym,m,desc); }
+	void AddInSymbol(const char *desc,int m = 1) { AddInlet(xlet_sym,m,desc); }
 	//! Add inlet(s) for bang
-	void AddInBang(int m = 1) { AddInlet(xlet::tp_sym,m); }
+	void AddInBang(int m = 1) { AddInlet(xlet_sym,m); }
 	//! Add inlet(s) for bangs (with description)
-	void AddInBang(const char *desc,int m = 1) { AddInlet(xlet::tp_sym,m,desc); }
+	void AddInBang(const char *desc,int m = 1) { AddInlet(xlet_sym,m,desc); }
 	//! Add inlet(s) for lists
-	void AddInList(int m = 1) { AddInlet(xlet::tp_list,m); }  
+	void AddInList(int m = 1) { AddInlet(xlet_list,m); }  
 	//! Add inlet(s) for lists (with description)
-	void AddInList(const char *desc,int m = 1) { AddInlet(xlet::tp_list,m,desc); }  
+	void AddInList(const char *desc,int m = 1) { AddInlet(xlet_list,m,desc); }  
 	
 	//! Add outlet(s) for anythings
-	void AddOutAnything(int m = 1) { AddOutlet(xlet::tp_any,m); }
+	void AddOutAnything(int m = 1) { AddOutlet(xlet_any,m); }
 	//! Add outlet(s) for anythings (with description)
-	void AddOutAnything(const char *desc,int m = 1) { AddOutlet(xlet::tp_any,m,desc); }
+	void AddOutAnything(const char *desc,int m = 1) { AddOutlet(xlet_any,m,desc); }
 	//! Add outlet(s) for floats
-	void AddOutFloat(int m = 1) { AddOutlet(xlet::tp_float,m); }
+	void AddOutFloat(int m = 1) { AddOutlet(xlet_float,m); }
 	//! Add outlet(s) for floats (with description)
-	void AddOutFloat(const char *desc,int m = 1) { AddOutlet(xlet::tp_float,m,desc); }
+	void AddOutFloat(const char *desc,int m = 1) { AddOutlet(xlet_float,m,desc); }
 	//! Add outlet(s) for integers
-	void AddOutInt(int m = 1) { AddOutlet(xlet::tp_int,m); }
+	void AddOutInt(int m = 1) { AddOutlet(xlet_int,m); }
 	//! Add outlet(s) for integers (with description)
-	void AddOutInt(const char *desc,int m = 1) { AddOutlet(xlet::tp_int,m,desc); }
+	void AddOutInt(const char *desc,int m = 1) { AddOutlet(xlet_int,m,desc); }
 	//! Add outlet(s) for symbols
-	void AddOutSymbol(int m = 1) { AddOutlet(xlet::tp_sym,m); }
+	void AddOutSymbol(int m = 1) { AddOutlet(xlet_sym,m); }
 	//! Add outlet(s) for symbols (with description)
-	void AddOutSymbol(const char *desc,int m = 1) { AddOutlet(xlet::tp_sym,m,desc); }
+	void AddOutSymbol(const char *desc,int m = 1) { AddOutlet(xlet_sym,m,desc); }
 	//! Add outlet(s) for bangs
-	void AddOutBang(int m = 1) { AddOutlet(xlet::tp_sym,m); }
+	void AddOutBang(int m = 1) { AddOutlet(xlet_sym,m); }
 	//! Add outlet(s) for bangs (with description)
-	void AddOutBang(const char *desc,int m = 1) { AddOutlet(xlet::tp_sym,m,desc); }
+	void AddOutBang(const char *desc,int m = 1) { AddOutlet(xlet_sym,m,desc); }
 	//! Add outlet(s) for lists
-	void AddOutList(int m = 1) { AddOutlet(xlet::tp_list,m); }
+	void AddOutList(int m = 1) { AddOutlet(xlet_list,m); }
 	//! Add outlet(s) for lists (with description)
-	void AddOutList(const char *desc,int m = 1) { AddOutlet(xlet::tp_list,m,desc); }
+	void AddOutList(const char *desc,int m = 1) { AddOutlet(xlet_list,m,desc); }
 
 	//! \deprecated inlets and outlets are now set up automatically
 	bool SetupInOut() { return true; }
@@ -196,10 +193,10 @@ public:
 	int CntOutSig() const { return outsigs; }
 
     //! Check if we are in DSP time
-    bool InDsp() const { return indsp; }
+    static bool InDsp() { return indsp; }
 
 	//! Retrieve currently processed message tag (NULL if no message processing)
-	const t_symbol *thisTag() const { return curtag; }
+	static const t_symbol *thisTag() { return curtag; }
 
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
 	class outlet;
@@ -207,7 +204,7 @@ public:
 	//! Get pointer to outlet (not in the constructor!)
 	outlet *GetOut(int ix) const { return outlets[ix]; }
 #endif
-	int GetOutAttr() const { return procattr?CntOut():0; }
+	int GetOutAttr() const { return HasAttributes()?CntOut():0; }
 
 	//! @} FLEXT_C_IO_MISC
 
@@ -377,7 +374,10 @@ public:
 	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,int &)) { AddMethod(inlet,MakeSymbol(tag),m); }
 
 	//! Set Max/MSP style of distributing list elements over (message) inlets
-	void SetDist(bool d = true) { distmsgs = d; }
+	static void SetDist(t_classid c,bool d = true);
+    //! Query whether lists are distributed
+	bool DoDist() const;
+
 
 //!		@} FLEXT_C_ADDMETHOD
 
@@ -515,22 +515,13 @@ protected:
 	*/
 	virtual bool Init();
 	
-	//! \brief This represents either an inlet or outlet
-	struct xlet {	
-		enum type {
-			tp_none = 0,
-			tp_float,tp_int,tp_sym,tp_list,tp_any,
-			tp_LIST,tp_ANY, // use AtomList and AtomAnything
-			tp_sig
-		};
 
-		xlet(type t,const char *desc = NULL);
-		~xlet();
-		
-		char *desc;
-		type tp;
-		xlet *nxt;
-	};
+    enum xlettype {
+	    xlet_none = 0,
+	    xlet_float,xlet_int,xlet_sym,xlet_list,xlet_any,
+	    xlet_LIST,xlet_ANY, // use AtomList and AtomAnything
+	    xlet_sig
+    };
 
 	/*!	\defgroup FLEXT_C_ATTR Attribute handling methods (object scope)
 		@{ 
@@ -605,7 +596,7 @@ protected:
 */
 
 	//! \brief get a code for a list of inlets or outlets
-	unsigned long XletCode(xlet::type tp = xlet::tp_none,...); // end list with 0 (= tp_none) !!
+	unsigned long XletCode(xlettype tp = xlettype::xlet_none,...); // end list with 0 (= tp_none) !!
 
 	/*! \brief Add some inlets by a special code representing the types
 		\remark use XletCode function to get code value
@@ -613,7 +604,7 @@ protected:
 	void AddInlets(unsigned long code); 
 
 	//! \brief Add one or more inlet(s)
-	void AddInlet(xlet::type tp,int mult = 1,const char *desc = NULL) { AddXlet(tp,mult,desc,inlist); }
+	void AddInlet(xlettype tp,int mult = 1,const char *desc = NULL);
 
 	/*! \brief Add some inlets by a special code representing the types
 		\remark use XletCode function to get code value
@@ -621,13 +612,13 @@ protected:
 	void AddOutlets(unsigned long code); 
 
 	//! \brief Add one or more outlet(s)
-	void AddOutlet(xlet::type tp,int mult = 1,const char *desc = NULL) { AddXlet(tp,mult,desc,outlist); }
+	void AddOutlet(xlettype tp,int mult = 1,const char *desc = NULL);
 
 	//! \brief Set the description of an indexed inlet
-	void DescInlet(int ix,const char *desc) { DescXlet(ix,desc,inlist); }
+	void DescInlet(int ix,const char *desc);
 
 	//! \brief Set the description of an indexed outlet
-	void DescOutlet(int ix,const char *desc) { DescXlet(ix,desc,outlist); }
+	void DescOutlet(int ix,const char *desc);
 
 //!		@} FLEXT_C_INOUT
 
@@ -650,15 +641,6 @@ protected:
 		Item *nxt;
 	};
 
-/*
-	class ItemSet:
-		public DataMap<const t_symbol *,Item *>
-	{
-	public:
-		ItemSet();
-		~ItemSet();
-	};
-*/
 	class ItemSet
         :public TablePtrMap<const t_symbol *,Item *,8>
     {
@@ -772,15 +754,6 @@ protected:
 		int flags;
 	};
 
-/*
-	class AttrDataCont:
-		public DataMap<const t_symbol *,AttrData *>
-	{
-	public:
-		AttrDataCont();
-		~AttrDataCont();
-	};
-*/
 	class AttrDataCont
         :public TablePtrMap<const t_symbol *,AttrData *,8>
     {
@@ -810,9 +783,6 @@ protected:
 	void ToSysBool(int n,bool f) const { ToSysInt(n,f?1:0); }
 	void ToSysAtom(int n,const t_atom &at) const;
 
-    // flag if we are within DSP
-    bool indsp;
-
 private:
 	class pxbnd_object;
 public:
@@ -831,34 +801,48 @@ public:
         pxbnd_object *px;
 	};
 	
-//!		@} FLEXT_CLASS
-
 	ItemCont *ThMeths() { return &methhead; }
-	static ItemCont *ClMeths(t_classid c) { return GetClassArr(c,0); }
+	static ItemCont *ClMeths(t_classid c);
 
 	static void AddMethod(ItemCont *ma,int inlet,const t_symbol *tag,methfun fun,metharg tp,...); 
 
 	ItemCont *ThAttrs() { return attrhead; }
-	static ItemCont *ClAttrs(t_classid c) { return GetClassArr(c,1); }
+	static ItemCont *ClAttrs(t_classid c);
 
     static void AddAttrib(ItemCont *aa,ItemCont *ma,const t_symbol *attr,metharg tp,methfun gfun,methfun sfun);
     void AddAttrib(const t_symbol *attr,metharg tp,methfun gfun,methfun sfun);
 	static void AddAttrib(t_classid c,const t_symbol *attr,metharg tp,methfun gfun,methfun sfun);
 
+    //! flag if we are within DSP
+    static bool indsp;
+
 private:
 
 	static void Setup(t_classid c);
 
-	xlet *inlist,*outlist;
-	const t_symbol *curtag;
-	int incnt,outcnt,insigs,outsigs;
-	bool distmsgs;
+    //! \brief This represents either an inlet or outlet during construction
+	class FLEXT_SHARE xlet {	
+    public:
+        xlet(): tp(xlet_none),desc(NULL) {}
+        ~xlet() { if(desc) delete[] desc; }
+
+        xlettype tp;
+		char *desc;
+
+        void Desc(const char *c);
+	};
+
+	static xlet inlist[];
+    static xlet outlist[];
+
+    //! current message tag
+	static const t_symbol *curtag;
+    //! number of message and signal inlets/outlets
+	unsigned char incnt,outcnt,insigs,outsigs;
+
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
 	outlet **outlets;
 #endif
-
-	void AddXlet(xlet::type tp,int mult,const char *desc,xlet *&root);	
-	void DescXlet(int ix,const char *desc,xlet *&root);	
 
 	union t_any {
 		float ft;
@@ -880,9 +864,7 @@ private:
 	typedef bool (*methfun_4)(flext_base *c,t_any &,t_any &,t_any &,t_any &);
 	typedef bool (*methfun_5)(flext_base *c,t_any &,t_any &,t_any &,t_any &,t_any &);
 
-	static ItemCont *GetClassArr(t_classid,int ix);
-
-	mutable ItemCont methhead,*clmethhead;
+	mutable ItemCont methhead;
 	mutable ItemCont *bindhead;
 	
 	bool CallMeth(const MethItem &m,int argc,const t_atom *argv);
@@ -891,7 +873,7 @@ private:
 	bool TryMethSym(Item *lst,const t_symbol *s);
 	bool TryMethAny(Item *lst,const t_symbol *s,int argc,const t_atom *argv);
 
-	mutable ItemCont *attrhead,*clattrhead;
+	mutable ItemCont *attrhead;
 	mutable AttrDataCont *attrdata;
 
 	AttrItem *FindAttrib(const t_symbol *tag,bool get,bool msg = false) const;

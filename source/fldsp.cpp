@@ -89,9 +89,9 @@ t_int *flext_dsp::dspmeth(t_int *w)
     if(obj->dspon)
 #endif
     {
-        obj->indsp = true;
+        flext_base::indsp = true;
         obj->CbSignal(); 
-        obj->indsp = false;
+        flext_base::indsp = false;
     }
     return w+2;
 }

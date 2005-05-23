@@ -91,6 +91,7 @@ void flext_base::ListMethods(AtomList &la,int inlet) const
 {
 	typedef TablePtrMap<int,const t_symbol *,32> MethList;
     MethList list[2];
+    ItemCont *clmethhead = ClMeths(thisClassId());
 
     int i;
     for(i = 0; i <= 1; ++i) {
@@ -119,7 +120,7 @@ void flext_base::ListMethods(AtomList &la,int inlet) const
 
 bool flext_base::cb_ListMethods(flext_base *c,int argc,const t_atom *argv) 
 { 
-    if(c->procattr && (argc == 0 || (argc == 1 && CanbeInt(argv[0])))) {
+    if(c->HasAttributes() && (argc == 0 || (argc == 1 && CanbeInt(argv[0])))) {
         // defined in flsupport.cpp
         extern const t_symbol *sym_methods;
 

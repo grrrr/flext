@@ -19,14 +19,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // === flext_base ============================================
 
 bool flext_base::compatibility = true;
+bool flext_base::indsp = false;
+const t_symbol *flext_base::curtag = NULL;
 
-flext_base::FLEXT_CLASSDEF(flext_base)():
-    indsp(false),
-    inlist(NULL),outlist(NULL),
-    curtag(NULL),
-    incnt(0),outcnt(0),
-    insigs(0),outsigs(0),
-    distmsgs(false)
+flext_base::FLEXT_CLASSDEF(flext_base)()
+    : incnt(0),outcnt(0)
+    , insigs(0),outsigs(0)
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
     ,outlets(NULL),inlets(NULL)
 #endif
@@ -36,18 +34,15 @@ flext_base::FLEXT_CLASSDEF(flext_base)():
 {
     FLEXT_LOG1("%s - flext logging is on",thisName());
 
-    t_classid clid = thisClassId();
-    clmethhead = ClMeths(clid);
     bindhead = NULL;
 
-    if(procattr) {
+    if(HasAttributes()) {
         // initialize when attribute processing is enabled
         attrhead = new ItemCont;
-        clattrhead = ClAttrs(clid);
         attrdata = new AttrDataCont;
     }
     else {
-        attrhead = clattrhead = NULL;
+        attrhead = NULL;
         attrdata = NULL;
     }
 }
@@ -77,10 +72,6 @@ flext_base::~FLEXT_CLASSDEF(flext_base)()
     if(attrhead) delete attrhead;
     if(attrdata) delete attrdata;
     
-    // destroy inlets and outlets and their proxy objects
-    if(inlist) delete inlist;
-    if(outlist) delete outlist;
-
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
     if(outlets) delete[] outlets;
 
@@ -126,7 +117,7 @@ bool flext_base::Init()
     if(ok) ok = InitInlets() && InitOutlets();
 
     if(ok) {
-        if(procattr && m_holdaargc && m_holdaargv) {
+        if(HasAttributes() && m_holdaargc && m_holdaargv) {
             // initialize creation attributes
             ok = InitAttrib(m_holdaargc,m_holdaargv);
         }
@@ -210,7 +201,7 @@ void flext_base::cb_assist(t_class *c,void * /*b*/,long msg,long arg,char *s)
             if(th->outdesc[arg]) strcpy(s,th->outdesc[arg]);
         }
         else
-            if(arg == th->outcnt && th->procattr) strcpy(s,"Attributes");
+            if(arg == th->outcnt && th->HasAttributes()) strcpy(s,"Attributes");
         break;
     }
 }

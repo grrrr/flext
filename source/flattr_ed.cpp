@@ -41,16 +41,17 @@ static t_widgetbehavior widgetbehavior;
 
 void flext_base::SetGfx(t_classid c)
 {
+	t_class *cl = getClass(c);
     // widgetbehavior struct MUST be resident... (static is just ok here)
 
 #ifndef FLEXT_CLONEWIDGET
-    widgetbehavior.w_visfn =        c->c_wb->w_visfn; 
-    widgetbehavior.w_selectfn =     c->c_wb->w_selectfn; 
-    widgetbehavior.w_getrectfn =    c->c_wb->w_getrectfn; 
-    widgetbehavior.w_displacefn =   c->c_wb->w_displacefn; 
-    widgetbehavior.w_activatefn =   c->c_wb->w_activatefn; 
-    widgetbehavior.w_deletefn =     c->c_wb->w_deletefn; 
-    widgetbehavior.w_selectfn =     c->c_wb->w_selectfn;
+    widgetbehavior.w_visfn =        cl->c_wb->w_visfn; 
+    widgetbehavior.w_selectfn =     cl->c_wb->w_selectfn; 
+    widgetbehavior.w_getrectfn =    cl->c_wb->w_getrectfn; 
+    widgetbehavior.w_displacefn =   cl->c_wb->w_displacefn; 
+    widgetbehavior.w_activatefn =   cl->c_wb->w_activatefn; 
+    widgetbehavior.w_deletefn =     cl->c_wb->w_deletefn; 
+    widgetbehavior.w_selectfn =     cl->c_wb->w_selectfn;
 #else
     widgetbehavior.w_visfn =        text_widgetbehavior.w_visfn; 
     widgetbehavior.w_selectfn =     text_widgetbehavior.w_selectfn; 
@@ -66,7 +67,7 @@ void flext_base::SetGfx(t_classid c)
 #endif // FLEXT_NOATTREDIT
 
     widgetbehavior.w_clickfn =      cb_click;
-    class_setwidget(c, &widgetbehavior);
+    class_setwidget(cl, &widgetbehavior);
 }
 
 
@@ -446,17 +447,18 @@ static void tclscript()
 
 void flext_base::attrsetup(t_classid c)
 {
+	t_class *cl = getClass(c);
 #ifndef FLEXT_CLONEWIDGET
-    ori_vis = c->c_wb->w_visfn; 
-    ori_select = c->c_wb->w_selectfn; 
+    ori_vis = cl->c_wb->w_visfn; 
+    ori_select = cl->c_wb->w_selectfn; 
 #endif
 
     widgetbehavior.w_visfn =        cb_GfxVis;
     widgetbehavior.w_selectfn =     cb_GfxSelect; 
 
 #if PD_MINOR_VERSION >= 37
-    class_setpropertiesfn(c,cb_GfxProperties);
-    class_setsavefn(c,cb_GfxSave);
+    class_setpropertiesfn(cl,cb_GfxProperties);
+    class_setsavefn(cl,cb_GfxSave);
 #else
     widgetbehavior.w_propertiesfn = cb_GfxProperties;
     widgetbehavior.w_savefn =       cb_GfxSave;

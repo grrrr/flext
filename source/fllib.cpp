@@ -100,40 +100,42 @@ bool flext::chktilde(const char *objname)
 }
 
 
-
 // this class stands for one registered object
 // it holds the class, type flags, constructor and destructor of the object and the creation arg types
 // it will never be destroyed
-class libclass:
+class flext_class:
     public flext_root
 {
 public:
-	libclass(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(flext_hdr *)); 
+	flext_class(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(flext_hdr *)); 
 	
 	flext_obj *(*newfun)(int,t_atom *);
 	void (*freefun)(flext_hdr *c);
 
 	t_class *const &clss;
-	bool lib,dsp,attr;
+	bool lib,dsp,attr,dist;
 	int argc;
 	int *argv;
+
+    flext_base::ItemCont meths,attrs;
 };
 
-libclass::libclass(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(flext_hdr *)): 
-	newfun(newf),freefun(freef),
+flext_class::flext_class(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(flext_hdr *)): 
 	clss(cl),
+	newfun(newf),freefun(freef),
 	argc(0),argv(NULL) 
+    , dist(false)
 {}
 
 
-typedef TablePtrMap<const t_symbol *,libclass *,8> LibMap;
+typedef TablePtrMap<const t_symbol *,flext_class *,8> LibMap;
 
 static LibMap libnames;
 
 //! Store or retrieve registered classes
-static libclass *FindName(const t_symbol *s,libclass *o = NULL) 
+static flext_class *FindName(const t_symbol *s,flext_class *o = NULL) 
 {
-    libclass *cl = libnames.find(s);
+    flext_class *cl = libnames.find(s);
     if(!cl) libnames.insert(s,cl = o);
     return cl;
 }
@@ -144,14 +146,12 @@ static libclass *FindName(const t_symbol *s,libclass *o = NULL)
 #if FLEXT_SYS == FLEXT_SYS_MAX
 static t_class *lib_class = NULL;
 static const t_symbol *lib_name = NULL;
-
-flext_obj::t_classid flext_obj::thisClassId() const 
-{ 
-    return FindName(thisNameSym()); 
-}
-
-t_class *flext_obj::getClass(t_classid id) { return reinterpret_cast<libclass *>(id)->clss; }
 #endif
+
+t_class *flext_obj::getClass(t_classid id) { return reinterpret_cast<flext_class *>(id)->clss; }
+
+bool flext_obj::HasAttributes() const { return clss->attr; }
+
 
 void flext_obj::lib_init(const char *name,void setupfun(),bool attr)
 {
@@ -227,7 +227,7 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 #endif
 
 	// make new dynamic object
-	libclass *lo = new libclass(*cl,newfun,freefun);
+	flext_class *lo = new flext_class(*cl,newfun,freefun);
 	lo->lib = lib;
 	lo->dsp = dsp;
 	lo->attr = process_attributes;
@@ -258,12 +258,7 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 	}
 
 	// get unique class id
-#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_JMAX
-	t_classid clid = lo->clss;
-#else
-	// in Max/MSP the t_class *value can't be used because it's possible that's it's not yet set!!
 	t_classid clid = lo;
-#endif
 
 	// make help reference
 	flext_obj::DefineHelp(clid,idname,extract(names,-1),dsp);
@@ -276,7 +271,7 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 
 		// add to name list
         const t_symbol *lsym = MakeSymbol(c);
-		/*libclass *lcl =*/ FindName(lsym,lo);
+		FindName(lsym,lo);
 	
 #if FLEXT_SYS == FLEXT_SYS_PD
 		if(ix > 0) 
@@ -327,7 +322,7 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 {
 	flext_hdr *obj = NULL;
 #endif
-	libclass *lo = FindName(s);
+	flext_class *lo = FindName(s);
 	if(lo) {
 		bool ok = true;
 		t_atom args[NEWARGS]; 
@@ -391,24 +386,19 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 
 		if(ok) {
             try {
-			    t_classid clid;
-
 #if FLEXT_SYS == FLEXT_SYS_PD
-			    clid = lo->clss;
 			    obj = (flext_hdr *)::pd_new(lo->clss);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-			    clid = lo;
 			    obj = (flext_hdr *)::newobject(lo->clss);
-#elif FLEXT_SYS == FLEXT_SYS_JMAX
-			    clid = lo->clss;
 #else
 #error
 #endif
 
                 flext_obj::m_holder = obj;
+			    flext_obj::m_holdclass = lo;
 			    flext_obj::m_holdname = s;
-			    flext_obj::m_holdattr = lo->attr;
                 flext_obj::initing = true;
+                flext_obj::init_ok = true;
 
 			    // get actual flext object (newfun calls "new flext_obj()")
 			    if(lo->argc >= 0)
@@ -417,12 +407,12 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 				    obj->data = lo->newfun(argc,argv); 
     	
 			    flext_obj::m_holder = NULL;
+			    flext_obj::m_holdclass = NULL;
 			    flext_obj::m_holdname = NULL;
-			    flext_obj::m_holdattr = false;
 
 			    ok = obj->data &&
 				    // check constructor exit flag
-				    obj->data->InitOk();
+				    flext_obj::init_ok;
 
 			    if(ok) {
 				    if(lo->attr) {
@@ -496,7 +486,7 @@ void flext_obj::obj_free(flext_hdr *h)
 {
 	flext_hdr *hdr = (flext_hdr *)h;
 	const t_symbol *name = hdr->data->thisNameSym();
-	libclass *lcl = FindName(name);
+	flext_class *lcl = FindName(name);
 
 	if(lcl) {
         try {
@@ -531,3 +521,10 @@ void flext_obj::obj_free(flext_hdr *h)
 }
 
 
+t_class *flext_obj::thisClass() const { FLEXT_ASSERT(x_obj); return thisClassId()->clss; }
+
+void flext_base::SetDist(t_classid c,bool d) { c->dist = d; }
+bool flext_base::DoDist() const { return thisClassId()->dist; }
+
+flext_base::ItemCont *flext_base::ClMeths(t_classid c) { return &c->meths; }
+flext_base::ItemCont *flext_base::ClAttrs(t_classid c) { return &c->attrs; }

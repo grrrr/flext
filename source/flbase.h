@@ -64,6 +64,8 @@ struct FLEXT_SHARE flext_hdr
 };
 
 
+class flext_class;
+
 // ----------------------------------------------------------------------------
 /*! \brief The mother of base classes for all flext external objects
 
@@ -110,7 +112,7 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
         /*! \brief Signal a construction problem
 			\note This should only be used in the constructor. Object creation will be aborted.
 		*/
-		void InitProblem() { init_ok = false; }
+		static void InitProblem() { init_ok = false; }
 
 		/*! \brief Enable/disable attribute procession (default = false)
 			\note Use that in the static class setup function (also library setup function)
@@ -145,34 +147,19 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 		const char *thisName() const { return GetString(m_name); } 
         //! Get the class name (as a symbol)
 		const t_symbol *thisNameSym() const { return m_name; } 
-
-
         //! Get the class pointer
-#if FLEXT_SYS == FLEXT_SYS_PD
-		t_class *thisClass() const { FLEXT_ASSERT(x_obj); return (t_class *)((t_object *)(x_obj))->te_g.g_pd; }
-#elif FLEXT_SYS == FLEXT_SYS_MAX
-		t_class *thisClass() const { FLEXT_ASSERT(x_obj); return (t_class *)(((t_tinyobject *)x_obj)->t_messlist-1); } 
-#elif FLEXT_SYS == FLEXT_SYS_JMAX
-		t_class *thisClass() const { return fts_object_get_class((fts_object_t *)thisHdr()); }
-#else
-#error
-#endif	
-		
-#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_JMAX
+		t_class *thisClass() const;
+
 		//! Typedef for unique class identifier
-		typedef t_class *t_classid;
+		typedef flext_class *t_classid;
+
 		//! Get unique id for object class
-		t_classid thisClassId() const { return thisClass(); }
-		//! Get class pointer from class id
-		static t_class *getClass(t_classid c) { return c; }
-#else
-		//! Typedef for unique class identifier
-		typedef void *t_classid;
-		//! Get unique id for object class (for Max/MSP library object share the same (t_class *)!)
-		t_classid thisClassId() const; 
+		t_classid thisClassId() const { return clss; }
+
 		//! Get class pointer from class id
 		static t_class *getClass(t_classid);
-#endif
+
+        bool HasAttributes() const;
 
 	//!	@}  FLEXT_O_INFO
 
@@ -202,14 +189,14 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 	*/
 
     protected:    	
-		
-        //! The object header
-        mutable flext_hdr          *x_obj;        	
 
-        //! Flag for attribute procession
-        bool				procattr;
+        //! pointer to flext class definition
+        flext_class *clss;
 
-		static bool				process_attributes;
+        //! backpointer to object header
+        mutable flext_hdr *x_obj;        	
+
+        static bool	process_attributes;
 
     private:
 
@@ -217,7 +204,7 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
         mutable t_canvas            *m_canvas;
         
         //! Flag for successful object construction
-        bool				init_ok;
+        static bool	init_ok;
 
         // flags for init and exit procedure;
         static bool initing;
@@ -232,19 +219,19 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 			\warning don't touch it!
 		*/
         static flext_hdr     *m_holder;
+		//! Hold object's class during construction
+		static flext_class *m_holdclass;
 		//! Hold object's name during construction
         static const t_symbol *m_holdname;  
 
 		//! Holders for attribute procession flag
-		static bool m_holdattr;
 		static int m_holdaargc;
 		static const t_atom *m_holdaargv;
 
-        //! The object's name in the patcher
+        /*! The object's name in the patcher 
+            \note objects of the same class can have various alias names!
+        */
 		const t_symbol *m_name;
-
-		//! Check whether construction was successful
-		bool InitOk() const { return init_ok; }
 
         /*! Return true if in object initialization phase
             true when in constructor or Init, false when in Finalize
@@ -575,7 +562,3 @@ FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
 
 #endif
-
-
-
-

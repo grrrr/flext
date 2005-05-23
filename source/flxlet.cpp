@@ -17,57 +17,71 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <string.h>
 #include <stdarg.h>
 
+#define MAXLETS 256
 
-flext_base::xlet::xlet(type t,const char *d): 
-    tp(t),nxt(NULL)
-{ 
-    if(d) {
-        size_t ln = strlen(d);
-        desc = new char[ln+1];
-        memcpy(desc,d,ln);
-        desc[ln] = 0;
-    }
-    else desc = NULL;
-}
+flext_base::xlet flext_base::inlist[MAXLETS],flext_base::outlist[MAXLETS];
 
-flext_base::xlet::~xlet() 
-{ 
+
+void flext_base::xlet::Desc(const char *c)
+{
     if(desc) delete[] desc;
-    if(nxt) delete nxt; 
-}
-
-void flext_base::AddXlet(xlet::type tp,int mult,const char *desc,xlet *&root)
-{
-    if(!root && mult) { root = new xlet(tp,desc); --mult; }
-    if(mult) {
-        xlet *xi = root; 
-        while(xi->nxt) xi = xi->nxt;
-        while(mult--) xi = xi->nxt = new xlet(tp,desc);
+    if(c) {
+        size_t l = strlen(c);
+        desc = new char[l+1];
+        memcpy(desc,c,l+1);
     }
+    else
+        desc = NULL;
 }
 
-void flext_base::DescXlet(int ix,const char *d,xlet *&root)
+void flext_base::AddInlet(xlettype tp,int mult,const char *desc)
 {
-    xlet *xi = root; 
-    for(int i = 0; xi && i < ix; xi = xi->nxt,++i) {}
-
-    if(xi) {
-        if(xi->desc) delete[] xi->desc;
-        size_t ln = strlen(d);
-        xi->desc = new char[ln+1];
-        memcpy(xi->desc,d,ln);
-        xi->desc[ln] = 0;
-    }
+    if(incnt+mult >= MAXLETS)
+        post("%s - too many inlets",thisName());
+    else
+        for(int i = 0; i < mult; ++i) {
+            xlet &x = inlist[incnt++];
+            x.tp = tp;
+            x.Desc(desc);
+        }
 }
 
-unsigned long flext_base::XletCode(xlet::type tp,...)
+void flext_base::AddOutlet(xlettype tp,int mult,const char *desc)
+{
+    if(outcnt+mult >= MAXLETS)
+        post("%s - too many outlets",thisName());
+    else
+        for(int i = 0; i < mult; ++i) {
+            xlet &x = outlist[outcnt++];
+            x.tp = tp;
+            x.Desc(desc);
+        }
+}
+
+void flext_base::DescInlet(int ix,const char *d)
+{
+    if(ix >= incnt)
+        post("%s - inlet %i not found",thisName(),ix);
+    else
+        inlist[ix].Desc(d);
+}
+
+void flext_base::DescOutlet(int ix,const char *d)
+{
+    if(ix >= outcnt)
+        post("%s - outlet %i not found",thisName(),ix);
+    else
+        outlist[ix].Desc(d);
+}
+
+unsigned long flext_base::XletCode(xlettype tp,...)
 {
     unsigned long code = 0;
 
     va_list marker;
     va_start(marker,tp);
     int cnt = 0;
-    xlet::type arg = tp;
+    xlettype arg = tp;
     for(; arg; ++cnt) {
 #ifdef FLEXT_DEBUG
         if(cnt > 9) {
@@ -77,7 +91,7 @@ unsigned long flext_base::XletCode(xlet::type tp,...)
 #endif          
 
         code = code*10+(int)arg;
-        arg = (xlet::type)va_arg(marker,int);
+        arg = (xlettype)va_arg(marker,int);
     }
     va_end(marker);
 
@@ -86,11 +100,11 @@ unsigned long flext_base::XletCode(xlet::type tp,...)
 
 void flext_base::AddInlets(unsigned long code) 
 { 
-    for(; code; code /= 10) AddInlet((xlet::type)(code%10));
+    for(; code; code /= 10) AddInlet((xlettype)(code%10));
 }
 
 void flext_base::AddOutlets(unsigned long code) 
 { 
-    for(; code; code /= 10) AddOutlet((xlet::type)(code%10));
+    for(; code; code /= 10) AddOutlet((xlettype)(code%10));
 }
 

@@ -596,7 +596,7 @@ protected:
 */
 
 	//! \brief get a code for a list of inlets or outlets
-	unsigned long XletCode(xlettype tp = xlettype::xlet_none,...); // end list with 0 (= tp_none) !!
+	unsigned long XletCode(xlettype tp = xlet_none,...); // end list with 0 (= tp_none) !!
 
 	/*! \brief Add some inlets by a special code representing the types
 		\remark use XletCode function to get code value

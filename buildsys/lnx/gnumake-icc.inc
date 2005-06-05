@@ -1,9 +1,17 @@
 ##############################################
 
+ifndef FLEXTINC
 FLEXTINC=$(FLEXTPREFIX)/include/flext
+endif
+ifndef FLEXTLIB
 FLEXTLIB=$(FLEXTPREFIX)/lib
+endif
+ifndef FLEXTSYS
 FLEXTSYS=$(FLEXTPREFIX)/lib/flext
+endif
+ifndef FLEXTBIN
 FLEXTBIN=$(FLEXTPREFIX)/bin
+endif
 
 ##############################################
 

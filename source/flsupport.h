@@ -681,7 +681,7 @@ public:
         explicit AtomListStatic(const AtomList &a): AtomListStaticBase(PRE,pre) { AtomList::operator =(a); }
 
 		//! Set list by another AtomList
-        AtomListStatic &operator =(const AtomListStatic &a) { AtomList::operator =(a); return *this; }
+        AtomListStatic &operator =(const AtomList &a) { AtomList::operator =(a); return *this; }
     protected:
         t_atom pre[PRE];
     };

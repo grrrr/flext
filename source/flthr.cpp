@@ -625,7 +625,7 @@ bool flext::ThrCond::TimedWait(double ftm)
 	ftime(&tmb);
 #endif
 	tm.tv_nsec = tmb.millitm*1000000;
-	tm.tv_sec = tmb.time; 
+	tm.tv_sec = (long)tmb.time; 
 #else // POSIX
 #if 0 // find out when the following is defined
 	clock_gettime(CLOCK_REALTIME,tm);

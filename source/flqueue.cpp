@@ -49,20 +49,35 @@ public:
         return *this;
     }
 
+    inline qmsg &Set(const t_symbol *r,const t_symbol *s,int ac,const t_atom *av)
+    {
+        th = NULL;
+        recv = r;
+        msg(s,ac,av);
+        return *this;
+    }
+
     // \note PD sys lock must already be held by caller
     inline void Send() const
     {
-        if(out < 0)
-            // message to self
-            th->CbMethodHandler(-1-out,msg.Header(),msg.Count(),msg.Atoms()); 
+        if(th) {
+            if(out < 0)
+                // message to self
+                th->CbMethodHandler(-1-out,msg.Header(),msg.Count(),msg.Atoms()); 
+            else
+                // message to outlet
+                th->ToSysAnything(out,msg.Header(),msg.Count(),msg.Atoms());
+        }
         else
-            // message to outlet
-            th->ToSysAnything(out,msg.Header(),msg.Count(),msg.Atoms());
+            flext::Forward(recv,msg,true);
     }
 
 private:
     flext_base *th;
-    int out;
+    union {
+        int out;
+        const t_symbol *recv;
+    };
     AtomAnything msg;
 };
 
@@ -82,6 +97,15 @@ public:
         qmsg *m = QueueFifo::New();
         FLEXT_ASSERT(m);
         m->Set(t,o,s,ac,av);
+        Put(m);
+        Trigger();
+    }
+
+    inline void Push(const t_symbol *r,const t_symbol *s,int ac,const t_atom *av)
+    {
+        qmsg *m = QueueFifo::New();
+        FLEXT_ASSERT(m);
+        m->Set(r,s,ac,av);
         Put(m);
         Trigger();
     }
@@ -335,4 +359,25 @@ void flext_base::ToQueueList(int o,int argc,const t_atom *argv) const
 void flext_base::ToQueueAnything(int o,const t_symbol *s,int argc,const t_atom *argv) const
 {
     queue.Push(const_cast<flext_base *>(this),o,s,argc,argv);
+}
+
+
+bool flext::Forward(const t_symbol *recv,const t_symbol *s,int argc,const t_atom *argv,bool direct)
+{
+    if(direct || IsSystemThread()) {
+        void *cl = recv->s_thing;
+        if(!cl) return false;
+        
+#if FLEXT_SYS == FLEXT_SYS_PD
+        pd_typedmess((t_class **)cl,(t_symbol *)s,argc,(t_atom *)argv);
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+        typedmess(recv->s_thing,(t_symbol *)s,argc,(t_atom *)argv);
+#else
+#error Not implemented
+#endif
+    }
+    else
+        // send over queue
+        queue.Push(recv,s,argc,argv);
+    return true;
 }

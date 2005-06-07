@@ -46,19 +46,3 @@ void flext::ZeroMem(void *dst,int bytes)
     memset(dst,0,bytes);
 #endif
 }
-
-
-bool flext::Forward(const t_symbol *recv,const t_symbol *s,int argc,const t_atom *argv)
-{
-    void *cl = recv->s_thing;
-    if(!cl) return false;
-    
-#if FLEXT_SYS == FLEXT_SYS_PD
-    pd_typedmess((t_class **)cl,(t_symbol *)s,argc,(t_atom *)argv);
-#elif FLEXT_SYS == FLEXT_SYS_MAX
-    typedmess(recv->s_thing,(t_symbol *)s,argc,(t_atom *)argv);
-#else
-#error Not implemented
-#endif
-    return true;
-}

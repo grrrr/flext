@@ -14,63 +14,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
  
 #include "flext.h"
 
-bool flext_base::CallMeth(const MethItem &m,int argc,const t_atom *argv)
-{
-    bool ret = false;
-    int ix;
-    t_any aargs[FLEXT_MAXMETHARGS];
-    bool ok = true;
-    for(ix = 0; ix < argc && ok; ++ix) {
-        switch(m.args[ix]) {
-        case a_float: {
-            if(IsFloat(argv[ix])) aargs[ix].ft = GetFloat(argv[ix]);
-            else if(IsInt(argv[ix])) aargs[ix].ft = (float)GetInt(argv[ix]);
-            else ok = false;
-            
-            if(ok) FLEXT_LOG2("int arg %i = %f",ix,aargs[ix].ft);
-            break;
-        }
-        case a_int: {
-            if(IsFloat(argv[ix])) aargs[ix].it = (int)GetFloat(argv[ix]);
-            else if(IsInt(argv[ix])) aargs[ix].it = GetInt(argv[ix]);
-            else ok = false;
-            
-            if(ok) FLEXT_LOG2("float arg %i = %i",ix,aargs[ix].it);
-            break;
-        }
-        case a_symbol: {
-            if(IsSymbol(argv[ix])) aargs[ix].st = GetSymbol(argv[ix]);
-            else ok = false;
-            
-            if(ok) FLEXT_LOG2("symbol arg %i = %s",ix,GetString(aargs[ix].st));
-            break;
-        }
-#if FLEXT_SYS == FLEXT_SYS_PD
-        case a_pointer: {
-            if(IsPointer(argv[ix])) aargs[ix].pt = (t_gpointer *)GetPointer(argv[ix]);
-            else ok = false;
-            break;
-        }
-#endif
-        default:
-            error("Argument type illegal");
-            ok = false;
-        }
-    }
-
-    if(ok && ix == argc) {
-        switch(argc) {
-        case 0: ret = ((methfun_0)m.fun)(this); break;
-        case 1: ret = ((methfun_1)m.fun)(this,aargs[0]); break;
-        case 2: ret = ((methfun_2)m.fun)(this,aargs[0],aargs[1]); break;
-        case 3: ret = ((methfun_3)m.fun)(this,aargs[0],aargs[1],aargs[2]); break;
-        case 4: ret = ((methfun_4)m.fun)(this,aargs[0],aargs[1],aargs[2],aargs[3]); break;
-        case 5: ret = ((methfun_5)m.fun)(this,aargs[0],aargs[1],aargs[2],aargs[3],aargs[4]); break;
-        }
-    }
-    
-    return ret;
-}
 
 bool flext_base::TryMethTag(Item *lst,const t_symbol *tag,int argc,const t_atom *argv)
 {
@@ -89,20 +32,78 @@ bool flext_base::TryMethTag(Item *lst,const t_symbol *tag,int argc,const t_atom 
         }
         else {
             if(m->argc == 1) {
-                // try list
-                if(m->args[0] == a_list && ((methfun_V)m->fun)(this,argc,const_cast<t_atom *>(argv))) return true;
-
-                // try anything
-                if(m->args[0] == a_any && ((methfun_A)m->fun)(this,tag,argc,const_cast<t_atom *>(argv))) return true;
+                if(m->args[0] == a_list) {
+                    // try list
+                    if(((methfun_V)m->fun)(this,argc,const_cast<t_atom *>(argv))) return true;
+                }
+                else if(m->args[0] == a_any) {
+                    // try anything
+                    if(((methfun_A)m->fun)(this,tag,argc,const_cast<t_atom *>(argv))) return true;
+                }
             }
 
             // try matching number of args
-            if(argc == m->argc && CallMeth(*m,argc,argv)) return true;
+            if(m->argc == argc) {
+                int ix;
+                t_any aargs[FLEXT_MAXMETHARGS];
+                bool ok = true;
+                for(ix = 0; ix < argc && ok; ++ix) {
+                    switch(m->args[ix]) {
+                    case a_float: {
+                        if(IsFloat(argv[ix])) aargs[ix].ft = GetFloat(argv[ix]);
+                        else if(IsInt(argv[ix])) aargs[ix].ft = (float)GetInt(argv[ix]);
+                        else ok = false;
+                        
+                        if(ok) FLEXT_LOG2("int arg %i = %f",ix,aargs[ix].ft);
+                        break;
+                    }
+                    case a_int: {
+                        if(IsFloat(argv[ix])) aargs[ix].it = (int)GetFloat(argv[ix]);
+                        else if(IsInt(argv[ix])) aargs[ix].it = GetInt(argv[ix]);
+                        else ok = false;
+                        
+                        if(ok) FLEXT_LOG2("float arg %i = %i",ix,aargs[ix].it);
+                        break;
+                    }
+                    case a_symbol: {
+                        if(IsSymbol(argv[ix])) aargs[ix].st = GetSymbol(argv[ix]);
+                        else ok = false;
+                        
+                        if(ok) FLEXT_LOG2("symbol arg %i = %s",ix,GetString(aargs[ix].st));
+                        break;
+                    }
+#if FLEXT_SYS == FLEXT_SYS_PD
+                    case a_pointer: {
+                        if(IsPointer(argv[ix])) aargs[ix].pt = (t_gpointer *)GetPointer(argv[ix]);
+                        else ok = false;
+                        break;
+                    }
+#endif
+                    default:
+                        error("Argument type illegal");
+                        ok = false;
+                    }
+                }
+
+                if(ok && ix == argc) {
+                    switch(argc) {
+                    case 0: return ((methfun_0)m->fun)(this); 
+                    case 1: return ((methfun_1)m->fun)(this,aargs[0]); 
+                    case 2: return ((methfun_2)m->fun)(this,aargs[0],aargs[1]); 
+                    case 3: return ((methfun_3)m->fun)(this,aargs[0],aargs[1],aargs[2]); 
+                    case 4: return ((methfun_4)m->fun)(this,aargs[0],aargs[1],aargs[2],aargs[3]); 
+                    case 5: return ((methfun_5)m->fun)(this,aargs[0],aargs[1],aargs[2],aargs[3],aargs[4]); 
+                    default:
+                        FLEXT_ASSERT(false);
+                    }
+                }
+            }
         }
     }
     return false;
 }
 
+/*
 bool flext_base::TryMethSym(Item *lst,const t_symbol *s)
 {
     for(; lst; lst = lst->nxt) {
@@ -117,6 +118,7 @@ bool flext_base::TryMethSym(Item *lst,const t_symbol *s)
     }
     return false;
 }
+*/
 
 bool flext_base::TryMethAny(Item *lst,const t_symbol *s,int argc,const t_atom *argv)
 {
@@ -143,19 +145,27 @@ bool flext_base::FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *arg
     // search for exactly matching tag
     if((lst = methhead.FindList(s,inlet)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
     if((lst = clmethhead->FindList(s,inlet)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
-    
-    // if no list args, then search for pure symbol 
-    if(!argc) {
-        if((lst = methhead.FindList(sym_symbol,inlet)) != NULL && TryMethSym(lst,s)) return true;
-        if((lst = clmethhead->FindList(sym_symbol,inlet)) != NULL && TryMethSym(lst,s)) return true;
-    }
-    
-    // otherwise search for anything
+
+    // if nothing found try any inlet
+    if((lst = methhead.FindList(s,-1)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
+    if((lst = clmethhead->FindList(s,-1)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
+
+    return false;
+}
+
+bool flext_base::FindMethAny(int inlet,const t_symbol *s,int argc,const t_atom *argv)
+{
+    Item *lst;
+    ItemCont *clmethhead = ClMeths(thisClassId());
+
     if((lst = methhead.FindList(sym_anything,inlet)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
     if((lst = clmethhead->FindList(sym_anything,inlet)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
 
     // if nothing found try any inlet
-    return inlet >= 0 && FindMeth(-1,s,argc,argv);
+    if((lst = methhead.FindList(sym_anything,-1)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
+    if((lst = clmethhead->FindList(sym_anything,-1)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
+
+    return false;
 }
 
 /*! \brief All the message processing
@@ -164,72 +174,76 @@ bool flext_base::FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *arg
 bool flext_base::CbMethodHandler(int inlet,const t_symbol *s,int argc,const t_atom *argv)
 {
     static bool trap = false;
+    bool ret;
 
     curtag = s;
 
 //  post("methodmain inlet:%i args:%i symbol:%s",inlet,argc,s?GetString(s):"");
 
-    bool ret = FindMeth(inlet,s,argc,argv);
-    if(ret) goto end;
-
     try {
-
-#if FLEXT_SYS == FLEXT_SYS_MAX
-        // If float message is not explicitly handled: try int handler instead
-        if(argc == 1 && s == sym_float && !trap) {
-            t_atom fl;
-            SetInt(fl,GetAInt(argv[0]));
-            trap = true;
-            ret = CbMethodHandler(inlet,sym_int,1,&fl);
-            trap = false;
-        }
-        if(ret) goto end;
-        
-        // If int message is not explicitly handled: try float handler instead
-        if(argc == 1 && s == sym_int && !trap) {
-            t_atom fl;
-            SetFloat(fl,GetAFloat(argv[0]));
-            trap = true;
-            ret = CbMethodHandler(inlet,sym_float,1,&fl);
-            trap = false;
-        }
-        if(ret) goto end;
-#endif
-        
-        // If float or int message is not explicitly handled: try list handler instead
-        if(!trap && argc == 1 && (s == sym_float || s == sym_symbol
-#if FLEXT_SYS == FLEXT_SYS_MAX
-            || s == sym_int
-#endif
-        )) {
-            t_atom list;
-            if(s == sym_float) 
-                SetFloat(list,GetFloat(argv[0]));
-#if FLEXT_SYS == FLEXT_SYS_MAX
-            else if(s == sym_int)
-                SetInt(list,GetInt(argv[0]));
-#endif
-            else if(s == sym_symbol)
-                SetSymbol(list,GetSymbol(argv[0]));
-
-            trap = true;
-            ret = CbMethodHandler(inlet,sym_list,1,&list);
-            trap = false;
-        }
+        ret = FindMeth(inlet,s,argc,argv);
         if(ret) goto end;
 
-        // If symbol message (pure anything without args) is not explicitly handled: try list handler instead
-        if(!trap && argc == 0) {
-            t_atom list;
-            SetSymbol(list,s);
-            trap = true;
-            ret = CbMethodHandler(inlet,sym_list,1,&list);
-            trap = false;
+        if(argc == 1) {
+            if(s == sym_list) {
+                // for 1-element lists try the single atom (this is the format output by [route])
+                if(IsFloat(argv[0]))
+                    ret = FindMeth(inlet,sym_float,1,argv);
+                else if(IsInt(argv[0]))
+                    ret = FindMeth(inlet,sym_int,1,argv);
+                else if(IsSymbol(argv[0]))
+                    ret = FindMeth(inlet,sym_symbol,1,argv);
+                else if(IsPointer(argv[0]))
+                    ret = FindMeth(inlet,sym_pointer,1,argv);
+                if(ret) goto end;
+            }
+            else {
+                if(s == sym_float) {
+    #if FLEXT_SYS == FLEXT_SYS_MAX
+                    t_atom at;
+                    // If float message is not explicitly handled: try int handler instead
+                    SetInt(at,(int)GetFloat(argv[0]));
+                    ret = FindMeth(inlet,sym_int,1,&at);
+                    if(ret) goto end;
+    #endif
+                    // If not explicitly handled: try list handler instead
+                    ret = FindMeth(inlet,sym_list,1,argv);
+                    if(ret) goto end;
+                }
+    #if FLEXT_SYS == FLEXT_SYS_MAX
+                else if(s == sym_int) {
+                    t_atom at;
+                    // If int message is not explicitly handled: try float handler instead
+                    SetFloat(at,(float)GetInt(argv[0]));
+                    ret = FindMeth(inlet,sym_float,1,&at);
+                    if(ret) goto end;
+                    // If not explicitly handled: try list handler instead
+                    ret = FindMeth(inlet,sym_list,1,argv);
+                    if(ret) goto end;
+                }
+    #endif
+                else if(s == sym_symbol) {
+                    ret = FindMeth(inlet,sym_list,1,argv);
+                    if(ret) goto end;
+                }
+    #if FLEXT_SYS == FLEXT_SYS_PD
+                else if(s == sym_pointer) {
+                    ret = FindMeth(inlet,sym_list,1,argv);
+                    if(ret) goto end;
+                }
+    #endif
+            }
         }
-        if(ret) goto end;
+        else if(argc == 0) {
+            // If symbol message (pure anything without args) is not explicitly handled: try list handler instead
+            t_atom at;
+            SetSymbol(at,s);
+            ret = FindMeth(inlet,sym_list,1,&at);
+            if(ret) goto end;
+        }
 
         // if distmsgs is switched on then distribute list elements over inlets (Max/MSP behavior)
-        if(DoDist() && !trap && inlet == 0 && s == sym_list && insigs <= 1) {
+        if(DoDist() && inlet == 0 && s == sym_list && insigs <= 1 && !trap) {
             int i = incnt;
             if(i > argc) i = argc;
             for(--i; i >= 0; --i) { // right to left distribution
@@ -237,20 +251,21 @@ bool flext_base::CbMethodHandler(int inlet,const t_symbol *s,int argc,const t_at
                 if(IsFloat(argv[i])) sym = sym_float;
                 else if(IsInt(argv[i])) sym = sym_int;
                 else if(IsSymbol(argv[i])) sym = sym_symbol;
-#if FLEXT_SYS == FLEXT_SYS_PD
                 else if(IsPointer(argv[i])) sym = sym_pointer;  // can pointer atoms occur here?
-#endif
+
                 if(sym) {
                     trap = true;
-                    CbMethodHandler(i,sym,1,argv+i);           
+                    CbMethodHandler(i,sym,1,argv+i);
                     trap = false;
                 }
             }
             
-            ret = true;
+            goto end;
         }
         
-        if(!ret && !trap) ret = CbMethodResort(inlet,s,argc,argv);
+        ret = FindMethAny(inlet,s,argc,argv);
+
+        if(!ret) ret = CbMethodResort(inlet,s,argc,argv);
     }
     catch(std::exception &x) {
         error("%s - Exception while processing method: %s",thisName(),x.what());

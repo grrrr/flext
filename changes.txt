@@ -40,6 +40,9 @@ Version history:
 - fixed bug for symbol messages into non-left inlets
 - better timers for Windows
 - slimmed down object data structures and changed initialization code accordingly
+- digest one-element float/int/symbol/pointer list messages as single atoms
+- simplified message analysis
+- made flext::Forward thread safe
 
 0.4.7:
 - added flext::GetBool (just because flext::GetInt has been there for a while)

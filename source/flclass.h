@@ -867,8 +867,8 @@ private:
 	mutable ItemCont methhead;
 	mutable ItemCont *bindhead;
 	
-	bool CallMeth(const MethItem &m,int argc,const t_atom *argv);
 	bool FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *argv);
+	bool FindMethAny(int inlet,const t_symbol *s,int argc,const t_atom *argv);
 	bool TryMethTag(Item *lst,const t_symbol *tag,int argc,const t_atom *argv);
 	bool TryMethSym(Item *lst,const t_symbol *s);
 	bool TryMethAny(Item *lst,const t_symbol *s,int argc,const t_atom *argv);

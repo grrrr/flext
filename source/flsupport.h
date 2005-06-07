@@ -742,15 +742,15 @@ public:
 	*/
 
     //! Send a message to a symbol (bound to an object)
-    static bool Forward(const t_symbol *sym,const t_symbol *s,int argc,const t_atom *argv);
+    static bool Forward(const t_symbol *sym,const t_symbol *s,int argc,const t_atom *argv,bool forcedirect = false);
 
-    static bool Forward(const t_symbol *sym,AtomAnything &args) { return Forward(sym,args.Header(),args.Count(),args.Atoms()); }
-    static bool Forward(const char *sym,AtomAnything &args) { return Forward(MakeSymbol(sym),args.Header(),args.Count(),args.Atoms()); }
+    static bool Forward(const t_symbol *sym,const AtomAnything &args,bool forcedirect = false) { return Forward(sym,args.Header(),args.Count(),args.Atoms(),forcedirect); }
+    static bool Forward(const char *sym,const AtomAnything &args,bool forcedirect = false) { return Forward(MakeSymbol(sym),args.Header(),args.Count(),args.Atoms(),forcedirect); }
 
-    static bool Forward(const t_symbol *sym,int argc,const t_atom *argv) { return Forward(sym,sym_list,argc,argv); }
+    static bool Forward(const t_symbol *sym,int argc,const t_atom *argv,bool forcedirect = false) { return Forward(sym,sym_list,argc,argv,forcedirect); }
 
-    static bool Forward(const t_symbol *sym,AtomList &args) { return Forward(sym,args.Count(),args.Atoms()); }
-    static bool Forward(const char *sym,AtomList &args) { return Forward(MakeSymbol(sym),args.Count(),args.Atoms()); }
+    static bool Forward(const t_symbol *sym,const AtomList &args,bool forcedirect = false) { return Forward(sym,args.Count(),args.Atoms(),forcedirect); }
+    static bool Forward(const char *sym,const AtomList &args,bool forcedirect = false) { return Forward(MakeSymbol(sym),args.Count(),args.Atoms(),forcedirect); }
 
 //!		@} FLEXT_S_MSG
 

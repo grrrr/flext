@@ -104,9 +104,6 @@ static ThrFinder< TypedLifo<thr_entry> > thractive,thrstopped;
 static flext::ThrCond *thrhelpcond = NULL;
 
 
-flext::thrid_t flext::GetSysThreadId() { return thrid; }
-
-
 static void LaunchHelper(thr_entry *e)
 {
     e->thrid = flext::GetThreadId();
@@ -601,8 +598,8 @@ bool flext::SetPriority(int p,thrid_t id)
 flext_base::thr_params::thr_params(int n): cl(NULL),var(new _data[n]) {}
 flext_base::thr_params::~thr_params() { if(var) delete[] var; }
 
-void flext_base::thr_params::set_any(const t_symbol *s,int argc,const t_atom *argv) { var[0]._any.args = new AtomAnything(s,argc,argv); }
-void flext_base::thr_params::set_list(int argc,const t_atom *argv) { var[0]._list.args = new AtomList(argc,argv); }
+void flext_base::thr_params::set_any(const t_symbol *s,int argc,const t_atom *argv) { var[0]._any = new AtomAnything(s,argc,argv); }
+void flext_base::thr_params::set_list(int argc,const t_atom *argv) { var[0]._list = new AtomList(argc,argv); }
 
 
 #if FLEXT_THREADS == FLEXT_THR_POSIX

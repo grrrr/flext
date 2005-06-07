@@ -781,10 +781,20 @@ public:
 
 //!		@} FLEXT_S_LOCK
 
-#ifdef FLEXT_THREADS
 	/*!	\defgroup FLEXT_S_THREAD Flext thread handling 
 		@{ 
 	*/
+
+    //! Check if current thread is the realtime system's thread
+	static bool IsSystemThread() { 
+#ifdef FLEXT_THREADS
+        return IsThread(GetSysThreadId()); 
+#else
+        return true;
+#endif
+    }
+
+#ifdef FLEXT_THREADS
 
 	//! thread type
 #if FLEXT_THREADS == FLEXT_THR_MP
@@ -813,7 +823,7 @@ public:
 
 	/*! \brief Get system thread id
 	*/
-	static thrid_t GetSysThreadId();
+    static thrid_t GetSysThreadId() { return thrid; }
 
 	//! Check if current thread should terminate
 	static bool ShouldExit();
@@ -828,9 +838,6 @@ public:
 		return ref == t;
 #endif
 	}
-
-	//! Check if current thread is the realtime system's thread
-	static bool IsSystemThread() { return IsThread(GetSysThreadId()); }
 
 
 	/*! \brief Thread parameters
@@ -852,9 +859,9 @@ public:
 			float _float;
 			int _int;
 			t_symptr _t_symptr;
-			struct { AtomAnything *args; } _any;
-			struct { AtomList *args; } _list;
-			struct { void *data; } _ext;
+			AtomAnything *_any;
+			AtomList *_list;
+			void *_ext;
 		} *var;
 	};
 
@@ -1093,10 +1100,9 @@ public:
 	*/
 	static bool StopThread(void (*meth)(thr_params *p),thr_params *params = NULL,bool wait = false);
 
-//!		@} FLEXT_S_THREAD
-
-
 #endif // FLEXT_THREADS
+
+//!		@} FLEXT_S_THREAD
 
 
 // --- timer stuff -----------------------------------------------

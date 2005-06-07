@@ -49,7 +49,7 @@ static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,t_symbol *s,int argc,t_atom *arg
 static void FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
-	AtomAnything *args = p->var[0]._any.args; \
+	AtomAnything *args = p->var[0]._any; \
 	delete p; \
 	if(ok) { \
 		th->M_FUN(args->Header(),args->Count(),args->Atoms()); \
@@ -67,7 +67,7 @@ static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,int argc,t_atom *argv) {  \
 static void FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
-	AtomList *args = p->var[0]._list.args; \
+	AtomList *args = p->var[0]._list; \
 	delete p; \
 	if(ok) { \
 		th->M_FUN(args->Count(),args->Atoms()); \
@@ -81,13 +81,13 @@ static void FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 */
 #define FLEXT_THREAD_X(M_FUN) \
 static bool FLEXT_CALL_PRE(M_FUN)(flext_base *c,void *data) {  \
-	thr_params *p = new thr_params; p->var[0]._ext.data = data; \
+	thr_params *p = new thr_params; p->var[0]._ext = data; \
 	return c->StartThread(FLEXT_THR_PRE(M_FUN),p,#M_FUN); \
 } \
 static void FLEXT_THR_PRE(M_FUN)(thr_params *p) {  \
 	thisType *th = FLEXT_CAST<thisType *>(p->cl); \
 	bool ok = th->PushThread(); \
-	void *data = p->var[0]._ext.data; \
+	void *data = p->var[0]._ext; \
 	delete p; \
 	if(ok) { \
 		th->M_FUN(data); \

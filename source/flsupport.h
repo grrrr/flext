@@ -664,6 +664,8 @@ public:
         virtual void Alloc(int sz,int keepix = -1,int keeplen = -1,int keepto = 0);
         virtual void Free();
 
+        AtomListStaticBase &operator =(const AtomList &a) { AtomList::operator =(a); return *this; }
+
         const int precnt;
         t_atom *const predata;
     };
@@ -678,10 +680,10 @@ public:
 		//! Construct list
 		explicit AtomListStatic(int argc,const t_atom *argv = NULL): AtomListStaticBase(PRE,pre) { operator()(argc,argv); }
 		//! Construct list
-        explicit AtomListStatic(const AtomList &a): AtomListStaticBase(PRE,pre) { AtomList::operator =(a); }
+        explicit AtomListStatic(const AtomList &a): AtomListStaticBase(PRE,pre) { operator =(a); }
 
 		//! Set list by another AtomList
-        AtomListStatic &operator =(const AtomList &a) { AtomList::operator =(a); return *this; }
+        AtomListStatic &operator =(const AtomList &a) { AtomListStaticBase::operator =(a); return *this; }
     protected:
         t_atom pre[PRE];
     };

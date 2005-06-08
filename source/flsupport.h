@@ -665,6 +665,7 @@ public:
         virtual void Free();
 
         AtomListStaticBase &operator =(const AtomList &a) { AtomList::operator =(a); return *this; }
+        AtomListStaticBase &operator =(const AtomListStaticBase &a) { AtomList::operator =(a); return *this; }
 
         const int precnt;
         t_atom *const predata;
@@ -684,6 +685,7 @@ public:
 
 		//! Set list by another AtomList
         AtomListStatic &operator =(const AtomList &a) { AtomListStaticBase::operator =(a); return *this; }
+        AtomListStatic &operator =(const AtomListStatic &a) { AtomListStaticBase::operator =(a); return *this; }
     protected:
         t_atom pre[PRE];
     };

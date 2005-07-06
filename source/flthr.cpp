@@ -51,7 +51,7 @@ class thr_entry
     , public Fifo::Cell
 {
 public:
-    void thr_entry::Set(void (*m)(thr_params *),thr_params *p,thrid_t id = GetThreadId())
+    void Set(void (*m)(thr_params *),thr_params *p,thrid_t id = GetThreadId())
     {
         th = p?p->cl:NULL;
         meth = m,params = p,thrid = id;
@@ -91,7 +91,7 @@ public:
         thr_entry *fnd;
         while((fnd = Pop()) && !fnd->Is(id)) qutmp.Push(fnd);
         // put back entries
-        for(thr_entry *ti; ti = qutmp.Pop(); ) Push(ti);
+        for(thr_entry *ti; (ti = qutmp.Pop()) != NULL; ) Push(ti);
         if(fnd && !pop) Push(fnd);
         return fnd;
     }
@@ -180,7 +180,7 @@ void flext::ThrHelper(void *)
 
    		// start all inactive threads
         thr_entry *ti;
-        while(ti = thrpending.Pop()) {
+        while((ti = thrpending.Pop()) != NULL) {
 		    bool ok;
     		
     #if FLEXT_THREADS == FLEXT_THR_POSIX

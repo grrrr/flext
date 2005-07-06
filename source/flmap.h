@@ -188,7 +188,7 @@ private:
 template <typename K,typename T,int N = 8>
 class TablePtrMap
     : 
-#if (defined(_MSC_VER) && _MSC_VER < 1300) || defined(__BORLANDC__)
+#if (defined(_MSC_VER) && _MSC_VER < 1300) || defined(__BORLANDC__) || defined(__MWERKS__)
     public  // necessary for VC6
 #endif
     TableAnyMap

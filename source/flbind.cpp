@@ -188,7 +188,7 @@ bool flext_base::UnbindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_sym
             Item *it = set.find(sym);
             if(fun) {
                 // check if function matches
-                for(; it && static_cast<BindItem *>(it)->fun != fun; it = it->nxt);
+                for(; it && static_cast<BindItem *>(it)->fun != fun; it = it->nxt) {}
             }
             item = static_cast<BindItem *>(it); 
         }

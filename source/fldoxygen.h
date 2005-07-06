@@ -14,7 +14,7 @@
 
 Currently there exist two widely used modular systems for real-time audio that can be
 extended by self-written objects (so called "externals"):<br>
-Max/MSP (http://www.cycling74.com) and Pure Data (http://www.pure-data.org).
+Max/MSP (http://www.cycling74.com) and Pure Data (http://www.pure-data.org) .
 
 Both come with APIs that are not very different (as they share their origin), but as well not quite the same.
 Flext seeks to provide a unifying interface for the APIs of those real-time systems while also
@@ -48,7 +48,7 @@ Currently, flext supports
 <ul>
 <li>PD on Windows with Microsoft Visual C++, Borland C++ and gcc(cygwin) compilers
 <li>PD on Linux with gcc
-<li>PD on Mac OSX with gcc (makefile or Project Builder)
+<li>PD on Mac OSX with gcc (makefile or Xcode)
 <li>Max/MSP on Mac OS9 and OSX with Metrowerks CodeWarrior
 </ul>
 
@@ -78,7 +78,7 @@ referenced works and their license texts.
 
 \section DOWNLOAD Download 
 
-Download the latest flext version from http://www.parasitaere-kapazitaeten.net/ext/flext .<br>
+Download the latest flext version from http://grrrr.org/ext/flext .<br>
 Alternatively, you can check out the cvs version from http://sourceforge.net/projects/pure-data .
 
 \section USAGE Usage

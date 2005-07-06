@@ -94,12 +94,9 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 {
     public:
 
-	/*!	\defgroup FLEXT_OBJCLASS Object base class
-		@{ 
-	*/
 // --- creation -------------------------------------------------------	
 
-	/*!	\defgroup FLEXT_O_CREATION Creation/Destruction functionality
+	/*!	\defgroup FLEXT_OBJ_CREATION Object creation/destruction functionality
 		@{ 
 	*/
 
@@ -129,11 +126,11 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 		//! Virtual function called at destruction (before the destructor)
 		virtual void Exit();
 
-	//!	@}  FLEXT_O_CREATION
+	//!	@}  FLEXT_OBJ_CREATION
 
 // --- info -------------------------------------------------------	
 
-	/*!	\defgroup FLEXT_O_INFO Get various information
+	/*!	\defgroup FLEXT_OBJ_INFO Get various information
 		@{ 
 	*/
 
@@ -161,11 +158,11 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 
         bool HasAttributes() const;
 
-	//!	@}  FLEXT_O_INFO
+	//!	@}  FLEXT_OBJ_INFO
 
 // --- help -------------------------------------------------------	
 
-	/*!	\defgroup FLEXT_O_HELP Help/assistance functionality
+	/*!	\defgroup FLEXT_OBJ_HELP Help/assistance functionality
 		\remark This is still PD only
 		@{ 
 	*/
@@ -178,12 +175,12 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 		//! Define the help reference symbol for a class
 		void DefineHelp(const char *ref,const char *dir = NULL,bool addtilde = false) { DefineHelp(thisClassId(),ref,dir,addtilde); }
 
-	//!	@} 
+	//!	@} FLEXT_OBJ_HELP
 
 
 // --- internal stuff -------------------------------------------------------	
 
-	/*!	\defgroup FLEXT_O_INTERNAL Internal stuff
+	/*!	\defgroup FLEXT_OBJ_INTERNAL Internal stuff
 		\internal
 		@{ 
 	*/
@@ -262,9 +259,7 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 		//! Get the canvas arguments
 		void CanvasArgs(AtomList &args) const;
 
-	//!	@} FLEXT_O_INTERNAL
-
-	//!	@} FLEXT_OBJCLASS   	
+	//!	@} FLEXT_OBJ_INTERNAL
 };
 
 

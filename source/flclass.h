@@ -506,6 +506,15 @@ public:
 
 // xxx internal stuff xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
+public: // needed by VC++ 6
+
+    enum xlettype {
+	    xlet_none = 0,
+	    xlet_float,xlet_int,xlet_sym,xlet_list,xlet_any,
+	    xlet_LIST,xlet_ANY, // use AtomList and AtomAnything
+	    xlet_sig
+    };
+
 protected:
 
 	FLEXT_CLASSDEF(flext_base)();
@@ -515,13 +524,6 @@ protected:
 	*/
 	virtual bool Init();
 	
-
-    enum xlettype {
-	    xlet_none = 0,
-	    xlet_float,xlet_int,xlet_sym,xlet_list,xlet_any,
-	    xlet_LIST,xlet_ANY, // use AtomList and AtomAnything
-	    xlet_sig
-    };
 
 	/*!	\defgroup FLEXT_C_ATTR Attribute handling methods (object scope)
 		@{ 

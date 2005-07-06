@@ -63,7 +63,7 @@ void signal2::m_bang()
 	// output various parameters of the pd audio system
 	ToOutFloat(0,Samplerate()); 
 	ToOutInt(1,Blocksize()); 
-	ToOutInt(2,ChannelsIn()); 
-	ToOutInt(3,ChannelsOut()); 
+	ToOutInt(2,CntInSig()); 
+	ToOutInt(3,CntOutSig()); 
 }
 

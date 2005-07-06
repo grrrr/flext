@@ -53,8 +53,10 @@ public:
 	//! Overloaded delete method
 	void operator delete(void *blk);
 
+#ifndef __BORLANDC__
 	inline void *operator new(size_t,void *p) { return p; }
 	inline void operator delete(void *,void *) {}
+#endif
 
 #ifdef FLEXT_DEBUGMEM
     static bool MemCheck(void *blk);
@@ -62,13 +64,15 @@ public:
     static bool MemCheck(void *) { return true; }
 #endif
 
-	#ifndef __MRC__ // doesn't allow new[] overloading?!
+#ifndef __MRC__ // doesn't allow new[] overloading?!
 	inline void *operator new[](size_t bytes) { return operator new(bytes); }
 	inline void operator delete[](void *blk) { operator delete(blk); }
 
+#ifndef __BORLANDC__
 	inline void *operator new[](size_t,void *p) { return p; }
 	inline void operator delete[](void *,void *) {}
-	#endif
+#endif
+#endif
 
 	//! Get an aligned memory block
 	static void *NewAligned(size_t bytes,int bitalign = 128);

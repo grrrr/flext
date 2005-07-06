@@ -307,8 +307,49 @@ public:
     }
 
     inline size_t Size() const { return oc; }
+
 #else
-#error Platform not supported
+    // no lock free code available for this compiler/platform
+
+    inline void Push(Cell *c) 
+    {
+#ifdef FLEXT_THREADS
+        mutex.Lock();
+#endif
+        c->link = (Cell *)top;
+        top = c;
+        ++oc;
+#ifdef FLEXT_THREADS
+        mutex.Unlock();
+#endif
+    }
+
+    inline Cell *Pop()
+    {
+        if(top) {
+            Cell *r;
+#ifdef FLEXT_THREADS
+            mutex.Lock();
+#endif
+            r = (Cell *)top;
+            top = r->link;
+            --oc;
+#ifdef FLEXT_THREADS
+            mutex.Unlock();
+#endif
+            return r;
+        }
+        else
+            return NULL;
+    }
+
+    inline size_t Size() const { return oc; }
+
+private:
+#ifdef FLEXT_THREADS
+    flext::ThrMutex mutex;
+#endif
+
 #endif
 
 private:

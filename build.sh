@@ -41,7 +41,7 @@ subbatch=${flext}buildsys/build-${compiler}.sh
 if 
 	[ -n "$platform" -a -n "$rtsys" -a -n "$compiler" -a -f $subbatch ]
 then 
-	bash $subbatch $platform $rtsys $target $4 $5 $6 $7 $8 $9
+	sh $subbatch $platform $rtsys $target $4 $5 $6 $7 $8 $9
 else
 	echo 
 	echo SYNTAX: build.sh [system] [compiler] {target}

@@ -45,7 +45,7 @@ Useful combinations of the above are
 under Windows:
 pd msvc, using nmake
 pd cygwin, using gnumake
-pd mingw, using gnumake
+pd mingw, using gnumake (from the CMD prompt, not msys!)
 max msvc, using nmake
 pd bcc, using bmake
 
@@ -144,9 +144,10 @@ A missing combination does not necessarily mean that it won't work.
 
 win-pd-msvc, single/multi/shared
 win-pd-bcc, single/multi/shared
-win-pd-mingw, single/multi/shared
-win-pd-cygwin, 
+win-pd-mingw, single/multi/shared (from CMD prompt, not MSYS)
+win-pd-cygwin, --- NOT WORKING (compiles but crashes) ----
 win-max-msvc, single/multi/shared
+win-max-mingw, --- NOT WORKING (wrong structure packing) ----
 
 
 mac-pd-gcc, single/multi/shared

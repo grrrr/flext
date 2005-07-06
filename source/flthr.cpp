@@ -25,7 +25,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <time.h>
 
-#if FLEXT_OSAPI == FLEXT_OSAPI_UNIX_POSIX || FLEXT_OSAPI == FLEXT_OSAPI_WIN_POSIX
+#if FLEXT_OSAPI == FLEXT_OSAPI_MAC_MACH || FLEXT_OSAPI == FLEXT_OSAPI_UNIX_POSIX || FLEXT_OSAPI == FLEXT_OSAPI_WIN_POSIX
 #include <sys/time.h>
 #include <unistd.h>
 #elif FLEXT_OS == FLEXT_OS_WIN

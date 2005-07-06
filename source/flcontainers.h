@@ -180,8 +180,15 @@ public:
 		    :"memory", "edx");
 	    return n;
     }
-#elif defined(__GNUC__) && FLEXT_CPU == FLEXT_CPU_X86_64
+#elif 0 //defined(__GNUC__) && FLEXT_CPU == FLEXT_CPU_X86_64
 /* attention - this only works for EMT64 or newer revisions of AMD 64-bit cpus */
+    #ifndef SMPLOCK
+    # ifdef __SMP__
+    #  define SMPLOCK "lock ; "
+    # else
+    #  define SMPLOCK ""
+    # endif
+    #endif
 
     inline void Push(Cell *cl) 
     {

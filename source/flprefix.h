@@ -364,7 +364,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
         exported functions refer to the first instance loaded!
         Therefore different class names are used so that the correct type of flext function is called.
 */
-#if defined(FLEXT_SHARED)
+#ifdef __DOXYGEN__
+    #define FLEXT_CLASSDEF(CL) CL
+#elif defined(FLEXT_SHARED)
     #define FLEXT_CLASSDEF(CL) CL##_shared
 #elif defined(FLEXT_THREADS)
     #define FLEXT_CLASSDEF(CL) CL##_multi

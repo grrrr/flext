@@ -794,13 +794,13 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 			Name="doc"
 			Filter="">
 			<File
+				RelativePath=".\build.txt">
+			</File>
+			<File
 				RelativePath="changes.txt">
 			</File>
 			<File
 				RelativePath="source\fldoxygen.h">
-			</File>
-			<File
-				RelativePath="make-files.txt">
 			</File>
 			<File
 				RelativePath=".\notes.txt">

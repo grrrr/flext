@@ -22,8 +22,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // check if PD API supports buffer dirty time
 #if defined(PD_DEVEL_VERSION) && defined(PD_MAJOR_VERSION) && defined(PD_MINOR_VERSION)
-#if PD_MINOR_VERSION >= 36
-    #define FLEXT_PDBUFDIRTYTIME
+#if PD_MINOR_VERSION >= 36 && PD_MINOR_VERSION <= 38
+// garray_updatetime has been removed in devel_0_39
+    #define FLEXT_HAVE_GARRAYUPDATETIME
+	#define FLEXT_HAVE_GARRAYLOCKS
 #endif
 #endif
 
@@ -182,7 +184,7 @@ flext::buffer::lock_t flext::buffer::Lock()
     FLEXT_ASSERT(sym);
 #if FLEXT_SYS == FLEXT_SYS_PD
     FLEXT_ASSERT(arr);
-#if PD_MINOR_VERSION >= 38 && defined(PD_DEVEL_VERSION)
+#ifdef FLEXT_HAVE_GARRAYLOCKS
     garray_lock(arr);
 #endif
     return false;
@@ -207,7 +209,7 @@ void flext::buffer::Unlock(flext::buffer::lock_t prv)
     FLEXT_ASSERT(sym);
 #if FLEXT_SYS == FLEXT_SYS_PD
     FLEXT_ASSERT(arr);
-#if PD_MINOR_VERSION >= 38 && defined(PD_DEVEL_VERSION)
+#ifdef FLEXT_HAVE_GARRAYLOCKS
     garray_unlock(arr);
 #endif
 #elif FLEXT_SYS == FLEXT_SYS_MAX
@@ -337,7 +339,7 @@ bool flext::buffer::IsDirty() const
     FLEXT_ASSERT(sym);
 #if FLEXT_SYS == FLEXT_SYS_PD
     FLEXT_ASSERT(arr);
-    #ifdef FLEXT_PDBUFDIRTYTIME
+    #ifdef FLEXT_HAVE_GARRAYUPDATETIME
     return isdirty || garray_updatetime(arr) > cleantime;
     #else
     // Don't know.... (no method in PD judging whether buffer has been changed from outside flext...)

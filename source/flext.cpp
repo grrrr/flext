@@ -34,6 +34,7 @@ flext_base::FLEXT_CLASSDEF(flext_base)()
 {
     FLEXT_LOG1("%s - flext logging is on",thisName());
 
+    methhead = NULL;
     bindhead = NULL;
 
     if(HasAttributes()) {
@@ -69,6 +70,7 @@ flext_base::~FLEXT_CLASSDEF(flext_base)()
 
     // delete message lists
     if(bindhead) delete bindhead;  // ATTENTION: the object must free all memory associated to bindings itself
+    if(methhead) delete methhead;
     if(attrhead) delete attrhead;
     if(attrdata) delete attrdata;
     

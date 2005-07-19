@@ -103,22 +103,6 @@ bool flext_base::TryMethTag(Item *lst,const t_symbol *tag,int argc,const t_atom 
     return false;
 }
 
-/*
-bool flext_base::TryMethSym(Item *lst,const t_symbol *s)
-{
-    for(; lst; lst = lst->nxt) {
-        MethItem *m = (MethItem *)lst;
-
-        if(!m->IsAttr()) {
-//          FLEXT_LOG3("found symbol method for %s: inlet=%i, symbol=%s",GetString(m->tag),m->inlet,GetString(s));
-
-            t_any sym; sym.st = const_cast<t_symbol *>(s);
-            if(((methfun_1)m->fun)(this,sym)) return true;
-        }
-    }
-    return false;
-}
-*/
 
 bool flext_base::TryMethAny(Item *lst,const t_symbol *s,int argc,const t_atom *argv)
 {
@@ -143,11 +127,11 @@ bool flext_base::FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *arg
     ItemCont *clmethhead = ClMeths(thisClassId());
 
     // search for exactly matching tag
-    if((lst = methhead.FindList(s,inlet)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
+    if(methhead && (lst = methhead->FindList(s,inlet)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
     if((lst = clmethhead->FindList(s,inlet)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
 
     // if nothing found try any inlet
-    if((lst = methhead.FindList(s,-1)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
+    if(methhead && (lst = methhead->FindList(s,-1)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
     if((lst = clmethhead->FindList(s,-1)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
 
     return false;
@@ -158,11 +142,11 @@ bool flext_base::FindMethAny(int inlet,const t_symbol *s,int argc,const t_atom *
     Item *lst;
     ItemCont *clmethhead = ClMeths(thisClassId());
 
-    if((lst = methhead.FindList(sym_anything,inlet)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
+    if(methhead && (lst = methhead->FindList(sym_anything,inlet)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
     if((lst = clmethhead->FindList(sym_anything,inlet)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
 
     // if nothing found try any inlet
-    if((lst = methhead.FindList(sym_anything,-1)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
+    if(methhead && (lst = methhead->FindList(sym_anything,-1)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
     if((lst = clmethhead->FindList(sym_anything,-1)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
 
     return false;
@@ -285,13 +269,12 @@ end:
 
 bool flext_base::m_method_(int inlet,const t_symbol *s,int argc,const t_atom *argv) 
 {
-//#ifdef FLEXT_DEBUG
     post("%s: message unhandled - inlet:%i args:%i symbol:%s",thisName(),inlet,argc,s?GetString(s):"");
-//#endif
     return false;
 }
 
 bool flext_base::CbMethodResort(int inlet,const t_symbol *s,int argc,const t_atom *argv) 
 {
+    // call deprecated version
     return m_method_(inlet,s,argc,argv);
 }

@@ -35,12 +35,6 @@ void flext_base::MethItem::SetArgs(methfun _fun,int _argc,metharg *_args)
     argc = _argc,args = _args;
 }
 
-
-void flext_base::AddMethodDef(int inlet,const t_symbol *tag)
-{
-    methhead.Add(new MethItem,tag,inlet);
-}
-
 /*! \brief Add a method to the queue
 */
 void flext_base::AddMethod(ItemCont *ma,int inlet,const t_symbol *tag,methfun fun,metharg tp,...)
@@ -95,7 +89,7 @@ void flext_base::ListMethods(AtomList &la,int inlet) const
 
     int i;
     for(i = 0; i <= 1; ++i) {
-        ItemCont *a = i?&methhead:clmethhead;
+        ItemCont *a = i?methhead:clmethhead;
         if(a && a->Contained(inlet)) {
             ItemSet &ai = a->GetInlet(inlet);
             for(ItemSet::iterator as(ai); as; ++as) {

@@ -8,6 +8,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 Version history:
 
+0.5.1:
+- optimizations for message handling and memory footprint
+
 0.5.0:
 - fixes for 64 bit builds (size_t is integer type of pointer size)
 - finally added a autoconf system (many many thanks to Tim Blechmann)

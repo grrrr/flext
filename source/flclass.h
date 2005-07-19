@@ -333,7 +333,7 @@ public:
 		@{ 
 	*/
 
-	void AddMethodDef(int inlet,const t_symbol *tag = NULL); // call virtual function for tag && inlet
+    void AddMethodDef(int inlet,const t_symbol *tag = NULL) { ThMeths()->Add(new MethItem,tag,inlet); }
     void AddMethodDef(int inlet,const char *tag = NULL) { AddMethodDef(inlet,MakeSymbol(tag)); }
 
 	void AddMethod(int inlet,bool (*m)(flext_base *,int,t_atom *)) { AddMethod(ThMeths(),inlet,sym_list,(methfun)m,a_list,a_null); }
@@ -496,7 +496,7 @@ public:
 	*/
 
 	//! Start a thread for this object
-	bool StartThread(void (*meth)(thr_params *p),thr_params *p,const char *) { p->cl = this; return flext::LaunchThread(meth,p); }
+	bool StartThread(void (*meth)(thr_params *p),thr_params *p,const char * = NULL) { p->cl = this; return flext::LaunchThread(meth,p); }
 
 	//! Terminate all threads of this object
 	bool StopThreads();
@@ -803,7 +803,7 @@ public:
         pxbnd_object *px;
 	};
 	
-	ItemCont *ThMeths() { return &methhead; }
+	ItemCont *ThMeths() { if(!methhead) methhead = new ItemCont; return methhead; }
 	static ItemCont *ClMeths(t_classid c);
 
 	static void AddMethod(ItemCont *ma,int inlet,const t_symbol *tag,methfun fun,metharg tp,...); 
@@ -866,7 +866,7 @@ private:
 	typedef bool (*methfun_4)(flext_base *c,t_any &,t_any &,t_any &,t_any &);
 	typedef bool (*methfun_5)(flext_base *c,t_any &,t_any &,t_any &,t_any &,t_any &);
 
-	mutable ItemCont methhead;
+	mutable ItemCont *methhead;
 	mutable ItemCont *bindhead;
 	
 	bool FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *argv);
@@ -1019,12 +1019,7 @@ private:
 
 	// callback functions
 
-#if FLEXT_SYS == FLEXT_SYS_JMAX
-	static void	cb_help(fts_object_t *o, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at);
-#else
-	static void cb_help(t_class *c);
 	static void cb_loadbang(t_class *c);
-#endif
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 	static int cb_click(t_gobj *z, struct _glist *glist,int xpix, int ypix, int shift, int alt, int dbl, int doit);

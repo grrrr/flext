@@ -21,7 +21,7 @@ $(TARGET) :: $(TARGETPATH)
 
 $(TARGET) :: $(COBJS) $(CPPOBJS)
 ifdef SHARED
-	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
+	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS) $(SYSLIBS)
 	chmod 755 $@
 	strip --strip-unneeded $@
 else

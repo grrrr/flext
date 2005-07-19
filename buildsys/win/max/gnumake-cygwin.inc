@@ -7,4 +7,4 @@ INCPATH += -I$(MAXSDKPATH)/max-includes -I$(MAXSDKPATH)/msp-includes
 LIBPATH += -L$(MAXSDKPATH)/max-includes -L$(MAXSDKPATH)/msp-includes
 
 # these are both in MAXSDKPATH
-LIBS += -lMaxAPI -lMaxAudio
+SYSLIBS += -lMaxAPI -lMaxAudio

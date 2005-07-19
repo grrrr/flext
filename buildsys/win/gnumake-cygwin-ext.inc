@@ -24,7 +24,7 @@ $(TARGETPATH)/%.o : $(SRCDIR)/%.c
 $(TARGET) :: $(TARGETPATH) 
 
 $(TARGET) :: $(COBJS) $(CPPOBJS)
-	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
+	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS) $(SYSLIBS)
 	strip --strip-unneeded $@
 	chmod 755 $@
 

@@ -36,7 +36,7 @@ _clean_:
 ##############################################
 
 $(INSTPATH):
-	-mkdir -p $@
+	-mkdir -p $(INSTPATH)
 
 _install_: $(INSTPATH)
 	install $(TARGET) $(INSTPATH)

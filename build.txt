@@ -76,8 +76,24 @@ Operating System, real-time system and compiler need to be provided as arguments
 See buildsys/readme.txt for developer-centered information.
 
 
+1.1) Prerequisites
+==================
 
-1.1) Building and installing flext
+Linux:
+- A gnu g/g++ compiler should be present on any system. 
+  The command "g++ --version" should show version 2.95 at least. Compiler version >= 3.3 is recommended.
+
+OSX:
+- The developer package must be installed which contains all necessary parts.
+
+Windows:
+- Microsoft Visual Studio 6, .NET 2002, .NET 2003 or .NET 2005
+  be sure to use the VCVARS32.BAT command on the prompt to set up the environment variables
+or
+- cygwin with binutils, gcc and make packages
+
+
+1.2) Building and installing flext
 ==================================
 
 Flext can build itself using the build system.
@@ -111,7 +127,7 @@ into the default location.
 (try "sudo" or "su -c" prefixes, or log in as root)
 
 
-1.2) Building externals
+1.3) Building externals
 =======================
 
 The flext build system can be used to compile flext-based externals or also
@@ -135,7 +151,7 @@ You can clean up the intermediate build folders with
 	bash ../flext/build.sh pd gcc clean
 
 
-1.3) Tested configurations
+1.4) Tested configurations
 ==========================
 
 Both flext and flext-based externals have been successfully built with the 
@@ -145,9 +161,10 @@ A missing combination does not necessarily mean that it won't work.
 win-pd-msvc, single/multi/shared
 win-pd-bcc, single/multi/shared
 win-pd-mingw, single/multi/shared (from CMD prompt, not MSYS)
-win-pd-cygwin, --- NOT WORKING (compiles but crashes) ----
+win-pd-cygwin, single/multi/shared
 win-max-msvc, single/multi/shared
-win-max-mingw, --- NOT WORKING (wrong structure packing) ----
+win-max-mingw, --- NOT WORKING (linker problems) ----
+win-max-cygwin, --- NOT WORKING (linker problems) ----
 
 
 mac-pd-gcc, single/multi/shared

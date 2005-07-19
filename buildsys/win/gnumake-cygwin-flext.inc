@@ -42,10 +42,10 @@ FLEXTLIBINST=$(FLEXTLIB)
 endif
 
 $(FLEXTINC):
-	-mkdir -p $@
+	-mkdir -p $(FLEXTINC)
 
 $(FLEXTLIBINST):
-	-mkdir -p $@
+	-mkdir -p $(FLEXTLIBINST)
 
 _install_: $(FLEXTINC) $(FLEXTLIBINST)
 	install $(TARGET) $(FLEXTLIBINST)

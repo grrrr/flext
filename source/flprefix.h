@@ -377,7 +377,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 /* Set the right calling convention (and exporting) for the OS */
 
-#ifdef _MSC_VER
+#if defined(_WIN32)
 	#ifdef FLEXT_SHARED
         // for compiling a shared flext library FLEXT_EXPORTS must be defined
         #ifdef FLEXT_EXPORTS

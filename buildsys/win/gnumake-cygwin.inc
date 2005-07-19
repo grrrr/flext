@@ -6,8 +6,8 @@ TARGET=$(TARGETPATH)/$(OUTNAME).$(EXT)
 
 ##############################################
 
-CFLAGS += 
-LDFLAGS += -shared
+CFLAGS += -mno-cygwin
+LDFLAGS += -shared -mno-cygwin
 
 ##############################################
 

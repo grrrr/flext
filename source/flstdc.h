@@ -114,6 +114,7 @@ typedef t_clock t_qelem;
 	#endif
 #elif FLEXT_OS == FLEXT_OS_WIN
 	#define WIN_VERSION 1
+	#define WIN_EXT_VERSION 1
 #endif
 
 

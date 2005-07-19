@@ -1,6 +1,6 @@
 # where is the PD installation?
 # (this should point to the main folder, which has a "src" subfolder)
-PDPATH=/cygdrive/c/programme/pd
+PDPATH=/cygdrive/c/program files/pd
 
 ###############################################################
 

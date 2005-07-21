@@ -42,7 +42,7 @@ ifdef PROFILE
 CFLAGS += -g
 LDFLAGS += -g
 else
-LDFLAGS += -Wl,-x -Wl,-S
+LDFLAGS += -Wl,-S
 endif
 endif
 

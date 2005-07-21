@@ -22,7 +22,7 @@ TARGETNAME=$(OUTNAME).$(EXT)
 ##############################################
 
 CFLAGS += -pthread -fPIC
-LDFLAGS += -pthread -shared -Wl,-x 
+LDFLAGS += -pthread -shared 
 
 ##############################################
 

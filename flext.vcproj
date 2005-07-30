@@ -122,7 +122,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="c:\data\pd\pd-cvs\src;c:\data\prog\audio\sndobj\include;c:\data\prog\audio\stk\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_PD;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_EXPORTS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_PD;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_EXPORTS;xFLEXT_ATTRHIDE;xFLEXT_NOATTREDIT"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				RuntimeTypeInfo="TRUE"
@@ -171,7 +171,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="c:\programme\audio\pd\src;c:\data\prog\audio\sndobj\include;c:\data\prog\audio\stk\include"
+				AdditionalIncludeDirectories="c:\programme\audio\pd-0.39-test4\src;c:\data\prog\audio\sndobj\include;c:\data\prog\audio\stk\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS=2;FLEXT_USE_SIMD;FLEXT_EXPORTS;FLEXT_DEBUGMEM;_WIN32_WINNT=0x400"
 				StringPooling="TRUE"
 				BasicRuntimeChecks="3"

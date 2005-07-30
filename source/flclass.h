@@ -912,11 +912,13 @@ private:
 
 	static void SetGfx(t_classid c);
 
-#if !defined(FLEXT_NOATTREDIT)
+#ifndef FLEXT_NOATTREDIT
 	// attribute editor
-	static void attrsetup(t_classid c);
 	static bool cb_AttrDialog(flext_base *c,int argc,const t_atom *argv);
 	static void cb_GfxProperties(t_gobj *c, t_glist *);
+#endif
+
+#ifdef FLEXT_ATTRHIDE
 	static void cb_GfxVis(t_gobj *c, t_glist *gl, int vis);
 	static void cb_GfxSave(t_gobj *c, t_binbuf *b);
 	static void cb_GfxSelect(t_gobj *x, struct _glist *glist, int state);
@@ -1022,7 +1024,7 @@ private:
 	static void cb_loadbang(t_class *c);
 
 #if FLEXT_SYS == FLEXT_SYS_PD
-	static int cb_click(t_gobj *z, struct _glist *glist,int xpix, int ypix, int shift, int alt, int dbl, int doit);
+	static void cb_click(t_gobj *z,t_floatarg xpos,t_floatarg ypos,t_floatarg shift,t_floatarg ctrl,t_floatarg alt);
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_MAX

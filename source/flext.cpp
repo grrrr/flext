@@ -135,12 +135,12 @@ void flext_base::Setup(t_classid id)
 {
     t_class *c = getClass(id);
 
-#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
     add_loadbang(c,cb_loadbang);
-#if FLEXT_SYS == FLEXT_SYS_MAX
+#if FLEXT_SYS == FLEXT_SYS_PD
+    class_addmethod(c,(t_method)cb_click,gensym("click"),A_FLOAT,A_FLOAT,A_FLOAT,A_FLOAT,A_FLOAT,A_NULL);
+#elif FLEXT_SYS == FLEXT_SYS_MAX
     add_assist(c,cb_assist);
     add_dblclick(c,cb_click);
-#endif
 #else
     #pragma message ("no implementation of loadbang or assist") 
 #endif
@@ -173,14 +173,9 @@ void flext_base::CbLoadbang() { m_loadbang(); }
 void flext_base::CbClick() {}
 
 #if FLEXT_SYS == FLEXT_SYS_PD
-int flext_base::cb_click(t_gobj *c, struct _glist *glist,int xpix, int ypix, int shift, int alt, int dbl, int doit)
+void flext_base::cb_click(t_gobj *c,t_floatarg xpos,t_floatarg ypos,t_floatarg shift,t_floatarg ctrl,t_floatarg alt)
 {
-    if(doit && alt) {
-        thisObject(c)->CbClick();
-        return 1;
-    }
-    else
-        return 0;
+    if(alt) thisObject(c)->CbClick();
 }
 #endif
 

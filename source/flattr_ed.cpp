@@ -20,63 +20,52 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #pragma warning( disable : 4091 ) 
 #endif
 
+
+#if defined(FLEXT_ATTRHIDE) || PD_MINOR_VERSION < 37
+#define __FLEXT_WIDGETBEHAVIOR
+#endif
+
+//////////////////////////////////////////////////////
+#ifdef __FLEXT_WIDGETBEHAVIOR
+// we need non-public headers!
+#pragma message("Attention: non-public headers used - binary is bound to a specific version")
+
+#include <g_canvas.h>
+
 /*
 #ifdef PD_DEVEL_VERSION
-#define FLEXT_CLONEWIDGET
+#define __FLEXT_CLONEWIDGET
 #endif
 */
 
-#ifndef FLEXT_CLONEWIDGET
-// This is problematic... non-public headers!
-// compilation is specific for a compiled version!!
+#ifndef __FLEXT_CLONEWIDGET
 #include <m_imp.h>
 #endif
 
-#include <g_canvas.h>
+#endif
+//////////////////////////////////////////////////////
+
 
 #include <string.h>
 #include <stdio.h>
 
-static t_widgetbehavior widgetbehavior; 
 
-void flext_base::SetGfx(t_classid c)
-{
-	t_class *cl = getClass(c);
-    // widgetbehavior struct MUST be resident... (static is just ok here)
-
-#ifndef FLEXT_CLONEWIDGET
-    widgetbehavior.w_visfn =        cl->c_wb->w_visfn; 
-    widgetbehavior.w_selectfn =     cl->c_wb->w_selectfn; 
-    widgetbehavior.w_getrectfn =    cl->c_wb->w_getrectfn; 
-    widgetbehavior.w_displacefn =   cl->c_wb->w_displacefn; 
-    widgetbehavior.w_activatefn =   cl->c_wb->w_activatefn; 
-    widgetbehavior.w_deletefn =     cl->c_wb->w_deletefn; 
-    widgetbehavior.w_selectfn =     cl->c_wb->w_selectfn;
-#else
-    widgetbehavior.w_visfn =        text_widgetbehavior.w_visfn; 
-    widgetbehavior.w_selectfn =     text_widgetbehavior.w_selectfn; 
-    widgetbehavior.w_getrectfn =    text_widgetbehavior.w_getrectfn; 
-    widgetbehavior.w_displacefn =   text_widgetbehavior.w_displacefn; 
-    widgetbehavior.w_activatefn =   text_widgetbehavior.w_activatefn; 
-    widgetbehavior.w_deletefn =     text_widgetbehavior.w_deletefn; 
-    widgetbehavior.w_selectfn =     text_widgetbehavior.w_selectfn;
-#endif
-
-#ifndef FLEXT_NOATTREDIT
-    attrsetup(c);
-#endif // FLEXT_NOATTREDIT
-
-    widgetbehavior.w_clickfn =      cb_click;
-    class_setwidget(cl, &widgetbehavior);
-}
-
-
-#ifndef FLEXT_NOATTREDIT
-
-#ifndef FLEXT_CLONEWIDGET
+#ifdef FLEXT_ATTRHIDE
+#ifndef __FLEXT_CLONEWIDGET
 static void (*ori_vis)(t_gobj *c, t_glist *, int vis) = NULL;
 static void (*ori_select)(t_gobj *c, t_glist *, int state) = NULL;
 #endif
+#endif
+
+
+#ifdef FLEXT_ATTRHIDE
+#define ST_DISABLED ""
+#else
+#define ST_DISABLED " -state disabled"
+#endif
+
+
+#ifndef FLEXT_NOATTREDIT
 
 //! generate the script for the property dialog
 static void tclscript()
@@ -337,19 +326,19 @@ static void tclscript()
                         // choose entry field type
                         "switch $atp {\n"
                             "0 - 1 {\n"  // int or float
-                                "entry $id.frame.init-$ix -textvariable $var_attr_init\n"
+                                "entry $id.frame.init-$ix -textvariable $var_attr_init" ST_DISABLED "\n"
                                 "entry $id.frame.val-$ix -textvariable $var_attr_val\n"
                             "}\n"
                             "2 {\n"  // boolean
-                                "checkbutton $id.frame.init-$ix -variable $var_attr_init\n"
+                                "checkbutton $id.frame.init-$ix -variable $var_attr_init" ST_DISABLED "\n"
                                 "checkbutton $id.frame.val-$ix -variable $var_attr_val\n"
                             "}\n"
                             "3 {\n"  // symbol
-                                "entry $id.frame.init-$ix -textvariable $var_attr_init\n"
+                                "entry $id.frame.init-$ix -textvariable $var_attr_init" ST_DISABLED "\n"
                                 "entry $id.frame.val-$ix -textvariable $var_attr_val\n"
                             "}\n"
                             "4 - 5 {\n"  // list or unknown
-                                "entry $id.frame.init-$ix -textvariable $var_attr_init\n"
+                                "entry $id.frame.init-$ix -textvariable $var_attr_init" ST_DISABLED "\n"
                                 "bind $id.frame.init-$ix {<Control-Button-1>} \" flext_textzoom $id.frame.init-$ix $var_attr_init { $title } $an 1\"\n"
                                 "entry $id.frame.val-$ix -textvariable $var_attr_val\n"
                                 "bind $id.frame.val-$ix {<Control-Button-1>} \" flext_textzoom $id.frame.val-$ix $var_attr_val { $title } $an 1\"\n"
@@ -360,7 +349,7 @@ static void tclscript()
                         "grid config $id.frame.val-$ix   -column 4 -row $row -padx 5 -sticky {ew}\n"
 
                         // copy buttons
-                        "button $id.frame.b2i-$ix -text {<-} -height 1 -command \" flext_copyval $var_attr_init $var_attr_val \"\n"
+                        "button $id.frame.b2i-$ix -text {<-} -height 1 -command \" flext_copyval $var_attr_init $var_attr_val \"" ST_DISABLED "\n"
                         "grid config $id.frame.b2i-$ix  -column 2 -row $row  -sticky {ew}\n"
                         "button $id.frame.b2c-$ix -text {->} -height 1 -command \" flext_copyval $var_attr_val $var_attr_init \"\n"
                         "grid config $id.frame.b2c-$ix  -column 3 -row $row  -sticky {ew}\n"
@@ -371,8 +360,8 @@ static void tclscript()
 
                         // radiobuttons
                         "foreach {i c} {0 black 1 blue 2 red} {\n"
-                            "radiobutton $id.frame.b$i-$ix -value $i -foreground $c -variable $var_attr_save \n"
-                            "grid config $id.frame.b$i-$ix -column [expr $i + 6] -row $row  \n"
+                            "radiobutton $id.frame.b$i-$ix -value $i -foreground $c -variable $var_attr_save" ST_DISABLED "\n"
+                            "grid config $id.frame.b$i-$ix -column [expr $i + 6] -row $row\n"
                         "}\n"
     );
     sys_vgui(
@@ -445,27 +434,76 @@ static void tclscript()
     );
 }
 
-void flext_base::attrsetup(t_classid c)
-{
-	t_class *cl = getClass(c);
-#ifndef FLEXT_CLONEWIDGET
-    ori_vis = cl->c_wb->w_visfn; 
-    ori_select = cl->c_wb->w_selectfn; 
 #endif
 
+
+#ifdef __FLEXT_WIDGETBEHAVIOR
+static t_widgetbehavior widgetbehavior; 
+#endif
+
+void flext_base::SetGfx(t_classid c)
+{
+	t_class *cl = getClass(c);
+    // widgetbehavior struct MUST be resident... (static is just ok here)
+
+#ifdef __FLEXT_WIDGETBEHAVIOR
+#ifndef __FLEXT_CLONEWIDGET
+    widgetbehavior.w_visfn =        cl->c_wb->w_visfn; 
+    widgetbehavior.w_selectfn =     cl->c_wb->w_selectfn; 
+    widgetbehavior.w_getrectfn =    cl->c_wb->w_getrectfn; 
+    widgetbehavior.w_displacefn =   cl->c_wb->w_displacefn; 
+    widgetbehavior.w_activatefn =   cl->c_wb->w_activatefn; 
+    widgetbehavior.w_deletefn =     cl->c_wb->w_deletefn; 
+    widgetbehavior.w_selectfn =     cl->c_wb->w_selectfn;
+    widgetbehavior.w_clickfn =      cl->c_wb->w_clickfn;
+#else
+    widgetbehavior.w_visfn =        text_widgetbehavior.w_visfn; 
+    widgetbehavior.w_selectfn =     text_widgetbehavior.w_selectfn; 
+    widgetbehavior.w_getrectfn =    text_widgetbehavior.w_getrectfn; 
+    widgetbehavior.w_displacefn =   text_widgetbehavior.w_displacefn; 
+    widgetbehavior.w_activatefn =   text_widgetbehavior.w_activatefn; 
+    widgetbehavior.w_deletefn =     text_widgetbehavior.w_deletefn; 
+    widgetbehavior.w_selectfn =     text_widgetbehavior.w_selectfn;
+    widgetbehavior.w_clickfn =      text_widgetbehavior.w_clickfn;
+#endif
+#endif
+
+#ifdef FLEXT_ATTRHIDE
+
+#ifndef __FLEXT_CLONEWIDGET
+    ori_vis = widgetbehavior.w_visfn; 
+    ori_select = widgetbehavior.w_selectfn; 
+#endif
     widgetbehavior.w_visfn =        cb_GfxVis;
     widgetbehavior.w_selectfn =     cb_GfxSelect; 
 
 #if PD_MINOR_VERSION >= 37
-    class_setpropertiesfn(cl,cb_GfxProperties);
     class_setsavefn(cl,cb_GfxSave);
 #else
-    widgetbehavior.w_propertiesfn = cb_GfxProperties;
     widgetbehavior.w_savefn =       cb_GfxSave;
 #endif
 
+#endif // FLEXT_ATTRHIDE
+
+
+#ifndef FLEXT_NOATTREDIT
+
+#if PD_MINOR_VERSION >= 37
+    class_setpropertiesfn(cl,cb_GfxProperties);
+#else
+    widgetbehavior.w_propertiesfn = cb_GfxProperties;
+#endif
+
     tclscript();
+#endif // FLEXT_NOATTREDIT
+
+#ifdef __FLEXT_WIDGETBEHAVIOR
+    class_setwidget(cl, &widgetbehavior);
+#endif
 }
+
+
+#ifndef FLEXT_NOATTREDIT
 
 static size_t escapeit(char *dst,size_t maxlen,const char *src)
 {
@@ -595,88 +633,6 @@ void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
     //! \todo delete proc in TCL space
 }
 
-//! Strip the attributes off the object command line
-void flext_base::cb_GfxVis(t_gobj *c, t_glist *gl, int vis)
-{
-    // show object if it's not a GOP
-    if(!gl->gl_isgraph || gl->gl_havewindow) {
-        flext_base *th = thisObject(c);
-        t_text *x = (t_text *)c;
-        FLEXT_ASSERT(x->te_binbuf);
-
-        t_binbuf *b = binbuf_new();
-        th->BinbufArgs(b,x->te_binbuf,true,false);
-
-        // delete old object box text
-        binbuf_free(x->te_binbuf);
-        // set new one
-        x->te_binbuf = b;
-
-        t_rtext *rt = glist_findrtext(gl,x);
-        rtext_retext(rt);
-
-        // now display the changed text with the normal drawing function
-    #ifdef FLEXT_CLONEWIDGET
-        text_widgetbehavior.w_visfn(c,gl,vis);
-    #else
-        ori_vis(c,gl,vis);
-    #endif
-   }
-}
-
-void flext_base::cb_GfxSelect(t_gobj *c,t_glist *gl,int state)
-{
-    // show object if it's not a GOP
-    if(!gl->gl_isgraph || gl->gl_havewindow) {
-        if(state || !gl->gl_editor->e_textdirty) {
-            // change text only on selection
-            // OR if text has _not_ been changed 
-            // ->  since object will not be recreated we have to get rid
-            //     of the attribute text
-
-            flext_base *th = thisObject(c);
-            t_text *x = (t_text *)c;
-            FLEXT_ASSERT(x->te_binbuf);
-
-            t_binbuf *b = binbuf_new();
-            th->BinbufArgs(b,x->te_binbuf,true,false);
-            if(state) th->BinbufAttr(b,false);
-
-            // delete old object box text
-            binbuf_free(x->te_binbuf);
-            // set new one
-            x->te_binbuf = b;
-
-            t_rtext *rt = glist_findrtext(gl,x);
-            rtext_retext(rt);
-
-            // fix lines
-            canvas_fixlinesfor(gl,x);
-        }
-
-        // call original function
-        #ifdef FLEXT_CLONEWIDGET
-            text_widgetbehavior.w_selectfn(c,gl,state);
-        #else
-            ori_select(c,gl,state);
-        #endif
-    }
-}
-
-void flext_base::cb_GfxSave(t_gobj *c, t_binbuf *b)
-{
-    flext_base *th = thisObject(c);
-    t_text *t = (t_text *)c;
-    binbuf_addv(b, "ssiis", gensym("#X"),gensym("obj"), t->te_xpix, t->te_ypix,MakeSymbol(th->thisName()));
-
-    // process the object arguments
-    th->BinbufArgs(b,t->te_binbuf,false,true);
-    // process the attributes
-    th->BinbufAttr(b,true);
-    // add end sign
-    binbuf_addv(b, ";");
-}
-
 bool flext_base::cb_AttrDialog(flext_base *th,int argc,const t_atom *argv)
 {
     for(int i = 0; i < argc; ) {
@@ -710,25 +666,9 @@ bool flext_base::cb_AttrDialog(flext_base *th,int argc,const t_atom *argv)
             bool ret = th->SetAttrib(aname,attr,ccnt,argv+coffs);
             FLEXT_ASSERT(ret);
 
-//            AttrDataCont::iterator it = th->attrdata->find(aname);
             AttrData *a = th->attrdata->find(aname);
-
             if(sv >= 1) {
                 // if data not present create it
-
-/*
-                if(it == th->attrdata->end()) {
-                    AttrDataCont::pair pair; 
-                    pair.key() = aname;
-                    pair.data() = new AttrData;
-                    it = th->attrdata->insert(th->attrdata->begin(),pair);
-                }
-
-                AttrData &a = *it.data();
-                a.SetSave(sv == 2);
-                a.SetInit(true);
-                a.SetInitValue(icnt,argv+ioffs);
-*/
                 if(!a) {
                     AttrData *old = th->attrdata->insert(aname,a = new AttrData);
                     FLEXT_ASSERT(!old);
@@ -739,16 +679,6 @@ bool flext_base::cb_AttrDialog(flext_base *th,int argc,const t_atom *argv)
                 a->SetInitValue(icnt,argv+ioffs);
             }
             else {
-/*
-                if(it != th->attrdata->end()) {
-                    AttrData &a = *it.data();
-                    // if data is present reset flags
-                    a.SetSave(false);
-                    a.SetInit(false);
-
-                    // let init data as is
-                }
-*/
                 if(a) {
                     // if data is present reset flags
                     a->SetSave(false);
@@ -765,6 +695,10 @@ bool flext_base::cb_AttrDialog(flext_base *th,int argc,const t_atom *argv)
     return true;
 }
 
+#endif // FLEXT_NOATTREDIT
+
+
+#ifdef FLEXT_ATTRHIDE
 
 static void BinbufAdd(t_binbuf *b,const t_atom &at,bool transdoll)
 {
@@ -801,13 +735,7 @@ void flext_base::BinbufAttr(t_binbuf *b,bool transdoll)
     for(i = 0; i < cnt; ++i) {
         const t_symbol *sym = GetSymbol(la[i]);
         const AtomList *lref = NULL;
-/*
-        AttrDataCont::iterator it = attrdata->find(sym);
-        if(it != attrdata->end()) {
-            const AttrData &a = *it.data();
-            if(a.IsInit() && a.IsInitValue()) {
-                lref = &a.GetInitValue();
-*/
+
         AttrData *a = attrdata->find(sym);
         if(a) {
             if(a->IsInit() && a->IsInitValue()) {
@@ -855,7 +783,90 @@ void flext_base::BinbufAttr(t_binbuf *b,bool transdoll)
     }
 }
 
-#endif // FLEXT_NOATTREDIT
+//! Strip the attributes off the object command line
+void flext_base::cb_GfxVis(t_gobj *c, t_glist *gl, int vis)
+{
+    if(!gl->gl_isgraph || gl->gl_havewindow) {
+        // show object if it's not inside a GOP
+
+        flext_base *th = thisObject(c);
+        t_text *x = (t_text *)c;
+        FLEXT_ASSERT(x->te_binbuf);
+
+        t_binbuf *b = binbuf_new();
+        th->BinbufArgs(b,x->te_binbuf,true,false);
+
+        // delete old object box text
+        binbuf_free(x->te_binbuf);
+        // set new one
+        x->te_binbuf = b;
+
+        t_rtext *rt = glist_findrtext(gl,x);
+        rtext_retext(rt);
+
+        // now display the changed text with the normal drawing function
+    #ifdef __FLEXT_CLONEWIDGET
+        text_widgetbehavior.w_visfn(c,gl,vis);
+    #else
+        ori_vis(c,gl,vis);
+    #endif
+    }
+    // else don't show
+}
+
+void flext_base::cb_GfxSelect(t_gobj *c,t_glist *gl,int state)
+{
+    t_text *x = (t_text *)c;
+    flext_base *th = thisObject(c);
+
+    if(!gl->gl_isgraph || gl->gl_havewindow) {
+        if(state || !gl->gl_editor->e_textdirty) {
+            // change text only on selection
+            // OR if text has _not_ been changed 
+            // ->  since object will not be recreated we have to get rid
+            //     of the attribute text
+
+            FLEXT_ASSERT(x->te_binbuf);
+
+            t_binbuf *b = binbuf_new();
+            th->BinbufArgs(b,x->te_binbuf,true,false);
+            if(state) th->BinbufAttr(b,false);
+
+            // delete old object box text
+            binbuf_free(x->te_binbuf);
+            // set new one
+            x->te_binbuf = b;
+
+            t_rtext *rt = glist_findrtext(gl,x);
+            rtext_retext(rt);
+
+            // fix lines
+            canvas_fixlinesfor(gl,x);
+        }
+
+        // call original function
+        #ifdef __FLEXT_CLONEWIDGET
+            text_widgetbehavior.w_selectfn(c,gl,state);
+        #else
+            ori_select(c,gl,state);
+        #endif
+    }
+}
+
+void flext_base::cb_GfxSave(t_gobj *c, t_binbuf *b)
+{
+    flext_base *th = thisObject(c);
+    t_text *t = (t_text *)c;
+    binbuf_addv(b, "ssiis", gensym("#X"),gensym("obj"), t->te_xpix, t->te_ypix,MakeSymbol(th->thisName()));
+
+    // process the object arguments
+    th->BinbufArgs(b,t->te_binbuf,false,true);
+    // process the attributes
+    th->BinbufAttr(b,true);
+    // add end sign
+    binbuf_addv(b, ";");
+}
+
+#endif // FLEXT_ATTRHIDE
 
 #endif // FLEXT_SYS_PD
-

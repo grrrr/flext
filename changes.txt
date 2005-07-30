@@ -12,6 +12,8 @@ Version history:
 - optimizations for message handling and memory footprint
 - enhanced build system for cygwin
 - added GetCanvasDir to retrieve folder in which the patcher resides
+- better handling of click callback
+- more compatible handling of attributes in patcher (hiding is now an option - define FLEXT_ATTRHIDE)
 
 0.5.0:
 - fixes for 64 bit builds (size_t is integer type of pointer size)

@@ -149,16 +149,43 @@ void canvas_getargs(int *argcp, t_atom **argvp);
 #endif
 
 
-void flext_obj::CanvasArgs(AtomList &args) const
+void flext_obj::GetCanvasArgs(AtomList &args) const
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
     int argc;
     t_atom *argv;
     canvas_getargs(&argc,&argv);
-    args(argc);
-    for(int i = 0; i < argc; ++i) args[i] = argv[i];
+    args(argc,argv);
 #else
     #pragma message("Not implemented")
     args(0);
+#endif
+}
+
+
+#if FLEXT_SYS == FLEXT_SYS_MAX 
+static short patcher_myvol(t_patcher *x)
+{
+    t_box *w;
+    if(x->p_vol)
+        return x->p_vol;
+    else if((w = (t_box *)x->p_vnewobj) != NULL)
+        return patcher_myvol(w->b_patcher);
+    else
+        return 0;
+}
+#endif
+
+void flext_obj::GetCanvasDir(char *buf,size_t bufsz) const
+{
+#if FLEXT_SYS == FLEXT_SYS_PD
+	const char *c = GetString(canvas_getdir(thisCanvas()));
+    strncpy(buf,c,bufsz);
+#elif FLEXT_SYS == FLEXT_SYS_MAX 
+	short path = patcher_myvol(thisCanvas());
+    // \TODO dangerous!! no check for path length (got to be long enough... like 1024 chars)
+	path_topathname(path,NULL,buf);
+#else 
+#error Not implemented
 #endif
 }

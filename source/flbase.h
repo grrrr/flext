@@ -257,7 +257,10 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 		static bool GetParamSym(t_atom &dst,const t_symbol *s,t_canvas *c);
 
 		//! Get the canvas arguments
-		void CanvasArgs(AtomList &args) const;
+		void GetCanvasArgs(AtomList &args) const;
+
+		//! Get the canvas/patcher directory
+        void GetCanvasDir(char *buf,size_t bufsz) const;
 
 	//!	@} FLEXT_OBJ_INTERNAL
 };

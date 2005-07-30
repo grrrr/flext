@@ -55,9 +55,9 @@ FLEXTLIBINST=$(FLEXTLIB)
 !endif
 
 _install_:
-	@if not exist $@ mkdir $(FLEXTINC) > nul
-	@if not exist $@ mkdir $(FLEXTLIB) > nul
-	@if not exist $@ mkdir $(FLEXTLIBINST) > nul
+	@if not exist $(FLEXTINC) mkdir $(FLEXTINC) > nul
+	@if not exist $(FLEXTLIB) mkdir $(FLEXTLIB) > nul
+	@if not exist $(FLEXTLIBINST) mkdir $(FLEXTLIBINST) > nul
 
 	copy $(TARGET) $(FLEXTLIBINST) > nul
 !ifdef SHARED

@@ -7,7 +7,7 @@ TARGET=$(TARGETPATH)\$(OUTNAME).$(EXT)
 ##############################################
 
 CFLAGS += -mms-bitfields -mno-cygwin
-LDFLAGS += -shared -mno-cygwin
+LDFLAGS += -shared -mno-cygwin 
 
 ##############################################
 

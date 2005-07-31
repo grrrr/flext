@@ -47,6 +47,8 @@ pd msvc, using nmake
 pd cygwin, using gnumake
 pd mingw, using gnumake (from the CMD prompt, not msys!)
 max msvc, using nmake
+max cygwin, using gnumake
+max mingw, using gnumake (from the CMD prompt, not msys!)
 pd bcc, using bmake
 
 under Linux or MacOSX:
@@ -163,8 +165,8 @@ win-pd-bcc, single/multi/shared
 win-pd-mingw, single/multi/shared (from CMD prompt, not MSYS)
 win-pd-cygwin, single/multi/shared
 win-max-msvc, single/multi/shared
-win-max-mingw, --- NOT WORKING (linker problems) ----
-win-max-cygwin, --- NOT WORKING (linker problems) ----
+win-max-cygwin, single/multi/shared
+win-max-mingw, single/multi/shared
 
 
 mac-pd-gcc, single/multi/shared

@@ -32,7 +32,7 @@ $(TARGETPATH)/%.o : $(SRCDIR)/%.c
 $(TARGET) :: $(TARGETPATH)
 
 $(TARGET) :: $(COBJS) $(CPPOBJS)
-	$(CXX) $(LDFLAGS) $(subst \,/,$(LIBPATH)) -o $(subst /,\,$@) $(subst /,\,$(COBJS) $(CPPOBJS) $(LIBS))
+	$(CXX) $(LDFLAGS) $(subst \,/,$(LIBPATH)) -o $(subst /,\,$@) $(subst /,\,$(COBJS) $(CPPOBJS) $(LIBS) $(SYSLIBS))
 	-strip --strip-unneeded $@
 
 ##############################################

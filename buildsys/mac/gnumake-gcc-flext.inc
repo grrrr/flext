@@ -46,7 +46,13 @@ $(TARGET) :: $(OBJPATH) $(TARGETPATH)
 $(TARGET) :: $(PRECOMDST) $(COBJS) $(CPPOBJS)
 ifdef SHARED
 	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
+ifdef DEBUG
+else
+ifdef PROFILE
+else
 	strip -x $@
+endif
+endif
 	chmod 755 $@
 else
 	libtool -static -o $@ $(COBJS) $(CPPOBJS)

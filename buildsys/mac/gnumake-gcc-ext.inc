@@ -52,7 +52,13 @@ $(TARGET) :: $(OBJPATH) $(TARGETPATH)
 
 $(TARGET) :: $(PRECOMDST) $(COBJS) $(CPPOBJS)
 	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
+ifdef DEBUG
+else
+ifdef PROFILE
+else
 	strip -x $@
+endif
+endif
 	chmod 755 $@
 
 ##############################################

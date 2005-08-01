@@ -52,6 +52,7 @@ $(TARGET) :: $(OBJPATH) $(TARGETPATH)
 
 $(TARGET) :: $(PRECOMDST) $(COBJS) $(CPPOBJS)
 	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
+	strip -x $@
 	chmod 755 $@
 
 ##############################################

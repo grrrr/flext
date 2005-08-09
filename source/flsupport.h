@@ -573,11 +573,11 @@ public:
 	{
 	public:
 		//! Construct list
-        explicit AtomList(): cnt(0),lst(NULL) {}
+        AtomList(): cnt(0),lst(NULL) {}
 		//! Construct list
-		explicit AtomList(int argc,const t_atom *argv = NULL): cnt(0),lst(NULL) { operator()(argc,argv); }
+        explicit AtomList(int argc,const t_atom *argv = NULL): cnt(0),lst(NULL) { operator()(argc,argv); }
 		//! Construct list
-        explicit AtomList(const AtomList &a): cnt(0),lst(NULL) { operator =(a); }
+        AtomList(const AtomList &a): cnt(0),lst(NULL) { operator =(a); }
 		//! Destroy list
         virtual ~AtomList();
 

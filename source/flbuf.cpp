@@ -13,20 +13,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
  
 #include "flext.h"
+#include "flfeatures.h"
 
 #if FLEXT_SYS != FLEXT_SYS_JMAX
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 #define DIRTY_INTERVAL 0   // buffer dirty check in msec
-#endif
-
-// check if PD API supports buffer dirty time
-#if defined(PD_DEVEL_VERSION) && defined(PD_MAJOR_VERSION) && defined(PD_MINOR_VERSION)
-#if PD_MINOR_VERSION >= 36 && PD_MINOR_VERSION <= 38
-// garray_updatetime has been removed in devel_0_39
-    #define FLEXT_HAVE_GARRAYUPDATETIME
-	#define FLEXT_HAVE_GARRAYLOCKS
-#endif
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
@@ -184,19 +176,18 @@ flext::buffer::lock_t flext::buffer::Lock()
     FLEXT_ASSERT(sym);
 #if FLEXT_SYS == FLEXT_SYS_PD
     FLEXT_ASSERT(arr);
-#ifdef FLEXT_HAVE_GARRAYLOCKS
+#ifdef _FLEXT_HAVE_PD_GARRAYLOCKS
     garray_lock(arr);
 #endif
     return false;
 #elif FLEXT_SYS == FLEXT_SYS_MAX
     t_buffer *p = (t_buffer *)sym->s_thing;
     FLEXT_ASSERT(p);
-#if defined(MAC_VERSION) || defined(WIN_VERSION) 
+#ifdef _FLEXT_HAVE_MAX_INUSEFLAG 
     long old = p->b_inuse;
     p->b_inuse = 1;
     return old;
 #else
-    // undefined for OS9
     return 0;
 #endif
 #else
@@ -209,14 +200,13 @@ void flext::buffer::Unlock(flext::buffer::lock_t prv)
     FLEXT_ASSERT(sym);
 #if FLEXT_SYS == FLEXT_SYS_PD
     FLEXT_ASSERT(arr);
-#ifdef FLEXT_HAVE_GARRAYLOCKS
+#ifdef _FLEXT_HAVE_PD_GARRAYLOCKS
     garray_unlock(arr);
 #endif
 #elif FLEXT_SYS == FLEXT_SYS_MAX
     t_buffer *p = (t_buffer *)sym->s_thing;
     FLEXT_ASSERT(p);
-#if defined(MAC_VERSION) || defined(WIN_VERSION) 
-    // not for OS9
+#ifdef _FLEXT_HAVE_MAX_INUSEFLAG 
     p->b_inuse = prv;
 #endif
 #else
@@ -339,7 +329,7 @@ bool flext::buffer::IsDirty() const
     FLEXT_ASSERT(sym);
 #if FLEXT_SYS == FLEXT_SYS_PD
     FLEXT_ASSERT(arr);
-    #ifdef FLEXT_HAVE_GARRAYUPDATETIME
+    #ifdef _FLEXT_HAVE_PD_GARRAYUPDATETIME
     return isdirty || garray_updatetime(arr) > cleantime;
     #else
     // Don't know.... (no method in PD judging whether buffer has been changed from outside flext...)

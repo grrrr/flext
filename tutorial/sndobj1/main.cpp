@@ -44,7 +44,7 @@ public:
 	float sh1,sh2;
 
 private:
-	static void Setup(t_class *c);
+	static void Setup(t_classid c);
 
 	FLEXT_ATTRVAR_F(sh1)
 	FLEXT_ATTRVAR_F(sh2)
@@ -61,7 +61,7 @@ sndobj1::sndobj1():
 	AddOutSignal(2);  // audio outs
 }
 
-void sndobj1::Setup(t_class *c)
+void sndobj1::Setup(t_classid c)
 {
 	FLEXT_CADDATTR_VAR1(c,"shL",sh1);
 	FLEXT_CADDATTR_VAR1(c,"shR",sh2);

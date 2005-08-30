@@ -44,7 +44,6 @@ protected:
 
 private:
 	Noise *inst;
-	static void Setup(t_class *c); 
 };
 
 FLEXT_NEW_DSP("stk1~",stk1)

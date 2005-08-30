@@ -76,6 +76,9 @@ public:
 
 	//! Get an aligned memory block
 	static void *NewAligned(size_t bytes,int bitalign = 128);
+    // same with templated type
+    template<typename T>
+    static T *NewAligned(size_t times,int bitalign = 128) { return static_cast<T *>(NewAligned(times*sizeof(T),bitalign)); }
 	//! Free an aligned memory block
 	static void FreeAligned(void *blk);
 	//! Test for alignment

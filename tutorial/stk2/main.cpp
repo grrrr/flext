@@ -48,7 +48,7 @@ public:
     MY_FLOAT *vec;
 
 private:
-	static void Setup(t_class *c);
+	static void Setup(t_classid c);
 
 	FLEXT_CALLBACK_F(m_sh1)
 	FLEXT_CALLBACK_F(m_sh2)
@@ -65,7 +65,7 @@ stk2::stk2()
 	inst[0] = inst[1] = NULL;
 }
 
-void stk2::Setup(t_class *c)
+void stk2::Setup(t_classid c)
 {
 	FLEXT_CADDMETHOD_F(c,0,"shL",m_sh1);
 	FLEXT_CADDMETHOD_F(c,0,"shR",m_sh2);

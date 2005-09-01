@@ -16,3 +16,4 @@ TARGETPOST=$(INSTTARGET)/Contents/Pkginfo
 
 $(INSTTARGET)/Contents/Pkginfo:
 	echo "iLaX????" >> $@
+

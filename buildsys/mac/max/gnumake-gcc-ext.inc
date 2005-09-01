@@ -10,3 +10,9 @@ INSTTARGET=$(OBJPATH)/$(OUTNAME).$(EXT)
 TARGETPATH=$(INSTTARGET)/Contents/MacOS
 # file inside bundle (build site)
 TARGET=$(TARGETPATH)/$(OUTNAME)
+
+# post build target
+TARGETPOST=$(INSTTARGET)/Contents/Pkginfo
+
+$(INSTTARGET)/Contents/Pkginfo:
+	echo "iLaX????" >> $@

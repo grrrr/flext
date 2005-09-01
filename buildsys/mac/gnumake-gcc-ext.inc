@@ -61,6 +61,10 @@ endif
 endif
 	chmod 755 $@
 
+ifdef TARGETPOST
+$(TARGET) :: $(TARGETPOST)
+endif
+
 ##############################################
 
 _clean_:

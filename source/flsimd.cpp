@@ -335,10 +335,11 @@ inline vector unsigned char LoadUnaligned( vector unsigned char *v )
 {
     vector unsigned char permuteVector = vec_lvsl( 0, (int*) v );
     vector unsigned char low = vec_ld( 0, v );
-    vector unsigned char high = vec_ld( 16, v );
+    vector unsigned char high = vec_ld( 15, v );
     return vec_perm( low, high, permuteVector );
 }
 
+/*
 //! Store a vector to an unaligned location in memory
 inline void StoreUnaligned( vector unsigned char v, vector unsigned char *where)
 {
@@ -361,16 +362,19 @@ inline void StoreUnaligned( vector unsigned char v, vector unsigned char *where)
     vec_st( low, 0, where );
     vec_st( high, 16, where );
 }
+*/
 
 inline vector float LoadUnaligned(const float *v )
 {
     return (vector float)LoadUnaligned((vector unsigned char *)v);
 }
 
+/*
 inline void StoreUnaligned( vector float v,float *where)
 {
     return StoreUnaligned((vector unsigned char)v,(vector unsigned char *)where);
 }
+*/
 
 inline bool IsVectorAligned(const void *where) 
 {
@@ -403,7 +407,7 @@ inline bool VectorsAligned(const void *v1,const void *v2,const void *v3,const vo
 
 inline vector float LoadValue(const float &f)
 {
-    return IsVectorAligned(&f)?vec_splat(vec_ld(0,(vector float *)&f),0):LoadUnaligned(&f);
+    return vec_splat(IsVectorAligned(&f)?vec_ld(0,(vector float *)&f):LoadUnaligned(&f),0);
 }
 #endif
 

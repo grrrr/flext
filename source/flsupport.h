@@ -200,7 +200,14 @@ public:
 		/*! \brief Check if the buffer is valid for use
             \note This must be true to use any of the other functions except set
 		*/
-		bool Ok() const { return sym && data; }
+		bool Ok() const 
+		{ 
+			return sym  
+#if FLEXT_SYS == FLEXT_SYS_PD
+				&& arr
+#endif
+				&& data; 
+		}
 		
 		/*! \brief Check if buffer content is valid (not in state of content change)
             \note buffer must be Ok()

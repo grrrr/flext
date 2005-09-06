@@ -41,9 +41,6 @@ protected:
     virtual bool Init();
     virtual void Exit();
 
-    virtual void m_dsp(int n,t_sample *const *in,t_sample *const *out); 
-    virtual void m_signal(int n,t_sample *const *in,t_sample *const *out); 
-
 private:
     //! SndObj for reading from inlet buffer
     class Inlet:
@@ -74,6 +71,9 @@ private:
     private:
         t_sample *buf;
     };
+
+    virtual bool CbDsp(); 
+    virtual void CbSignal(); 
 
     void ClearObjs();
 

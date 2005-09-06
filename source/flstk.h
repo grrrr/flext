@@ -79,8 +79,8 @@ protected:
     Output &Outlet(int ix) { return *outobj[ix]; }
 
 private:
-    virtual void m_dsp(int n,t_sample *const *in,t_sample *const *out); 
-    virtual void m_signal(int n,t_sample *const *in,t_sample *const *out); 
+    virtual bool CbDsp(); 
+    virtual void CbSignal(); 
 
     void ClearObjs();
 

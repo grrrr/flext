@@ -45,7 +45,7 @@ void flext_stk::ClearObjs()
     }
 }
 
-void flext_stk::m_dsp(int n,t_sample *const *in,t_sample *const *out)
+bool flext_stk::CbDsp()
 {
     // called on every rebuild of the dsp chain
 
@@ -64,12 +64,12 @@ void flext_stk::m_dsp(int n,t_sample *const *in,t_sample *const *out)
         if(inobjs) {
             inobj = new Input *[inobjs];
             for(i = 0; i < inobjs; ++i)
-                inobj[i] = new Input(in[i],blsz);
+                inobj[i] = new Input(InSig(i),blsz);
         }
         if(outobjs) {
             outobj = new Output *[outobjs];
             for(i = 0; i < outobjs; ++i) 
-                outobj[i] = new Output(out[i],blsz);
+                outobj[i] = new Output(OutSig(i),blsz);
         }
 
         if(!NewObjs()) ClearObjs();
@@ -77,12 +77,13 @@ void flext_stk::m_dsp(int n,t_sample *const *in,t_sample *const *out)
     else {
         // assign changed input/output vectors
 
-        for(i = 0; i < inobjs; ++i) inobj[i]->SetBuf(in[i]);
-        for(i = 0; i < outobjs; ++i) outobj[i]->SetBuf(out[i]);
+        for(i = 0; i < inobjs; ++i) inobj[i]->SetBuf(InSig(i));
+        for(i = 0; i < outobjs; ++i) outobj[i]->SetBuf(OutSig(i));
     }
+    return true;
 }
 
-void flext_stk::m_signal(int n,t_sample *const *in,t_sample *const *out)
+void flext_stk::CbSignal()
 {
     if(inobjs || outobjs) ProcessObjs(blsz);
 }

@@ -175,7 +175,7 @@ void flext_base::CbClick() {}
 #if FLEXT_SYS == FLEXT_SYS_PD
 void flext_base::cb_click(t_gobj *c,t_floatarg xpos,t_floatarg ypos,t_floatarg shift,t_floatarg ctrl,t_floatarg alt)
 {
-    if(alt) thisObject(c)->CbClick();
+    if(shift) thisObject(c)->CbClick();
 }
 #endif
 

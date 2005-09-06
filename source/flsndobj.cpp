@@ -50,7 +50,7 @@ void flext_sndobj::ClearObjs()
     }
 }
 
-void flext_sndobj::m_dsp(int n,t_sample *const *in,t_sample *const *out)
+bool flext_sndobj::CbDsp()
 {
     // called on every rebuild of the dsp chain
     
@@ -68,13 +68,13 @@ void flext_sndobj::m_dsp(int n,t_sample *const *in,t_sample *const *out)
             inobj = new Inlet *[inobjs];
             tmpobj = new SndObj *[inobjs];
             for(i = 0; i < inobjs; ++i) {
-                inobj[i] = new Inlet(in[i],blsz,smprt);
+                inobj[i] = new Inlet(InSig(i),blsz,smprt);
                 tmpobj[i] = new SndObj(NULL,blsz,smprt);
             }
         }
         if(outobjs) {
             outobj = new Outlet *[outobjs];
-            for(i = 0; i < outobjs; ++i) outobj[i] = new Outlet(out[i],blsz,smprt);
+            for(i = 0; i < outobjs; ++i) outobj[i] = new Outlet(OutSig(i),blsz,smprt);
         }
 
         if(!NewObjs()) ClearObjs();
@@ -82,12 +82,13 @@ void flext_sndobj::m_dsp(int n,t_sample *const *in,t_sample *const *out)
     else {
         // assign changed input/output vectors
 
-        for(i = 0; i < inobjs; ++i) inobj[i]->SetBuf(in[i]);
-        for(i = 0; i < outobjs; ++i) outobj[i]->SetBuf(out[i]);
+        for(i = 0; i < inobjs; ++i) inobj[i]->SetBuf(InSig(i));
+        for(i = 0; i < outobjs; ++i) outobj[i]->SetBuf(OutSig(i));
     }
+    return true;
 }
 
-void flext_sndobj::m_signal(int n,t_sample *const *in,t_sample *const *out)
+void flext_sndobj::CbSignal()
 {
     for(int i = 0; i < inobjs; ++i) *tmpobj[i] << *inobj[i];
     ProcessObjs();

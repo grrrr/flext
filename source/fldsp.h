@@ -54,8 +54,14 @@ public:
 	//! returns array of input vectors (CntInSig() vectors)
     t_sample *const *InSig() const { return invecs; }
 
+	//! returns input vector
+    t_sample *InSig(int i) const { return invecs[i]; }
+
 	//! returns array of output vectors (CntOutSig() vectors)
     t_sample *const *OutSig() const { return outvecs; }
+
+	//! returns output vector
+    t_sample *OutSig(int i) const { return outvecs[i]; }
 
 	//! typedef describing a signal vector
 #if FLEXT_SYS == FLEXT_SYS_JMAX

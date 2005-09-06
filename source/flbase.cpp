@@ -25,6 +25,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     #pragma warning (push)
     #pragma warning (disable:4091)
 #endif
+// for canvas_realizedollar (should be noon-critical)
 #include <g_canvas.h>
 #ifdef _MSC_VER
     #pragma warning (pop)

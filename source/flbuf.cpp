@@ -326,11 +326,10 @@ void flext::buffer::ClearDirty()
 
 bool flext::buffer::IsDirty() const
 {
-    FLEXT_ASSERT(sym);
+    if(!sym) return false;
 #if FLEXT_SYS == FLEXT_SYS_PD
-    FLEXT_ASSERT(arr);
     #ifdef _FLEXT_HAVE_PD_GARRAYUPDATETIME
-    return isdirty || garray_updatetime(arr) > cleantime;
+    return arr && (isdirty || garray_updatetime(arr) > cleantime);
     #else
     // Don't know.... (no method in PD judging whether buffer has been changed from outside flext...)
     return true; 

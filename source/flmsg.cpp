@@ -253,12 +253,15 @@ bool flext_base::CbMethodHandler(int inlet,const t_symbol *s,int argc,const t_at
     }
     catch(std::exception &x) {
         error("%s - Exception while processing method: %s",thisName(),x.what());
+        ret = false;
     }
     catch(const char *txt) {
     	error("%s - Exception while processing method: %s",thisName(),txt);
+        ret = false;
     }
     catch(...) {
     	error("%s - Unknown exception while processing method",thisName());
+        ret = false;
     }
 
 end:

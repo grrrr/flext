@@ -170,9 +170,6 @@ public:
 		@{ 
 	*/
 
-// not for Jmax at the moment
-#if FLEXT_SYS != FLEXT_SYS_JMAX
-
 	//! Class for platform independent buffer handling
     class FLEXT_SHARE buffer:
         public flext_root
@@ -314,7 +311,6 @@ public:
 #endif
 	};
 
-#endif // jmax
 
 //!		@} FLEXT_S_BUFFER
 
@@ -329,8 +325,11 @@ public:
 
 	//! Print an atom
 	static bool PrintAtom(const t_atom &a,char *buf,size_t bufsz);
-	//! Scan an atom
-	static bool ScanAtom(t_atom &a,const char *buf);
+
+	/*! Scan an atom until whitespace
+        \return next token position, or NULL on failure
+    */
+	static const char *ScanAtom(t_atom &a,const char *buf);
 
 	//! Copy a list of atoms
 	static t_atom *CopyList(int argc,const t_atom *argv);
@@ -389,17 +388,10 @@ public:
     //! \note This is used in macros where the type of the arg is not clear
 	static const t_symbol *MakeSymbol(const t_symbol *s) { return s; }
 
-#if FLEXT_SYS == FLEXT_SYS_JMAX
-	//! Make a symbol from a string
-	static const t_symbol *MakeSymbol(const char *s) { return ::fts_new_symbol(s); }
-	//! Get symbol string
-	static const char *GetString(const t_symbol *s); // ** TODO **
-#else
 	//! Make a symbol from a string
 	static const t_symbol *MakeSymbol(const char *s) { return ::gensym(const_cast<char *>(s)); }
 	//! Get symbol string
 	static const char *GetString(const t_symbol *s) { return s->s_name; }  
-#endif
 	//! Check for symbol and get string
 	static const char *GetAString(const t_symbol *s,const char *def = NULL) { return s?GetString(s):def; }
 
@@ -412,18 +404,6 @@ public:
 
 	// there are some more comparison functions for t_atom types outside the class
 
-#if FLEXT_SYS == FLEXT_SYS_JMAX
-	//! Set atom from another atom
-	static int GetType(const t_atom &a); // ** TODO **
-
-	//! Check whether the atom is nothing
-	static bool IsNothing(const t_atom &a) { return fts_is_a(&a,fts_void_class); }
-	//! Set the atom to represent nothing
-	static void SetNothing(t_atom &a) { fts_set_void(&a); }
-
-	//! Check whether the atom is a float
-	static bool IsFloat(const t_atom &a) { return fts_is_a(&a,fts_float_class); }
-#else
 	//! Set atom from another atom
 	static int GetType(const t_atom &a) { return a.a_type; }
 
@@ -434,20 +414,10 @@ public:
 
 	//! Check whether the atom is a float
 	static bool IsFloat(const t_atom &a) { return a.a_type == A_FLOAT; }
-#endif
 
 	//! Check whether the atom can be represented as a float
 	static bool CanbeFloat(const t_atom &a) { return IsFloat(a) || IsInt(a); }
 
-#if FLEXT_SYS == FLEXT_SYS_JMAX
-	//! Access the float value (without type check)
-	static float GetFloat(const t_atom &a) { return fts_get_float(&a); }
-	//! Set the atom to represent a float 
-	static void SetFloat(t_atom &a,float v) { fts_set_float(&a,v); }
-
-	//! Check whether the atom is a symbol
-	static bool IsSymbol(const t_atom &a) { return fts_is_a(&a,fts_symbol_class); }
-#else
 	//! Access the float value (without type check)
 	static float GetFloat(const t_atom &a) { return a.a_w.w_float; }
 	//! Set the atom to represent a float 
@@ -455,7 +425,6 @@ public:
 
 	//! Check whether the atom is a symbol
 	static bool IsSymbol(const t_atom &a) { return a.a_type == A_SYMBOL; }
-#endif
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 	//! Access the symbol value (without type check)
@@ -467,11 +436,6 @@ public:
 	static t_symbol *GetSymbol(const t_atom &a) { return a.a_w.w_sym; }
 	//! Set the atom to represent a symbol
 	static void SetSymbol(t_atom &a,const t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_sym = const_cast<t_symbol *>(s); }
-#elif FLEXT_SYS == FLEXT_SYS_JMAX
-	//! Access the symbol value (without type check)
-	static t_symbol *GetSymbol(const t_atom &a); // ** TODO **
-	//! Set the atom to represent a symbol
-	static void SetSymbol(t_atom &a,const t_symbol *s) { fts_set_symbol(&a,s); }
 #else
 #error
 #endif
@@ -539,29 +503,6 @@ public:
 	static void *GetAPointer(const t_atom &a,void *def = NULL) { return IsInt(a)?(void *)GetInt(a):def; }
 	//! Set the atom to represent a pointer
 	static void SetPointer(t_atom &a,void *p) { SetInt(a,(int)p); }
-#elif FLEXT_SYS == FLEXT_SYS_JMAX
-	//! Check for a float and get its value 
-	static float GetAFloat(const t_atom &a,float def = 0) { return IsFloat(a)?GetFloat(a):(IsInt(a)?GetInt(a):def); }
-
-	//! Check whether the atom is an int
-	static bool IsInt(const t_atom &a) { return fts_is_a(&a,fts_int_class); }
-	//! Access the integer value (without type check)
-	static int GetInt(const t_atom &a) { return fts_get_int(&a); }
-	//! Check for an integer and get its value 
-	static int GetAInt(const t_atom &a,int def = 0) { return IsInt(a)?GetInt(a):(IsFloat(a)?(int)GetFloat(a):def); }
-	//! Set the atom to represent an integer
-	static void SetInt(t_atom &a,int v) { fts_set_int(&a,v); }
-
-	//! Check whether the atom strictly is a pointer
-	static bool IsPointer(const t_atom &a) { return fts_is_a(&a,fts_pointer_class); }
-	//! Check whether the atom can be a pointer
-	static bool CanbePointer(const t_atom &a) { return IsPointer(a); }
-	//! Access the pointer value (without type check)
-	static void *GetPointer(const t_atom &a) { return fts_get_pointer(&a); }
-	//! Check for a pointer and get its value 
-	static void *GetAPointer(const t_atom &a,void *def = NULL) { return IsPointer(a)?GetPointer(a):def; }
-	//! Set the atom to represent a pointer
-	static void SetPointer(t_atom &a,void *p) { fts_set_pointer(&a,p); }
 #else
 #error "Platform not supported"
 #endif
@@ -710,13 +651,13 @@ public:
 	{
 	public:
         explicit AtomAnything(): hdr(NULL) {}
-#if FLEXT_SYS != FLEXT_SYS_JMAX
-		//! Construct anything
+
+        //! Construct anything
 		explicit AtomAnything(const t_symbol *h,int argc = 0,const t_atom *argv = NULL)
             : AtomList(argc,argv),hdr(h?h:sym__) 
         {}
-#endif
-		//! Construct anything
+
+        //! Construct anything
 		explicit AtomAnything(const char *h,int argc = 0,const t_atom *argv = NULL)
             : AtomList(argc,argv),hdr(MakeSymbol(h)) 
         {}

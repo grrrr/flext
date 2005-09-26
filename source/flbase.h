@@ -210,7 +210,7 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 	public:
 
     	//! Creation callback
-		static void __setup__(t_classid) { flext::Setup(); }	
+		static void __setup__(t_classid);	
 
 		/*! \brief This is a temporary holder
 			\warning don't touch it!

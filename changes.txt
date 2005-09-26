@@ -17,6 +17,7 @@ Version history:
 - added header file flfeatures.h for compile-time detection of version-specific features
 - typed flext::NewAligned allocator
 - fixed severe Altivec bug (load unaligned)... thanks to Ian Ollmann
+- restructured initialization and finalization (esp. Max DSP stuff)
 
 0.5.0:
 - fixes for 64 bit builds (size_t is integer type of pointer size)

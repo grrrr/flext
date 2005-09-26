@@ -42,14 +42,12 @@ add_method1(c,cb_px_ft ## IX,"ft" #IX,A_FLOAT)
 
 void flext_base::cb_px_anything(t_class *c,const t_symbol *s,short argc,t_atom *argv)
 {
-    // check if inlet allows anything (or list)  
     int ci = ((flext_hdr *)c)->curinlet;
     thisObject(c)->CbMethodHandler(ci,s,argc,argv);
 }
 
 void flext_base::cb_px_int(t_class *c,long v)
 {
-    // check if inlet allows int type
     t_atom atom; SetInt(atom,v);  
     int ci = ((flext_hdr *)c)->curinlet;
     thisObject(c)->CbMethodHandler(ci,sym_int,1,&atom);
@@ -57,7 +55,6 @@ void flext_base::cb_px_int(t_class *c,long v)
 
 void flext_base::cb_px_float(t_class *c,double v)
 {
-    // check if inlet allows float type
     t_atom atom; SetFloat(atom,v);  
     int ci = ((flext_hdr *)c)->curinlet;
     thisObject(c)->CbMethodHandler(ci,sym_float,1,&atom);
@@ -65,7 +62,6 @@ void flext_base::cb_px_float(t_class *c,double v)
 
 void flext_base::cb_px_bang(t_class *c)
 {
-    // check if inlet allows bang
     int ci = ((flext_hdr *)c)->curinlet;
     thisObject(c)->CbMethodHandler(ci,sym_bang,0,NULL);
 }
@@ -105,7 +101,7 @@ void flext_base::SetProxies(t_class *c)
     add_bang(c,cb_px_bang);
     add_method1(c,cb_px_int,"int",A_INT);  
     add_method1(c,cb_px_float,"float",A_FLOAT);  
-    add_methodG(c,cb_px_anything,"list");  
+//    add_methodG(c,cb_px_anything,"list");  
     add_anything(c,cb_px_anything);
 #else
 #error Not implemented!
@@ -122,16 +118,4 @@ void flext_base::SetProxies(t_class *c)
     ADD_IN_FT(8);
     ADD_IN_FT(9);
 }
-
-#elif FLEXT_SYS == FLEXT_SYS_JMAX
-void flext_base::jmax_proxy(fts_object_t *c, int winlet, fts_symbol_t s, int argc, const fts_atom_t *argv)
-{
-    thisObject(c)->CbMethodHandler(winlet,s,argc,argv);
-}
-
-void flext_base::SetProxies(t_class *c) 
-{
-    fts_class_set_default_handler(c, jmax_proxy);
-}
-
 #endif

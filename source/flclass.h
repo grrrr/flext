@@ -518,11 +518,14 @@ public: // needed by VC++ 6
 protected:
 
 	FLEXT_CLASSDEF(flext_base)();
-	virtual ~FLEXT_CLASSDEF(flext_base)();
 
 	/*! \brief Set up inlets and outlets, method and attribute lists
 	*/
 	virtual bool Init();
+	
+	/*! \brief Deallocate all kinds of stuff
+	*/
+	virtual void Exit();
 	
 
 	/*!	\defgroup FLEXT_C_ATTR Attribute handling methods (object scope)

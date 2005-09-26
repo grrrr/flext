@@ -52,6 +52,10 @@ bool flext_obj::init_ok;
 
 void flext_obj::ProcessAttributes(bool attr) { process_attributes = attr; }
 
+#if FLEXT_SYS == FLEXT_SYS_MAX
+static const t_symbol *sym__shP = NULL;
+#endif
+
 /////////////////////////////////////////////////////////
 // Constructor
 //
@@ -64,7 +68,7 @@ flext_obj :: FLEXT_CLASSDEF(flext_obj)()
 #if FLEXT_SYS == FLEXT_SYS_PD
     m_canvas = canvas_getcurrent();
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-    m_canvas = (t_patcher *)gensym("#P")->s_thing;
+    m_canvas = (t_patcher *)sym__shP->s_thing;
     x_obj->curinlet = 0;
 #endif
 }
@@ -78,6 +82,13 @@ flext_obj :: ~FLEXT_CLASSDEF(flext_obj)()
     x_obj = NULL;
 }
 
+void flext_obj::__setup__(t_classid) 
+{ 
+#if FLEXT_SYS == FLEXT_SYS_MAX
+    sym__shP = MakeSymbol("#P");
+#endif
+    flext::Setup(); 
+}	
 
 bool flext_obj::Init() { return true; }
 bool flext_obj::Finalize() { return true; }

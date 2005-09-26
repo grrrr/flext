@@ -191,24 +191,25 @@ bool flext_base::InitInlets()
                         error("%s: All signal inlets must be left-aligned",thisName());
                         ok = false;
                         break;
-                    case xlet_float:
-                        inlets[ix] = NULL;
-                        if(ix >= 10) { 
-                            post("%s: Only 9 float inlets possible",thisName());
-                            ok = false;
-                        }
-                        else
-                            floatin(x_obj,ix);  
-                        break;
-                    case xlet_int:
-                        inlets[ix] = NULL;
-                        if(ix >= 10) { 
-                            post("%s: Only 9 int inlets possible",thisName());
-                            ok = false;
-                        }
-                        else
-                            intin(x_obj,ix);  
-                        break;
+                    case xlet_float: {
+						if(ix < 10) {
+							inlets[ix] = NULL;
+                            floatin(x_obj,ix);
+							break;
+						}
+						else
+							goto makeproxy;
+					}
+                    case xlet_int: {
+						if(ix < 10) {
+							inlets[ix] = NULL;
+                            intin(x_obj,ix);
+							break;
+						}
+						else
+							goto makeproxy;
+					}
+					makeproxy:
                     case xlet_any: // non-leftmost
                     case xlet_sym:
                     case xlet_list:
@@ -221,12 +222,9 @@ bool flext_base::InitInlets()
                 } 
             }
         }
-
-//          incnt = cnt;
-
-        if(insigs) 
-            dsp_setup(thisHdr(),insigs); // signal inlets   
-    }
+        
+        while(ix >= 0) inlets[ix--] = NULL;
+	}
 #else
 #error
 #endif

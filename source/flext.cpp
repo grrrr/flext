@@ -48,17 +48,40 @@ flext_base::FLEXT_CLASSDEF(flext_base)()
     }
 }
 
-flext_base::~FLEXT_CLASSDEF(flext_base)()
+/*! This virtual function is called after the object has been created, that is, 
+    after the constructor has been processed. 
+    It creates the inlets and outlets and the message and attribute lists.
+    \note You can override it in your own class, but be sure to call it, 
+    \note otherwise no inlets/outlets will be created
+    \note All inlet, outlets, method and attribute declarations must be made before a call to Init!
+    \remark Creation of inlets/outlets can't be done upon declaration, as Max/MSP needs creation
+    \remark in reverse.
+*/
+bool flext_base::Init()
+{
+    bool ok = flext_obj::Init();
+
+    if(ok) ok = InitInlets() && InitOutlets();
+
+    if(ok) {
+        if(HasAttributes() && m_holdaargc && m_holdaargv) {
+            // initialize creation attributes
+            ok = InitAttrib(m_holdaargc,m_holdaargv);
+        }
+    }
+
+    return ok;
+}
+
+
+/*! This virtual function is called before the destructor.
+    We do this because here we can still call virtual methods.
+*/
+void flext_base::Exit()
 {
 #if FLEXT_SYS == FLEXT_SYS_PD && !defined(FLEXT_NOATTREDIT)
     // attribute editor window may still be open -> close it
     gfxstub_deleteforkey(thisHdr());
-#endif
-
-#if FLEXT_SYS == FLEXT_SYS_MAX
-    // according to David Z. one should do that first...
-    if(insigs) dsp_free(thisHdr());
-//    if(insigs) dsp_freebox(thisHdr());
 #endif
 
 #ifdef FLEXT_THREADS
@@ -101,32 +124,10 @@ flext_base::~FLEXT_CLASSDEF(flext_base)()
         delete[] outdesc;
     }
 #endif
+
+    flext_obj::Exit();
 }
 
-/*! This virtual function is called after the object has been created, that is, 
-    after the constructor has been processed. 
-    It creates the inlets and outlets and the message and attribute lists.
-    \note You can override it in your own class, but be sure to call it, 
-    \note otherwise no inlets/outlets will be created
-    \note All inlet, outlets, method and attribute declarations must be made before a call to Init!
-    \remark Creation of inlets/outlets can't be done upon declaration, as Max/MSP needs creation
-    \remark in reverse.
-*/
-bool flext_base::Init()
-{
-    bool ok = flext_obj::Init();
-
-    if(ok) ok = InitInlets() && InitOutlets();
-
-    if(ok) {
-        if(HasAttributes() && m_holdaargc && m_holdaargv) {
-            // initialize creation attributes
-            ok = InitAttrib(m_holdaargc,m_holdaargv);
-        }
-    }
-
-    return ok;
-}
 
 /*! Set up proxy classes and basic methods at class creation time
     This ensures that they are processed before the registered flext messages

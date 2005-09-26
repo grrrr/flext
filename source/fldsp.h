@@ -52,23 +52,19 @@ public:
 	int Blocksize() const { return blksz; }
     
 	//! returns array of input vectors (CntInSig() vectors)
-    t_sample *const *InSig() const { return invecs; }
+    t_sample *const *InSig() const { return vecs; }
 
 	//! returns input vector
-    t_sample *InSig(int i) const { return invecs[i]; }
+    t_sample *InSig(int i) const { return vecs[i]; }
 
 	//! returns array of output vectors (CntOutSig() vectors)
-    t_sample *const *OutSig() const { return outvecs; }
+    t_sample *const *OutSig() const { return vecs+CntInSig(); }
 
 	//! returns output vector
-    t_sample *OutSig(int i) const { return outvecs[i]; }
+    t_sample *OutSig(int i) const { return vecs[CntInSig()+i]; }
 
 	//! typedef describing a signal vector
-#if FLEXT_SYS == FLEXT_SYS_JMAX
-	typedef fts_symbol_t t_signalvec;
-#else
 	typedef t_sample *t_signalvec;
-#endif
 
 //!	@} 
 
@@ -145,48 +141,34 @@ public:
 protected:
 	
 	FLEXT_CLASSDEF(flext_dsp)();
-	virtual ~FLEXT_CLASSDEF(flext_dsp)();
+
+#if FLEXT_SYS == FLEXT_SYS_MAX
+    virtual bool Init();
+#endif
+
+    virtual void Exit();
 
 private:
 
 	// not static, could be different in different patchers..
 	float srate; 
 	int blksz;
-	int chnsin,chnsout;
+	t_signalvec *vecs;
 
 	// setup function
 	static void Setup(t_classid c);
 
 	// callback functions
-
-#if FLEXT_SYS == FLEXT_SYS_JMAX
-	static void	cb_dsp(fts_object_t *o, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at);
-//	static void	cb_dsp_init(fts_object_t *o, int winlet, fts_symbol_t *s, int ac, const fts_atom_t *at);
-//	static void	cb_dsp_delete(fts_object_t *o, int winlet, fts_symbol_t *s, int ac, const fts_atom_t *at);
-#elif FLEXT_SYS == FLEXT_SYS_MAX
+#if FLEXT_SYS == FLEXT_SYS_MAX
 	static void cb_dsp(t_class *c,t_signal **s,short *count);
 #else
 	static void cb_dsp(t_class *c,t_signal **s);
-#endif
-
-#if FLEXT_SYS != FLEXT_SYS_MAX
-#if FLEXT_SYS == FLEXT_SYS_JMAX
-	static void cb_enable(fts_object_t *o, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at);
-#else
 	static void cb_enable(t_class *c,t_float on);
-#endif
 	bool dspon;
 #endif
 
 	// dsp stuff
-
-#if FLEXT_SYS == FLEXT_SYS_JMAX
-	static void dspmeth(fts_word_t *);
-	static const t_symbol *dspsym;
-#else
 	static t_int *dspmeth(t_int *w); 
-#endif
-	t_signalvec *invecs,*outvecs;
 };
 
 #endif

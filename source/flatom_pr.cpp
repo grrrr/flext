@@ -88,41 +88,34 @@ bool flext::PrintList(int argc,const t_atom *argv,char *buf,size_t bufsz)
 }
 
 
-bool flext::ScanAtom(t_atom &a,const char *buf)
+const char *flext::ScanAtom(t_atom &a,const char *c)
 {
-    // skip whitespace
-    while(*buf && isspace(*buf)) ++buf;
-    if(!*buf) return false;
+	// skip leading whitespace
+	while(*c && isspace(*c)) ++c;
+	if(!*c) return NULL;
 
-    char tmp[1024];
-    strcpy(tmp,buf);
-    char *c = tmp;
+    // go to next space and save character
+    char *end = const_cast<char *>(c);
+    while(*end && !isspace(*end)) ++end;
+    char sv = *end;
 
-    // check for word type (s = 0,1,2 ... int,float,symbol)
-    int s = 0;
-    for(; *c && !isspace(*c); ++c) {
-        if(!isdigit(*c)) 
-            s = (*c != '.' || s == 1)?2:1;
+    float fres;
+    // first try float
+    char *endp;
+    // see if it's a float - thanks to Frank Barknecht
+    fres = (float)strtod(c,&endp);   
+    if(!*c && endp != c) { 
+        int ires = (int)fres; // try a cast
+        if(fres == ires)
+            SetInt(a,ires);
+        else
+            SetFloat(a,fres);
     }
+    // no, it's a symbol
+    else
+        SetString(a,c);
 
-    switch(s) {
-    case 0: // integer
-#if FLEXT_SYS == FLEXT_SYS_MAX
-        SetInt(a,atol(tmp));
-        break;
-#endif
-    case 1: // float
-        SetFloat(a,(float)atof(tmp));
-        break;
-    default: { // anything else is a symbol
-        char t = *c; *c = 0;
-        SetString(a,tmp);
-        *c = t;
-        break;
-    }
-    }
+    *end = sv;
 
-    return true;
+	return c;
 }
-
-

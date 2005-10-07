@@ -366,12 +366,22 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 #ifdef __DOXYGEN__
     #define FLEXT_CLASSDEF(CL) CL
-#elif defined(FLEXT_SHARED)
-    #define FLEXT_CLASSDEF(CL) CL##_shared
-#elif defined(FLEXT_THREADS)
-    #define FLEXT_CLASSDEF(CL) CL##_multi
+#elif defined(FLEXT_DEBUG)
+    #if defined(FLEXT_SHARED)
+        #define FLEXT_CLASSDEF(CL) CL##_shared_d
+    #elif defined(FLEXT_THREADS)
+        #define FLEXT_CLASSDEF(CL) CL##_multi_d
+    #else
+        #define FLEXT_CLASSDEF(CL) CL##_single_d
+    #endif
 #else
-    #define FLEXT_CLASSDEF(CL) CL##_single
+    #if defined(FLEXT_SHARED)
+        #define FLEXT_CLASSDEF(CL) CL##_shared
+    #elif defined(FLEXT_THREADS)
+        #define FLEXT_CLASSDEF(CL) CL##_multi
+    #else
+        #define FLEXT_CLASSDEF(CL) CL##_single
+    #endif
 #endif
 
 

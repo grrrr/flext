@@ -55,13 +55,19 @@ public:
     t_sample *const *InSig() const { return vecs; }
 
 	//! returns input vector
-    t_sample *InSig(int i) const { return vecs[i]; }
+    t_sample *InSig(int i) const { return InSig()[i]; }
 
 	//! returns array of output vectors (CntOutSig() vectors)
-    t_sample *const *OutSig() const { return vecs+CntInSig(); }
+    // \todo cache that returned pointer
+    t_sample *const *OutSig() const 
+    { 
+        int i = CntInSig(); 
+        // we have at least one actual dsp in vector
+        return vecs+(i?i:1); 
+    }
 
 	//! returns output vector
-    t_sample *OutSig(int i) const { return vecs[CntInSig()+i]; }
+    t_sample *OutSig(int i) const { return OutSig()[i]; }
 
 	//! typedef describing a signal vector
 	typedef t_sample *t_signalvec;

@@ -18,6 +18,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include <stdarg.h>
 #include <string.h>
 #include <ctype.h>
+#include <map>
 
 #define ALIASDEL ','
 
@@ -127,16 +128,17 @@ flext_class::flext_class(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*fr
     , dist(false)
 {}
 
-
 typedef TablePtrMap<const t_symbol *,flext_class *,8> LibMap;
-
-static LibMap libnames;
+// static initialization (with constructor) doesn't work for Codewarrior
+static LibMap *libnames = NULL;
 
 //! Store or retrieve registered classes
 static flext_class *FindName(const t_symbol *s,flext_class *o = NULL) 
 {
-    flext_class *cl = libnames.find(s);
-    if(!cl) libnames.insert(s,cl = o);
+	if(!libnames) libnames = new LibMap;
+    flext_class *cl = libnames->find(s);
+    if(!cl && o)
+    	libnames->insert(s,cl = o);
     return cl;
 }
 

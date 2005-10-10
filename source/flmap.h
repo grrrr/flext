@@ -16,6 +16,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __FLMAP_H
 
 #include "flprefix.h"
+#include <assert.h>
 
 /*!	\defgroup FLEXT_SUPPORT Flext support classes
 	@{
@@ -61,6 +62,7 @@ public:
         if(n) 
             r = _set(tsize,k,t);
         else {
+			assert(data);
             data[n++](k,t);
             r = 0;
         }
@@ -144,7 +146,7 @@ public:
     void _check(int tsize);
 #endif
 
-    Data *const data;
+    Data *data;
     TableAnyMap *parent,*left,*right;
     int n;
 

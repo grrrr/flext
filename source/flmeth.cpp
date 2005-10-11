@@ -116,8 +116,6 @@ bool flext_base::cb_ListMethods(flext_base *c,int argc,const t_atom *argv)
 { 
     if(c->HasAttributes() && (argc == 0 || (argc == 1 && CanbeInt(argv[0])))) {
         // defined in flsupport.cpp
-        extern const t_symbol *sym_methods;
-
         int inlet = argc?GetAInt(argv[0]):0;
         AtomListStatic<32> la;
         c->ListMethods(la,inlet);

@@ -34,15 +34,13 @@ const t_symbol *flext::sym_pointer = NULL;
 const t_symbol *flext::sym_int = NULL;
 const t_symbol *flext::sym_signal = NULL;
 
-#if FLEXT_SYS != FLEXT_SYS_JMAX
 const t_symbol *flext::sym_anything = NULL;
 
-const t_symbol *sym_buffer = NULL;
-const t_symbol *sym_size = NULL;
-#endif
+const t_symbol *flext::sym_buffer = NULL;
+const t_symbol *flext::sym_size = NULL;
 
-const t_symbol *sym_attributes = NULL;
-const t_symbol *sym_methods = NULL;
+const t_symbol *flext::sym_attributes = NULL;
+const t_symbol *flext::sym_methods = NULL;
 
 
 int flext::Version() { return FLEXT_VERSION; }
@@ -78,15 +76,6 @@ void flext::Setup()
 
     sym_buffer = flext::MakeSymbol("buffer~");
     sym_size = flext::MakeSymbol("size");
-#elif FLEXT_SYS == FLEXT_SYS_JMAX
-	sym__ = fts_new_symbol("");; // is there a static symbol for that?
-	sym_int = fts_s_int;
-	sym_float = fts_s_float;
-	sym_symbol = fts_s_symbol;
-	sym_bang = fts_s_bang;
-	sym_list = fts_s_list;
-	sym_pointer = fts_s_pointer;
-#else
 #endif
 
     sym_attributes = flext::MakeSymbol("attributes");
@@ -138,9 +127,7 @@ void *flext_root::operator new(size_t bytes)
 	//! We need system locking here for secondary threads!
         SYSLOCK();
 
-#if FLEXT_SYS == FLEXT_SYS_JMAX
-    	blk = (char *)::fts_malloc(bytes);
-#elif defined(FLEXT_USECMEM)
+#if defined(FLEXT_USECMEM)
 	    blk = (char *)::malloc(bytes);
 #else
 	    blk = (char *)::getbytes(bytes);
@@ -184,9 +171,7 @@ void flext_root::operator delete(void *blk)
 	//! We need system locking here for secondary threads!
         SYSLOCK();
 
-#if FLEXT_SYS == FLEXT_SYS_JMAX
-        ::fts_free(ori);
-#elif defined(FLEXT_USECMEM)
+#if defined(FLEXT_USECMEM)
 	    ::free(ori);
 #else
 	    ::freebytes(ori,bytes);
@@ -226,9 +211,7 @@ void *flext_root::NewAligned(size_t bytes,int bitalign)
 	//! We need system locking here for secondary threads!
         SYSLOCK();
 
-#if FLEXT_SYS == FLEXT_SYS_JMAX
-    	blk = (char *)::fts_malloc(bytes);
-#elif defined(FLEXT_USECMEM)
+#if defined(FLEXT_USECMEM)
 	    blk = (char *)::malloc(bytes);
 #else
 	    blk = (char *)::getbytes(bytes);
@@ -262,9 +245,7 @@ void flext_root::FreeAligned(void *blk)
 	//! We need system locking here for secondary threads!
         SYSLOCK();
 
-#if FLEXT_SYS == FLEXT_SYS_JMAX
-        ::fts_free(ori);
-#elif defined(FLEXT_USECMEM)
+#if defined(FLEXT_USECMEM)
 	    ::free(ori);
 #else
 	    ::freebytes(ori,bytes);

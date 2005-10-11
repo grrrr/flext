@@ -1189,6 +1189,11 @@ protected:
 	static bool chktilde(const char *objname);
 
 	static unsigned long simdcaps;
+
+	static const t_symbol *sym_buffer;
+	static const t_symbol *sym_size;
+	static const t_symbol *sym_attributes;
+	static const t_symbol *sym_methods;
 };
 
 

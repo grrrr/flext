@@ -194,8 +194,6 @@ bool flext_base::ListAttrib() const
 {
     if(HasAttributes()) {
         // defined in flsupport.cpp
-        extern const t_symbol *sym_attributes;
-
 		AtomListStatic<32> la;
 		ListAttrib(la);
 		ToOutAnything(GetOutAttr(),sym_attributes,la.Count(),la.Atoms());

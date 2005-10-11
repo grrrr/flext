@@ -92,6 +92,12 @@ void flext_dsp::cb_dsp(t_class *c,t_signal **sp)
 #endif
 { 
     flext_dsp *obj = thisObject(c); 
+	
+#if FLEXT_SYS == FLEXT_SYS_MAX
+	// we must extra-check here if it is really a DSP object
+	// obviously, for objects that are part of a library, one dsp_initclass enables DSP for all
+	if(!obj->HasDSP()) return;
+#endif
 
     int i;
     int in = obj->CntInSig();

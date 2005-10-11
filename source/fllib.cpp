@@ -153,6 +153,7 @@ static const t_symbol *lib_name = NULL;
 t_class *flext_obj::getClass(t_classid id) { return reinterpret_cast<flext_class *>(id)->clss; }
 
 bool flext_obj::HasAttributes() const { return clss->attr; }
+bool flext_obj::HasDSP() const { return clss->dsp; }
 
 
 void flext_obj::lib_init(const char *name,void setupfun(),bool attr)

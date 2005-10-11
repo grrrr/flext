@@ -157,6 +157,7 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 		static t_class *getClass(t_classid);
 
         bool HasAttributes() const;
+        bool HasDSP() const;
 
 	//!	@}  FLEXT_OBJ_INFO
 

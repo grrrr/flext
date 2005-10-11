@@ -198,12 +198,11 @@ public:
 	//! Retrieve currently processed message tag (NULL if no message processing)
 	static const t_symbol *thisTag() { return curtag; }
 
-#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
 	class outlet;
 
 	//! Get pointer to outlet (not in the constructor!)
 	outlet *GetOut(int ix) const { return outlets[ix]; }
-#endif
+
 	int GetOutAttr() const { return HasAttributes()?CntOut():0; }
 
 	//! @} FLEXT_C_IO_MISC
@@ -349,10 +348,8 @@ public:
 	void AddMethod(int inlet,bool (*m)(flext_base *,float &,float &,float &)) { AddMethod(ThMeths(),inlet,sym_list,(methfun)m,a_float,a_float,a_float,a_null); } // list of 3 floats
 #if FLEXT_SYS == FLEXT_SYS_PD
 	void AddMethod(int inlet,bool (*m)(flext_base *,int &)) { AddMethod(ThMeths(),inlet,sym_float,(methfun)m,a_int,a_null); }  // single float
-#elif FLEXT_SYS == FLEXT_SYS_MAX || FLEXT_SYS == FLEXT_SYS_JMAX
-	void AddMethod(int inlet,bool (*m)(flext_base *,int &)) { AddMethod(ThMeths(),inlet,sym_int,(methfun)m,a_int,a_null); }  // single float
 #else
-#error
+	void AddMethod(int inlet,bool (*m)(flext_base *,int &)) { AddMethod(ThMeths(),inlet,sym_int,(methfun)m,a_int,a_null); }  // single float
 #endif
 	void AddMethod(int inlet,bool (*m)(flext_base *,int &,int &)) { AddMethod(ThMeths(),inlet,sym_list,(methfun)m,a_int,a_int,a_null); } // list of 2 floats
 	void AddMethod(int inlet,bool (*m)(flext_base *,int &,int &,int &)) { AddMethod(ThMeths(),inlet,sym_list,(methfun)m,a_int,a_int,a_int,a_null); } // list of 3 floats
@@ -399,10 +396,8 @@ public:
 	static void AddMethod(t_classid c,int inlet,bool (*m)(flext_base *,float &,float &,float &)) { AddMethod(ClMeths(c),inlet,sym_list,(methfun)m,a_float,a_float,a_float,a_null); } // list of 3 floats
 #if FLEXT_SYS == FLEXT_SYS_PD
 	static void AddMethod(t_classid c,int inlet,bool (*m)(flext_base *,int &)) { AddMethod(ClMeths(c),inlet,sym_float,(methfun)m,a_int,a_null); }  // single integer
-#elif FLEXT_SYS == FLEXT_SYS_MAX || FLEXT_SYS == FLEXT_SYS_JMAX
-	static void AddMethod(t_classid c,int inlet,bool (*m)(flext_base *,int &)) { AddMethod(ClMeths(c),inlet,sym_int,(methfun)m,a_int,a_null); }  // single integer
 #else
-#error
+	static void AddMethod(t_classid c,int inlet,bool (*m)(flext_base *,int &)) { AddMethod(ClMeths(c),inlet,sym_int,(methfun)m,a_int,a_null); }  // single integer
 #endif
 	static void AddMethod(t_classid c,int inlet,bool (*m)(flext_base *,int &,int &)) { AddMethod(ClMeths(c),inlet,sym_list,(methfun)m,a_int,a_int,a_null); } // list of 2 floats
 	static void AddMethod(t_classid c,int inlet,bool (*m)(flext_base *,int &,int &,int &)) { AddMethod(ClMeths(c),inlet,sym_list,(methfun)m,a_int,a_int,a_int,a_null); } // list of 3 floats
@@ -432,24 +427,15 @@ public:
 		@{ 
 	*/
 
-#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX 
 	//! Bind object to a symbol
 	bool Bind(const t_symbol *sym);
 	//! Unbind object from a symbol
 	bool Unbind(const t_symbol *sym);
-#endif
 
-#if FLEXT_SYS == FLEXT_SYS_JMAX
-	//! Bind object to a symbol (as string)
-	bool Bind(const char *sym); // ** TODO **  
-	//! Unbind object from a symbol (as string)
-	bool Unbind(const char *sym);  // ** TODO **   
-#else
 	//! Bind object to a symbol (as string)
 	bool Bind(const char *sym) { return Bind(MakeSymbol(sym)); }  
 	//! Unbind object from a symbol (as string)
 	bool Unbind(const char *sym) { return Unbind(MakeSymbol(sym)); }  
-#endif
 
     /*! \brief Bind a method to a symbol
         \param sym Symbol to bind to
@@ -768,25 +754,19 @@ protected:
     };
 
 	// these outlet functions don't check for thread but send directly to the real-time system
-#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
     void ToSysBang(int n) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_bang((t_outlet *)o); CRITOFF(); } }
     void ToSysFloat(int n,float f) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_float((t_outlet *)o,f); CRITOFF(); } }
     void ToSysInt(int n,int f) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_flint((t_outlet *)o,f); CRITOFF(); } }
     void ToSysSymbol(int n,const t_symbol *s) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); CRITOFF(); } }
     void ToSysList(int n,int argc,const t_atom *argv) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_list((t_outlet *)o,const_cast<t_symbol *>(sym_list),argc,(t_atom *)argv); CRITOFF(); } }
     void ToSysAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,(t_atom *)argv); CRITOFF(); } }
-#elif FLEXT_SYS == FLEXT_SYS_JMAX
-    void ToSysBang(int n) const { fts_outlet_bang((fts_object *)thisHdr(),n); }
-    void ToSysFloat(int n,float f) const { fts_outlet_float((fts_object *)thisHdr(),n,f); }
-    void ToSysInt(int n,int f) const { fts_outlet_int((fts_object *)thisHdr(),n,f); }
-    void ToSysSymbol(int n,const t_symbol *s) const { fts_outlet_symbol((fts_object *)thisHdr(),n,s); }
-    void ToSysList(int n,int argc,const t_atom *argv) const { fts_outlet_send((fts_object *)thisHdr(),n,sym_list,argc,(t_atom *)argv); }
-    void ToSysAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { fts_outlet_send((fts_object *)thisHdr(),n,const_cast<t_symbol *>(s),argc,(t_atom *)argv); }
-#else
-#error Not implemented
-#endif
+
 	void ToSysBool(int n,bool f) const { ToSysInt(n,f?1:0); }
 	void ToSysAtom(int n,const t_atom &at) const;
+
+	// add class method handlers
+	static void AddMessageMethods(t_class *c);
+	static void AddSignalMethods(t_class *c);
 
 private:
 	class pxbnd_object;
@@ -823,6 +803,8 @@ public:
 
 private:
 
+	static inline flext_base *thisObject(flext_hdr *c) { return FLEXT_CAST<flext_base *>(c->data); } 
+
 	static void Setup(t_classid c);
 
     //! \brief This represents either an inlet or outlet during construction
@@ -845,9 +827,7 @@ private:
     //! number of message and signal inlets/outlets
 	unsigned char incnt,outcnt,insigs,outsigs;
 
-#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
 	outlet **outlets;
-#endif
 
 	union t_any {
 		float ft;
@@ -918,13 +898,13 @@ private:
 #ifndef FLEXT_NOATTREDIT
 	// attribute editor
 	static bool cb_AttrDialog(flext_base *c,int argc,const t_atom *argv);
-	static void cb_GfxProperties(t_gobj *c, t_glist *);
+	static void cb_GfxProperties(flext_hdr *c, t_glist *);
 #endif
 
 #ifdef FLEXT_ATTRHIDE
-	static void cb_GfxVis(t_gobj *c, t_glist *gl, int vis);
-	static void cb_GfxSave(t_gobj *c, t_binbuf *b);
-	static void cb_GfxSelect(t_gobj *x, struct _glist *glist, int state);
+	static void cb_GfxVis(flext_hdr *c, t_glist *gl, int vis);
+	static void cb_GfxSave(flext_hdr *c, t_binbuf *b);
+	static void cb_GfxSelect(flext_hdr *x, struct _glist *glist, int state);
 
     void BinbufArgs(t_binbuf *b,t_binbuf *args,bool withname,bool transdoll);
     void BinbufAttr(t_binbuf *b,bool transdoll);
@@ -943,52 +923,48 @@ private:
 		static void px_method(px_object *c,const t_symbol *s,int argc,t_atom *argv);
 	};
 
-	static void cb_px_anything(t_class *c,const t_symbol *s,int argc,t_atom *argv);
+	static void cb_px_anything(flext_hdr *c,const t_symbol *s,int argc,t_atom *argv);
 
-	static void cb_px_ft1(t_class *c,float f);
-	static void cb_px_ft2(t_class *c,float f);
-	static void cb_px_ft3(t_class *c,float f);
-	static void cb_px_ft4(t_class *c,float f);
-	static void cb_px_ft5(t_class *c,float f);
-	static void cb_px_ft6(t_class *c,float f);
-	static void cb_px_ft7(t_class *c,float f);
-	static void cb_px_ft8(t_class *c,float f);
-	static void cb_px_ft9(t_class *c,float f);
+	static void cb_px_ft1(flext_hdr *c,float f);
+	static void cb_px_ft2(flext_hdr *c,float f);
+	static void cb_px_ft3(flext_hdr *c,float f);
+	static void cb_px_ft4(flext_hdr *c,float f);
+	static void cb_px_ft5(flext_hdr *c,float f);
+	static void cb_px_ft6(flext_hdr *c,float f);
+	static void cb_px_ft7(flext_hdr *c,float f);
+	static void cb_px_ft8(flext_hdr *c,float f);
+	static void cb_px_ft9(flext_hdr *c,float f);
 
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	typedef object px_object;
-	static void cb_px_float(t_class *c,double f);
-	static void cb_px_int(t_class *c,long v);
-	static void cb_px_bang(t_class *c);
+	static void cb_px_float(flext_hdr *c,double f);
+	static void cb_px_int(flext_hdr *c,long v);
+	static void cb_px_bang(flext_hdr *c);
 
-	static void cb_px_in1(t_class *c,long v);
-	static void cb_px_in2(t_class *c,long v);
-	static void cb_px_in3(t_class *c,long v);
-	static void cb_px_in4(t_class *c,long v);
-	static void cb_px_in5(t_class *c,long v);
-	static void cb_px_in6(t_class *c,long v);
-	static void cb_px_in7(t_class *c,long v);
-	static void cb_px_in8(t_class *c,long v);
-	static void cb_px_in9(t_class *c,long v);
+	static void cb_px_in1(flext_hdr *c,long v);
+	static void cb_px_in2(flext_hdr *c,long v);
+	static void cb_px_in3(flext_hdr *c,long v);
+	static void cb_px_in4(flext_hdr *c,long v);
+	static void cb_px_in5(flext_hdr *c,long v);
+	static void cb_px_in6(flext_hdr *c,long v);
+	static void cb_px_in7(flext_hdr *c,long v);
+	static void cb_px_in8(flext_hdr *c,long v);
+	static void cb_px_in9(flext_hdr *c,long v);
 
-	static void cb_px_ft1(t_class *c,double f);
-	static void cb_px_ft2(t_class *c,double f);
-	static void cb_px_ft3(t_class *c,double f);
-	static void cb_px_ft4(t_class *c,double f);
-	static void cb_px_ft5(t_class *c,double f);
-	static void cb_px_ft6(t_class *c,double f);
-	static void cb_px_ft7(t_class *c,double f);
-	static void cb_px_ft8(t_class *c,double f);
-	static void cb_px_ft9(t_class *c,double f);
+	static void cb_px_ft1(flext_hdr *c,double f);
+	static void cb_px_ft2(flext_hdr *c,double f);
+	static void cb_px_ft3(flext_hdr *c,double f);
+	static void cb_px_ft4(flext_hdr *c,double f);
+	static void cb_px_ft5(flext_hdr *c,double f);
+	static void cb_px_ft6(flext_hdr *c,double f);
+	static void cb_px_ft7(flext_hdr *c,double f);
+	static void cb_px_ft8(flext_hdr *c,double f);
+	static void cb_px_ft9(flext_hdr *c,double f);
 
-	static void cb_px_anything(t_class *c,const t_symbol *s,short argc,t_atom *argv);
+	static void cb_px_anything(flext_hdr *c,const t_symbol *s,short argc,t_atom *argv);
 #endif
 
-#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
 	px_object **inlets;
-#elif FLEXT_SYS == FLEXT_SYS_JMAX
-	static void jmax_proxy(fts_object_t *c, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at);
-#endif
 
 	// --------- symbol-bound proxy
 
@@ -1024,17 +1000,19 @@ private:
 
 	// callback functions
 
-	static void cb_loadbang(t_class *c);
-
-#if FLEXT_SYS == FLEXT_SYS_PD
-	static void cb_click(t_gobj *z,t_floatarg xpos,t_floatarg ypos,t_floatarg shift,t_floatarg ctrl,t_floatarg alt);
-#endif
+	static void cb_loadbang(flext_hdr *c);
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
 	char **indesc,**outdesc;
 
-	static void cb_assist(t_class *c,void *b,long msg,long arg,char *s);
-    static void cb_click (t_class *c, Point pt, short mods);
+	static void cb_assist(flext_hdr *c,void *b,long msg,long arg,char *s);
+    static void cb_click (flext_hdr *c, Point pt, short mods);
+
+	static void cb_dsp(flext_hdr *c,t_signal **s,short *count);
+#elif FLEXT_SYS == FLEXT_SYS_PD
+	static void cb_click(flext_hdr *z,t_floatarg xpos,t_floatarg ypos,t_floatarg shift,t_floatarg ctrl,t_floatarg alt);
+
+	static void cb_dsp(flext_hdr *c,t_signal **s);
 #endif
 };
 

@@ -478,7 +478,7 @@ void flext_base::SetGfx(t_classid c)
     widgetbehavior.w_selectfn =     cb_GfxSelect; 
 
 #if PD_MINOR_VERSION >= 37
-    class_setsavefn(cl,cb_GfxSave);
+    class_setsavefn(cl,(t_savefn)cb_GfxSave);
 #else
     widgetbehavior.w_savefn =       cb_GfxSave;
 #endif
@@ -489,7 +489,7 @@ void flext_base::SetGfx(t_classid c)
 #ifndef FLEXT_NOATTREDIT
 
 #if PD_MINOR_VERSION >= 37
-    class_setpropertiesfn(cl,cb_GfxProperties);
+    class_setpropertiesfn(cl,(t_propertiesfn)cb_GfxProperties);
 #else
     widgetbehavior.w_propertiesfn = cb_GfxProperties;
 #endif
@@ -518,7 +518,7 @@ static size_t escapeit(char *dst,size_t maxlen,const char *src)
     return d-dst;
 }
 
-void flext_base::cb_GfxProperties(t_gobj *c, t_glist *)
+void flext_base::cb_GfxProperties(flext_hdr *c, t_glist *)
 {
     flext_base *th = thisObject(c);
     char buf[1000];
@@ -784,7 +784,7 @@ void flext_base::BinbufAttr(t_binbuf *b,bool transdoll)
 }
 
 //! Strip the attributes off the object command line
-void flext_base::cb_GfxVis(t_gobj *c, t_glist *gl, int vis)
+void flext_base::cb_GfxVis(flext_hdr *c, t_glist *gl, int vis)
 {
     if(!gl->gl_isgraph || gl->gl_havewindow) {
         // show object if it's not inside a GOP
@@ -814,7 +814,7 @@ void flext_base::cb_GfxVis(t_gobj *c, t_glist *gl, int vis)
     // else don't show
 }
 
-void flext_base::cb_GfxSelect(t_gobj *c,t_glist *gl,int state)
+void flext_base::cb_GfxSelect(flext_hdr *c,t_glist *gl,int state)
 {
     t_text *x = (t_text *)c;
     flext_base *th = thisObject(c);
@@ -853,7 +853,7 @@ void flext_base::cb_GfxSelect(t_gobj *c,t_glist *gl,int state)
     }
 }
 
-void flext_base::cb_GfxSave(t_gobj *c, t_binbuf *b)
+void flext_base::cb_GfxSave(flext_hdr *c, t_binbuf *b)
 {
     flext_base *th = thisObject(c);
     t_text *t = (t_text *)c;

@@ -14,6 +14,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
  
 #include "flext.h"
 #include "flinternal.h"
+#include "fldsp.h"
 #include <string.h>
 
 // === flext_base ============================================
@@ -64,6 +65,12 @@ bool flext_base::Init()
     if(ok) ok = InitInlets() && InitOutlets();
 
     if(ok) {
+#if FLEXT_SYS == FLEXT_SYS_MAX
+		// according to the Max/MSP SDK this should be prior to any inlet creation, BUT
+		// that doesn't seem to be true... multiple signal ins and additional inlets don't seem to work then      
+		if(NeedDSP()) dsp_setup(thisHdr(),CntInSig()); // signal inlets   
+#endif
+
         if(HasAttributes() && m_holdaargc && m_holdaargv) {
             // initialize creation attributes
             ok = InitAttrib(m_holdaargc,m_holdaargv);
@@ -79,6 +86,11 @@ bool flext_base::Init()
 */
 void flext_base::Exit()
 {
+#if FLEXT_SYS == FLEXT_SYS_MAX
+    // according to David Z. one should do that first...
+	if(NeedDSP()) dsp_free(thisHdr());
+#endif
+
 #if FLEXT_SYS == FLEXT_SYS_PD && !defined(FLEXT_NOATTREDIT)
     // attribute editor window may still be open -> close it
     gfxstub_deleteforkey(thisHdr());
@@ -129,13 +141,8 @@ void flext_base::Exit()
 }
 
 
-/*! Set up proxy classes and basic methods at class creation time
-    This ensures that they are processed before the registered flext messages
-*/
-void flext_base::Setup(t_classid id)
+void flext_base::AddMessageMethods(t_class *c)
 {
-    t_class *c = getClass(id);
-
     add_loadbang(c,cb_loadbang);
 #if FLEXT_SYS == FLEXT_SYS_PD
     class_addmethod(c,(t_method)cb_click,gensym("click"),A_FLOAT,A_FLOAT,A_FLOAT,A_FLOAT,A_FLOAT,A_NULL);
@@ -145,6 +152,35 @@ void flext_base::Setup(t_classid id)
 #else
     #pragma message ("no implementation of loadbang or assist") 
 #endif
+
+    SetProxies(c);
+    StartQueue();
+}
+
+void flext_base::AddSignalMethods(t_class *c)
+{
+#if FLEXT_SYS == FLEXT_SYS_MAX
+	add_dsp(c,cb_dsp);
+	dsp_initclass();
+#elif FLEXT_SYS == FLEXT_SYS_PD
+    CLASS_MAINSIGNALIN(c,flext_hdr,defsig); // float messages going into the left inlet are converted to signal
+    add_dsp(c,cb_dsp);
+#else
+#error Platform not supported!
+#endif
+}
+
+/*! Set up proxy classes and basic methods at class creation time
+    This ensures that they are processed before the registered flext messages
+*/
+void flext_base::Setup(t_classid id)
+{
+    t_class *c = getClass(id);
+
+#if FLEXT_SYS == FLEXT_SYS_MAX
+	if(!IsLib(id))
+#endif
+	AddMessageMethods(c);
 
     if(process_attributes) {
         AddMethod(id,0,"getattributes",cb_ListAttrib);
@@ -158,15 +194,9 @@ void flext_base::Setup(t_classid id)
 #if FLEXT_SYS == FLEXT_SYS_PD
     SetGfx(id);
 #endif
-
-    SetProxies(c);
-
-    StartQueue();
 }
 
-#if FLEXT_SYS != FLEXT_SYS_JMAX
-void flext_base::cb_loadbang(t_class *c) { thisObject(c)->CbLoadbang(); }   
-#endif
+void flext_base::cb_loadbang(flext_hdr *c) { thisObject(c)->CbLoadbang(); }   
 
 void flext_base::m_loadbang() {}
 void flext_base::CbLoadbang() { m_loadbang(); }
@@ -174,19 +204,19 @@ void flext_base::CbLoadbang() { m_loadbang(); }
 void flext_base::CbClick() {}
 
 #if FLEXT_SYS == FLEXT_SYS_PD
-void flext_base::cb_click(t_gobj *c,t_floatarg xpos,t_floatarg ypos,t_floatarg shift,t_floatarg ctrl,t_floatarg alt)
+void flext_base::cb_click(flext_hdr *c,t_floatarg xpos,t_floatarg ypos,t_floatarg shift,t_floatarg ctrl,t_floatarg alt)
 {
     if(shift) thisObject(c)->CbClick();
 }
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
-void flext_base::cb_click(t_class *c, Point pt, short mods)
+void flext_base::cb_click(flext_hdr *c, Point pt, short mods)
 {
     thisObject(c)->CbClick();
 }
 
-void flext_base::cb_assist(t_class *c,void * /*b*/,long msg,long arg,char *s) 
+void flext_base::cb_assist(flext_hdr *c,void * /*b*/,long msg,long arg,char *s) 
 { 
     flext_base *th = thisObject(c); 
 
@@ -204,3 +234,28 @@ void flext_base::cb_assist(t_class *c,void * /*b*/,long msg,long arg,char *s)
     }
 }
 #endif
+
+#if FLEXT_SYS == FLEXT_SYS_MAX
+void flext_base::cb_dsp(flext_hdr *c,t_signal **sp,short *count) 
+#else
+void flext_base::cb_dsp(flext_hdr *c,t_signal **sp) 
+#endif
+{ 
+    flext_base *bobj = thisObject(c); 
+	
+#if FLEXT_SYS == FLEXT_SYS_MAX
+	// we must extra-check here if it is really a DSP object
+	// obviously, for objects that are part of a library, one dsp_initclass enables DSP for all
+	if(!bobj->IsDSP()) return;
+#endif
+
+	flext_dsp *obj;
+#ifdef FLEXT_DEBUG
+    obj = dynamic_cast<flext_dsp *>(bobj); 
+#else
+    obj = static_cast<flext_dsp *>(bobj); 
+#endif
+
+	obj->SetupDsp(sp);
+}
+

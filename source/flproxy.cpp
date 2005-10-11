@@ -27,40 +27,40 @@ void flext_base::px_object::px_method(px_object *obj,const t_symbol *s,int argc,
     obj->base->CbMethodHandler(obj->index,s,argc,argv);
 }
 
-void flext_base::cb_px_anything(t_class *c,const t_symbol *s,int argc,t_atom *argv)
+void flext_base::cb_px_anything(flext_hdr *c,const t_symbol *s,int argc,t_atom *argv)
 {
     thisObject(c)->CbMethodHandler(0,s,argc,argv);
 }
 
 #define DEF_IN_FT(IX) \
-void flext_base::cb_px_ft ## IX(t_class *c,float v) { t_atom atom; SetFloat(atom,v); thisObject(c)->CbMethodHandler(IX,sym_float,1,&atom); }
+void flext_base::cb_px_ft ## IX(flext_hdr *c,float v) { t_atom atom; SetFloat(atom,v); thisObject(c)->CbMethodHandler(IX,sym_float,1,&atom); }
 
 #define ADD_IN_FT(IX) \
 add_method1(c,cb_px_ft ## IX,"ft" #IX,A_FLOAT)
 
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 
-void flext_base::cb_px_anything(t_class *c,const t_symbol *s,short argc,t_atom *argv)
+void flext_base::cb_px_anything(flext_hdr *c,const t_symbol *s,short argc,t_atom *argv)
 {
     int ci = ((flext_hdr *)c)->curinlet;
     thisObject(c)->CbMethodHandler(ci,s,argc,argv);
 }
 
-void flext_base::cb_px_int(t_class *c,long v)
+void flext_base::cb_px_int(flext_hdr *c,long v)
 {
     t_atom atom; SetInt(atom,v);  
     int ci = ((flext_hdr *)c)->curinlet;
     thisObject(c)->CbMethodHandler(ci,sym_int,1,&atom);
 }
 
-void flext_base::cb_px_float(t_class *c,double v)
+void flext_base::cb_px_float(flext_hdr *c,double v)
 {
     t_atom atom; SetFloat(atom,v);  
     int ci = ((flext_hdr *)c)->curinlet;
     thisObject(c)->CbMethodHandler(ci,sym_float,1,&atom);
 }
 
-void flext_base::cb_px_bang(t_class *c)
+void flext_base::cb_px_bang(flext_hdr *c)
 {
     int ci = ((flext_hdr *)c)->curinlet;
     thisObject(c)->CbMethodHandler(ci,sym_bang,0,NULL);
@@ -68,8 +68,8 @@ void flext_base::cb_px_bang(t_class *c)
 
 
 #define DEF_IN_FT(IX) \
-void flext_base::cb_px_in ## IX(t_class *c,long v) { t_atom atom; SetInt(atom,v); thisObject(c)->CbMethodHandler(IX,sym_int,1,&atom); } \
-void flext_base::cb_px_ft ## IX(t_class *c,double v) { t_atom atom; SetFloat(atom,v); thisObject(c)->CbMethodHandler(IX,sym_float,1,&atom); }
+void flext_base::cb_px_in ## IX(flext_hdr *c,long v) { t_atom atom; SetInt(atom,v); thisObject(c)->CbMethodHandler(IX,sym_int,1,&atom); } \
+void flext_base::cb_px_ft ## IX(flext_hdr *c,double v) { t_atom atom; SetFloat(atom,v); thisObject(c)->CbMethodHandler(IX,sym_float,1,&atom); }
 
 #define ADD_IN_FT(IX) \
 add_method1(c,cb_px_in ## IX,"in" #IX,A_INT); \

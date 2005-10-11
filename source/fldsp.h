@@ -33,6 +33,8 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_dsp):
 {
 	FLEXT_HEADER_S(FLEXT_CLASSDEF(flext_dsp),flext_base,Setup)
 	
+	friend class FLEXT_SHARE FLEXT_CLASSDEF(flext_base);
+
 public:
 
 /*!	\defgroup FLEXT_DSP Flext dsp class
@@ -148,10 +150,6 @@ protected:
 	
 	FLEXT_CLASSDEF(flext_dsp)();
 
-#if FLEXT_SYS == FLEXT_SYS_MAX
-    virtual bool Init();
-#endif
-
     virtual void Exit();
 
 private:
@@ -164,14 +162,14 @@ private:
 	// setup function
 	static void Setup(t_classid c);
 
-	// callback functions
-#if FLEXT_SYS == FLEXT_SYS_MAX
-	static void cb_dsp(t_class *c,t_signal **s,short *count);
-#else
-	static void cb_dsp(t_class *c,t_signal **s);
-	static void cb_enable(t_class *c,t_float on);
+#if FLEXT_SYS == FLEXT_SYS_PD
+	static void cb_enable(flext_hdr *c,t_float on);
 	bool dspon;
 #endif
+
+	static inline flext_dsp *thisObject(flext_hdr *c) { return FLEXT_CAST<flext_dsp *>(c->data); } 
+
+	void SetupDsp(t_signal **sp);
 
 	// dsp stuff
 	static t_int *dspmeth(t_int *w); 

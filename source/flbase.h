@@ -154,10 +154,20 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 		t_classid thisClassId() const { return clss; }
 
 		//! Get class pointer from class id
-		static t_class *getClass(t_classid);
+		static t_class *getClass(t_classid id);
+		
+        static bool IsDSP(t_classid id);
+        static bool IsLib(t_classid id);
 
         bool HasAttributes() const;
-        bool HasDSP() const;
+        bool IsDSP() const;
+        bool IsLib() const;
+
+#if FLEXT_SYS == FLEXT_SYS_MAX
+		// under Max/MSP it could be necessary to activate DSP also for message objects
+		// namely for those coexisting with DSP objects in a library
+		bool NeedDSP() const;
+#endif
 
 	//!	@}  FLEXT_OBJ_INFO
 
@@ -242,17 +252,12 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 		// Definitions for library objects
 		static void lib_init(const char *name,void setupfun(),bool attr);
 		static void obj_add(bool lib,bool dsp,bool attr,const char *idname,const char *names,void setupfun(t_classid),FLEXT_CLASSDEF(flext_obj) *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...);
-#if FLEXT_SYS == FLEXT_SYS_JMAX
-		static void obj_new(fts_object_t *o, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at);
-		static void obj_free(fts_object_t *o, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at);
-#else
 #if FLEXT_SYS == FLEXT_SYS_MAX
 		static flext_hdr *obj_new(const t_symbol *s,short argc,t_atom *argv);
 #else
 		static flext_hdr *obj_new(const t_symbol *s,int argc,t_atom *argv);
 #endif
 		static void obj_free(flext_hdr *o);
-#endif
 
 		//! Convert $0 or #0 symbol into appropriate value
 		static bool GetParamSym(t_atom &dst,const t_symbol *s,t_canvas *c);
@@ -303,77 +308,52 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 public:     	    	    \
 typedef NEW_CLASS thisType;  \
 static FLEXT_CLASSDEF(flext_obj) *__init__(int argc,t_atom *argv);  \
-static void __free__(flext_hdr *hdr)    	    	    	\
-{ FLEXT_CLASSDEF(flext_obj) *mydata = hdr->data; delete mydata; \
-  hdr->flext_hdr::~flext_hdr(); }   	    	\
-static void __setup__(t_classid classid) { 	    	\
-	PARENT_CLASS::__setup__(classid); } \
-protected:    \
-static inline NEW_CLASS *thisObject(void *c) { return FLEXT_CAST<NEW_CLASS *>(((flext_hdr *)c)->data); } 
+static void __free__(flext_hdr *hdr) {  	    	    	\
+	FLEXT_CLASSDEF(flext_obj) *mydata = hdr->data; delete mydata; \
+	hdr->flext_hdr::~flext_hdr(); \
+}   	    	\
+static void __setup__(t_classid classid) { PARENT_CLASS::__setup__(classid); }
 
 
 #define FLEXT_REALHDR_S(NEW_CLASS, PARENT_CLASS,SETUPFUN)    	    	\
 public:     	    	    \
 typedef NEW_CLASS thisType;  \
 static FLEXT_CLASSDEF(flext_obj) *__init__(int argc,t_atom *argv);  \
-static void __free__(flext_hdr *hdr)    	    	    	\
-{ FLEXT_CLASSDEF(flext_obj) *mydata = hdr->data; delete mydata; \
-  hdr->flext_hdr::~flext_hdr(); }   	    	\
-static void __setup__(t_classid classid)  	    	\
-{ PARENT_CLASS::__setup__(classid);    	    	\
-	NEW_CLASS::SETUPFUN(classid); 	}    	    	\
-protected: \
-static inline NEW_CLASS *thisObject(void *c) { return FLEXT_CAST<NEW_CLASS *>(((flext_hdr *)c)->data); }
+static void __free__(flext_hdr *hdr) {  	    	    	\
+	FLEXT_CLASSDEF(flext_obj) *mydata = hdr->data; delete mydata; \
+	hdr->flext_hdr::~flext_hdr(); \
+}   	    	\
+static void __setup__(t_classid classid) { 	    	\
+	PARENT_CLASS::__setup__(classid);    	    	\
+	NEW_CLASS::SETUPFUN(classid); \
+}
+
 
 // generate name of dsp/non-dsp setup function
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
 	#define FLEXT_STPF_0(NAME) NAME##_setup
 	#define FLEXT_STPF_1(NAME) NAME##_tilde_setup
 #else
-	#define FLEXT_STPF_0(NAME) NAME##_config
-	#define FLEXT_STPF_1(NAME) signal_##NAME##_config
+#error Platform not supported
 #endif
 
 #define FLEXT_STPF_(DSP) FLEXT_STPF_##DSP
 #define FLEXT_STPF(NAME,DSP) FLEXT_STPF_(DSP)(NAME)
 
 
-
 // --------------------------------------------------------------------------------------
 
 
-
-// these can be used in library setup functions 
-// to register the individual objects in the library
-
-#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
-	#define REAL_SETUP_0(cl) \
-	extern void cl##_setup(); cl##_setup()  
-	
-	#define REAL_SETUP_1(cl) \
-	extern void cl##_tilde_setup(); cl##_tilde_setup()  
-#else
-	#define REAL_SETUP_0(cl) \
-	extern void cl##_config(); cl##_config()  
-	
-	#define REAL_SETUP_1(cl) \
-	extern void signal_##cl##_config(); signal_##cl##_config()  
-#endif
-
-#define REAL_SETUP(cl,DSP) REAL_SETUP_##DSP(cl)
+// used in library setup functions to register the individual objects in the library
+#define REAL_SETUP(cl,DSP) extern void FLEXT_STPF(cl,DSP)(); FLEXT_STPF(cl,DSP)();
 
 // specify that to define the library itself
-
 #if FLEXT_SYS == FLEXT_SYS_PD
 #define REAL_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT void NAME##_setup() { flext_obj::lib_init(#NAME,SETUPFUN,FLEXT_ATTRIBUTES); }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 #define REAL_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT int main() { flext_obj::lib_init(#NAME,SETUPFUN,FLEXT_ATTRIBUTES); return 0; }
-#elif FLEXT_SYS == FLEXT_SYS_JMAX
-#define REAL_LIB_SETUP(NAME,SETUPFUN) \
-static void __##NAME##_initfun() { flext_obj::lib_init(#NAME,SETUPFUN,FLEXT_ATTRIBUTES); } \
-fts_module_t __##NAME##_module = {#NAME,#NAME,__##NAME##_initfun,0,0};
 #else
-#error
+#error Platform not supported
 #endif
 
 
@@ -384,7 +364,7 @@ fts_module_t __##NAME##_module = {#NAME,#NAME,__##NAME##_initfun,0,0};
 #define FLEXT_EXP_1 
 #define FLEXT_EXP(LIB) FLEXT_EXP_##LIB
 
-#if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_JMAX
+#if FLEXT_SYS == FLEXT_SYS_PD
 #define FLEXT_OBJ_SETUP_0(NEW_CLASS,DSP)
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 #define FLEXT_OBJ_SETUP_0(NEW_CLASS,DSP) extern "C" FLEXT_EXT int main() { FLEXT_STPF(NEW_CLASS,DSP)(); return 0; }
@@ -444,7 +424,7 @@ fts_module_t __##NAME##_module = {#NAME,#NAME,__##NAME##_initfun,0,0};
 #define FLEXTTYPE_bool FLEXTTPN_FLOAT
 #define FLEXTTYPE_bool0 FLEXTTPN_DEFFLOAT
 #define CALLBTYPE_bool float
-#elif FLEXT_SYS == FLEXT_SYS_MAX || FLEXT_SYS == FLEXT_SYS_JMAX
+#elif FLEXT_SYS == FLEXT_SYS_MAX
 #define FLEXTTYPE_int FLEXTTPN_INT
 #define FLEXTTYPE_int0 FLEXTTPN_DEFINT
 #define CALLBTYPE_int int
@@ -452,7 +432,7 @@ fts_module_t __##NAME##_module = {#NAME,#NAME,__##NAME##_initfun,0,0};
 #define FLEXTTYPE_bool0 FLEXTTPN_DEFINT
 #define CALLBTYPE_bool int
 #else
-#error
+#error Platform not supported
 #endif
 
 #define FLEXTTYPE_t_symptr FLEXTTPN_SYM

@@ -100,6 +100,24 @@ bool flext::chktilde(const char *objname)
 		return false;
 }
 
+// this class stands for one library of objects
+// there can be more if flext is a shared library
+class flext_library
+{
+public:
+	flext_library(const t_symbol *nm)
+		: name(nm)
+#if FLEXT_SYS == FLEXT_SYS_MAX
+		, clss(NULL),dsp(false)
+#endif
+	{}
+
+	const t_symbol *name;
+#if FLEXT_SYS == FLEXT_SYS_MAX
+	t_class *clss;
+	bool dsp;
+#endif
+};
 
 // this class stands for one registered object
 // it holds the class, type flags, constructor and destructor of the object and the creation arg types
@@ -114,7 +132,8 @@ public:
 	void (*freefun)(flext_hdr *c);
 
 	t_class *const &clss;
-	bool lib,dsp,attr,dist;
+	flext_library *lib;
+	bool dsp,attr,dist;
 	int argc;
 	int *argv;
 
@@ -143,52 +162,63 @@ static flext_class *FindName(const t_symbol *s,flext_class *o = NULL)
 }
 
 
-// for Max/MSP, the library is represented by a special object (class) registered at startup
-// all objects in the library are clones of that library object - they share the same class
-#if FLEXT_SYS == FLEXT_SYS_MAX
-static t_class *lib_class = NULL;
-static const t_symbol *lib_name = NULL;
-#endif
-
-t_class *flext_obj::getClass(t_classid id) { return reinterpret_cast<flext_class *>(id)->clss; }
+t_class *flext_obj::getClass(t_classid cl) { return cl->clss; }
+bool flext_obj::IsDSP(t_classid cl) { return cl->dsp; }
+bool flext_obj::IsLib(t_classid cl) { return cl->lib != NULL; }
 
 bool flext_obj::HasAttributes() const { return clss->attr; }
-bool flext_obj::HasDSP() const { return clss->dsp; }
+bool flext_obj::IsDSP() const { return clss->dsp; }
+bool flext_obj::IsLib() const { return clss->lib != NULL; }
 
+#if FLEXT_SYS == FLEXT_SYS_MAX
+bool flext_obj::NeedDSP() const { return clss->dsp || (clss->lib && clss->lib->dsp); }
+#endif
+
+static flext_library *curlib = NULL;
 
 void flext_obj::lib_init(const char *name,void setupfun(),bool attr)
 {
+	// make new library instance
+	curlib = new flext_library(MakeSymbol(name));
+
     flext::Setup();
 
-#if FLEXT_SYS == FLEXT_SYS_MAX
-	lib_name = MakeSymbol(name);
-	::setup(
-		(t_messlist **)&lib_class,
-		(t_newmethod)obj_new,(t_method)obj_free,
-		sizeof(flext_hdr),NULL,A_GIMME,A_NULL);
-#endif
 	process_attributes = attr;
 
+	// first register all classes
     try {
 	    setupfun();
     }
     catch(std::exception &x) {
         error("%s - %s",name,x.what());
+		return;
     }
     catch(char *txt) {
     	error("%s - %s",name,txt);
+		return;
     }
     catch(...) {
     	error("%s - Unknown exception at library setup",name);
+		return;
     }
-}
+	
+#if FLEXT_SYS == FLEXT_SYS_MAX
+	// then see if we got DSP classes
 
-#if FLEXT_SYS == FLEXT_SYS_JMAX
-static void jmax_class_inst(t_class *cl) 
-{
-	fts_class_init(cl, sizeof(flext_hdr),flext_obj::obj_new,flext_obj::obj_free);
-}
+	// for Max/MSP, the library is represented by a special object (class) registered at startup
+	// all objects in the library are clones of that library object - they share the same class
+	::setup(
+		(t_messlist **)&curlib->clss,
+		(t_newmethod)obj_new,(t_method)obj_free,
+		sizeof(flext_hdr),NULL,A_GIMME,A_NULL);
+	
+	// for all classes in library add methods
+	flext_base::AddMessageMethods(curlib->clss);
+	if(curlib->dsp) flext_base::AddSignalMethods(curlib->clss);
 #endif
+
+	curlib = NULL;
+}
 
 void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const char *names,void setupfun(t_classid),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...)
 {
@@ -199,12 +229,21 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 	if(dsp) chktilde(GetString(nsym));
 #endif
 
-	if(!lib) process_attributes = attr;
+	if(lib) {
+		FLEXT_ASSERT(curlib);
+#if FLEXT_SYS == FLEXT_SYS_MAX
+		curlib->dsp |= dsp;
+#endif
+	}
+	else {
+		FLEXT_ASSERT(!curlib);
+		process_attributes = attr;
+	}
 
 	// set dynamic class pointer
 	t_class **cl = 
 #if FLEXT_SYS == FLEXT_SYS_MAX
-		lib?&lib_class:
+		lib?&curlib->clss:
 #endif
 		new t_class *;
 
@@ -223,19 +262,17 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
      	// attention: in Max/MSP the *cl variable is not initialized after that call.
      	// just the address is stored, the initialization then occurs with the first object instance!
 	}
-#elif FLEXT_SYS == FLEXT_SYS_JMAX
-	*cl = fts_class_install(nsym, jmax_class_inst);
 #else
-#error
+#error Platform not implemented
 #endif
 
 	// make new dynamic object
 	flext_class *lo = new flext_class(*cl,newfun,freefun);
-	lo->lib = lib;
+	lo->lib = curlib;
 	lo->dsp = dsp;
 	lo->attr = process_attributes;
 
-//	post("ADDCLASS %p -> LIBOBJ %p -> %p",*cl,lo,lo->clss);
+//	post("ADDCLASS %s,%s = %p -> LIBOBJ %p -> %p (lib=%i,dsp=%i)",idname,names,*cl,lo,lo->clss,lib?1:0,dsp?1:0);
 
 	// parse the argument type list and store it with the object
 	if(argtp1 == FLEXTTPN_VAR)
@@ -285,8 +322,6 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 			// in Max/MSP the first alias gets its name from the name of the object file,
 			// unless it is a library (then the name can be different)
 			::alias(const_cast<char *>(c));  
-#elif FLEXT_SYS == FLEXT_SYS_JMAX
-		if(ix > 0)  fts_class_alias(lo->clss,lsym);
 #else
 #error
 #endif	
@@ -312,11 +347,6 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 
 typedef flext_obj *(*libfun)(int,t_atom *);
 
-#if FLEXT_SYS == FLEXT_SYS_JMAX
-void flext_obj::obj_new(fts_object_t *o, int, fts_symbol_t s, int _argc_, const fts_atom_t *argv)
-{
-	flext_hdr *obj = (flext_hdr *)o;
-#else
 #if FLEXT_SYS == FLEXT_SYS_MAX
 flext_hdr *flext_obj::obj_new(const t_symbol *s,short _argc_,t_atom *argv)
 #else
@@ -324,9 +354,10 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 #endif
 {
 	flext_hdr *obj = NULL;
-#endif
 	flext_class *lo = FindName(s);
 	if(lo) {
+//		post("NEWOBJ %s = %p -> %p",GetString(s),lo,lo->clss);
+
 		bool ok = true;
 		t_atom args[NEWARGS]; 
 
@@ -471,21 +502,15 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 	else
 #if FLEXT_SYS == FLEXT_SYS_MAX
 		// in Max/MSP an object with the name of the library exists, even if not explicitly declared!
-		if(s != lib_name) 
+//		if(!lo->lib || s != lo->lib->name) 
 #endif
 		error("Class %s not found in library!",s->s_name);
 #endif
 
-#if FLEXT_SYS != FLEXT_SYS_JMAX
 	return obj;
-#endif
 }
 
-#if FLEXT_SYS == FLEXT_SYS_JMAX
-void flext_obj::obj_free(fts_object_t *h, int winlet, fts_symbol_t s, int ac, const fts_atom_t *at)
-#else
 void flext_obj::obj_free(flext_hdr *h)
-#endif
 {
 	flext_hdr *hdr = (flext_hdr *)h;
 	const t_symbol *name = hdr->data->thisNameSym();
@@ -517,7 +542,7 @@ void flext_obj::obj_free(flext_hdr *h)
 	else 
 #if FLEXT_SYS == FLEXT_SYS_MAX
 		// in Max/MSP an object with the name of the library exists, even if not explicitely declared!
-		if(name != lib_name) 
+//		if(!lo->lib || s != lo->lib->name) 
 #endif
 		error("Class %s not found in library!",name);
 #endif

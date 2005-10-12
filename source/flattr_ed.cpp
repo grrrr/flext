@@ -474,13 +474,13 @@ void flext_base::SetGfx(t_classid c)
     ori_vis = widgetbehavior.w_visfn; 
     ori_select = widgetbehavior.w_selectfn; 
 #endif
-    widgetbehavior.w_visfn =        cb_GfxVis;
-    widgetbehavior.w_selectfn =     cb_GfxSelect; 
+    widgetbehavior.w_visfn =        (t_visfn)cb_GfxVis;
+    widgetbehavior.w_selectfn =     (t_selectfn)cb_GfxSelect; 
 
 #if PD_MINOR_VERSION >= 37
     class_setsavefn(cl,(t_savefn)cb_GfxSave);
 #else
-    widgetbehavior.w_savefn =       cb_GfxSave;
+    widgetbehavior.w_savefn =       (t_savefn)cb_GfxSave;
 #endif
 
 #endif // FLEXT_ATTRHIDE
@@ -491,7 +491,7 @@ void flext_base::SetGfx(t_classid c)
 #if PD_MINOR_VERSION >= 37
     class_setpropertiesfn(cl,(t_propertiesfn)cb_GfxProperties);
 #else
-    widgetbehavior.w_propertiesfn = cb_GfxProperties;
+    widgetbehavior.w_propertiesfn = (t_propertiesfn)cb_GfxProperties;
 #endif
 
     tclscript();

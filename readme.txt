@@ -19,7 +19,7 @@ modular real-time audio systems Max/MSP and Pure Data (PD) with external modules
 short externals. These modules provide a way to tailor such a system for one’s 
 special needs and supply additional functionality. 
 
-Source code based on flext is able to exploit nearly all features of the 
+Source code based on flext is able to exploit most common features of the 
 respective real-time framework while staying completely independent of the
 actual host system and platform (hardware and operating system). 
 
@@ -41,7 +41,7 @@ pros:
 
 cons:
 - introduces a small overhead to speed of message and signal handling 
-- overhead in object size (due to possibly unneeded code)
+- larger memory footprint
 
 ----------------------------------------------------------------------------
 

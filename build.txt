@@ -8,6 +8,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 This document consists of the following parts:
 
+0) Important stuff at the beginning
 1) Using the flext build system
 1.1) Building and installing flext
 1.2) Building externals
@@ -16,6 +17,16 @@ This document consists of the following parts:
 2) Using autoconf
 
 3) Other ways to compile flext and flext-based externals
+
+----------------------------------------------------------------------------
+
+0) Important stuff at the beginning
+===================================
+
+Please be aware that the build system might have difficulties handling paths with spaces.
+Under unix you might get along with escaping your\ path or quoting "your path".
+Under Windows escaping doesn't work at all and quoting might not work either - therefore it's
+best not to use spaced paths at all.
 
 ----------------------------------------------------------------------------
 
@@ -93,6 +104,7 @@ Windows:
   be sure to use the VCVARS32.BAT command on the prompt to set up the environment variables
 or
 - cygwin with binutils, gcc and make packages
+
 
 
 1.2) Building and installing flext

@@ -28,10 +28,6 @@ KNOWN BUGS:
   In these cases one can switch back to the C library memory operators by defining the FLEXT_NOGLOBALNEW macro before
   inclusion of the flext.h header file (e.g. as a -D compiler option)
 
-- MaxMSP Mach-O DSP externals cannot be the first externals loaded (e.g. in Max Runtime)
-    there must be a CFM signal external loaded beforehand!!! (Max will crash otherwise)
-	-> i think this is fixed in Max in the meantime!
-
 - PD: floats into the leftmost inlet of DSP objects can't be used as messages 
   even if there's no signal inlet at all
 

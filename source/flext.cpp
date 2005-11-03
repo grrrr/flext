@@ -251,11 +251,12 @@ void flext_base::cb_dsp(flext_hdr *c,t_signal **sp)
 
 	flext_dsp *obj;
 #ifdef FLEXT_DEBUG
-    obj = dynamic_cast<flext_dsp *>(bobj); 
+    obj = dynamic_cast<flext_dsp *>(bobj);
 #else
     obj = static_cast<flext_dsp *>(bobj); 
 #endif
 
+    FLEXT_ASSERT(obj);
 	obj->SetupDsp(sp);
 }
 

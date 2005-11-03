@@ -7,4 +7,5 @@ SIMD=1
 
 # where is the Sndobjs installation?
 # (uncomment the line with # to disable SNDOBJ support)
+# please be sure to delete an eventual m_pd.h file from the SNDOBJ include folder!!
 #SNDOBJ=/usr/local/lib/sndobj

@@ -810,8 +810,8 @@ private:
     //! \brief This represents either an inlet or outlet during construction
 	class FLEXT_SHARE xlet {	
     public:
-        xlet(): tp(xlet_none),desc(NULL) {}
-        ~xlet() { if(desc) delete[] desc; }
+        xlet();
+        ~xlet();
 
         xlettype tp;
 		char *desc;

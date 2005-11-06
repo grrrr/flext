@@ -101,7 +101,8 @@ bool flext_base::InitInlets()
 
 #if PD_MINOR_VERSION >= 37 && defined(PD_DEVEL_VERSION)
             // set tooltip
-            if(xi.desc && *xi.desc) class_settip(thisClass(),gensym(xi.desc));
+// this is on a per-class basis... we cannot really use it here
+//            if(xi.desc && *xi.desc) class_settip(thisClass(),gensym(xi.desc));
 #endif
         }       
 

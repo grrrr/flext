@@ -21,6 +21,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 flext_base::xlet flext_base::inlist[MAXLETS],flext_base::outlist[MAXLETS];
 
+flext_base::xlet::xlet(): tp(xlet_none),desc(NULL) {}
+flext_base::xlet::~xlet() { if(desc) delete[] desc; }
 
 void flext_base::xlet::Desc(const char *c)
 {

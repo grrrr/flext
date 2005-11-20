@@ -55,18 +55,18 @@ Useful combinations of the above are
 
 under Windows:
 pd msvc, using nmake
-pd cygwin, using gnumake
-pd mingw, using gnumake (from the CMD prompt, not msys!)
+pd cygwin, using GNU make
+pd mingw, using GNU make (from the CMD prompt, not msys!)
 max msvc, using nmake
-max cygwin, using gnumake
-max mingw, using gnumake (from the CMD prompt, not msys!)
-pd bcc, using bmake
+max cygwin, using GNU make
+max mingw, using GNU make (from the CMD prompt, not msys!)
+pd bcc, using Borland make
 
 under Linux or MacOSX:
-pd gcc, using gnumake
+pd gcc, using GNU make
 
 under MacOSX:
-max gcc, using gnumake - Mach-O externals only (Max 4.5 upwards)
+max gcc, using GNU make - Mach-O externals only (Max 4.5 upwards)
 
 
 There are two central scripts in the flext folder which invoke the building process:

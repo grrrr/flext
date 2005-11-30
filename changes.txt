@@ -21,6 +21,7 @@ Version history:
 - real class names now also reflect debug mode (like in flext_base_shared_d)
 - cleaned up internals (like Max/MSP typedefs)
 - fixed coexistence of message and signal objects in Max/MSP object libraries
+- fixes for pthreads version 2
 
 0.5.0:
 - fixes for 64 bit builds (size_t is integer type of pointer size)

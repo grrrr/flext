@@ -17,6 +17,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "flstdc.h"
 #include <new>
+#include <string.h>
 
 /*!	\defgroup FLEXT_SUPPORT Flext support classes
 	@{
@@ -828,11 +829,13 @@ protected:
 
 	static thrid_t thrhelpid;
 	static thrid_t thrmsgid;
-	static bool StartHelper();
 	static void ThrHelper(void *);
 
 	//! the system's thread id
 	static thrid_t thrid;  // the system thread
+
+private:
+    static bool StartHelper(); // used in flext::Setup()
 
 public:
 
@@ -1204,6 +1207,24 @@ inline bool operator <(const t_atom &a,const t_atom &b) { return flext::CmpAtom(
 inline bool operator <=(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) <= 0; }
 inline bool operator >(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) > 0; }
 inline bool operator >=(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) >= 0; }
+
+#ifdef FLEXT_THREADS
+inline bool operator ==(const flext::thrid_t &a,const flext::thrid_t &b)
+{
+    if(sizeof(a) == sizeof(size_t))
+        return *(size_t *)&a == *(size_t *)&b;
+    else
+        return !memcmp(&a,&b,sizeof(a));
+}
+
+inline bool operator <(const flext::thrid_t &a,const flext::thrid_t &b)
+{
+    if(sizeof(a) == sizeof(size_t))
+        return *(size_t *)&a < *(size_t *)&b;
+    else
+        return memcmp(&a,&b,sizeof(a)) < 0;
+}
+#endif
 
 //! @} // FLEXT_SUPPORT
 

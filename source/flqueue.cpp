@@ -23,8 +23,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #ifdef FLEXT_THREADS
 //! Thread id of message queue thread
-flext::thrid_t flext::thrmsgid = 0;
+flext::thrid_t flext::thrmsgid;
 #endif
+
+static bool qustarted = false;
 
 #ifdef FLEXT_SHARED
 /*
@@ -299,6 +301,7 @@ static void Trigger()
 void flext_base::QWorker(thr_params *)
 {
     thrmsgid = GetThreadId();
+    qustarted = true;
     for(;;) {
         qthrcond.Wait();
         QWork(true);
@@ -308,19 +311,19 @@ void flext_base::QWorker(thr_params *)
 
 void flext_base::StartQueue()
 {
-    static bool started = false;
-    if(started) return;
-    else started = true;
-
+    if(qustarted) return;
 #if FLEXT_QMODE == 1
 #ifdef PERMANENTIDLE
     sys_callback(QTick,NULL,0);
+    qustarted = true;
 #endif
 #elif FLEXT_QMODE == 2
     LaunchThread(QWorker,NULL);
+    while(!qustarted) Sleep(0.001);
 #elif FLEXT_QMODE == 0 && (FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX)
 //    qclk = (t_qelem *)(qelem_new(NULL,(t_method)QTick));
     qclk = (t_clock *)(clock_new(NULL,(t_method)QTick));
+    qustarted = true;
 #else
 #error Not implemented!
 #endif

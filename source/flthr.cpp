@@ -38,11 +38,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include <errno.h>
 
-//! Thread id of system thread
-flext::thrid_t flext::thrid = 0;
+//! Thread id of system thread - will be initialized in flext::Setup
+flext::thrid_t flext::thrid;
 
-//! Thread id of helper thread
-flext::thrid_t flext::thrhelpid = 0;
+//! Thread id of helper thread - will be initialized in flext::Setup
+flext::thrid_t flext::thrhelpid;
 
 
 //! \brief This represents an entry to the list of active method threads
@@ -110,30 +110,26 @@ static void LaunchHelper(thr_entry *e)
     e->meth(e->params);
 }
 
+bool initialized = false;
 
 //! Start helper thread
 bool flext::StartHelper()
 {
-	if(thrhelpid) return true;
-	
-	if(!thrid) {
-		// system thread has not been set
-		ERRINTERNAL();
-		return false;
-	}
-
 	bool ok = false;
+    initialized = false;
 #if FLEXT_THREADS == FLEXT_THR_POSIX
 	pthread_attr_t attr;
 	pthread_attr_init(&attr);
 	pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);
 
-	ok = pthread_create (&thrhelpid,&attr,(void *(*)(void *))ThrHelper,NULL) == 0;
+    pthread_t tmp;
+	ok = pthread_create (&tmp,&attr,(void *(*)(void *))ThrHelper,NULL) == 0;
 #elif FLEXT_THREADS == FLEXT_THR_MP
 	if(!MPLibraryIsLoaded())
 		error("Thread library is not loaded");
 	else {
-		OSStatus ret = MPCreateTask((TaskProc)ThrHelper,NULL,0,0,0,0,0,&thrhelpid);
+        MPTaskID tmp;
+		OSStatus ret = MPCreateTask((TaskProc)ThrHelper,NULL,0,0,0,0,0,&tmp);
 		ok = ret == noErr;
 	}
 #elif FLEXT_THREADS == FLEXT_THR_WIN32
@@ -145,7 +141,7 @@ bool flext::StartHelper()
 		error("flext - Could not launch helper thread!"); 
     else {
         // now we have to wait for thread helper to initialize
-        while(!thrhelpid || !thrhelpcond) Sleep(0.001);
+        while(!initialized) Sleep(0.001);
 
         // we are ready for threading now!
     }
@@ -173,6 +169,8 @@ void flext::ThrHelper(void *)
 	RelPriority(-1);
 
 	thrhelpcond = new ThrCond;
+
+    initialized = true;
 
 	// helper loop
 	for(;;) {

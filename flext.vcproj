@@ -121,7 +121,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="c:\programme\audio\pd-0.39-1\src;c:\data\prog\audio\sndobj\include;c:\data\prog\audio\stk\include"
+				AdditionalIncludeDirectories="c:\data\prog\packs\pthreads\include;c:\programme\audio\pd\src;c:\data\prog\audio\sndobj\include;c:\data\prog\audio\stk\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_PD;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_EXPORTS;xFLEXT_ATTRHIDE;xFLEXT_NOATTREDIT;_WIN32_WINNT=0x501"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"

@@ -55,6 +55,9 @@ public:
     inline void *operator new(size_t bytes) { return ::operator new(bytes); }
     inline void operator delete(void *blk) { ::operator delete(blk); }
 
+    inline void *operator new[](size_t bytes) { return ::operator new[](bytes); }
+    inline void operator delete[](void *blk) { ::operator delete[](blk); }
+
     static bool MemCheck(void *) { return true; }
 #else
 	/*! Overloaded new memory allocation method

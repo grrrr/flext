@@ -104,6 +104,7 @@ bool flext_base::InitInlets()
 // this is on a per-class basis... we cannot really use it here
 //            if(xi.desc && *xi.desc) class_settip(thisClass(),gensym(xi.desc));
 #endif
+            inlets[0] = NULL;
         }       
 
         for(int ix = 1; ix < incnt; ++ix,++cnt) {

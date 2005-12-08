@@ -46,6 +46,17 @@ public:
 		@{ 
 	*/
 
+#ifdef FLEXT_NOGLOBALNEW
+#error FLEXT_NOGLOBALNEW is deprecated, define FLEXT_USECMEM instead
+#define FLEXT_USECMEM
+#endif
+
+#ifdef FLEXT_USECMEM
+    inline void *operator new(size_t bytes) { return ::operator new(bytes); }
+    inline void operator delete(void *blk) { ::operator delete(blk); }
+
+    static bool MemCheck(void *) { return true; }
+#else
 	/*! Overloaded new memory allocation method
 		\note this uses a fast allocation method of the real-time system
 		\warning Max/MSP (or MacOS) allows only 32K in overdrive mode!
@@ -54,9 +65,9 @@ public:
 	//! Overloaded delete method
 	void operator delete(void *blk);
 
-#ifndef __BORLANDC__
-	inline void *operator new(size_t,void *p) { return p; }
-	inline void operator delete(void *,void *) {}
+#ifndef __MRC__ // doesn't allow new[] overloading?!
+	inline void *operator new[](size_t bytes) { return operator new(bytes); }
+	inline void operator delete[](void *blk) { operator delete(blk); }
 #endif
 
 #ifdef FLEXT_DEBUGMEM
@@ -65,11 +76,12 @@ public:
     static bool MemCheck(void *) { return true; }
 #endif
 
-#ifndef __MRC__ // doesn't allow new[] overloading?!
-	inline void *operator new[](size_t bytes) { return operator new(bytes); }
-	inline void operator delete[](void *blk) { operator delete(blk); }
+#endif // USECMEM
 
 #ifndef __BORLANDC__
+	inline void *operator new(size_t,void *p) { return p; }
+	inline void operator delete(void *,void *) {}
+#ifndef __MRC__
 	inline void *operator new[](size_t,void *p) { return p; }
 	inline void operator delete[](void *,void *) {}
 #endif
@@ -89,7 +101,7 @@ public:
 	//!	@}  FLEXT_S_MEMORY  	
 };
 
-#ifndef FLEXT_NOGLOBALNEW
+#ifndef FLEXT_USECMEM
 /************************************************************************/
 // MFC doesn't like global overloading of allocators
 // anyway, who likes MFC
@@ -110,7 +122,7 @@ inline void *operator new[](size_t bytes) NEWTHROW { return flext_root::operator
 inline void operator delete[](void *blk) DELTHROW { flext_root::operator delete[](blk); }
 #endif
 
-#endif // FLEXT_NOGLOBALNEW
+#endif // FLEXT_USECMEM
 
 /************************************************************************/
 
@@ -792,8 +804,6 @@ public:
 	static bool IsThread(thrid_t t,thrid_t ref = GetThreadId()) { 
 #if FLEXT_THREADS == FLEXT_THR_POSIX
 		return pthread_equal(ref,t) != 0; 
-#elif FLEXT_THREADS == FLEXT_THR_WIN32
-        return ref == t; 
 #else
 		return ref == t;
 #endif

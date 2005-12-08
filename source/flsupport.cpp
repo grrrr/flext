@@ -104,6 +104,8 @@ void flext::Setup()
 
 #define LARGEALLOC 32000
 
+#ifndef FLEXT_USECMEM
+
 #ifdef FLEXT_DEBUGMEM
 static const size_t memtest = 0x12345678L;
 #endif
@@ -190,6 +192,8 @@ bool flext_root::MemCheck(void *blk)
         *(size_t *)((char *)ori+sizeof(size_t)) == memtest && 
         *(size_t *)((char *)ori+bytes-sizeof(memtest)) == memtest;
 }
+#endif
+
 #endif
 
 void *flext_root::NewAligned(size_t bytes,int bitalign)

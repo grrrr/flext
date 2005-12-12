@@ -192,8 +192,6 @@ public:
 	//! Get number of signal outlets
 	int CntOutSig() const { return outsigs; }
 
-    //! Check if we are in DSP time
-    static bool InDsp() { return indsp; }
 
 	//! Retrieve currently processed message tag (NULL if no message processing)
 	static const t_symbol *thisTag() { return curtag; }
@@ -249,38 +247,44 @@ public:
 		@{ 
 	*/
 
-	//! Output bang (index n starts with 0)
+	//! Output low priority bang (index n starts with 0)
 	void ToQueueBang(int n) const;
 
-	//! Output float (index n starts with 0)
+	//! Output low priority float (index n starts with 0)
 	void ToQueueFloat(int n,float f) const;
 
-	//! Output integer (index n starts with 0)
+	//! Output low priority integer (index n starts with 0)
 	void ToQueueInt(int n,int f) const;
 
-	//! Output boolean (index n starts with 0)
+	//! Output low priority boolean (index n starts with 0)
 	void ToQueueBool(int n,bool f) const { ToQueueInt(n,f?1:0); }
 
-	//! Output symbol (index n starts with 0)
+	//! Output low priority symbol (index n starts with 0)
 	void ToQueueSymbol(int n,const t_symbol *s) const;
-	//! Output string aka symbol (to appointed outlet)
+	//! Output low priority string aka symbol (to appointed outlet)
 	void ToQueueString(int n,const char *s) const { ToQueueSymbol(n,MakeSymbol(s)); }
 
-	//! Output atom (index n starts with 0)
+	//! Output low priority atom (index n starts with 0)
 	void ToQueueAtom(int n,const t_atom &at) const; 
 
-	//! Output list (index n starts with 0)
+	//! Output low priority list (index n starts with 0)
 	void ToQueueList(int n,int argc,const t_atom *argv) const; 
-	//! Output list (index n starts with 0)
+	//! Output low priority list (index n starts with 0)
 	void ToQueueList(int n,const AtomList &list) const  { ToQueueList(n,list.Count(),list.Atoms()); }
 
-	//! Output anything (index n starts with 0)
+	//! Output low priority anything (index n starts with 0)
 	void ToQueueAnything(int n,const t_symbol *s,int argc,const t_atom *argv)  const;
-	//! Output anything (index n starts with 0)
+	//! Output low priority anything (index n starts with 0)
 	void ToQueueAnything(int n,const AtomAnything &any) const  { ToQueueAnything(n,any.Header(),any.Count(),any.Atoms()); }
 
+    //!	@} FLEXT_C_IO_QUEUE
 
-	//! Send bang to self (inlet n)
+
+	/*!	\defgroup FLEXT_C_IO_SELF Output of data to inlets/outlets of this object
+		@{ 
+	*/
+
+    //! Send bang to self (inlet n)
     void ToSelfBang(int n) const { ToQueueBang(-1-n); }
 
 	//! Send float to self (inlet n)
@@ -310,7 +314,76 @@ public:
 	//! Send anything to self (inlet n)
 	void ToSelfAnything(int n,const AtomAnything &any) const { ToSelfAnything(n,any.Header(),any.Count(),any.Atoms()); }
 
-//!		@} FLEXT_C_IO_QUEUE
+    //!	@} FLEXT_C_IO_SELF
+
+
+	/*!	\defgroup FLEXT_C_IO_MESSAGEBUNDLE Output of data via message bundles
+
+        These are used to assure the sending of several messages from a second thread to the same logical time
+
+		@{ 
+	*/
+
+	//! Output bang (index n starts with 0)
+	void MsgAddBang(MsgBundle *mb,int n) const;
+
+	//! Output float (index n starts with 0)
+	void MsgAddFloat(MsgBundle *mb,int n,float f) const;
+
+	//! Output integer (index n starts with 0)
+	void MsgAddInt(MsgBundle *mb,int n,int f) const;
+
+	//! Output boolean (index n starts with 0)
+	void MsgAddBool(MsgBundle *mb,int n,bool f) const { MsgAddInt(mb,n,f?1:0); }
+
+	//! Output symbol (index n starts with 0)
+	void MsgAddSymbol(MsgBundle *mb,int n,const t_symbol *s) const;
+	//! Output string aka symbol (to appointed outlet)
+	void MsgAddString(MsgBundle *mb,int n,const char *s) const { MsgAddSymbol(mb,n,MakeSymbol(s)); }
+
+	//! Output atom (index n starts with 0)
+	void MsgAddAtom(MsgBundle *mb,int n,const t_atom &at) const;
+
+	//! Output list (index n starts with 0)
+	void MsgAddList(MsgBundle *mb,int n,int argc,const t_atom *argv) const; 
+	//! Output list (index n starts with 0)
+	void MsgAddList(MsgBundle *mb,int n,const AtomList &list) const { MsgAddList(mb,n,list.Count(),list.Atoms()); }
+
+	//! Output anything (index n starts with 0)
+	void MsgAddAnything(MsgBundle *mb,int n,const t_symbol *s,int argc,const t_atom *argv) const;
+	//! Output anything (index n starts with 0)
+	void MsgAddAnything(MsgBundle *mb,int n,const AtomAnything &any) const { MsgAddAnything(mb,n,any.Header(),any.Count(),any.Atoms()); }
+
+    void MsgSelfBang(MsgBundle *mb,int n) const { MsgAddBang(mb,-1-n); }
+
+	//! Send float to self (inlet n)
+    void MsgSelfFloat(MsgBundle *mb,int n,float f) const { MsgAddFloat(mb,-1-n,f); }
+
+	//! Send integer to self (inlet n)
+    void MsgSelfInt(MsgBundle *mb,int n,int f) const { MsgAddInt(mb,-1-n,f); }
+
+	//! Send boolean to self (inlet n)
+	void MsgSelfBool(MsgBundle *mb,int n,bool f) const { MsgSelfInt(mb,n,f?1:0); }
+
+	//! Send symbol to self (inlet n)
+    void MsgSelfSymbol(MsgBundle *mb,int n,const t_symbol *s) const { MsgAddSymbol(mb,-1-n,s); }
+	//! Send string aka symbol to self (inlet 0)
+	void MsgSelfString(MsgBundle *mb,int n,const char *s) const { MsgSelfSymbol(mb,n,MakeSymbol(s)); }
+
+	//! Output atom (index n starts with 0)
+    void MsgSelfAtom(MsgBundle *mb,int n,const t_atom &at) const { MsgAddAtom(mb,-1-n,at); }
+
+	//! Send list to self (inlet n)
+    void MsgSelfList(MsgBundle *mb,int n,int argc,const t_atom *argv) const { MsgAddList(mb,-1-n,argc,argv); }
+	//! Send list to self (inlet n)
+	void MsgSelfList(MsgBundle *mb,int n,const AtomList &list) const { MsgSelfList(mb,n,list.Count(),list.Atoms()); }
+
+	//! Send anything to self (inlet n)
+    void MsgSelfAnything(MsgBundle *mb,int n,const t_symbol *s,int argc,const t_atom *argv) const { MsgAddAnything(mb,-1-n,s,argc,argv); }
+	//! Send anything to self (inlet n)
+	void MsgSelfAnything(MsgBundle *mb,int n,const AtomAnything &any) const { MsgSelfAnything(mb,n,any.Header(),any.Count(),any.Atoms()); }
+
+    //! @} FLEXT_C_IO_MESSAGEBUNDLE
 
 //!	@} FLEXT_C_INOUT
 
@@ -764,6 +837,8 @@ protected:
 	void ToSysBool(int n,bool f) const { ToSysInt(n,f?1:0); }
 	void ToSysAtom(int n,const t_atom &at) const;
 
+	static void ToSysMsg(MsgBundle *mb);
+
 	// add class method handlers
 	static void AddMessageMethods(t_class *c);
 	static void AddSignalMethods(t_class *c);
@@ -797,9 +872,6 @@ public:
     static void AddAttrib(ItemCont *aa,ItemCont *ma,const t_symbol *attr,metharg tp,methfun gfun,methfun sfun);
     void AddAttrib(const t_symbol *attr,metharg tp,methfun gfun,methfun sfun);
 	static void AddAttrib(t_classid c,const t_symbol *attr,metharg tp,methfun gfun,methfun sfun);
-
-    //! flag if we are within DSP
-    static bool indsp;
 
 private:
 

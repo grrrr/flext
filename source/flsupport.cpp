@@ -42,6 +42,8 @@ const t_symbol *flext::sym_size = NULL;
 const t_symbol *flext::sym_attributes = NULL;
 const t_symbol *flext::sym_methods = NULL;
 
+bool flext::indsp = false;
+
 
 int flext::Version() { return FLEXT_VERSION; }
 const char *flext::VersionStr() { return FLEXT_VERSTR; }
@@ -77,7 +79,7 @@ void flext::Setup()
     sym_buffer = flext::MakeSymbol("buffer~");
     sym_size = flext::MakeSymbol("size");
 #endif
-
+    
     sym_attributes = flext::MakeSymbol("attributes");
     sym_methods = flext::MakeSymbol("methods");
 

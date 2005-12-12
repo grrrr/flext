@@ -20,7 +20,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // === flext_base ============================================
 
 bool flext_base::compatibility = true;
-bool flext_base::indsp = false;
 const t_symbol *flext_base::curtag = NULL;
 
 flext_base::FLEXT_CLASSDEF(flext_base)()
@@ -113,13 +112,14 @@ void flext_base::Exit()
     if(outlets) delete[] outlets;
 
     if(inlets) {
-        for(int ix = 0; ix < incnt; ++ix)
-            if(inlets[ix]) {
+        FLEXT_ASSERT(incnt > 1);
+        for(int ix = 1; ix < incnt; ++ix)
+            if(inlets[ix-1]) {
                 // release proxy object
 #if FLEXT_SYS == FLEXT_SYS_PD
-                pd_free(&inlets[ix]->obj.ob_pd);
+                pd_free(&inlets[ix-1]->obj.ob_pd);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-                freeobject((object *)inlets[ix]);
+                freeobject((object *)inlets[ix-1]);
 #endif
             }
         delete[] inlets;

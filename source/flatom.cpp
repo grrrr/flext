@@ -48,7 +48,7 @@ t_atom *flext::CopyList(int argc,const t_atom *argv)
 	return dst;
 }
 
-static void copyatoms(int cnt,t_atom *dst,const t_atom *src)
+void flext::CopyAtoms(int cnt,t_atom *dst,const t_atom *src)
 {
     if(dst < src)
         // forward
@@ -63,16 +63,22 @@ void flext::AtomList::Alloc(int sz,int keepix,int keeplen,int keepto)
     if(lst) {
         if(cnt == sz) return; // no change
 
-        t_atom *l = new t_atom[sz];
-        if(keepix >= 0)
-            // keep contents
-            copyatoms(keeplen >= 0?keeplen:(cnt > sz?sz:cnt),l+keepto,lst+keepix);
+        t_atom *l;
+        if(sz) {
+            l = new t_atom[sz];
+            if(keepix >= 0)
+                // keep contents
+                CopyAtoms(keeplen >= 0?keeplen:(cnt > sz?sz:cnt),l+keepto,lst+keepix);
+        }
+        else
+            l = NULL;
+
         delete[] lst;
         lst = l,cnt = sz;
     }
     else {
         FLEXT_ASSERT(cnt == 0);
-        lst = new t_atom[cnt = sz];
+        if(sz) lst = new t_atom[cnt = sz];
     }
 }
 
@@ -94,7 +100,7 @@ flext::AtomList &flext::AtomList::Set(int argc,const t_atom *argv,int offs,bool 
 	if(resize) Alloc(ncnt);
 
     // argv can be NULL independently from argc
-    if(argv) copyatoms(argc,lst+offs,argv);
+    if(argv) CopyAtoms(argc,lst+offs,argv);
 
 	return *this;
 }
@@ -120,7 +126,7 @@ void flext::AtomListStaticBase::Alloc(int sz,int keepix,int keeplen,int keepto)
         if(lst != predata && lst) {
             if(keepix >= 0)
                 // keep contents
-                copyatoms(keeplen >= 0?keeplen:(cnt > sz?sz:cnt),predata+keepto,lst+keepix);
+                CopyAtoms(keeplen >= 0?keeplen:(cnt > sz?sz:cnt),predata+keepto,lst+keepix);
             AtomList::Free();
         }
         lst = predata,cnt = sz;

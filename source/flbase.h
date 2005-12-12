@@ -160,8 +160,8 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
         static bool IsLib(t_classid id);
 
         bool HasAttributes() const;
-        bool IsDSP() const;
         bool IsLib() const;
+        bool IsDSP() const;
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
 		// under Max/MSP it could be necessary to activate DSP also for message objects

@@ -339,6 +339,9 @@ public:
 	//! Copy an atom
 	static void CopyAtom(t_atom *dst,const t_atom *src) { *dst = *src; }
 
+	//! Copy atoms
+	static void CopyAtoms(int cnt,t_atom *dst,const t_atom *src);
+
 	//! Print an atom
 	static bool PrintAtom(const t_atom &a,char *buf,size_t bufsz);
 
@@ -707,27 +710,68 @@ public:
 	};
 
 
-//!		@} FLEXT_S_ATOM
+    //!	@} FLEXT_S_ATOM
 
 
 // --- messages -------------------------------------------------------	
+
+	/*!	\defgroup FLEXT_S_MSGBUNDLE Flext message handling 
+		@{ 
+	*/
+
+    class MsgBundle;
+
+    //! Make new message bundle
+    static MsgBundle *MsgNew();
+
+    //! Destroy message bundle
+    static void MsgFree(MsgBundle *mb);
+
+    //! Send (and destroy) message bundle
+    static void ToSysMsg(MsgBundle *mb);
+
+    //! Send (and destroy) message bundle
+    static void ToOutMsg(MsgBundle *mb);
+
+    //! Send low priority (and destroy) message bundle
+    static void ToQueueMsg(MsgBundle *mb);
+
+    //! @} FLEXT_S_MSGBUNDLE
+
 
 	/*!	\defgroup FLEXT_S_MSG Flext message handling 
 		@{ 
 	*/
 
-    //! Send a message to a symbol (bound to an object)
-    static bool Forward(const t_symbol *sym,const t_symbol *s,int argc,const t_atom *argv,bool forcedirect = false);
+    static bool Forward(const t_symbol *sym,const t_symbol *s,int argc,const t_atom *argv);
+    static bool Forward(const t_symbol *sym,const AtomAnything &args) { return Forward(sym,args.Header(),args.Count(),args.Atoms()); }
+    static bool Forward(const char *sym,const AtomAnything &args) { return Forward(MakeSymbol(sym),args.Header(),args.Count(),args.Atoms()); }
+    static bool Forward(const t_symbol *sym,int argc,const t_atom *argv) { return Forward(sym,sym_list,argc,argv); }
+    static bool Forward(const t_symbol *sym,const AtomList &args) { return Forward(sym,args.Count(),args.Atoms()); }
+    static bool Forward(const char *sym,const AtomList &args) { return Forward(MakeSymbol(sym),args.Count(),args.Atoms()); }
 
-    static bool Forward(const t_symbol *sym,const AtomAnything &args,bool forcedirect = false) { return Forward(sym,args.Header(),args.Count(),args.Atoms(),forcedirect); }
-    static bool Forward(const char *sym,const AtomAnything &args,bool forcedirect = false) { return Forward(MakeSymbol(sym),args.Header(),args.Count(),args.Atoms(),forcedirect); }
+    static bool SysForward(const t_symbol *sym,const t_symbol *s,int argc,const t_atom *argv);
+    static bool SysForward(const t_symbol *sym,const AtomAnything &args) { return SysForward(sym,args.Header(),args.Count(),args.Atoms()); }
+    static bool SysForward(const char *sym,const AtomAnything &args) { return SysForward(MakeSymbol(sym),args.Header(),args.Count(),args.Atoms()); }
+    static bool SysForward(const t_symbol *sym,int argc,const t_atom *argv) { return SysForward(sym,sym_list,argc,argv); }
+    static bool SysForward(const t_symbol *sym,const AtomList &args) { return SysForward(sym,args.Count(),args.Atoms()); }
+    static bool SysForward(const char *sym,const AtomList &args) { return SysForward(MakeSymbol(sym),args.Count(),args.Atoms()); }
 
-    static bool Forward(const t_symbol *sym,int argc,const t_atom *argv,bool forcedirect = false) { return Forward(sym,sym_list,argc,argv,forcedirect); }
+    static bool QueueForward(const t_symbol *sym,const t_symbol *s,int argc,const t_atom *argv);
+    static bool QueueForward(const t_symbol *sym,const AtomAnything &args) { return QueueForward(sym,args.Header(),args.Count(),args.Atoms()); }
+    static bool QueueForward(const char *sym,const AtomAnything &args) { return QueueForward(MakeSymbol(sym),args.Header(),args.Count(),args.Atoms()); }
+    static bool QueueForward(const t_symbol *sym,int argc,const t_atom *argv) { return QueueForward(sym,sym_list,argc,argv); }
+    static bool QueueForward(const t_symbol *sym,const AtomList &args) { return QueueForward(sym,args.Count(),args.Atoms()); }
+    static bool QueueForward(const char *sym,const AtomList &args) { return QueueForward(MakeSymbol(sym),args.Count(),args.Atoms()); }
 
-    static bool Forward(const t_symbol *sym,const AtomList &args,bool forcedirect = false) { return Forward(sym,args.Count(),args.Atoms(),forcedirect); }
-    static bool Forward(const char *sym,const AtomList &args,bool forcedirect = false) { return Forward(MakeSymbol(sym),args.Count(),args.Atoms(),forcedirect); }
+    static bool MsgForward(MsgBundle *mb,const t_symbol *sym,const t_symbol *s,int argc,const t_atom *argv);
+    static bool MsgForward(MsgBundle *mb,const t_symbol *sym,const AtomAnything &args) { return MsgForward(mb,sym,args.Header(),args.Count(),args.Atoms()); }
+    static bool MsgForward(MsgBundle *mb,const char *sym,const AtomAnything &args) { return MsgForward(mb,MakeSymbol(sym),args.Header(),args.Count(),args.Atoms()); }
+    static bool MsgForward(MsgBundle *mb,const t_symbol *sym,int argc,const t_atom *argv) { return MsgForward(mb,sym,sym_list,argc,argv); }
+    static bool MsgForward(MsgBundle *mb,const t_symbol *sym,const AtomList &args) { return MsgForward(mb,sym,args.Count(),args.Atoms()); }
+    static bool MsgForward(MsgBundle *mb,const char *sym,const AtomList &args) { return MsgForward(mb,MakeSymbol(sym),args.Count(),args.Atoms()); }
 
-//!		@} FLEXT_S_MSG
+    //! @} FLEXT_S_MSG
 
     
 
@@ -1164,6 +1208,9 @@ public:
 
 //!		@} FLEXT_S_TIMER
 
+    //! Check if we are in DSP time
+    static bool InDSP() { return indsp; }
+
 // --- SIMD functionality -----------------------------------------------
 
 /*!	\defgroup FLEXT_S_SIMD Cross platform SIMD support for modern CPUs 
@@ -1210,6 +1257,9 @@ protected:
 	static const t_symbol *sym_size;
 	static const t_symbol *sym_attributes;
 	static const t_symbol *sym_methods;
+
+    //! flag if we are within DSP
+    static bool indsp;
 };
 
 

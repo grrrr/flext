@@ -45,12 +45,12 @@ void flext_base::ToSysAtom(int n,const t_atom &at) const
 
 #if defined(FLEXT_THREADS)
     #if FLEXT_QMODE == 2
-        #define CHKTHR() ((IsSystemThread() || IsThread(flext::thrmsgid)) && !InDsp())
+        #define CHKTHR() ((IsSystemThread() || IsThread(flext::thrmsgid)) && !InDSP())
     #else
-        #define CHKTHR() (IsSystemThread() && !InDsp())
+        #define CHKTHR() (IsSystemThread() && !InDSP())
     #endif
 #else
-    #define CHKTHR() (!InDsp())
+    #define CHKTHR() (!InDSP())
 #endif
 
 void flext_base::ToOutBang(int n) const { if(CHKTHR()) ToSysBang(n); else ToQueueBang(n); }
@@ -60,6 +60,13 @@ void flext_base::ToOutSymbol(int n,const t_symbol *s) const { if(CHKTHR()) ToSys
 void flext_base::ToOutAtom(int n,const t_atom &at) const { if(CHKTHR()) ToSysAtom(n,at); else ToQueueAtom(n,at); }
 void flext_base::ToOutList(int n,int argc,const t_atom *argv) const { if(CHKTHR()) ToSysList(n,argc,argv); else ToQueueList(n,argc,argv); }
 void flext_base::ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { if(CHKTHR()) ToSysAnything(n,s,argc,argv); else ToQueueAnything(n,s,argc,argv); }
+
+void flext::ToOutMsg(MsgBundle *mb) { if(CHKTHR()) ToSysMsg(mb); else ToQueueMsg(mb); }
+
+bool flext::Forward(const t_symbol *recv,const t_symbol *s,int argc,const t_atom *argv)
+{
+    return CHKTHR()?SysForward(recv,s,argc,argv):QueueForward(recv,s,argc,argv); 
+}
 
 
 bool flext_base::InitInlets()
@@ -86,7 +93,7 @@ bool flext_base::InitInlets()
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
-    inlets = new px_object *[incnt];
+    inlets = incnt > 1?new px_object *[incnt]:NULL;
 #endif
     
     // type info is now in list array
@@ -104,7 +111,6 @@ bool flext_base::InitInlets()
 // this is on a per-class basis... we cannot really use it here
 //            if(xi.desc && *xi.desc) class_settip(thisClass(),gensym(xi.desc));
 #endif
-            inlets[0] = NULL;
         }       
 
         for(int ix = 1; ix < incnt; ++ix,++cnt) {
@@ -113,7 +119,7 @@ bool flext_base::InitInlets()
             switch(xi.tp) {
                 case xlet_float:
                 case xlet_int: {
-                    inlets[ix] = NULL;
+                    inlets[ix-1] = NULL;
                     char sym[] = "ft??";
                     if(ix >= 10) { 
                         if(compatibility) {
@@ -133,19 +139,19 @@ bool flext_base::InitInlets()
                     break;
                 }
                 case xlet_sym: 
-                    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
-                    in = inlet_new(&x_obj->obj,&inlets[ix]->obj.ob_pd, (t_symbol *)sym_symbol, (t_symbol *)sym_symbol);  
+                    (inlets[ix-1] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
+                    in = inlet_new(&x_obj->obj,&inlets[ix-1]->obj.ob_pd, (t_symbol *)sym_symbol, (t_symbol *)sym_symbol);  
                     break;
                 case xlet_list:
-                    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
-                    in = inlet_new(&x_obj->obj,&inlets[ix]->obj.ob_pd, (t_symbol *)sym_list, (t_symbol *)sym_list);  
+                    (inlets[ix-1] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
+                    in = inlet_new(&x_obj->obj,&inlets[ix-1]->obj.ob_pd, (t_symbol *)sym_list, (t_symbol *)sym_list);  
                     break;
                 case xlet_any:
-                    (inlets[ix] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
-                    in = inlet_new(&x_obj->obj,&inlets[ix]->obj.ob_pd, 0, 0);  
+                    (inlets[ix-1] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
+                    in = inlet_new(&x_obj->obj,&inlets[ix-1]->obj.ob_pd, 0, 0);  
                     break;
                 case xlet_sig:
-                    inlets[ix] = NULL;
+                    inlets[ix-1] = NULL;
                     if(compatibility && inlist[ix-1].tp != xlet_sig) {
                         post("%s: All signal inlets must be left-aligned in compatibility mode",thisName());
                         ok = false;
@@ -158,7 +164,7 @@ bool flext_base::InitInlets()
                     }
                     break;
                 default:
-                    inlets[ix] = NULL;
+                    inlets[ix-1] = NULL;
                     error("%s: Wrong type for inlet #%i: %i",thisName(),ix,(int)inlist[ix].tp);
                     ok = false;
             } 
@@ -180,7 +186,6 @@ bool flext_base::InitInlets()
         for(cnt = 0,ix = incnt-1; ix >= insigs; --ix,++cnt) {
             xlet &xi = inlist[ix];
             if(ix == 0) {
-                inlets[ix] = NULL;
                 if(xi.tp != xlet_any) {
                     error("%s: Leftmost inlet must be of type signal or anything",thisName());
                     ok = false;
@@ -189,13 +194,13 @@ bool flext_base::InitInlets()
             else {
                 switch(xi.tp) {
                     case xlet_sig:
-                        inlets[ix] = NULL;
+                        inlets[ix-1] = NULL;
                         error("%s: All signal inlets must be left-aligned",thisName());
                         ok = false;
                         break;
                     case xlet_float: {
 						if(ix < 10) {
-							inlets[ix] = NULL;
+							inlets[ix-1] = NULL;
                             floatin(x_obj,ix);
 							break;
 						}
@@ -204,7 +209,7 @@ bool flext_base::InitInlets()
 					}
                     case xlet_int: {
 						if(ix < 10) {
-							inlets[ix] = NULL;
+							inlets[ix-1] = NULL;
                             intin(x_obj,ix);
 							break;
 						}
@@ -215,17 +220,17 @@ bool flext_base::InitInlets()
                     case xlet_any: // non-leftmost
                     case xlet_sym:
                     case xlet_list:
-                        inlets[ix] = (px_object *)proxy_new(x_obj,ix,&((flext_hdr *)x_obj)->curinlet);  
+                        inlets[ix-1] = (px_object *)proxy_new(x_obj,ix,&((flext_hdr *)x_obj)->curinlet);  
                         break;
                     default:
-                        inlets[ix] = NULL;
+                        inlets[ix-1] = NULL;
                         error("%s: Wrong type for inlet #%i: %i",thisName(),ix,(int)xi.tp);
                         ok = false;
                 } 
             }
         }
         
-        while(ix >= 0) inlets[ix--] = NULL;
+        while(ix > 0) inlets[ix--] = NULL;
 	}
 #else
 #error
@@ -266,7 +271,10 @@ bool flext_base::InitOutlets()
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
-    outlets = new outlet *[outcnt+procattr];
+    if(outcnt+procattr)
+        outlets = new outlet *[outcnt+procattr];
+    else
+        outlets = NULL;
 
     // type info is now in list array
 #if FLEXT_SYS == FLEXT_SYS_PD

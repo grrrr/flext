@@ -47,11 +47,11 @@ public:
 	*/
 
 #ifdef FLEXT_NOGLOBALNEW
-#error FLEXT_NOGLOBALNEW is deprecated, define FLEXT_USECMEM instead
-#define FLEXT_USECMEM
+#error FLEXT_NOGLOBALNEW is deprecated, define FLEXT_USE_CMEM instead
+#define FLEXT_USE_CMEM
 #endif
 
-#ifdef FLEXT_USECMEM
+#ifdef FLEXT_USE_CMEM
     inline void *operator new(size_t bytes) { return ::operator new(bytes); }
     inline void operator delete(void *blk) { ::operator delete(blk); }
 
@@ -104,7 +104,7 @@ public:
 	//!	@}  FLEXT_S_MEMORY  	
 };
 
-#ifndef FLEXT_USECMEM
+#ifndef FLEXT_USE_CMEM
 /************************************************************************/
 // MFC doesn't like global overloading of allocators
 // anyway, who likes MFC
@@ -125,7 +125,7 @@ inline void *operator new[](size_t bytes) NEWTHROW { return flext_root::operator
 inline void operator delete[](void *blk) DELTHROW { flext_root::operator delete[](blk); }
 #endif
 
-#endif // FLEXT_USECMEM
+#endif // FLEXT_USE_CMEM
 
 /************************************************************************/
 

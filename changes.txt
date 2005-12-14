@@ -22,7 +22,7 @@ Version history:
 - cleaned up internals (like Max/MSP typedefs)
 - fixed coexistence of message and signal objects in Max/MSP object libraries
 - fixes for pthreads version 2
-- deprecated FLEXT_GLOBALNEW in favor of FLEXT_USECMEM (either global new/delete operators or C library memory allocation)
+- deprecated FLEXT_NOGLOBALNEW in favor of FLEXT_USE_CMEM (either global new/delete operators or C library memory allocation)
 - fixing uninitialized pointer (first inlet pointer)
 - added message bundle functionality (to send more messages over the thread boundary to arrive at the same logical time)
 - fixed dangerous spot (also memory leak) with message queuing

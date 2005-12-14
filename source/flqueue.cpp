@@ -49,14 +49,8 @@ class Queue:
 {
 public:
     inline bool Empty() const { return Size() == 0; }
-
-    inline void Push(MsgBundle *m)
-    {
-        if(m) {
-            Put(m);
-            Trigger();
-        }
-    }
+    
+    inline void Push(MsgBundle *m); // defined after MsgBundle (gcc 3.3. won't take it otherwise...)
 };
 
 static Queue queue;
@@ -266,6 +260,13 @@ private:
     }
 };
 
+inline void Queue::Push(MsgBundle *m)
+{
+    if(m) {
+        Put(m);
+        Trigger();
+    }
+}
 
 #if FLEXT_QMODE == 2
 static flext::ThrCond qthrcond;

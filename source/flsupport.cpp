@@ -106,7 +106,7 @@ void flext::Setup()
 
 #define LARGEALLOC 32000
 
-#ifndef FLEXT_USECMEM
+#ifndef FLEXT_USE_CMEM
 
 #ifdef FLEXT_DEBUGMEM
 static const size_t memtest = 0x12345678L;
@@ -131,7 +131,7 @@ void *flext_root::operator new(size_t bytes)
 	//! We need system locking here for secondary threads!
         SYSLOCK();
 
-#if defined(FLEXT_USECMEM)
+#if defined(FLEXT_USE_CMEM)
 	    blk = (char *)::malloc(bytes);
 #else
 	    blk = (char *)::getbytes(bytes);
@@ -175,7 +175,7 @@ void flext_root::operator delete(void *blk)
 	//! We need system locking here for secondary threads!
         SYSLOCK();
 
-#if defined(FLEXT_USECMEM)
+#if defined(FLEXT_USE_CMEM)
 	    ::free(ori);
 #else
 	    ::freebytes(ori,bytes);
@@ -217,7 +217,7 @@ void *flext_root::NewAligned(size_t bytes,int bitalign)
 	//! We need system locking here for secondary threads!
         SYSLOCK();
 
-#if defined(FLEXT_USECMEM)
+#if defined(FLEXT_USE_CMEM)
 	    blk = (char *)::malloc(bytes);
 #else
 	    blk = (char *)::getbytes(bytes);
@@ -251,7 +251,7 @@ void flext_root::FreeAligned(void *blk)
 	//! We need system locking here for secondary threads!
         SYSLOCK();
 
-#if defined(FLEXT_USECMEM)
+#if defined(FLEXT_USE_CMEM)
 	    ::free(ori);
 #else
 	    ::freebytes(ori,bytes);

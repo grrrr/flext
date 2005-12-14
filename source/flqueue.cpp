@@ -260,6 +260,7 @@ private:
         if(m->Ok()) {
             for(; m->nxt; m = m->nxt) {}
             m = m->nxt = new Msg;
+            m->Init();
         }
         return m;
     }

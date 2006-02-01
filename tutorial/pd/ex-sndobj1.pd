@@ -2,7 +2,7 @@
 #X obj 56 348 dac~;
 #X obj 15 8 cnv 15 550 40 empty empty sndobj1 10 22 0 24 -260818 -1
 0;
-#X text 175 28 http://www.parasitaere-kapazitaeten.net;
+#X text 175 28 http://grrrr.org;
 #X text 170 285 adjust the volume;
 #X text 35 97 source;
 #X obj 171 268 hsl 128 15 0.01 1 1 0 empty empty empty -2 -6 0 8 -261681
@@ -19,7 +19,7 @@
 #X obj 32 226 sndobj1~ @shL 0.7 @shR 1.2;
 #X obj 32 304 *~ 0.3;
 #X obj 91 304 *~ 0.3;
-#X text 175 8 flext tutorial \, (C)2002 \, 2003 Thomas Grill;
+#X text 175 8 flext tutorial \, (C)2002-2006 Thomas Grill;
 #X connect 5 0 14 1;
 #X connect 5 0 15 1;
 #X connect 6 0 13 0;

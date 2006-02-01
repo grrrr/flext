@@ -1,7 +1,7 @@
 #N canvas 175 139 607 457 12;
 #X obj 16 7 cnv 15 550 40 empty empty attr3 10 22 0 24 -260818 -1 0
 ;
-#X text 174 28 http://www.parasitaere-kapazitaeten.net;
+#X text 174 28 http://grrrr.org;
 #X obj 293 364 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
 #X obj 196 361 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
@@ -34,11 +34,11 @@
 #X text 117 238 get count;
 #X text 112 266 set count;
 #X msg 387 259 step 3;
-#X text 21 49 this is a port of IOhannes Zmoelnings "counter" example
+#X text 21 49 this is a port of IOhannes Zmoelnigs "counter" example
 ;
 #X msg 258 234 getbounds;
 #X msg 257 261 bounds 5 15;
-#X text 174 8 flext tutorial \, (C)2002 \, 2003 Thomas Grill;
+#X text 174 8 flext tutorial \, (C)2002-2006 Thomas Grill;
 #X connect 4 0 19 1;
 #X connect 5 0 19 2;
 #X connect 6 0 19 2;

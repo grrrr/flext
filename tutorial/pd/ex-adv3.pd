@@ -1,7 +1,7 @@
 #N canvas 175 139 603 361 12;
 #X obj 16 7 cnv 15 550 40 empty empty adv3 10 22 0 24 -260818 -1 0
 ;
-#X text 174 28 http://www.parasitaere-kapazitaeten.net;
+#X text 174 28 http://grrrr.org;
 #X obj 229 266 adv3 2 5 1;
 #X obj 305 303 bng 15 250 50 0 empty empty empty 0 -6 0 8 -262144 -1
 -1;
@@ -24,8 +24,8 @@
 #X text 390 106 set step size;
 #X msg 80 196 reset;
 #X text 83 176 reset;
-#X text 174 8 flext tutorial \, (C)2002 \, 2003 Thomas Grill;
-#X text 21 49 this is a port of IOhannes Zmoelnings "counter" example
+#X text 174 8 flext tutorial \, (C)2002-2006 Thomas Grill;
+#X text 21 49 this is a port of IOhannes Zmoelnigs "counter" example
 ;
 #X connect 2 0 4 0;
 #X connect 2 1 3 0;

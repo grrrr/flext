@@ -6,7 +6,7 @@
 #X text 261 205 channels in and out;
 #X obj 16 8 cnv 15 550 40 empty empty signal2 10 22 0 24 -260818 -1
 0;
-#X text 175 28 http://www.parasitaere-kapazitaeten.net;
+#X text 175 28 http://grrrr.org;
 #X obj 66 184 nbx 5 16 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
 12 -228992 -1 -1 0 256;
 #X obj 158 184 nbx 5 16 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
@@ -17,7 +17,7 @@
 12 -228992 -1 -1 0 256;
 #X text 40 204 samplerate;
 #X text 156 204 blocksize;
-#X text 173 10 flext tutorial \, (C)2002 \, 2003 Thomas Grill;
+#X text 173 10 flext tutorial \, (C)2002-2006 Thomas Grill;
 #X connect 0 0 6 0;
 #X connect 0 1 7 0;
 #X connect 0 2 8 0;

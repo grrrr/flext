@@ -1,8 +1,8 @@
 #N canvas 94 140 763 489 12;
 #X obj 11 -12 cnv 15 550 40 empty empty buffer1 10 22 0 24 -260818
 -1 0;
-#X text 178 8 http://www.parasitaere-kapazitaeten.net;
-#X text 178 -12 flext tutorial \, (C)2003 Thomas Grill;
+#X text 178 8 http://grrrr.org;
+#X text 178 -12 flext tutorial \, (C)2002-2006 Thomas Grill;
 #N canvas 0 22 450 300 graph1 0;
 #X array buf1 1000 float 1;
 #A 0 -0.0142856 -0.0142856 -0.0142856 -0.0142856 -0.0142856 -0.0142856

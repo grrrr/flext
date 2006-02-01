@@ -7,7 +7,7 @@
 #X obj 97 175 signal1~;
 #X obj 16 8 cnv 15 550 40 empty empty signal1 10 22 0 24 -260818 -1
 0;
-#X text 175 28 http://www.parasitaere-kapazitaeten.net;
+#X text 175 28 http://grrrr.org;
 #X text 342 138 control the mixing;
 #X text 166 210 adjust the volume;
 #X obj 97 209 *~ 0.5;
@@ -15,7 +15,7 @@
 #X text 125 101 source 2;
 #X obj 248 143 nbx 5 16 0 1 0 0 empty empty empty 0 -6 0 12 -261681
 -1 -1 0 256;
-#X text 175 8 flext tutorial \, (C)2002 \, 2003 Thomas Grill;
+#X text 175 8 flext tutorial \, (C)2002-2006 Thomas Grill;
 #X text 21 51 this is a port of IOhannes Zmoelnigs pan~ example;
 #X text 21 66 done by Frank Barknecht;
 #X connect 0 0 12 0;

@@ -22,7 +22,7 @@
 #X msg 158 155 getresult;
 #X obj 16 8 cnv 15 550 40 empty empty attr2 10 22 32 24 -260818 -1
 0;
-#X text 173 28 http://www.parasitaere-kapazitaeten.net;
+#X text 173 28 http://grrrr.org;
 #X text 91 398 result;
 #X obj 23 271 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 32 12 -261681
 -1 -1 20 256;
@@ -30,7 +30,7 @@
 -1 -1 4 256;
 #X obj 151 398 nbx 7 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 32
 12 -228992 -1 -1 80 256;
-#X text 171 10 flext tutorial \, (C)2002 \, 2003 Thomas Grill;
+#X text 171 10 flext tutorial \, (C)2002-2006 Thomas Grill;
 #X text 328 274 set argument;
 #X connect 0 0 11 0;
 #X connect 1 0 11 0;

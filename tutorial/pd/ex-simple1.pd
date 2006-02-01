@@ -5,12 +5,12 @@
 #X obj 113 131 simple1;
 #X obj 16 8 cnv 15 550 40 empty empty simple1 10 22 0 24 -260818 -1
 0;
-#X text 167 30 http://www.parasitaere-kapazitaeten.net;
+#X text 167 30 http://grrrr.org;
 #X obj 114 96 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
 -1 -1 0 256;
 #X obj 114 170 nbx 7 16 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
 12 -228992 -1 -1 0 256;
-#X text 167 10 flext tutorial \, (C)2002 \, 2003 Thomas Grill;
+#X text 167 10 flext tutorial \, (C)2002-2006 Thomas Grill;
 #X connect 0 0 3 0;
 #X connect 3 0 7 0;
 #X connect 6 0 3 0;

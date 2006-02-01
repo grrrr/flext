@@ -14,7 +14,7 @@
 #X text 228 167 query attribute "arg" (watch console);
 #X obj 16 8 cnv 15 550 40 empty empty attr1 10 22 0 24 -260818 -1 0
 ;
-#X text 175 28 http://www.parasitaere-kapazitaeten.net;
+#X text 175 28 http://grrrr.org;
 #X text 206 85 get some "help";
 #X text 26 413 result;
 #X obj 23 139 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
@@ -23,7 +23,7 @@
 -228992 -1 -1 143 256;
 #X obj 161 206 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
 -1 -1 34 256;
-#X text 175 10 flext tutorial \, (C)2002 \, 2003 Thomas Grill;
+#X text 175 10 flext tutorial \, (C)2002-2006 Thomas Grill;
 #X connect 0 0 1 0;
 #X connect 1 0 18 0;
 #X connect 1 1 6 0;

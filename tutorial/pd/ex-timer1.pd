@@ -2,8 +2,8 @@
 #X msg 29 92 help;
 #X obj 16 8 cnv 15 550 40 empty empty timer1 10 22 32 24 -260818 -1
 0;
-#X text 167 30 http://www.parasitaere-kapazitaeten.net;
-#X text 167 10 flext tutorial \, (C)2003 Thomas Grill;
+#X text 167 30 http://grrrr.org;
+#X text 167 10 flext tutorial \, (C)2003-2006 Thomas Grill;
 #X obj 241 241 timer1;
 #X obj 241 267 print;
 #X msg 105 104 resetA;

@@ -8,11 +8,11 @@
 #X text 162 257 you can also use "prepend";
 #X obj 16 8 cnv 15 550 40 empty empty adv1 10 22 0 24 -260818 -1 0
 ;
-#X text 175 28 http://www.parasitaere-kapazitaeten.net;
+#X text 175 28 http://grrrr.org;
 #X text 199 214 watch the console!;
 #X text 210 110 send the object various messages;
 #X text 160 274 (if adv1 has already been loaded);
-#X text 145 10 flext tutorial \, (C)2002 \, 2003 Thomas Grill;
+#X text 145 10 flext tutorial \, (C)2002-2006 Thomas Grill;
 #X obj 66 127 nbx 3 18 0 100 0 0 empty empty empty 0 -6 0 14 -262144
 -1 -1 24 256;
 #X connect 0 0 4 0;

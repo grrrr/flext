@@ -11,10 +11,10 @@
 #X text 72 97 print a help message;
 #X obj 16 7 cnv 15 550 40 empty empty adv2 10 22 0 24 -260818 -1 0
 ;
-#X text 146 27 http://www.parasitaere-kapazitaeten.net;
+#X text 146 27 http://grrrr.org;
 #X obj 148 293 adv2;
 #X text 21 49 this is identical to the simple3 example;
-#X text 145 9 flext tutorial \, (C)2002 \, 2003 Thomas Grill;
+#X text 145 9 flext tutorial \, (C)2002-2006 Thomas Grill;
 #X connect 0 0 12 0;
 #X connect 1 0 12 0;
 #X connect 2 0 12 0;

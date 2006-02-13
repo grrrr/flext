@@ -158,7 +158,7 @@ public:
     // \note PD sys lock must already be held by caller
     inline void Send() const
     {
-        FLEXT_ASSERT(msg.Ok());
+        if(!msg.Ok()) return; // Empty!
 
         const Msg *m = &msg;
         do {

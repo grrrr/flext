@@ -130,11 +130,13 @@ or
 buildsys/config-mac-max-gcc.txt
 
 
+After editing the files you will have to run the build script again to ensure that flext is built.
 
 After successfully building everything, you can install flext with (under Windows)
 	build pd msvc install
 or (under unix)
 	bash build.sh pd gcc install
+
 
 You will probably have to have superuser rights in order to install things 
 into the default location.

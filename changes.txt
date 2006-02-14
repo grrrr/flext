@@ -26,6 +26,7 @@ Version history:
 - fixing uninitialized pointer (first inlet pointer)
 - added message bundle functionality (to send more messages over the thread boundary to arrive at the same logical time)
 - fixed dangerous spot (also memory leak) with message queuing
+- fixed buggy freeing of memory for AtomListStatic
 
 0.5.0:
 - fixes for 64 bit builds (size_t is integer type of pointer size)

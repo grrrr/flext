@@ -61,19 +61,32 @@ void flext::CopyAtoms(int cnt,t_atom *dst,const t_atom *src)
 void flext::AtomList::Alloc(int sz,int keepix,int keeplen,int keepto)
 {
     if(lst) {
-        if(cnt == sz) return; // no change
+        if(cnt == sz) {
+            if(keepix != keepto) {
+                int c = keeplen >= 0?keeplen:cnt;
+                FLEXT_ASSERT(c+keepto <= cnt);
+                FLEXT_ASSERT(c+keepix <= cnt);
+                CopyAtoms(c,lst+keepto,lst+keepix);
+            }
+
+            return; // no change
+        }
 
         t_atom *l;
         if(sz) {
             l = new t_atom[sz];
-            if(keepix >= 0)
+            if(keepix >= 0) {
                 // keep contents
-                CopyAtoms(keeplen >= 0?keeplen:(cnt > sz?sz:cnt),l+keepto,lst+keepix);
+                int c = keeplen >= 0?keeplen:(cnt > sz?sz:cnt);
+                FLEXT_ASSERT(c+keepto <= sz);
+                FLEXT_ASSERT(c+keepix <= cnt);
+                CopyAtoms(c,l+keepto,lst+keepix);
+            }
         }
         else
             l = NULL;
 
-        delete[] lst;
+        Free();
         lst = l,cnt = sz;
     }
     else {
@@ -122,11 +135,21 @@ flext::AtomListStaticBase::~AtomListStaticBase() { Free(); }
 
 void flext::AtomListStaticBase::Alloc(int sz,int keepix,int keeplen,int keepto)
 { 
-    if(sz < precnt) {
+    if(sz <= precnt) {
+        // small enough for pre-allocated space
+
         if(lst != predata && lst) {
-            if(keepix >= 0)
+            // currently allocated memory is larger than what we need
+
+            if(keepix >= 0) {
                 // keep contents
-                CopyAtoms(keeplen >= 0?keeplen:(cnt > sz?sz:cnt),predata+keepto,lst+keepix);
+                int c = keeplen >= 0?keeplen:(cnt > sz?sz:cnt);
+                FLEXT_ASSERT(c+keepto < precnt);
+                FLEXT_ASSERT(c+keepix < cnt);
+                CopyAtoms(c,predata+keepto,lst+keepix);
+            }
+
+            // free allocated memory
             AtomList::Free();
         }
         lst = predata,cnt = sz;

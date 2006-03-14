@@ -144,8 +144,8 @@ void flext::AtomListStaticBase::Alloc(int sz,int keepix,int keeplen,int keepto)
             if(keepix >= 0) {
                 // keep contents
                 int c = keeplen >= 0?keeplen:(cnt > sz?sz:cnt);
-                FLEXT_ASSERT(c+keepto < precnt);
-                FLEXT_ASSERT(c+keepix < cnt);
+                FLEXT_ASSERT(c+keepto <= precnt);
+                FLEXT_ASSERT(c+keepix <= cnt);
                 CopyAtoms(c,predata+keepto,lst+keepix);
             }
 

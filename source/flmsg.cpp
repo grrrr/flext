@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -177,8 +177,10 @@ bool flext_base::CbMethodHandler(int inlet,const t_symbol *s,int argc,const t_at
                     ret = FindMeth(inlet,sym_int,1,argv);
                 else if(IsSymbol(argv[0]))
                     ret = FindMeth(inlet,sym_symbol,1,argv);
+    #if FLEXT_SYS == FLEXT_SYS_PD && !defined(FLEXT_COMPATIBLE)
                 else if(IsPointer(argv[0]))
                     ret = FindMeth(inlet,sym_pointer,1,argv);
+    #endif
                 if(ret) goto end;
             }
             else {
@@ -210,7 +212,7 @@ bool flext_base::CbMethodHandler(int inlet,const t_symbol *s,int argc,const t_at
                     ret = FindMeth(inlet,sym_list,1,argv);
                     if(ret) goto end;
                 }
-    #if FLEXT_SYS == FLEXT_SYS_PD
+    #if FLEXT_SYS == FLEXT_SYS_PD && !defined(FLEXT_COMPATIBLE)
                 else if(s == sym_pointer) {
                     ret = FindMeth(inlet,sym_list,1,argv);
                     if(ret) goto end;
@@ -235,7 +237,9 @@ bool flext_base::CbMethodHandler(int inlet,const t_symbol *s,int argc,const t_at
                 if(IsFloat(argv[i])) sym = sym_float;
                 else if(IsInt(argv[i])) sym = sym_int;
                 else if(IsSymbol(argv[i])) sym = sym_symbol;
+    #if FLEXT_SYS == FLEXT_SYS_PD && !defined(FLEXT_COMPATIBLE)
                 else if(IsPointer(argv[i])) sym = sym_pointer;  // can pointer atoms occur here?
+    #endif
 
                 if(sym) {
                     trap = true;

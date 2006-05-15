@@ -126,8 +126,8 @@ bool flext_base::InitInlets()
                     }
                     else { 
                         inlets[ix-1] = NULL;
-                        char sym[] = "ft?";
-                        sym[2] = '0'+ix;  
+                        static char sym[] = " ft ?";
+                        sym[4] = '0'+ix;  
                         in = inlet_new(&x_obj->obj, &x_obj->obj.ob_pd, (t_symbol *)sym_float, gensym(sym)); 
                     }
                     break;
@@ -146,11 +146,14 @@ bool flext_base::InitInlets()
                     break;
                 case xlet_sig:
                     inlets[ix-1] = NULL;
-                    if(compatibility && inlist[ix-1].tp != xlet_sig) {
+#ifdef FLEXT_COMPATIBLE
+                    if(inlist[ix-1].tp != xlet_sig) {
                         post("%s: All signal inlets must be left-aligned in compatibility mode",thisName());
                         ok = false;
                     }
-                    else {
+                    else 
+#endif
+                    {
                         // pd is not able to handle signals and messages into the same inlet...
                         in = inlet_new(&x_obj->obj, &x_obj->obj.ob_pd, (t_symbol *)sym_signal, (t_symbol *)sym_signal);  
                         ++insigs;

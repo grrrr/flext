@@ -62,20 +62,6 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_base):
 
 public:
 
-	/*!	\defgroup FLEXT_C_BASE Basic class functionality
-		@{ 
-	*/
-
-// ---  compatibility mode ----------------------------------------
-
-	/*! \brief Cross-platform compatibility flag.
-		If set flext allows only operations valid for all platforms.
-		Set to true by default!
-	*/
-	static bool compatibility;  
-
-//!		@} FLEXT_C_BASE
-
 // --- inheritable virtual methods --------------------------------
 
 	/*!	\defgroup FLEXT_C_VIRTUAL Virtual base class functions

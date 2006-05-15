@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -46,10 +46,12 @@ bool flext::PrintAtom(const t_atom &a,char *buf,size_t bufsz)
                 ok = false;
         }
     }
+#if FLEXT_SYS == FLEXT_SYS_PD
+#ifndef FLEXT_COMPATIBLE
     else if(IsPointer(a)) {
         ok = STD::snprintf(buf,bufsz,"%p",GetPointer(a)) > 0;
     }
-#if FLEXT_SYS == FLEXT_SYS_PD
+#endif
     else if(a.a_type == A_DOLLAR) {
         ok = STD::snprintf(buf,bufsz,"$%d",a.a_w.w_index) > 0;
     }

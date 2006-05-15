@@ -277,7 +277,7 @@
 				AdditionalIncludeDirectories="c:\programme\audio\pd\src;c:\data\prog\audio\sndobj\include;c:\data\prog\audio\stk\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;FLEXT_SYS=2;FLEXT_USE_SIMD;FLEXT_EXPORTS;_WIN32_WINNT=0x400"
 				StringPooling="TRUE"
-				RuntimeLibrary="0"
+				RuntimeLibrary="4"
 				EnableFunctionLevelLinking="TRUE"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"

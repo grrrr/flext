@@ -19,7 +19,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // === flext_base ============================================
 
-bool flext_base::compatibility = true;
 const t_symbol *flext_base::curtag = NULL;
 
 flext_base::FLEXT_CLASSDEF(flext_base)()
@@ -144,6 +143,7 @@ void flext_base::Exit()
 void flext_base::AddMessageMethods(t_class *c,bool dsp)
 {
     add_loadbang(c,cb_loadbang);
+
 #if FLEXT_SYS == FLEXT_SYS_PD
     class_addmethod(c,(t_method)cb_click,gensym("click"),A_FLOAT,A_FLOAT,A_FLOAT,A_FLOAT,A_FLOAT,A_NULL);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
@@ -156,8 +156,8 @@ void flext_base::AddMessageMethods(t_class *c,bool dsp)
     
     if(dsp) {
 #if FLEXT_SYS == FLEXT_SYS_MAX
-    	add_dsp(c,cb_dsp);
-	   dsp_initclass();
+        add_dsp(c,cb_dsp);
+        dsp_initclass();
 #elif FLEXT_SYS == FLEXT_SYS_PD
         CLASS_MAINSIGNALIN(c,flext_hdr,defsig); // float messages going into the left inlet are converted to signal
         add_dsp(c,cb_dsp);

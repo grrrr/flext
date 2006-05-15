@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -488,6 +488,7 @@ public:
 	//! Set the atom to represent a integer (depending on the system)
 	static void SetInt(t_atom &a,int v) { a.a_type = A_FLOAT; a.a_w.w_float = (float)v; }
 
+#ifndef FLEXT_COMPATIBLE
 	//! Check whether the atom strictly is a pointer
 	static bool IsPointer(const t_atom &a) { return a.a_type == A_POINTER; }
 	//! Check whether the atom can be a pointer
@@ -498,6 +499,7 @@ public:
 	static t_gpointer *GetAPointer(const t_atom &a,t_gpointer *def = NULL) { return IsPointer(a)?GetPointer(a):def; }
 	//! Set the atom to represent a pointer
 	static void SetPointer(t_atom &a,t_gpointer *p) { a.a_type = A_POINTER; a.a_w.w_gpointer = (t_gpointer *)p; }
+#endif
 
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	//! Check for a float and get its value 
@@ -511,17 +513,6 @@ public:
 	static int GetAInt(const t_atom &a,int def = 0) { return IsInt(a)?GetInt(a):(IsFloat(a)?(int)GetFloat(a):def); }
 	//! Set the atom to represent an integer
 	static void SetInt(t_atom &a,int v) { a.a_type = A_INT; a.a_w.w_long = v; }
-
-	//! Check whether the atom strictly is a pointer
-	static bool IsPointer(const t_atom &) { return false; }
-	//! Check whether the atom can be a pointer
-	static bool CanbePointer(const t_atom &a) { return IsInt(a); }
-	//! Access the pointer value (without type check)
-	static void *GetPointer(const t_atom &) { return NULL; }
-	//! Check for a pointer and get its value 
-	static void *GetAPointer(const t_atom &a,void *def = NULL) { return IsInt(a)?(void *)GetInt(a):def; }
-	//! Set the atom to represent a pointer
-	static void SetPointer(t_atom &a,void *p) { SetInt(a,(int)p); }
 #else
 #error "Platform not supported"
 #endif

@@ -86,7 +86,7 @@ void flext_base::cb_anything(flext_hdr *c,const t_symbol *s,int argc,t_atom *arg
 void flext_base::cb_px_ft ## IX(flext_hdr *c,t_float v) { t_atom atom; SetFloat(atom,v); thisObject(c)->CbMethodHandler(IX,sym_float,1,&atom); }
 
 #define ADD_PROXYMSG(c,IX) \
-add_method1(c,cb_px_ft ## IX,"ft" #IX,A_FLOAT)
+add_method1(c,cb_px_ft ## IX," ft " #IX,A_FLOAT)
 
 //AddMethod(c,0,flext::MakeSymbol("ft" #IX),cb_px_ft ## IX) 
 
@@ -180,6 +180,7 @@ void flext_base::SetProxies(t_class *c,bool dsp)
     addbang((method)cb_bang);
     addint((method)cb_int);  
     addfloat((method)cb_float);  
+    addmess((method)cb_anything,"list",A_GIMME,A_NOTHING); // must be explicitly given, otherwise list elements are distributes over inlets
     addmess((method)cb_anything,"anything",A_GIMME,A_NOTHING);
 #else
 #error Not implemented!

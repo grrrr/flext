@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -840,8 +840,7 @@ protected:
 	static void ToSysMsg(MsgBundle *mb);
 
 	// add class method handlers
-	static void AddMessageMethods(t_class *c);
-	static void AddSignalMethods(t_class *c);
+	static void AddMessageMethods(t_class *c,bool dsp);
 
 private:
 	class pxbnd_object;
@@ -982,6 +981,12 @@ private:
     void BinbufAttr(t_binbuf *b,bool transdoll);
 #endif
 
+	static void cb_bang(flext_hdr *c);
+	static void cb_float(flext_hdr *c,t_float f);
+	static void cb_symbol(flext_hdr *c,const t_symbol *s);
+//    static void cb_pointer(fltext_hdr *c,const t_gpointer *p);
+	static void cb_anything(flext_hdr *c,const t_symbol *s,int argc,t_atom *argv);
+
 	// proxy object (for additional inlets)
 	static t_class *px_class;
 
@@ -992,26 +997,29 @@ private:
 		int index;
 
 		void init(flext_base *b,int ix) { base = b; index = ix; }
-		static void px_method(px_object *c,const t_symbol *s,int argc,t_atom *argv);
+		static void px_bang(px_object *c);
+		static void px_float(px_object *c,t_float f);
+		static void px_symbol(px_object *c,const t_symbol *s);
+//		static void px_pointer(px_object *c,const t_gpointer *p);
+		static void px_anything(px_object *c,const t_symbol *s,int argc,t_atom *argv);
 	};
 
-	static void cb_px_anything(flext_hdr *c,const t_symbol *s,int argc,t_atom *argv);
-
-	static void cb_px_ft1(flext_hdr *c,float f);
-	static void cb_px_ft2(flext_hdr *c,float f);
-	static void cb_px_ft3(flext_hdr *c,float f);
-	static void cb_px_ft4(flext_hdr *c,float f);
-	static void cb_px_ft5(flext_hdr *c,float f);
-	static void cb_px_ft6(flext_hdr *c,float f);
-	static void cb_px_ft7(flext_hdr *c,float f);
-	static void cb_px_ft8(flext_hdr *c,float f);
-	static void cb_px_ft9(flext_hdr *c,float f);
-
+	static void cb_px_ft1(flext_hdr *c,t_float f);
+	static void cb_px_ft2(flext_hdr *c,t_float f);
+	static void cb_px_ft3(flext_hdr *c,t_float f);
+	static void cb_px_ft4(flext_hdr *c,t_float f);
+	static void cb_px_ft5(flext_hdr *c,t_float f);
+	static void cb_px_ft6(flext_hdr *c,t_float f);
+	static void cb_px_ft7(flext_hdr *c,t_float f);
+	static void cb_px_ft8(flext_hdr *c,t_float f);
+	static void cb_px_ft9(flext_hdr *c,t_float f);
+	
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	typedef object px_object;
-	static void cb_px_float(flext_hdr *c,double f);
-	static void cb_px_int(flext_hdr *c,long v);
-	static void cb_px_bang(flext_hdr *c);
+	static void cb_bang(flext_hdr *c);
+	static void cb_float(flext_hdr *c,double f);
+	static void cb_int(flext_hdr *c,long v);
+	static void cb_anything(flext_hdr *c,const t_symbol *s,short argc,t_atom *argv);
 
 	static void cb_px_in1(flext_hdr *c,long v);
 	static void cb_px_in2(flext_hdr *c,long v);
@@ -1032,8 +1040,6 @@ private:
 	static void cb_px_ft7(flext_hdr *c,double f);
 	static void cb_px_ft8(flext_hdr *c,double f);
 	static void cb_px_ft9(flext_hdr *c,double f);
-
-	static void cb_px_anything(flext_hdr *c,const t_symbol *s,short argc,t_atom *argv);
 #endif
 
 	px_object **inlets;
@@ -1062,7 +1068,7 @@ private:
 	// ---------
 
     //! set up inlet proxies
-	static void SetProxies(t_class *c);
+	static void SetProxies(t_class *c,bool dsp);
 
     //! initialize inlets (according to class or object constructor definitions)
 	bool InitInlets();

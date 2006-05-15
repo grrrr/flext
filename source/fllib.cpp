@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -213,8 +213,7 @@ void flext_obj::lib_init(const char *name,void setupfun(),bool attr)
 		sizeof(flext_hdr),NULL,A_GIMME,A_NULL);
 	
 	// for all classes in library add methods
-	flext_base::AddMessageMethods(curlib->clss);
-	if(curlib->dsp) flext_base::AddSignalMethods(curlib->clss);
+	flext_base::AddMessageMethods(curlib->clss,curlib->dsp);
 #endif
 
 	curlib = NULL;

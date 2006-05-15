@@ -52,8 +52,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #ifdef FLEXT_ATTRHIDE
 #ifndef __FLEXT_CLONEWIDGET
-static void (*ori_vis)(t_gobj *c, t_glist *, int vis) = NULL;
-static void (*ori_select)(t_gobj *c, t_glist *, int state) = NULL;
+static t_visfn ori_vis = NULL;
+static t_selectfn ori_select = NULL;
 #endif
 #endif
 

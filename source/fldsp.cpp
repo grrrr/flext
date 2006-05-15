@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -20,15 +20,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 void flext_dsp::Setup(t_classid id)
 {
-    t_class *c = getClass(id);
-
-#if FLEXT_SYS == FLEXT_SYS_MAX
-	if(!IsLib(id)) 
-#endif
-	AddSignalMethods(c);
-
 #if FLEXT_SYS == FLEXT_SYS_PD
-    add_method1(c,cb_enable,"enable",A_FLOAT);
+//    add_method1(c,cb_enable,"enable",A_FLOAT);
+    AddMethod(id,0,MakeSymbol("enable"),&cb_enable);
 #endif
 }
 
@@ -119,5 +113,6 @@ void flext_dsp::CbSignal()
 
 
 #if FLEXT_SYS == FLEXT_SYS_PD
-void flext_dsp::cb_enable(flext_hdr *c,t_float on) { thisObject(c)->dspon = on != 0; }
+//void flext_dsp::cb_enable(flext_hdr *c,t_float on) { thisObject(c)->dspon = on != 0; }
+bool flext_dsp::cb_enable(flext_base *b,float &on) { static_cast<flext_dsp *>(b)->dspon = on != 0; return true; }
 #endif

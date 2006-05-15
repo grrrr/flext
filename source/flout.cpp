@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -119,23 +119,17 @@ bool flext_base::InitInlets()
             switch(xi.tp) {
                 case xlet_float:
                 case xlet_int: {
-                    inlets[ix-1] = NULL;
-                    char sym[] = "ft??";
-                    if(ix >= 10) { 
-                        if(compatibility) {
-                            // Max allows max. 9 inlets
-                            post("%s: Only 9 float/int inlets allowed in compatibility mode",thisName());
-                            ok = false;
-                        }
-                        else {
-                            if(ix > 99)
-                                post("%s: Inlet index > 99 not allowed for float/int inlets",thisName());
-                            sym[2] = '0'+ix/10,sym[3] = '0'+ix%10;
-                        }
+                    if(ix > 9) { 
+                        // proxy inlet needed
+                        (inlets[ix-1] = (px_object *)pd_new(px_class))->init(this,ix);  // proxy for 2nd inlet messages 
+                        in = inlet_new(&x_obj->obj,&inlets[ix-1]->obj.ob_pd, (t_symbol *)sym_float, (t_symbol *)sym_float);  
                     }
-                    else 
-                        sym[2] = '0'+ix,sym[3] = 0;  
-                    if(ok) in = inlet_new(&x_obj->obj, &x_obj->obj.ob_pd, (t_symbol *)sym_float, gensym(sym)); 
+                    else { 
+                        inlets[ix-1] = NULL;
+                        char sym[] = "ft?";
+                        sym[2] = '0'+ix;  
+                        in = inlet_new(&x_obj->obj, &x_obj->obj.ob_pd, (t_symbol *)sym_float, gensym(sym)); 
+                    }
                     break;
                 }
                 case xlet_sym: 
@@ -157,8 +151,7 @@ bool flext_base::InitInlets()
                         ok = false;
                     }
                     else {
-                        // pd doesn't seem to be able to handle signals and messages into the same inlet...
-                        
+                        // pd is not able to handle signals and messages into the same inlet...
                         in = inlet_new(&x_obj->obj, &x_obj->obj.ob_pd, (t_symbol *)sym_signal, (t_symbol *)sym_signal);  
                         ++insigs;
                     }

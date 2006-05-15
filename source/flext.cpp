@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -141,7 +141,7 @@ void flext_base::Exit()
 }
 
 
-void flext_base::AddMessageMethods(t_class *c)
+void flext_base::AddMessageMethods(t_class *c,bool dsp)
 {
     add_loadbang(c,cb_loadbang);
 #if FLEXT_SYS == FLEXT_SYS_PD
@@ -149,26 +149,24 @@ void flext_base::AddMessageMethods(t_class *c)
 #elif FLEXT_SYS == FLEXT_SYS_MAX
     add_assist(c,cb_assist);
     add_dblclick(c,cb_click);
-#else
-    #pragma message ("no implementation of loadbang or assist") 
 #endif
 
-    SetProxies(c);
+    SetProxies(c,dsp);
     StartQueue();
-}
-
-void flext_base::AddSignalMethods(t_class *c)
-{
+    
+    if(dsp) {
 #if FLEXT_SYS == FLEXT_SYS_MAX
-	add_dsp(c,cb_dsp);
-	dsp_initclass();
+    	add_dsp(c,cb_dsp);
+	   dsp_initclass();
 #elif FLEXT_SYS == FLEXT_SYS_PD
-    CLASS_MAINSIGNALIN(c,flext_hdr,defsig); // float messages going into the left inlet are converted to signal
-    add_dsp(c,cb_dsp);
+        CLASS_MAINSIGNALIN(c,flext_hdr,defsig); // float messages going into the left inlet are converted to signal
+        add_dsp(c,cb_dsp);
 #else
 #error Platform not supported!
 #endif
+    }
 }
+
 
 /*! Set up proxy classes and basic methods at class creation time
     This ensures that they are processed before the registered flext messages
@@ -180,7 +178,7 @@ void flext_base::Setup(t_classid id)
 #if FLEXT_SYS == FLEXT_SYS_MAX
 	if(!IsLib(id))
 #endif
-	AddMessageMethods(c);
+	AddMessageMethods(c,IsDSP(id));
 
     if(process_attributes) {
         AddMethod(id,0,"getattributes",cb_ListAttrib);

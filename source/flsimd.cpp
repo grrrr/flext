@@ -301,7 +301,7 @@ static unsigned long setsimdcaps()
     if(cpuinfo.os_support&_CPU_FEATURE_3DNOW) simdflags += flext::simd_3dnow;
     if(cpuinfo.os_support&_CPU_FEATURE_SSE) simdflags += flext::simd_sse;
     if(cpuinfo.os_support&_CPU_FEATURE_SSE2) simdflags += flext::simd_sse2;
-#elif FLEXT_CPU == FLEXT_CPU_PPC 
+#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__) 
     #if FLEXT_OSAPI == FLEXT_OSAPI_MAC_MACH
 
     int selectors[2] = { CTL_HW, HW_VECTORUNIT }; 

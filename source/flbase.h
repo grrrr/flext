@@ -307,25 +307,27 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 #define FLEXT_REALHDR(NEW_CLASS, PARENT_CLASS)    	    	\
 public:     	    	    \
 typedef NEW_CLASS thisType;  \
+typedef PARENT_CLASS thisParent;  \
 static FLEXT_CLASSDEF(flext_obj) *__init__(int argc,t_atom *argv);  \
 static void __free__(flext_hdr *hdr) {  	    	    	\
 	FLEXT_CLASSDEF(flext_obj) *mydata = hdr->data; delete mydata; \
 	hdr->flext_hdr::~flext_hdr(); \
 }   	    	\
-static void __setup__(t_classid classid) { PARENT_CLASS::__setup__(classid); }
+static void __setup__(t_classid classid) { thisParent::__setup__(classid); }
 
 
 #define FLEXT_REALHDR_S(NEW_CLASS, PARENT_CLASS,SETUPFUN)    	    	\
 public:     	    	    \
 typedef NEW_CLASS thisType;  \
+typedef PARENT_CLASS thisParent;  \
 static FLEXT_CLASSDEF(flext_obj) *__init__(int argc,t_atom *argv);  \
 static void __free__(flext_hdr *hdr) {  	    	    	\
 	FLEXT_CLASSDEF(flext_obj) *mydata = hdr->data; delete mydata; \
 	hdr->flext_hdr::~flext_hdr(); \
 }   	    	\
 static void __setup__(t_classid classid) { 	    	\
-	PARENT_CLASS::__setup__(classid);    	    	\
-	NEW_CLASS::SETUPFUN(classid); \
+	thisParent::__setup__(classid);    	    	\
+	thisType::SETUPFUN(classid); \
 }
 
 

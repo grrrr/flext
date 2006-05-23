@@ -644,5 +644,4 @@ bool flext::ThrCond::TimedWait(double ftm)
 }
 #endif
 
-
 #endif // FLEXT_THREADS

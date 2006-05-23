@@ -235,10 +235,7 @@ bool flext_base::SetAttrib(const t_symbol *tag,int argc,const t_atom *argv)
 {
 	// search for matching attribute
 	AttrItem *a = FindAttrib(tag,false,true);
-	if(a) 
-		return SetAttrib(tag,a,argc,argv);
-	else
-		return true;
+	return a && SetAttrib(tag,a,argc,argv);
 }
 
 bool flext_base::SetAttrib(const t_symbol *tag,AttrItem *a,int argc,const t_atom *argv)

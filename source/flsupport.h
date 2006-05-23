@@ -1145,9 +1145,6 @@ public:
 	*/
 	static void Sleep(double s);
 
-	//! Sleep for a very short amount of time, just to let other threads wake up
-	static void MiniSleep();
-
 	/*! \brief Class encapsulating a timer with callback functionality.
 		This class can either be used with FLEXT_ADDTIMER or used as a base class with an overloaded virtual Work function.
 	*/ 

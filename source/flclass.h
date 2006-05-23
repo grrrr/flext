@@ -394,6 +394,7 @@ public:
     void AddMethodDef(int inlet,const t_symbol *tag = NULL) { ThMeths()->Add(new MethItem,tag,inlet); }
     void AddMethodDef(int inlet,const char *tag = NULL) { AddMethodDef(inlet,MakeSymbol(tag)); }
 
+	void AddMethod(int inlet,bool (*m)(flext_base *)) { AddMethod(ThMeths(),inlet,sym_bang,(methfun)m,a_null); }
 	void AddMethod(int inlet,bool (*m)(flext_base *,int,t_atom *)) { AddMethod(ThMeths(),inlet,sym_list,(methfun)m,a_list,a_null); }
 	void AddMethod(int inlet,bool (*m)(flext_base *,int,const t_atom *)) { AddMethod(ThMeths(),inlet,sym_list,(methfun)m,a_list,a_null); }
 	void AddMethod(int inlet,const t_symbol *tag,bool (*m)(flext_base *)) { AddMethod(ThMeths(),inlet,tag,(methfun)m,a_null); }  // pure method
@@ -442,6 +443,7 @@ public:
 		@{ 
 	*/
 
+	static void AddMethod(t_classid c,int inlet,bool (*m)(flext_base *)) { AddMethod(ClMeths(c),inlet,sym_bang,(methfun)m,a_null); }
 	static void AddMethod(t_classid c,int inlet,bool (*m)(flext_base *,int,t_atom *)) { AddMethod(ClMeths(c),inlet,sym_list,(methfun)m,a_list,a_null); }
 	static void AddMethod(t_classid c,int inlet,bool (*m)(flext_base *,int,const t_atom *)) { AddMethod(ClMeths(c),inlet,sym_list,(methfun)m,a_list,a_null); }
 	static void AddMethod(t_classid c,int inlet,const t_symbol *tag,bool (*m)(flext_base *)) { AddMethod(ClMeths(c),inlet,tag,(methfun)m,a_null); }  // pure method
@@ -620,10 +622,19 @@ protected:
     //! Dump an attribute to the attribute outlet
 	bool DumpAttrib(const char *attr) const { return DumpAttrib(MakeSymbol(attr)); }
 
+    // check for attribute symbol @
+	static int CheckAttrib(int argc,const t_atom *argv);
+    // check for attribute symbol @
+    static int CheckAttrib(const AtomList &args,int offset = 0) { return CheckAttrib(args.Count()-offset,args.Atoms()+offset)+offset; }
+
+	//! List attributes
+	bool ListAttrib() const;
 	//! List attributes
 	void ListAttrib(AtomList &a) const;
 	//! Get an attribute value
 	bool GetAttrib(const t_symbol *s,AtomList &a) const;
+	//! Set an attribute value
+	bool SetAttrib(const t_symbol *s,int argc,const t_atom *argv);
 	//! Set an attribute value
 	bool SetAttrib(const t_symbol *s,const AtomList &a) { return SetAttrib(s,a.Count(),a.Atoms()); }
 
@@ -920,13 +931,10 @@ private:
 
 	AttrItem *FindAttrib(const t_symbol *tag,bool get,bool msg = false) const;
 
-	static int CheckAttrib(int argc,const t_atom *argv);
 	bool InitAttrib(int argc,const t_atom *argv);
 
-	bool ListAttrib() const;
 	bool DumpAttrib(const t_symbol *tag,AttrItem *a) const;
 	bool GetAttrib(const t_symbol *tag,AttrItem *a,AtomList &l) const;
-	bool SetAttrib(const t_symbol *s,int argc,const t_atom *argv);
 	bool SetAttrib(const t_symbol *tag,AttrItem *a,int argc,const t_atom *argv);
 	bool SetAttrib(const t_symbol *tag,AttrItem *a,const AtomList &l) { return SetAttrib(tag,a,l.Count(),l.Atoms()); }
 	// get and set the attribute

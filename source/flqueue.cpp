@@ -378,11 +378,6 @@ static void Trigger()
 //        qelem_front(qclk);
         clock_delay(qclk,0);
     #endif
-#elif FLEXT_SYS == FLEXT_SYS_JMAX
-    #if FLEXT_QMODE == 0
-        // this is dangerous because there may be other timers on this object!
-        fts_timebase_add_call(fts_get_timebase(), (fts_object_t *)thisHdr(), QTick, NULL, 0);
-    #endif
 #else
 #error Not implemented
 #endif
@@ -410,6 +405,7 @@ void flext_base::StartQueue()
 #endif
 #elif FLEXT_QMODE == 2
     LaunchThread(QWorker,NULL);
+    // very unelegant... but waiting should be ok, since happens only on loading
     while(!qustarted) Sleep(0.001);
 #elif FLEXT_QMODE == 0 && (FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX)
 //    qclk = (t_qelem *)(qelem_new(NULL,(t_method)QTick));

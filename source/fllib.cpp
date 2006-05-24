@@ -163,6 +163,7 @@ static flext_class *FindName(const t_symbol *s,flext_class *o = NULL)
 
 
 t_class *flext_obj::getClass(t_classid cl) { return cl->clss; }
+bool flext_obj::HasAttributes(t_classid cl) { return cl->attr; }
 bool flext_obj::IsDSP(t_classid cl) { return cl->dsp; }
 bool flext_obj::IsLib(t_classid cl) { return cl->lib != NULL; }
 
@@ -176,14 +177,12 @@ bool flext_obj::NeedDSP() const { return clss->dsp || (clss->lib && clss->lib->d
 
 static flext_library *curlib = NULL;
 
-void flext_obj::lib_init(const char *name,void setupfun(),bool attr)
+void flext_obj::lib_init(const char *name,void setupfun())
 {
 	// make new library instance
 	curlib = new flext_library(MakeSymbol(name));
 
     flext::Setup();
-
-	process_attributes = attr;
 
 	// first register all classes
     try {
@@ -236,7 +235,7 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 	}
 	else {
 		FLEXT_ASSERT(!curlib);
-		process_attributes = attr;
+//		process_attributes = attr;
 	}
 
 	// set dynamic class pointer
@@ -269,7 +268,7 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 	flext_class *lo = new flext_class(*cl,newfun,freefun);
 	lo->lib = curlib;
 	lo->dsp = dsp;
-	lo->attr = process_attributes;
+	lo->attr = attr;
 
 //	post("ADDCLASS %s,%s = %p -> LIBOBJ %p -> %p (lib=%i,dsp=%i)",idname,names,*cl,lo,lo->clss,lib?1:0,dsp?1:0);
 

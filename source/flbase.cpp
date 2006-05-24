@@ -44,13 +44,13 @@ const t_symbol *flext_obj::m_holdname = NULL;
 flext_class *flext_obj::m_holdclass = NULL;
 int flext_obj::m_holdaargc = 0;
 const t_atom *flext_obj::m_holdaargv = NULL;
-bool flext_obj::process_attributes = false;
+//bool flext_obj::process_attributes = false;
 
 bool flext_obj::initing = false;
 bool flext_obj::exiting = false;
 bool flext_obj::init_ok;
 
-void flext_obj::ProcessAttributes(bool attr) { process_attributes = attr; }
+//void flext_obj::ProcessAttributes(bool attr) { process_attributes = attr; }
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
 static const t_symbol *sym__shP = NULL;

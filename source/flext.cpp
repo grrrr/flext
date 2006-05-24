@@ -180,7 +180,8 @@ void flext_base::Setup(t_classid id)
 #endif
 	AddMessageMethods(c,IsDSP(id));
 
-    if(process_attributes) {
+    if(HasAttributes(id)) {
+//    if(process_attributes) {
         AddMethod(id,0,"getattributes",cb_ListAttrib);
         AddMethod(id,0,"getmethods",cb_ListMethods);
 

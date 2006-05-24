@@ -32,6 +32,7 @@ Version history:
 - Max: fixed reported bug (#67), where list elements are distributed over inlets
 - added thisParent type, which refers to the class from which the current flext class is derived (as given in FLEXT_HEADER)
 - bang method can also by added with FLEXT_(C)ADDMETHOD (FLEXT_(C)ADDBANG is still an alias)
+- attribute generation is now determined exclusively by each object class setup (not library is before)
 
 0.5.0:
 - fixes for 64 bit builds (size_t is integer type of pointer size)

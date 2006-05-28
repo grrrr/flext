@@ -96,6 +96,11 @@ typedef t_clock t_qelem;
 
 /* Max/MSP definitions start here */
 
+// 2-byte alignment for Max/MSP structures
+#ifdef _MSC_VER
+#pragma pack(push,flext_maxsdk)
+#pragma pack(2)
+#endif
 
 // Include the relevant Max/MSP header files
 
@@ -117,7 +122,6 @@ typedef t_clock t_qelem;
 	#define WIN_EXT_VERSION 1
 #endif
 
-
 // necessary for the old OS9 SDK
 extern "C" {	    	    	    
 
@@ -136,7 +140,6 @@ extern "C" {
 } // extern "C"
 
 #undef WIN_VERSION
-
 
 typedef t_pxobject t_sigobj;  // that's the all-in-one object type of Max/MSP (not very memory-efficent, i guess)
 typedef t_patcher t_canvas;
@@ -187,36 +190,12 @@ typedef void t_binbuf;
 #define critical_exit(N)
 #endif
 
-#elif FLEXT_SYS == FLEXT_SYS_JMAX
+#ifdef _MSC_VER
+#pragma pack(pop,flext_maxsdk)
+#endif
 
-extern "C" {
-	// Wow, the jMax developers made excessive use of C++ reserved words
-	// good hit!
-	#define typeid c_typeid_
-	#define template c_template_
-	#define this c_this_
-	#define class c_class_
-	
-	#include <fts/fts.h>
-	
-	// undefine them again
-	#undef typeid 
-	#undef template 
-	#undef this 
-	#undef class 
-}
-
-typedef fts_dsp_object t_sigobj;
-typedef void t_canvas; // decide type later on
-
-typedef char t_symbol;
-typedef fts_atom_t t_atom;
-typedef fts_class_t t_class;
-typedef float t_sample; // is there no sample type in jMax?
-
-typedef fts_timebase_entry_t t_clock;
-typedef fts_timebase_entry_t t_qelem;
-
+#else
+#error Platform not supported
 #endif // FLEXT_SYS
 
 

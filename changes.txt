@@ -33,6 +33,7 @@ Version history:
 - added thisParent type, which refers to the class from which the current flext class is derived (as given in FLEXT_HEADER)
 - bang method can also by added with FLEXT_(C)ADDMETHOD (FLEXT_(C)ADDBANG is still an alias)
 - attribute generation is now determined exclusively by each object class setup (not library is before)
+- more robust pack setting for Max/MSP @ Windows
 
 0.5.0:
 - fixes for 64 bit builds (size_t is integer type of pointer size)

@@ -690,11 +690,10 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				InlineFunctionExpansion="0"
 				FavorSizeOrSpeed="0"
 				EnableFiberSafeOptimizations="FALSE"
-				AdditionalIncludeDirectories="&quot;C:\data\prog\audio\maxmspsdk_win\4.5 headers\c74support\max-includes&quot;;&quot;C:\data\prog\audio\maxmspsdk_win\4.5 headers\c74support\msp-includes&quot;;c:\data\prog\audio\sndobj\include;c:\data\prog\audio\stk\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_MAX;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_EXPORTS;_WIN32_WINNT=0x501"
+				AdditionalIncludeDirectories="&quot;C:\data\prog\audio\maxmspsdk\c74support\max-includes&quot;;&quot;C:\data\prog\audio\maxmspsdk\c74support\msp-includes&quot;;c:\data\prog\audio\sndobj\include;c:\data\prog\audio\stk\include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS=1;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_EXPORTS;_WIN32_WINNT=0x501"
 				StringPooling="TRUE"
 				RuntimeLibrary="1"
-				StructMemberAlignment="2"
 				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
@@ -745,11 +744,10 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				InlineFunctionExpansion="2"
 				FavorSizeOrSpeed="0"
 				EnableFiberSafeOptimizations="FALSE"
-				AdditionalIncludeDirectories="&quot;C:\data\prog\audio\maxmspsdk_win\4.5 headers\c74support\max-includes&quot;;&quot;C:\data\prog\audio\maxmspsdk_win\4.5 headers\c74support\msp-includes&quot;;c:\data\prog\audio\sndobj\include;c:\data\prog\audio\stk\include"
-				PreprocessorDefinitions="WIN32;_LIB;FLEXT_SYS_MAX;FLEXT_USE_SIMD;FLEXT_EXPORTS;FLEXT_THREADS"
+				AdditionalIncludeDirectories="&quot;C:\data\prog\audio\maxmspsdk\c74support\max-includes&quot;;&quot;C:\data\prog\audio\maxmspsdk\c74support\msp-includes&quot;;c:\data\prog\audio\sndobj\include;c:\data\prog\audio\stk\include"
+				PreprocessorDefinitions="WIN32;_LIB;FLEXT_SYS=1;FLEXT_USE_SIMD;FLEXT_EXPORTS;FLEXT_THREADS;_WIN32_WINNT=0x502"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
-				StructMemberAlignment="2"
 				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
@@ -1920,7 +1918,6 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -2060,7 +2057,6 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -2197,7 +2193,6 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -2334,7 +2329,6 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -2471,7 +2465,6 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -2608,7 +2601,6 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -2745,7 +2737,6 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -2882,7 +2873,6 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -3019,7 +3009,6 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -3160,7 +3149,6 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
 				<FileConfiguration

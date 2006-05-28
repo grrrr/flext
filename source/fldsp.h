@@ -64,8 +64,14 @@ public:
     t_sample *const *OutSig() const 
     { 
         int i = CntInSig(); 
-        // we have at least one actual dsp in vector
+        // in PD we have at least one actual dsp in vector
+#if FLEXT_SYS == FLEXT_SYS_PD
         return vecs+(i?i:1); 
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+        return vecs+i; 
+#else
+#error
+#endif
     }
 
 	//! returns output vector

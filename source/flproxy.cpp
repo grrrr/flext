@@ -124,20 +124,22 @@ void flext_base::cb_bang(flext_hdr *c)
 void flext_base::cb_px_in ## IX(flext_hdr *c,long v) { t_atom atom; SetInt(atom,v); thisObject(c)->CbMethodHandler(IX,sym_int,1,&atom); } \
 void flext_base::cb_px_ft ## IX(flext_hdr *c,double v) { t_atom atom; SetFloat(atom,v); thisObject(c)->CbMethodHandler(IX,sym_float,1,&atom); }
 
-//void flext_base::cb_px_in ## IX(flext_hdr *c,long v) { t_atom atom; SetInt(atom,v); thisObject(c)->CbMethodHandler(IX,sym_int,1,&atom); } \
-//void flext_base::cb_px_ft ## IX(flext_hdr *c,double v) { t_atom atom; SetFloat(atom,v); thisObject(c)->CbMethodHandler(IX,sym_float,1,&atom); }
-
+/*
+void flext_base::cb_px_in ## IX(flext_hdr *c,long v) { t_atom atom; SetInt(atom,v); thisObject(c)->CbMethodHandler(IX,sym_int,1,&atom); } \
+void flext_base::cb_px_ft ## IX(flext_hdr *c,double v) { t_atom atom; SetFloat(atom,v); thisObject(c)->CbMethodHandler(IX,sym_float,1,&atom); }
+*/
 
 #define ADD_PROXYMSG(c,IX) \
 addinx((method)(cb_px_in ## IX),IX); \
 addftx((method)(cb_px_ft ## IX),IX)
 
-//add_method1(c,cb_px_in ## IX,"in" #IX,A_INT); \
-//add_method1(c,cb_px_ft ## IX,"ft" #IX,A_FLOAT)
+/*
+add_method1(c,cb_px_in ## IX,"in" #IX,A_INT); \
+add_method1(c,cb_px_ft ## IX,"ft" #IX,A_FLOAT)
 
-//AddMethod(c,0,flext::MakeSymbol("in" #IX),cb_px_in ## IX); \
-//AddMethod(c,0,flext::MakeSymbol("ft" #IX),cb_px_ft ## IX) 
-
+AddMethod(c,0,flext::MakeSymbol("in" #IX),cb_px_in ## IX); \
+AddMethod(c,0,flext::MakeSymbol("ft" #IX),cb_px_ft ## IX) 
+*/
 
 #endif 
 

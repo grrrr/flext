@@ -352,7 +352,6 @@ bool flext_base::StopThreads()
     // first search pending queue
     // --------------------------
 
-    bool found = false;
     while((ti = thrpending.Pop()) != NULL)
         if(ti->This() == this)
             // found -> thread hasn't started -> just delete

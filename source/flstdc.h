@@ -251,11 +251,11 @@ typedef t_symbol *t_symptr;
 
 #ifdef FLEXT_DEBUG
 #ifdef _MSC_VER
-#define FLEXT_ASSERT(b) (!(b)?_CrtDbgReport(_CRT_ASSERT,__FILE__,__LINE__,"flext",#b):1)
+#define FLEXT_ASSERT(b) do { if(!(b)) _CrtDbgReport(_CRT_ASSERT,__FILE__,__LINE__,"flext",#b); } while(false)
 #define FLEXT_WARN(str) _CrtDbgReport(_CRT_WARN,__FILE__,__LINE__,"flext",NULL)
 #define FLEXT_ERROR(str) _CrtDbgReport(_CRT_ERROR,__FILE__,__LINE__,"flext",NULL)
 #else
-#define FLEXT_ASSERT(b) (!(b)?(error("Assertion failed: " #b " - in " __FILE__ " line %i",(int)__LINE__),0):1)
+#define FLEXT_ASSERT(b) do { if(!(b)) error("Assertion failed: " #b " - in " __FILE__ " line %i",(int)__LINE__); } while(false)
 #define FLEXT_WARN(str) error("Warning: in " __FILE__ " line %i",(int)__LINE__)
 #define FLEXT_ERROR(str) error("Error: in " __FILE__ " line %i",(int)__LINE__)
 #endif

@@ -128,14 +128,16 @@ class flext_class:
 public:
 	flext_class(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(flext_hdr *)); 
 	
+	t_class *const &clss;
+
 	flext_obj *(*newfun)(int,t_atom *);
 	void (*freefun)(flext_hdr *c);
 
-	t_class *const &clss;
-	flext_library *lib;
-	bool dsp,attr,dist;
 	int argc;
 	int *argv;
+
+	flext_library *lib;
+	bool dsp,attr,dist;
 
     flext_base::ItemCont meths,attrs;
 };

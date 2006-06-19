@@ -199,11 +199,11 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 
     protected:    	
 
-        //! pointer to flext class definition
-        flext_class *clss;
-
         //! backpointer to object header
         mutable flext_hdr *x_obj;        	
+
+        //! pointer to flext class definition
+        flext_class *clss;
 
 //        static bool	process_attributes;
 

@@ -33,8 +33,6 @@ bool flext::PrintAtom(const t_atom &a,char *buf,size_t bufsz)
         ok = STD::snprintf(buf,bufsz,"%i",GetInt(a)) > 0;
     }
     else if(IsSymbol(a)) {
-		FLEXT_ASSERT(IsSymbol(a));
-
 		const char *c = GetString(a);
 		size_t len = strlen(c);
 		if(len < bufsz) {

@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -149,16 +149,16 @@ public:
 		    "movl 	4(%%esi), %%edx		\n\t"
 		    "movl  	(%%esi), %%eax		\n\t"	
 		    "testl	%%eax, %%eax		\n\t"
-		    "jz		20f					\n"
-		    "10:                        \t"
+		    "jz		2f					\n"
+		    "1:                        \t"
 		    "movl 	(%%eax), %%ebx		\n\t"
 		    "movl	%%edx, %%ecx		\n\t"
 		    "incl	%%ecx				\n\t"
 		    SMPLOCK "cmpxchg8b (%%esi)	\n\t"
-		    "jz		20f					\n\t"
+		    "jz		2f					\n\t"
 		    "testl	%%eax, %%eax		\n\t"
-		    "jnz	10b					\n"
-		    "20:                        \t"
+		    "jnz	1b					\n"
+		    "2:                        \t"
 		    "popl	%%ecx				\n\t"
 		    "popl	%%ebx				\n\t"
 		    :"=a" (v)
@@ -221,16 +221,16 @@ public:
 		    "mov 	8(%%rsi), %%rdx		\n\t"
 		    "mov  	(%%rsi), %%rax		\n\t"	
 		    "test	%%rax, %%rax		\n\t"
-		    "jz		20f					\n"
-		    "10:                        \t"
+		    "jz		2f					\n"
+		    "1:                        \t"
 		    "mov 	(%%rax), %%rbx		\n\t"
 		    "mov	%%rdx, %%rcx		\n\t"
 		    "inc	%%rcx				\n\t"
 		    SMPLOCK "cmpxchg16b (%%rsi)	\n\t"
-		    "jz		20f					\n\t"
+		    "jz		2f					\n\t"
 		    "test	%%rax, %%rax		\n\t"
-		    "jnz	10b					\n"
-		    "20:                        \t"
+		    "jnz	1b					\n"
+		    "2:                        \t"
 		    "pop	%%rcx				\n\t"
 		    "pop	%%rbx				\n\t"
 		    :"=a" (v)

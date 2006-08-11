@@ -28,6 +28,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #ifdef _MSC_VER
 #include <crtdbg.h>
+#else
+#include <assert.h>
 #endif
 
 // PD stuff
@@ -255,7 +257,8 @@ typedef t_symbol *t_symptr;
 #define FLEXT_WARN(str) _CrtDbgReport(_CRT_WARN,__FILE__,__LINE__,"flext",NULL)
 #define FLEXT_ERROR(str) _CrtDbgReport(_CRT_ERROR,__FILE__,__LINE__,"flext",NULL)
 #else
-#define FLEXT_ASSERT(b) do { if(!(b)) error("Assertion failed: " #b " - in " __FILE__ " line %i",(int)__LINE__); } while(false)
+#define FLEXT_ASSERT(b) assert(b)
+//#define FLEXT_ASSERT(b) do { if(!(b)) error("Assertion failed: " #b " - in " __FILE__ " line %i",(int)__LINE__); } while(false)
 #define FLEXT_WARN(str) error("Warning: in " __FILE__ " line %i",(int)__LINE__)
 #define FLEXT_ERROR(str) error("Error: in " __FILE__ " line %i",(int)__LINE__)
 #endif

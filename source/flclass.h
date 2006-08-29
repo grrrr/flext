@@ -226,6 +226,8 @@ public:
 	void ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const;
 	//! Output anything (index n starts with 0)
 	void ToOutAnything(int n,const AtomAnything &any) const { ToOutAnything(n,any.Header(),any.Count(),any.Atoms()); }
+	//! Output anything (index n starts with 0)
+	void ToOutAnything(int n,const t_symbol *s,const AtomList &list) const { ToOutAnything(n,s,list.Count(),list.Atoms()); }
 	
 	//! @} FLEXT_C_IO_OUT
 
@@ -829,7 +831,10 @@ protected:
     void ToSysInt(int n,int f) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_flint((t_outlet *)o,f); CRITOFF(); } }
     void ToSysSymbol(int n,const t_symbol *s) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(s)); CRITOFF(); } }
     void ToSysList(int n,int argc,const t_atom *argv) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_list((t_outlet *)o,const_cast<t_symbol *>(sym_list),argc,(t_atom *)argv); CRITOFF(); } }
+	void ToSysList(int n,const AtomList &list) const { ToSysList(n,list.Count(),list.Atoms()); }
     void ToSysAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { outlet *o = GetOut(n); if(o) { CRITON(); outlet_anything((t_outlet *)o,const_cast<t_symbol *>(s),argc,(t_atom *)argv); CRITOFF(); } }
+	void ToSysAnything(int n,const AtomAnything &any) const { ToSysAnything(n,any.Header(),any.Count(),any.Atoms()); }
+	void ToSysAnything(int n,const t_symbol *s,const AtomList &list) const { ToSysAnything(n,s,list.Count(),list.Atoms()); }
 
 	void ToSysBool(int n,bool f) const { ToSysInt(n,f?1:0); }
 	void ToSysAtom(int n,const t_atom &at) const;

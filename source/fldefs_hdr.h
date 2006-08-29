@@ -32,6 +32,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 \
 FLEXT_REALHDR(NEW_CLASS, PARENT_CLASS)    	    	
 
+#define FLEXT_HEADER_T(NEW_CLASS,PARENT_CLASS) \
+\
+FLEXT_REALHDR_T(NEW_CLASS, PARENT_CLASS)    	    	
+
 /*! \brief Flext class header with setup function
 	\param NEW_CLASS name of the current C++ class
 	\param PARENT_CLASS name of the base C++ class (e.g. flext_base or flext_dsp)
@@ -45,6 +49,10 @@ FLEXT_REALHDR(NEW_CLASS, PARENT_CLASS)
 #define FLEXT_HEADER_S(NEW_CLASS, PARENT_CLASS, SETUPFUN)\
 \
 FLEXT_REALHDR_S(NEW_CLASS, PARENT_CLASS, SETUPFUN)    	    	
+
+#define FLEXT_HEADER_TS(NEW_CLASS, PARENT_CLASS, SETUPFUN)\
+\
+FLEXT_REALHDR_TS(NEW_CLASS, PARENT_CLASS, SETUPFUN)    	    	
 
 
 //! @} FLEXT_D_HEADER

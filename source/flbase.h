@@ -331,6 +331,34 @@ static void __setup__(t_classid classid) { 	    	\
 	thisType::SETUPFUN(classid); \
 }
 
+#define FLEXT_REALHDR_T(NEW_CLASS, PARENT_CLASS)    	    	\
+public:    	    \
+typedef NEW_CLASS thisType;  \
+typedef PARENT_CLASS thisParent;  \
+typedef typename thisParent::t_classid t_classid;  \
+static FLEXT_CLASSDEF(flext_obj) *__init__(int argc,t_atom *argv);  \
+static void __free__(flext_hdr *hdr) {  	    	    	\
+	FLEXT_CLASSDEF(flext_obj) *mydata = hdr->data; delete mydata; \
+	hdr->flext_hdr::~flext_hdr(); \
+}   	    	\
+static void __setup__(t_classid classid) { thisParent::__setup__(classid); }
+
+
+#define FLEXT_REALHDR_TS(NEW_CLASS, PARENT_CLASS,SETUPFUN)    	    	\
+public:     	    	    \
+typedef NEW_CLASS thisType;  \
+typedef PARENT_CLASS thisParent;  \
+typedef typename thisParent::t_classid t_classid;  \
+static FLEXT_CLASSDEF(flext_obj) *__init__(int argc,t_atom *argv);  \
+static void __free__(flext_hdr *hdr) {  	    	    	\
+	FLEXT_CLASSDEF(flext_obj) *mydata = hdr->data; delete mydata; \
+	hdr->flext_hdr::~flext_hdr(); \
+}   	    	\
+static void __setup__(t_classid classid) { 	    	\
+	thisParent::__setup__(classid);    	    	\
+	thisType::SETUPFUN(classid); \
+}
+
 
 // generate name of dsp/non-dsp setup function
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX

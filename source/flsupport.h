@@ -1124,16 +1124,37 @@ public:
 	\remark Since this clock can be synchronized to an external clock (or e.g. the audio card) 
 	\remark it may differ from the clock of the operating system
 */
+
 	/*! \brief Get time since real-time system startup.
 		\note This is not the time of the operating system but of the real-time system.
-		\note It depends on the time source the system is synchronized to.
+		\note It may depend on the time source the system is synchronized to (e.g. audio sample rate).
 	*/
-	static double GetTime();
+	static double GetTime()
+	{
+	#if FLEXT_SYS == FLEXT_SYS_PD
+		return clock_gettimesince(0)*0.001;
+	#elif FLEXT_SYS == FLEXT_SYS_MAX
+		double tm;
+		clock_getftime(&tm);
+		return tm*0.001;
+	#else
+		#error Not implemented
+	#endif
+	}
 	
 	/*! \brief Get time granularity of the GetTime function.
 		\note This can be zero if not determined.
 	*/
-	static double GetTimeGrain();
+	static double GetTimeGrain()
+	{
+	#if FLEXT_SYS == FLEXT_SYS_PD
+		return 0;
+	#elif FLEXT_SYS == FLEXT_SYS_MAX
+		return 0.001;
+	#else
+		#error Not implemented
+	#endif
+	}
 
 	/*! \brief Get operating system time since flext startup.
 	*/

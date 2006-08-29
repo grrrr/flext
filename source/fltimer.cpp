@@ -25,31 +25,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 
-
-double flext::GetTime()
-{
-#if FLEXT_SYS == FLEXT_SYS_PD
-    return clock_gettimesince(0)*0.001;
-#elif FLEXT_SYS == FLEXT_SYS_MAX
-    double tm;
-    clock_getftime(&tm);
-    return tm*0.001;
-#else
-    #error Not implemented
-#endif
-}
-
-double flext::GetTimeGrain()
-{
-#if FLEXT_SYS == FLEXT_SYS_PD
-    return 0;
-#elif FLEXT_SYS == FLEXT_SYS_MAX
-    return 0.001;
-#else
-    #error Not implemented
-#endif
-}
-
 #if FLEXT_OS == FLEXT_OS_WIN
 static double perffrq = 0;
 #endif
@@ -246,9 +221,9 @@ bool flext::Timer::Delay(double tm,void *data)
 bool flext::Timer::Periodic(double tm,void *data) 
 {
     userdata = data;
-    period = tm;
+	period = tm;
 #if FLEXT_SYS == FLEXT_SYS_PD 
-    clock_delay(clk,tm*1000);
+    clock_delay(clk,tm*1000.);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
     clock_fdelay(clk,tm*1000.);
 #else
@@ -263,10 +238,9 @@ bool flext::Timer::Periodic(double tm,void *data)
 void flext::Timer::callback(Timer *tmr)
 {
     if(tmr->period) {
-        // clearly it would be more precise if the periodic event is scheduled as such
-        // and not retriggered every time
+		// reschedule
 #if FLEXT_SYS == FLEXT_SYS_PD 
-        clock_delay(tmr->clk,tmr->period*1000);
+        clock_delay(tmr->clk,tmr->period*1000.);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
         clock_fdelay(tmr->clk,tmr->period*1000.);
 #else

@@ -98,10 +98,11 @@ void flext_obj::DefineHelp(t_classid c,const char *ref,const char *dir,bool addt
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
     char tmp[256];
-    if(dir) { 
-        strcpy(tmp,dir); 
-        strcat(tmp,"/"); 
-        strcat(tmp,ref); 
+    if(dir && *dir) { 
+        strcpy(tmp,dir);
+		char *last = tmp+strlen(tmp)-1; 
+        if(*last != '/') strcat(last,"/"); 
+        strcat(last,ref); 
     }
     else 
         strcpy(tmp,ref);

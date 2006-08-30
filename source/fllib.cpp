@@ -305,7 +305,16 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 	t_classid clid = lo;
 
 	// make help reference
-	flext_obj::DefineHelp(clid,idname,extract(names,-1),dsp);
+	const char *helptxt = extract(names,-1);
+	if(helptxt) {
+		const char *sl = strchr(helptxt,'/');
+		if(sl && !sl[1])
+			// helptxt is only the path (path with trailing /)
+			flext_obj::DefineHelp(clid,idname,helptxt,dsp);
+		else 
+			// helptxt is path and patch name
+			flext_obj::DefineHelp(clid,helptxt,NULL,dsp);
+	}
 
 	for(int ix = 0; ; ++ix) {
 		// in this loop register all the possible aliases of the object

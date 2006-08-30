@@ -37,6 +37,7 @@ Version history:
 - should work with Mac/Intel (still untested!)
 - added new FLEXT_HEADER macros to enable class templates
 - more ToOut/Sys* methods
+- fixed help name definition at class setup
 
 0.5.0:
 - fixes for 64 bit builds (size_t is integer type of pointer size)

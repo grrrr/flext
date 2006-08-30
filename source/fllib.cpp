@@ -41,27 +41,31 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 //! Extract space-delimited words from a string
 static const char *extract(const char *name,int ix = 0)
 {
-	static char tmp[1024];
+	char tmp[1024];
 	const char *n = name;
 	
 	const char *del = strchr(name,ALIASDEL);
 
 	if(del) {
-		if(ix < 0) {
-			char *t = tmp;
-			while(n < del && (isspace(*n) || strchr(ALIASSLASHES,*n))) ++n;
-			while(n < del && !isspace(*n)) {
-				char c = *(n++);
-				*(t++) = strchr(ALIASSLASHES,c)?ALIASSLASH:c;
-			}
-			while(*t == ALIASSLASH && t > tmp) --t;
-			*t = 0;
-
-			return tmp;
+#if 0
+		char *t = tmp;
+		while(n < del && (isspace(*n) || strchr(ALIASSLASHES,*n))) ++n;
+		while(n < del && !isspace(*n)) {
+			char c = *(n++);
+			*(t++) = strchr(ALIASSLASHES,c)?ALIASSLASH:c;
 		}
+		while(*t == ALIASSLASH && t > tmp) --t;
+		*t = 0;
+#endif
+		if(ix < 0)
+			return del+1;
 
-		n = del+1;
+		strncpy(tmp,name,del-name);
+		tmp[del-name] = 0;
+		n = tmp;
 	}
+	else if(ix < 0)
+		return NULL; // no explicit help name
 
 	while(*n && isspace(*n)) ++n;
 	

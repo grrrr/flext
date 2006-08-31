@@ -232,11 +232,16 @@ bool flext::Timer::Periodic(double tm,void *data)
     return true;
 }
 
-/*! \brief Callback function for system clock.
-    \todo Make periodic events scheduled as such.
-*/
+//! \brief Callback function for system clock.
 void flext::Timer::callback(Timer *tmr)
 {
+#if FLEXT_SYS == FLEXT_SYS_MAX
+    if(tmr->queued) 
+        qelem_set(tmr->qelem);
+    else
+#endif
+        tmr->Work();
+
     if(tmr->period) {
 		// reschedule
 #if FLEXT_SYS == FLEXT_SYS_PD 
@@ -247,13 +252,6 @@ void flext::Timer::callback(Timer *tmr)
     #error Not implemented
 #endif
     }
-
-#if FLEXT_SYS == FLEXT_SYS_MAX
-    if(tmr->queued) 
-        qelem_set(tmr->qelem);
-    else
-#endif
-        tmr->Work();
 }
 
 #if FLEXT_SYS == FLEXT_SYS_MAX

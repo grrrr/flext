@@ -1,10 +1,2 @@
 # use SIMD instructions (Intel SSE)?
 SIMD=1
-
-# where is the STK installation?
-# (uncomment the line with # to disable STK support)
-#STK=c:\data\prog\audio\stk
-
-# where is the Sndobjs installation?
-# (uncomment the line with # to disable SNDOBJ support)
-#SNDOBJ=c:\data\prog\audio\sndobj

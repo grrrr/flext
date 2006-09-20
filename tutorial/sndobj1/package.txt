@@ -1,2 +1,2 @@
-NAME=sndobj1
+NAME=sndobj1~
 SRCS=main.cpp

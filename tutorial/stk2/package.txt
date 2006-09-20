@@ -1,2 +1,2 @@
-NAME=stk2
+NAME=stk2~
 SRCS=main.cpp

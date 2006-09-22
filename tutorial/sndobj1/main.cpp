@@ -1,7 +1,7 @@
 /* 
 flext tutorial - sndobj 1
 
-Copyright (c) 2002,2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002-2006 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -21,7 +21,7 @@ This external features simple stereo pitch shifting.
 #include <flsndobj.h>
  
 #if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 401)
-#error You need at least flext version 0.4.1
+#error You need at least flext version 0.4.1 with sndobj support
 #endif
 
 

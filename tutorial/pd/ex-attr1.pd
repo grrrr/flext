@@ -1,34 +1,31 @@
-#N canvas 70 150 690 461 12;
-#X msg 160 85 help;
-#X obj 59 321 attr1 @arg 3;
-#X text 114 298 attribute as a creation arg;
-#X msg 160 123 getattributes;
-#X text 167 344 there is one additional outlet;
-#X text 167 359 for all attribute-enabled objects;
-#X obj 150 392 print;
-#X msg 160 166 getarg;
-#X text 12 117 trigger output;
-#X msg 160 228 arg \$1;
-#X text 230 216 set attribute "arg";
-#X text 295 123 query object attributes (watch console);
-#X text 228 167 query attribute "arg" (watch console);
+#N canvas 70 150 694 465 12;
+#X obj 59 296 attr1 @arg 3;
+#X text 114 273 attribute as a creation arg;
+#X msg 160 98 getattributes;
+#X text 167 319 there is one additional outlet;
+#X text 167 334 for all attribute-enabled objects;
+#X obj 150 367 print;
+#X msg 160 141 getarg;
+#X text 12 92 trigger output;
+#X msg 160 203 arg \$1;
+#X text 230 191 set attribute "arg";
+#X text 295 98 query object attributes (watch console);
+#X text 228 142 query attribute "arg" (watch console);
 #X obj 16 8 cnv 15 550 40 empty empty attr1 10 22 0 24 -260818 -1 0
 ;
 #X text 175 28 http://grrrr.org;
-#X text 206 85 get some "help";
-#X text 26 413 result;
-#X obj 23 139 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
--1 -1 109 256;
-#X obj 29 395 nbx 7 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
--228992 -1 -1 143 256;
-#X obj 161 206 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
--1 -1 34 256;
+#X text 26 388 result;
+#X obj 23 114 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
+-1 -1 0 256;
+#X obj 29 370 nbx 7 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
+-228992 -1 -1 0 256;
+#X obj 161 181 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
+-1 -1 0 256;
 #X text 175 10 flext tutorial \, (C)2002-2006 Thomas Grill;
-#X connect 0 0 1 0;
-#X connect 1 0 18 0;
-#X connect 1 1 6 0;
-#X connect 3 0 1 0;
-#X connect 7 0 1 0;
-#X connect 9 0 1 0;
-#X connect 17 0 1 0;
-#X connect 19 0 9 0;
+#X connect 0 0 16 0;
+#X connect 0 1 5 0;
+#X connect 2 0 0 0;
+#X connect 6 0 0 0;
+#X connect 8 0 0 0;
+#X connect 15 0 0 0;
+#X connect 17 0 8 0;

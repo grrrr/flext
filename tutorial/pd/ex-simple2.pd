@@ -1,21 +1,16 @@
-#N canvas 72 265 595 313 12;
-#X obj 111 196 simple2 3;
-#X msg 21 83 help;
-#X text 103 119 triggering;
-#X text 215 120 non-triggering;
-#X text 206 197 default argument;
+#N canvas 72 265 599 317 12;
+#X obj 42 196 simple2 3;
+#X text 121 177 default argument;
 #X obj 16 8 cnv 15 550 40 empty empty simple2 10 22 0 24 -260818 -1
 0;
 #X text 167 29 http://grrrr.org;
-#X text 66 82 print a "help" message (to the console);
-#X obj 110 144 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
--1 -1 0 256;
-#X obj 217 144 nbx 4 16 -999 999 0 0 empty empty empty 0 -6 0 12 -261681
--1 -1 0 256;
-#X obj 111 239 nbx 7 16 -1e+037 1e+037 0 0 empty empty empty 0 -6 0
-12 -228992 -1 -1 0 256;
+#X obj 41 110 nbx 4 16 -999 999 0 0 empty empty triggering 0 -6 0 12
+-261681 -1 -1 0 256;
+#X obj 148 110 nbx 4 16 -999 999 0 0 empty empty non-triggering 0 -6
+0 12 -261681 -1 -1 0 256;
+#X obj 42 239 nbx 7 16 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 12
+-228992 -1 -1 0 256;
 #X text 167 11 flext tutorial \, (C)2002-2006 Thomas Grill;
-#X connect 0 0 10 0;
-#X connect 1 0 0 0;
-#X connect 8 0 0 0;
-#X connect 9 0 0 1;
+#X connect 0 0 6 0;
+#X connect 4 0 0 0;
+#X connect 5 0 0 1;

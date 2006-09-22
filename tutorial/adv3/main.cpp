@@ -1,7 +1,7 @@
 /* 
 flext tutorial - advanced 3
 
-Copyright (c) 2002,2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002-2006 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -30,8 +30,8 @@ Apart from that you'll notice several differences to the original C object:
 #include <flext.h>
 
 // check for appropriate flext version
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 401)
-#error You need at least flext version 0.4.1
+#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 501)
+#error You need at least flext version 0.5.1
 #endif
 
 class adv3:
@@ -147,7 +147,7 @@ private:
 
 // instantiate the class (constructor has a variable argument list)
 // let "counter" be an alternative name
-// before the colon define the name of the path to the help file
-FLEXT_NEW_V("help, adv3 counter",adv3)
+// after the colon define the path/name of the help file (a path has a trailing /, a file has not)
+FLEXT_NEW_V("adv3 counter,help/",adv3)
 
 

@@ -1,7 +1,7 @@
 /* 
 flext tutorial - advanced 2
 
-Copyright (c) 2002,2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002-2006 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -22,8 +22,8 @@ All objects [adv2] will share the same database, saving memory.
 #include <flext.h>
 
 // check for appropriate flext version
-#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 401)
-#error You need at least flext version 0.4.1
+#if !defined(FLEXT_VERSION) || (FLEXT_VERSION < 500)
+#error You need at least flext version 0.5.0
 #endif
 
 class adv2:
@@ -40,7 +40,7 @@ protected:
 	void m_tag_and_int(int i);   
 	void m_sym(t_symbol *s);   
 
-	virtual void m_help();
+	void m_help();
 	
 private:
 	// define the _static_ class setup function
@@ -49,6 +49,7 @@ private:
 	FLEXT_CALLBACK(m_tag)  
 	FLEXT_CALLBACK_I(m_tag_and_int)
 	FLEXT_CALLBACK_S(m_sym)
+	FLEXT_CALLBACK(m_help)
 };
 
 // instantiate the class (constructor takes no arguments)
@@ -72,6 +73,8 @@ void adv2::setup(t_classid c)
 	FLEXT_CADDMETHOD_I(c,0,"hula",m_tag_and_int);  
 
 	FLEXT_CADDMETHOD(c,0,m_sym);  
+
+	FLEXT_CADDMETHOD_(c,0,"help",m_help);  
 }
 
 void adv2::m_tag()

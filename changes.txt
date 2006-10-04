@@ -38,6 +38,7 @@ Version history:
 - added new FLEXT_HEADER macros to enable class templates
 - more ToOut/Sys* methods
 - fixed help name definition at class setup
+- added gcc branch hinting
 
 0.5.0:
 - fixes for 64 bit builds (size_t is integer type of pointer size)

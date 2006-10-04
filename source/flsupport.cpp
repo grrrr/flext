@@ -119,7 +119,7 @@ void *flext_root::operator new(size_t bytes)
     bytes += sizeof(memtest)*2;
 #endif
     char *blk;
-    if(bytes >= LARGEALLOC) {
+    if(UNLIKELY(bytes >= LARGEALLOC)) {
 #if FLEXT_SYS == FLEXT_SYS_MAX && defined(_SYSMEM_H_)
         blk = (char *)::sysmem_newptr(bytes);
 #else
@@ -163,7 +163,7 @@ void flext_root::operator delete(void *blk)
 #endif
 	size_t bytes = *(size_t *)ori;
 
-    if(bytes >= LARGEALLOC) {
+    if(UNLIKELY(bytes >= LARGEALLOC)) {
 #if FLEXT_SYS == FLEXT_SYS_MAX && defined(_SYSMEM_H_)
         ::sysmem_freeptr(ori);
 #else
@@ -205,7 +205,7 @@ void *flext_root::NewAligned(size_t bytes,int bitalign)
 	bytes += ovh+alignovh;
 
     char *blk;
-    if(bytes >= LARGEALLOC) {
+    if(UNLIKELY(bytes >= LARGEALLOC)) {
 #if FLEXT_SYS == FLEXT_SYS_MAX && defined(_SYSMEM_H_)
         blk = (char *)::sysmem_newptr(bytes);
 #else
@@ -239,7 +239,7 @@ void flext_root::FreeAligned(void *blk)
 	char *ori = *(char **)((char *)blk-sizeof(size_t)-sizeof(char *));
 	size_t bytes = *(size_t *)((char *)blk-sizeof(size_t));
 
-    if(bytes >= LARGEALLOC) {
+    if(UNLIKELY(bytes >= LARGEALLOC)) {
 #if FLEXT_SYS == FLEXT_SYS_MAX && defined(_SYSMEM_H_)
         ::sysmem_freeptr(ori);
 #else

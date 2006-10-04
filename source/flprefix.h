@@ -412,5 +412,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define STD
 #endif
 
+// branching hints
+#ifdef __GNUC__
+#define LIKELY(expression) (__builtin_expect(!!(expression), 1))
+#define UNLIKELY(expression) (__builtin_expect(!!(expression), 0))
+#else
+#define LIKELY(expression) (expression)
+#define UNLIKELY(expression) (expression)
+#endif
+
 
 #endif // __FLEXT_PREFIX_H

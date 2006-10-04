@@ -38,7 +38,7 @@ void flext_base::xlet::Desc(const char *c)
 
 void flext_base::AddInlet(xlettype tp,int mult,const char *desc)
 {
-    if(incnt+mult >= MAXLETS)
+    if(UNLIKELY(incnt+mult >= MAXLETS))
         post("%s - too many inlets",thisName());
     else
         for(int i = 0; i < mult; ++i) {
@@ -50,7 +50,7 @@ void flext_base::AddInlet(xlettype tp,int mult,const char *desc)
 
 void flext_base::AddOutlet(xlettype tp,int mult,const char *desc)
 {
-    if(outcnt+mult >= MAXLETS)
+    if(UNLIKELY(outcnt+mult >= MAXLETS))
         post("%s - too many outlets",thisName());
     else
         for(int i = 0; i < mult; ++i) {
@@ -62,7 +62,7 @@ void flext_base::AddOutlet(xlettype tp,int mult,const char *desc)
 
 void flext_base::DescInlet(int ix,const char *d)
 {
-    if(ix >= incnt)
+    if(UNLIKELY(ix >= incnt))
         post("%s - inlet %i not found",thisName(),ix);
     else
         inlist[ix].Desc(d);
@@ -70,7 +70,7 @@ void flext_base::DescInlet(int ix,const char *d)
 
 void flext_base::DescOutlet(int ix,const char *d)
 {
-    if(ix >= outcnt)
+    if(UNLIKELY(ix >= incnt))
         post("%s - outlet %i not found",thisName(),ix);
     else
         outlist[ix].Desc(d);

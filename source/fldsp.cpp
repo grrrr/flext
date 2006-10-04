@@ -49,7 +49,7 @@ t_int *flext_dsp::dspmeth(t_int *w)
 #if FLEXT_SYS == FLEXT_SYS_MAX
     if(!obj->thisHdr()->z_disabled)
 #else
-    if(obj->dspon)
+    if(LIKELY(obj->dspon))
 #endif
     {
         flext_base::indsp = true;

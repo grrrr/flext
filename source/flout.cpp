@@ -20,7 +20,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 void flext_base::ToSysAtom(int n,const t_atom &at) const 
 { 
     outlet *o = GetOut(n); 
-    if(o) { 
+    if(LIKELY(o)) { 
         CRITON(); 
         if(IsSymbol(at))
             outlet_symbol((t_outlet *)o,const_cast<t_symbol *>(GetSymbol(at))); 
@@ -45,12 +45,12 @@ void flext_base::ToSysAtom(int n,const t_atom &at) const
 
 #if defined(FLEXT_THREADS)
     #if FLEXT_QMODE == 2
-        #define CHKTHR() ((IsSystemThread() || IsThread(flext::thrmsgid)) && !InDSP())
+        #define CHKTHR() (LIKELY((IsSystemThread() || IsThread(flext::thrmsgid)) && !InDSP()))
     #else
-        #define CHKTHR() (IsSystemThread() && !InDSP())
+        #define CHKTHR() (LIKELY(IsSystemThread() && !InDSP()))
     #endif
 #else
-    #define CHKTHR() (!InDSP())
+    #define CHKTHR() (LIKELY(!InDSP()))
 #endif
 
 void flext_base::ToOutBang(int n) const { if(CHKTHR()) ToSysBang(n); else ToQueueBang(n); }

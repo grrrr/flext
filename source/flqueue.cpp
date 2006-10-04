@@ -208,7 +208,7 @@ private:
         void Send() const
         {
             if(th) {
-                if(out < 0)
+                if(UNLIKELY(out < 0))
                     // message to self
                     th->CbMethodHandler(-1-out,sym,argc,argc > STATSIZE?argv:argl); 
                 else
@@ -238,7 +238,7 @@ private:
         {
             sym = s;
             argc = cnt;
-            if(cnt > STATSIZE) {
+            if(UNLIKELY(cnt > STATSIZE)) {
                 argv = new t_atom[cnt];
                 flext::CopyAtoms(cnt,argv,lst);
             }
@@ -251,7 +251,7 @@ private:
     Msg *Get()
     {
         Msg *m = &msg;
-        if(m->Ok()) {
+        if(LIKELY(m->Ok())) {
             for(; m->nxt; m = m->nxt) {}
             m = m->nxt = new Msg;
             m->Init();
@@ -262,7 +262,7 @@ private:
 
 inline void Queue::Push(MsgBundle *m)
 {
-    if(m) {
+    if(LIKELY(m)) {
         Put(m);
         Trigger();
     }
@@ -531,7 +531,7 @@ void flext_base::MsgAddAnything(MsgBundle *m,int n,const t_symbol *s,int argc,co
 bool flext::SysForward(const t_symbol *recv,const t_symbol *s,int argc,const t_atom *argv)
 {
     void *cl = recv->s_thing;
-    if(!cl) return false;
+    if(UNLIKELY(!cl)) return false;
     
 #if FLEXT_SYS == FLEXT_SYS_PD
     pd_typedmess((t_class **)cl,(t_symbol *)s,argc,(t_atom *)argv);

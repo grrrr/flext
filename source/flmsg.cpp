@@ -127,7 +127,7 @@ bool flext_base::FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *arg
     ItemCont *clmethhead = ClMeths(thisClassId());
 
     // search for exactly matching tag
-    if(methhead && (lst = methhead->FindList(s,inlet)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
+    if(UNLIKELY(methhead) && (lst = methhead->FindList(s,inlet)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
     if((lst = clmethhead->FindList(s,inlet)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
 
     // if nothing found try any inlet
@@ -142,7 +142,7 @@ bool flext_base::FindMethAny(int inlet,const t_symbol *s,int argc,const t_atom *
     Item *lst;
     ItemCont *clmethhead = ClMeths(thisClassId());
 
-    if(methhead && (lst = methhead->FindList(sym_anything,inlet)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
+    if(UNLIKELY(methhead) && (lst = methhead->FindList(sym_anything,inlet)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
     if((lst = clmethhead->FindList(sym_anything,inlet)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
 
     // if nothing found try any inlet

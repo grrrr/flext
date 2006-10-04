@@ -58,7 +58,7 @@ public:
     void *insert(int tsize,size_t k,void *t)
     {
         void *r;
-        if(n) 
+        if(LIKELY(n)) 
             r = _set(tsize,k,t);
         else {
             data[n++](k,t);
@@ -68,11 +68,11 @@ public:
         return r;
     }
 
-    void *find(int tsize,size_t k) const { return n?_find(tsize,k):0; }
+    void *find(int tsize,size_t k) const { return LIKELY(n)?_find(tsize,k):0; }
 
     void *remove(int tsize,size_t k) 
 	{ 
-		void *r = n?_remove(tsize,k):0; 
+		void *r = LIKELY(n)?_remove(tsize,k):0; 
 //		check(tsize); 
 		return r; 
 	}
@@ -213,7 +213,7 @@ public:
     inline T remove(K k) 
     { 
         void *d = TableAnyMap::remove(N,*(size_t *)&k); 
-        if(d) --count;
+        if(LIKELY(d)) --count;
         return (T)d;
     }
 

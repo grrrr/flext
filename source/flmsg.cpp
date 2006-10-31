@@ -256,15 +256,15 @@ bool flext_base::CbMethodHandler(int inlet,const t_symbol *s,int argc,const t_at
         if(!ret) ret = CbMethodResort(inlet,s,argc,argv);
     }
     catch(std::exception &x) {
-        error("%s - Exception while processing method: %s",thisName(),x.what());
+        error("%s - %s: %s",thisName(),GetString(s),x.what());
         ret = false;
     }
     catch(const char *txt) {
-    	error("%s - Exception while processing method: %s",thisName(),txt);
+        error("%s - %s: %s",thisName(),GetString(s),txt);
         ret = false;
     }
     catch(...) {
-    	error("%s - Unknown exception while processing method",thisName());
+        error("%s - %s : Unknown exception while processing method",thisName(),GetString(s));
         ret = false;
     }
 

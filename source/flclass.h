@@ -843,7 +843,7 @@ protected:
 	static void ToSysMsg(MsgBundle *mb);
 
 	// add class method handlers
-	static void AddMessageMethods(t_class *c,bool dsp);
+	static void AddMessageMethods(t_class *c,bool dsp,bool dspin);
 
 private:
 	class pxbnd_object;

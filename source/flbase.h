@@ -158,11 +158,13 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 		
         static bool HasAttributes(t_classid id);
         static bool IsDSP(t_classid id);
+        static bool HasDSPIn(t_classid id);
         static bool IsLib(t_classid id);
 
         bool HasAttributes() const;
         bool IsLib() const;
         bool IsDSP() const;
+        bool HasDSPIn() const;
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
 		// under Max/MSP it could be necessary to activate DSP also for message objects
@@ -252,7 +254,7 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 
 		// Definitions for library objects
 		static void lib_init(const char *name,void setupfun());
-		static void obj_add(bool lib,bool dsp,bool attr,const char *idname,const char *names,void setupfun(t_classid),FLEXT_CLASSDEF(flext_obj) *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...);
+		static void obj_add(bool lib,bool dsp,bool noi,bool attr,const char *idname,const char *names,void setupfun(t_classid),FLEXT_CLASSDEF(flext_obj) *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...);
 #if FLEXT_SYS == FLEXT_SYS_MAX
 		static flext_hdr *obj_new(const t_symbol *s,short argc,t_atom *argv);
 #else
@@ -491,70 +493,69 @@ static void __setup__(t_classid classid) { 	    	\
 #define ARGMEMBER_t_symtype0(a) ARGMEMBER_t_symptr0(a)
 #define ARGCAST(a,tp) ARGMEMBER_##tp(a)
 
-
-#define REAL_NEW(NAME,NEW_CLASS,DSP,LIB) \
+#define REAL_NEW(NAME,NEW_CLASS,DSP,NOI,LIB) \
 flext_obj *NEW_CLASS::__init__(int ,t_atom *) \
 {     	    	    	    	    	    	    	    	\
     return new NEW_CLASS;                     \
 }   	    	    	    	    	    	    	    	\
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
-    flext_obj::obj_add(LIB,DSP,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,&NEW_CLASS::__free__,FLEXTTPN_NULL); \
+    flext_obj::obj_add(LIB,DSP,NOI,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,&NEW_CLASS::__free__,FLEXTTPN_NULL); \
 } \
 FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
-#define REAL_NEW_V(NAME,NEW_CLASS,DSP,LIB) \
+#define REAL_NEW_V(NAME,NEW_CLASS,DSP,NOI,LIB) \
 flext_obj *NEW_CLASS::__init__(int argc,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     return new NEW_CLASS(argc,argv);                     \
 }   	    	    	    	    	    	    	    	\
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
-    flext_obj::obj_add(LIB,DSP,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,&NEW_CLASS::__free__,FLEXTTPN_VAR,FLEXTTPN_NULL); \
+    flext_obj::obj_add(LIB,DSP,NOI,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,&NEW_CLASS::__free__,FLEXTTPN_VAR,FLEXTTPN_NULL); \
 } \
 FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
-#define REAL_NEW_1(NAME,NEW_CLASS,DSP,LIB, TYPE1) \
+#define REAL_NEW_1(NAME,NEW_CLASS,DSP,NOI,LIB, TYPE1) \
 flext_obj *NEW_CLASS::__init__(int,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     return new NEW_CLASS(ARGCAST(argv[0],TYPE1));                     \
 }   	    	    	    	    	    	    	    	\
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
-    flext_obj::obj_add(LIB,DSP,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,NEW_CLASS::__free__,FLEXTTP(TYPE1),FLEXTTPN_NULL); \
+    flext_obj::obj_add(LIB,DSP,NOI,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,NEW_CLASS::__free__,FLEXTTP(TYPE1),FLEXTTPN_NULL); \
 } \
 FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
-#define REAL_NEW_2(NAME,NEW_CLASS,DSP,LIB, TYPE1,TYPE2) \
+#define REAL_NEW_2(NAME,NEW_CLASS,DSP,NOI,LIB, TYPE1,TYPE2) \
 flext_obj *NEW_CLASS::__init__(int,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     return new NEW_CLASS(ARGCAST(argv[0],TYPE1),ARGCAST(argv[1],TYPE2));                     \
 }   	    	    	    	    	    	    	    	\
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
-    flext_obj::obj_add(LIB,DSP,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,NEW_CLASS::__free__,FLEXTTP(TYPE1),FLEXTTP(TYPE2),FLEXTTPN_NULL); \
+    flext_obj::obj_add(LIB,DSP,NOI,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,NEW_CLASS::__free__,FLEXTTP(TYPE1),FLEXTTP(TYPE2),FLEXTTPN_NULL); \
 } \
 FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
-#define REAL_NEW_3(NAME,NEW_CLASS,DSP,LIB, TYPE1, TYPE2, TYPE3) \
+#define REAL_NEW_3(NAME,NEW_CLASS,DSP,NOI,LIB, TYPE1, TYPE2, TYPE3) \
 flext_obj *NEW_CLASS::__init__(int,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     return new NEW_CLASS(ARGCAST(argv[0],TYPE1),ARGCAST(argv[1],TYPE2),ARGCAST(argv[2],TYPE3));                     \
 }   	    	    	    	    	    	    	    	\
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
-    flext_obj::obj_add(LIB,DSP,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,NEW_CLASS::__free__,FLEXTTP(TYPE1),FLEXTTP(TYPE2),FLEXTTP(TYPE3),FLEXTTPN_NULL); \
+    flext_obj::obj_add(LIB,DSP,NOI,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,NEW_CLASS::__free__,FLEXTTP(TYPE1),FLEXTTP(TYPE2),FLEXTTP(TYPE3),FLEXTTPN_NULL); \
 } \
 FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
-#define REAL_NEW_4(NAME,NEW_CLASS,DSP,LIB, TYPE1,TYPE2, TYPE3, TYPE4) \
+#define REAL_NEW_4(NAME,NEW_CLASS,DSP,NOI,LIB, TYPE1,TYPE2, TYPE3, TYPE4) \
 flext_obj *NEW_CLASS::__init__(int,t_atom *argv) \
 {     	    	    	    	    	    	    	    	\
     return new NEW_CLASS(ARGCAST(argv[0],TYPE1),ARGCAST(argv[1],TYPE2),ARGCAST(argv[2],TYPE3),ARGCAST(argv[3],TYPE4));                     \
 }   	    	    	    	    	    	    	    	\
 FLEXT_EXP(LIB) void FLEXT_STPF(NEW_CLASS,DSP)()   \
 {   	    	    	    	    	    	    	    	\
-    flext_obj::obj_add(LIB,DSP,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,NEW_CLASS::__free__,FLEXTTP(TYPE1),FLEXTTP(TYPE2),FLEXTTP(TYPE3),FLEXTTP(TYPE4),FLEXTTPN_NULL); \
+    flext_obj::obj_add(LIB,DSP,NOI,FLEXT_ATTRIBUTES,#NEW_CLASS,NAME,NEW_CLASS::__setup__,NEW_CLASS::__init__,NEW_CLASS::__free__,FLEXTTP(TYPE1),FLEXTTP(TYPE2),FLEXTTP(TYPE3),FLEXTTP(TYPE4),FLEXTTPN_NULL); \
 } \
 FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 

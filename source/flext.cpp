@@ -140,7 +140,7 @@ void flext_base::Exit()
 }
 
 
-void flext_base::AddMessageMethods(t_class *c,bool dsp)
+void flext_base::AddMessageMethods(t_class *c,bool dsp,bool dspin)
 {
     add_loadbang(c,cb_loadbang);
 
@@ -159,7 +159,8 @@ void flext_base::AddMessageMethods(t_class *c,bool dsp)
         add_dsp(c,cb_dsp);
         dsp_initclass();
 #elif FLEXT_SYS == FLEXT_SYS_PD
-        CLASS_MAINSIGNALIN(c,flext_hdr,defsig); // float messages going into the left inlet are converted to signal
+        if(dspin)
+            CLASS_MAINSIGNALIN(c,flext_hdr,defsig); // float messages going into the left inlet are converted to signal
         add_dsp(c,cb_dsp);
 #else
 #error Platform not supported!
@@ -178,10 +179,9 @@ void flext_base::Setup(t_classid id)
 #if FLEXT_SYS == FLEXT_SYS_MAX
 	if(!IsLib(id))
 #endif
-	AddMessageMethods(c,IsDSP(id));
+	AddMessageMethods(c,IsDSP(id),HasDSPIn(id));
 
     if(HasAttributes(id)) {
-//    if(process_attributes) {
         AddMethod(id,0,"getattributes",cb_ListAttrib);
         AddMethod(id,0,"getmethods",cb_ListMethods);
 

@@ -141,7 +141,7 @@ public:
 	int *argv;
 
 	flext_library *lib;
-	bool dsp,attr,dist;
+    bool dsp:1,noi:1,attr:1,dist:1;
 
     flext_base::ItemCont meths,attrs;
 };
@@ -171,10 +171,12 @@ static flext_class *FindName(const t_symbol *s,flext_class *o = NULL)
 t_class *flext_obj::getClass(t_classid cl) { return cl->clss; }
 bool flext_obj::HasAttributes(t_classid cl) { return cl->attr; }
 bool flext_obj::IsDSP(t_classid cl) { return cl->dsp; }
+bool flext_obj::HasDSPIn(t_classid cl) { return !cl->noi; }
 bool flext_obj::IsLib(t_classid cl) { return cl->lib != NULL; }
 
 bool flext_obj::HasAttributes() const { return clss->attr; }
 bool flext_obj::IsDSP() const { return clss->dsp; }
+bool flext_obj::HasDSPIn() const { return !clss->noi; }
 bool flext_obj::IsLib() const { return clss->lib != NULL; }
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
@@ -224,7 +226,7 @@ void flext_obj::lib_init(const char *name,void setupfun())
 	curlib = NULL;
 }
 
-void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const char *names,void setupfun(t_classid),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...)
+void flext_obj::obj_add(bool lib,bool dsp,bool noi,bool attr,const char *idname,const char *names,void setupfun(t_classid),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...)
 {
 	// get first possible object name
 	const t_symbol *nsym = MakeSymbol(extract(names));
@@ -274,6 +276,7 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
 	flext_class *lo = new flext_class(*cl,newfun,freefun);
 	lo->lib = curlib;
 	lo->dsp = dsp;
+	lo->noi = noi;
 	lo->attr = attr;
 
 //	post("ADDCLASS %s,%s = %p -> LIBOBJ %p -> %p (lib=%i,dsp=%i)",idname,names,*cl,lo,lo->clss,lib?1:0,dsp?1:0);
@@ -345,10 +348,10 @@ void flext_obj::obj_add(bool lib,bool dsp,bool attr,const char *idname,const cha
         setupfun(clid);
     }
     catch(std::exception &x) {
-        error("%s - Exception while initializing class: %s",idname,x.what());
+        error("%s: %s",idname,x.what());
     }
     catch(char *txt) {
-    	error("%s - Exception while initializing class: %s",idname,txt);
+        error("%s: %s",idname,txt);
     }
     catch(...) {
     	error("%s - Unknown exception while initializing class",idname);

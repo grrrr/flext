@@ -39,6 +39,7 @@ Version history:
 - more ToOut/Sys* methods
 - fixed help name definition at class setup
 - added gcc branch hinting
+- PD: possibility to create DSP classes without main DSP inlet (use e.g. FLEXT_DSP0_NEW)
 
 0.5.0:
 - fixes for 64 bit builds (size_t is integer type of pointer size)

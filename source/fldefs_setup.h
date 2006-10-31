@@ -59,28 +59,42 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 #define FLEXT_NEW(NAME,NEW_CLASS)       \
 \
-REAL_NEW(NAME,NEW_CLASS,0,0)
+REAL_NEW(NAME,NEW_CLASS,0,0,0)
 
 /*! \brief Implementation of a flext dsp class with no arguments
     \ingroup FLEXT_D_NEW_DSP
 */
 #define FLEXT_NEW_DSP(NAME,NEW_CLASS)   \
 \
-REAL_NEW(NAME,NEW_CLASS,1,0)
+REAL_NEW(NAME,NEW_CLASS,1,0,0)
+
+/*! \brief Implementation of a flext dsp class with no arguments and no dsp inlet
+    \ingroup FLEXT_D_NEW_DSP
+*/
+#define FLEXT_NEW_DSP0(NAME,NEW_CLASS)   \
+\
+REAL_NEW(NAME,NEW_CLASS,1,1,0)
 
 /*! \brief Implementation of a flext class (part of a library) with no arguments
     \ingroup FLEXT_D_LIB
 */
 #define FLEXT_LIB(NAME,NEW_CLASS) \
 \
-REAL_NEW(NAME,NEW_CLASS,0,1) 
+REAL_NEW(NAME,NEW_CLASS,0,0,1) 
 
 /*! \brief Implementation of a flext dsp class (part of a library) with no arguments
     \ingroup FLEXT_D_LIB_DSP
 */
 #define FLEXT_LIB_DSP(NAME,NEW_CLASS)   \
 \
-REAL_NEW(NAME,NEW_CLASS,1,1) 
+REAL_NEW(NAME,NEW_CLASS,1,0,1) 
+
+/*! \brief Implementation of a flext dsp class (part of a library) with no arguments and no dsp inlet
+    \ingroup FLEXT_D_LIB_DSP
+*/
+#define FLEXT_LIB_DSP0(NAME,NEW_CLASS)   \
+\
+REAL_NEW(NAME,NEW_CLASS,1,1,1) 
 
 
 // VARIABLE ARGUMENT LIST
@@ -91,28 +105,42 @@ REAL_NEW(NAME,NEW_CLASS,1,1)
 */
 #define FLEXT_NEW_V(NAME,NEW_CLASS)         \
 \
-REAL_NEW_V(NAME,NEW_CLASS,0,0) \
+REAL_NEW_V(NAME,NEW_CLASS,0,0,0)
 
 /*! \brief Implementation of a flext dsp class with a variable argument list
     \ingroup FLEXT_D_NEW_DSP
 */
 #define FLEXT_NEW_DSP_V(NAME,NEW_CLASS) \
 \
-REAL_NEW_V(NAME,NEW_CLASS,1,0) \
+REAL_NEW_V(NAME,NEW_CLASS,1,0,0)
+
+/*! \brief Implementation of a flext dsp class with a variable argument list and no dsp inlet
+    \ingroup FLEXT_D_NEW_DSP
+*/
+#define FLEXT_NEW_DSP0_V(NAME,NEW_CLASS) \
+\
+REAL_NEW_V(NAME,NEW_CLASS,1,1,0)
 
 /*! \brief Implementation of a flext class (part of a library) with a variable argument list
     \ingroup FLEXT_D_LIB
 */
 #define FLEXT_LIB_V(NAME,NEW_CLASS)         \
 \
-REAL_NEW_V(NAME,NEW_CLASS, 0,1) 
+REAL_NEW_V(NAME,NEW_CLASS, 0,0,1) 
 
 /*! \brief Implementation of a flext dsp class (part of a library) with a variable argument list
     \ingroup FLEXT_D_LIB_DSP
 */
 #define FLEXT_LIB_DSP_V(NAME,NEW_CLASS) \
 \
-REAL_NEW_V(NAME,NEW_CLASS, 1,1) 
+REAL_NEW_V(NAME,NEW_CLASS, 1,0,1) 
+
+/*! \brief Implementation of a flext dsp class (part of a library) with a variable argument list and no dsp inlet
+    \ingroup FLEXT_D_LIB_DSP
+*/
+#define FLEXT_LIB_DSP0_V(NAME,NEW_CLASS) \
+\
+REAL_NEW_V(NAME,NEW_CLASS, 1,1,1) 
 
 
 // ONE ARGUMENT
@@ -123,28 +151,42 @@ REAL_NEW_V(NAME,NEW_CLASS, 1,1)
 */
 #define FLEXT_NEW_1(NAME,NEW_CLASS, TYPE)       \
 \
-REAL_NEW_1(NAME,NEW_CLASS, 0, 0,TYPE) \
+REAL_NEW_1(NAME,NEW_CLASS, 0,0,0, TYPE)
 
 /*! \brief Implementation of a flext dsp class with one argument
     \ingroup FLEXT_D_NEW_DSP
 */
 #define FLEXT_NEW_DSP_1(NAME,NEW_CLASS, TYPE)   \
 \
-REAL_NEW_1(NAME,NEW_CLASS, 1, 0,TYPE) \
+REAL_NEW_1(NAME,NEW_CLASS, 1,0,0, TYPE)
+
+/*! \brief Implementation of a flext dsp class with one argument and no dsp inlet
+    \ingroup FLEXT_D_NEW_DSP
+*/
+#define FLEXT_NEW_DSP0_1(NAME,NEW_CLASS, TYPE)   \
+\
+REAL_NEW_1(NAME,NEW_CLASS, 1,1,0, TYPE)
 
 /*! \brief Implementation of a flext class (part of a library) with one argument
     \ingroup FLEXT_D_LIB
 */
 #define FLEXT_LIB_1(NAME,NEW_CLASS, TYPE) \
 \
-REAL_NEW_1(NAME,NEW_CLASS, 0,1,TYPE)
+REAL_NEW_1(NAME,NEW_CLASS, 0,0,1, TYPE)
 
 /*! \brief Implementation of a flext dsp class (part of a library) with one argument
     \ingroup FLEXT_D_LIB_DSP
 */
 #define FLEXT_LIB_DSP_1(NAME,NEW_CLASS, TYPE)   \
 \
-REAL_NEW_1(NAME,NEW_CLASS, 1,1, TYPE)
+REAL_NEW_1(NAME,NEW_CLASS, 1,0,1, TYPE)
+
+/*! \brief Implementation of a flext dsp class (part of a library) with one argument and no dsp inlet
+    \ingroup FLEXT_D_LIB_DSP
+*/
+#define FLEXT_LIB_DSP0_1(NAME,NEW_CLASS, TYPE)   \
+\
+REAL_NEW_1(NAME,NEW_CLASS, 1,1,1, TYPE)
 
 
 // TWO ARGUMENTS
@@ -155,28 +197,42 @@ REAL_NEW_1(NAME,NEW_CLASS, 1,1, TYPE)
 */
 #define FLEXT_NEW_2(NAME,NEW_CLASS, TYPE1, TYPE2)           \
 \
-REAL_NEW_2(NAME,NEW_CLASS, 0,0, TYPE1, TYPE2) \
+REAL_NEW_2(NAME,NEW_CLASS, 0,0,0, TYPE1, TYPE2)
 
 /*! \brief Implementation of a flext dsp class with 2 arguments
     \ingroup FLEXT_D_NEW_DSP
 */
 #define FLEXT_NEW_DSP_2(NAME,NEW_CLASS, TYPE1, TYPE2)   \
 \
-REAL_NEW_2(NAME,NEW_CLASS, 1,0, TYPE1, TYPE2) \
+REAL_NEW_2(NAME,NEW_CLASS, 1,0,0, TYPE1, TYPE2)
+
+/*! \brief Implementation of a flext dsp class with 2 arguments and no dsp inlet
+    \ingroup FLEXT_D_NEW_DSP
+*/
+#define FLEXT_NEW_DSP0_2(NAME,NEW_CLASS, TYPE1, TYPE2)   \
+\
+REAL_NEW_2(NAME,NEW_CLASS, 1,1,0, TYPE1, TYPE2)
 
 /*! \brief Implementation of a flext class (part of a library) with 2 arguments
     \ingroup FLEXT_D_LIB
 */
 #define FLEXT_LIB_2(NAME,NEW_CLASS, TYPE1, TYPE2)       \
 \
-REAL_NEW_2(NAME,NEW_CLASS, 0,1, TYPE1, TYPE2)
+REAL_NEW_2(NAME,NEW_CLASS, 0,0,1, TYPE1, TYPE2)
 
 /*! \brief Implementation of a flext dsp class (part of a library) with 2 arguments
     \ingroup FLEXT_D_LIB_DSP
 */
 #define FLEXT_LIB_DSP_2(NAME,NEW_CLASS, TYPE1, TYPE2)   \
 \
-REAL_NEW_2(NAME,NEW_CLASS, 1,1, TYPE1, TYPE2)
+REAL_NEW_2(NAME,NEW_CLASS, 1,0,1, TYPE1, TYPE2)
+
+/*! \brief Implementation of a flext dsp class (part of a library) with 2 arguments and no dsp inlet
+    \ingroup FLEXT_D_LIB_DSP
+*/
+#define FLEXT_LIB_DSP0_2(NAME,NEW_CLASS, TYPE1, TYPE2)   \
+\
+REAL_NEW_2(NAME,NEW_CLASS, 1,1,1, TYPE1, TYPE2)
 
 
 // THREE ARGUMENTS
@@ -187,28 +243,42 @@ REAL_NEW_2(NAME,NEW_CLASS, 1,1, TYPE1, TYPE2)
 */
 #define FLEXT_NEW_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3) \
 \
-REAL_NEW_3(NAME,NEW_CLASS, 0,0, TYPE1, TYPE2, TYPE3)  \
+REAL_NEW_3(NAME,NEW_CLASS, 0,0,0, TYPE1, TYPE2, TYPE3)
 
 /*! \brief Implementation of a flext dsp class with 3 arguments
     \ingroup FLEXT_D_NEW_DSP
 */
 #define FLEXT_NEW_DSP_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3)    \
 \
-REAL_NEW_3(NAME,NEW_CLASS, 1,0, TYPE1, TYPE2, TYPE3) \
+REAL_NEW_3(NAME,NEW_CLASS, 1,0,0, TYPE1, TYPE2, TYPE3)
+
+/*! \brief Implementation of a flext dsp class with 3 arguments and no dsp inlet
+    \ingroup FLEXT_D_NEW_DSP
+*/
+#define FLEXT_NEW_DSP0_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3)    \
+\
+REAL_NEW_3(NAME,NEW_CLASS, 1,1,0, TYPE1, TYPE2, TYPE3)
 
 /*! \brief Implementation of a flext class (part of a library) with 3 arguments
     \ingroup FLEXT_D_LIB
 */
 #define FLEXT_LIB_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3)        \
 \
-REAL_NEW_3(NAME,NEW_CLASS, 0,1,TYPE1, TYPE2, TYPE3)
+REAL_NEW_3(NAME,NEW_CLASS, 0,0,1, TYPE1, TYPE2, TYPE3)
 
 /*! \brief Implementation of a flext dsp class (part of a library) with 3 arguments
     \ingroup FLEXT_D_LIB_DSP
 */
 #define FLEXT_LIB_DSP_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3)    \
 \
-REAL_NEW_3(NAME,NEW_CLASS, 1,1, TYPE1, TYPE2, TYPE3)
+REAL_NEW_3(NAME,NEW_CLASS, 1,0,1, TYPE1, TYPE2, TYPE3)
+
+/*! \brief Implementation of a flext dsp class (part of a library) with 3 arguments and no dsp inlet
+    \ingroup FLEXT_D_LIB_DSP
+*/
+#define FLEXT_LIB_DSP0_3(NAME,NEW_CLASS, TYPE1, TYPE2, TYPE3)    \
+\
+REAL_NEW_3(NAME,NEW_CLASS, 1,1,1, TYPE1, TYPE2, TYPE3)
 
 
 // deprecated stuff

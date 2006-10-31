@@ -79,6 +79,26 @@ void flext_base::cb_pointer(flext_hdr *c,const t_gpointer *p)
 
 void flext_base::cb_anything(flext_hdr *c,const t_symbol *s,int argc,t_atom *argv)
 {
+    if(UNLIKELY(!s)) {
+        // apparently, this happens only in one case... object is a DSP object, but has no main DSP inlet...
+
+        // interpret tag from args
+        if(!argc)
+            s = sym_bang;
+        else if(argc == 1) {
+            if(IsFloat(*argv))
+                s = sym_float;
+            else if(IsSymbol(*argv))
+                s = sym_symbol;
+            else if(IsPointer(*argv))
+                s = sym_pointer;
+            else
+                FLEXT_ASSERT(false);
+        }
+        else
+            s = sym_list;
+    }
+
     thisObject(c)->CbMethodHandler(0,s,argc,argv);
 }
 

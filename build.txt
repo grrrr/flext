@@ -101,7 +101,7 @@ OSX:
 
 Windows:
 - Microsoft Visual Studio 6, .NET 2002, .NET 2003 or .NET 2005
-  be sure to use the VCVARS32.BAT command on the prompt to set up the environment variables
+  be sure to use the VCVARS32.BAT (or probably SDKVARS.BAT) command on the prompt to set up the environment variables
 or
 - cygwin with binutils, gcc and make packages
 

@@ -220,7 +220,7 @@ void flext_obj::lib_init(const char *name,void setupfun())
 		sizeof(flext_hdr),NULL,A_GIMME,A_NULL);
 	
 	// for all classes in library add methods
-	flext_base::AddMessageMethods(curlib->clss,curlib->dsp);
+	flext_base::AddMessageMethods(curlib->clss,curlib->dsp,true);
 #endif
 
 	curlib = NULL;

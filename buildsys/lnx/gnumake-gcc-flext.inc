@@ -21,9 +21,11 @@ $(TARGETPATH):
 	-mkdir -p $@
 
 $(TARGETPATH)/%.opp : $(SRCDIR)/%.cpp
+	-mkdir -p $(dir $@)
 	$(CXX) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
 
 $(TARGETPATH)/%.o : $(SRCDIR)/%.c
+	-mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
 
 $(TARGET) :: $(TARGETPATH) 

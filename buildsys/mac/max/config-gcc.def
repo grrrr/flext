@@ -1,6 +1,6 @@
 # where are the Max/MSP SDK header files?
 # you should have the latest version!
-MAXSDKPATH=/Applications/MaxMSP\ 4.5/MaxMSP-SDK/4.5\ headers/c74support
+MAXSDKPATH=/Applications/MaxMSP\ 4.5/MaxMSP-SDK/c74support
 
 ###############################################################
 

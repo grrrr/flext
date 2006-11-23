@@ -33,12 +33,15 @@ PRECOMINC = -include $(OBJPATH)/$(notdir $(PRECOMSRC))
 endif
 
 $(PRECOMDST): $(PRECOMSRC) $(patsubst %,$(SRCDIR)/%,$(HDRS))
+	-mkdir -p $(dir $@)
 	$(CXX) -c $(CFLAGS) $(DEFS) $(INCPATH) $(PRECOMSRC) -o $@
 
 $(OBJPATH)/%.opp : $(SRCDIR)/%.cpp
+	-mkdir -p $(dir $@)
 	$(CXX) -c $(CFLAGS) $(DEFS) $(PRECOMINC) $(INCPATH) $< -o $@
 
 $(OBJPATH)/%.o : $(SRCDIR)/%.c
+	-mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
 
 $(TARGET) :: $(OBJPATH) $(TARGETPATH)

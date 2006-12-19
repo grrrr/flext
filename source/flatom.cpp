@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -24,7 +24,7 @@ int flext::CmpAtom(const t_atom &a,const t_atom &b)
 #if FLEXT_SYS == FLEXT_SYS_MAX
 			case A_INT: return GetInt(a) == GetInt(b)?0:(GetInt(a) < GetInt(b)?-1:1);
 #endif
-			case A_SYMBOL: return GetSymbol(a) == GetSymbol(b)?0:(GetSymbol(a) < GetSymbol(b)?-1:1);
+			case A_SYMBOL: return GetSymbol(a) == GetSymbol(b)?0:strcmp(GetString(a),GetString(b));
 #if FLEXT_SYS == FLEXT_SYS_PD
 			case A_POINTER: return GetPointer(a) == GetPointer(b)?0:(GetPointer(a) < GetPointer(b)?-1:1);
 #endif

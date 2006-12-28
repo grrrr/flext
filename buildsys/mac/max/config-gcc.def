@@ -33,7 +33,13 @@ UFLAGS=-faltivec -ffast-math
 
 # user defined optimization flags
 # (check if they match your system!)
-OFLAGS=-O3
+OFLAGS+=-Os
 # optimizations for G4
 OFLAGS+=-mcpu=G4
+
+# for Universal builds, enable these.
+# you may not specify cpu-specific flags (like -faltivec) then
+#ARCH=i386 ppc
+#OSXSDK=/Developer/SDKs/MacOSX10.4u.sdk
+
 

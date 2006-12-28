@@ -29,12 +29,12 @@ $(TARGETPATH):
 ifdef PRECOMPILE
 PRECOMSRC=$(SRCDIR)/$(PRECOMPILE)
 PRECOMDST=$(OBJPATH)/$(notdir $(PRECOMSRC)).gch
-PRECOMINC = -include $(OBJPATH)/$(notdir $(PRECOMSRC))
+PRECOMINC = -I $(OBJPATH)
 endif
 
 $(PRECOMDST): $(PRECOMSRC) $(patsubst %,$(SRCDIR)/%,$(HDRS))
 	-mkdir -p $(dir $@)
-	$(CXX) -c $(CFLAGS) $(DEFS) $(INCPATH) $(PRECOMSRC) -o $@
+	$(CXX) -c $(DEFS) $(INCPATH) $(PRECOMSRC) -o $@
 
 $(OBJPATH)/%.opp : $(SRCDIR)/%.cpp
 	-mkdir -p $(dir $@)

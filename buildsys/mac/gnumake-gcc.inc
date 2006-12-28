@@ -46,3 +46,14 @@ LDFLAGS += -Wl,-S
 endif
 endif
 
+##############################################
+
+ifdef ARCH
+CFLAGS += $(patsubst %,-arch %,$(ARCH))
+LDFLAGS += $(patsubst %,-arch %,$(ARCH))
+endif
+
+ifdef OSXSDK
+CFLAGS += -isysroot $(OSXSDK)
+LDFLAGS += -isysroot $(OSXSDK)
+endif

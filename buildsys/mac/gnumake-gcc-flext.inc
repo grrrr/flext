@@ -10,6 +10,31 @@ endif
 # common compilation stuff
 include $(BUILDPATH)$(PLATFORM)/gnumake-gcc-targets.inc
 
+##### linking ###################
+
+$(TARGET) :: $(OBJPATH) $(TARGETPATH)
+
+$(TARGET) :: $(PRECOMDST) $(COBJS) $(CPPOBJS)
+ifdef SHARED
+	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
+ifdef DEBUG
+else
+ifdef PROFILE
+else
+	strip -x $@
+endif
+endif
+	chmod 755 $@
+else
+	libtool -static -o $@ $(COBJS) $(CPPOBJS)
+endif
+
+ifdef TARGETPOST
+$(TARGET) :: $(TARGETPOST)
+endif
+
+###################################
+
 $(FLEXTINC):
 	-mkdir -p $@
 

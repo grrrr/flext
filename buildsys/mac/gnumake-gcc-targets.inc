@@ -61,29 +61,6 @@ $(OBJPATH)/%.opp : $(foreach arch,$(ARCH),$(OBJPATH)/%.opp_$(arch))
 $(OBJPATH)/%.o : $(foreach arch,$(ARCH),$(OBJPATH)/%.o_$(arch))
 	lipo $^ -create -output $@
 
-##### linking ###################
-
-$(TARGET) :: $(OBJPATH) $(TARGETPATH)
-
-$(TARGET) :: $(PRECOMDST) $(COBJS) $(CPPOBJS)
-ifdef SHARED
-	$(CXX) $(LDFLAGS) $(LIBPATH) -o $@ $(COBJS) $(CPPOBJS) $(LIBS)
-ifdef DEBUG
-else
-ifdef PROFILE
-else
-	strip -x $@
-endif
-endif
-	chmod 755 $@
-else
-	libtool -static -o $@ $(COBJS) $(CPPOBJS)
-endif
-
-ifdef TARGETPOST
-$(TARGET) :: $(TARGETPOST)
-endif
-
 ##############################################
 
 _clean_:

@@ -48,6 +48,8 @@ endif
 
 ##############################################
 
+LDFLAGS += $(patsubst %,-arch %,$(ARCH))
+
 ifdef OSXSDK
 CFLAGS += -isysroot $(OSXSDK)
 LDFLAGS += -isysroot $(OSXSDK)

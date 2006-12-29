@@ -24,17 +24,19 @@ INSTPATH=$(PDPATH)/extra
 
 ###############################################################
 
-# user defined optimization flags
-# (check if they match your system!)
-UFLAGS=-faltivec -ffast-math
-
 # user defined compiler flags
-# (check if they match your system!)
-OFLAGS+=-Os
-# optimizations for G4
-OFLAGS+=-mcpu=G4
+UFLAGS += -ffast-math
 
-# for Universal builds, enable these.
-# you may not specify cpu-specific flags (like -faltivec) then
+# user defined optimization flags
+OFLAGS += -Os -ftree-vectorize
+
+# architecture-specific flags (optional)
+UFLAGS_ppc += -maltivec -faltivec
+OFLAGS_ppc += -mtune=G4
+
+UFLAGS_i386 += -msse -msse2 -msse3
+OFLAGS_i386 += -mtune=nocona
+
+# cross-compilation (optional)
 #ARCH=i386 ppc
 #OSXSDK=/Developer/SDKs/MacOSX10.4u.sdk

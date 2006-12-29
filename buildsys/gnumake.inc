@@ -3,7 +3,7 @@
 ##############################################
 
 ifndef ARCH
-ifeq ($(shell uname -p),"powerpc")
+ifeq ("$(shell uname -p)","powerpc")
 ARCH := ppc
 else
 ARCH := $(shell uname -p)

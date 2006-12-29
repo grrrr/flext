@@ -1,31 +1,53 @@
 ##############################################
+# cross-compilation
+##############################################
+
+ifndef ARCH
+ifeq ($(shell uname -p),"powerpc")
+ARCH := ppc
+else
+ARCH := $(shell uname -p)
+endif
+endif
+
+##############################################
 # some compiler definitions
 ##############################################
 
 CFLAGS += $(UFLAGS)
+$(foreach arch,$(ARCH),$(eval CFLAGS_$(arch) += $$(UFLAGS_$(arch)) ) )
 
 ifdef DEBUG
+
 DEFS += -D_DEBUG
 CFLAGS += $(DFLAGS)
-else
-ifdef PROFILE
+
+define ARCH_FLAGS
+CFLAGS_$(1) += $$(DFLAGS_$(1))
+endef
+
+else  ## profile and release
+
 DEFS += -DNDEBUG
-CFLAGS += $(OFLAGS)
-else
-DEFS += -DNDEBUG
-CFLAGS += $(OFLAGS)
+CFLAGS += $(OFLAGS) 
+
+define ARCH_FLAGS
+CFLAGS_$(1) += $$(OFLAGS_$(1))
+endef
+
 endif
-endif
+
+$(foreach arch,$(ARCH),$(eval $(call ARCH_FLAGS,$(arch))))
 
 
 ifdef SHARED
 # --- shared ---
-DEFS+=-DFLEXT_SHARED
+DEFS += -DFLEXT_SHARED
 
 else
 ifdef THREADED
 # --- static multi-threaded ---
-DEFS+=-DFLEXT_THREADS
+DEFS += -DFLEXT_THREADS
 
 else 
 # --- static single-threaded ---
@@ -38,36 +60,36 @@ endif
 ##############################################
 
 ifdef SHARED
-TYPEEXT=_
+TYPEEXT := _
 else
 ifdef THREADED
-TYPEEXT=_t
+TYPEEXT := _t
 else
-TYPEEXT=_s
+TYPEEXT := _s
 endif
 endif
 
 ifdef DEBUG
-MODEEXT=d
+MODEEXT := d
 else
 ifdef PROFILE
-MODEEXT=p
+MODEEXT := p
 else
-MODEEXT=
+MODEEXT :=
 ifdef SHARED
-TYPEEXT=
+TYPEEXT :=
 endif
 endif
 endif
 
-FLEXTNAME=flext-$(RTSYS)$(TYPEEXT)$(MODEEXT)
+FLEXTNAME := flext-$(RTSYS)$(TYPEEXT)$(MODEEXT)
 
 ##############################################
 # product name and folder
 ##############################################
 
 ifndef SRCDIR
-SRCDIR=.
+SRCDIR := .
 endif
 
-OUTSUB=$(TARGETMODE)-$(TARGETTYPE)
+OUTSUB := $(TARGETMODE)-$(TARGETTYPE)

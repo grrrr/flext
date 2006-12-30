@@ -33,12 +33,17 @@ UFLAGS += -ffast-math
 # user defined optimization flags
 OFLAGS += -Os -ftree-vectorize
 
+# user defined debugging flags
+DFLAGS +=
+
 # architecture-specific flags (optional)
 UFLAGS_ppc += -maltivec -faltivec
 OFLAGS_ppc += -mtune=G4
+DFLAGS_ppc +=
 
-UFLAGS_i386 += -msse -msse2 -msse3
-OFLAGS_i386 += -mtune=nocona
+UFLAGS_i386 += -mmmx -msse -msse2 -msse3
+OFLAGS_i386 += -mtune=prescott
+DFLAGS_i386 +=
 
 # cross-compilation (optional)
 #ARCH=i386 ppc

@@ -62,7 +62,7 @@ void flext::AtomList::Alloc(int sz,int keepix,int keeplen,int keepto)
 {
     if(lst) {
         if(cnt == sz) {
-            if(keepix != keepto) {
+            if(keepix >= 0 && keepix != keepto) {
                 int c = keeplen >= 0?keeplen:cnt;
                 FLEXT_ASSERT(c+keepto <= cnt);
                 FLEXT_ASSERT(c+keepix <= cnt);

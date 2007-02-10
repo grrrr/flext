@@ -57,8 +57,12 @@ static const char *extract(const char *name,int ix = 0)
 		while(*t == ALIASSLASH && t > tmp) --t;
 		*t = 0;
 #endif
-		if(ix < 0)
-			return del+1;
+		if(ix < 0) {
+			// eat white space in front of help definition
+			++del;
+			while(*del && isspace(*del)) ++del;
+			return del;
+		}
 
 		strncpy(tmp,name,del-name);
 		tmp[del-name] = 0;

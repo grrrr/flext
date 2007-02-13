@@ -6,6 +6,10 @@ endif
 
 ##############################################
 
+LDFLAGS += -dynamiclib
+
+##############################################
+
 OBJPATH=$(OUTPATH)/$(OUTSUB)
 TARGETPATH=$(OBJPATH)
 

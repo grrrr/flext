@@ -2,6 +2,10 @@ EXT=mxo
 
 ##############################################
 
+LDFLAGS += -bundle
+
+##############################################
+
 OBJPATH=$(OUTPATH)/$(OUTSUB)
 
 # bundle name (build site)

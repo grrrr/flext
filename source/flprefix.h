@@ -407,18 +407,26 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // std namespace
 #ifdef __MWERKS__
-#define STD std
+#	define STD std
 #else
-#define STD
+#	define STD
 #endif
 
 // branching hints
 #ifdef __GNUC__
-#define LIKELY(expression) (__builtin_expect(!!(expression), 1))
-#define UNLIKELY(expression) (__builtin_expect(!!(expression), 0))
+#	ifndef LIKELY
+#		define LIKELY(expression) (__builtin_expect(!!(expression), 1))
+#	endif
+#	ifndef UNLIKELY
+#		define UNLIKELY(expression) (__builtin_expect(!!(expression), 0))
+#	endif
 #else
-#define LIKELY(expression) (expression)
-#define UNLIKELY(expression) (expression)
+#	ifndef LIKELY
+#		define LIKELY(expression) (expression)
+#	endif
+#	ifndef UNLIKELY
+#		define UNLIKELY(expression) (expression)
+#	endif
 #endif
 
 

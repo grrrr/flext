@@ -866,6 +866,7 @@ public:
 	ItemCont *ThMeths() { if(!methhead) methhead = new ItemCont; return methhead; }
 	static ItemCont *ClMeths(t_classid c);
 
+	//! \brief This is the central function to add message handlers. It is used by all other AddMethod incarnations.
 	static void AddMethod(ItemCont *ma,int inlet,const t_symbol *tag,methfun fun,metharg tp,...); 
 
 	ItemCont *ThAttrs() { return attrhead; }

@@ -39,6 +39,10 @@ void flext_base::MethItem::SetArgs(methfun _fun,int _argc,metharg *_args)
 */
 void flext_base::AddMethod(ItemCont *ma,int inlet,const t_symbol *tag,methfun fun,metharg tp,...)
 {
+#ifdef FLEXT_LOG_MSGS
+	post("addmethod %i:%s",inlet,GetString(tag));
+#endif
+
     va_list marker; 
 
     // at first just count the arg type list (in argc)

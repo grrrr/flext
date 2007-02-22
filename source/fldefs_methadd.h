@@ -23,13 +23,16 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     @{ 
 */
 
-//! Add a method handler for bang 
+/*! Add a method handler for bang 
+    \note This is for compatibility - better use the method below
+*/
 #define FLEXT_CADDBANG(CL,IX,M_FUN) \
 \
-AddMethod(CL,IX,flext::sym_bang,FLEXT_CALL_PRE(M_FUN))   
+AddMethod(CL,IX,FLEXT_CALL_PRE(M_FUN))   
 
 //! Add a handler for a method with either no, list or anything arguments
 #define FLEXT_CADDMETHOD(CL,IX,M_FUN) \
+\
 AddMethod(CL,IX,FLEXT_CALL_PRE(M_FUN))  
 
 //! Add a a handler for a method with implicit arguments

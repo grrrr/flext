@@ -131,7 +131,7 @@ bool flext_base::FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *arg
     if((lst = clmethhead->FindList(s,inlet)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
 
     // if nothing found try any inlet
-    if(methhead && (lst = methhead->FindList(s,-1)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
+    if(UNLIKELY(methhead) && (lst = methhead->FindList(s,-1)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
     if((lst = clmethhead->FindList(s,-1)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
 
     return false;
@@ -146,7 +146,7 @@ bool flext_base::FindMethAny(int inlet,const t_symbol *s,int argc,const t_atom *
     if((lst = clmethhead->FindList(sym_anything,inlet)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
 
     // if nothing found try any inlet
-    if(methhead && (lst = methhead->FindList(sym_anything,-1)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
+    if(UNLIKELY(methhead) && (lst = methhead->FindList(sym_anything,-1)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
     if((lst = clmethhead->FindList(sym_anything,-1)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
 
     return false;
@@ -162,10 +162,15 @@ bool flext_base::CbMethodHandler(int inlet,const t_symbol *s,int argc,const t_at
 
     curtag = s;
 
-//  post("methodmain inlet:%i args:%i symbol:%s",inlet,argc,s?GetString(s):"");
+#ifdef FLEXT_LOG_MSGS
+	post("methodmain inlet:%i args:%i symbol:%s",inlet,argc,s?GetString(s):"");
+#endif
 
     try {
         ret = FindMeth(inlet,s,argc,argv);
+#ifdef FLEXT_LOG_MSGS
+		if(ret) post("found %s message in %s,%i",GetString(s),__FILE__,__LINE__);
+#endif
         if(ret) goto end;
 
         if(argc == 1) {
@@ -225,6 +230,9 @@ bool flext_base::CbMethodHandler(int inlet,const t_symbol *s,int argc,const t_at
             t_atom at;
             SetSymbol(at,s);
             ret = FindMeth(inlet,sym_list,1,&at);
+#ifdef FLEXT_LOG_MSGS
+			if(ret) post("found %s message in %s,%i",GetString(sym_list),__FILE__,__LINE__);
+#endif
             if(ret) goto end;
         }
 

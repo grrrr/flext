@@ -21,6 +21,30 @@ INSTPATH=/usr/local/lib/pd/extra
 
 ###############################################################
 
+# STK (synthesis tool kit) support
+# http://ccrma.stanford.edu/software/stk
+
+# where to find the STK header files (e.g. stk.h)
+STK_INC=/usr/local/include/stk
+
+# where to find the STK library (normally libstk.a)
+# (comment out STK_LIB if you don't use STK)
+STK_LIB=/usr/local/lib/libstk.a
+
+###############################################################
+
+# SndObj support
+# http://music.nuim.ie//musictec/SndObj
+
+# where to find the SndObj header files (e.g. sndobj.h)
+SNDOBJ_INC=/usr/local/include/sndobj
+
+# where to find the SndObj library (normally libsndobj.a)
+# (comment out STK_LIB if you don't use SndObj)
+SNDOBJ_LIB=/usr/local/lib/libsndobj.a
+
+###############################################################
+
 # user defined compiler flags
 # (check if they match your system!)
 UFLAGS=-msse -mfpmath=sse -ffast-math

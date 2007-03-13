@@ -48,6 +48,24 @@ endif
 
 ##############################################
 
+ifdef STK_INC
+INCPATH += -I$(STK_INC)
+endif
+ifdef STK_LIB
+LIBS += $(STK_LIB)
+endif
+
+##############################################
+
+ifdef SNDOBJ_INC
+INCPATH += -I$(SNDOBJ_INC)
+endif
+ifdef SNDOBJ_LIB
+LIBS += $(SNDOBJ_LIB)
+endif
+
+##############################################
+
 LDFLAGS += $(patsubst %,-arch %,$(ARCH))
 
 ifdef OSXSDK

@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2007 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -12,6 +12,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __FLSTK_H
 
 #include "flext.h"
+
+// PI is defined in the Max/MSP SDK, but clashes with Stk.h
+#ifdef PI
+#undef PI
+#endif
+
 #include <Stk.h>
 
 class FLEXT_SHARE flext_stk:
@@ -40,7 +46,8 @@ protected:
 
         inline MY_FLOAT lastOut() const { return (MY_FLOAT)buf[index]; }
 
-        inline MY_FLOAT tick() { 
+        inline MY_FLOAT tick() 
+        { 
             if(++index >= vecsz) index = 0; 
             return lastOut(); 
         }
@@ -61,7 +68,8 @@ protected:
     public:
         Output(t_sample *b,int vecsz);
 
-        inline void tick(MY_FLOAT s) { 
+        inline void tick(MY_FLOAT s) 
+        { 
             buf[index] = (t_sample)s; 
             if(++index >= vecsz) index = 0; 
         }

@@ -1,6 +1,6 @@
 # where are the Max/MSP SDK header files?
 # you should have the latest version!
-MAXSDKPATH=/Applications/MaxMSP\ 4.5/MaxMSP-SDK/c74support
+MAXSDKPATH=/Applications/MaxMSP\ 4.6/MaxMSP-SDK/c74support
 
 ###############################################################
 
@@ -23,7 +23,31 @@ INSTPATH=/Library/Application\ Support/Cycling\ \'74/externals/flext
 INITPATH=/Library/Application\ Support/Cycling\ \'74/init
 
 # where should the help files be installed?
-HELPPATH=/Applications/MaxMSP\ 4.5/max-help/flext
+HELPPATH=/Applications/MaxMSP\ 4.6/max-help/flext
+
+###############################################################
+
+# STK (synthesis tool kit) support
+# http://ccrma.stanford.edu/software/stk
+
+# where to find the STK header files (e.g. stk.h)
+STK_INC=/usr/local/include/stk
+
+# where to find the STK library (normally libstk.a)
+# (comment out STK_LIB if you don't use STK)
+STK_LIB=/usr/local/lib/libstk.a
+
+###############################################################
+
+# SndObj support
+# http://music.nuim.ie//musictec/SndObj
+
+# where to find the SndObj header files (e.g. sndobj.h)
+SNDOBJ_INC=/usr/local/include/sndobj
+
+# where to find the SndObj library (normally libsndobj.a)
+# (comment out STK_LIB if you don't use SndObj)
+SNDOBJ_LIB=/usr/local/lib/libsndobj.a
 
 ###############################################################
 

@@ -40,6 +40,24 @@ endif
 
 ##############################################
 
+ifdef STK_INC
+INCPATH += -I$(STK_INC)
+endif
+ifdef STK_LIB
+LIBS += $(STK_LIB)
+endif
+
+##############################################
+
+ifdef SNDOBJ_INC
+INCPATH += -I$(SNDOBJ_INC)
+endif
+ifdef SNDOBJ_LIB
+LIBS += $(SNDOBJ_LIB)
+endif
+
+##############################################
+
 CSRCS=$(patsubst %.c,$(SRCDIR)/%.c,$(filter %.c,$(SRCS)))
 CPPSRCS=$(patsubst %.cpp,$(SRCDIR)/%.cpp,$(filter %.cpp,$(SRCS)))
 COBJS=$(patsubst %.c,$(OBJPATH)/%.o,$(filter %.c,$(SRCS))) 

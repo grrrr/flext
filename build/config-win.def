@@ -1,2 +1,2 @@
-# use SIMD instructions (Intel SSE)?
+# comment out to inhibit SIMD (Altivec/SSE) usage
 SIMD=1

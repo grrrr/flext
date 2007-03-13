@@ -1,2 +1,2 @@
-# uncomment to inhibit SIMD usage
+# comment out to inhibit SIMD (Altivec/SSE) usage
 SIMD=1

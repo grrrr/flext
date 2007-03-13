@@ -29,7 +29,7 @@ STK_INC=/usr/local/include/stk
 
 # where to find the STK library (normally libstk.a)
 # (comment out STK_LIB if you don't use STK)
-STK_LIB=/usr/local/lib/libstk.a
+#STK_LIB=/usr/local/lib/libstk.a
 
 ###############################################################
 
@@ -41,7 +41,7 @@ SNDOBJ_INC=/usr/local/include/sndobj
 
 # where to find the SndObj library (normally libsndobj.a)
 # (comment out STK_LIB if you don't use SndObj)
-SNDOBJ_LIB=/usr/local/lib/libsndobj.a
+#SNDOBJ_LIB=/usr/local/lib/libsndobj.a
 
 ###############################################################
 

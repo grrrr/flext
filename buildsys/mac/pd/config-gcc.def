@@ -48,6 +48,9 @@ SNDOBJ_INC=/usr/local/include/sndobj
 
 ###############################################################
 
+# make flags (e.g. use multiprocessor)
+#MFLAGS=-j 2
+
 # user defined compiler flags
 UFLAGS += -ffast-math
 

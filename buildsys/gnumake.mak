@@ -28,54 +28,54 @@ endif
 # check variables
 
 ifndef BUILDCLASS
-BUILDCLASS=ext
+BUILDCLASS := ext
 endif
 
 ifndef BUILDMODE
-BUILDMODE=release
+BUILDMODE := release
 endif
 
 ifndef BUILDTYPE
-BUILDTYPE=single
+BUILDTYPE := single
 endif
 
 ##############################
 
 #ifndef TARGETMODE
-#TARGETMODE=$(BUILDMODE)
+#TARGETMODE := $(BUILDMODE)
 #endif
 
 #ifndef TARGETTYPE
-#TARGETTYPE=$(BUILDTYPE)
+#TARGETTYPE := $(BUILDTYPE)
 #endif
 
 ###############################################
 
 ifeq ($(PLATFORM),win)
 	# substitute eventual \ by /
-	UBUILDPATH=$(subst \,/,$(BUILDPATH))
+	UBUILDPATH := $(subst \,/,$(BUILDPATH))
 else
-	UBUILDPATH=$(BUILDPATH)
+	UBUILDPATH := $(BUILDPATH)
 endif
 
 ###############################################
 
-SYSCONFIG=$(UBUILDPATH)config-$(PLATFORM)-$(RTSYS)-$(COMPILER).txt
-SYSDEFAULT=$(UBUILDPATH)$(PLATFORM)/$(RTSYS)/config-$(COMPILER).def
+SYSCONFIG := $(UBUILDPATH)config-$(PLATFORM)-$(RTSYS)-$(COMPILER).txt
+SYSDEFAULT := $(UBUILDPATH)$(PLATFORM)/$(RTSYS)/config-$(COMPILER).def
 
-OPTIONS=-f $(UBUILDPATH)gnumake-sub.mak \
+MAKE_OPTIONS := -f $(UBUILDPATH)gnumake-sub.mak \
 	PLATFORM=$(PLATFORM) RTSYS=$(RTSYS) COMPILER=$(COMPILER) \
 	BUILDPATH=$(UBUILDPATH) PKGINFO=$(PKGINFO) BUILDCLASS=$(BUILDCLASS)
 
 ###############################################
 
 ifdef BUILDDIR
-USRCONFIG=config.txt
-USRDEFAULT=$(BUILDDIR)/config-$(PLATFORM).def
+USRCONFIG := config.txt
+USRDEFAULT := $(BUILDDIR)/config-$(PLATFORM).def
 
-USRMAKE=$(BUILDDIR)/gnumake-$(PLATFORM)-$(COMPILER).inc
+USRMAKE := $(BUILDDIR)/gnumake-$(PLATFORM)-$(COMPILER).inc
 
-OPTIONS+=USRCONFIG=$(USRCONFIG) USRMAKE=$(USRMAKE)
+MAKE_OPTIONS += $(MFLAGS) USRCONFIG=$(USRCONFIG) USRMAKE=$(USRMAKE)
 endif
 
 ###############################################

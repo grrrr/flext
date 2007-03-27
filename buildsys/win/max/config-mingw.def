@@ -31,6 +31,9 @@ HELPPATH="%ProgramFiles%/MaxMSP 4.5/max-help/flext"
 
 ###############################################################
 
+# make flags (e.g. use multiprocessor)
+#MFLAGS=-j 2
+
 # user defined compiler flags
 # (check if they match your system!)
 UFLAGS=-msse -ffast-math

@@ -2,13 +2,13 @@
 # cross-compilation
 ##############################################
 
-ifndef ARCH
-ifeq ("$(shell uname -p)","powerpc")
-ARCH := ppc
-else
-ARCH := $(shell uname -p)
-endif
-endif
+#ifndef ARCH
+#ifeq ("$(shell uname -p)","powerpc")
+#ARCH := ppc
+#else
+#ARCH := $(shell uname -p)
+#endif
+#endif
 
 ##############################################
 # some compiler definitions
@@ -37,7 +37,9 @@ endef
 
 endif
 
+ifdef ARCH
 $(foreach arch,$(ARCH),$(eval $(call ARCH_FLAGS,$(arch))))
+endif
 
 
 ifdef SHARED

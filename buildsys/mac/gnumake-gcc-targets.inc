@@ -38,6 +38,20 @@ $(PRECOMDST) : $(PRECOMSRC) $(patsubst %,$(SRCDIR)/%,$(HDRS))
 	-mkdir -p $(dir $@)
 	$(CXX) -c $(DEFS) $(INCPATH) $(PRECOMSRC) -o $@
 
+
+
+ifndef ARCH
+##### non-architecture-specific compilation ###################
+
+$(OBJPATH)/%.opp : $(SRCDIR)/%.cpp
+	-mkdir -p $(dir $@)
+	$(CXX) -c $(CFLAGS) $(DEFS) $(PRECOMINC) $(INCPATH) $^ -o $@
+
+$(OBJPATH)/%.o : $(SRCDIR)/%.c
+	-mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS) $(DEFS) $(INCPATH) $^ -o $@
+
+else
 ##### architecture-specific compilation ###################
 
 define ARCH_COMPILE
@@ -60,6 +74,8 @@ $(OBJPATH)/%.opp : $(foreach arch,$(ARCH),$(OBJPATH)/%.opp_$(arch))
 
 $(OBJPATH)/%.o : $(foreach arch,$(ARCH),$(OBJPATH)/%.o_$(arch))
 	lipo $^ -create -output $@
+
+endif
 
 ##############################################
 

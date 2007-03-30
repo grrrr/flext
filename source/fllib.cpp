@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2007 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -230,8 +230,23 @@ void flext_obj::lib_init(const char *name,void setupfun())
 	curlib = NULL;
 }
 
+#ifdef FLEXT_SYS == FLEXT_SYS_PD
+t_class *buf_class = NULL;
+extern void cb_buffer_dsp(void *c,t_signal **sp);
+#endif
+
 void flext_obj::obj_add(bool lib,bool dsp,bool noi,bool attr,const char *idname,const char *names,void setupfun(t_classid),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...)
 {
+#if FLEXT_SYS == FLEXT_SYS_PD
+	// register buffer helper class (if not present already)
+	if(!buf_class) {
+		buf_class = ::class_new(gensym(" flext buffer helper "),NULL,NULL,sizeof(t_object),CLASS_PD|CLASS_NOINLET,A_NULL);
+		add_dsp(buf_class,cb_buffer_dsp);
+		// make an instance
+		void *c = ::pd_new(buf_class);
+	}
+#endif
+
 	// get first possible object name
 	const t_symbol *nsym = MakeSymbol(extract(names));
 	
@@ -257,8 +272,8 @@ void flext_obj::obj_add(bool lib,bool dsp,bool noi,bool attr,const char *idname,
 #endif
 		new t_class *;
 
-	// register object class
 #if FLEXT_SYS == FLEXT_SYS_PD
+	// register object class
     *cl = ::class_new(
 		(t_symbol *)nsym,
     	(t_newmethod)obj_new,(t_method)obj_free,

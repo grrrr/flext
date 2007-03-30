@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2007 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -14,6 +14,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
  
 #include "flext.h"
 #include "flfeatures.h"
+#include <set>
 
 #if FLEXT_SYS != FLEXT_SYS_JMAX
 
@@ -26,6 +27,17 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 extern const t_symbol *sym_buffer,*sym_size;
 #endif
 
+#ifdef FLEXT_SYS == FLEXT_SYS_PD
+typedef std::set<flext::buffer *> Buffers;
+static Buffers buffers;
+
+void cb_buffer_dsp(void *c,t_signal **sp) 
+{
+	for(Buffers::iterator it = buffers.begin(); it != buffers.end(); ++it)
+		(*it)->Set();
+} 
+#endif
+
 flext::buffer::buffer(const t_symbol *bn,bool delayed):
     sym(NULL),data(NULL),
     chns(0),frames(0)
@@ -35,12 +47,18 @@ flext::buffer::buffer(const t_symbol *bn,bool delayed):
     interval = DIRTY_INTERVAL;
     isdirty = false;
     ticking = false;
+	
+	// we probably should make this global... work on the set of registered buffers
     tick = clock_new(this,(t_method)cb_tick);
 #endif
 
     if(bn) Set(bn,delayed);
 
     ClearDirty();
+	
+	// register buffer
+	FLEXT_ASSERT(buffers.find(this) == buffers.end());
+	buffers.insert(this);
 }
 
 flext::buffer::~buffer()
@@ -48,6 +66,10 @@ flext::buffer::~buffer()
 #if FLEXT_SYS == FLEXT_SYS_PD
     clock_free(tick);
 #endif
+
+	// unregister buffer
+	FLEXT_ASSERT(buffers.find(this) != buffers.end());
+	buffers.erase(this);
 }
 
 int flext::buffer::Set(const t_symbol *s,bool nameonly)

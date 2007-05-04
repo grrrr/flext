@@ -27,7 +27,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 extern const t_symbol *sym_buffer,*sym_size;
 #endif
 
-#ifdef FLEXT_SYS == FLEXT_SYS_PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 typedef std::set<flext::buffer *> Buffers;
 static Buffers buffers;
 

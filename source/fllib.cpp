@@ -230,7 +230,7 @@ void flext_obj::lib_init(const char *name,void setupfun())
 	curlib = NULL;
 }
 
-#ifdef FLEXT_SYS == FLEXT_SYS_PD
+#if FLEXT_SYS == FLEXT_SYS_PD
 t_class *buf_class = NULL;
 extern void cb_buffer_dsp(void *c,t_signal **sp);
 #endif

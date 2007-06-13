@@ -48,7 +48,7 @@ flext::thrid_t flext::thrhelpid;
 //! \brief This represents an entry to the list of active method threads
 class thr_entry
     : public flext
-    , public Fifo::Cell
+    , public LifoCell
 {
 public:
     void Set(void (*m)(thr_params *),thr_params *p,thrid_t id = GetThreadId())
@@ -230,7 +230,7 @@ bool flext::LaunchThread(void (*meth)(thr_params *p),thr_params *p)
 	return true;
 }
 
-static bool waitforstopped(TypedFifo<thr_entry> &qufnd,float wait = 0)
+static bool waitforstopped(TypedLifo<thr_entry> &qufnd,float wait = 0)
 {
     TypedLifo<thr_entry> qutmp;
 
@@ -238,7 +238,7 @@ static bool waitforstopped(TypedFifo<thr_entry> &qufnd,float wait = 0)
     if(wait) until = flext::GetOSTime()+wait;
 
     for(;;) {
-        thr_entry *fnd = qufnd.Get();
+        thr_entry *fnd = qufnd.Pop();
         if(!fnd) break; // no more entries -> done!
 
         thr_entry *ti;
@@ -249,7 +249,7 @@ static bool waitforstopped(TypedFifo<thr_entry> &qufnd,float wait = 0)
 
         if(ti) { 
             // still in thrstopped queue
-            qufnd.Put(fnd);
+            qufnd.Push(fnd);
             // yield to other threads
             flext::ThrYield();
             
@@ -291,13 +291,13 @@ bool flext::StopThread(void (*meth)(thr_params *p),thr_params *p,bool wait)
     // now search active queue
     // -----------------------
 
-    TypedFifo<thr_entry> qufnd;
+    TypedLifo<thr_entry> qufnd;
 
     while((ti = thractive.Pop()) != NULL)
         if(ti->meth == meth && ti->params == p) {
             thrstopped.Push(ti);
             thrhelpcond->Signal();
-            qufnd.Put(ti);
+            qufnd.Push(ti);
         }
         else
             qutmp.Push(ti);
@@ -312,7 +312,7 @@ bool flext::StopThread(void (*meth)(thr_params *p),thr_params *p,bool wait)
     if(wait) 
         return waitforstopped(qufnd);
     else
-        return qufnd.Size() == 0;
+        return !qufnd.Avail();
 }
 
 bool flext::ShouldExit() 
@@ -365,13 +365,13 @@ bool flext_base::StopThreads()
     // now search active queue
     // -----------------------
 
-    TypedFifo<thr_entry> qufnd;
+    TypedLifo<thr_entry> qufnd;
 
     while((ti = thractive.Pop()) != NULL)
         if(ti->This() == this) {
             thrstopped.Push(ti);
             thrhelpcond->Signal();
-            qufnd.Put(ti);
+            qufnd.Push(ti);
         }
         else
             qutmp.Push(ti);
@@ -389,7 +389,7 @@ bool flext_base::StopThreads()
 #endif
 
 		// timeout -> hard termination
-        while((ti = qufnd.Get()) != NULL) {
+        while((ti = qufnd.Pop()) != NULL) {
 #if FLEXT_THREADS == FLEXT_THR_POSIX
 			if(pthread_cancel(ti->thrid)) 
                 post("%s - Thread could not be terminated!",thisName());

@@ -273,39 +273,41 @@ typedef t_symbol *t_symptr;
 
 // ----- disable attribute editor for PD version < devel_0_36 or 0.37
 #ifndef PD_MAJOR_VERSION
-#undef FLEXT_NOATTREDIT
-#define FLEXT_NOATTREDIT
+#	undef FLEXT_NOATTREDIT
+#	define FLEXT_NOATTREDIT
 #endif
 
 
 // ----- set message queue mode -----
 #if FLEXT_SYS == FLEXT_SYS_PD && PD_MINOR_VERSION >= 37
-	// for PD version >= 0.37test10 FLEXT_PDLOCK is standard
-	#undef FLEXT_PDLOCK
-	#define FLEXT_PDLOCK
-#endif
-
-#if FLEXT_SYS == FLEXT_SYS_PD && PD_MINOR_VERSION >= 38 && defined(PD_DEVEL_VERSION)
-    // use idle callback
-    #define FLEXT_QMODE 1
-#elif defined(FLEXT_PDLOCK)
-	// new PD thread locking functionality shall be used
-	#if FLEXT_SYS == FLEXT_SYS_PD
-		#ifdef FLEXT_THREADS
-			// can only be used with PD and threaded build
-			#define FLEXT_QMODE 2
-        #else
-			#define FLEXT_QMODE 0
-		#endif
-	#else
-		#error FLEXT_PDLOCK can only be defined with PD
-	#endif
-#else
-	#define FLEXT_QMODE 0
+//	for PD version >= 0.37test10 FLEXT_PDLOCK is standard
+#	undef FLEXT_PDLOCK
+#	define FLEXT_PDLOCK
 #endif
 
 #ifndef FLEXT_QMODE
-#error Internal error: Queueing mode not defined
+#	if FLEXT_SYS == FLEXT_SYS_PD && PD_MINOR_VERSION >= 38 && defined(PD_DEVEL_VERSION)
+//		use idle callback
+#		define FLEXT_QMODE 1
+#	elif defined(FLEXT_PDLOCK)
+//		new PD thread locking functionality shall be used
+#		if FLEXT_SYS == FLEXT_SYS_PD
+#			ifdef FLEXT_THREADS
+//				can only be used with PD and threaded build
+#				define FLEXT_QMODE 2
+#			else
+#				define FLEXT_QMODE 0
+#			endif
+#		else
+#			error FLEXT_PDLOCK can only be defined with PD
+#		endif
+#	else
+#		define FLEXT_QMODE 0
+#	endif
+#endif
+
+#ifndef FLEXT_QMODE
+#	error Internal error: Queueing mode not defined
 #endif
 
 #endif

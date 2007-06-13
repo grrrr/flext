@@ -48,7 +48,7 @@ class Queue:
     public QueueFifo
 {
 public:
-    inline bool Empty() const { return Size() == 0; }
+    inline bool Empty() const { return !Avail(); }
     
     inline void Push(MsgBundle *m); // defined after MsgBundle (gcc 3.3. won't take it otherwise...)
 };
@@ -60,7 +60,7 @@ static Queue queue;
 
 class flext::MsgBundle:
     public flext,
-    public Fifo::Cell
+    public FifoCell
 {
 public:
     static MsgBundle *New()
@@ -285,8 +285,7 @@ static void QWork(bool syslock)
         // qc will be a minimum guaranteed number of present queue elements.
         // On the other hand, if new queue elements are added by the methods called
         // in the loop, these will be sent in the next tick to avoid recursion overflow.
-        size_t qc = queue.Size();
-        if(!qc) break;
+        if(!queue.Avail()) break;
 
     #if FLEXT_QMODE == 2
         if(syslock) flext::Lock();

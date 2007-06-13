@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2007 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -10,364 +10,25 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 /*! \file flcontainers.h
 	\brief Lock-free container classes
-   
-	This code has been adapted from the MidiShare project (c)Grame
-    http://midishare.sourceforge.net
 */
 
 #ifndef __FLCONTAINERS_H
 #define __FLCONTAINERS_H
 
-
 #include "flprefix.h"
 
+#include <stack.hpp>
+#include <fifo.hpp>
 
-// define that precautiously...
-// it's faster without that but we can't really know...
-#define __SMP__
+class LifoCell: public lockfree::stack_node {};
 
-
-class FLEXT_SHARE Lifo 
+class Lifo
+	: public lockfree::intrusive_stack<LifoCell>
 {
 public:
-    class Cell 
-    {
-	    friend class Lifo;
-	    friend class Fifo;
-    private:
-	    Cell *link;
-    };
-
-    inline Lifo() { Init(); }
-
-    inline void Init() { ic = oc = 0; top = NULL; }
-
-    inline Cell *Avail() { return (Cell *)top; }
-
-#if defined(_MSC_VER) && FLEXT_CPU == FLEXT_CPU_IA32
-    #ifdef __SMP__
-    #define LOCK lock
-    #else
-    #define LOCK
-    #endif
-
-    inline void Push(Cell *cell) 
-    {
-	    __asm 
-	    {
-		    push	eax
-		    push	ebx
-		    push	ecx
-		    push	edx
-		    push	esi
-		    mov		esi, this
-		    mov		eax, dword ptr [esi]
-		    mov		ecx, cell
-		    mov		edx, dword ptr [esi+4]
-	    _loop:
-		    mov		ebx, eax
-		    inc		ebx
-		    mov		[ecx], edx
-		    LOCK cmpxchg8b qword ptr [esi]
-		    jnz		_loop
-		    pop		esi
-		    pop		edx
-		    pop		ecx
-		    pop		ebx
-		    pop		eax
-	    }
-    }
-
-    inline Cell *Pop() 
-    {
-	    __asm 
-	    {
-		    push	ebx
-		    push	ecx
-		    push	edx
-		    push	esi
-		    mov		esi, this
-		    add		esi, 4 /* point to top */
-		    mov 	edx, dword ptr [esi+4]
-		    mov  	eax, dword ptr [esi]	
-		    test	eax, eax
-		    jz		_end
-	    _loop:
-		    mov		ebx, dword ptr [eax]
-		    mov		ecx, edx
-		    inc		ecx
-		    LOCK cmpxchg8b qword ptr [esi]
-		    jz		_end
-		    test	eax, eax
-		    jnz		_loop
-	    _end:
-		    pop		esi
-		    pop		edx
-		    pop		ecx
-		    pop		ebx
-	    }
-    }
-
-    inline size_t Size() const { return ic-oc; }
-#elif defined(__GNUC__) && FLEXT_CPU == FLEXT_CPU_IA32
-    #ifndef SMPLOCK
-    # ifdef __SMP__
-    #  define SMPLOCK "lock ; "
-    # else
-    #  define SMPLOCK ""
-    # endif
-    #endif
-
-    inline void Push(Cell *cl) 
-    {
-	    __asm__ __volatile__ (
-		    "# LFPUSH					\n\t"
-		    "pushl	%%ebx				\n\t"
-		    "pushl	%%ecx				\n\t"
-		    "movl 0(%%esi), %%eax		\n\t"
-		    "movl 4(%%esi), %%edx		\n"	
-		    "1:                         \t"
-		    "movl %%eax, %%ebx			\n\t"
-		    "incl %%ebx					\n\t"
-		    "movl %%edx, (%%ecx)		\n\t"
-		    SMPLOCK "cmpxchg8b (%%esi)	\n\t"
-		    "jnz	1b					\n\t"
-		    "popl	%%ecx				\n\t"
-		    "popl	%%ebx				\n\t"
-		    :/* no output */
-		    :"S" (this), "c" (cl)
-		    :"memory", "eax", "edx");
-    }
-
-    inline Cell *Pop() 
-    {
-	    Cell *v=0;
-	    __asm__ __volatile__ (
-		    "# LFPOP 					\n\t"
-		    "pushl	%%ebx				\n\t"
-		    "pushl	%%ecx				\n\t"
-		    "movl 	4(%%esi), %%edx		\n\t"
-		    "movl  	(%%esi), %%eax		\n\t"	
-		    "testl	%%eax, %%eax		\n\t"
-		    "jz		2f					\n"
-		    "1:                        \t"
-		    "movl 	(%%eax), %%ebx		\n\t"
-		    "movl	%%edx, %%ecx		\n\t"
-		    "incl	%%ecx				\n\t"
-		    SMPLOCK "cmpxchg8b (%%esi)	\n\t"
-		    "jz		2f					\n\t"
-		    "testl	%%eax, %%eax		\n\t"
-		    "jnz	1b					\n"
-		    "2:                        \t"
-		    "popl	%%ecx				\n\t"
-		    "popl	%%ebx				\n\t"
-		    :"=a" (v)
-		    :"S" (&this->top)
-		    :"memory", "edx");
-	    return v;
-    }
-
-    inline size_t Size() const 
-    {
-	    size_t n;
-	    __asm__ __volatile__ (
-		    "# LFSIZE					\n\t"
-		    "movl 	8(%%esi), %%edx		\n\t"
-		    "movl  	(%%esi), %%eax		\n\t"	
-		    "subl 	%%edx, %%eax		\n\t"
-		    :"=a" (n)
-		    :"S" (this)
-		    :"memory", "edx");
-	    return n;
-    }
-#elif 0 //defined(__GNUC__) && FLEXT_CPU == FLEXT_CPU_X86_64
-/* attention - this only works for EMT64 or newer revisions of AMD 64-bit cpus */
-    #ifndef SMPLOCK
-    # ifdef __SMP__
-    #  define SMPLOCK "lock ; "
-    # else
-    #  define SMPLOCK ""
-    # endif
-    #endif
-
-    inline void Push(Cell *cl) 
-    {
-	    __asm__ __volatile__ (
-		    "# LFPUSH					\n\t"
-		    "push	%%rbx				\n\t"
-		    "push	%%rcx				\n\t"
-		    "mov 0(%%rsi), %%rax		\n\t"
-		    "mov 8(%%rsi), %%rdx		\n"	
-		    "1:                         \t"
-		    "mov %%rax, %%rbx			\n\t"
-		    "inc %%rbx					\n\t"
-		    "mov %%rdx, (%%rcx)		\n\t"
-		    SMPLOCK "cmpxchg16b (%%rsi)	\n\t"
-		    "jnz	1b					\n\t"
-		    "pop	%%rcx				\n\t"
-		    "pop	%%rbx				\n\t"
-		    :/* no output */
-		    :"S" (this), "c" (cl)
-		    :"memory", "rax", "rdx");
-    }
-
-    inline Cell *Pop() 
-    {
-	    Cell *v=0;
-	    __asm__ __volatile__ (
-		    "# LFPOP 					\n\t"
-		    "push	%%rbx				\n\t"
-		    "push	%%rcx				\n\t"
-		    "mov 	8(%%rsi), %%rdx		\n\t"
-		    "mov  	(%%rsi), %%rax		\n\t"	
-		    "test	%%rax, %%rax		\n\t"
-		    "jz		2f					\n"
-		    "1:                        \t"
-		    "mov 	(%%rax), %%rbx		\n\t"
-		    "mov	%%rdx, %%rcx		\n\t"
-		    "inc	%%rcx				\n\t"
-		    SMPLOCK "cmpxchg16b (%%rsi)	\n\t"
-		    "jz		2f					\n\t"
-		    "test	%%rax, %%rax		\n\t"
-		    "jnz	1b					\n"
-		    "2:                        \t"
-		    "pop	%%rcx				\n\t"
-		    "pop	%%rbx				\n\t"
-		    :"=a" (v)
-		    :"S" (&this->top)
-		    :"memory", "rdx");
-	    return v;
-    }
-
-    inline size_t Size() const 
-    {
-	    size_t n;
-	    __asm__ __volatile__ (
-		    "# LFSIZE					\n\t"
-		    "mov 	16(%%rsi), %%rdx	\n\t"
-		    "mov  	(%%rsi), %%rax		\n\t"	
-		    "sub 	%%rdx, %%rax		\n\t"
-		    :"=a" (n)
-		    :"S" (this)
-		    :"memory", "rdx");
-	    return n;
-    }
-
-#elif defined(__GNUC__) && FLEXT_CPU == FLEXT_CPU_PPC
-    inline void Push(register Cell *cl) 
-    {
-        register volatile long t1;
-        register long t2=0;
-        asm volatile (
-	        "# LFPUSH \n"
-	        "0: 				      \n"
-	        "   lwarx   %0, %3, %1  \n"		
-	        "   stw	  %0, 0(%2)   \n"	
-	        "   sync  			  \n"	
-	        "   stwcx.  %2, %3, %1  \n"						   
-	        "   bne-    0b	      \n"  
-	        "0:				      \n"
-	        "   lwarx   %0, %3, %4  \n"		
-	        "   addi    %0, %0, 1	  \n"  
-	        "   sync  			  \n"  
-	        "   stwcx.  %0, %3, %4  \n"
-	        "   bne-    0b		  \n"
-	        : "=r" (t1)
-	        : "r" (&this->top), "r" (cl), "r" (t2), "r" (&this->oc), "0" (t1)
-	        : "r0" 		/* prevents using r0 because of the ambiguity of 'addi' coding: */
-	  				        /* gcc version 2.95.3 20010315 (release - Linux-Mandrake 8.0 for PPC) */
-					        /* compiles the instruction "addi 0, 0, n" as li 0, n */
-        );
-    }
-
-    inline Cell *Pop() 
-    {
-	    register Cell *result;
-	    register volatile long a, b;
-	    register long c=0;
-	    asm volatile (
-        "# LFPOP					\n"
-            "0:						\n"
-		    "	lwarx	%4, %1, %2	\n"         /* creates a reservation on lf    */
-		    "	cmpwi	%4, 0		\n"         /* test if the lifo is empty      */
-		    "	beq-	1f		\n"
-		    "	lwz		%5, 0(%4)	\n"         /* next cell in b                */
-            "	sync            	\n"         /* synchronize instructions       */
-		    "	stwcx.	%5, %1, %2	\n"         /* if the reservation is not altered */
-                                                /* modify lifo top                */
-		    "	bne-	0b  		\n"         /* otherwise: loop and try again  */
-            "0:						\n"
-		    "	lwarx	%5, %1, %3	\n"         /* creates a reservation on lf->count */
-            "	addi	%5, %5, -1	\n"         /* dec count                      */
-		    "	sync            	\n"         /* synchronize instructions       */
-		    "	stwcx.	%5, %1, %3	\n"         /* conditionnal store             */
-		    "	bne-	0b			\n"
-            "1:						\n"
-		    "	mr		%0, %4		\n"
-        :"=r" (result), "=r" (c)
-	    : "r" (&this->top), "r" (&this->oc), "r" (a), "r" (b), "1" (c)
-	    : "r0" 		/* prevents using r0 because of the ambiguity of 'addi' coding: */
-	  				    /* gcc version 2.95.3 20010315 (release - Linux-Mandrake 8.0 for PPC) */
-					    /* compiles the instruction "addi 0, 0, n" as li 0, n */
-	    );
-	    return result;
-    }
-
-    inline size_t Size() const { return oc; }
-
-#else
-    // no lock free code available for this compiler/platform
-
-    inline void Push(Cell *c) 
-    {
-#ifdef FLEXT_THREADS
-        mutex.Lock();
-#endif
-        c->link = (Cell *)top;
-        top = c;
-        ++oc;
-#ifdef FLEXT_THREADS
-        mutex.Unlock();
-#endif
-    }
-
-    inline Cell *Pop()
-    {
-        if(top) {
-            Cell *r;
-#ifdef FLEXT_THREADS
-            mutex.Lock();
-#endif
-            r = (Cell *)top;
-            top = r->link;
-            --oc;
-#ifdef FLEXT_THREADS
-            mutex.Unlock();
-#endif
-            return r;
-        }
-        else
-            return NULL;
-    }
-
-    inline size_t Size() const { return oc; }
-
-private:
-#ifdef FLEXT_THREADS
-    flext::ThrMutex mutex;
-#endif
-
-#endif
-
-private:
-    // don't change order!
-    volatile size_t ic;		// input (push) count
-	volatile Cell *top;	    // top of the stack
-	volatile size_t oc;		// output (pop) count
-#ifdef __POWERPC__
-	size_t unused[5];		// lifo size must be at least 32 bytes
-							// to avoid livelock in multiprocessor
-#endif
+	inline void Push(LifoCell *cell) { this->push(cell); }
+	inline LifoCell *Pop() { return this->pop(); }
+	inline bool Avail() const { return !this->empty(); }
 };
 
 template <typename T>
@@ -375,7 +36,6 @@ class TypedLifo
     : public Lifo
 {
 public:
-    inline T *Avail() { return static_cast<T *>(Lifo::Avail()); }
     inline void Push(T *c) { Lifo::Push(static_cast<T *>(c)); }
     inline T *Pop() { return static_cast<T *>(Lifo::Pop()); }
 };
@@ -385,77 +45,52 @@ class PooledLifo
     : public TypedLifo<T>
 {
 public:
-    inline T *New() { T *n = reuse.Pop(); return n?n:new T; }
-    inline size_t Size() const { return TypedLifo<T>::Size(); }
-    inline void Free(T *p) { if(reuse.Size() < Size()*M+O) reuse.Push(p); else delete p; }
+	PooledLifo(): sz(0),resz(0) {}
+
+	void Push(T *c) { TypedLifo<T>::Push(c); ++sz; }
+	T *Pop() { T *r = TypedLifo<T>::Pop(); if(r) --sz; return r; }
+
+    T *New() 
+	{ 
+		T *n = reuse.Pop(); 
+		if(n) {
+			--resz;
+			return n;
+		}
+		else
+			return new T; 
+	}
+
+    inline void Free(T *p) 
+	{ 
+		if(resz < sz*M+O) { reuse.Push(p); ++resz; }
+		else delete p; 
+	}
 private:
     TypedLifo<T> reuse;
+	size_t sz,resz;
 };
 
 
-class FLEXT_SHARE Fifo 
+class FifoCell: public lockfree::fifo_node {};
+
+class Fifo
+	: public lockfree::intrusive_fifo<FifoCell>
 {
 public:
-    typedef Lifo::Cell Cell;
-
-    void Init() { in.Init(); out.Init(); }
-
-    inline size_t Size() const { return in.Size()+out.Size(); }
-
-    inline void Put(Cell *cl) { in.Push(cl); }
-
-    Cell *Get() 
-    {
-        Cell *v1 = out.Pop();
-        if(!v1) {
-            v1 = in.Pop();
-            if(v1)
-                for(Cell *v2; (v2 = in.Pop()) != NULL; v1 = v2) 
-                    out.Push(v1);
-        }
-        return v1;
-    }
-
-    Cell *Avail()
-    {
-        Cell *v1 = out.Avail();
-        if(v1)
-            return v1;
-        else {
-            for(Cell *v2; (v2 = in.Pop()) != NULL; ) 
-                out.Push(v2);
-            return out.Avail();
-        }
-    }
-
-    Cell *Clear()
-    {
-        Cell *first = Get();
-        if(!first) return NULL;
-
-        Cell *next,*cur = first;
-        while((next = Get()) != NULL) {
-            cur->link = next;
-            cur = next;
-        }
-        cur->link = NULL;
-
-        Init();
-        return first;
-    }
-
-	Lifo in,out;
+	inline void Put(FifoCell *cl) { this->enqueue(cl); }
+	inline FifoCell *Get() { return this->dequeue(); }
+    inline bool Avail() const { return !this->empty(); }
 };
+
 
 template <typename T>
 class TypedFifo
     : public Fifo
 {
 public:
-    inline T *Avail() { return static_cast<T *>(Fifo::Avail()); }
     inline void Put(T *c) { Fifo::Put(static_cast<T *>(c)); }
     inline T *Get() { return static_cast<T *>(Fifo::Get()); }
-    inline T *Clear() { return static_cast<T *>(Fifo::Clear()); }
 };
 
 template <typename T,int M = 2,int O = 1>
@@ -463,11 +98,12 @@ class PooledFifo
     : public TypedFifo<T>
 {
 public:
-    inline T *New() { T *n = reuse.Pop(); return n?n:new T; }
-    inline size_t Size() const { return TypedFifo<T>::Size(); }
-    inline void Free(T *p) { if(reuse.Size() < Size()*M+O) reuse.Push(p); else delete p; }
+    inline T *New() { T *n = reuse.Get(); return n?n:new T; }
+    inline void Free(T *p) { if(resz < sz*M+O) reuse.Put(p); else delete p; }
 private:
-    TypedLifo<T> reuse;
+    TypedFifo<T> reuse;
+	size_t sz,resz;
 };
 
 #endif
+

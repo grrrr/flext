@@ -259,3 +259,4 @@ void flext_base::cb_dsp(flext_hdr *c,t_signal **sp)
 	obj->SetupDsp(sp);
 }
 
+bool flext_base::CbIdle() { return 0; }

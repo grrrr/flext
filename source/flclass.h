@@ -87,6 +87,8 @@ public:
 	virtual bool CbMethodResort(int inlet,const t_symbol *s,int argc,const t_atom *argv);
 	virtual bool m_method_(int inlet,const t_symbol *s,int argc,const t_atom *argv);
 
+	virtual bool CbIdle();
+
 //!		@} FLEXT_C_VIRTUAL
 
 
@@ -432,6 +434,9 @@ public:
 	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,float &)) { AddMethod(inlet,MakeSymbol(tag),m); }
 	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,int &)) { AddMethod(inlet,MakeSymbol(tag),m); }
 
+	// ´schedule call of the CbIdle method during the next idle cycle
+	void AddIdle();
+
 	//! Set Max/MSP style of distributing list elements over (message) inlets
 	static void SetDist(t_classid c,bool d = true);
     //! Query whether lists are distributed
@@ -480,6 +485,9 @@ public:
 	static void AddMethod(t_classid c,int inlet,const char *tag,bool (*m)(flext_base *,const t_symbol *&)) { AddMethod(c,inlet,MakeSymbol(tag),m); }
 	static void AddMethod(t_classid c,int inlet,const char *tag,bool (*m)(flext_base *,float &)) { AddMethod(c,inlet,MakeSymbol(tag),m); }
 	static void AddMethod(t_classid c,int inlet,const char *tag,bool (*m)(flext_base *,int &)) { AddMethod(c,inlet,MakeSymbol(tag),m); }
+
+	// ´schedule call of the given idlefun during the next idle cycle
+	static void AddIdle(bool (*idlefun)(int argc,const t_atom *argv),int argc,const t_atom *argv);
 
 //!		@} FLEXT_C_CADDMETHOD
 

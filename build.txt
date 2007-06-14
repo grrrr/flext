@@ -1,6 +1,6 @@
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2007 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -101,7 +101,8 @@ OSX:
 
 Windows:
 - Microsoft Visual Studio 6, .NET 2002, .NET 2003 or .NET 2005
-  be sure to use the VCVARS32.BAT (or probably SDKVARS.BAT) command on the prompt to set up the environment variables
+  Be sure to use the VCVARS32.BAT (or probably SDKVARS.BAT) command on the prompt to set up the environment variables
+  Also be sure NOT to put flext or other externals into a path containing spaces!!
 or
 - cygwin with binutils, gcc and make packages
 

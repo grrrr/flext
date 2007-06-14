@@ -82,6 +82,16 @@ public:
         queue.Free(m);
     }
 
+    void Idle(flext_base *t)
+    {
+		Get()->Idle(t);
+	}
+
+    void Idle(bool (*idlefun)(int argc,const t_atom *argv),int argc,const t_atom *argv)
+    {
+		Get()->Idle(idlefun,argc,argv);
+	}
+
     inline MsgBundle &Add(flext_base *t,int o,const t_symbol *s,int ac,const t_atom *av)
     {
         Get()->Set(t,o,s,ac,av);
@@ -156,15 +166,20 @@ public:
     }
 
     // \note PD sys lock must already be held by caller
-    inline void Send() const
+    inline bool Send() const
     {
-        if(!msg.Ok()) return; // Empty!
+        if(!msg.Ok()) return false; // Empty!
 
         const Msg *m = &msg;
         do {
-            m->Send();
+			if(m->Send()) {
+				// we should re-enqeue the message... it can't be a real bundle then, only a solo message
+				FLEXT_ASSERT(!m->nxt);
+				return true;
+			}
             m = m->nxt;
         } while(m);
+		return false;
     }
 
 private:
@@ -205,19 +220,47 @@ private:
             SetMsg(s,ac,av);
         }
 
-        void Send() const
+        void Idle(flext_base *t)
         {
-            if(th) {
-                if(UNLIKELY(out < 0))
-                    // message to self
-                    th->CbMethodHandler(-1-out,sym,argc,argc > STATSIZE?argv:argl); 
-                else
-                    // message to outlet
-                    th->ToSysAnything(out,sym,argc,argc > STATSIZE?argv:argl);
-            }
-            else
-                flext::SysForward(recv,sym,argc,argc > STATSIZE?argv:argl);
-        }
+            FLEXT_ASSERT(t);
+            th = t;
+			SetMsg(NULL,NULL,NULL);
+		}
+
+        void Idle(bool (*idlefun)(int argc,const t_atom *argv),int argc,const t_atom *argv)
+        {
+            FLEXT_ASSERT(idlefun);
+            th = NULL;
+			fun = idlefun;
+			SetMsg(NULL,argc,argv);
+		}
+
+        bool Send() const
+        {
+			if(LIKELY(sym)) {
+				// messages
+				if(th) {
+					if(UNLIKELY(out < 0))
+						// message to self
+						th->CbMethodHandler(-1-out,sym,argc,argc > STATSIZE?argv:argl); 
+					else
+						// message to outlet
+						th->ToSysAnything(out,sym,argc,argc > STATSIZE?argv:argl);
+				}
+				else
+					flext::SysForward(recv,sym,argc,argc > STATSIZE?argv:argl);
+				return 0;
+			}
+			else {
+				// idle processing
+				if(th)
+					// call virtual method
+					return th->CbIdle();
+				else
+					// call static function
+					return (*fun)(argc,argc > STATSIZE?argv:argl);
+			}
+		}
 
         Msg *nxt;
 
@@ -226,6 +269,7 @@ private:
         union {
             int out;
             const t_symbol *recv;
+			bool (*fun)(int argc,const t_atom *argv);
         };
         const t_symbol *sym;
         int argc;
@@ -280,7 +324,10 @@ static t_clock *qclk = NULL;
 
 static void QWork(bool syslock)
 {
-    for(;;) {
+	Queue newmsgs;
+    flext::MsgBundle *q;
+
+	for(;;) {
         // Since qcnt can only be increased from any other function than QWork
         // qc will be a minimum guaranteed number of present queue elements.
         // On the other hand, if new queue elements are added by the methods called
@@ -291,10 +338,11 @@ static void QWork(bool syslock)
         if(syslock) flext::Lock();
     #endif
 
-        flext::MsgBundle *q;
         while((q = queue.Get()) != NULL) {
-            q->Send();
-            flext::MsgBundle::Free(q);
+            if(q->Send())
+				newmsgs.Push(q);
+			else
+	            flext::MsgBundle::Free(q);
         }
 
     #if FLEXT_QMODE == 2
@@ -302,6 +350,9 @@ static void QWork(bool syslock)
     #endif
 
     }
+
+    while((q = newmsgs.Get()) != NULL)
+		queue.Push(q);
 }
 
 #if FLEXT_QMODE == 0
@@ -555,4 +606,20 @@ bool flext::MsgForward(MsgBundle *m,const t_symbol *recv,const t_symbol *s,int a
 {
     m->Add(recv,s,argc,argv);
     return true;
+}
+
+void flext_base::AddIdle()
+{
+    MsgBundle *m = MsgBundle::New();
+    m->Idle(const_cast<flext_base *>(this));
+    // send over queue
+    queue.Push(m);
+}
+
+void flext_base::AddIdle(bool (*idlefun)(int argc,const t_atom *argv),int argc,const t_atom *argv)
+{
+    MsgBundle *m = MsgBundle::New();
+    m->Idle(idlefun,argc,argv);
+    // send over queue
+    queue.Push(m);
 }

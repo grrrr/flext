@@ -1,6 +1,6 @@
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2007 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -69,8 +69,16 @@ Prerequisites:
     and build a library.
     download from: http://ccrma-www.stanford.edu/software/stk/
     For linking it may preferable to use a library of all the STK objects.
+
     Under linux you can create one from the STK directory with something like
-    "g++ -c -pipe -I include -D __LINUX_OSS__ src/*.cpp && ar r libstk.a *.o && rm -f *.o"
+    > g++ -c -pipe -I include -D __LINUX_OSS__ src/*.cpp && ar r libstk.a *.o && rm -f *.o
+
+    Under Windows you can build a static STK library with the following commands:
+    > cl src/*.c* /MT /D__OS_WINDOWS__ /EHsc /Ox /Iinclude /I../pthreads/include /c
+    > lib *.obj /out:stk.lib
+    Please note, that you have to have pthreads installed (../pthreads points to it in the command)
+    Also, the resulting stk.lib will be a multithreaded build, linked to a static C library.
+    Consequently you should also use multithreaded flext for your flext-based external.
 
 ----------------------------------------------------------------------------
 

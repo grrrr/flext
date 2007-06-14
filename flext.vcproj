@@ -121,7 +121,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="c:\data\prog\packs\pthreads\include;&quot;c:\data\pd\pd-cvs\src&quot;;c:\data\prog\audio\sndobj\include;c:\data\prog\audio\stk\include"
+				AdditionalIncludeDirectories="$(prereq)\pthreads\include;$(pdmax)\pd\src;$(prereq)\sndobj\include;$(prereq)\stk\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_PD;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_EXPORTS;xFLEXT_ATTRHIDE;xFLEXT_NOATTREDIT;_WIN32_WINNT=0x501;xFLEXT_USECMEM"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -171,8 +171,9 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="c:\data\pd\pd-cvs\src;c:\data\prog\audio\sndobj\include;c:\data\prog\audio\stk\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS=2;FLEXT_USE_SIMD;FLEXT_EXPORTS;FLEXT_DEBUGMEM;_WIN32_WINNT=0x400"
+				EnableIntrinsicFunctions="TRUE"
+				AdditionalIncludeDirectories="&quot;$(prereq)\pthreads\include&quot;;&quot;$(pdmax)\pd\src&quot;;&quot;$(prereq)\sndobj\include\SndObj&quot;;&quot;$(prereq)\stk\include&quot;;C:\data\nova\libs\lockfree"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS=2;FLEXT_USE_SIMD;FLEXT_EXPORTS;FLEXT_DEBUGMEM;_WIN32_WINNT=0x400;WIN"
 				StringPooling="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="5"
@@ -784,6 +785,58 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 			<Tool
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
+		<Configuration
+			Name="PD Lockfree Debug|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="0"
+				EnableIntrinsicFunctions="TRUE"
+				AdditionalIncludeDirectories="&quot;$(prereq)\pthreads\include&quot;;&quot;$(pdmax)\pd\src&quot;;&quot;$(prereq)\sndobj\include&quot;;&quot;$(prereq)\stk\include&quot;;C:\data\nova\libs\lockfree"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_PD;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_EXPORTS;xFLEXT_ATTRHIDE;xFLEXT_NOATTREDIT;_WIN32_WINNT=0x501;xFLEXT_USECMEM"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderThrough="flext.h"
+				BrowseInformation="1"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="pd-msvc/flext-pd_td.lib"
+				SuppressStartupBanner="TRUE"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="3079"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -946,6 +999,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="source\flatom_part.cpp">
@@ -1075,6 +1138,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1220,6 +1293,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -1353,6 +1436,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1504,6 +1597,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="source\flext.h">
@@ -1639,6 +1742,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -1790,6 +1903,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -1922,6 +2045,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -2069,6 +2202,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="source\flitem.cpp">
@@ -2197,6 +2340,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -2341,6 +2494,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="source\flmsg.cpp">
@@ -2469,6 +2632,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -2613,6 +2786,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="source\flproxy.cpp">
@@ -2741,6 +2924,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -2885,6 +3078,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="source\flxlet.cpp">
@@ -3013,6 +3216,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -3153,6 +3366,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -3310,6 +3533,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="source\flsupport.cpp">
@@ -3439,6 +3672,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -3587,6 +3830,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="source\flutil.cpp">
@@ -3716,6 +3969,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -3857,6 +4120,16 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Threaded Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
@@ -4010,6 +4283,17 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Threaded Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32"
 					ExcludedFromBuild="TRUE">
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4212,6 +4496,17 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Max Threaded Release|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="PD Lockfree Debug|Win32"
 					ExcludedFromBuild="TRUE">
 					<Tool
 						Name="VCCLCompilerTool"

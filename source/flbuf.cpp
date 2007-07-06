@@ -56,9 +56,11 @@ flext::buffer::buffer(const t_symbol *bn,bool delayed):
 
     ClearDirty();
 	
+#if FLEXT_SYS == FLEXT_SYS_PD
 	// register buffer
 	FLEXT_ASSERT(buffers.find(this) == buffers.end());
 	buffers.insert(this);
+#endif
 }
 
 flext::buffer::~buffer()
@@ -67,9 +69,11 @@ flext::buffer::~buffer()
     clock_free(tick);
 #endif
 
+#if FLEXT_SYS == FLEXT_SYS_PD
 	// unregister buffer
 	FLEXT_ASSERT(buffers.find(this) != buffers.end());
 	buffers.erase(this);
+#endif
 }
 
 int flext::buffer::Set(const t_symbol *s,bool nameonly)

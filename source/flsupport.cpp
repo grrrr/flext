@@ -128,14 +128,9 @@ void *flext_root::operator new(size_t bytes)
 #endif
     }
     else {
-	//! We need system locking here for secondary threads!
+    	//! We need system locking here for secondary threads!
         SYSLOCK();
-
-#if defined(FLEXT_USE_CMEM)
-	    blk = (char *)::malloc(bytes);
-#else
 	    blk = (char *)::getbytes(bytes);
-#endif
         SYSUNLOCK();
     }
 
@@ -172,14 +167,9 @@ void flext_root::operator delete(void *blk)
 #endif
     }
     else {
-	//! We need system locking here for secondary threads!
+	    //! We need system locking here for secondary threads!
         SYSLOCK();
-
-#if defined(FLEXT_USE_CMEM)
-	    ::free(ori);
-#else
 	    ::freebytes(ori,bytes);
-#endif
         SYSUNLOCK();
     }
 }

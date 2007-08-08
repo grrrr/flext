@@ -98,6 +98,8 @@ class PooledFifo
     : public TypedFifo<T>
 {
 public:
+    ~PooledFifo() { T *n; while((n = reuse.Get()) != NULL) delete n; }
+
     inline T *New() { T *n = reuse.Get(); return n?n:new T; }
     inline void Free(T *p) { if(resz < sz*M+O) reuse.Put(p); else delete p; }
 private:

@@ -82,6 +82,8 @@ class ThrFinder:
     public T
 {
 public:
+    ~ThrFinder() { thr_entry *e; while((e = Pop()) != NULL) delete e; }
+
     void Push(thr_entry *e) { T::Push(e); }
     thr_entry *Pop() { return T::Pop(); }
 

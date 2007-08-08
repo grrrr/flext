@@ -39,7 +39,6 @@ $(PRECOMDST) : $(PRECOMSRC) $(patsubst %,$(SRCDIR)/%,$(HDRS))
 	$(CXX) -c $(DEFS) $(INCPATH) $(PRECOMSRC) -o $@
 
 
-
 ifndef ARCH
 ##### non-architecture-specific compilation ###################
 
@@ -51,7 +50,7 @@ $(OBJPATH)/%.o : $(SRCDIR)/%.c
 	-mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) $(DEFS) $(INCPATH) $^ -o $@
 
-else
+else # ARCH
 ##### architecture-specific compilation ###################
 
 define ARCH_COMPILE
@@ -64,9 +63,6 @@ $(OBJPATH)/%.o_$(1) : $(SRCDIR)/%.c
 	$(CC) -c $(CFLAGS) -arch $(1) $$(CFLAGS_$(1)) $(DEFS) $(INCPATH) $$^ -o $$@
 endef
 
-# implement for all archs in ARCH
-$(foreach arch,$(ARCH),$(eval $(call ARCH_COMPILE,$(arch))))
-
 ##### make fat object file ###################
 
 $(OBJPATH)/%.opp : $(foreach arch,$(ARCH),$(OBJPATH)/%.opp_$(arch))
@@ -75,7 +71,12 @@ $(OBJPATH)/%.opp : $(foreach arch,$(ARCH),$(OBJPATH)/%.opp_$(arch))
 $(OBJPATH)/%.o : $(foreach arch,$(ARCH),$(OBJPATH)/%.o_$(arch))
 	lipo $^ -create -output $@
 
-endif
+endif # ARCH
+
+# implement for all archs in ARCH
+# for some strange reason this must be OUTSIDE an ifdef/endif clause
+$(foreach arch,$(ARCH),$(eval $(call ARCH_COMPILE,$(arch))))
+
 
 ##############################################
 

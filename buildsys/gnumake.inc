@@ -15,7 +15,9 @@
 ##############################################
 
 CFLAGS += $(UFLAGS)
+
 $(foreach arch,$(ARCH),$(eval CFLAGS_$(arch) += $$(UFLAGS_$(arch)) ) )
+
 
 ifdef DEBUG
 
@@ -37,9 +39,7 @@ endef
 
 endif
 
-ifdef ARCH
 $(foreach arch,$(ARCH),$(eval $(call ARCH_FLAGS,$(arch))))
-endif
 
 
 ifdef SHARED

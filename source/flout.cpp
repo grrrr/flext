@@ -45,9 +45,9 @@ void flext_base::ToSysAtom(int n,const t_atom &at) const
 
 #if defined(FLEXT_THREADS)
     #if FLEXT_QMODE == 2
-        #define CHKTHR() (LIKELY((IsSystemThread() || IsThread(flext::thrmsgid)) && !InDSP()))
+        #define CHKTHR() (LIKELY((!IsThreadRegistered() || IsThread(flext::thrmsgid)) && !InDSP()))
     #else
-        #define CHKTHR() (LIKELY(IsSystemThread() && !InDSP()))
+        #define CHKTHR() (LIKELY(!IsThreadRegistered() && !InDSP()))
     #endif
 #else
     #define CHKTHR() (LIKELY(!InDSP()))

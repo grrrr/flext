@@ -799,7 +799,7 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				InlineFunctionExpansion="0"
 				EnableIntrinsicFunctions="TRUE"
 				AdditionalIncludeDirectories="&quot;$(prereq)\pthreads\include&quot;;&quot;$(pdmax)\pd\src&quot;;&quot;$(prereq)\sndobj\include&quot;;&quot;$(prereq)\stk\include&quot;;C:\data\nova\libs\lockfree"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_PD;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_EXPORTS;xFLEXT_ATTRHIDE;xFLEXT_NOATTREDIT;_WIN32_WINNT=0x501;xFLEXT_USECMEM"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_PD;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_EXPORTS;xFLEXT_ATTRHIDE;xFLEXT_NOATTREDIT;_WIN32_WINNT=0x501;xFLEXT_USECMEM;FLEXT_QMODE=2"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				RuntimeTypeInfo="TRUE"

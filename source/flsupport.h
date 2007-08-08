@@ -795,27 +795,25 @@ public:
 		@{ 
 	*/
 
-    //! Check if current thread is the realtime system's thread
-	static bool IsSystemThread() { 
+    //! Check if current thread is registered to be a secondary thread
 #ifdef FLEXT_THREADS
-        return IsThread(GetSysThreadId()); 
+	static bool IsThreadRegistered();
 #else
-        return true;
+	static bool IsThreadRegistered() { return false; }
 #endif
-    }
 
 #ifdef FLEXT_THREADS
 
 	//! thread type
-#if FLEXT_THREADS == FLEXT_THR_MP
+#	if FLEXT_THREADS == FLEXT_THR_MP
 	typedef MPTaskID thrid_t;
-#elif FLEXT_THREADS == FLEXT_THR_POSIX
+#	elif FLEXT_THREADS == FLEXT_THR_POSIX
 	typedef pthread_t thrid_t;
-#elif FLEXT_THREADS == FLEXT_THR_WIN32
+#	elif FLEXT_THREADS == FLEXT_THR_WIN32
     typedef DWORD thrid_t;
-#else
-#error
-#endif
+#	else
+#		error Threading model not supported
+#	endif
 
 	/*! \brief Get current thread id
 	*/
@@ -1083,17 +1081,21 @@ public:
 #error "Not implemented"
 #endif
 
+	protected:
 	/*! \brief Add current thread to list of active threads.
+		\note Calls RegisterThread automatically
 		\return true on success
 		\internal
 	*/
 	static bool PushThread();
 
 	/*! \brief Remove current thread from list of active threads.
+		\note Calls UnregisterThread automatically
 		\internal
 	*/
 	static void PopThread();
 
+	public:
 	/*! \brief Launch a thread.
 		\param meth Thread function
 		\param params Parameters to pass to the thread, may be NULL if not needed.
@@ -1110,11 +1112,22 @@ public:
 	*/
 	static bool StopThread(void (*meth)(thr_params *p),thr_params *params = NULL,bool wait = false);
 
+
+	//! \brief Register current thread to be allowed to execute flext functions.
+	static void RegisterThread(thrid_t id = GetThreadId());
+
+	//! \brief Unregister current thread 
+	static void UnregisterThread(thrid_t id = GetThreadId());
+
+	protected:
+	static void ThreadRegistryWorker();
+
 #endif // FLEXT_THREADS
 
 //!		@} FLEXT_S_THREAD
 
 
+	public:
 // --- timer stuff -----------------------------------------------
 
 /*!	\defgroup FLEXT_S_TIMER Flext timer handling 

@@ -40,6 +40,34 @@ public:
     inline T *Pop() { return static_cast<T *>(Lifo::Pop()); }
 };
 
+template <typename T>
+class ValueLifoCell
+	: public LifoCell 
+{
+public:
+	ValueLifoCell(T v): value(v) {}
+	T value;
+};
+
+template <typename T>
+class ValueLifo
+    : public TypedLifo<ValueLifoCell<T> >
+{
+public:
+    inline void Push(T v) 
+	{ 
+		TypedLifo<ValueLifoCell<T> >::Push(new ValueLifoCell<T>(v)); 
+	}
+
+    inline T Pop() 
+	{
+		ValueLifoCell<T> *p = TypedLifo<ValueLifoCell<T> >::Pop(); 
+		T v = p->value;
+		delete p; 
+		return v;
+	}
+};
+
 template <typename T,int M = 2,int O = 1>
 class PooledLifo
     : public TypedLifo<T>
@@ -92,6 +120,36 @@ public:
     inline void Put(T *c) { Fifo::Put(static_cast<T *>(c)); }
     inline T *Get() { return static_cast<T *>(Fifo::Get()); }
 };
+
+
+template <typename T>
+class ValueFifoCell
+	: public FifoCell 
+{
+public:
+	ValueFifoCell(T v): value(v) {}
+	T value;
+};
+
+template <typename T>
+class ValueFifo
+    : public TypedFifo<ValueFifoCell<T> >
+{
+public:
+    inline void Put(T v) 
+	{ 
+		TypedFifo<ValueFifoCell<T> >::Put(new ValueFifoCell<T>(v)); 
+	}
+
+    inline T Get() 
+	{
+		ValueFifoCell<T> *p = TypedFifo<ValueFifoCell<T> >::Get(); 
+		T v = p->value;
+		delete p; 
+		return v;
+	}
+};
+
 
 template <typename T,int M = 2,int O = 1>
 class PooledFifo

@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2007 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -322,10 +322,15 @@ static t_clock *qclk = NULL;
 
 #define CHUNK 10
 
-static void QWork(bool syslock)
+static bool QWork(bool syslock)
 {
 	Queue newmsgs;
     flext::MsgBundle *q;
+
+#if 0
+	static int counter = 0;
+	fprintf(stderr,"QWORK %i\n",counter++);
+#endif
 
 	for(;;) {
         // Since qcnt can only be increased from any other function than QWork
@@ -353,6 +358,8 @@ static void QWork(bool syslock)
 
     while((q = newmsgs.Get()) != NULL)
 		queue.Push(q);
+
+	return false;
 }
 
 #if FLEXT_QMODE == 0
@@ -363,33 +370,32 @@ static void QTick(fts_object_t *c,int winlet, fts_symbol_t s, int ac, const fts_
 static void QTick(flext_base *c)
 {
 #endif
-#ifdef FLEXT_THREADS
-    FLEXT_ASSERT(flext::IsSystemThread());
-#endif
     QWork(false);
 }
 
 #elif FLEXT_QMODE == 1
-#ifndef PERMANENTIDLE
-static bool qtickactive = false;
-#endif
+#	ifndef PERMANENTIDLE
+		static bool qtickactive = false;
+#	endif
 static t_int QTick(t_int *)
 {
 #ifndef PERMANENTIDLE
     qtickactive = false;
 #endif
 
-    QWork(false);
-
-#ifdef PERMANENTIDLE
-    // will be run in the next idle cycle
-    return 2;
-#else
-    // won't be run again
-    // for non-shared externals assume that there's rarely a message waiting
-    // so it's better to delete the callback meanwhile
-    return 0; 
-#endif
+    if(QWork(false))
+		return 1;
+	else {
+#		ifdef PERMANENTIDLE
+			// will be run in the next idle cycle
+			return 2;
+#		else
+			// won't be run again
+			// for non-shared externals assume that there's rarely a message waiting
+			// so it's better to delete the callback meanwhile
+			return 0; 
+#		endif
+	}
 }
 #endif
 
@@ -399,37 +405,31 @@ But then the order of sent messages is not as intended
 */
 void flext_base::QFlush(flext_base *th)
 {
-#ifdef FLEXT_THREADS
-    if(!IsSystemThread()) {
-        error("flext - Queue flush called by wrong thread!");
-        return;
-    }
-#endif
-
+	FLEXT_ASSERT(!IsThreadRegistered());
     while(!queue.Empty()) QWork(false);
 }
 
 static void Trigger()
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
-    #if FLEXT_QMODE == 2
+#	if FLEXT_QMODE == 2
         // wake up worker thread
         qthrcond.Signal();
-    #elif FLEXT_QMODE == 1 && !defined(PERMANENTIDLE)
+#	elif FLEXT_QMODE == 1 && !defined(PERMANENTIDLE)
         if(!qtickactive) {
             sys_callback(QTick,NULL,0);
             qtickactive = true;
         }
-    #elif FLEXT_QMODE == 0
+#	elif FLEXT_QMODE == 0
         clock_delay(qclk,0);
-    #endif
+#	endif
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-    #if FLEXT_QMODE == 0
+#	if FLEXT_QMODE == 0
 //        qelem_front(qclk);
         clock_delay(qclk,0);
-    #endif
+#	endif
 #else
-#error Not implemented
+#	error Not implemented
 #endif
 }
 
@@ -449,10 +449,10 @@ void flext_base::StartQueue()
 {
     if(qustarted) return;
 #if FLEXT_QMODE == 1
-#ifdef PERMANENTIDLE
-    sys_callback(QTick,NULL,0);
-    qustarted = true;
-#endif
+#	ifdef PERMANENTIDLE
+		sys_callback(QTick,NULL,0);
+		qustarted = true;
+#	endif
 #elif FLEXT_QMODE == 2
     LaunchThread(QWorker,NULL);
     // very unelegant... but waiting should be ok, since happens only on loading
@@ -462,7 +462,7 @@ void flext_base::StartQueue()
     qclk = (t_clock *)(clock_new(NULL,(t_method)QTick));
     qustarted = true;
 #else
-#error Not implemented!
+#	error Not implemented!
 #endif
 }
 
@@ -588,7 +588,7 @@ bool flext::SysForward(const t_symbol *recv,const t_symbol *s,int argc,const t_a
 #elif FLEXT_SYS == FLEXT_SYS_MAX
     typedmess(recv->s_thing,(t_symbol *)s,argc,(t_atom *)argv);
 #else
-#error Not implemented
+#	error Not implemented
 #endif
     return true;
 }

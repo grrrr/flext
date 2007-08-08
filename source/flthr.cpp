@@ -22,6 +22,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "flinternal.h"
 #include "flcontainers.h"
+#include <set>
 
 #include <time.h>
 
@@ -102,9 +103,38 @@ public:
 static ThrFinder< PooledLifo<thr_entry,1,10> > thrpending;
 static ThrFinder< TypedLifo<thr_entry> > thractive,thrstopped;
 
+class ThrId
+	: public flext
+{
+public:
+	ThrId(const thrid_t &_id): id(_id) {}
+	thrid_t id;
+
+	bool operator <(const ThrId &tid) const 
+	{ 
+		if(sizeof(id) == sizeof(unsigned))
+			return (unsigned *)&id < (unsigned *)&tid;
+		else
+			return memcmp(&id,&tid,sizeof(id)) < 0;
+	}
+};
+
+class ThrIdCell
+	: public LifoCell
+	, public ThrId
+{
+public:
+	ThrIdCell(const thrid_t &_id): ThrId(_id) {}
+};
+
+static TypedLifo<ThrIdCell> regqueue,unregqueue;
+
+// this should _definitely_ be a hashmap....
+static std::set<ThrId> regthreads;
+
+
 //! Helper thread conditional
 static flext::ThrCond *thrhelpcond = NULL;
-
 
 static void LaunchHelper(thr_entry *e)
 {
@@ -326,12 +356,14 @@ bool flext::PushThread()
 {
 	// set priority of newly created thread one point below the system thread's
 	RelPriority(-1);
+	RegisterThread();
 	return true;
 }
 
 void flext::PopThread()
 {
     thrid_t id = GetThreadId();
+	UnregisterThread(id);
     thr_entry *fnd = thrstopped.Find(id,true);
     if(!fnd) fnd = thractive.Find(id,true);
 
@@ -341,6 +373,28 @@ void flext::PopThread()
 	else
 		post("flext - INTERNAL ERROR: Thread not found!");
 #endif
+}
+
+void flext::RegisterThread(thrid_t id)
+{
+	regqueue.Push(new ThrIdCell(id));
+}
+
+void flext::UnregisterThread(thrid_t id)
+{
+	unregqueue.Push(new ThrIdCell(id));
+}
+
+void flext::ThreadRegistryWorker()
+{
+	ThrIdCell *pid;
+	while((pid = regqueue.Pop()) != NULL) { regthreads.insert(pid->id); delete pid; }
+	while((pid = unregqueue.Pop()) != NULL) { regthreads.erase(pid->id); delete pid; }
+}
+
+bool flext::IsThreadRegistered()
+{
+	return regthreads.find(GetThreadId()) != regthreads.end();
 }
 
 //! Terminate all object threads

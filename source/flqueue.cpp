@@ -41,7 +41,12 @@ static void Trigger();
 
 class flext::MsgBundle;
 
-typedef PooledFifo<flext::MsgBundle> QueueFifo;
+class QueueFifo
+    : public PooledFifo<flext::MsgBundle>
+{
+public:
+    ~QueueFifo();
+};
 
 class Queue:
     public flext,
@@ -249,7 +254,7 @@ private:
 				}
 				else
 					flext::SysForward(recv,sym,argc,argc > STATSIZE?argv:argl);
-				return 0;
+				return false;
 			}
 			else {
 				// idle processing
@@ -303,6 +308,12 @@ private:
         return m;
     }
 };
+
+QueueFifo::~QueueFifo() 
+{ 
+    flext::MsgBundle *n; 
+    while((n = Get()) != NULL) delete n; 
+}
 
 inline void Queue::Push(MsgBundle *m)
 {
@@ -359,7 +370,7 @@ static bool QWork(bool syslock)
     while((q = newmsgs.Get()) != NULL)
 		queue.Push(q);
 
-	return false;
+	return queue.Avail();
 }
 
 #if FLEXT_QMODE == 0

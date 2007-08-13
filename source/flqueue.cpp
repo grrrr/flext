@@ -89,13 +89,13 @@ public:
 
     void Idle(flext_base *t)
     {
-		Get()->Idle(t);
-	}
+        Get()->Idle(t);
+    }
 
     void Idle(bool (*idlefun)(int argc,const t_atom *argv),int argc,const t_atom *argv)
     {
-		Get()->Idle(idlefun,argc,argv);
-	}
+        Get()->Idle(idlefun,argc,argv);
+    }
 
     inline MsgBundle &Add(flext_base *t,int o,const t_symbol *s,int ac,const t_atom *av)
     {
@@ -177,14 +177,14 @@ public:
 
         const Msg *m = &msg;
         do {
-			if(m->Send()) {
-				// we should re-enqeue the message... it can't be a real bundle then, only a solo message
-				FLEXT_ASSERT(!m->nxt);
-				return true;
-			}
+            if(m->Send()) {
+                // we should re-enqeue the message... it can't be a real bundle then, only a solo message
+                FLEXT_ASSERT(!m->nxt);
+                return true;
+            }
             m = m->nxt;
         } while(m);
-		return false;
+        return false;
     }
 
 private:
@@ -229,43 +229,43 @@ private:
         {
             FLEXT_ASSERT(t);
             th = t;
-			SetMsg(NULL,NULL,NULL);
-		}
+            SetMsg(NULL,NULL,NULL);
+        }
 
         void Idle(bool (*idlefun)(int argc,const t_atom *argv),int argc,const t_atom *argv)
         {
             FLEXT_ASSERT(idlefun);
             th = NULL;
-			fun = idlefun;
-			SetMsg(NULL,argc,argv);
-		}
+            fun = idlefun;
+            SetMsg(NULL,argc,argv);
+        }
 
         bool Send() const
         {
-			if(LIKELY(sym)) {
-				// messages
-				if(th) {
-					if(UNLIKELY(out < 0))
-						// message to self
-						th->CbMethodHandler(-1-out,sym,argc,argc > STATSIZE?argv:argl); 
-					else
-						// message to outlet
-						th->ToSysAnything(out,sym,argc,argc > STATSIZE?argv:argl);
-				}
-				else
-					flext::SysForward(recv,sym,argc,argc > STATSIZE?argv:argl);
-				return false;
-			}
-			else {
-				// idle processing
-				if(th)
-					// call virtual method
-					return th->CbIdle();
-				else
-					// call static function
-					return (*fun)(argc,argc > STATSIZE?argv:argl);
-			}
-		}
+            if(LIKELY(sym)) {
+                // messages
+                if(th) {
+                    if(UNLIKELY(out < 0))
+                        // message to self
+                        th->CbMethodHandler(-1-out,sym,argc,argc > STATSIZE?argv:argl); 
+                    else
+                        // message to outlet
+                        th->ToSysAnything(out,sym,argc,argc > STATSIZE?argv:argl);
+                }
+                else
+                    flext::SysForward(recv,sym,argc,argc > STATSIZE?argv:argl);
+                return false;
+            }
+            else {
+                // idle processing
+                if(th)
+                    // call virtual method
+                    return th->CbIdle();
+                else
+                    // call static function
+                    return (*fun)(argc,argc > STATSIZE?argv:argl);
+            }
+        }
 
         Msg *nxt;
 
@@ -274,7 +274,7 @@ private:
         union {
             int out;
             const t_symbol *recv;
-			bool (*fun)(int argc,const t_atom *argv);
+            bool (*fun)(int argc,const t_atom *argv);
         };
         const t_symbol *sym;
         int argc;
@@ -333,17 +333,37 @@ static t_clock *qclk = NULL;
 
 #define CHUNK 10
 
+#if FLEXT_QMODE == 1
 static bool QWork(bool syslock)
 {
-	Queue newmsgs;
+    // Since qcnt can only be increased from any other function than QWork
+    // qc will be a minimum guaranteed number of present queue elements.
+    // On the other hand, if new queue elements are added by the methods called
+    // in the loop, these will be sent in the next tick to avoid recursion overflow.
+    flext::MsgBundle *q;
+    if((q = queue.Get()) == NULL) 
+        return false;
+    else if(q->Send()) {
+        queue.Push(q);  // remember messages to be processed again
+        return true;
+    }
+    else {
+        flext::MsgBundle::Free(q);
+        return false;
+    }
+}
+#else
+static bool QWork(bool syslock)
+{
+    Queue newmsgs;
     flext::MsgBundle *q;
 
 #if 0
-	static int counter = 0;
-	fprintf(stderr,"QWORK %i\n",counter++);
+    static int counter = 0;
+    fprintf(stderr,"QWORK %i\n",counter++);
 #endif
 
-	for(;;) {
+    for(;;) {
         // Since qcnt can only be increased from any other function than QWork
         // qc will be a minimum guaranteed number of present queue elements.
         // On the other hand, if new queue elements are added by the methods called
@@ -356,9 +376,9 @@ static bool QWork(bool syslock)
 
         while((q = queue.Get()) != NULL) {
             if(q->Send())
-				newmsgs.Push(q);
-			else
-	            flext::MsgBundle::Free(q);
+                newmsgs.Push(q);  // remember messages to be processed again
+            else
+                flext::MsgBundle::Free(q);
         }
 
     #if FLEXT_QMODE == 2
@@ -367,11 +387,13 @@ static bool QWork(bool syslock)
 
     }
 
+    // enqueue messages that have to be processed again
     while((q = newmsgs.Get()) != NULL)
-		queue.Push(q);
+        queue.Push(q);
 
-	return queue.Avail();
+    return queue.Avail();
 }
+#endif
 
 #if FLEXT_QMODE == 0
 #if FLEXT_SYS == FLEXT_SYS_JMAX
@@ -385,9 +407,9 @@ static void QTick(flext_base *c)
 }
 
 #elif FLEXT_QMODE == 1
-#	ifndef PERMANENTIDLE
-		static bool qtickactive = false;
-#	endif
+#   ifndef PERMANENTIDLE
+        static bool qtickactive = false;
+#   endif
 static t_int QTick(t_int *)
 {
 #ifndef PERMANENTIDLE
@@ -395,18 +417,18 @@ static t_int QTick(t_int *)
 #endif
 
     if(QWork(false))
-		return 1;
-	else {
-#		ifdef PERMANENTIDLE
-			// will be run in the next idle cycle
-			return 2;
-#		else
-			// won't be run again
-			// for non-shared externals assume that there's rarely a message waiting
-			// so it's better to delete the callback meanwhile
-			return 0; 
-#		endif
-	}
+        return 1;
+    else {
+#       ifdef PERMANENTIDLE
+            // will be run in the next idle cycle
+            return 2;
+#       else
+            // won't be run again
+            // for non-shared externals assume that there's rarely a message waiting
+            // so it's better to delete the callback meanwhile
+            return 0; 
+#       endif
+    }
 }
 #endif
 
@@ -416,31 +438,31 @@ But then the order of sent messages is not as intended
 */
 void flext_base::QFlush(flext_base *th)
 {
-	FLEXT_ASSERT(!IsThreadRegistered());
+    FLEXT_ASSERT(!IsThreadRegistered());
     while(!queue.Empty()) QWork(false);
 }
 
 static void Trigger()
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
-#	if FLEXT_QMODE == 2
+#   if FLEXT_QMODE == 2
         // wake up worker thread
         qthrcond.Signal();
-#	elif FLEXT_QMODE == 1 && !defined(PERMANENTIDLE)
+#   elif FLEXT_QMODE == 1 && !defined(PERMANENTIDLE)
         if(!qtickactive) {
             sys_callback(QTick,NULL,0);
             qtickactive = true;
         }
-#	elif FLEXT_QMODE == 0
+#   elif FLEXT_QMODE == 0
         clock_delay(qclk,0);
-#	endif
+#   endif
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-#	if FLEXT_QMODE == 0
+#   if FLEXT_QMODE == 0
 //        qelem_front(qclk);
         clock_delay(qclk,0);
-#	endif
+#   endif
 #else
-#	error Not implemented
+#   error Not implemented
 #endif
 }
 
@@ -460,10 +482,10 @@ void flext_base::StartQueue()
 {
     if(qustarted) return;
 #if FLEXT_QMODE == 1
-#	ifdef PERMANENTIDLE
-		sys_callback(QTick,NULL,0);
-		qustarted = true;
-#	endif
+#   ifdef PERMANENTIDLE
+        sys_callback(QTick,NULL,0);
+        qustarted = true;
+#   endif
 #elif FLEXT_QMODE == 2
     LaunchThread(QWorker,NULL);
     // very unelegant... but waiting should be ok, since happens only on loading
@@ -473,7 +495,7 @@ void flext_base::StartQueue()
     qclk = (t_clock *)(clock_new(NULL,(t_method)QTick));
     qustarted = true;
 #else
-#	error Not implemented!
+#   error Not implemented!
 #endif
 }
 
@@ -599,7 +621,7 @@ bool flext::SysForward(const t_symbol *recv,const t_symbol *s,int argc,const t_a
 #elif FLEXT_SYS == FLEXT_SYS_MAX
     typedmess(recv->s_thing,(t_symbol *)s,argc,(t_atom *)argv);
 #else
-#	error Not implemented
+#   error Not implemented
 #endif
     return true;
 }

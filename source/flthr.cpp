@@ -127,11 +127,19 @@ public:
 	ThrIdCell(const thrid_t &_id): ThrId(_id) {}
 };
 
-static TypedLifo<ThrIdCell> regqueue,unregqueue;
+class RegQueue
+    : public TypedLifo<ThrIdCell>
+{
+public:
+    ~RegQueue() { ThrIdCell *pid; while((pid = Pop()) != NULL) delete pid; }
+};
+
+static RegQueue regqueue,unregqueue;
 
 // this should _definitely_ be a hashmap....
+// \TODO above all it should be populated immediately, otherwise it could easily happen 
+// that the passing on to the set happens too late! We need that lockfree set!
 static std::set<ThrId> regthreads;
-
 
 //! Helper thread conditional
 static flext::ThrCond *thrhelpcond = NULL;
@@ -139,7 +147,9 @@ static flext::ThrCond *thrhelpcond = NULL;
 static void LaunchHelper(thr_entry *e)
 {
     e->thrid = flext::GetThreadId();
+    flext::RegisterThread(e->thrid);
     e->meth(e->params);
+    flext::UnregisterThread(e->thrid);
 }
 
 bool initialized = false;

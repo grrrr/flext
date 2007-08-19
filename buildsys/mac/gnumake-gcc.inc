@@ -66,6 +66,16 @@ endif
 
 ##############################################
 
+ifdef LOCKFREE
+INCPATH += -I$(LOCKFREE)
+endif
+
+ifdef ATOMIC_OPS
+INCPATH += -I$(ATOMIC_OPS)/src
+endif
+
+##############################################
+
 LDFLAGS += $(patsubst %,-arch %,$(ARCH))
 
 ifdef OSXSDK

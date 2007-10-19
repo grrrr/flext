@@ -447,24 +447,24 @@ public:
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 	//! Access the symbol value (without type check)
-	static t_symbol *GetSymbol(const t_atom &a) { return a.a_w.w_symbol; }
+	static const t_symbol *GetSymbol(const t_atom &a) { return const_cast<const t_symbol *>(a.a_w.w_symbol); }
 	//! Set the atom to represent a symbol
 	static void SetSymbol(t_atom &a,const t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_symbol = const_cast<t_symbol *>(s); }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 	//! Access the symbol value (without type check)
-	static t_symbol *GetSymbol(const t_atom &a) { return a.a_w.w_sym; }
+	static const t_symbol *GetSymbol(const t_atom &a) { return const_cast<const t_symbol *>(a.a_w.w_sym); }
 	//! Set the atom to represent a symbol
 	static void SetSymbol(t_atom &a,const t_symbol *s) { a.a_type = A_SYMBOL; a.a_w.w_sym = const_cast<t_symbol *>(s); }
 #else
 #error
 #endif
 	//! Check for a symbol and get its value 
-	static t_symbol *GetASymbol(const t_atom &a,t_symbol *def = NULL) { return IsSymbol(a)?GetSymbol(a):def; }  // NULL or empty symbol?
+	static const t_symbol *GetASymbol(const t_atom &a,const t_symbol *def = NULL) { return IsSymbol(a)?GetSymbol(a):def; }  // NULL or empty symbol?
 
 	//! Check whether the atom is a string
 	static bool IsString(const t_atom &a) { return IsSymbol(a); }
 	//! Access the string value (without type check)
-	static const char *GetString(const t_atom &a) { t_symbol *s = GetSymbol(a); return s?GetString(s):NULL; }  
+	static const char *GetString(const t_atom &a) { const t_symbol *s = GetSymbol(a); return s?GetString(s):NULL; }  
 	//! Check for a string and get its value 
     static const char *GetAString(const t_atom &a,const char *def = NULL) { return IsSymbol(a)?GetAString(GetSymbol(a),def):def; }
 	//! Check for a string and get its value 

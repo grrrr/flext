@@ -224,7 +224,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="c:\programme\audio\pd\src;c:\data\prog\audio\sndobj\include;c:\data\prog\audio\stk\include"
+				AdditionalIncludeDirectories="&quot;$(pdmax)\pd\src&quot;;&quot;$(prereq)\sndobj\include&quot;;&quot;$(prereq)\stk\include&quot;;&quot;$(prereq)\pthreads\include&quot;;c:\data\nova\libs\lockfree"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;FLEXT_SYS=2;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_EXPORTS;_WIN32_WINNT=0x501"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"

@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2007 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -916,7 +916,7 @@ private:
 		float ft;
 		int it;
 		bool bt;
-		t_symbol *st;
+		const t_symbol *st;
 #if FLEXT_SYS == FLEXT_SYS_PD
 		t_gpointer *pt;
 #endif

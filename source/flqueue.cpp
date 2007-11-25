@@ -87,6 +87,11 @@ public:
         queue.Free(m);
     }
 
+    bool BelongsTo(flext_base *t) const
+    {
+        return !msg.nxt && msg.BelongsTo(t);
+    }
+
     void Idle(flext_base *t)
     {
         Get()->Idle(t);
@@ -209,13 +214,20 @@ private:
             }
         }
 
+        //! Attention: works only for solo messages, not real bundles!!
+        bool BelongsTo(flext_base *t) const
+        {
+            FLEXT_ASSERT(!nxt);
+            return th == t; 
+        }
+
         void Set(flext_base *t,int o,const t_symbol *s,int ac,const t_atom *av)
         {
             FLEXT_ASSERT(t);
             th = t;
             out = o;
             SetMsg(s,ac,av);
-}
+        }
 
         void Set(const t_symbol *r,const t_symbol *s,int ac,const t_atom *av)
         {
@@ -353,7 +365,7 @@ static bool QWork(bool syslock)
     }
 }
 #else
-static bool QWork(bool syslock)
+static bool QWork(bool syslock,flext_base *flushobj = NULL)
 {
     Queue newmsgs;
     flext::MsgBundle *q;
@@ -389,7 +401,8 @@ static bool QWork(bool syslock)
 
     // enqueue messages that have to be processed again
     while((q = newmsgs.Get()) != NULL)
-        queue.Push(q);
+        if(!flushobj || !q->BelongsTo(flushobj))
+            queue.Push(q);
 
     return queue.Avail();
 }
@@ -439,7 +452,7 @@ But then the order of sent messages is not as intended
 void flext_base::QFlush(flext_base *th)
 {
     FLEXT_ASSERT(!IsThreadRegistered());
-    while(!queue.Empty()) QWork(false);
+    while(!queue.Empty()) QWork(false,th);
 }
 
 static void Trigger()
@@ -472,7 +485,8 @@ void flext_base::QWorker(thr_params *)
     thrmsgid = GetThreadId();
     qustarted = true;
     for(;;) {
-        qthrcond.Wait();
+        // we need a timed wait so that idle processing can take place
+        qthrcond.TimedWait(0.001);
         QWork(true);
     }
 }

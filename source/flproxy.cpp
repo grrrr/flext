@@ -116,6 +116,7 @@ add_method1(c,cb_px_ft ## IX," ft " #IX,A_FLOAT)
 void flext_base::cb_anything(flext_hdr *c,const t_symbol *s,short argc,t_atom *argv)
 {
     int ci = ((flext_hdr *)c)->curinlet;
+//    post("%s %i, cb_anything(%i)",__FILE__,__LINE__,ci);
     thisObject(c)->CbMethodHandler(ci,s,argc,argv);
 }
 
@@ -188,7 +189,7 @@ void flext_base::SetProxies(t_class *c,bool dsp)
     class_addanything(c,cb_anything);
 
     // proxy for extra inlets
-    if(!px_class) {
+    if(UNLIKELY(!px_class)) {
         // only once
         px_class = class_new(gensym(" flext_base proxy "),NULL,NULL,sizeof(px_object),CLASS_PD|CLASS_NOINLET, A_NULL);
         class_addbang(px_class,px_object::px_bang); // for other inlets
@@ -202,7 +203,7 @@ void flext_base::SetProxies(t_class *c,bool dsp)
     addbang((method)cb_bang);
     addint((method)cb_int);  
     addfloat((method)cb_float);  
-    addmess((method)cb_anything,"list",A_GIMME,A_NOTHING); // must be explicitly given, otherwise list elements are distributes over inlets
+    addmess((method)cb_anything,"list",A_GIMME,A_NOTHING); // must be explicitly given, otherwise list elements are distributed over inlets
     addmess((method)cb_anything,"anything",A_GIMME,A_NOTHING);
 #else
 #error Not implemented!

@@ -346,7 +346,7 @@ static t_clock *qclk = NULL;
 #define CHUNK 10
 
 #if FLEXT_QMODE == 1
-static bool QWork(bool syslock)
+static bool QWork(bool syslock,flext_base *flushobj = NULL)
 {
     // Since qcnt can only be increased from any other function than QWork
     // qc will be a minimum guaranteed number of present queue elements.
@@ -356,7 +356,8 @@ static bool QWork(bool syslock)
     if((q = queue.Get()) == NULL) 
         return false;
     else if(q->Send()) {
-        queue.Push(q);  // remember messages to be processed again
+        if(!flushobj || !q->BelongsTo(flushobj))
+            queue.Push(q);  // remember messages to be processed again
         return true;
     }
     else {

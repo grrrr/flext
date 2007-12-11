@@ -358,6 +358,8 @@ static bool QWork(bool syslock,flext_base *flushobj = NULL)
     else if(q->Send()) {
         if(!flushobj || !q->BelongsTo(flushobj))
             queue.Push(q);  // remember messages to be processed again
+        else
+            flext::MsgBundle::Free(q);
         return true;
     }
     else {
@@ -404,6 +406,8 @@ static bool QWork(bool syslock,flext_base *flushobj = NULL)
     while((q = newmsgs.Get()) != NULL)
         if(!flushobj || !q->BelongsTo(flushobj))
             queue.Push(q);
+        else
+            flext::MsgBundle::Free(q);
 
     return queue.Avail();
 }

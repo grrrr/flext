@@ -210,7 +210,10 @@ public:
 	
 	//! Output boolean (index n starts with 0)
     void ToOutBool(int n,bool f) const { ToOutInt(n,f?1:0); }
-	
+
+	//! Output double (index n starts with 0)
+	void ToOutDouble(int n,double d) const { t_atom dbl[2]; ToOutList(n,2,SetDouble(dbl,d)); }
+
 	//! Output symbol (index n starts with 0)
 	void ToOutSymbol(int n,const t_symbol *s) const;
 	//! Output string aka symbol (index n starts with 0)
@@ -249,6 +252,9 @@ public:
 	//! Output low priority boolean (index n starts with 0)
 	void ToQueueBool(int n,bool f) const { ToQueueInt(n,f?1:0); }
 
+	//! Output double (index n starts with 0)
+	void ToQueueDouble(int n,double d) const { t_atom dbl[2]; ToQueueList(n,2,SetDouble(dbl,d)); }
+
 	//! Output low priority symbol (index n starts with 0)
 	void ToQueueSymbol(int n,const t_symbol *s) const;
 	//! Output low priority string aka symbol (to appointed outlet)
@@ -285,6 +291,9 @@ public:
 
 	//! Send boolean to self (inlet n)
 	void ToSelfBool(int n,bool f) const { ToSelfInt(n,f?1:0); }
+
+	//! Send double to self (index n starts with 0)
+	void ToSelfDouble(int n,double d) const { t_atom dbl[2]; ToSelfList(n,2,SetDouble(dbl,d)); }
 
 	//! Send symbol to self (inlet n)
     void ToSelfSymbol(int n,const t_symbol *s) const { ToQueueSymbol(-1-n,s); }
@@ -326,6 +335,9 @@ public:
 	//! Output boolean (index n starts with 0)
 	void MsgAddBool(MsgBundle *mb,int n,bool f) const { MsgAddInt(mb,n,f?1:0); }
 
+	//! Output double (index n starts with 0)
+	void MsgAddDouble(MsgBundle *mb,int n,double d) const { t_atom dbl[2]; MsgAddList(mb,n,2,SetDouble(dbl,d)); }
+
 	//! Output symbol (index n starts with 0)
 	void MsgAddSymbol(MsgBundle *mb,int n,const t_symbol *s) const;
 	//! Output string aka symbol (to appointed outlet)
@@ -335,7 +347,8 @@ public:
 	void MsgAddAtom(MsgBundle *mb,int n,const t_atom &at) const;
 
 	//! Output list (index n starts with 0)
-	void MsgAddList(MsgBundle *mb,int n,int argc,const t_atom *argv) const; 
+	void MsgAddList(MsgBundle *mb,int n,int argc,const t_atom *argv) const;
+
 	//! Output list (index n starts with 0)
 	void MsgAddList(MsgBundle *mb,int n,const AtomList &list) const { MsgAddList(mb,n,list.Count(),list.Atoms()); }
 
@@ -354,6 +367,9 @@ public:
 
 	//! Send boolean to self (inlet n)
 	void MsgSelfBool(MsgBundle *mb,int n,bool f) const { MsgSelfInt(mb,n,f?1:0); }
+
+	//! Output double (index n starts with 0)
+	void MsgSelfDouble(MsgBundle *mb,int n,double d) const { t_atom dbl[2]; MsgSelfList(mb,n,2,SetDouble(dbl,d)); }
 
 	//! Send symbol to self (inlet n)
     void MsgSelfSymbol(MsgBundle *mb,int n,const t_symbol *s) const { MsgAddSymbol(mb,-1-n,s); }
@@ -847,6 +863,7 @@ protected:
 
 	void ToSysBool(int n,bool f) const { ToSysInt(n,f?1:0); }
 	void ToSysAtom(int n,const t_atom &at) const;
+	void ToSysDouble(int n,double d) const { t_atom dbl[2]; ToSysList(n,2,SetDouble(dbl,d)); }
 
 	static void ToSysMsg(MsgBundle *mb);
 

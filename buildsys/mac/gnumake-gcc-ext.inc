@@ -1,5 +1,7 @@
 # build class specific settings
 
+LDFLAGS += -framework ApplicationServices
+
 INCPATH += -I$(FLEXTINC)
 LIBPATH += -L$(FLEXTLIB)
 LIBS += -l$(FLEXTNAME)

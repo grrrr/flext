@@ -30,7 +30,7 @@ FLEXTBIN := $(FLEXTPREFIX)/bin
 
 ##############################################
 
-LDFLAGS += -dynamic -framework ApplicationServices -framework vecLib
+LDFLAGS += -dynamic -framework vecLib
 
 ##############################################
 

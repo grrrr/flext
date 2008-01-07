@@ -26,6 +26,7 @@
 #define __LOCKFREE_ATOMIC_INT_HPP
 
 #include "cas.hpp"
+#include "branch_hints.hpp"
 
 namespace lockfree
 {
@@ -49,6 +50,18 @@ public:
     {
         value = v;
         memory_barrier();
+    }
+
+    /* prefix operator */
+    T operator ++()
+    {
+        return *this += 1;
+    }
+
+    /* prefix operator */
+    T operator --()
+    {
+        return *this -= 1;
     }
 
 #if defined(__GNUC__) && ( (__GNUC__ > 4) || ((__GNUC__ >= 4) && (__GNUC_MINOR__ >= 1)) )
@@ -76,31 +89,31 @@ public:
 #else
     T operator +=(T v)
     {
-        for(;;) {
-            T oldv = value;
-            memory_barrier();
-            if(CAS(&value,oldv,oldv+v))
-                return oldv+v;
+        for(;;)
+        {
+            T newv = value+v;
+            if(likely(CAS(&value,value,newv))) 
+                return newv;
         }
     }
 
     T operator -=(T v)
     {
-        for(;;) {
-            T oldv = value;
-            memory_barrier();
-            if(CAS(&value,oldv,oldv-v))
-                return oldv-v;
+        for(;;)
+        {
+            T newv = value-v;
+            if(likely(CAS(&value,value,newv))) 
+                return newv;
         }
     }
 
     /* postfix operator */
     T operator ++(int)
     {
-        for(;;) {
+        for(;;)
+        {
             T oldv = value;
-            memory_barrier();
-            if(CAS(&value,oldv,oldv+1))
+            if(likely(CAS(&value,oldv,oldv+1))) 
                 return oldv;
         }
     }
@@ -108,27 +121,14 @@ public:
     /* postfix operator */
     T operator --(int)
     {
-        for(;;) {
+        for(;;)
+        {
             T oldv = value;
-            memory_barrier();
-            if(CAS(&value,oldv,oldv-1))
+            if(likely(CAS(&value,oldv,oldv-1))) 
                 return oldv;
         }
     }
 #endif
-
-    /* prefix operator */
-    T operator ++()
-    {
-        return *this += 1;
-    }
-
-    /* prefix operator */
-    T operator --()
-    {
-        return *this -= 1;
-    }
-
 
 private:
     T value;

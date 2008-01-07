@@ -45,15 +45,20 @@ namespace lockfree
         atomic_ptr(T *p,size_t t = 0): ptr(p),tag(t) {}
 
         /** atomic set operation */
-        inline atomic_ptr &operator()(T *p,size_t t)
-        {
-            while(!likely(CAS(ptr,tag, p,t))) {}
-            return *this;
-        }
-
         inline atomic_ptr &operator =(const atomic_ptr &p)
         {
-            return operator()(p.ptr,p.tag);
+            for (;;)
+            {
+                atomic_ptr current(ptr, tag);
+
+                if(likely(CAS(current, p)))
+                    return *this;
+            }
+        }
+
+        inline atomic_ptr &operator()(T *p,size_t t)
+        {
+            return operator=(atomic_ptr(p, t) );
         }
 
 
@@ -84,14 +89,9 @@ namespace lockfree
             return lockfree::CAS2(this,oldval.ptr,oldval.tag,newptr,oldval.tag+1);
         }
 
-        inline bool CAS(T *oldptr,size_t oldtag,T *newptr)
+        inline bool CAS(const T *oldptr,size_t oldtag,T *newptr)
         {
             return lockfree::CAS2(this,oldptr,oldtag,newptr,oldtag+1);
-        }
-
-        inline bool CAS(T *oldptr,size_t oldtag,T *newptr,size_t newtag)
-        {
-            return lockfree::CAS2(this,oldptr,oldtag,newptr,newtag);
         }
 
     protected:

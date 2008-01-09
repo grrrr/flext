@@ -26,7 +26,11 @@
 #define __LOCKFREE_CAS_H
 
 #include "prefix.hpp"
-#include "pthread.h"
+
+#ifndef _WIN32
+// pthreads are not available under Windows by default and we should not need them there
+#include <pthread.h>
+#endif
 
 namespace lockfree
 {

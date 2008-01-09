@@ -1,7 +1,7 @@
 #
 # flext - C++ layer for Max/MSP and pd (pure data) externals
 #
-# Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+# Copyright (c) 2001-2008 Thomas Grill (gr@grrrr.org)
 # For information on usage and redistribution, and for a DISCLAIMER OF ALL
 # WARRANTIES, see the file, "license.txt," in this distribution.  
 #
@@ -38,7 +38,10 @@ HDRS= \
 	flmap.h flcontainers.h \
 	fldefs.h fldefs_hdr.h fldefs_setup.h \
 	fldefs_methcb.h fldefs_meththr.h fldefs_methadd.h fldefs_methbind.h fldefs_methcall.h \
-	fldefs_attrcb.h fldefs_attrvar.h fldefs_attradd.h
+	fldefs_attrcb.h fldefs_attrvar.h fldefs_attradd.h \
+    lockfree/prefix.hpp lockfree/cas.hpp lockfree/branch_hints.hpp \
+    lockfree/atomic_int.hpp lockfree/atomic_ptr.hpp \
+    lockfree/fifo.hpp lockfree/stack.hpp
 
 
 SRCS_SNDOBJ=flsndobj.cpp

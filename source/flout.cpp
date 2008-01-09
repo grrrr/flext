@@ -93,7 +93,7 @@ bool flext_base::InitInlets()
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
-    inlets = incnt > 1?new px_object *[incnt]:NULL;
+    inlets = incnt > 1?new px_object *[incnt-1]:NULL;
 #endif
     
     // type info is now in list array
@@ -190,13 +190,13 @@ bool flext_base::InitInlets()
             else {
                 switch(xi.tp) {
                     case xlet_sig:
-                        inlets[ix-1] = NULL;
+                        inlets[ix] = NULL;
                         error("%s: All signal inlets must be left-aligned",thisName());
                         ok = false;
                         break;
                     case xlet_float: {
 						if(ix < 10) {
-							inlets[ix-1] = NULL;
+							inlets[ix] = NULL;
                             floatin(x_obj,ix);
 							break;
 						}
@@ -205,7 +205,7 @@ bool flext_base::InitInlets()
 					}
                     case xlet_int: {
 						if(ix < 10) {
-							inlets[ix-1] = NULL;
+							inlets[ix] = NULL;
                             intin(x_obj,ix);
 							break;
 						}
@@ -216,17 +216,17 @@ bool flext_base::InitInlets()
                     case xlet_any: // non-leftmost
                     case xlet_sym:
                     case xlet_list:
-                        inlets[ix-1] = (px_object *)proxy_new(x_obj,ix,&((flext_hdr *)x_obj)->curinlet);  
+                        inlets[ix] = (px_object *)proxy_new(x_obj,ix,&((flext_hdr *)x_obj)->curinlet);  
                         break;
                     default:
-                        inlets[ix-1] = NULL;
+                        inlets[ix] = NULL;
                         error("%s: Wrong type for inlet #%i: %i",thisName(),ix,(int)xi.tp);
                         ok = false;
                 } 
             }
         }
         
-        while(ix > 0) inlets[ix--] = NULL;
+        while(ix >= 0) inlets[ix--] = NULL;
 	}
 #else
 #error

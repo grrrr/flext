@@ -217,6 +217,21 @@ su -c "make install"
 3) Other ways to compile flext and flext-based externals
 ========================================================
 
+Flext can be compiled straightforward as a static or shared library, in release or debug mode.
+
+Some preprocessor symbols must be defined depending on the build mode and the realtime system it is targetted for.
+
+for Max/MSP: FLEXT_SYS = 1
+for PD: FLEXT_SYS = 2
+
+for a debug build: FLEXT_DEBUG
+
+for a static single-threaded library: nothing needs to be defined
+for a static multi-threaded library: FLEXT_THREADS
+for a shared library (always multi-threaded): FLEXT_SHARED
+
+
+
 - Windows - Microsoft Visual Studio projects (.vcproj files)
 
     Please have a look at the projects delivered with flext and flext-based externals.

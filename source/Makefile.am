@@ -1,9 +1,12 @@
 #
 # automake template
 # added by tim blechmann
-#
+# added by Thomas Grill
 
-lib_LIBRARIES = libflext-pd_s.a libflext-pd_sd.a libflext-pd_t.a libflext-pd_td.a 
+# static libraries
+lib_LIBRARIES = libflext-@SYSTEM@_s.a libflext-@SYSTEM@_sd.a libflext-@SYSTEM@_t.a libflext-@SYSTEM@_td.a 
+# shared libraries
+lib_LTLIBRARIES = libflext-@SYSTEM@.la libflext-@SYSTEM@_d.la 
 
 SRCS_FLEXT = \
 	flbase.cpp \
@@ -16,13 +19,12 @@ SRCS_FLEXT = \
 	flattr_ed.cpp \
 	flsupport.cpp \
 	flutil.cpp \
-	flatom.cpp \
-	flatom_pr.cpp \
 	flthr.cpp \
 	fltimer.cpp \
 	flsimd.cpp \
 	flout.cpp \
-	flatom_app.cpp \
+	flatom.cpp \
+	flatom_pr.cpp \
 	flatom_part.cpp \
 	flitem.cpp \
 	flmeth.cpp \
@@ -32,7 +34,7 @@ SRCS_FLEXT = \
 	flbind.cpp \
 	flmap.cpp
 
-pkginclude_HEADERS = \
+nobase_pkginclude_HEADERS = \
 	flprefix.h \
 	flstdc.h \
 	flbase.h \
@@ -42,6 +44,7 @@ pkginclude_HEADERS = \
 	flmap.h \
 	fldsp.h \
 	flinternal.h \
+	flcontainers.h \
 	fldefs.h \
 	fldefs_hdr.h \
 	fldefs_setup.h \
@@ -52,7 +55,15 @@ pkginclude_HEADERS = \
 	fldefs_methcall.h \
 	fldefs_attrcb.h \
 	fldefs_attrvar.h \
-	fldefs_attradd.h
+	fldefs_attradd.h \
+	lockfree/prefix.hpp \
+	lockfree/branch_hints.hpp \
+	lockfree/cas.hpp \
+	lockfree/atomic_int.hpp \
+	lockfree/atomic_ptr.hpp \
+	lockfree/fifo.hpp \
+	lockfree/stack.hpp
+
 
 
 # handling for stk / sndobj
@@ -64,66 +75,29 @@ HDRS_SNDOBJ = flsndobj.cpp
 
 if SNDOBJ
 SRCS_FLEXT         += $(SRCS_SNDOBJ)
-pkginclude_HEADERS += $(HDRS_SNDOBJ)
+nobase_pkginclude_HEADERS += $(HDRS_SNDOBJ)
 LIB_SNDOBJ         = -lsndobj
 endif
 
 if STK
 SRCS_FLEXT         += $(SRCS_STK)
-pkginclude_HEADERS += $(HDRS_STK)
+nobase_pkginclude_HEADERS += $(HDRS_STK)
 LIB_STK            =  -lstk
 endif
 
-FRAMEWORKS = @FRAMEWORKS@
+libflext_@SYSTEM@_s_a_SOURCES    = $(SRCS_FLEXT)
+libflext_@SYSTEM@_sd_a_SOURCES  = $(SRCS_FLEXT)
+libflext_@SYSTEM@_t_a_SOURCES  = $(SRCS_FLEXT)
+libflext_@SYSTEM@_td_a_SOURCES = $(SRCS_FLEXT)
+libflext_@SYSTEM@_la_SOURCES = $(SRCS_FLEXT)
+libflext_@SYSTEM@_d_la_SOURCES = $(SRCS_FLEXT)
 
-# for static libraries we can use automake
-libflext_pd_s_a_SOURCES    = $(SRCS_FLEXT)
-libflext_pd_sd_a_SOURCES  = $(SRCS_FLEXT)
-libflext_pd_t_a_SOURCES  = $(SRCS_FLEXT)
-libflext_pd_td_a_SOURCES = $(SRCS_FLEXT)
+libflext_@SYSTEM@_s_a_CXXFLAGS    = @OPT_FLAGS@ @INCLUDEDIR@ 
+libflext_@SYSTEM@_sd_a_CXXFLAGS  = @DBG_FLAGS@ @INCLUDEDIR@
+libflext_@SYSTEM@_t_a_CXXFLAGS  = @OPT_FLAGS@ @INCLUDEDIR@ -DFLEXT_THREADS 
+libflext_@SYSTEM@_td_a_CXXFLAGS = @DBG_FLAGS@ @INCLUDEDIR@ -DFLEXT_THREADS 
+libflext_@SYSTEM@_la_CXXFLAGS    = @OPT_FLAGS@ @INCLUDEDIR@ -DFLEXT_SHARED
+libflext_@SYSTEM@_d_la_CXXFLAGS  = @DBG_FLAGS@ @INCLUDEDIR@ -DFLEXT_SHARED
 
-libflext_pd_s_a_CXXFLAGS    = @OPT_FLAGS@ @INCLUDEDIR@ 
-libflext_pd_sd_a_CXXFLAGS  = @INCLUDEDIR@ -g -DFLEXT_DEBUG
-libflext_pd_t_a_CXXFLAGS  = @OPT_FLAGS@ @INCLUDEDIR@ -DFLEXT_THREADS 
-libflext_pd_td_a_CXXFLAGS = @INCLUDEDIR@ -g -DFLEXT_DEBUG -DFLEXT_THREADS 
-
-libflext_pd_s_a_LDFLAGS    = @OPT_FLAGS@ @INCLUDEDIR@ \
-	$(patsubst %,-framework %,$(FRAMEWORKS))
-libflext_pd_sd_a_LDFLAGS  = @INCLUDEDIR@ -g -DFLEXT_DEBUG \
-	$(patsubst %,-framework %,$(FRAMEWORKS))
-libflext_pd_t_a_LDFLAGS  = @OPT_FLAGS@ @INCLUDEDIR@ -DFLEXT_THREADS \
-	$(patsubst %,-framework %,$(FRAMEWORKS))
-libflext_pd_td_a_LDFLAGS = @INCLUDEDIR@ -g -DFLEXT_DEBUG -DFLEXT_THREADS \
-	$(patsubst %,-framework %,$(FRAMEWORKS))
-
-# for shared libraries, we can't ...
-libflext_pd_la_CXXFLAGS   = @OPT_FLAGS@ @INCLUDEDIR@ -DFLEXT_SHARED \
-	-DFLEXT_EXPORTS $(DEFS)
-libflext_pd_d_la_CXXFLAGS = @INCLUDEDIR@ -g -DFLEXT_DEBUG -DFLEXT_SHARED \
-	-DFLEXT_EXPORTS $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES)
-libflext_pd_la_LDFLAGS   = @DYNAMIC_LDFLAGS@ $(LIB_STK) $(LIB_SNDOBJ) $(LDFLAGS) \
-	$(patsubst %,-framework %,$(FRAMEWORKS))
-libflext_pd_d_la_LDFLAGS = @DYNAMIC_LDFLAGS@ $(LIB_STK) $(LIB_SNDOBJ) $(LDFLAGS)
-	$(patsubst %,-framework %,$(FRAMEWORKS))
-
-libflext_pd_la_NAME = libflext-pd.@SOEXT@
-libflext_pd_d_la_NAME = libflext-pd_d.@SOEXT@
-
-all-local: $(libflext_pd_la_NAME) $(libflext_pd_d_la_NAME)
-
-$(libflext_pd_la_NAME): $(patsubst %.cpp,libflext_pd_la-%.o,$(SRCS_FLEXT))
-	$(CXX) $(libflext_pd_la_LDFLAGS) $(LIBS) -o $(libflext_pd_la_NAME) $^
-
-libflext_pd_la-%.o : %.cpp
-	$(CXX) -c $(libflext_pd_la_CXXFLAGS) $< -o $@
-
-$(libflext_pd_d_la_NAME): $(patsubst %.cpp,libflext_pd_d_la-%.o,$(SRCS_FLEXT))
-	$(CXX) $(libflext_pd_d_la_LDFLAGS) $(LIBS) -o $(libflext_pd_d_la_NAME) $^
-
-libflext_pd_d_la-%.o: %.cpp
-	$(CXX) -c $(libflext_pd_d_la_CXXFLAGS) $< -o $@
-
-install-exec-local: 
-	$(libLIBRARIES_INSTALL) $(libflext_pd_la_NAME) $(DESTDIR)$(libdir)
-	$(libLIBRARIES_INSTALL) $(libflext_pd_d_la_NAME) $(DESTDIR)$(libdir)
-
+libflext_@SYSTEM@_la_LDFLAGS  = $(patsubst %,-framework %,@FRAMEWORKS@)
+libflext_@SYSTEM@_d_la_LDFLAGS  = $(patsubst %,-framework %,@FRAMEWORKS@) 

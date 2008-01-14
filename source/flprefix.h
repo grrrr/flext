@@ -103,11 +103,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 // ---------------------------------------------------
 
 // Definition of supported real-time systems
-#if FLEXT_SYS == FLEXT_SYS_MAX
-#elif FLEXT_SYS == FLEXT_SYS_PD
-#elif FLEXT_SYS == FLEXT_SYS_JMAX
+#if FLEXT_SYS == FLEXT_SYS_MAX || FLEXT_SYS == FLEXT_SYS_PD
 #else
-    #error "System must be defined by either FLEXT_SYS_MAX, FLEXT_SYS_PD or FLEXT_SYS_JMAX"
+    #error "System must be defined by either FLEXT_SYS_MAX or FLEXT_SYS_PD"
 #endif
 
 // Definition of OS/CPU

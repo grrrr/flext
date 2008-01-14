@@ -181,22 +181,23 @@ bool flext_base::InitInlets()
         
         for(cnt = 0,ix = incnt-1; ix >= insigs; --ix,++cnt) {
             xlet &xi = inlist[ix];
-            if(ix == 0) {
+            if(!ix) {
                 if(xi.tp != xlet_any) {
                     error("%s: Leftmost inlet must be of type signal or anything",thisName());
                     ok = false;
                 }
             }
             else {
+                FLEXT_ASSERT(inlets);
                 switch(xi.tp) {
                     case xlet_sig:
-                        inlets[ix] = NULL;
+                        inlets[ix-1] = NULL;
                         error("%s: All signal inlets must be left-aligned",thisName());
                         ok = false;
                         break;
                     case xlet_float: {
 						if(ix < 10) {
-							inlets[ix] = NULL;
+							inlets[ix-1] = NULL;
                             floatin(x_obj,ix);
 							break;
 						}
@@ -205,7 +206,7 @@ bool flext_base::InitInlets()
 					}
                     case xlet_int: {
 						if(ix < 10) {
-							inlets[ix] = NULL;
+							inlets[ix-1] = NULL;
                             intin(x_obj,ix);
 							break;
 						}
@@ -216,17 +217,18 @@ bool flext_base::InitInlets()
                     case xlet_any: // non-leftmost
                     case xlet_sym:
                     case xlet_list:
-                        inlets[ix] = (px_object *)proxy_new(x_obj,ix,&((flext_hdr *)x_obj)->curinlet);  
+                        inlets[ix-1] = (px_object *)proxy_new(x_obj,ix,&((flext_hdr *)x_obj)->curinlet);  
                         break;
                     default:
-                        inlets[ix] = NULL;
+                        inlets[ix-1] = NULL;
                         error("%s: Wrong type for inlet #%i: %i",thisName(),ix,(int)xi.tp);
                         ok = false;
                 } 
             }
         }
         
-        while(ix >= 0) inlets[ix--] = NULL;
+        if(inlets)
+            while(ix >= 0) inlets[ix--] = NULL;
 	}
 #else
 #error

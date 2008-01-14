@@ -1,6 +1,6 @@
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2007 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2008 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -204,13 +204,15 @@ then you can run
 ./configure --help 
 to get a page of options.
 
-You need to pass the path to the PD source files to the ./configure script, e.g. with
-./configure --with-sysdir=/usr/local/src/pd/src
+You need to pass the path to the PD source files or the Max SDK to the ./configure script, 
+e.g. on OS X with something like
+./configure --enable-system=pd --with-sysdir=/Applications/Pd-0.40-2/Contents/Resources/src
 
-Then build flext with
+then build flext with
 make
+
 and install it with
-su -c "make install"
+sudo make install
 
 ----------------------------------------------------------------------------
 

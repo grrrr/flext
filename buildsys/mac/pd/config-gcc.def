@@ -28,7 +28,7 @@ INSTPATH=$(PDPATH)/extra
 # http://ccrma.stanford.edu/software/stk
 
 # where to find the STK header files (e.g. stk.h)
-STK_INC=/usr/local/include/stk
+#STK_INC=/usr/local/include/stk
 
 # where to find the STK library (normally libstk.a)
 # (comment out STK_LIB if you don't use STK)
@@ -40,7 +40,7 @@ STK_INC=/usr/local/include/stk
 # http://music.nuim.ie//musictec/SndObj
 
 # where to find the SndObj header files (e.g. sndobj.h)
-SNDOBJ_INC=/usr/local/include/sndobj
+#SNDOBJ_INC=/usr/local/include/sndobj
 
 # where to find the SndObj library (normally libsndobj.a)
 # (comment out STK_LIB if you don't use SndObj)
@@ -49,27 +49,29 @@ SNDOBJ_INC=/usr/local/include/sndobj
 ###############################################################
 
 # make flags (e.g. use multiprocessor)
-#MFLAGS=-j 2
+MFLAGS=-j 2
 
 # user defined compiler flags
-UFLAGS += -ffast-math
+UFLAGS += -ffast-math -mmacosx-version-min=10.3
 
 # user defined optimization flags
-OFLAGS += -Os -ftree-vectorize
+OFLAGS += -Os # -ftree-vectorize
 
 # user defined debugging flags
 DFLAGS +=
 
 # architecture-specific flags (optional)
-UFLAGS_ppc += -maltivec -faltivec
-OFLAGS_ppc += -mtune=G4
+UFLAGS_ppc += -mcpu=G4 -faltivec 
+OFLAGS_ppc += 
 DFLAGS_ppc +=
 
-UFLAGS_i386 += -mmmx -msse -msse2 -msse3
-OFLAGS_i386 += -mtune=prescott
+UFLAGS_i386 += -mmmx -msse -msse2 -msse3 -mtune=nocona
+OFLAGS_i386 += 
 DFLAGS_i386 +=
 
 # cross-compilation (optional)
-#ARCH=i386 ppc
+ARCH=ppc i386 #x86_64 ppc64
+# don't use OSXSDK for 10.5!
 #OSXSDK=/Developer/SDKs/MacOSX10.4u.sdk
+
 

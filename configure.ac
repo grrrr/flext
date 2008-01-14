@@ -1,160 +1,169 @@
-dnl
-dnl autoconf template
-dnl added by tim blechmann
-dnl
+#
+# autoconf template
+# modified by Thomas Grill
+#
 
-dnl flext API version (current:release:age)
-API_VERSION=0:0:0
+# flext API version (current:release:age)
+# API_VERSION=0:0:0
 
-AC_INIT([flext],[0.5.0],[gr@grrrr.org],[flext])
-AM_INIT_AUTOMAKE(1.6)
+AC_INIT([flext],[0.5.1],[gr@grrrr.org])
+AM_INIT_AUTOMAKE
 
 
-dnl configure options
-AC_ARG_ENABLE(system, [  --enable-system         flext system (default: pd)],
-    [
-	case $enableval in 
-		max) AC_DEFINE(FLEXT_SYS,1)
-			 TARGETDIR=maxmsp;;
-		*) AC_DEFINE(FLEXT_SYS,2)
-			 TARGETDIR=pd;;
-	esac
-	system = $enableval
-	],
-	AC_DEFINE(FLEXT_SYS,2)
-	TARGETDIR=pd
+# configure options
+AC_ARG_ENABLE(system,
+	AS_HELP_STRING(--enable-system,[realtime system [default=pd]]),
+    [SYSTEM=$enableval],
+	[SYSTEM=pd]
 )
 
 AC_ARG_WITH(sysdir,
-	[  --with-sysdir           path to pd or max headers],
-    	[
-		sysdir=$withval
-		INCLUDEDIR="-I$withval $INCLUDEDIR"
-	],
-	[echo "path to system headers required "$enableval && exit 1])
+	AS_HELP_STRING(--with-sysdir,[path to pd or max headers]),
+    [sysdir=$withval],
+	AC_MSG_ERROR(path to system headers required $withval)
+)
 
-dnl check for g_canvas.h in pd folder
-AC_CHECK_FILE("$sysdir/g_canvas.h",,[echo "$sysdir/g_canvas.h not found" && exit 1])
+if test $SYSTEM == max; then
+	AC_DEFINE(FLEXT_SYS,1)
+# check for MaxAPI.h in pd folder
+	AC_CHECK_FILE([$sysdir/max-includes/MaxAPI.h],,AC_MSG_ERROR([Cannot find $sysdir/max-includes/MaxAPI.h]))
+	AC_CHECK_FILE([$sysdir/max-includes/MaxAudioAPI.h],,AC_MSG_ERROR([Cannot find $sysdir/max-includes/MaxAudioAPI.h]))
+	INCLUDEDIR+=" -I$sysdir/max-includes -I$sysdir/msp-includes"
+
+elif test $SYSTEM == pd; then
+	AC_DEFINE(FLEXT_SYS,2)
+# check for g_canvas.h in pd folder
+	AC_CHECK_FILE([$sysdir/g_canvas.h],,AC_MSG_ERROR([Cannot find $sysdir/g_canvas.h]))
+	INCLUDEDIR+=" -I$sysdir"
+
+else
+	AC_MSG_ERROR([system must be pd or max])
+fi
 
 AC_ARG_WITH(stkdir,
-	[  --with-stkdir           path to stk headers],
+	AS_HELP_STRING(--with-stkdir,[path to STK headers]),
 	[
-	    AC_CHECK_FILE("$withval/Stk.h",,[echo "$withval/Stk.h not found" && exit 1])	
+	    AC_CHECK_FILE([$withval/Stk.h],,AC_MSG_ERROR([$withval/Stk.h not found]))	
 		stkdir=$withval
-		INCLUDEDIR="-I$withval $INCLUDEDIR"
-	])
+		INCLUDEDIR+=" -I$withval"
+	]
+)
 
 AM_CONDITIONAL([STK],[test "$stkdir"])
 
 AC_ARG_WITH(sndobjdir,
-	[  --with-sndobjdir      path to SndObj headers],
+	AS_HELP_STRING(--with-sndobjdir,[path to SndObj headers]),
 	[
-		AC_CHECK_FILE("$withval/SndObj.h",,[echo "$withval/SndObj.h not found" && exit 1])
+		AC_CHECK_FILE([$withval/SndObj.h],,AC_MSG_ERROR([$withval/SndObj.h not found]))
 		sndobjdir=$withval
-		INCLUDEDIR="-I$withval $INCLUDEDIR"
-	])
+		INCLUDEDIR+=" -I$withval"
+	]
+)
 
 AM_CONDITIONAL([SNDOBJ],[test "$sndobjdir"])
 
-AC_ARG_ENABLE(optimize, [  --enable-optimize       enables optimized builds for: pentium4, pentium3, G4, G5],
-    [
-	case $enableval in
-	pentium3 | pentium3m)
-		OPT_FLAGS = "-mtune=$enableval -march=$enableval -mmmx -msse -mfpmath=sse";
-		AC_DEFINE(FLEXT_USE_SIMD);;
-	pentium2 | athlon | pentium-mmx)
-		OPT_FLAGS="-mtune=$enableval -march=$enableval -mmmx";;
-	pentium)
-	 	OPT_FLAGS="-mtune=$enableval -march=$enableval";;
-	pentium4 | pentium4m | pentium-m | prescott | nocona | athlon-xp | athlon-mp | athlon64 | opteron) 
-		OPT_FLAGS="-mtune=$enableval -march=$enableval -mmmx -msse -msse2 -mfpmath=sse";
-		AC_DEFINE(FLEXT_USE_SIMD);;
-	G5 | G4)
-		OPT_FLAGS="-mtune=$enableval --maltivec -faltivec -malign-natural";
-		AC_DEFINE(FLEXT_USE_SIMD);;
-	G3)
-		OPT_FLAGS="-mtune=$enableval --malign-natural";;
-	*)
-		;;
-	esac
-	])
+# if CFLAGS aren't set by the user, set them to an empty string
+# otherwise AC_PROG_CC sets them to "-O2 -g" 
+test ".$CFLAGS" = "." && CFLAGS=" "
+test ".$CXXFLAGS" = "." && CXXFLAGS=" "
 
-dnl Checks for programs.
+# Checks for programs.
 AC_PROG_CC
 AC_PROG_CXX
+AC_PROG_LIBTOOL
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
-AC_PROG_RANLIB
 
-dnl Checks for libraries.
+AM_ENABLE_STATIC
+AM_ENABLE_STATIC
 
-dnl Checks for header files.
+AC_LANG(C++)
 
-dnl Checks for typedefs, structures, and compiler characteristics.
+# Checks for libraries.
+
+# Checks for header files.
+
+# Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_INLINE
 AC_TYPE_SIZE_T
 AC_STRUCT_TM
 
-dnl Checks for library functions.
+# Checks for library functions.
 
-dnl system specific
-
-if test `uname -s` == Linux; then
-	DYNAMIC_LDFLAGS="-Wl,-Bdynamic -shared"
-	EXTENSION=pd_linux
-	SOEXT=so
-fi
-
-if test `uname -s` == Darwin; then
-#	DYNAMIC_LDFLAGS="-version-info $API_VERSION -release $AC_PACKAGE_VERSION -dynamiclib -dynamic -flat_namespace -undefined suppress"
-
-	DYNAMIC_LDFLAGS="-dynamiclib -dynamic -flat_namespace -undefined suppress"
-	if test $system == max; then
-		EXTENSION=mxo
-	else	
-		EXTENSION=pd_darwin
-	fi
-	
-	SOEXT=dylib
+# system specific
+if test $(uname -s) == Linux; then
+	true
+elif test $(uname -s) == Darwin; then
 	FRAMEWORKS="ApplicationServices vecLib"
+elif test $(uname -s) == MINGW32_NT-5.0; then
+	EXT_CFLAGS+=" -mms-bitfields -mno-cygwin"
+elif test $(uname -s) == CYGWIN_NT-5.0; then
+	EXT_CFLAGS+=" -mms-bitfields -mno-cygwin"
 fi
 
-dnl todo: mingw / cygwin
+
+# set compilation flags
+
+OPT_FLAGS=-O2
+DBG_FLAGS="-DFLEXT_DEBUG -g"
+
+AC_ARG_ENABLE(optimize, 
+	AS_HELP_STRING(--enable-optimize,[enables optimized architecture specific builds for pentium4, pentium3, G4, G5, etc.]),
+    [
+		OPT_FLAGS+=" -mtune=$enableval"
+		case $enableval in
+			pentium | pentium2 | athlon | pentium-mmx)
+				OPT_FLAGS+=" -march=$enableval";;
+			pentium3 | pentium3m | pentium4 | pentium4m | pentium-m | prescott | nocona | athlon-xp | athlon-mp | athlon64 | opteron) 
+				OPT_FLAGS+=" -march=$enableval -mfpmath=sse";
+				AC_DEFINE(FLEXT_USE_SIMD);;
+			G3)
+				OPT_FLAGS+=" -mcpu=$enableval";;
+			G5 | G4)
+				OPT_FLAGS+=" -mcpu=$enableval -faltivec";
+				AC_DEFINE(FLEXT_USE_SIMD);;
+			*)
+				;;
+		esac
+	]
+)
+
 
 AC_SUBST(INCLUDEDIR)
+AC_SUBST(SYSTEM)
 AC_SUBST(OPT_FLAGS)
-AC_SUBST(DYNAMIC_LDFLAGS)
+AC_SUBST(DBG_FLAGS)
+# AC_SUBST(API_VERSION)
 AC_SUBST(stkdir)
 AC_SUBST(sndobjdir)
-AC_SUBST(EXTENSION)
-AC_SUBST(SOEXT)
-AC_SUBST(TARGETDIR)
-AC_SUBST(FRAMEWORKS) dnl for osx
+AC_SUBST(FRAMEWORKS)
+
 AC_OUTPUT([
 			Makefile
-			tutorial/Makefile
-			tutorial/adv1/Makefile
-			tutorial/adv2/Makefile
-			tutorial/adv3/Makefile
-			tutorial/attr1/Makefile
-			tutorial/attr2/Makefile
-			tutorial/attr3/Makefile
-			tutorial/bind1/Makefile
-			tutorial/buffer1/Makefile
-			tutorial/lib1/Makefile
-			tutorial/signal1/Makefile
-			tutorial/signal2/Makefile
-			tutorial/simple1/Makefile
-			tutorial/simple2/Makefile
-			tutorial/simple3/Makefile
-			tutorial/sndobj1/Makefile
-			tutorial/stk1/Makefile
-			tutorial/stk2/Makefile
-			tutorial/thread1/Makefile
-			tutorial/thread2/Makefile
-			tutorial/timer1/Makefile
-			tutorial/pd/Makefile
-			tutorial/maxmsp/Makefile
-			source/Makefile])
+			source/Makefile
+])
 
+#			tutorial/Makefile
+#			tutorial/adv1/Makefile
+#			tutorial/adv2/Makefile
+#			tutorial/adv3/Makefile
+#			tutorial/attr1/Makefile
+#			tutorial/attr2/Makefile
+#			tutorial/attr3/Makefile
+#			tutorial/bind1/Makefile
+#			tutorial/buffer1/Makefile
+#			tutorial/lib1/Makefile
+#			tutorial/signal1/Makefile
+#			tutorial/signal2/Makefile
+#			tutorial/simple1/Makefile
+#			tutorial/simple2/Makefile
+#			tutorial/simple3/Makefile
+#			tutorial/sndobj1/Makefile
+#			tutorial/stk1/Makefile
+#			tutorial/stk2/Makefile
+#			tutorial/thread1/Makefile
+#			tutorial/thread2/Makefile
+#			tutorial/timer1/Makefile
+#			tutorial/pd/Makefile
+#			tutorial/maxmsp/Makefile

@@ -1,5 +1,7 @@
 #! /bin/sh
 
-aclocal \
-&& automake --foreign \
-&& autoconf
+# MacOS has no libtoolize... use glibtoolize instead
+glibtoolize --force && \
+aclocal && \
+automake --foreign --add-missing && \
+autoconf

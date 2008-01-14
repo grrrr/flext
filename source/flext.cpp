@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2008 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -179,7 +179,7 @@ void flext_base::Setup(t_classid id)
 #if FLEXT_SYS == FLEXT_SYS_MAX
 	if(!IsLib(id))
 #endif
-	AddMessageMethods(c,IsDSP(id),HasDSPIn(id));
+        AddMessageMethods(c,IsDSP(id),HasDSPIn(id));
 
     if(HasAttributes(id)) {
         AddMethod(id,0,"getattributes",cb_ListAttrib);

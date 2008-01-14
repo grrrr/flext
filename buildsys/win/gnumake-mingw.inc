@@ -9,6 +9,9 @@ TARGET=$(TARGETPATH)\$(OUTNAME).$(EXT)
 CFLAGS += -mms-bitfields -mno-cygwin
 LDFLAGS += -shared -mno-cygwin 
 
+# default Windows flags as defined from VC IDE
+CFLAGS += -DWIN32 -D_WINDOWS
+
 ##############################################
 
 ifdef DEBUG

@@ -35,6 +35,27 @@ HELPPATH="%ProgramFiles%\MaxMSP 4.5\max-help\flext"
 
 ###############################################################
 
+# where is the STK installation?
+# (uncomment the line with # to disable STK support)
+# --------------------------------------------------------------------
+# In order to use STK you must have an Stk.obj file
+# made with MSVC (from within the STK src folder)
+#   cl /c /Ox /GR /EHsc /MT /I ..\include Stk.cpp
+#   (in case you define DYNAMIC=1 below, omit the /MT flag)
+#
+#STK=c:\data\prog\audio\stk
+
+# where is the Sndobjs installation?
+# (uncomment the line with # to disable SNDOBJ support)
+# --------------------------------------------------------------------
+# Please be sure to delete an eventual m_pd.h file from the SNDOBJ include folder!!
+# The shared flext library links to the SndObj.lib file from the SNDOBJ distribution.
+# Flext must be compiled with the same compiler version as the SNDOBJ lib (default MSVC6)
+#
+#SNDOBJ=c:\data\prog\audio\sndobj
+
+###############################################################
+
 # some user-definable flags
 # (check if they match your system!)
 OFLAGS=/Ox
@@ -42,5 +63,5 @@ OFLAGS=/Ox
 #OFLAGS=$(OFLAGS) /G6 /arch:SSE
 
 # uncomment to link against dynamic C runtime libraries
-# (don't use this if you want to distribute the built product)
-#DYNAMIC=1
+# (that's ok if you compile with VC++ 7.0 and 7.1)
+DYNAMIC=1

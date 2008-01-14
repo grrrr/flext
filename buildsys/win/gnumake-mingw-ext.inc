@@ -9,6 +9,16 @@ else
 LIBS += -l$(FLEXTNAME)
 endif
 
+ifndef SHARED
+ifdef SNDOBJ
+LIBS += -lSndObj
+endif
+
+ifdef STK
+LIBS += -lStk
+endif
+endif
+
 ##############################################
 
 # default target

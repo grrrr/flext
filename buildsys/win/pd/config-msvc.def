@@ -8,6 +8,22 @@ PDPATH="%ProgramFiles%\pd"
 
 ###############################################################
 
+# version of the pthreads library (the one coming with PD has version number 1)
+PTHREADSVERSION=1
+
+# path to pthreads headers (PD comes with some in the src folder)
+PTHREADSINC=$(PDPATH)\src
+
+# path to pthreads link library (PD comes with one in the bin folder)
+PTHREADSLIB=$(PDPATH)\bin
+
+###############################################################
+
+# path to lockfree library
+LOCKFREEPATH=$(FLEXTINC)\source\lockfree
+
+###############################################################
+
 # where do/should the flext headers reside/be built?
 FLEXTINC=$(PDPATH)\flext
 
@@ -25,6 +41,27 @@ OUTPATH=pd-msvc
 
 # where should externals be installed?
 INSTPATH=$(PDPATH)\extra
+
+###############################################################
+
+# where is the STK installation?
+# (uncomment the line with # to disable STK support)
+# --------------------------------------------------------------------
+# In order to use STK you must have an Stk.obj file
+# made with MSVC (from within the STK src folder)
+#   cl /c /Ox /GR /EHsc /MT /I ..\include Stk.cpp
+#   (in case you define DYNAMIC=1 below, omit the /MT flag)
+#
+#STK=c:\data\prog\audio\stk
+
+# where is the Sndobjs installation?
+# (uncomment the line with # to disable SNDOBJ support)
+# --------------------------------------------------------------------
+# Please be sure to delete an eventual m_pd.h file from the SNDOBJ include folder!!
+# The shared flext library links to the SndObj.lib file from the SNDOBJ distribution.
+# Flext must be compiled with the same compiler version as the SNDOBJ lib (default MSVC6)
+#
+#SNDOBJ=c:\data\prog\audio\sndobj
 
 ###############################################################
 

@@ -1,5 +1,19 @@
 # build class specific settings
 
+!ifdef SHARED
+
+!ifdef SNDOBJ
+LIBS=$(LIBS) $(SNDOBJ)\lib\SndObj.lib
+SRCS=$(SRCS) $(SRCS_SNDOBJ)
+!endif
+
+!ifdef STK
+LIBS=$(LIBS) $(STK)\src\Stk.obj
+SRCS=$(SRCS) $(SRCS_STKOBJ)
+!endif
+
+!endif
+
 ##############################################
 
 # default target

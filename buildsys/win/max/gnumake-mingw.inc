@@ -1,7 +1,7 @@
 DEFS += -DFLEXT_SYS=1
 
-# fpack-struct should align to 2 bytes... can't specify that...
-CFLAGS += -DWINVER=0x0501 -D_WIN32_WINNT=0x501
+# fpack-struct should align to 2 bytes... rely on the SDK header files to specify that
+CFLAGS += -DWINVER=0x0501 -D_WIN32_WINNT=0x501 -DWIN_VERSION -DWIN_EXT_VERSION
 # suppress multiple symbol errors
 LDFLAGS += -Wl,--allow-multiple-definition
 

@@ -31,6 +31,25 @@ HELPPATH="%ProgramFiles%/MaxMSP 4.5/max-help/flext"
 
 ###############################################################
 
+# where is the STK installation?
+# (uncomment the line with # to disable STK support)
+# --------------------------------------------------------------------
+# In order to use STK you must have an Stk.obj file
+# made with mingw
+#   g++ -c -mno-cygwin -O3 -I ../include Stk.cpp -o Stk.obj
+#
+#STK=c:\data\prog\audio\stk
+
+# where is the Sndobjs installation?
+# (uncomment the line with # to disable SNDOBJ support)
+# --------------------------------------------------------------------
+# Please be sure to delete an eventual m_pd.h file from the SNDOBJ include folder!!
+# The shared flext library links to the libsndobj.a library.
+#
+#SNDOBJ=c:\data\prog\audio\sndobj
+
+###############################################################
+
 # make flags (e.g. use multiprocessor)
 #MFLAGS=-j 2
 

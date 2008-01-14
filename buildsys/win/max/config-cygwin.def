@@ -40,6 +40,23 @@ HELPPATH=$(MAXAPPPATH)/max-help/flext
 
 ###############################################################
 
+# where is the STK installation?
+# (uncomment the line with # to disable STK support)
+# --------------------------------------------------------------------
+# In order to use STK you must have a libstk.a library
+#
+#STK=c:\data\prog\audio\stk
+
+# where is the Sndobjs installation?
+# (uncomment the line with # to disable SNDOBJ support)
+# --------------------------------------------------------------------
+# Please be sure to delete an eventual m_pd.h file from the SNDOBJ include folder!!
+# The shared flext library links to the libsndobj.a file from the SNDOBJ distribution.
+#
+#SNDOBJ=c:\data\prog\audio\sndobj
+
+###############################################################
+
 # make flags (e.g. use multiprocessor)
 #MFLAGS=-j 2
 

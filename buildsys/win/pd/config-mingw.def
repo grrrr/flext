@@ -4,6 +4,17 @@ PDPATH="%ProgramFiles%\pd"
 
 ###############################################################
 
+# version of the pthreads library (the one coming with PD has version number 1)
+PTHREADSVERSION=1
+
+# path to pthreads headers (PD comes with some in the src folder)
+PTHREADSINC=$(PDPATH)\src
+
+# path to pthreads link library (PD comes with one in the bin folder)
+PTHREADSLIB=$(PDPATH)\bin
+
+###############################################################
+
 # where do/should the flext headers reside/be built?
 FLEXTINC=$(PDPATH)\flext
 

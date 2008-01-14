@@ -4,6 +4,16 @@ INCPATH=$(INCPATH) -I$(FLEXTINC)
 LIBPATH=$(LIBPATH) -L$(FLEXTLIB)
 LIBS=$(LIBS) $(FLEXTNAME).lib
 
+!ifndef SHARED
+!ifdef SNDOBJ
+LIBS=$(LIBS) $(SNDOBJ)\lib\SndObj.lib
+!endif
+
+!ifdef STK
+LIBS=$(LIBS) $(STK)\src\Stk.obj
+!endif
+!endif
+
 ##############################################
 
 # default target

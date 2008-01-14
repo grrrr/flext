@@ -3,6 +3,18 @@ INCPATH=$(INCPATH) /I$(MSVCPATH)\include
 LIBPATH=$(LIBPATH) /LIBPATH:$(MSVCPATH)\lib
 !endif
 
+!ifdef LOCKFREEPATH
+INCPATH=$(INCPATH) /I$(LOCKFREEPATH) 
+!endif
+
+!ifdef SNDOBJ
+INCPATH=$(INCPATH) /I$(SNDOBJ)\include 
+!endif
+
+!ifdef STK
+INCPATH=$(INCPATH) /I$(STK)\include 
+!endif
+
 ##############################################
 
 OBJPATH=$(OUTPATH)\$(OUTSUB)
@@ -21,12 +33,18 @@ CFLAGS=$(CFLAGS) /YX$(PRECOMPILE) /Fp$(OBJPATH)\precompiled.pch
 # create code for DLL
 CFLAGS=$(CFLAGS) /LD
 
-# enable exception handling and RTTI
-CFLAGS=$(CFLAGS) /EHsc /GR
+# enable exception handling, RTTI and intrinsic functions
+CFLAGS=$(CFLAGS) /EHsc /GR /Oi
 
 # no banner
 CFLAGS=$(CFLAGS) /nologo
 LDFLAGS=$(LDFLAGS) /nologo
+
+# inhibit VC8 warnings
+CFLAGS=$(CFLAGS) /D_CRT_SECURE_NO_DEPRECATE
+
+# default Windows flags as defined from VC IDE
+CFLAGS=$(CFLAGS) /DWIN32 /D_WINDOWS
 
 ##############################################
 

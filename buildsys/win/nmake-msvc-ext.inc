@@ -4,6 +4,16 @@ INCPATH=$(INCPATH) /I$(FLEXTINC)
 LIBPATH=$(LIBPATH) /LIBPATH:$(FLEXTLIB)
 LIBS=$(LIBS) $(FLEXTNAME).lib
 
+!ifndef SHARED
+!ifdef SNDOBJ
+LIBS=$(LIBS) $(SNDOBJ)\lib\SndObj.lib
+!endif
+
+!ifdef STK
+LIBS=$(LIBS) $(STK)\src\Stk.obj
+!endif
+!endif
+
 ##############################################
 
 # default target
@@ -18,8 +28,16 @@ $(TARGETPATH): $(OUTPATH)
 {$(SRCDIR)}.cpp{}.obj:
 	cl /c $(CFLAGS) $(DEFS) $(INCPATH) $** /Fo$(TARGETPATH)\$@
 
+.cpp.obj:
+    @-mkdir $(TARGETPATH)\$(@D:/=\) 2> NUL
+	cl /c $(CFLAGS) $(DEFS) $(INCPATH) $(SRCDIR)\$** /Fo$(TARGETPATH)\$@
+
 {$(SRCDIR)}.c{}.obj:
 	cl /c $(CFLAGS) $(DEFS) $(INCPATH) $** /Fo$(TARGETPATH)\$@
+
+.c.obj:
+    @-mkdir $(TARGETPATH)\$(@D:/=\) 2> NUL
+	cl /c $(CFLAGS) $(DEFS) $(INCPATH) $(SRCDIR)\$** /Fo$(TARGETPATH)\$@
 
 $(TARGET):: $(TARGETPATH)
 

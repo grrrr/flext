@@ -121,8 +121,9 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(prereq)\pthreads\include;$(pdmax)\pd\src;$(prereq)\sndobj\include;$(prereq)\stk\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS_PD;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_EXPORTS;xFLEXT_ATTRHIDE;xFLEXT_NOATTREDIT;_WIN32_WINNT=0x501;xFLEXT_USECMEM"
+				EnableIntrinsicFunctions="TRUE"
+				AdditionalIncludeDirectories="&quot;$(pdmax)\pd\src&quot;;&quot;$(prereq)\pthreads\include&quot;;&quot;$(prereq)\sndobj\include&quot;;&quot;$(prereq)\stk\include&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS=2;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_EXPORTS;xFLEXT_ATTRHIDE;xFLEXT_NOATTREDIT;_WIN32_WINNT=0x501;FLEXT_USECMEM"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				RuntimeTypeInfo="TRUE"
@@ -172,8 +173,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				EnableIntrinsicFunctions="TRUE"
-				AdditionalIncludeDirectories="&quot;$(prereq)\pthreads\include&quot;;&quot;$(pdmax)\pd\src&quot;;&quot;$(prereq)\sndobj\include\SndObj&quot;;&quot;$(prereq)\stk\include&quot;;C:\data\nova\libs\lockfree"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS=2;FLEXT_USE_SIMD;FLEXT_EXPORTS;FLEXT_DEBUGMEM;_WIN32_WINNT=0x400;WIN"
+				AdditionalIncludeDirectories="&quot;$(prereq)\pthreads\include&quot;;&quot;c:\programme\pd-0.40-2\src&quot;;&quot;$(prereq)\sndobj\include\SndObj&quot;;&quot;$(prereq)\stk\include&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;FLEXT_SYS=2;FLEXT_USE_SIMD;FLEXT_EXPORTS;xFLEXT_DEBUGMEM;_WIN32_WINNT=0x400;WIN"
 				StringPooling="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="5"
@@ -224,7 +225,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;$(pdmax)\pd\src&quot;;&quot;$(prereq)\sndobj\include&quot;;&quot;$(prereq)\stk\include&quot;;&quot;$(prereq)\pthreads\include&quot;;c:\data\nova\libs\lockfree"
+				AdditionalIncludeDirectories="&quot;$(pdmax)\pd\src&quot;;&quot;$(prereq)\sndobj\include&quot;;&quot;$(prereq)\stk\include&quot;;&quot;$(prereq)\pthreads\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;FLEXT_SYS=2;FLEXT_THREADS;FLEXT_USE_SIMD;FLEXT_EXPORTS;_WIN32_WINNT=0x501"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
@@ -275,7 +276,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="c:\programme\audio\pd\src;c:\data\prog\audio\sndobj\include;c:\data\prog\audio\stk\include"
+				EnableIntrinsicFunctions="TRUE"
+				AdditionalIncludeDirectories="&quot;$(prereq)\pthreads\include&quot;;c:\data\pdmax\pd\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;FLEXT_SYS=2;FLEXT_USE_SIMD;FLEXT_EXPORTS;_WIN32_WINNT=0x400"
 				StringPooling="TRUE"
 				RuntimeLibrary="4"
@@ -814,7 +816,7 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="pd-msvc/flext-pd_td.lib"
+				OutputFile="pd-msvc/flext-pd_td_l.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -4197,7 +4199,8 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="PD Release|Win32">
+					Name="PD Release|Win32"
+					ExcludedFromBuild="TRUE">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
@@ -4410,7 +4413,8 @@ copy F:\prog\max\flext\max-msvc\flext.max.dll f:\prog\dll
 						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="PD Release|Win32">
+					Name="PD Release|Win32"
+					ExcludedFromBuild="TRUE">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"

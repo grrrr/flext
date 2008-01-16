@@ -1,1 +1,104 @@
-## automake template# added by tim blechmann# added by Thomas Grill## static librarieslib_LIBRARIES = libflext-@SYSTEM@_s.a libflext-@SYSTEM@_sd.a libflext-@SYSTEM@_t.a libflext-@SYSTEM@_td.a # shared librarieslib_LTLIBRARIES = libflext-@SYSTEM@.la libflext-@SYSTEM@_d.la SRCS_FLEXT = \	flbase.cpp \	flext.cpp \	flbuf.cpp \	fldsp.cpp \	fllib.cpp \	flxlet.cpp \	flattr.cpp \	flattr_ed.cpp \	flsupport.cpp \	flutil.cpp \	flthr.cpp \	fltimer.cpp \	flsimd.cpp \	flout.cpp \	flatom.cpp \	flatom_pr.cpp \	flatom_part.cpp \	flitem.cpp \	flmeth.cpp \	flmsg.cpp \	flproxy.cpp \	flqueue.cpp \	flbind.cpp \	flmap.cppnobase_pkginclude_HEADERS = \	flprefix.h \	flstdc.h \	flbase.h \	flclass.h \	flext.h \	flsupport.h \	flmap.h \	fldsp.h \	flinternal.h \	flcontainers.h \	fldefs.h \	fldefs_hdr.h \	fldefs_setup.h \	fldefs_methcb.h \	fldefs_meththr.h \	fldefs_methadd.h \	fldefs_methbind.h \	fldefs_methcall.h \	fldefs_attrcb.h \	fldefs_attrvar.h \	fldefs_attradd.h \	lockfree/prefix.hpp \	lockfree/branch_hints.hpp \	lockfree/cas.hpp \	lockfree/atomic_int.hpp \	lockfree/atomic_ptr.hpp \	lockfree/fifo.hpp \	lockfree/stack.hpp# handling for stk / sndobjSRCS_STK = flstk.cppHDRS_STK = flstk.cppSRCS_SNDOBJ = flsndobj.cppHDRS_SNDOBJ = flsndobj.cppif SNDOBJSRCS_FLEXT         += $(SRCS_SNDOBJ)nobase_pkginclude_HEADERS += $(HDRS_SNDOBJ)LIB_SNDOBJ         = -lsndobjendifif STKSRCS_FLEXT         += $(SRCS_STK)nobase_pkginclude_HEADERS += $(HDRS_STK)LIB_STK            =  -lstkendiflibflext_@SYSTEM@_s_a_SOURCES    = $(SRCS_FLEXT)libflext_@SYSTEM@_sd_a_SOURCES  = $(SRCS_FLEXT)libflext_@SYSTEM@_t_a_SOURCES  = $(SRCS_FLEXT)libflext_@SYSTEM@_td_a_SOURCES = $(SRCS_FLEXT)libflext_@SYSTEM@_la_SOURCES = $(SRCS_FLEXT)libflext_@SYSTEM@_d_la_SOURCES = $(SRCS_FLEXT)libflext_@SYSTEM@_s_a_CXXFLAGS    = @OPT_FLAGS@ @INCLUDEDIR@ libflext_@SYSTEM@_sd_a_CXXFLAGS  = @DBG_FLAGS@ @INCLUDEDIR@libflext_@SYSTEM@_t_a_CXXFLAGS  = @OPT_FLAGS@ @INCLUDEDIR@ -DFLEXT_THREADS libflext_@SYSTEM@_td_a_CXXFLAGS = @DBG_FLAGS@ @INCLUDEDIR@ -DFLEXT_THREADS libflext_@SYSTEM@_la_CXXFLAGS    = @OPT_FLAGS@ @INCLUDEDIR@ -DFLEXT_SHAREDlibflext_@SYSTEM@_d_la_CXXFLAGS  = @DBG_FLAGS@ @INCLUDEDIR@ -DFLEXT_SHAREDlibflext_@SYSTEM@_la_LDFLAGS  = $(patsubst %,-framework %,@FRAMEWORKS@)libflext_@SYSTEM@_d_la_LDFLAGS  = $(patsubst %,-framework %,@FRAMEWORKS@) 
+#
+# automake template
+# added by tim blechmann
+# added by Thomas Grill
+#
+
+# static libraries
+lib_LIBRARIES = libflext-@SYSTEM@_s.a libflext-@SYSTEM@_sd.a libflext-@SYSTEM@_t.a libflext-@SYSTEM@_td.a 
+# shared libraries
+lib_LTLIBRARIES = libflext-@SYSTEM@.la libflext-@SYSTEM@_d.la 
+
+SRCS_FLEXT = \
+	flbase.cpp \
+	flext.cpp \
+	flbuf.cpp \
+	fldsp.cpp \
+	fllib.cpp \
+	flxlet.cpp \
+	flattr.cpp \
+	flattr_ed.cpp \
+	flsupport.cpp \
+	flutil.cpp \
+	flthr.cpp \
+	fltimer.cpp \
+	flsimd.cpp \
+	flout.cpp \
+	flatom.cpp \
+	flatom_pr.cpp \
+	flatom_part.cpp \
+	flitem.cpp \
+	flmeth.cpp \
+	flmsg.cpp \
+	flproxy.cpp \
+	flqueue.cpp \
+	flbind.cpp \
+	flmap.cpp
+
+nobase_pkginclude_HEADERS = \
+	flprefix.h \
+	flstdc.h \
+	flbase.h \
+	flclass.h \
+	flext.h \
+	flsupport.h \
+	flmap.h \
+	fldsp.h \
+	flinternal.h \
+	flcontainers.h \
+	fldefs.h \
+	fldefs_hdr.h \
+	fldefs_setup.h \
+	fldefs_methcb.h \
+	fldefs_meththr.h \
+	fldefs_methadd.h \
+	fldefs_methbind.h \
+	fldefs_methcall.h \
+	fldefs_attrcb.h \
+	fldefs_attrvar.h \
+	fldefs_attradd.h \
+	lockfree/prefix.hpp \
+	lockfree/branch_hints.hpp \
+	lockfree/cas.hpp \
+	lockfree/atomic_int.hpp \
+	lockfree/atomic_ptr.hpp \
+	lockfree/fifo.hpp \
+	lockfree/stack.hpp
+
+
+
+# handling for stk / sndobj
+SRCS_STK = flstk.cpp
+HDRS_STK = flstk.cpp
+
+SRCS_SNDOBJ = flsndobj.cpp
+HDRS_SNDOBJ = flsndobj.cpp
+
+if SNDOBJ
+SRCS_FLEXT         += $(SRCS_SNDOBJ)
+nobase_pkginclude_HEADERS += $(HDRS_SNDOBJ)
+LIB_SNDOBJ         = -lsndobj
+endif
+
+if STK
+SRCS_FLEXT         += $(SRCS_STK)
+nobase_pkginclude_HEADERS += $(HDRS_STK)
+LIB_STK            =  -lstk
+endif
+
+libflext_@SYSTEM@_s_a_SOURCES    = $(SRCS_FLEXT)
+libflext_@SYSTEM@_sd_a_SOURCES  = $(SRCS_FLEXT)
+libflext_@SYSTEM@_t_a_SOURCES  = $(SRCS_FLEXT)
+libflext_@SYSTEM@_td_a_SOURCES = $(SRCS_FLEXT)
+libflext_@SYSTEM@_la_SOURCES = $(SRCS_FLEXT)
+libflext_@SYSTEM@_d_la_SOURCES = $(SRCS_FLEXT)
+
+libflext_@SYSTEM@_s_a_CXXFLAGS    = @OPT_FLAGS@ @INCLUDEDIR@ 
+libflext_@SYSTEM@_sd_a_CXXFLAGS  = @DBG_FLAGS@ @INCLUDEDIR@
+libflext_@SYSTEM@_t_a_CXXFLAGS  = @OPT_FLAGS@ @INCLUDEDIR@ -DFLEXT_THREADS 
+libflext_@SYSTEM@_td_a_CXXFLAGS = @DBG_FLAGS@ @INCLUDEDIR@ -DFLEXT_THREADS 
+libflext_@SYSTEM@_la_CXXFLAGS    = @OPT_FLAGS@ @INCLUDEDIR@ -DFLEXT_SHARED
+libflext_@SYSTEM@_d_la_CXXFLAGS  = @DBG_FLAGS@ @INCLUDEDIR@ -DFLEXT_SHARED
+
+libflext_@SYSTEM@_la_LDFLAGS  = $(patsubst %,-framework %,@FRAMEWORKS@)
+libflext_@SYSTEM@_d_la_LDFLAGS  = $(patsubst %,-framework %,@FRAMEWORKS@) 

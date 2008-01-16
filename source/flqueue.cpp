@@ -241,7 +241,7 @@ private:
         {
             FLEXT_ASSERT(t);
             th = t;
-            SetMsg(NULL,NULL,NULL);
+            SetMsg(NULL,0,NULL);
         }
 
         void Idle(bool (*idlefun)(int argc,const t_atom *argv),int argc,const t_atom *argv)

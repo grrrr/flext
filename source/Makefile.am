@@ -93,12 +93,12 @@ libflext_@SYSTEM@_td_a_SOURCES = $(SRCS_FLEXT)
 libflext_@SYSTEM@_la_SOURCES = $(SRCS_FLEXT)
 libflext_@SYSTEM@_d_la_SOURCES = $(SRCS_FLEXT)
 
-libflext_@SYSTEM@_s_a_CXXFLAGS    = @OPT_FLAGS@ @INCLUDEDIR@ 
-libflext_@SYSTEM@_sd_a_CXXFLAGS  = @DBG_FLAGS@ @INCLUDEDIR@
-libflext_@SYSTEM@_t_a_CXXFLAGS  = @OPT_FLAGS@ @INCLUDEDIR@ -DFLEXT_THREADS 
-libflext_@SYSTEM@_td_a_CXXFLAGS = @DBG_FLAGS@ @INCLUDEDIR@ -DFLEXT_THREADS 
-libflext_@SYSTEM@_la_CXXFLAGS    = @OPT_FLAGS@ @INCLUDEDIR@ -DFLEXT_SHARED
-libflext_@SYSTEM@_d_la_CXXFLAGS  = @DBG_FLAGS@ @INCLUDEDIR@ -DFLEXT_SHARED
+libflext_@SYSTEM@_s_a_CXXFLAGS    = @OPT_FLAGS@ $(patsubst %,-I%,@INCLUDEDIRS@)
+libflext_@SYSTEM@_sd_a_CXXFLAGS  = @DBG_FLAGS@ $(patsubst %,-I%,@INCLUDEDIRS@)
+libflext_@SYSTEM@_t_a_CXXFLAGS  = @OPT_FLAGS@ $(patsubst %,-I%,@INCLUDEDIRS@) -DFLEXT_THREADS 
+libflext_@SYSTEM@_td_a_CXXFLAGS = @DBG_FLAGS@ $(patsubst %,-I%,@INCLUDEDIRS@) -DFLEXT_THREADS 
+libflext_@SYSTEM@_la_CXXFLAGS    = @OPT_FLAGS@ $(patsubst %,-I%,@INCLUDEDIRS@) -DFLEXT_SHARED
+libflext_@SYSTEM@_d_la_CXXFLAGS  = @DBG_FLAGS@ $(patsubst %,-I%,@INCLUDEDIRS@) -DFLEXT_SHARED
 
 libflext_@SYSTEM@_la_LDFLAGS  = $(patsubst %,-framework %,@FRAMEWORKS@)
 libflext_@SYSTEM@_d_la_LDFLAGS  = $(patsubst %,-framework %,@FRAMEWORKS@) 

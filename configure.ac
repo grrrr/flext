@@ -28,13 +28,13 @@ if test $SYSTEM == max; then
 # check for MaxAPI.h in pd folder
 	AC_CHECK_FILE([$sysdir/max-includes/MaxAPI.h],,AC_MSG_ERROR([Cannot find $sysdir/max-includes/MaxAPI.h]))
 	AC_CHECK_FILE([$sysdir/max-includes/MaxAudioAPI.h],,AC_MSG_ERROR([Cannot find $sysdir/max-includes/MaxAudioAPI.h]))
-	INCLUDEDIR+=" -I$sysdir/max-includes -I$sysdir/msp-includes"
+	INCLUDEDIRS+=" $sysdir/max-includes $sysdir/msp-includes"
 
 elif test $SYSTEM == pd; then
 	AC_DEFINE(FLEXT_SYS,2)
 # check for g_canvas.h in pd folder
 	AC_CHECK_FILE([$sysdir/g_canvas.h],,AC_MSG_ERROR([Cannot find $sysdir/g_canvas.h]))
-	INCLUDEDIR+=" -I$sysdir"
+	INCLUDEDIRS+=" $sysdir"
 
 else
 	AC_MSG_ERROR([system must be pd or max])
@@ -44,7 +44,7 @@ AC_ARG_WITH(atomic_ops,
 	AS_HELP_STRING(--with-atomic_ops,[path to atomic_ops library (needed for gcc version < 4.1)]),
 	[
 	    AC_CHECK_FILE([$withval/atomic_ops.h],,AC_MSG_ERROR([Cannot find $withval/atomic_ops.h]))	
-		INCLUDEDIR+=" -I$withval"
+		INCLUDEDIRS+=" $withval"
         AC_DEFINE(USE_ATOMIC_OPS)
 	]
 )
@@ -54,7 +54,7 @@ AC_ARG_WITH(stkdir,
 	[
 	    AC_CHECK_FILE([$withval/Stk.h],,AC_MSG_ERROR([Cannot find $withval/Stk.h]))	
 		stkdir=$withval
-		INCLUDEDIR+=" -I$withval"
+		INCLUDEDIRS+=" $withval"
 	]
 )
 
@@ -65,7 +65,7 @@ AC_ARG_WITH(sndobjdir,
 	[
 		AC_CHECK_FILE([$withval/SndObj.h],,AC_MSG_ERROR([Cannot find $withval/SndObj.h]))
 		sndobjdir=$withval
-		INCLUDEDIR+=" -I$withval"
+		INCLUDEDIRS+=" $withval"
 	]
 )
 
@@ -118,6 +118,7 @@ DBG_FLAGS="-DFLEXT_DEBUG -g"
 AC_ARG_ENABLE(optimize, 
 	AS_HELP_STRING(--enable-optimize,[enables optimized architecture specific builds for pentium4, pentium3, G4, G5, etc.]),
     [
+        # tune to a specific CPU
 		OPT_FLAGS+=" -mtune=$enableval"
 		case $enableval in
 			pentium | pentium2 | athlon | pentium-mmx)
@@ -126,8 +127,10 @@ AC_ARG_ENABLE(optimize,
 				OPT_FLAGS+=" -march=$enableval -mfpmath=sse";
 				AC_DEFINE(FLEXT_USE_SIMD);;
 			G3)
+                # set specific architecture (like march)
 				OPT_FLAGS+=" -mcpu=$enableval";;
 			G5 | G4)
+                # set specific architecture (like march)
 				OPT_FLAGS+=" -mcpu=$enableval -faltivec";
 				AC_DEFINE(FLEXT_USE_SIMD);;
 			*)
@@ -137,7 +140,7 @@ AC_ARG_ENABLE(optimize,
 )
 
 
-AC_SUBST(INCLUDEDIR)
+AC_SUBST(INCLUDEDIRS)
 AC_SUBST(SYSTEM)
 AC_SUBST(OPT_FLAGS)
 AC_SUBST(DBG_FLAGS)

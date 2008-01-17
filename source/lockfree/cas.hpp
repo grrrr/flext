@@ -55,9 +55,11 @@ namespace lockfree
 #if defined(__GNUC__) && ( (__GNUC__ > 4) || ((__GNUC__ >= 4) && (__GNUC_MINOR__ >= 1)) )
         return __sync_bool_compare_and_swap(addr, old, nw);
 #elif defined(_MSC_VER)
-        return _InterlockedCompareExchange(addr,old,nw) == old;
+        ASSERT((size_t(addr)&3) == 0);
+        return _InterlockedCompareExchange(addr,nw,old) == old;
 #elif defined(_WIN32)
-        return InterlockedCompareExchange(addr,old,nw) == old;
+        ASSERT((size_t(addr)&3) == 0);
+        return InterlockedCompareExchange(addr,nw,old) == old;
 #elif defined(__APPLE__)
         return OSAtomicCompareAndSwap32(old,nw,addr);
 #elif defined(AO_HAVE_compare_and_swap_full)

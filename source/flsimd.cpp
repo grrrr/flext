@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2008 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -38,21 +38,23 @@ $LastChangedBy$
         #include <xmmintrin.h> // SSE
         #include <emmintrin.h> // SSE2
         #include <mm3dnow.h> // 3DNow!
-    #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__MWERKS__) && defined(__VEC__)
-        #if FLEXT_OSAPI == FLEXT_OSAPI_MAC_MACH
-            #include <sys/sysctl.h> 
-            #include <vDSP.h>
-        #else
-            #include <Gestalt.h> 
-        #endif
+    #elif defined(__APPLE__)  && defined(__VEC__)
+        #ifdef __MWERKS__
+            #if FLEXT_OSAPI == FLEXT_OSAPI_MAC_MACH
+                #include <sys/sysctl.h> 
+                #include <vDSP.h>
+            #else
+                #include <Gestalt.h> 
+            #endif
     
-        #pragma altivec_model on
+            #pragma altivec_model on
 
-        #include <altivec.h>
-        #include <vectorOps.h>
-    #elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__GNUC__) && defined(__VEC__)
-        #include <sys/sysctl.h> 
-        #include <vecLib/vecLib.h>
+            #include <altivec.h>
+            #include <vectorOps.h>
+        #elif defined(__GNUC__)
+            #include <sys/sysctl.h> 
+            #include <vecLib/vecLib.h>
+        #endif
     #endif
 
 #endif // FLEXT_USE_SIMD
@@ -69,7 +71,7 @@ unsigned long flext::GetSIMDCapabilities() { return simdcaps; }
 
 #ifdef FLEXT_USE_SIMD
 
-#if FLEXT_CPU == FLEXT_CPU_IA32 || FLEXT_CPU == FLEXT_CPU_X84_64
+#if FLEXT_CPU == FLEXT_CPU_IA32 || FLEXT_CPU == FLEXT_CPU_X86_64
 
 #define _CPU_FEATURE_MMX    0x0001
 #define _CPU_FEATURE_SSE    0x0002
@@ -297,14 +299,14 @@ static int _cpuid (_p_info *pinfo)
 static unsigned long setsimdcaps()
 {
     unsigned long simdflags = flext::simd_none;
-#if FLEXT_CPU == FLEXT_CPU_IA32 || FLEXT_CPU == FLEXT_CPU_AMD64
+#if FLEXT_CPU == FLEXT_CPU_IA32 || FLEXT_CPU == FLEXT_CPU_X86_64
     _p_info cpuinfo;
     int feature = _cpuid(&cpuinfo);
     if(cpuinfo.os_support&_CPU_FEATURE_MMX) simdflags += flext::simd_mmx;
     if(cpuinfo.os_support&_CPU_FEATURE_3DNOW) simdflags += flext::simd_3dnow;
     if(cpuinfo.os_support&_CPU_FEATURE_SSE) simdflags += flext::simd_sse;
     if(cpuinfo.os_support&_CPU_FEATURE_SSE2) simdflags += flext::simd_sse2;
-#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__) 
+#elif defined(__APPLE__) && defined(__VEC__) 
     #if FLEXT_OSAPI == FLEXT_OSAPI_MAC_MACH
 
     int selectors[2] = { CTL_HW, HW_VECTORUNIT }; 
@@ -329,7 +331,7 @@ static unsigned long setsimdcaps()
 }
 
 
-#if FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
+#if (FLEXT_CPU == FLEXT_CPU_PPC || FLEXT_CPU == FLEXT_CPU_PPC64)  && defined(__VEC__)
 
 /* functions for misaligned vector data - taken from the Altivec tutorial of Ian Ollmann, Ph.D. */
 
@@ -547,7 +549,7 @@ zero:
         while(cnt--) *(dst++) = *(src++); 
     }
     else
-#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VECTOROPS__)
+#elif (FLEXT_CPU == FLEXT_CPU_PPC || FLEXT_CPU == FLEXT_CPU_PPC64) && defined(__VECTOROPS__)
     if(true) {
         int n = cnt>>2,n4 = n<<2;
         vScopy(n4,(vector float *)src,(vector float *)dst);
@@ -570,7 +572,7 @@ zero:
 #endif
 }
 
-#if defined(FLEXT_USE_SIMD) && FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
+#if defined(FLEXT_USE_SIMD) && (FLEXT_CPU == FLEXT_CPU_PPC || FLEXT_CPU == FLEXT_CPU_PPC64) && defined(__VEC__)
 // because of some frame code Altivec stuff should be in seperate functions....
 
 static const vector float zero = (vector float)(0);
@@ -801,7 +803,7 @@ zero:
         while(cnt--) *(dst++) = s; 
     }
     else
-#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
+#elif (FLEXT_CPU == FLEXT_CPU_PPC || FLEXT_CPU == FLEXT_CPU_PPC64) && defined(__VEC__)
     if(GetSIMDCapabilities()&simd_altivec && IsVectorAligned(dst)) 
         SetAltivec(dst,cnt,s);
     else
@@ -920,12 +922,12 @@ zero:
         while(cnt--) *(dst++) = *(src++)*op; 
     }
     else
-#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VDSP__)
+#elif defined(__APPLE__) && defined(__VDSP__)
     if(true) {
-        vsmul(src,1,&op,dst,1,cnt);
+        vDSP_vsmul(src,1,&op,dst,1,cnt);
     }
     else
-#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
+#elif (FLEXT_CPU == FLEXT_CPU_PPC || FLEXT_CPU == FLEXT_CPU_PPC64) && defined(__VEC__)
     if(GetSIMDCapabilities()&simd_altivec && VectorsAligned(src,dst)) 
         MulAltivec(dst,src,op,cnt);
     else
@@ -1149,12 +1151,12 @@ zero:
         while(cnt--) *(dst++) = *(src++) * *(op++); 
     }
     else
-#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VDSP__)
+#elif defined(__APPLE__) && defined(__VDSP__)
     if(true) {
-        vmul(src,1,op,1,dst,1,cnt);
+        vDSP_vmul(src,1,op,1,dst,1,cnt);
     }
     else
-#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
+#elif (FLEXT_CPU == FLEXT_CPU_PPC || FLEXT_CPU == FLEXT_CPU_PPC64) && defined(__VEC__)
     if(GetSIMDCapabilities()&simd_altivec && VectorsAligned(src,op,dst)) 
         MulAltivec(dst,src,op,cnt);
     else
@@ -1285,7 +1287,7 @@ zero:
         while(cnt--) *(dst++) = *(src++)+op; 
     }
     else
-#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
+#elif (FLEXT_CPU == FLEXT_CPU_PPC || FLEXT_CPU == FLEXT_CPU_PPC64) && defined(__VEC__)
     if(GetSIMDCapabilities()&simd_altivec && VectorsAligned(src,dst)) 
         AddAltivec(dst,src,op,cnt);
     else
@@ -1510,12 +1512,12 @@ zero:
         while(cnt--) *(dst++) = *(src++) + *(op++); 
     }
     else
-#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VDSP__)
+#elif defined(__APPLE__) && defined(__VDSP__)
     if(true) {
-        vadd(src,1,op,1,dst,1,cnt);
+        vDSP_vadd(src,1,op,1,dst,1,cnt);
     }
     else
-#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
+#elif (FLEXT_CPU == FLEXT_CPU_PPC || FLEXT_CPU == FLEXT_CPU_PPC64) && defined(__VEC__)
     if(GetSIMDCapabilities()&simd_altivec && VectorsAligned(src,op,dst))
         AddAltivec(dst,src,op,cnt);
     else
@@ -1659,7 +1661,7 @@ zero:
         while(cnt--) *(dst++) = *(src++)*opmul+opadd; 
     }
     else
-#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
+#elif (FLEXT_CPU == FLEXT_CPU_PPC || FLEXT_CPU == FLEXT_CPU_PPC64) && defined(__VEC__)
     if(GetSIMDCapabilities()&simd_altivec && VectorsAligned(src,dst)) 
         ScaleAltivec(dst,src,opmul,opadd,cnt);
     else
@@ -1803,7 +1805,7 @@ zero:
         while(cnt--) *(dst++) = *(src++) * opmul + *(opadd++); 
     }
     else
-#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
+#elif (FLEXT_CPU == FLEXT_CPU_PPC || FLEXT_CPU == FLEXT_CPU_PPC64) && defined(__VEC__)
     if(GetSIMDCapabilities()&simd_altivec && VectorsAligned(src,dst,opadd)) 
         ScaleAltivec(dst,src,opmul,opadd,cnt);
     else
@@ -1971,7 +1973,7 @@ zero:
         while(cnt--) *(dst++) = *(src++) * *(opmul++) + *(opadd++); 
     }
     else
-#elif FLEXT_CPU == FLEXT_CPU_PPC && defined(__VEC__)
+#elif (FLEXT_CPU == FLEXT_CPU_PPC || FLEXT_CPU == FLEXT_CPU_PPC64) && defined(__VEC__)
     if(GetSIMDCapabilities()&simd_altivec && VectorsAligned(src,dst,opmul,opadd)) 
         ScaleAltivec(dst,src,opmul,opadd,cnt);
     else

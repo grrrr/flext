@@ -76,6 +76,7 @@ $LastChangedBy$
 
 #define FLEXT_CPU_IA64   5 // Itanium
 #define FLEXT_CPU_X86_64 6 // AMD-K8, EMT64
+#define FLEXT_CPU_PPC64  7 // G5 in 64 bit mode
 
 // compatibility
 #define FLEXT_CPU_INTEL FLEXT_CPU_IA32
@@ -164,7 +165,19 @@ $LastChangedBy$
 
     #ifdef __MACH__
         // quick fix for OSX Mach-O
-        #define TARGET_CPU_PPC 1
+        #ifdef __POWERPC__
+            #ifdef __LP64__
+                #define TARGET_CPU_PPC64 1
+            #else
+                #define TARGET_CPU_PPC 1
+            #endif
+        #else
+            #ifdef __LP64__
+                #define TARGET_CPU_X86_64 1
+            #else
+                #define TARGET_CPU_IA32 1
+            #endif
+        #endif
         #define TARGET_OS_MAC 1
         #define TARGET_API_MAC_OSX 1
     #else
@@ -174,8 +187,12 @@ $LastChangedBy$
     #endif
 
     #ifndef FLEXT_CPU
-        #if TARGET_CPU_X86
-            #define FLEXT_CPU FLEXT_CPU_INTEL
+        #if TARGET_CPU_X86_64
+            #define FLEXT_CPU FLEXT_CPU_X86_64
+        #elif TARGET_CPU_X86
+            #define FLEXT_CPU FLEXT_CPU_IA32
+        #elif TARGET_CPU_PPC64
+            #define FLEXT_CPU FLEXT_CPU_PPC64
         #elif TARGET_CPU_PPC
             #define FLEXT_CPU FLEXT_CPU_PPC
         #elif TARGET_CPU_MIPS
@@ -222,11 +239,13 @@ $LastChangedBy$
     // and Intel (as suggested by Tim Blechmann)
 
     #ifndef FLEXT_CPU
-        #if defined(__x86_64__) // not sure about this one
+        #if defined(__x86_64__)
             #define FLEXT_CPU FLEXT_CPU_X86_64
         #elif defined(_X86_) || defined(__i386__) || defined(__i586__) || defined(__i686__)
             #define FLEXT_CPU FLEXT_CPU_IA32
-        #elif defined(__POWERPC__)
+        #elif defined(__ppc64__)
+            #define FLEXT_CPU FLEXT_CPU_PPC64
+        #elif defined(__ppc__)
             #define FLEXT_CPU FLEXT_CPU_PPC
         #elif defined(__MIPS__)
             #define FLEXT_CPU FLEXT_CPU_MIPS

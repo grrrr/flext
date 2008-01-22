@@ -61,7 +61,10 @@ ifdef SHARED
 else
 	-ln -sf $(VERNAME) $(FLEXTLIB)/$(TARGETNAME)
 endif
-	install $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTINC)
+# make directories
+	for f in $(dir $(patsubst %,$(FLEXTINC)/%,$(HDRS))); do mkdir -p $$f; done
+# install headers (each one separately as relative paths might occur)
+	for f in $(HDRS); do install $(SRCDIR)/$$f $(FLEXTINC)/$$f; done
 # transfer build system
 #	cp -rf buildsys $(FLEXTSYS)
 #	install build.sh $(FLEXTSYS)

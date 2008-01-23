@@ -55,10 +55,10 @@ namespace lockfree
 #if defined(__GNUC__) && ( (__GNUC__ > 4) || ((__GNUC__ >= 4) && (__GNUC_MINOR__ >= 1)) )
         return __sync_bool_compare_and_swap(addr, old, nw);
 #elif defined(_MSC_VER)
-        ASSERT((size_t(addr)&3) == 0);
+        assert((size_t(addr)&3) == 0);  // a runtime check only for debug mode is somehow insufficient....
         return _InterlockedCompareExchange(addr,nw,old) == old;
-#elif defined(_WIN32)
-        ASSERT((size_t(addr)&3) == 0);
+#elif defined(_WIN32) || defined(_WIN64)
+        assert((size_t(addr)&3) == 0);  // a runtime check only for debug mode is somehow insufficient....
         return InterlockedCompareExchange(addr,nw,old) == old;
 #elif defined(__APPLE__)
         if(sizeof(D) == 4)
@@ -124,12 +124,21 @@ namespace lockfree
 #elif defined(_MSC_VER)
         bool ok;
         __asm {
+#ifdef _WIN32
             mov eax,[old1]
             mov edx,[old2]
             mov ebx,[new1]
             mov ecx,[new2]
             mov edi,[addr]
             lock cmpxchg8b [edi]
+#else
+            mov rax,[old1]
+            mov rdx,[old2]
+            mov rbx,[new1]
+            mov rcx,[new2]
+            mov rdi,[addr]
+            lock cmpxchg16b [rdi]
+#endif
             setz [ok]
         }
         return ok;

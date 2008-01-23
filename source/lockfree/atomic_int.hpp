@@ -31,7 +31,7 @@
 namespace lockfree
 {
 
-template <typename T>
+template <typename T = size_t>
 class atomic_int
 {
 public:

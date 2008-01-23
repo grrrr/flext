@@ -61,7 +61,12 @@ namespace lockfree
         ASSERT((size_t(addr)&3) == 0);
         return InterlockedCompareExchange(addr,nw,old) == old;
 #elif defined(__APPLE__)
-        return OSAtomicCompareAndSwap32(old,nw,addr);
+        if(sizeof(D) == 4)
+            return OSAtomicCompareAndSwap32(old,nw,addr);
+        else if(sizeof(D) == 8)
+            return OSAtomicCompareAndSwap64(old,nw,addr);
+        else
+            assert(false);
 #elif defined(AO_HAVE_compare_and_swap_full)
         return AO_compare_and_swap_full(reinterpret_cast<volatile AO_t*>(addr),
             reinterpret_cast<AO_t>(old),
@@ -128,19 +133,29 @@ namespace lockfree
             setz [ok]
         }
         return ok;
-#elif defined(__GNUC__) && defined(__i386__)
+#elif defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
         char result;
-#ifndef __PIC__
-        __asm__ __volatile__("lock; cmpxchg8b %0; setz %1"
-                             : "=m"(*addr), "=q"(result)
-                             : "m"(*addr), "a" (old1), "d" (old2),
-                             "b" (new1), "c" (new2) : "memory");
-#else
-        __asm__ __volatile__("push %%ebx; movl %5,%%ebx; lock; cmpxchg8b %0; setz %1; pop %%ebx"
-                             : "=m"(*addr), "=q"(result)
-                             : "m"(*addr), "a" (old1), "d" (old2),
-                             "m" (new1), "c" (new2) : "memory");
-#endif
+        if(sizeof(D) == 4 && sizeof(E) == 4) {
+            #ifndef __PIC__
+            __asm__ __volatile__("lock; cmpxchg8b %0; setz %1"
+                                 : "=m"(*addr), "=q"(result)
+                                 : "m"(*addr), "a" (old1), "d" (old2),
+                                 "b" (new1), "c" (new2) : "memory");
+            #else
+            __asm__ __volatile__("push %%ebx; movl %5,%%ebx; lock; cmpxchg8b %0; setz %1; pop %%ebx"
+                                 : "=m"(*addr), "=q"(result)
+                                 : "m"(*addr), "a" (old1), "d" (old2),
+                                 "m" (new1), "c" (new2) : "memory");
+            #endif
+        }
+        else if(sizeof(D) == 8 && sizeof(E) == 8) {
+            __asm__ __volatile__("lock; cmpxchg16b %0; setz %1"
+                                 : "=m"(*addr), "=q"(result)
+                                 : "m"(*addr), "a" (old1), "d" (old2),
+                                 "b" (new1), "c" (new2) : "memory");
+        }
+        else
+            assert(false);
         return result != 0;
 #elif defined(AO_HAVE_double_compare_and_swap_full)
         if (sizeof(D) != sizeof(AO_t) || sizeof(E) != sizeof(AO_t)) {

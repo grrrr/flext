@@ -219,6 +219,8 @@ void flext::ThrHelper(void *)
 
 	// helper loop
 	for(;;) {
+        ThreadRegistryWorker();
+
 		thrhelpcond->Wait();
 
    		// start all inactive threads

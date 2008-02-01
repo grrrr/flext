@@ -58,6 +58,16 @@ endif
 
 ##############################################
 
+ifdef LOCKFREE
+INCPATH += -I$(LOCKFREE)
+endif
+
+ifdef ATOMIC_OPS
+INCPATH += -I$(ATOMIC_OPS)/src
+endif
+
+##############################################
+
 CSRCS=$(patsubst %.c,$(SRCDIR)/%.c,$(filter %.c,$(SRCS)))
 CPPSRCS=$(patsubst %.cpp,$(SRCDIR)/%.cpp,$(filter %.cpp,$(SRCS)))
 COBJS=$(patsubst %.c,$(OBJPATH)/%.o,$(filter %.c,$(SRCS))) 

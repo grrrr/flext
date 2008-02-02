@@ -64,6 +64,7 @@ endif
 
 ifdef ATOMIC_OPS
 INCPATH += -I$(ATOMIC_OPS)/src
+DEFS += -DUSE_ATOMIC_OPS
 endif
 
 ##############################################

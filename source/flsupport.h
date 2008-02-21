@@ -1149,9 +1149,6 @@ public:
     //! \brief Unregister current thread 
     static void UnregisterThread(thrid_t id = GetThreadId());
 
-    protected:
-    static void ThreadRegistryWorker();
-
 #endif // FLEXT_THREADS
 
 //!     @} FLEXT_S_THREAD

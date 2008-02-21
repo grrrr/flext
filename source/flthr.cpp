@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2008 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -122,6 +122,7 @@ public:
 	}
 };
 
+#if 0
 class ThrIdCell
 	: public LifoCell
 	, public ThrId
@@ -138,11 +139,15 @@ public:
 };
 
 static RegQueue regqueue,unregqueue;
+#endif
 
 // this should _definitely_ be a hashmap....
 // \TODO above all it should be populated immediately, otherwise it could easily happen 
 // that the passing on to the set happens too late! We need that lockfree set!
 static std::set<ThrId> regthreads;
+
+//! Registry lock
+static flext::ThrMutex *thrregmtx = NULL;
 
 //! Helper thread conditional
 static flext::ThrCond *thrhelpcond = NULL;
@@ -162,6 +167,9 @@ bool flext::StartHelper()
 {
 	bool ok = false;
     initialized = false;
+
+    thrregmtx = new ThrMutex;
+
 #if FLEXT_THREADS == FLEXT_THR_POSIX
 	pthread_attr_t attr;
 	pthread_attr_init(&attr);
@@ -219,8 +227,6 @@ void flext::ThrHelper(void *)
 
 	// helper loop
 	for(;;) {
-        ThreadRegistryWorker();
-
 		thrhelpcond->Wait();
 
    		// start all inactive threads
@@ -392,24 +398,44 @@ void flext::PopThread()
 
 void flext::RegisterThread(thrid_t id)
 {
+#if 1
+    FLEXT_ASSERT(thrregmtx);
+    thrregmtx->Lock();
+    regthreads.insert(id);
+    thrregmtx->Unlock();
+#else
 	regqueue.Push(new ThrIdCell(id));
+#endif
 }
 
 void flext::UnregisterThread(thrid_t id)
 {
+#if 1
+    FLEXT_ASSERT(thrregmtx);
+    thrregmtx->Lock();
+    regthreads.erase(id);
+    thrregmtx->Unlock();
+#else
 	unregqueue.Push(new ThrIdCell(id));
+#endif
 }
 
+#if 0
 void flext::ThreadRegistryWorker()
 {
 	ThrIdCell *pid;
 	while((pid = regqueue.Pop()) != NULL) { regthreads.insert(pid->id); delete pid; }
 	while((pid = unregqueue.Pop()) != NULL) { regthreads.erase(pid->id); delete pid; }
 }
+#endif
 
 bool flext::IsThreadRegistered()
 {
-	return regthreads.find(GetThreadId()) != regthreads.end();
+    FLEXT_ASSERT(thrregmtx);
+    thrregmtx->Lock();
+	bool fnd = regthreads.find(GetThreadId()) != regthreads.end();
+    thrregmtx->Unlock();
+    return fnd;
 }
 
 //! Terminate all object threads

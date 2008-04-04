@@ -3,11 +3,11 @@
 (
     (
         (
-            test ".$(which libtoolize)" == "." || libtoolize --force
+            test -x "$(which libtoolize)" && libtoolize --force
         ) ||
         (
             # MacOS has no libtoolize... use glibtoolize instead
-            test ".$(which glibtoolize)" == "." || glibtoolize --force
+            test -x "$(which glibtoolize)" && glibtoolize --force
         )
     ) &&
     aclocal &&

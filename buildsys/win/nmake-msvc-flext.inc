@@ -70,4 +70,4 @@ _install_:
 	copy $(TARGET:.dll=.lib) $(FLEXTLIB) > nul	
 !endif
 # copy headers
-	for %%i in ($(HDRS)) do @copy $(SRCDIR)\%%i $(FLEXTINC) > nul
+	for %%i in ($(HDRS:/=\)) do @xcopy $(SRCDIR)\%%i $(FLEXTINC) > nul

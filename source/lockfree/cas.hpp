@@ -38,6 +38,8 @@ namespace lockfree
     {
 #if defined(__GNUC__) && ( (__GNUC__ > 4) || ((__GNUC__ >= 4) && (__GNUC_MINOR__ >= 1)) )
         __sync_synchronize();
+#elif defined(__GNUC__) && defined(__i386__)
+		asm("" : : : "memory");
 #elif defined(_MSC_VER) && (_MSC_VER >= 1300)
         _ReadWriteBarrier();
 #elif defined(__APPLE__)

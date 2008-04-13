@@ -1,6 +1,6 @@
 //  $Id$
 //
-//  Copyright (C) 2007 Tim Blechmann & Thomas Grill
+//  Copyright (C) 2007-2008 Tim Blechmann & Thomas Grill
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -118,7 +118,31 @@ namespace lockfree
         nw.c.d = new1;
         nw.c.e = new2;
 
-        return __sync_bool_compare_and_swap_8(reinterpret_cast<volatile long long*>(addr),
+        return __sync_bool_compare_and_swap /*_8*/ (reinterpret_cast<volatile long long*>(addr),
+            old.l,
+            nw.l);
+#elif defined(__GNUC__) && ((__GNUC__ >  4) || ( (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 2) ) ) && defined(__x86_64__)
+        struct packed_c
+        {
+            D d;
+            E e;
+        };
+
+        union cu
+        {
+            packed_c c;
+            long long l;
+        };
+
+        cu old;
+        old.c.d = old1;
+        old.c.e = old2;
+
+        cu nw;
+        nw.c.d = new1;
+        nw.c.e = new2;
+
+        return __sync_bool_compare_and_swap/* _16 */(reinterpret_cast<volatile long long*>(addr),
             old.l,
             nw.l);
 #elif defined(_MSC_VER)
@@ -179,30 +203,6 @@ namespace lockfree
             static_cast<AO_t>(new2),
             reinterpret_cast<AO_t>(new1)
         );
-#elif defined(__GNUC__) && ((__GNUC__ >  4) || ( (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 2) ) ) && defined(__x86_64__)
-        struct packed_c
-        {
-            D d;
-            E e;
-        };
-
-        union cu
-        {
-            packed_c c;
-            long long l;
-        };
-
-        cu old;
-        old.c.d = old1;
-        old.c.e = old2;
-
-        cu nw;
-        nw.c.d = new1;
-        nw.c.e = new2;
-
-        return __sync_bool_compare_and_swap/* _16 */(reinterpret_cast<volatile long long*>(addr),
-            old.l,
-            nw.l);
 #else
 #pragma message("blocking CAS2 emulation")
         struct packed_c

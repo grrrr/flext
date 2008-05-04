@@ -118,5 +118,17 @@ const char *flext::ScanAtom(t_atom &a,const char *c)
 
     *end = sv;
 
-	return c;
+	return end;
 }
+
+int flext::ScanList(int argc,t_atom *argv,const char *buf)
+{
+    int read;    
+    for(read = 0; read < argc; ++read)
+    {
+        buf = ScanAtom(argv[read],buf);
+        if(!buf) break;
+    }
+    return read;
+}
+

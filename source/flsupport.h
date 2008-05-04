@@ -353,8 +353,16 @@ public:
 
     //! Copy a list of atoms
     static t_atom *CopyList(int argc,const t_atom *argv);
+    
     //! Print an atom list
     static bool PrintList(int argc,const t_atom *argv,char *buf,size_t bufsz);
+    
+    /*! Scan an atom list
+        \param argc ... maximum amount of atoms scanned
+        \param argv ... array of atoms
+        \param buf ... char buffer
+    */
+    static int ScanList(int argc,t_atom *argv,const char *buf);
 
     //! Copy a memory region
     static void CopyMem(void *dst,const void *src,int bytes);
@@ -614,6 +622,11 @@ public:
 
         //! Represent as a string
         bool Print(char *buffer,int buflen) const { return flext::PrintList(Count(),Atoms(),buffer,buflen); }
+
+        /*! Read from string
+            \note: doesn't clear or reallocate the list
+        */
+        int Scan(const char *buffer) { return flext::ScanList(Count(),Atoms(),buffer); }
 
     protected:
         virtual void Alloc(int sz,int keepix = -1,int keeplen = -1,int keepto = 0);

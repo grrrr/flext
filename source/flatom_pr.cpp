@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2008 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -17,7 +17,7 @@ $LastChangedBy$
  
 #include "flext.h"
 #include <ctype.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include <string.h>
 #include <stdio.h>
 
@@ -105,7 +105,7 @@ const char *flext::ScanAtom(t_atom &a,const char *c)
     char *endp;
     // see if it's a float - thanks to Frank Barknecht
     fres = (float)strtod(c,&endp);   
-    if(!*c && endp != c) { 
+    if(*c && endp != c) { 
         int ires = (int)fres; // try a cast
         if(fres == ires)
             SetInt(a,ires);

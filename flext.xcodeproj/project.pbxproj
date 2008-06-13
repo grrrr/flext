@@ -358,14 +358,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		E99747CD0770545100206F68 /* libflext-pd_s.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libflext-pd_s.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E99747CD0770545100206F68 /* libflext-pd_sd.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libflext-pd_sd.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9974802077054CD00206F68 /* vecLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vecLib.framework; path = /System/Library/Frameworks/vecLib.framework; sourceTree = "<absolute>"; };
-		E997483F0770570800206F68 /* libflext-pd_t.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libflext-pd_t.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E9974886077058C100206F68 /* flext-pd.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "flext-pd.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E997483F0770570800206F68 /* libflext-pd_td.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libflext-pd_td.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E9974886077058C100206F68 /* flext-pd_d.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "flext-pd_d.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E99748D007705BAF00206F68 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
-		E99749BE07705CC400206F68 /* libflext-max_s.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libflext-max_s.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E99749BE07705CC400206F68 /* libflext-max_sd.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libflext-max_sd.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9974BC407705F1400206F68 /* libflext-max_t.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libflext-max_t.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E9974BFA07705F4F00206F68 /* flext-max.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "flext-max.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E9974BFA07705F4F00206F68 /* flext-max_d.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "flext-max_d.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9974E140770780D00206F68 /* MaxAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MaxAPI.framework; path = /Library/Frameworks/MaxAPI.framework; sourceTree = "<absolute>"; };
 		E9974E150770780D00206F68 /* MaxAudioAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MaxAudioAPI.framework; path = /Library/Frameworks/MaxAudioAPI.framework; sourceTree = "<absolute>"; };
 		E99A3D8B0D35903A00E692EF /* atomic_int.hpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = atomic_int.hpp; sourceTree = "<group>"; };
@@ -492,12 +492,12 @@
 		034768DDFF38A45A11DB9C8B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E99747CD0770545100206F68 /* libflext-pd_s.a */,
-				E997483F0770570800206F68 /* libflext-pd_t.a */,
-				E9974886077058C100206F68 /* flext-pd.dylib */,
-				E99749BE07705CC400206F68 /* libflext-max_s.a */,
+				E99747CD0770545100206F68 /* libflext-pd_sd.a */,
+				E997483F0770570800206F68 /* libflext-pd_td.a */,
+				E9974886077058C100206F68 /* flext-pd_d.dylib */,
+				E99749BE07705CC400206F68 /* libflext-max_sd.a */,
 				E9974BC407705F1400206F68 /* libflext-max_t.a */,
-				E9974BFA07705F4F00206F68 /* flext-max.dylib */,
+				E9974BFA07705F4F00206F68 /* flext-max_d.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -866,7 +866,7 @@
 			);
 			name = "PD static single";
 			productName = "PD static single";
-			productReference = E99747CD0770545100206F68 /* libflext-pd_s.a */;
+			productReference = E99747CD0770545100206F68 /* libflext-pd_sd.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		E997480D0770570800206F68 /* PD static multi */ = {
@@ -883,7 +883,7 @@
 			);
 			name = "PD static multi";
 			productName = "PD static single";
-			productReference = E997483F0770570800206F68 /* libflext-pd_t.a */;
+			productReference = E997483F0770570800206F68 /* libflext-pd_td.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		E9974885077058C100206F68 /* PD shared */ = {
@@ -900,7 +900,7 @@
 			);
 			name = "PD shared";
 			productName = "PD shared";
-			productReference = E9974886077058C100206F68 /* flext-pd.dylib */;
+			productReference = E9974886077058C100206F68 /* flext-pd_d.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 		E997498C07705CC400206F68 /* Max static single */ = {
@@ -917,7 +917,7 @@
 			);
 			name = "Max static single";
 			productName = "PD static single";
-			productReference = E99749BE07705CC400206F68 /* libflext-max_s.a */;
+			productReference = E99749BE07705CC400206F68 /* libflext-max_sd.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		E9974B9207705F1400206F68 /* Max static multi */ = {
@@ -951,7 +951,7 @@
 			);
 			name = "Max shared";
 			productName = "PD shared";
-			productReference = E9974BFA07705F4F00206F68 /* flext-max.dylib */;
+			productReference = E9974BFA07705F4F00206F68 /* flext-max_d.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -960,7 +960,6 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = E9A5BCB90A3381C400AD9F03 /* Build configuration list for PBXProject "flext" */;
-			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 0867D691FE84028FC02AAC07 /* flext-PB */;
 			productRefGroup = 034768DDFF38A45A11DB9C8B /* Products */;

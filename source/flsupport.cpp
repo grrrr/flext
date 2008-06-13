@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2008 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -151,7 +151,8 @@ void *flext_root::operator new(size_t bytes)
 
 void flext_root::operator delete(void *blk)
 {
-	FLEXT_ASSERT(blk);
+    if(!blk) return;
+
     FLEXT_ASSERT(MemCheck(blk));
 
 #ifdef FLEXT_DEBUGMEM

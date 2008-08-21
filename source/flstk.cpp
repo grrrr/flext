@@ -93,7 +93,7 @@ void flext_stk::CbSignal()
 
 flext_stk::Input::Input(const t_sample *b,int v): 
     buf(b),vecsz(v),
-    index(0)
+    index(v-1)
 {}
 
 MY_FLOAT *flext_stk::Input::tick(MY_FLOAT *vector,unsigned int vectorSize)

@@ -44,6 +44,8 @@ Version history:
 - updated build system to handle UB on OSX (including architecture-specific compiler flags)
 - new idle callback/method functionality
 - Max: fixed bug at destructing of proxy objects
+- fixed message processing of empty lists
+- fixed STK inlet processing
 
 0.5.0:
 - fixes for 64 bit builds (size_t is integer type of pointer size)

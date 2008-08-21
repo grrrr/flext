@@ -73,7 +73,8 @@ void flext_dsp::SetupDsp(t_signal **sp)
 #endif
 
     // store current dsp parameters
-    srate = sp[0]->s_sr;
+    srate = sys_getsr();   // \TODO need not be stored in each object....
+    // overlap = sp[0]->s_sr/srate;  // currently not used/exposed
     blksz = sp[0]->s_n;  // is this guaranteed to be the same as sys_getblksize() ?
 
     // store in and out signal vectors

@@ -364,7 +364,7 @@
 		E9974886077058C100206F68 /* flext-pd_d.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "flext-pd_d.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E99748D007705BAF00206F68 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		E99749BE07705CC400206F68 /* libflext-max_sd.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libflext-max_sd.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E9974BC407705F1400206F68 /* libflext-max_t.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libflext-max_t.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E9974BC407705F1400206F68 /* libflext-max_td.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libflext-max_td.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9974BFA07705F4F00206F68 /* flext-max_d.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "flext-max_d.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9974E140770780D00206F68 /* MaxAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MaxAPI.framework; path = /Library/Frameworks/MaxAPI.framework; sourceTree = "<absolute>"; };
 		E9974E150770780D00206F68 /* MaxAudioAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MaxAudioAPI.framework; path = /Library/Frameworks/MaxAudioAPI.framework; sourceTree = "<absolute>"; };
@@ -496,7 +496,7 @@
 				E997483F0770570800206F68 /* libflext-pd_td.a */,
 				E9974886077058C100206F68 /* flext-pd_d.dylib */,
 				E99749BE07705CC400206F68 /* libflext-max_sd.a */,
-				E9974BC407705F1400206F68 /* libflext-max_t.a */,
+				E9974BC407705F1400206F68 /* libflext-max_td.a */,
 				E9974BFA07705F4F00206F68 /* flext-max_d.dylib */,
 			);
 			name = Products;
@@ -934,7 +934,7 @@
 			);
 			name = "Max static multi";
 			productName = "PD static single";
-			productReference = E9974BC407705F1400206F68 /* libflext-max_t.a */;
+			productReference = E9974BC407705F1400206F68 /* libflext-max_td.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		E9974BC507705F4F00206F68 /* Max shared */ = {
@@ -960,6 +960,7 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = E9A5BCB90A3381C400AD9F03 /* Build configuration list for PBXProject "flext" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 0867D691FE84028FC02AAC07 /* flext-PB */;
 			productRefGroup = 034768DDFF38A45A11DB9C8B /* Products */;

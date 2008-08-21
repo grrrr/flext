@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2008 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -230,9 +230,14 @@ bool flext_base::CbMethodHandler(int inlet,const t_symbol *s,int argc,const t_at
         }
         else if(argc == 0) {
             // If symbol message (pure anything without args) is not explicitly handled: try list handler instead
-            t_atom at;
-            SetSymbol(at,s);
-            ret = FindMeth(inlet,sym_list,1,&at);
+            if(s == sym_bang)
+                // bang is equal to an empty list
+                ret = FindMeth(inlet,sym_list,0,NULL);
+            else {
+                t_atom at;
+                SetSymbol(at,s);
+                ret = FindMeth(inlet,sym_list,1,&at);
+            }
 #ifdef FLEXT_LOG_MSGS
 			if(ret) post("found %s message in %s,%i",GetString(sym_list),__FILE__,__LINE__);
 #endif

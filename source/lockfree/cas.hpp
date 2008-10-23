@@ -29,7 +29,7 @@
 
 #ifndef _WIN32
 // pthreads are not available under Windows by default and we should not need them there
-#include <pthread.h>
+#   include <pthread.h>
 #endif
 
 namespace lockfree
@@ -42,7 +42,7 @@ namespace lockfree
 		asm("" : : : "memory");
 #elif defined(_MSC_VER) && (_MSC_VER >= 1300)
         _ReadWriteBarrier();
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_4
         OSMemoryBarrier();
 #elif defined(AO_HAVE_nop_full)
         AO_nop_full();
@@ -62,7 +62,7 @@ namespace lockfree
 #elif defined(_WIN32) || defined(_WIN64)
         assert((size_t(addr)&3) == 0);  // a runtime check only for debug mode is somehow insufficient....
         return InterlockedCompareExchange(addr,nw,old) == old;
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_4
         if(sizeof(D) == 4)
             return OSAtomicCompareAndSwap32(old,nw,addr);
         else if(sizeof(D) == 8)
@@ -74,7 +74,13 @@ namespace lockfree
             reinterpret_cast<AO_t>(old),
             reinterpret_cast<AO_t>(nw));
 #else
-#pragma message("blocking cas emulation")
+
+#   ifdef __GNUC__
+#       warning blocking CAS emulation
+#   else
+#       pragma message("blocking CAS emulation")
+#   endif
+
         pthread_mutex_t guard = PTHREAD_MUTEX_INITIALIZER;
         int status = pthread_mutex_lock(&guard);
         assert(!status);
@@ -151,21 +157,21 @@ namespace lockfree
 #elif defined(_MSC_VER)
         bool ok;
         __asm {
-#ifdef _WIN32
+#   ifdef _WIN32
             mov eax,[old1]
             mov edx,[old2]
             mov ebx,[new1]
             mov ecx,[new2]
             mov edi,[addr]
             lock cmpxchg8b [edi]
-#else
+#   else
             mov rax,[old1]
             mov rdx,[old2]
             mov rbx,[new1]
             mov rcx,[new2]
             mov rdi,[addr]
             lock cmpxchg16b [rdi]
-#endif
+#   endif
             setz [ok]
         }
         return ok;
@@ -207,7 +213,12 @@ namespace lockfree
             reinterpret_cast<AO_t>(new1)
         );
 #else
-#pragma message("blocking CAS2 emulation")
+
+#   ifdef __GNUC__
+#       warning blocking CAS2 emulation
+#   else
+#       pragma message("blocking CAS2 emulation")
+#   endif
         struct packed_c
         {
             D d;

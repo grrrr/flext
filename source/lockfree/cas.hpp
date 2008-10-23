@@ -99,7 +99,8 @@ namespace lockfree
     template <class C, class D, class E>
     inline bool CAS2(C * addr,D old1,E old2,D new1,E new2)
     {
-#if defined(__GNUC__) && ((__GNUC__ >  4) || ( (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 2) ) ) && defined(__i386__)
+#if defined(__GNUC__) && ((__GNUC__ >  4) || ( (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 2) ) )
+    && defined(__i686__ || __pentiumpro__ || __nocona__ || __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8)
         struct packed_c
         {
             D d;

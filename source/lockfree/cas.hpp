@@ -42,7 +42,7 @@ namespace lockfree
 		asm("" : : : "memory");
 #elif defined(_MSC_VER) && (_MSC_VER >= 1300)
         _ReadWriteBarrier();
-#elif defined(__APPLE__) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_4
+#elif defined(__APPLE__) && (MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_4)
         OSMemoryBarrier();
 #elif defined(AO_HAVE_nop_full)
         AO_nop_full();
@@ -62,7 +62,7 @@ namespace lockfree
 #elif defined(_WIN32) || defined(_WIN64)
         assert((size_t(addr)&3) == 0);  // a runtime check only for debug mode is somehow insufficient....
         return InterlockedCompareExchange(addr,nw,old) == old;
-#elif defined(__APPLE__) && MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_4
+#elif defined(__APPLE__) && (MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_4)
         if(sizeof(D) == 4)
             return OSAtomicCompareAndSwap32(old,nw,addr);
         else if(sizeof(D) == 8)
@@ -105,8 +105,7 @@ namespace lockfree
     template <class C, class D, class E>
     inline bool CAS2(C * addr,D old1,E old2,D new1,E new2)
     {
-#if defined(__GNUC__) && ((__GNUC__ >  4) || ( (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 2) ) )
-    && defined(__i686__ || __pentiumpro__ || __nocona__ || __GCC_HAVE_SYNC_COMPARE_AND_SWAP_8)
+#if defined(__GNUC__) && ((__GNUC__ > 4) || ( (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 2) ) ) && (defined(__i686__) || defined(__pentiumpro__) || defined(__nocona__) || defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8))
         struct packed_c
         {
             D d;
@@ -127,10 +126,10 @@ namespace lockfree
         nw.c.d = new1;
         nw.c.e = new2;
 
-        return __sync_bool_compare_and_swap /*_8*/ (reinterpret_cast<volatile long long*>(addr),
+        return __sync_bool_compare_and_swap_8(reinterpret_cast<volatile long long*>(addr),
             old.l,
             nw.l);
-#elif defined(__GNUC__) && ((__GNUC__ >  4) || ( (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 2) ) ) && defined(__x86_64__)
+#elif defined(__GNUC__) && ((__GNUC__ >  4) || ( (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 2) ) ) && (defined(__x86_64__) || defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_16))
         struct packed_c
         {
             D d;
@@ -151,7 +150,7 @@ namespace lockfree
         nw.c.d = new1;
         nw.c.e = new2;
 
-        return __sync_bool_compare_and_swap/* _16 */(reinterpret_cast<volatile long long*>(addr),
+        return __sync_bool_compare_and_swap_16(reinterpret_cast<volatile long long*>(addr),
             old.l,
             nw.l);
 #elif defined(_MSC_VER)

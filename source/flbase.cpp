@@ -182,12 +182,14 @@ void flext_obj::GetCanvasArgs(AtomList &args) const
 #if FLEXT_SYS == FLEXT_SYS_MAX 
 static short patcher_myvol(t_patcher *x)
 {
+#ifndef	MM_UNIFIED // Max5 check... we don't know what to do yet
     t_box *w;
     if(x->p_vol)
         return x->p_vol;
     else if((w = (t_box *)x->p_vnewobj) != NULL)
         return patcher_myvol(w->b_patcher);
     else
+#endif
         return 0;
 }
 #endif

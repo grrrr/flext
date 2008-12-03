@@ -164,7 +164,10 @@ typedef method t_method;
 typedef method t_newmethod;
 typedef int t_atomtype;
 
-typedef struct clock t_clock;
+#ifndef MM_UNIFIED  // bad way to detect Max5 SDK....
+typedef struct clock t_clock;  // this is defined in the Max5 SDK
+#endif
+
 typedef void t_binbuf;
 
 #undef clock_free

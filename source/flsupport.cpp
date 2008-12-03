@@ -124,16 +124,16 @@ void *flext_root::operator new(size_t bytes)
     char *blk;
     if(UNLIKELY(bytes >= LARGEALLOC)) {
 #if FLEXT_SYS == FLEXT_SYS_MAX && defined(_SYSMEM_H_)
-        blk = (char *)::sysmem_newptr(bytes);
+        blk = (char *)sysmem_newptr(bytes);
 #else
         // use C library function for large memory blocks
-        blk = (char *)::malloc(bytes);
+        blk = (char *)malloc(bytes);
 #endif
     }
     else {
     	//! We need system locking here for secondary threads!
         SYSLOCK();
-	    blk = (char *)::getbytes(bytes);
+	    blk = (char *)getbytes(bytes);
         SYSUNLOCK();
     }
 
@@ -164,16 +164,16 @@ void flext_root::operator delete(void *blk)
 
     if(UNLIKELY(bytes >= LARGEALLOC)) {
 #if FLEXT_SYS == FLEXT_SYS_MAX && defined(_SYSMEM_H_)
-        ::sysmem_freeptr(ori);
+        sysmem_freeptr(ori);
 #else
         // use C library function for large memory blocks
-        ::free(ori);
+        free(ori);
 #endif
     }
     else {
 	    //! We need system locking here for secondary threads!
         SYSLOCK();
-	    ::freebytes(ori,bytes);
+	    freebytes(ori,bytes);
         SYSUNLOCK();
     }
 }
@@ -201,10 +201,10 @@ void *flext_root::NewAligned(size_t bytes,int bitalign)
     char *blk;
     if(UNLIKELY(bytes >= LARGEALLOC)) {
 #if FLEXT_SYS == FLEXT_SYS_MAX && defined(_SYSMEM_H_)
-        blk = (char *)::sysmem_newptr(bytes);
+        blk = (char *)sysmem_newptr(bytes);
 #else
         // use C library function for large memory blocks
-        blk = (char *)::malloc(bytes);
+        blk = (char *)malloc(bytes);
 #endif
     }
     else {
@@ -212,9 +212,9 @@ void *flext_root::NewAligned(size_t bytes,int bitalign)
         SYSLOCK();
 
 #if defined(FLEXT_USE_CMEM)
-	    blk = (char *)::malloc(bytes);
+	    blk = (char *)malloc(bytes);
 #else
-	    blk = (char *)::getbytes(bytes);
+	    blk = (char *)getbytes(bytes);
 #endif
         SYSUNLOCK();
     }
@@ -235,10 +235,10 @@ void flext_root::FreeAligned(void *blk)
 
     if(UNLIKELY(bytes >= LARGEALLOC)) {
 #if FLEXT_SYS == FLEXT_SYS_MAX && defined(_SYSMEM_H_)
-        ::sysmem_freeptr(ori);
+        sysmem_freeptr(ori);
 #else
         // use C library function for large memory blocks
-        ::free(ori);
+        free(ori);
 #endif
     }
     else {
@@ -246,9 +246,9 @@ void flext_root::FreeAligned(void *blk)
         SYSLOCK();
 
 #if defined(FLEXT_USE_CMEM)
-	    ::free(ori);
+	    free(ori);
 #else
-	    ::freebytes(ori,bytes);
+	    freebytes(ori,bytes);
 #endif
         SYSUNLOCK();
     }

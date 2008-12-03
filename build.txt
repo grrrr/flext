@@ -195,7 +195,7 @@ lnx-pd-gcc, single/multi/shared
 =================
 
 Thanks to Tim Blechmann, flext can also be built using autoconf.
-This only works under unix shells.
+This only works under unix shells (like bash).
 
 When starting from a fresh cvs-based copy of flext first run
 ./bootstrap.sh
@@ -213,6 +213,16 @@ make
 
 and install it with
 sudo make install
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+MINGW: the specs file for certain gcc versions seems to be wrong and needs to be fixed before building flext
+
+- locate the specs file with "gcc --print-file specs"
+- open this file with your favourite editor
+- search for the line "*md_startfile_prefix:"
+- change the next line "/mingw/lib" to "/lib"
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ----------------------------------------------------------------------------
 

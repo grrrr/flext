@@ -1,5 +1,4 @@
-/* 
-
+/*
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
 Copyright (c) 2001-2008 Thomas Grill (gr@grrrr.org)

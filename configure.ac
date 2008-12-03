@@ -9,63 +9,82 @@
 AC_INIT([flext],[0.5.1],[gr@grrrr.org])
 AM_INIT_AUTOMAKE
 
+if ( test $(uname -s) == CYGWIN_NT-5.0 ) || ( test $(uname -s) == CYGWIN_NT-5.1 ) || ( test $(uname -s) == MINGW32_NT-5.1 ); then
+	set win = 1
+fi
 
 # configure options
 AC_ARG_ENABLE(system,
-	AS_HELP_STRING(--enable-system,[realtime system [default=pd]]),
+	AC_HELP_STRING(--enable-system,[realtime system [default=pd]]),
     [SYSTEM=$enableval],
     [SYSTEM=pd]
 )
 
-AC_ARG_WITH(sysdir,
-	AS_HELP_STRING(--with-sysdir,[path to pd or max headers]),
-    [sysdir=$withval],
+AC_ARG_WITH(sdkdir,
+	AC_HELP_STRING(--with-sdkdir,[path to pd or max headers]),
+    [sdkdir=$withval],
 	AC_MSG_ERROR(path to system headers required $withval)
+)
+
+AC_ARG_WITH(pdbindir,
+	AC_HELP_STRING(--with-pdbindir,[path to pd bin dir]),
+	[
+		AC_CHECK_FILE([$withval/pd.dll],,AC_MSG_ERROR([Cannot find $withval/pd.dll]))	
+		LIBDIRS="$LIBDIRS $withval"
+	],
+	AC_MSG_ERROR(path to pd bin dir required)
 )
 
 if test $SYSTEM == max; then
 	AC_DEFINE(FLEXT_SYS,1)
 # check for MaxAPI.h in pd folder
-	AC_CHECK_FILE([$sysdir/max-includes/MaxAPI.h],,AC_MSG_ERROR([Cannot find $sysdir/max-includes/MaxAPI.h]))
-	AC_CHECK_FILE([$sysdir/max-includes/MaxAudioAPI.h],,AC_MSG_ERROR([Cannot find $sysdir/max-includes/MaxAudioAPI.h]))
-	INCLUDEDIRS+=" $sysdir/max-includes $sysdir/msp-includes"
+	AC_CHECK_FILE([$sdkdir/max-includes/MaxAPI.h],,AC_MSG_ERROR([Cannot find $sdkdir/max-includes/MaxAPI.h]))
+	AC_CHECK_FILE([$sdkdir/max-includes/MaxAudioAPI.h],,AC_MSG_ERROR([Cannot find $sdkdir/max-includes/MaxAudioAPI.h]))
+	INCLUDEDIRS="$INCLUDEDIRS $sdkdir/max-includes $sdkdir/msp-includes"
 
 elif test $SYSTEM == pd; then
+#	if test $win; then
+#	fi
+
 	AC_DEFINE(FLEXT_SYS,2)
 # check for g_canvas.h in pd folder
-	AC_CHECK_FILE([$sysdir/g_canvas.h],,AC_MSG_ERROR([Cannot find $sysdir/g_canvas.h]))
-	INCLUDEDIRS+=" $sysdir"
+	AC_CHECK_FILE([$sdkdir/g_canvas.h],,AC_MSG_ERROR([Cannot find $sdkdir/g_canvas.h]))
+	INCLUDEDIRS="$INCLUDEDIRS $sdkdir"
+	libs="$libs pd"
 
+	if test $win; then
+		AC_DEFINE(NT)
+	fi
 else
 	AC_MSG_ERROR([system must be pd or max])
 fi
 
 AC_ARG_WITH(atomic_ops,
-	AS_HELP_STRING(--with-atomic_ops,[path to atomic_ops library (needed for gcc version < 4.1)]),
+	AC_HELP_STRING(--with-atomic_ops,[path to atomic_ops library (needed for gcc version < 4.1 on non-i386 cpus)]),
 	[
 	    AC_CHECK_FILE([$withval/atomic_ops.h],,AC_MSG_ERROR([Cannot find $withval/atomic_ops.h]))	
-		INCLUDEDIRS+=" $withval"
+		INCLUDEDIRS="$INCLUDEDIRS $withval"
         AC_DEFINE(USE_ATOMIC_OPS)
 	]
 )
 
 AC_ARG_WITH(stkdir,
-	AS_HELP_STRING(--with-stkdir,[path to STK headers]),
+	AC_HELP_STRING(--with-stk,[path to STK headers]),
 	[
 	    AC_CHECK_FILE([$withval/Stk.h],,AC_MSG_ERROR([Cannot find $withval/Stk.h]))	
 		stkdir=$withval
-		INCLUDEDIRS+=" $withval"
+		INCLUDEDIRS="$INCLUDEDIRS $withval"
 	]
 )
 
 AM_CONDITIONAL([STK],[test "$stkdir"])
 
 AC_ARG_WITH(sndobjdir,
-	AS_HELP_STRING(--with-sndobjdir,[path to SndObj headers]),
+	AC_HELP_STRING(--with-sndobj,[path to SndObj headers]),
 	[
 		AC_CHECK_FILE([$withval/SndObj.h],,AC_MSG_ERROR([Cannot find $withval/SndObj.h]))
 		sndobjdir=$withval
-		INCLUDEDIRS+=" $withval"
+		INCLUDEDIRS="$INCLDUEDIRS $withval"
 	]
 )
 
@@ -76,15 +95,18 @@ AM_CONDITIONAL([SNDOBJ],[test "$sndobjdir"])
 test ".$CFLAGS" = "." && CFLAGS=" "
 test ".$CXXFLAGS" = "." && CXXFLAGS=" "
 
+# needed for libtool to build win32 dlls
+AC_LIBTOOL_WIN32_DLL
+
+AM_ENABLE_STATIC
+AM_ENABLE_SHARED
+
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_LIBTOOL
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
-
-AM_ENABLE_STATIC
-AM_ENABLE_STATIC
 
 AC_LANG(C++)
 
@@ -104,34 +126,35 @@ AC_STRUCT_TM
 if test $(uname -s) == Linux; then
 	true
 elif test $(uname -s) == Darwin; then
-	FRAMEWORKS="ApplicationServices vecLib"
-elif ( test $(uname -s) == CYGWIN_NT-5.0 ) || ( test $(uname -s) == CYGWIN_NT-5.1 ) ; then
-	EXT_CFLAGS+=" -mms-bitfields -mno-cygwin"
+	FRAMEWORKS="$FRAMEWORKS ApplicationServices vecLib"
+elif test $win; then
+	C_FLAGS="$C_FLAGS -mms-bitfields -mno-cygwin"
+	LD_FLAGS="$LD_FLAGS -mno-cygwin"
 fi
 
 
 # set compilation flags
 
-OPT_FLAGS=-O2
-DBG_FLAGS="-DFLEXT_DEBUG -g"
+OPT_FLAGS="$C_FLAGS -O2"
+DBG_FLAGS="$C_FLAGS -DFLEXT_DEBUG -g"
 
 AC_ARG_ENABLE(optimize, 
-	AS_HELP_STRING(--enable-optimize,[enables optimized architecture specific builds for pentium4, pentium3, G4, G5, etc.]),
+	AC_HELP_STRING(--enable-optimize,[enables optimized architecture specific builds for pentium4, pentium3, G4, G5, etc.]),
     [
         # tune to a specific CPU
-		OPT_FLAGS+=" -mtune=$enableval"
+		OPT_FLAGS="$OPT_FLAGS -mtune=$enableval"
 		case $enableval in
 			pentium | pentium2 | athlon | pentium-mmx)
-				OPT_FLAGS+=" -march=$enableval";;
+				OPT_FLAGS="$OPT_FLAGS -march=$enableval";;
 			pentium3 | pentium3m | pentium4 | pentium4m | pentium-m | prescott | nocona | athlon-xp | athlon-mp | athlon64 | opteron) 
-				OPT_FLAGS+=" -march=$enableval -mfpmath=sse";
+				OPT_FLAGS="$OPT_FLAGS -march=$enableval -mfpmath=sse";
 				AC_DEFINE(FLEXT_USE_SIMD);;
 			G3)
                 # set specific architecture (like march)
-				OPT_FLAGS+=" -mcpu=$enableval";;
+				OPT_FLAGS="$OPT_FLAGS -mcpu=$enableval";;
 			G5 | G4)
                 # set specific architecture (like march)
-				OPT_FLAGS+=" -mcpu=$enableval -faltivec";
+				OPT_FLAGS="$OPT_FLAGS -mcpu=$enableval -faltivec";
 				AC_DEFINE(FLEXT_USE_SIMD);;
 			*)
 				;;
@@ -140,11 +163,14 @@ AC_ARG_ENABLE(optimize,
 )
 
 
-AC_SUBST(INCLUDEDIRS)
 AC_SUBST(SYSTEM)
+AC_SUBST(INCLUDEDIRS)
+AC_SUBST(LIBDIRS)
 AC_SUBST(OPT_FLAGS)
 AC_SUBST(DBG_FLAGS)
+AC_SUBST(LD_FLAGS)
 # AC_SUBST(API_VERSION)
+AC_SUBST(libs)
 AC_SUBST(stkdir)
 AC_SUBST(sndobjdir)
 AC_SUBST(FRAMEWORKS)

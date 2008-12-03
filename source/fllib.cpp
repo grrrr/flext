@@ -160,7 +160,7 @@ flext_class::flext_class(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*fr
     , dist(false)
 {}
 
-typedef TablePtrMap<const t_symbol *,flext_class *,8> LibMap;
+typedef std::map<const t_symbol *,flext_class *> LibMap;
 // static initialization (with constructor) doesn't work for Codewarrior
 static LibMap *libnames = NULL;
 
@@ -168,10 +168,15 @@ static LibMap *libnames = NULL;
 static flext_class *FindName(const t_symbol *s,flext_class *o = NULL) 
 {
 	if(!libnames) libnames = new LibMap;
-    flext_class *cl = libnames->find(s);
-    if(!cl && o)
-    	libnames->insert(s,cl = o);
-    return cl;
+	LibMap::iterator it = libnames->find(s);
+	if(it != libnames->end())
+		return it->second;
+	else if(o) {
+		(*libnames)[s] = o;
+		return o;
+	}
+	else
+		return NULL;
 }
 
 
@@ -393,6 +398,7 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 {
 	flext_hdr *obj = NULL;
 	flext_class *lo = FindName(s);
+
 	if(lo) {
 //		post("NEWOBJ %s = %p -> %p",GetString(s),lo,lo->clss);
 
@@ -440,7 +446,7 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 					if(i >= argc)
 						if(lo->argv[i] == FLEXTTPN_DEFSYM) SetSymbol(args[i],sym__);
 						else { misnum = -1,ok = false; break; }
-					else if(IsSymbol(argv[i])) 
+					else if(IsSymbol(argv[i]))
 //							SetSymbol(args[i],GetParamSym(GetSymbol(argv[i]),NULL));
 						args[i] = argv[i];
 					else ok = false;
@@ -457,6 +463,8 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 
 
 		if(ok) {
+            flext_obj::initing = true;
+
             try {
 #if FLEXT_SYS == FLEXT_SYS_PD
 			    obj = (flext_hdr *)::pd_new(lo->clss);
@@ -465,11 +473,9 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 #else
 #error
 #endif
-
                 flext_obj::m_holder = obj;
 			    flext_obj::m_holdclass = lo;
 			    flext_obj::m_holdname = s;
-                flext_obj::initing = true;
                 flext_obj::init_ok = true;
 
 			    // get actual flext object (newfun calls "new flext_obj()")
@@ -555,15 +561,15 @@ void flext_obj::obj_free(flext_hdr *h)
 	flext_class *lcl = FindName(name);
 
 	if(lcl) {
-        try {
-            flext_obj::exiting = true;
+        flext_obj::exiting = true;
 
+		try {
 		    // call virtual exit function
 		    hdr->data->Exit();
 
 		    // now call object destructor and deallocate
 		    lcl->freefun(hdr);
-        } //try
+        }
         catch(std::exception &x) {
             error("%s - Exception while destroying object: %s",GetString(name),x.what());
         }
@@ -574,12 +580,12 @@ void flext_obj::obj_free(flext_hdr *h)
     		error("%s - Unknown exception while destroying object",GetString(name));
         }
 
-        flext_obj::exiting = false;
+		flext_obj::exiting = false;
     }
 #ifdef FLEXT_DEBUG
 	else 
 #if FLEXT_SYS == FLEXT_SYS_MAX
-		// in Max/MSP an object with the name of the library exists, even if not explicitely declared!
+		// in Max/MSP an object with the name of the library exists, even if not explicitly declared!
 //		if(!lo->lib || s != lo->lib->name) 
 #endif
 		error("Class %s not found in library!",name);

@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2008 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -315,10 +315,7 @@ public:     	    	    \
 typedef NEW_CLASS thisType;  \
 typedef PARENT_CLASS thisParent;  \
 static FLEXT_CLASSDEF(flext_obj) *__init__(int argc,t_atom *argv);  \
-static void __free__(flext_hdr *hdr) {  	    	    	\
-	FLEXT_CLASSDEF(flext_obj) *mydata = hdr->data; delete mydata; \
-	hdr->flext_hdr::~flext_hdr(); \
-}   	    	\
+static void __free__(flext_hdr *hdr) { delete hdr->data; }   	    	\
 static void __setup__(t_classid classid) { thisParent::__setup__(classid); }
 
 
@@ -327,10 +324,7 @@ public:     	    	    \
 typedef NEW_CLASS thisType;  \
 typedef PARENT_CLASS thisParent;  \
 static FLEXT_CLASSDEF(flext_obj) *__init__(int argc,t_atom *argv);  \
-static void __free__(flext_hdr *hdr) {  	    	    	\
-	FLEXT_CLASSDEF(flext_obj) *mydata = hdr->data; delete mydata; \
-	hdr->flext_hdr::~flext_hdr(); \
-}   	    	\
+static void __free__(flext_hdr *hdr) { delete hdr->data; }   	    	\
 static void __setup__(t_classid classid) { 	    	\
 	thisParent::__setup__(classid);    	    	\
 	thisType::SETUPFUN(classid); \
@@ -342,10 +336,7 @@ typedef NEW_CLASS thisType;  \
 typedef PARENT_CLASS thisParent;  \
 typedef typename thisParent::t_classid t_classid;  \
 static FLEXT_CLASSDEF(flext_obj) *__init__(int argc,t_atom *argv);  \
-static void __free__(flext_hdr *hdr) {  	    	    	\
-	FLEXT_CLASSDEF(flext_obj) *mydata = hdr->data; delete mydata; \
-	hdr->flext_hdr::~flext_hdr(); \
-}   	    	\
+static void __free__(flext_hdr *hdr) { delete hdr->data; }   	    	\
 static void __setup__(t_classid classid) { thisParent::__setup__(classid); }
 
 
@@ -355,10 +346,7 @@ typedef NEW_CLASS thisType;  \
 typedef PARENT_CLASS thisParent;  \
 typedef typename thisParent::t_classid t_classid;  \
 static FLEXT_CLASSDEF(flext_obj) *__init__(int argc,t_atom *argv);  \
-static void __free__(flext_hdr *hdr) {  	    	    	\
-	FLEXT_CLASSDEF(flext_obj) *mydata = hdr->data; delete mydata; \
-	hdr->flext_hdr::~flext_hdr(); \
-}   	    	\
+static void __free__(flext_hdr *hdr) { delete hdr->data; }   	    	\
 static void __setup__(t_classid classid) { 	    	\
 	thisParent::__setup__(classid);    	    	\
 	thisType::SETUPFUN(classid); \

@@ -77,13 +77,13 @@ HDRS_SNDOBJ = flsndobj.cpp
 if SNDOBJ
 SRCS_FLEXT         += $(SRCS_SNDOBJ)
 nobase_pkginclude_HEADERS += $(HDRS_SNDOBJ)
-LIB_SNDOBJ         = -lsndobj
+LIB_SNDOBJ         = sndobj
 endif
 
 if STK
 SRCS_FLEXT         += $(SRCS_STK)
 nobase_pkginclude_HEADERS += $(HDRS_STK)
-LIB_STK            =  -lstk
+LIB_STK            =  stk
 endif
 
 libflext_@SYSTEM@_s_a_SOURCES    = $(SRCS_FLEXT)
@@ -100,5 +100,8 @@ libflext_@SYSTEM@_td_a_CXXFLAGS = @DBG_FLAGS@ $(patsubst %,-I%,@INCLUDEDIRS@) -D
 libflext_@SYSTEM@_la_CXXFLAGS    = @OPT_FLAGS@ $(patsubst %,-I%,@INCLUDEDIRS@) -DFLEXT_SHARED
 libflext_@SYSTEM@_d_la_CXXFLAGS  = @DBG_FLAGS@ $(patsubst %,-I%,@INCLUDEDIRS@) -DFLEXT_SHARED
 
-libflext_@SYSTEM@_la_LDFLAGS  = $(patsubst %,-framework %,@FRAMEWORKS@)
-libflext_@SYSTEM@_d_la_LDFLAGS  = $(patsubst %,-framework %,@FRAMEWORKS@) 
+libflext_@SYSTEM@_la_LDFLAGS  = @LD_FLAGS@ -no-undefined $(patsubst %,-L%,@LIBDIRS@) $(patsubst %,-l%,@libs@ $(LIB_SNDOBJ) $(LIB_STK)) $(patsubst %,-framework %,@FRAMEWORKS@)
+libflext_@SYSTEM@_d_la_LDFLAGS  = @LD_FLAGS@ -no-undefined $(patsubst %,-L%,@LIBDIRS@) $(patsubst %,-l%,@libs@ $(LIB_SNDOBJ) $(LIB_STK)) $(patsubst %,-framework %,@FRAMEWORKS@) 
+
+#libflext_@SYSTEM@_la_LIBADD = @libs@ 
+#libflext_@SYSTEM@_d_la_LIBADD = @libs@ 

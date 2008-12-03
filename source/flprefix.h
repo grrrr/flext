@@ -407,7 +407,7 @@ $LastChangedBy$
 
 /* Set the right calling convention (and exporting) for the OS */
 
-#if defined(_WIN32)
+#if defined(_MSC_VER)
 	#ifdef FLEXT_SHARED
         // for compiling a shared flext library FLEXT_EXPORTS must be defined
         #ifdef FLEXT_EXPORTS

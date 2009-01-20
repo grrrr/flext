@@ -47,10 +47,12 @@ INSTPATH=$(PDPATH)\extra
 # where is the STK installation?
 # (uncomment the line with # to disable STK support)
 # --------------------------------------------------------------------
-# In order to use STK you must have an Stk.obj file
-# made with MSVC (from within the STK src folder)
-#   cl /c /Ox /GR /EHsc /MT /I ..\include Stk.cpp
-#   (in case you define DYNAMIC=1 below, omit the /MT flag)
+# In order to use STK you must have an stk.lib library
+# Using MSVC you can build it as following (from the STK main folder):
+#   cl /c /GR /EHsc /Iinclude /MT /Ox src\*.cpp
+#     (in case you define DYNAMIC=1 below, omit the /MT flag and set /MD instead)
+#     (you will get errors for some files, you can ignore them in the flext context)
+#   lib *.obj /out:stk.lib
 #
 #STK=c:\data\prog\audio\stk
 

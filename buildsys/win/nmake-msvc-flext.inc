@@ -8,7 +8,7 @@ SRCS=$(SRCS) $(SRCS_SNDOBJ)
 !endif
 
 !ifdef STK
-LIBS=$(LIBS) $(STK)\src\Stk.obj
+LIBS=$(LIBS) $(STK)\stk.lib
 SRCS=$(SRCS) $(SRCS_STKOBJ)
 !endif
 
@@ -71,3 +71,9 @@ _install_:
 !endif
 # copy headers
 	for %%i in ($(HDRS:/=\)) do @copy $(SRCDIR)\%%i $(FLEXTINC) > nul
+!ifdef STK
+	for %%i in ($(HDRS_STK:/=\)) do @copy $(SRCDIR)\%%i $(FLEXTINC) > nul
+!endif
+!ifdef SNDOBJ
+	for %%i in ($(HDRS_SNDOBJ:/=\)) do @copy $(SRCDIR)\%%i $(FLEXTINC) > nul
+!endif

@@ -10,7 +10,7 @@ LIBS=$(LIBS) $(SNDOBJ)\lib\SndObj.lib
 !endif
 
 !ifdef STK
-LIBS=$(LIBS) $(STK)\src\Stk.obj
+LIBS=$(LIBS) $(STK)\stk.lib
 !endif
 !endif
 

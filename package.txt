@@ -3,9 +3,9 @@
 #
 # Copyright (c) 2001-2008 Thomas Grill (gr@grrrr.org)
 #
-# $LastChangedRevision: 3651 $
-# $LastChangedDate: 2008-12-04 00:57:18 +0100 (Thu, 04 Dec 2008) $
-# $LastChangedBy: thomas $
+# $LastChangedRevision$
+# $LastChangedDate$
+# $LastChangedBy$
 #
 # For information on usage and redistribution, and for a DISCLAIMER OF ALL
 # WARRANTIES, see the file, "license.txt," in this distribution.  

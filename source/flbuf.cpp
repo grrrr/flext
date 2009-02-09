@@ -69,7 +69,7 @@ flext::buffer::buffer(const t_symbol *bn,bool delayed):
 flext::buffer::~buffer()
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
-    clock_free(tick);
+    if(tick) clock_free(tick);
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_PD

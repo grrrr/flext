@@ -112,7 +112,7 @@ typedef t_clock t_qelem;
 #if FLEXT_OS == FLEXT_OS_MAC
 	#if FLEXT_OSAPI == FLEXT_OSAPI_MAC_MACH
 		// MachO version - must insert prefix header
-		#include <ext_carbon_prefix.h>
+         #include <Carbon/Carbon.h>
 	#else
 		// CFM version
 		#ifndef __MRC__
@@ -128,7 +128,7 @@ typedef t_clock t_qelem;
 #endif
 
 // necessary for the old OS9 SDK
-extern "C" {	    	    	    
+extern "C" {
 
 #include "ext.h"
 #include "ext_user.h"
@@ -142,6 +142,12 @@ extern "C" {
 #endif
 #include "z_dsp.h"
 
+// check for Max5 SDK
+#include "commonsyms.h"
+#if COMMON_SYMBOLS_VERSION >= 500 
+    #define _FLEXT_MAX5SDK
+#endif
+
 } // extern "C"
 
 #undef WIN_VERSION
@@ -153,18 +159,20 @@ typedef t_int t_flint;
 typedef t_symbol *t_symtype;
 typedef t_object *t_thing;
 
-// for the following to work you should have the latest SDK
-#if FLEXT_OS == FLEXT_OS_MAC //&& !defined(MAC_VERSION)
-typedef struct qelem t_qelem;
-#else
-typedef void *t_qelem;
+#ifndef _FLEXT_MAX5SDK
+    // for the following to work you should have the latest SDK
+    #if FLEXT_OS == FLEXT_OS_MAC //&& !defined(MAC_VERSION)
+    typedef struct qelem t_qelem;
+    #else
+    typedef void *t_qelem;
+    #endif
 #endif
 
 typedef method t_method;
 typedef method t_newmethod;
 typedef int t_atomtype;
 
-#ifndef MM_UNIFIED  // bad way to detect Max5 SDK....
+#ifndef _FLEXT_MAX5SDK
 typedef struct clock t_clock;  // this is defined in the Max5 SDK
 #endif
 

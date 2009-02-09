@@ -38,7 +38,7 @@ namespace lockfree
     {
 #if defined(__GNUC__) && ( (__GNUC__ > 4) || ((__GNUC__ >= 4) && (__GNUC_MINOR__ >= 1)) )
         __sync_synchronize();
-#elif defined(__GNUC__) && defined(__i386__)
+#elif defined(__GNUC__) && (defined(__i386__) || defined(__i686__))
 		asm("" : : : "memory");
 #elif defined(_MSC_VER) && (_MSC_VER >= 1300)
         _ReadWriteBarrier();
@@ -174,7 +174,7 @@ namespace lockfree
             setz [ok]
         }
         return ok;
-#elif defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
+#elif defined(__GNUC__) && (defined(__i386__) || defined(__i686__) || defined(__x86_64__))
         char result;
         if(sizeof(D) == 4 && sizeof(E) == 4) {
             #ifndef __PIC__

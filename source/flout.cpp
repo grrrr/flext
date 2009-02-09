@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -19,6 +19,8 @@ $LastChangedBy$
 #include "flinternal.h"
 #include <string.h>
  
+#include "flpushns.h"
+
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
 void flext_base::ToSysAtom(int n,const t_atom &at) const 
 { 
@@ -334,4 +336,5 @@ bool flext_base::InitOutlets()
     return ok;
 }
 
+#include "flpopns.h"
 

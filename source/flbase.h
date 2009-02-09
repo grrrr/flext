@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2008 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -23,6 +23,7 @@ $LastChangedBy$
 #include "flstdc.h"
 #include "flsupport.h"
 
+#include "flpushns.h"
 
 class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj);
 typedef class FLEXT_CLASSDEF(flext_obj) flext_obj;
@@ -373,7 +374,7 @@ static void __setup__(t_classid classid) { 	    	\
 
 // specify that to define the library itself
 #if FLEXT_SYS == FLEXT_SYS_PD
-#define REAL_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT void NAME##_setup() { flext_obj::lib_init(#NAME,SETUPFUN); }
+#define REAL_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT void ::NAME##_setup() { flext_obj::lib_init(#NAME,SETUPFUN); }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 #define REAL_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT int main() { flext_obj::lib_init(#NAME,SETUPFUN); return 0; }
 #else
@@ -562,5 +563,6 @@ FLEXT_OBJ_SETUP(NEW_CLASS,DSP,LIB)
 
 #define FLEXTARG(TP) FLEXTARG_ ## TP
 
+#include "flpopns.h"
 
 #endif

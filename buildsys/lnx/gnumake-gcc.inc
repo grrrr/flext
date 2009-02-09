@@ -21,7 +21,7 @@ TARGETNAME=$(OUTNAME).$(EXT)
 
 ##############################################
 
-CFLAGS += -pthread -fPIC
+CFLAGS += -pthread -fPIC -fvisibility-inlines-hidden
 LDFLAGS += -pthread -shared 
 
 ##############################################

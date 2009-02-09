@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2008 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -20,6 +20,8 @@ $LastChangedBy$
 #include <cstdlib>
 #include <string.h>
 #include <stdio.h>
+
+#include "flpushns.h"
 
 #ifdef _MSC_VER
 #define snprintf _snprintf
@@ -132,3 +134,4 @@ int flext::ScanList(int argc,t_atom *argv,const char *buf)
     return read;
 }
 
+#include "flpopns.h"

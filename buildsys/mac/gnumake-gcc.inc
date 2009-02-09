@@ -30,6 +30,7 @@ FLEXTBIN := $(FLEXTPREFIX)/bin
 
 ##############################################
 
+CFLAGS += -fvisibility-inlines-hidden
 LDFLAGS += -dynamic -framework vecLib
 
 ##############################################

@@ -2,6 +2,11 @@
 # flext - C++ layer for Max/MSP and pd (pure data) externals
 #
 # Copyright (c) 2001-2008 Thomas Grill (gr@grrrr.org)
+#
+# $LastChangedRevision: 3651 $
+# $LastChangedDate: 2008-12-04 00:57:18 +0100 (Thu, 04 Dec 2008) $
+# $LastChangedBy: thomas $
+#
 # For information on usage and redistribution, and for a DISCLAIMER OF ALL
 # WARRANTIES, see the file, "license.txt," in this distribution.  
 #
@@ -34,6 +39,7 @@ SRCS= \
 	flproxy.cpp flqueue.cpp flbind.cpp flmap.cpp
 HDRS= \
 	flext.h flprefix.h flstdc.h flinternal.h flfeatures.h \
+	flpushns.h flpopns.h \
 	flbase.h flclass.h flsupport.h fldsp.h \
 	flmap.h flcontainers.h \
 	fldefs.h fldefs_hdr.h fldefs_setup.h \

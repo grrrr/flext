@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2008 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -17,6 +17,7 @@ $LastChangedBy$
  
 #include "flext.h"
 
+#include "flpushns.h"
 
 bool flext_base::TryMethTag(Item *lst,const t_symbol *tag,int argc,const t_atom *argv)
 {
@@ -301,3 +302,6 @@ bool flext_base::CbMethodResort(int inlet,const t_symbol *s,int argc,const t_ato
     // call deprecated version
     return m_method_(inlet,s,argc,argv);
 }
+
+#include "flpopns.h"
+

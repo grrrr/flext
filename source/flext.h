@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -32,7 +32,6 @@ $LastChangedBy$
 #define FLEXT_VERSTR "0.5.1pre"
 
 //! @}
-
 
 // determine System/OS/CPU
 #include "flprefix.h"

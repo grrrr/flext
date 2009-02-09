@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2008 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -22,6 +22,8 @@ $LastChangedBy$
 #include <stdlib.h>
 #include <string.h>
 #include <new>
+
+#include "flpushns.h"
 
 #ifdef _MSC_VER
 #define vsnprintf _vsnprintf
@@ -51,13 +53,9 @@ bool flext::indsp = false;
 int flext::Version() { return FLEXT_VERSION; }
 const char *flext::VersionStr() { return FLEXT_VERSTR; }
 
-
 void flext::Setup()
 {
-	static bool issetup = false;
-	if(issetup) 
-		return;
-	else issetup = true;
+	if(sym__) return;
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 	sym__ = &s_;
@@ -307,4 +305,5 @@ void flext_root::error(const char *fmt,...)
     va_end(ap);
 }
 
+#include "flpopns.h"
 

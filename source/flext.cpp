@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2008 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -19,6 +19,8 @@ $LastChangedBy$
 #include "flinternal.h"
 #include "fldsp.h"
 #include <string.h>
+
+#include "flpushns.h"
 
 // === flext_base ============================================
 
@@ -263,3 +265,5 @@ void flext_base::cb_dsp(flext_hdr *c,t_signal **sp)
 }
 
 bool flext_base::CbIdle() { return 0; }
+
+#include "flpopns.h"

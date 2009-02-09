@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -19,6 +19,8 @@ $LastChangedBy$
 #include "flinternal.h"
 #include <string.h>
 #include <stdarg.h>
+
+#include "flpushns.h"
 
 #define MAXLETS 256
 
@@ -113,3 +115,4 @@ void flext_base::AddOutlets(unsigned long code)
     for(; code; code /= 10) AddOutlet((xlettype)(code%10));
 }
 
+#include "flpopns.h"

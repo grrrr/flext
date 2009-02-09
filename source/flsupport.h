@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2007 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -21,6 +21,9 @@ $LastChangedBy$
 #include "flstdc.h"
 #include <new>
 #include <string.h>
+
+
+#include "flpushns.h"
 
 /*! \defgroup FLEXT_SUPPORT Flext support classes
     @{
@@ -1334,5 +1337,7 @@ inline bool operator >(const t_atom &a,const t_atom &b) { return flext::CmpAtom(
 inline bool operator >=(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) >= 0; }
 
 //! @} // FLEXT_SUPPORT
+
+#include "flpopns.h"
 
 #endif

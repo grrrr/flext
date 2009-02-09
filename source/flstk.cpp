@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -10,6 +10,8 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "flext.h"
 #include "flstk.h"
+
+#include "flpushns.h"
 
 flext_stk::flext_stk():
     inobjs(0),outobjs(0),
@@ -114,4 +116,6 @@ void flext_stk::Output::tick(const MY_FLOAT *vector,unsigned int vectorSize)
 {
     for(unsigned int i = 0; i < vectorSize; i++) tick(vector[i]);
 }
+
+#include "flpopns.h"
 

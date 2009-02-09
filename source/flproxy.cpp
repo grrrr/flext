@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -18,6 +18,7 @@ $LastChangedBy$
 #include "flext.h"
 #include "flinternal.h"
 
+#include "flpushns.h"
 
 // === proxy class for flext_base ============================
 
@@ -224,3 +225,5 @@ void flext_base::SetProxies(t_class *c,bool dsp)
     ADD_PROXYMSG(c,9);
 }
 #endif
+
+#include "flpopns.h"

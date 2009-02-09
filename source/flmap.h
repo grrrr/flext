@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -23,6 +23,8 @@ $LastChangedBy$
 /*!	\defgroup FLEXT_SUPPORT Flext support classes
 	@{
 */
+
+#include "flpushns.h"
 
 class FLEXT_SHARE TableAnyMap
 {
@@ -252,6 +254,8 @@ protected:
 private:
     explicit TablePtrMap(const TableAnyMap &p) {}
 };
+
+#include "flpopns.h"
 
 //! @} // FLEXT_SUPPORT
 

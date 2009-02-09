@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2006 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -19,6 +19,8 @@ $LastChangedBy$
 #include <string.h>
 #include <stdarg.h>
 #include "flinternal.h"
+
+#include "flpushns.h"
 
 flext_base::MethItem::MethItem(AttrItem *conn): 
     Item(conn),index(0),
@@ -133,3 +135,4 @@ bool flext_base::cb_ListMethods(flext_base *c,int argc,const t_atom *argv)
         return false;
 }
 
+#include "flpopns.h"

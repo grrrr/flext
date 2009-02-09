@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -21,6 +21,7 @@ $LastChangedBy$
 
 #include <set>
 
+#include "flpushns.h"
 
 #ifdef __MWERKS__
 #define STD std
@@ -446,3 +447,5 @@ bool flext_base::ShowAttrib(const t_symbol *attr,bool show) const
 	AttrItem *item = FindAttrib(attr,true);
 	return item && ShowAttrib(item,show);
 }
+
+#include "flpopns.h"

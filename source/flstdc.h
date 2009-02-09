@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -78,6 +78,8 @@ extern "C" {
 	#pragma warning (pop)
 #endif
 
+#include "flpushns.h"
+
 #ifdef cabs
 #undef cabs // this is defined in m_pd.h (clashes with math.h in MacOSX)
 #endif
@@ -96,10 +98,12 @@ typedef t_clock t_qelem;
 #define A_DEFFLINT A_DEFFLOAT
 #define A_DEFSYMBOL A_DEFSYM
 
+#include "flpopns.h"
+
 
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 
-/* Max/MSP definitions start here */
+/* -------------- Max/MSP ------------------- */
 
 // 2-byte alignment for Max/MSP structures
 #ifdef _MSC_VER
@@ -149,6 +153,8 @@ extern "C" {
 #endif
 
 } // extern "C"
+
+#include "flpushns.h"
 
 #undef WIN_VERSION
 
@@ -210,6 +216,8 @@ typedef void t_binbuf;
 #pragma pack(pop,flext_maxsdk)
 #endif
 
+#include "flpopns.h"
+
 #else
 #error Platform not supported
 #endif // FLEXT_SYS
@@ -217,8 +225,9 @@ typedef void t_binbuf;
 
 // general definitions
 
-typedef t_symbol *t_symptr;
+#include "flpushns.h"
 
+typedef t_symbol *t_symptr;
 
 // -------------------------
 
@@ -323,5 +332,7 @@ typedef t_symbol *t_symptr;
 #ifndef FLEXT_QMODE
 #	error Internal error: Queueing mode not defined
 #endif
+
+#include "flpopns.h"
 
 #endif

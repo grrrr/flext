@@ -36,7 +36,7 @@ endif
 
 $(PRECOMDST) : $(PRECOMSRC) $(patsubst %,$(SRCDIR)/%,$(HDRS))
 	-mkdir -p $(dir $@)
-	$(CXX) -c $(DEFS) $(INCPATH) $(PRECOMSRC) -o $@
+	$(CXX) -c $(CFLAGS) $(DEFS) $(INCPATH) $(PRECOMSRC) -o $@
 
 
 ifndef ARCH

@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2007 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -22,6 +22,8 @@ $LastChangedBy$
 #include <string.h>
 #include <ctype.h>
 #include <map>
+
+#include "flpushns.h"
 
 #define ALIASDEL ','
 
@@ -600,3 +602,5 @@ bool flext_base::DoDist() const { return thisClassId()->dist; }
 
 flext_base::ItemCont *flext_base::ClMeths(t_classid c) { return &c->meths; }
 flext_base::ItemCont *flext_base::ClAttrs(t_classid c) { return &c->attrs; }
+
+#include "flpopns.h"

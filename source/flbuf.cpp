@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2007 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -18,6 +18,8 @@ $LastChangedBy$
 #include "flext.h"
 #include "flfeatures.h"
 #include <set>
+
+#include "flpushns.h"
 
 #if FLEXT_SYS != FLEXT_SYS_JMAX
 
@@ -374,4 +376,5 @@ bool flext::buffer::IsDirty() const
 
 #endif // Jmax
 
+#include "flpopns.h"
 

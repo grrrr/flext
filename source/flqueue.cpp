@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2008 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -23,6 +23,8 @@ $LastChangedBy$
 #include "flinternal.h"
 #include "flcontainers.h"
 #include <string.h> // for memcpy
+
+#include "flpushns.h"
 
 #ifdef FLEXT_THREADS
 //! Thread id of message queue thread
@@ -677,3 +679,6 @@ void flext_base::AddIdle(bool (*idlefun)(int argc,const t_atom *argv),int argc,c
     // send over queue
     queue.Push(m);
 }
+
+#include "flpopns.h"
+

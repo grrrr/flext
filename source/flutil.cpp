@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2008 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -27,6 +27,8 @@ $LastChangedBy$
         #include <Carbon/Carbon.h>
     #endif
 #endif
+
+#include "flpushns.h"
 
 void flext::CopyMem(void *dst,const void *src,int bytes) 
 {
@@ -53,3 +55,7 @@ void flext::ZeroMem(void *dst,int bytes)
     memset(dst,0,bytes);
 #endif
 }
+
+#include "flpopns.h"
+
+

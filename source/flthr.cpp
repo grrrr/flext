@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2008 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -40,6 +40,8 @@ $LastChangedBy$
 #endif
 
 #include <errno.h>
+
+#include "flpushns.h"
 
 //! Thread id of system thread - will be initialized in flext::Setup
 flext::thrid_t flext::thrid;
@@ -739,4 +741,7 @@ bool flext::ThrCond::TimedWait(double ftm)
 }
 #endif
 
+#include "flpopns.h"
+
 #endif // FLEXT_THREADS
+

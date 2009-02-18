@@ -372,13 +372,19 @@ static void __setup__(t_classid classid) { 	    	\
 // used in library setup functions to register the individual objects in the library
 #define REAL_SETUP(cl,DSP) extern void FLEXT_STPF(cl,DSP)(); FLEXT_STPF(cl,DSP)();
 
+#ifdef FLEXT_USE_NAMESPACE
+    #define _FLEXT_REAL_SETUP_NSPREFIX ::
+#else
+    #define _FLEXT_REAL_SETUP_NSPREFIX
+#endif
+
 // specify that to define the library itself
 #if FLEXT_SYS == FLEXT_SYS_PD
-#define REAL_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT void ::NAME##_setup() { flext_obj::lib_init(#NAME,SETUPFUN); }
+#   define REAL_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT void _FLEXT_REAL_SETUP_NSPREFIX##NAME##_setup() { flext_obj::lib_init(#NAME,SETUPFUN); }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-#define REAL_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT int main() { flext_obj::lib_init(#NAME,SETUPFUN); return 0; }
+#   define REAL_LIB_SETUP(NAME,SETUPFUN) extern "C" FLEXT_EXT int main() { flext_obj::lib_init(#NAME,SETUPFUN); return 0; }
 #else
-#error Platform not supported
+#   error Platform not supported
 #endif
 
 

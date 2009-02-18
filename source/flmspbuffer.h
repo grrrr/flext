@@ -19,8 +19,6 @@ $LastChangedBy$
     The latter is not easily found so i included the original file buffer.h with flext
 */
 
-#include "flpushns.h"
-
 #if (FLEXT_SYS == FLEXT_SYS_MAX) && !defined(__FLEXT_MSPBUFFER_H)
 #define __FLEXT_MSPBUFFER_H
 
@@ -83,7 +81,5 @@ typedef struct _buffer
 } t_buffer;
 
 #define BUFWIND(x) ((t_wind *)(x->b_wind))
-
-#include "flpopns.h"
 
 #endif

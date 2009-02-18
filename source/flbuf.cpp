@@ -214,9 +214,13 @@ flext::buffer::lock_t flext::buffer::Lock()
 #elif FLEXT_SYS == FLEXT_SYS_MAX
     t_buffer *p = (t_buffer *)sym->s_thing;
     FLEXT_ASSERT(p);
-#ifdef _FLEXT_HAVE_MAX_INUSEFLAG 
+#ifdef _FLEXT_HAVE_MAX_INUSEFLAG
     long old = p->b_inuse;
+#ifdef ATOMIC_INCREMENT
+    ATOMIC_INCREMENT(&p->b_inuse);
+#else
     p->b_inuse = 1;
+#endif
     return old;
 #else
     return 0;
@@ -238,7 +242,11 @@ void flext::buffer::Unlock(flext::buffer::lock_t prv)
     t_buffer *p = (t_buffer *)sym->s_thing;
     FLEXT_ASSERT(p);
 #ifdef _FLEXT_HAVE_MAX_INUSEFLAG 
+#ifdef ATOMIC_INCREMENT
+    ATOMIC_DECREMENT(&p->b_inuse);
+#else
     p->b_inuse = prv;
+#endif
 #endif
 #else
 #error not implemented

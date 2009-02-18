@@ -44,8 +44,11 @@ nobase_pkginclude_HEADERS = \
 	flsupport.h \
 	flmap.h \
 	fldsp.h \
+	flmspbuffer.h \
 	flinternal.h \
 	flcontainers.h \
+	flpushns.h \
+	flpopns.h \
 	fldefs.h \
 	fldefs_hdr.h \
 	fldefs_setup.h \

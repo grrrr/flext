@@ -7,6 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E95B343B0F40BEE3006336AA /* flpushns.h in Headers */ = {isa = PBXBuildFile; fileRef = E95B343A0F40BEE3006336AA /* flpushns.h */; };
+		E95B343C0F40BEE3006336AA /* flpushns.h in Headers */ = {isa = PBXBuildFile; fileRef = E95B343A0F40BEE3006336AA /* flpushns.h */; };
+		E95B343D0F40BEE3006336AA /* flpushns.h in Headers */ = {isa = PBXBuildFile; fileRef = E95B343A0F40BEE3006336AA /* flpushns.h */; };
+		E95B343E0F40BEE3006336AA /* flpushns.h in Headers */ = {isa = PBXBuildFile; fileRef = E95B343A0F40BEE3006336AA /* flpushns.h */; };
+		E95B343F0F40BEE3006336AA /* flpushns.h in Headers */ = {isa = PBXBuildFile; fileRef = E95B343A0F40BEE3006336AA /* flpushns.h */; };
+		E95B34400F40BEE3006336AA /* flpushns.h in Headers */ = {isa = PBXBuildFile; fileRef = E95B343A0F40BEE3006336AA /* flpushns.h */; };
+		E95B34420F40BEF0006336AA /* flpopns.h in Headers */ = {isa = PBXBuildFile; fileRef = E95B34410F40BEF0006336AA /* flpopns.h */; };
+		E95B34430F40BEF0006336AA /* flpopns.h in Headers */ = {isa = PBXBuildFile; fileRef = E95B34410F40BEF0006336AA /* flpopns.h */; };
+		E95B34440F40BEF0006336AA /* flpopns.h in Headers */ = {isa = PBXBuildFile; fileRef = E95B34410F40BEF0006336AA /* flpopns.h */; };
+		E95B34450F40BEF0006336AA /* flpopns.h in Headers */ = {isa = PBXBuildFile; fileRef = E95B34410F40BEF0006336AA /* flpopns.h */; };
+		E95B34460F40BEF0006336AA /* flpopns.h in Headers */ = {isa = PBXBuildFile; fileRef = E95B34410F40BEF0006336AA /* flpopns.h */; };
+		E95B34470F40BEF0006336AA /* flpopns.h in Headers */ = {isa = PBXBuildFile; fileRef = E95B34410F40BEF0006336AA /* flpopns.h */; };
 		E99747CE0770548700206F68 /* flatom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55CED7C0383E50201A80AC9 /* flatom.cpp */; };
 		E99747D00770548700206F68 /* flatom_part.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F504A66C03CE39F501A80AC9 /* flatom_part.cpp */; };
 		E99747D10770548700206F68 /* flatom_pr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55CED7B0383E50201A80AC9 /* flatom_pr.cpp */; };
@@ -358,6 +370,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E95B343A0F40BEE3006336AA /* flpushns.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = flpushns.h; sourceTree = "<group>"; };
+		E95B34410F40BEF0006336AA /* flpopns.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = flpopns.h; sourceTree = "<group>"; };
 		E99747CD0770545100206F68 /* libflext-pd_sd.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libflext-pd_sd.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9974802077054CD00206F68 /* vecLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = vecLib.framework; path = /System/Library/Frameworks/vecLib.framework; sourceTree = "<absolute>"; };
 		E997483F0770570800206F68 /* libflext-pd_td.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libflext-pd_td.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -591,6 +605,8 @@
 				F55CED920383E50201A80AC9 /* flstdc.h */,
 				F55CED940383E50201A80AC9 /* flsupport.h */,
 				F504A67403CE39F501A80AC9 /* flstk.h */,
+				E95B343A0F40BEE3006336AA /* flpushns.h */,
+				E95B34410F40BEF0006336AA /* flpopns.h */,
 			);
 			name = Headers;
 			path = source;
@@ -652,6 +668,8 @@
 				E99A3DDB0D3592D100E692EF /* flcontainers.h in Headers */,
 				E99A3DDC0D3592D100E692EF /* flfeatures.h in Headers */,
 				E99A3DDD0D3592D100E692EF /* flmap.h in Headers */,
+				E95B34400F40BEE3006336AA /* flpushns.h in Headers */,
+				E95B34470F40BEF0006336AA /* flpopns.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -690,6 +708,8 @@
 				E99A3DDE0D3592D100E692EF /* flcontainers.h in Headers */,
 				E99A3DDF0D3592D100E692EF /* flfeatures.h in Headers */,
 				E99A3DE00D3592D100E692EF /* flmap.h in Headers */,
+				E95B343B0F40BEE3006336AA /* flpushns.h in Headers */,
+				E95B34420F40BEF0006336AA /* flpopns.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -730,6 +750,8 @@
 				E99A3DD80D3592D100E692EF /* flcontainers.h in Headers */,
 				E99A3DD90D3592D100E692EF /* flfeatures.h in Headers */,
 				E99A3DDA0D3592D100E692EF /* flmap.h in Headers */,
+				E95B343C0F40BEE3006336AA /* flpushns.h in Headers */,
+				E95B34430F40BEF0006336AA /* flpopns.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -768,6 +790,8 @@
 				E99A3DE10D3592D100E692EF /* flcontainers.h in Headers */,
 				E99A3DE20D3592D100E692EF /* flfeatures.h in Headers */,
 				E99A3DE30D3592D100E692EF /* flmap.h in Headers */,
+				E95B343F0F40BEE3006336AA /* flpushns.h in Headers */,
+				E95B34460F40BEF0006336AA /* flpopns.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -806,6 +830,8 @@
 				E99A3DE40D3592D100E692EF /* flcontainers.h in Headers */,
 				E99A3DE50D3592D100E692EF /* flfeatures.h in Headers */,
 				E99A3DE60D3592D100E692EF /* flmap.h in Headers */,
+				E95B343D0F40BEE3006336AA /* flpushns.h in Headers */,
+				E95B34440F40BEF0006336AA /* flpopns.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -846,6 +872,8 @@
 				E99A3DE70D3592D100E692EF /* flcontainers.h in Headers */,
 				E99A3DE80D3592D100E692EF /* flfeatures.h in Headers */,
 				E99A3DE90D3592D100E692EF /* flmap.h in Headers */,
+				E95B343E0F40BEE3006336AA /* flpushns.h in Headers */,
+				E95B34450F40BEF0006336AA /* flpopns.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1296,6 +1324,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"FLEXT_SYS=1",
+					MAC_VERSION,
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(maxsdk)/max-includes",
@@ -1432,6 +1461,8 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DEBUG,
 					FLEXT_USE_SIMD,
+					FLEXT_NAMESPACE,
+					FLEXT_USE_CMEM,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.3;
 				PRODUCT_NAME = "$(PROJECT_NAME)";

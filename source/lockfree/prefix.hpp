@@ -43,6 +43,9 @@
 
 #ifdef __APPLE__
     #include <libkern/OSAtomic.h>
+    #if  defined(__GLIBCPP__) || defined(__GLIBCXX__)
+        #include <bits/atomicity.h>
+    #endif
 #endif
 
 #if defined(_MSC_VER)

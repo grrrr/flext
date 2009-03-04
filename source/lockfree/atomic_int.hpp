@@ -25,13 +25,133 @@
 #ifndef __LOCKFREE_ATOMIC_INT_HPP
 #define __LOCKFREE_ATOMIC_INT_HPP
 
-#include "cas.hpp"
-#include "branch_hints.hpp"
+#include "prefix.hpp"
 
 namespace lockfree
 {
 
-template <typename T = size_t>
+#if defined(__GNUC__) && ( (__GNUC__ > 4) || ((__GNUC__ >= 4) && (__GNUC_MINOR__ >= 1)) )
+
+template <typename T>
+class atomic_int
+{
+public:
+    explicit atomic_int(T v = 0):
+        value(v)
+    {
+    }
+
+    operator T(void) const
+    {
+        return __sync_fetch_and_add(&value, 0);
+    }
+
+    void operator =(T v)
+    {
+        value = v;
+        __sync_synchronize();
+    }
+
+    T operator +=(T v)
+    {
+        return __sync_add_and_fetch(&value, v);
+    }
+
+    T operator -=(T v)
+    {
+        return __sync_sub_and_fetch(&value, v);
+    }
+
+    /* prefix operator */
+    T operator ++(void)
+    {
+        return __sync_add_and_fetch(&value, 1);
+    }
+
+    /* prefix operator */
+    T operator --(void)
+    {
+        return __sync_sub_and_fetch(&value, 1);
+    }
+
+    /* postfix operator */
+    T operator ++(int)
+    {
+        return __sync_fetch_and_add(&value, 1);
+    }
+
+    /* postfix operator */
+    T operator --(int)
+    {
+        return __sync_fetch_and_sub(&value, 1);
+    }
+
+private:
+    mutable T value;
+};
+
+#elif defined(__GLIBCPP__) || defined(__GLIBCXX__)
+
+template <typename T>
+class atomic_int
+{
+public:
+    explicit atomic_int(T v = 0):
+        value(v)
+    {
+    }
+
+    operator T(void) const
+    {
+        return __gnu_cxx::__exchange_and_add(&value, 0);
+    }
+
+    void operator =(T v)
+    {
+        value = v;
+    }
+
+    T operator +=(T v)
+    {
+        return __gnu_cxx::__exchange_and_add(&value, v) + v;
+    }
+
+    T operator -=(T v)
+    {
+        return __gnu_cxx::__exchange_and_add(&value, -v) - v;
+    }
+
+    /* prefix operator */
+    T operator ++(void)
+    {
+        return operator+=(1);
+    }
+
+    /* prefix operator */
+    T operator --(void)
+    {
+        return operator-=(1);
+    }
+
+    /* postfix operator */
+    T operator ++(int)
+    {
+        return __gnu_cxx::__exchange_and_add(&value, 1);
+    }
+
+    /* postfix operator */
+    T operator --(int)
+    {
+        return __gnu_cxx::__exchange_and_add(&value, -1);
+    }
+
+private:
+    mutable _Atomic_word value;
+};
+
+#else /* emulate via CAS */
+
+template <typename T>
 class atomic_int
 {
 public:
@@ -64,35 +184,12 @@ public:
         return *this -= 1;
     }
 
-#if defined(__GNUC__) && ( (__GNUC__ > 4) || ((__GNUC__ >= 4) && (__GNUC_MINOR__ >= 1)) )
-    T operator +=(T v)
-    {
-        return __sync_add_and_fetch(&value, v);
-    }
-
-    T operator -=(T v)
-    {
-        return __sync_sub_and_fetch(&value, v);
-    }
-
-    /* postfix operator */
-    T operator ++(int)
-    {
-        return __sync_fetch_and_add(&value, 1);
-    }
-
-    /* postfix operator */
-    T operator --(int)
-    {
-        return __sync_fetch_and_sub(&value, 1);
-    }
-#else
     T operator +=(T v)
     {
         for(;;)
         {
             T newv = value+v;
-            if(likely(CAS(&value,value,newv))) 
+            if(likely(CAS(&value,value,newv)))
                 return newv;
         }
     }
@@ -102,7 +199,7 @@ public:
         for(;;)
         {
             T newv = value-v;
-            if(likely(CAS(&value,value,newv))) 
+            if(likely(CAS(&value,value,newv)))
                 return newv;
         }
     }
@@ -113,7 +210,7 @@ public:
         for(;;)
         {
             T oldv = value;
-            if(likely(CAS(&value,oldv,oldv+1))) 
+            if(likely(CAS(&value,oldv,oldv+1)))
                 return oldv;
         }
     }
@@ -124,15 +221,17 @@ public:
         for(;;)
         {
             T oldv = value;
-            if(likely(CAS(&value,oldv,oldv-1))) 
+            if(likely(CAS(&value,oldv,oldv-1)))
                 return oldv;
         }
     }
-#endif
 
 private:
     T value;
 };
+
+
+#endif
 
 } // namespace lockfree
 

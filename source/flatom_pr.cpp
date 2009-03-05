@@ -16,7 +16,7 @@ $LastChangedBy$
 */
  
 #include "flext.h"
-#include <ctype.h>
+#include <cctype>
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>

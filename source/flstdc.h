@@ -148,7 +148,7 @@ extern "C" {
 
 // check for Max5 SDK
 #include "commonsyms.h"
-#if COMMON_SYMBOLS_VERSION >= 500 
+#if C74_MAX_SDK_VERSION >= 0x0500 || COMMON_SYMBOLS_VERSION >= 500 
     #define _FLEXT_MAX5SDK
 #endif
 

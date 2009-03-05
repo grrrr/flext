@@ -25,8 +25,7 @@ $LastChangedBy$
 #include "flinternal.h"
 #include "flcontainers.h"
 #include <set>
-
-#include <time.h>
+#include <ctime>
 
 #if FLEXT_OSAPI == FLEXT_OSAPI_MAC_MACH || FLEXT_OSAPI == FLEXT_OSAPI_UNIX_POSIX || FLEXT_OSAPI == FLEXT_OSAPI_WIN_POSIX
 #include <sys/time.h>
@@ -39,7 +38,7 @@ $LastChangedBy$
 #error WIN32 threads need Windows SDK version >= 0x500
 #endif
 
-#include <errno.h>
+#include <cerrno>
 
 #include "flpushns.h"
 

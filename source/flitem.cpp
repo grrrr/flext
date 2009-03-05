@@ -16,7 +16,7 @@ $LastChangedBy$
 */
  
 #include "flext.h"
-#include <string.h>
+#include <cstring>
 
 #include "flpushns.h"
 

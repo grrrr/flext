@@ -20,7 +20,7 @@ $LastChangedBy$
 
 #include "flstdc.h"
 #include <new>
-#include <string.h>
+#include <cstring>
 
 
 #include "flpushns.h"

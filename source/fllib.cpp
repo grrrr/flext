@@ -18,9 +18,9 @@ $LastChangedBy$
 #include "flext.h"
 #include "flinternal.h"
 
-#include <stdarg.h>
-#include <string.h>
-#include <ctype.h>
+#include <cstdarg>
+#include <cstring>
+#include <cctype>
 #include <map>
 
 #include "flpushns.h"

@@ -26,7 +26,7 @@
 #ifndef __LOCKFREE_PREFIX_H
 #define __LOCKFREE_PREFIX_H
 
-#include <assert.h>
+#include <cassert>
 
 #ifdef USE_ATOMIC_OPS
     #define AO_REQUIRE_CAS

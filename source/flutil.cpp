@@ -16,7 +16,7 @@ $LastChangedBy$
 */
  
 #include "flext.h"
-#include <string.h>
+#include <cstring>
 
 #if FLEXT_OS == FLEXT_OS_WIN
 #include <windows.h>

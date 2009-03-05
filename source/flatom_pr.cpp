@@ -18,8 +18,8 @@ $LastChangedBy$
 #include "flext.h"
 #include <ctype.h>
 #include <cstdlib>
-#include <string.h>
-#include <stdio.h>
+#include <cstring>
+#include <cstdio>
 
 #include "flpushns.h"
 
@@ -27,7 +27,6 @@ $LastChangedBy$
 #define snprintf _snprintf
 #endif
 
-// \TODO take bufsz into account!
 bool flext::PrintAtom(const t_atom &a,char *buf,size_t bufsz)
 {
     bool ok = true;

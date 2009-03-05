@@ -19,9 +19,9 @@ $LastChangedBy$
  
 #include "flext.h"
 #include "flinternal.h"
-#include <string.h>
-#include <ctype.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cctype>
+#include <cstdlib>
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 #ifdef _MSC_VER

@@ -26,13 +26,13 @@ $LastChangedBy$
     include math.h here - when included with PD or Max/MSP headers,  
     C linkage would be used which disturbs MSVC6
 */
-#include <math.h>
+#include <cmath>
 #endif
 
 #ifdef _MSC_VER
 #include <crtdbg.h>
 #else
-#include <assert.h>
+#include <cassert>
 #endif
 
 // PD stuff

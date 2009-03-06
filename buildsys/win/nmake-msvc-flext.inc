@@ -58,22 +58,29 @@ FLEXTLIBINST=$(FLEXTSHLIB)
 FLEXTLIBINST=$(FLEXTLIB)
 !endif
 
+TMPFILE=$(TARGETPATH)\flext_install_filelist.tmp
+
 _install_:
 # create folders
-	@if not exist $(FLEXTINC) mkdir $(FLEXTINC) > nul
-	@if not exist $(FLEXTLIB) mkdir $(FLEXTLIB) > nul
-	@if not exist $(FLEXTLIBINST) mkdir $(FLEXTLIBINST) > nul
+#	-@if not exist $(FLEXTINC) mkdir $(FLEXTINC) > nul
+	-@if not exist $(FLEXTLIB) mkdir $(FLEXTLIB) > nul
+	-@if not exist $(FLEXTLIBINST) mkdir $(FLEXTLIBINST) > nul
 
-	copy $(TARGET) $(FLEXTLIBINST) > nul
+	-copy $(TARGET) $(FLEXTLIBINST) > nul
 !ifdef SHARED
 # copy import library
-	copy $(TARGET:.dll=.lib) $(FLEXTLIB) > nul	
+	-copy $(TARGET:.dll=.lib) $(FLEXTLIB) > nul	
 !endif
 # copy headers
-	for %%i in ($(HDRS:/=\)) do @copy $(SRCDIR)\%%i $(FLEXTINC) > nul
-!ifdef STK
-	for %%i in ($(HDRS_STK:/=\)) do @copy $(SRCDIR)\%%i $(FLEXTINC) > nul
-!endif
-!ifdef SNDOBJ
-	for %%i in ($(HDRS_SNDOBJ:/=\)) do @copy $(SRCDIR)\%%i $(FLEXTINC) > nul
-!endif
+
+	-@del $(TMPFILE) 2>nul
+	-@for %%i in ($(HDRS)) do @echo %%i >> $(TMPFILE)
+	-@for /f "tokens=1,2 delims=/" %%i in ($(TMPFILE)) do @if "%%j" == "" ( copy $(SRCDIR)\%%i $(FLEXTINC) > nul ) else ( mkdir $(FLEXTINC)\%%i 2>nul & copy $(SRCDIR)\%%i\%%j $(FLEXTINC)\%%i > nul )
+	-@del $(TMPFILE) 2>nul
+
+#!ifdef STK
+#	for %%i in ($(HDRS_STK:/=\)) do @copy $(SRCDIR)\%%i $(FLEXTINC) > nul
+#!endif
+#!ifdef SNDOBJ
+#	for %%i in ($(HDRS_SNDOBJ:/=\)) do @copy $(SRCDIR)\%%i $(FLEXTINC) > nul
+#!endif

@@ -47,7 +47,10 @@ protected:
         public Stk
     {
     public:
-        Input(const t_sample *b,int vecsz);
+		Input(const t_sample *b,int v): 
+		    buf(b),vecsz(v),
+		    index(v-1)
+		{}
 
         inline StkFloat lastOut() const { return (StkFloat)buf[index]; }
 
@@ -71,7 +74,10 @@ protected:
         public Stk
     {
     public:
-        Output(t_sample *b,int vecsz);
+		Output(t_sample *b,int v): 
+		    buf(b),vecsz(v),
+		    index(0)
+		{}
 
         inline void tick(StkFloat s) 
         { 

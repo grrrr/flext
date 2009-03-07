@@ -2,14 +2,12 @@
 
 !ifdef SHARED
 
-!ifdef SNDOBJ
-LIBS=$(LIBS) $(SNDOBJ)\lib\SndObj.lib
-SRCS=$(SRCS) $(SRCS_SNDOBJ)
+!ifdef SNDOBJ_LIB
+LIBS=$(LIBS) $(SNDOBJ_LIB)
 !endif
 
-!ifdef STK
-LIBS=$(LIBS) $(STK)\stk.lib
-SRCS=$(SRCS) $(SRCS_STKOBJ)
+!ifdef STK_LIB
+LIBS=$(LIBS) $(STK_LIB)
 !endif
 
 !endif
@@ -71,16 +69,9 @@ _install_:
 # copy import library
 	-copy $(TARGET:.dll=.lib) $(FLEXTLIB) > nul	
 !endif
-# copy headers
+# copy headers (probably with subpath)
 
 	-@del $(TMPFILE) 2>nul
 	-@for %%i in ($(HDRS)) do @echo %%i >> $(TMPFILE)
 	-@for /f "tokens=1,2 delims=/" %%i in ($(TMPFILE)) do @if "%%j" == "" ( copy $(SRCDIR)\%%i $(FLEXTINC) > nul ) else ( mkdir $(FLEXTINC)\%%i 2>nul & copy $(SRCDIR)\%%i\%%j $(FLEXTINC)\%%i > nul )
 	-@del $(TMPFILE) 2>nul
-
-#!ifdef STK
-#	for %%i in ($(HDRS_STK:/=\)) do @copy $(SRCDIR)\%%i $(FLEXTINC) > nul
-#!endif
-#!ifdef SNDOBJ
-#	for %%i in ($(HDRS_SNDOBJ:/=\)) do @copy $(SRCDIR)\%%i $(FLEXTINC) > nul
-#!endif

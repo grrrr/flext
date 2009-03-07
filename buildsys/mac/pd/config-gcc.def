@@ -43,7 +43,7 @@ INSTPATH=$(PDPATH)/extra
 #SNDOBJ_INC=/usr/local/include/sndobj
 
 # where to find the SndObj library (normally libsndobj.a)
-# (comment out STK_LIB if you don't use SndObj)
+# (comment out SNDOBJ_LIB if you don't use SndObj)
 #SNDOBJ_LIB=/usr/local/lib/libsndobj.a
 
 ###############################################################

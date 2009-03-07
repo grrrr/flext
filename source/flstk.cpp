@@ -93,12 +93,7 @@ void flext_stk::CbSignal()
 
 // inlet class
 
-flext_stk::Input::Input(const t_sample *b,int v): 
-    buf(b),vecsz(v),
-    index(v-1)
-{}
-
-MY_FLOAT *flext_stk::Input::tick(MY_FLOAT *vector,unsigned int vectorSize)
+StkFloat *flext_stk::Input::tick(StkFloat *vector,unsigned int vectorSize)
 {
     for(unsigned int i = 0; i < vectorSize; i++) vector[i] = tick();
     return vector;
@@ -107,12 +102,7 @@ MY_FLOAT *flext_stk::Input::tick(MY_FLOAT *vector,unsigned int vectorSize)
 
 // outlet class
 
-flext_stk::Output::Output(t_sample *b,int v): 
-    buf(b),vecsz(v),
-    index(0)
-{}
-
-void flext_stk::Output::tick(const MY_FLOAT *vector,unsigned int vectorSize)
+void flext_stk::Output::tick(const StkFloat *vector,unsigned int vectorSize)
 {
     for(unsigned int i = 0; i < vectorSize; i++) tick(vector[i]);
 }

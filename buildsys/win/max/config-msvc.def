@@ -45,16 +45,27 @@ HELPPATH="%ProgramFiles%\MaxMSP 4.5\max-help\flext"
 #     (you will get errors for some files, you can ignore them in the flext context)
 #   lib *.obj /out:stk.lib
 #
-#STK=c:\data\prog\audio\stk
+
+# where to find the STK header files (e.g. stk.h)
+#STK_INC=%HOMEDRIVE%\%HOMEPATH%\stk\include
+
+# where to find the STK library (normally stk.lib)
+# (comment out STK_LIB if you don't use STK)
+#STK_LIB=%HOMEDRIVE%\%HOMEPATH%\stk\stk.lib
 
 # where is the Sndobjs installation?
 # (uncomment the line with # to disable SNDOBJ support)
 # --------------------------------------------------------------------
 # Please be sure to delete an eventual m_pd.h file from the SNDOBJ include folder!!
-# The shared flext library links to the SndObj.lib file from the SNDOBJ distribution.
 # Flext must be compiled with the same compiler version as the SNDOBJ lib (default MSVC6)
 #
-#SNDOBJ=c:\data\prog\audio\sndobj
+
+# where to find the SndObj header files (e.g. SndObj.h)
+#SNDOBJ_INC=%HOMEDRIVE%\%HOMEPATH%\SndObj\include
+
+# where to find the SndObj library (normally SndObj.lib)
+# (comment out SNDOBJ_LIB if you don't use SndObj)
+#SNDOBJ_LIB=%HOMEDRIVE%\%HOMEPATH%\SndObj\lib\SndObj.lib
 
 ###############################################################
 

@@ -21,11 +21,18 @@ $LastChangedBy$
 #undef PI
 #endif
 
+// SndObj needs WIN symbol when compiled under Windows
+#if FLEXT_OS == FLEXT_OS_WIN && !defined(WIN)
+#define WIN
+#endif
+
 #ifndef FLEXT_THREADS
 #define NOPTHREAD
 #endif
-#include <SndObj.h>
-#include <SndIO.h>
+
+#include <SndObj/SndObj.h>
+#include <SndObj/SndIO.h>
+
 #undef NOPTHREAD
 
 #include "flpushns.h"

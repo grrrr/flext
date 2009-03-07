@@ -7,12 +7,12 @@ LIBPATH=$(LIBPATH) /LIBPATH:$(MSVCPATH)\lib
 INCPATH=$(INCPATH) /I$(LOCKFREEPATH) 
 !endif
 
-!ifdef SNDOBJ
-INCPATH=$(INCPATH) /I$(SNDOBJ)\include 
+!ifdef SNDOBJ_INC
+INCPATH=$(INCPATH) /I$(SNDOBJ_INC)
 !endif
 
-!ifdef STK
-INCPATH=$(INCPATH) /I$(STK)\include 
+!ifdef STK_INC
+INCPATH=$(INCPATH) /I$(STK_INC)
 !endif
 
 ##############################################

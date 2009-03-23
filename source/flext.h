@@ -26,10 +26,10 @@ $LastChangedBy$
 */
 
 //! \brief flext version number
-#define FLEXT_VERSION 501
+#define FLEXT_VERSION 502
 
 //! \brief flext version string
-#define FLEXT_VERSTR "0.5.1pre"
+#define FLEXT_VERSTR "0.5.2"
 
 //! @}
 

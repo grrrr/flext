@@ -299,6 +299,17 @@ public:
         //! Graphic auto refresh interval
         void SetRefrIntv(float intv);
 
+        //! Buffer locking class
+        class Locker
+        {
+        public:
+            Locker(buffer &b): buf(b),lock(b.Lock()) {}
+            ~Locker() { buf.Unlock(lock); }
+        private:
+            buffer &buf;
+            lock_t lock;
+        };
+
     protected:
         //! buffer name
         const t_symbol *sym;
@@ -1318,10 +1329,14 @@ protected:
 
     static unsigned long simdcaps;
 
-    static const t_symbol *sym_buffer;
-    static const t_symbol *sym_size;
     static const t_symbol *sym_attributes;
     static const t_symbol *sym_methods;
+
+#if FLEXT_SYS == FLEXT_SYS_MAX
+    static const t_symbol *sym_buffer;
+    static const t_symbol *sym_size;
+    static const t_symbol *sym_dirty;
+#endif
 
     //! flag if we are within DSP
     static bool indsp;

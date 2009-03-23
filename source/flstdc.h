@@ -145,6 +145,7 @@ extern "C" {
 #include "flmspbuffer.h"
 #endif
 #include "z_dsp.h"
+#include "ext_obex.h"
 
 // check for Max5 SDK
 #include "commonsyms.h"

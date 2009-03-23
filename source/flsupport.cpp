@@ -41,8 +41,11 @@ const t_symbol *flext::sym_signal = NULL;
 
 const t_symbol *flext::sym_anything = NULL;
 
+#if FLEXT_SYS == FLEXT_SYS_MAX
 const t_symbol *flext::sym_buffer = NULL;
 const t_symbol *flext::sym_size = NULL;
+const t_symbol *flext::sym_dirty = NULL;
+#endif
 
 const t_symbol *flext::sym_attributes = NULL;
 const t_symbol *flext::sym_methods = NULL;
@@ -79,6 +82,7 @@ void flext::Setup()
 
     sym_buffer = flext::MakeSymbol("buffer~");
     sym_size = flext::MakeSymbol("size");
+    sym_dirty = flext::MakeSymbol("dirty");
 #endif
     
     sym_attributes = flext::MakeSymbol("attributes");

@@ -328,7 +328,8 @@ void flext::buffer::Dirty(bool force)
 #elif FLEXT_SYS == FLEXT_SYS_MAX
     t_buffer *p = (t_buffer *)sym->s_thing;
     FLEXT_ASSERT(p && !NOGOOD(p));
-    p->b_modtime = gettime();
+    ::object_method((t_object *)p,(t_symbol *)sym_dirty);
+//    p->b_modtime = gettime();
 #else
 #error Not implemented
 #endif 

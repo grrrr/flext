@@ -455,7 +455,7 @@ public:
 	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,float &)) { AddMethod(inlet,MakeSymbol(tag),m); }
 	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,int &)) { AddMethod(inlet,MakeSymbol(tag),m); }
 
-	// 큦chedule call of the CbIdle method during the next idle cycle
+	// 짜schedule call of the CbIdle method during the next idle cycle
 	void AddIdle();
 
 	//! Set Max/MSP style of distributing list elements over (message) inlets
@@ -507,7 +507,7 @@ public:
 	static void AddMethod(t_classid c,int inlet,const char *tag,bool (*m)(flext_base *,float &)) { AddMethod(c,inlet,MakeSymbol(tag),m); }
 	static void AddMethod(t_classid c,int inlet,const char *tag,bool (*m)(flext_base *,int &)) { AddMethod(c,inlet,MakeSymbol(tag),m); }
 
-	// 큦chedule call of the given idlefun during the next idle cycle
+	// 짜schedule call of the given idlefun during the next idle cycle
 	static void AddIdle(bool (*idlefun)(int argc,const t_atom *argv),int argc,const t_atom *argv);
 
 //!		@} FLEXT_C_CADDMETHOD
@@ -980,7 +980,7 @@ private:
 	bool ShowAttrib(AttrItem *a,bool show) const;
 
 	static bool cb_ListMethods(flext_base *c,int argc,const t_atom *argv);
-	static bool cb_ListAttrib(flext_base *c) { return c->ListAttrib(); }
+	static bool cb_ListAttrib(flext_base *c) { Locker lock(c); return c->ListAttrib(); }
 
 	// queue stuff
 

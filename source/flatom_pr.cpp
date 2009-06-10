@@ -60,7 +60,7 @@ bool flext::PrintAtom(const t_atom &a,char *buf,size_t bufsz)
     }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
     else if(a.a_type == A_DOLLAR) {
-        ok = STD::snprintf(buf,bufsz,"$%d",a.a_w.w_long) > 0;
+        ok = STD::snprintf(buf,bufsz,"$%ld",a.a_w.w_long) > 0;
     }
 #else
 //#pragma message("Not implemented")

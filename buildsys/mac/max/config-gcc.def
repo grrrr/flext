@@ -55,7 +55,10 @@ HELPPATH=/Applications/MaxMSP\ 4.6/max-help/flext
 MFLAGS=-j 2
 
 # user defined compiler flags
-UFLAGS += -ffast-math -mmacosx-version-min=10.3
+UFLAGS += -ffast-math -mmacosx-version-min=10.4
+
+# user defined linker flags
+LDFLAGS += -mmacosx-version-min=10.4
 
 # user defined optimization flags
 OFLAGS += -Os # -ftree-vectorize
@@ -74,5 +77,6 @@ DFLAGS_i386 +=
 
 # cross-compilation (optional)
 ARCH=ppc i386 #x86_64 ppc64
-# don't use OSXSDK for 10.5!
+
+# SDK for 10.4
 #OSXSDK=/Developer/SDKs/MacOSX10.4u.sdk

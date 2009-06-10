@@ -247,6 +247,8 @@ extern void cb_buffer_dsp(void *c,t_signal **sp);
 
 void flext_obj::obj_add(bool lib,bool dsp,bool noi,bool attr,const char *idname,const char *names,void setupfun(t_classid),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...)
 {
+    Locker lock;
+
 #if FLEXT_SYS == FLEXT_SYS_PD
 	// register buffer helper class (if not present already)
 	if(!buf_class) {
@@ -398,6 +400,8 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,short _argc_,t_atom *argv)
 flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 #endif
 {
+    Locker lock;
+
 	flext_hdr *obj = NULL;
 	flext_class *lo = FindName(s);
 
@@ -537,7 +541,13 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 
             flext_obj::initing = false;
 
-            if(!ok) { 
+            if(ok) {
+#if FLEXT_SYS == FLEXT_SYS_MAX
+                // create object-specific thread lock
+                critical_new(&obj->data->lock);
+#endif
+            }
+            else { 
 				// there was some init error, free object
 				lo->freefun(obj); 
 				obj = NULL; 
@@ -558,6 +568,8 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 
 void flext_obj::obj_free(flext_hdr *h)
 {
+    Locker lock;
+
 	flext_hdr *hdr = (flext_hdr *)h;
 	const t_symbol *name = hdr->data->thisNameSym();
 	flext_class *lcl = FindName(name);
@@ -568,6 +580,11 @@ void flext_obj::obj_free(flext_hdr *h)
 		try {
 		    // call virtual exit function
 		    hdr->data->Exit();
+
+#if FLEXT_SYS == FLEXT_SYS_MAX
+            // free object-specific thread lock
+            critical_free(hdr->data->lock);
+#endif
 
 		    // now call object destructor and deallocate
 		    lcl->freefun(hdr);

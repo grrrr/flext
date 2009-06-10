@@ -213,6 +213,31 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 
 //        static bool	process_attributes;
 
+#if FLEXT_SYS == FLEXT_SYS_MAX
+        t_critical lock;
+        void Lock() { critical_enter(lock); }
+        void Unlock() { critical_exit(lock); }
+        static void SysLock() { critical_enter(0); }
+        static void SysUnlock() { critical_exit(0); }
+#elif FLEXT_SYS == FLEXT_SYS_PD
+        void Lock() {}
+        void Unlock() {}
+        static void SysLock() {}
+        static void SysUnlock() {}
+#else
+    #error
+#endif
+
+        class Locker
+        {
+        public:
+            Locker(flext_obj *o = NULL): obj(o)  { if(obj) obj->Lock(); else SysLock(); }
+            Locker(flext_hdr *h): obj(h->data)  { FLEXT_ASSERT(obj); obj->Lock(); }
+            ~Locker() { if(obj) obj->Unlock(); else SysUnlock();  }
+        protected:
+            flext_obj *obj;
+        };
+
     private:
 
         //! The canvas (patcher) that the object is in

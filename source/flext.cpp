@@ -200,7 +200,11 @@ void flext_base::Setup(t_classid id)
 #endif
 }
 
-void flext_base::cb_loadbang(flext_hdr *c) { thisObject(c)->CbLoadbang(); }   
+void flext_base::cb_loadbang(flext_hdr *c) 
+{ 
+    Locker lock(c);
+    thisObject(c)->CbLoadbang(); 
+}   
 
 void flext_base::m_loadbang() {}
 void flext_base::CbLoadbang() { m_loadbang(); }
@@ -210,18 +214,23 @@ void flext_base::CbClick() {}
 #if FLEXT_SYS == FLEXT_SYS_PD
 void flext_base::cb_click(flext_hdr *c,t_floatarg xpos,t_floatarg ypos,t_floatarg shift,t_floatarg ctrl,t_floatarg alt)
 {
-    if(shift) thisObject(c)->CbClick();
+    if(shift) {
+        Locker lock(c);
+        thisObject(c)->CbClick();
+    }
 }
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
 void flext_base::cb_click(flext_hdr *c, Point pt, short mods)
 {
+    Locker lock(c);
     thisObject(c)->CbClick();
 }
 
 void flext_base::cb_assist(flext_hdr *c,void * /*b*/,long msg,long arg,char *s) 
 { 
+    Locker lock(c);
     flext_base *th = thisObject(c); 
 
     switch(msg) {
@@ -245,6 +254,7 @@ void flext_base::cb_dsp(flext_hdr *c,t_signal **sp,short *count)
 void flext_base::cb_dsp(flext_hdr *c,t_signal **sp) 
 #endif
 { 
+    Locker lock(c);
     flext_base *bobj = thisObject(c); 
 	
 #if FLEXT_SYS == FLEXT_SYS_MAX

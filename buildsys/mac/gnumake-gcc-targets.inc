@@ -44,11 +44,11 @@ ifndef ARCH
 
 $(OBJPATH)/%.opp : $(SRCDIR)/%.cpp
 	-mkdir -p $(dir $@)
-	$(CXX) -c $(CFLAGS) $(DEFS) $(PRECOMINC) $(INCPATH) $^ -o $@
+	$(CXX) -c $(CFLAGS) $(CXXFLAGS) $(DEFS) $(PRECOMINC) $(INCPATH) $^ -o $@
 
 $(OBJPATH)/%.o : $(SRCDIR)/%.c
 	-mkdir -p $(dir $@)
-	$(CC) -c $(CFLAGS) $(DEFS) $(INCPATH) $^ -o $@
+	$(CC) -c $(CFLAGS) $(DEFS) $(PRECOMINC) $(INCPATH) $^ -o $@
 
 else # ARCH
 ##### architecture-specific compilation ###################
@@ -56,11 +56,11 @@ else # ARCH
 define ARCH_COMPILE
 $(OBJPATH)/%.opp_$(1) : $(SRCDIR)/%.cpp
 	-mkdir -p $(dir $$@)
-	$(CXX) -c $(CFLAGS) -arch $(1) $$(CFLAGS_$(1)) $(DEFS) $(PRECOMINC) $(INCPATH) $$^ -o $$@
+	$(CXX) -c $(CFLAGS) $(CXXFLAGS) -arch $(1) $$(CFLAGS_$(1)) $(DEFS) $(PRECOMINC) $(INCPATH) $$^ -o $$@
 
 $(OBJPATH)/%.o_$(1) : $(SRCDIR)/%.c
 	-mkdir -p $(dir $$@)
-	$(CC) -c $(CFLAGS) -arch $(1) $$(CFLAGS_$(1)) $(DEFS) $(INCPATH) $$^ -o $$@
+	$(CC) -c $(CFLAGS) -arch $(1) $$(CFLAGS_$(1)) $(DEFS) $(PRECOMINC)  $(INCPATH) $$^ -o $$@
 endef
 
 ##### make fat object file ###################

@@ -130,7 +130,7 @@ add_method1(c,cb_px_ft ## IX," ft " #IX,A_FLOAT)
 void flext_base::cb_anything(flext_hdr *c,const t_symbol *s,short argc,t_atom *argv)
 {
     Locker lock(c);
-    int ci = c->curinlet;
+    int const ci = proxy_getinlet((t_object *)&c->obj);
 //    post("%s %i, cb_anything(%i)",__FILE__,__LINE__,ci);
     thisObject(c)->CbMethodHandler(ci,s,argc,argv);
 }
@@ -139,7 +139,7 @@ void flext_base::cb_int(flext_hdr *c,long v)
 {
     t_atom atom; SetInt(atom,v);
     Locker lock(c);
-    int ci = c->curinlet;
+    int const ci = proxy_getinlet((t_object *)&c->obj);
     thisObject(c)->CbMethodHandler(ci,sym_int,1,&atom);
 }
 
@@ -147,14 +147,14 @@ void flext_base::cb_float(flext_hdr *c,double v)
 {
     t_atom atom; SetFloat(atom,v);
     Locker lock(c);
-    int ci = c->curinlet;
+    int const ci = proxy_getinlet((t_object *)&c->obj);
     thisObject(c)->CbMethodHandler(ci,sym_float,1,&atom);
 }
 
 void flext_base::cb_bang(flext_hdr *c)
 {
-    int ci = c->curinlet;
     Locker lock(c);
+    int const ci = proxy_getinlet((t_object *)&c->obj);
     thisObject(c)->CbMethodHandler(ci,sym_bang,0,NULL);
 }
 

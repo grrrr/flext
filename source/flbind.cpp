@@ -34,7 +34,7 @@ void flext_base::SetupBindProxy()
     // already initialized?
     if(!pxbnd_class) {
 #if FLEXT_SYS == FLEXT_SYS_PD
-        pxbnd_class = class_new(gensym("flext_base bind proxy"),NULL,NULL,sizeof(pxbnd_object),CLASS_PD|CLASS_NOINLET, A_NULL);
+        pxbnd_class = class_new(gensym(const_cast<char *>("flext_base bind proxy")),NULL,NULL,sizeof(pxbnd_object),CLASS_PD|CLASS_NOINLET, A_NULL);
         add_anything(pxbnd_class,pxbnd_object::px_method); // for symbol-bound methods
 #elif FLEXT_SYS == FLEXT_SYS_MAX
         pxbnd_class = new t_class;

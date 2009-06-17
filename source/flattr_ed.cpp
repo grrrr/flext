@@ -79,7 +79,7 @@ static void tclscript()
     if(havecode) return;
     else havecode = true;
 
-    sys_vgui(
+    sys_vgui(const_cast<char *>(
         "proc flext_escatoms {lst} {\n"
             "set tmp {}\n"
             "foreach a $lst {\n"
@@ -93,9 +93,9 @@ static void tclscript()
                 "lappend tmp $a\n"
             "}\n"
             "return $tmp\n"
-        "}\n"
+        "}\n")
     );
-    sys_vgui(
+    sys_vgui(const_cast<char *>(
         "proc flext_makevalue {id ix} {\n"
             // strip "." from the TK id to make a variable name suffix
             "set vid [string trimleft $id .]\n"
@@ -128,9 +128,9 @@ static void tclscript()
 
             // return list
             "return $lst\n" 
-        "}\n"
+        "}\n")
     );
-    sys_vgui(
+    sys_vgui(const_cast<char *>(
         "proc flext_apply {id ix} {\n"
             "set lst [flext_makevalue $id $ix]\n"
             "set lst [eval concat $lst]\n" // remove curly braces from character escaping
@@ -156,9 +156,9 @@ static void tclscript()
         "proc flext_ok {id alen} {\n"
             "flext_applyall $id $alen\n"
             "flext_cancel $id\n"
-        "}\n"
+        "}\n")
     );
-    sys_vgui(
+    sys_vgui(const_cast<char *>(
         "proc flext_help {id} {\n"
             "toplevel $id.hw\n"
             "wm title $id.hw \"Flext attribute editor help\"\n"
@@ -184,9 +184,9 @@ static void tclscript()
                 "Ctrl-Button on a text field will open an editor window where text can be entered more comfortably.\n"
             "\"\n"
             "$id.hw.text configure -state disabled\n"
-        "}\n"
+        "}\n")
     );
-    sys_vgui(
+    sys_vgui(const_cast<char *>(
         "proc flext_copyval {dst src} {\n"
             "global $src $dst\n"
             "set $dst [expr $$src]\n"
@@ -200,9 +200,9 @@ static void tclscript()
             "foreach t $txt { lappend tmp [string trim $t] }\n"
             "set $var $tmp\n"
             "destroy $id\n"
-        "}\n"
+        "}\n")
     );
-    sys_vgui(
+    sys_vgui(const_cast<char *>(
         "proc flext_textzoom {id var title attr edit} {\n"
             "global $var\n"
             "toplevel $id.w\n"
@@ -239,9 +239,9 @@ static void tclscript()
             "button $id.w.buttons.cancel -text Cancel -command \"destroy $id.w\"\n"
             "pack $id.w.buttons.cancel -side left -expand 1\n"
             "bind $id.w {<KeyPress-Escape>} \"destroy $id.w\"\n"
-        "}\n"
+        "}\n")
     );
-    sys_vgui(
+    sys_vgui(const_cast<char *>(
         "proc pdtk_flext_dialog {id title attrlist} {\n"
                 "set vid [string trimleft $id .]\n"
                 "set alen [expr [llength $attrlist] / 6 ]\n"
@@ -283,9 +283,9 @@ static void tclscript()
                 // Separator
                 "frame $id.frame.sep -relief ridge -bd 1 -height 2\n"
                 "grid config $id.frame.sep -column 0 -columnspan 9 -row $row -pady 2 -sticky {snew}\n"
-                "incr row\n"
+                "incr row\n")
     );
-    sys_vgui(
+    sys_vgui(const_cast<char *>(
                 "set ix 1\n"
                 "foreach {an av ai atp asv afl} $attrlist {\n"
                     "grid rowconfigure $id.frame $row -weight 1\n"
@@ -319,9 +319,9 @@ static void tclscript()
 
                     // attribute label
                     "label $id.frame.label-$ix -text \"$an :\" -font {Helvetica 8 bold}\n"
-                    "grid config $id.frame.label-$ix -column 0 -row $row -padx 5 -sticky {e}\n"
+                    "grid config $id.frame.label-$ix -column 0 -row $row -padx 5 -sticky {e}\n")
     );
-    sys_vgui(
+    sys_vgui(const_cast<char *>(
                     "if { $afl != 0 } {\n"
                         // attribute is puttable
 
@@ -367,9 +367,9 @@ static void tclscript()
                         "foreach {i c} {0 black 1 blue 2 red} {\n"
                             "radiobutton $id.frame.b$i-$ix -value $i -foreground $c -variable $var_attr_save" ST_DISABLED "\n"
                             "grid config $id.frame.b$i-$ix -column [expr $i + 6] -row $row\n"
-                        "}\n"
+                        "}\n")
     );
-    sys_vgui(
+    sys_vgui(const_cast<char *>(
                     "} else {\n"
                         // attribute is gettable only
 
@@ -408,9 +408,9 @@ static void tclscript()
                 "grid rowconfigure $id.frame $row -weight 1\n"
                 "frame $id.frame.dummy\n"
                 "grid config $id.frame.dummy -column 0 -columnspan 9 -row $row\n"
-                "incr row\n"
+                "incr row\n")
     );
-    sys_vgui(
+    sys_vgui(const_cast<char *>(
                 // Separator
                 "frame $id.sep2 -relief ridge -bd 1 -height 2\n"
 
@@ -435,7 +435,7 @@ static void tclscript()
                 "bind $id {<KeyPress-Escape>} \" flext_cancel $id \"\n"
                 "bind $id {<KeyPress-Return>} \" flext_ok $id $alen \"\n"
                 "bind $id {<Shift-KeyPress-Return>} \" flext_applyall $id $alen \"\n"
-        "}\n"
+        "}\n")
     );
 }
 
@@ -529,9 +529,9 @@ void flext_base::cb_GfxProperties(flext_hdr *c, t_glist *)
     char buf[1000];
 
      // beginning of proc
-    sys_vgui("proc pdtk_flext_dialog_%p {title} {\n",th);
+    sys_vgui(const_cast<char *>("proc pdtk_flext_dialog_%p {title} {\n"),th);
 
-    sys_vgui("pdtk_flext_dialog $title {\n");
+    sys_vgui(const_cast<char *>("pdtk_flext_dialog $title {\n"));
 
     // add title
     t_text *x = (t_text *)c;
@@ -541,7 +541,7 @@ void flext_base::cb_GfxProperties(flext_hdr *c, t_glist *)
     t_atom *argv = binbuf_getvec(x->te_binbuf);
 
     PrintList(argc,argv,buf,sizeof(buf));
-    sys_vgui("%s } {\n",buf);
+    sys_vgui(const_cast<char *>("%s } {\n"),buf);
 
     AtomListStatic<32> la;
     th->ListAttrib(la);
@@ -603,10 +603,10 @@ void flext_base::cb_GfxProperties(flext_hdr *c, t_glist *)
                 b += escapeit(b,sizeof(buf)+buf-b,tmp);
                 if(i < lv.Count()-1) { *(b++) = ' '; *b = 0; }
             }
-            sys_vgui("%s",buf);
+            sys_vgui(const_cast<char *>("%s"),buf);
         }
         else
-            sys_vgui("{}");
+            sys_vgui(const_cast<char *>("{}"));
 
         sys_vgui(const_cast<char *>(list?"} {":" "));
 
@@ -621,16 +621,16 @@ void flext_base::cb_GfxProperties(flext_hdr *c, t_glist *)
                 b += escapeit(b,sizeof(buf)+buf-b,tmp);
                 if(i < lp.Count()-1) { *(b++) = ' '; *b = 0; }
             }
-            sys_vgui("%s",buf);
+            sys_vgui(const_cast<char *>("%s"),buf);
         }
         else
-            sys_vgui("{}");
+            sys_vgui(const_cast<char *>("{}"));
 
 
         sys_vgui(const_cast<char *>(list?"} %i %i %i \n":" %i %i %i \n"),tp,sv,pattr?(pattr->BothExist()?2:1):0);
     }
 
-    sys_vgui(" } }\n"); // end of proc
+    sys_vgui(const_cast<char *>(" } }\n")); // end of proc
 
     STD::sprintf(buf,"pdtk_flext_dialog_%p %%s\n",th);
     gfxstub_new((t_pd *)th->thisHdr(), th->thisHdr(),buf);

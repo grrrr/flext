@@ -150,7 +150,7 @@ void flext_base::AddMessageMethods(t_class *c,bool dsp,bool dspin)
     add_loadbang(c,cb_loadbang);
 
 #if FLEXT_SYS == FLEXT_SYS_PD
-    class_addmethod(c,(t_method)cb_click,gensym("click"),A_FLOAT,A_FLOAT,A_FLOAT,A_FLOAT,A_FLOAT,A_NULL);
+    class_addmethod(c,(t_method)cb_click,gensym(const_cast<char *>("click")),A_FLOAT,A_FLOAT,A_FLOAT,A_FLOAT,A_FLOAT,A_NULL);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
     add_assist(c,cb_assist);
     add_dblclick(c,cb_click);

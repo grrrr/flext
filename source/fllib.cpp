@@ -252,7 +252,7 @@ void flext_obj::obj_add(bool lib,bool dsp,bool noi,bool attr,const char *idname,
 #if FLEXT_SYS == FLEXT_SYS_PD
 	// register buffer helper class (if not present already)
 	if(!buf_class) {
-		buf_class = ::class_new(gensym(" flext buffer helper "),NULL,NULL,sizeof(t_object),CLASS_PD|CLASS_NOINLET,A_NULL);
+		buf_class = ::class_new(gensym(const_cast<char *>(" flext buffer helper ")),NULL,NULL,sizeof(t_object),CLASS_PD|CLASS_NOINLET,A_NULL);
 		add_dsp(buf_class,cb_buffer_dsp);
 		// make an instance
 		void *c = ::pd_new(buf_class);

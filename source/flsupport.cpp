@@ -69,16 +69,16 @@ void flext::Setup()
 	sym_bang = &s_bang;
 	sym_list = &s_list;
 	sym_signal = &s_signal;
-	sym_int = gensym("int");
+	sym_int = flext::MakeSymbol("int");
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	sym__ = gensym("");
-	sym_int = gensym("int");
-	sym_float = gensym("float");
-	sym_symbol = gensym("symbol");
-	sym_bang = gensym("bang");
-	sym_list = gensym("list");
-	sym_anything = gensym("anything");
-	sym_signal = gensym("signal");
+	sym__ = flext::MakeSymbol("");
+	sym_int = flext::MakeSymbol("int");
+	sym_float = flext::MakeSymbol("float");
+	sym_symbol = flext::MakeSymbol("symbol");
+	sym_bang = flext::MakeSymbol("bang");
+	sym_list = flext::MakeSymbol("list");
+	sym_anything = flext::MakeSymbol("anything");
+	sym_signal = flext::MakeSymbol("signal");
 
     sym_buffer = flext::MakeSymbol("buffer~");
     sym_size = flext::MakeSymbol("size");

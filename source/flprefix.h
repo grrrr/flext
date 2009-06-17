@@ -449,8 +449,4 @@ $LastChangedBy$
 #	endif
 #endif
 
-#ifdef __CYGWIN__
-void strtold();
-#endif
-
 #endif // __FLEXT_PREFIX_H

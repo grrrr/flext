@@ -7,7 +7,7 @@ INCPATH += -I/usr/include
 
 ##############################################
 
-CFLAGS += -mno-cygwin
+CFLAGS += -mno-cygwin -include /usr/include/stdlib.h
 LDFLAGS += -shared -mno-cygwin
 
 # default Windows flags as defined from VC IDE

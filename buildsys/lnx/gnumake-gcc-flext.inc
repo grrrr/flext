@@ -22,7 +22,7 @@ $(TARGETPATH):
 
 $(TARGETPATH)/%.opp : $(SRCDIR)/%.cpp
 	-mkdir -p $(dir $@)
-	$(CXX) -c c $(CXXFLAGS) $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
+	$(CXX) -c $(CXXFLAGS) $(CFLAGS) $(DEFS) $(INCPATH) $< -o $@
 
 $(TARGETPATH)/%.o : $(SRCDIR)/%.c
 	-mkdir -p $(dir $@)
@@ -46,7 +46,7 @@ endif
 ##############################################
 
 _clean_:
-	-rm -r $(TARGETPATH)
+	-rm -rf $(TARGETPATH)
 
 ##############################################
 

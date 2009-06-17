@@ -209,7 +209,7 @@ void flext_base::SetProxies(t_class *c,bool dsp)
     // proxy for extra inlets
     if(UNLIKELY(!px_class)) {
         // only once
-        px_class = class_new(gensym(" flext_base proxy "),NULL,NULL,sizeof(px_object),CLASS_PD|CLASS_NOINLET, A_NULL);
+        px_class = class_new(gensym(const_cast<char *>(" flext_base proxy ")),NULL,NULL,sizeof(px_object),CLASS_PD|CLASS_NOINLET, A_NULL);
         class_addbang(px_class,px_object::px_bang); // for other inlets
         class_addfloat(px_class,px_object::px_float); // for other inlets
         class_addsymbol(px_class,px_object::px_symbol); // for other inlets

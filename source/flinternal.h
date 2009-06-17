@@ -32,20 +32,20 @@ $LastChangedBy$
                 
 
 
-#define add_dsp(clss,meth) class_addmethod(clss, (t_method)meth,gensym("dsp"),A_NULL)
+#define add_dsp(clss,meth) class_addmethod(clss, (t_method)meth,gensym(const_cast<char *>("dsp")),A_NULL)
 #define add_bang(clss,meth) class_addbang(clss, (t_method)meth)
 #define add_float(clss,meth) class_addfloat(clss, (t_method)meth)
-#define add_floatn(clss,meth,n) class_addmethod(clss, (t_method)meth,gensym("ft" #n),A_FLOAT,A_NULL)
+#define add_floatn(clss,meth,n) class_addmethod(clss, (t_method)meth,gensym(const_cast<char *>("ft" #n)),A_FLOAT,A_NULL)
 #define add_flint(clss,meth) class_addfloat(clss, (t_method)meth)
-#define add_flintn(clss,meth,n) class_addmethod(clss, (t_method)meth,gensym("ft" #n),A_FLOAT,A_NULL)
-#define add_method(clss,meth,text) class_addmethod(clss, (t_method)meth, gensym(text), A_NULL)
-#define add_methodG(clss,meth,text) class_addmethod(clss, (t_method)meth, gensym(text), A_GIMME,A_NULL)
-#define add_method1(clss,meth,text,a1) class_addmethod(clss, (t_method)meth, gensym(text), a1,A_NULL)
-#define add_method2(clss,meth,text,a1,a2) class_addmethod(clss, (t_method)meth, gensym(text), a1,a2,A_NULL)
-#define add_method3(clss,meth,text,a1,a2,a3) class_addmethod(clss, (t_method)meth, gensym(text), a1,a2,a3,A_NULL)
-#define add_method4(clss,meth,text,a1,a2,a3,a4) class_addmethod(clss, (t_method)meth, gensym(text), a1,a2,a3,a4,A_NULL)
-#define add_method5(clss,meth,text,a1,a2,a3,a5) class_addmethod(clss, (t_method)meth, gensym(text), a1,a2,a3,a4,a5,A_NULL)
-#define add_loadbang(clss,meth) class_addmethod(clss,(t_method)meth, gensym("loadbang"), A_CANT, A_NULL)
+#define add_flintn(clss,meth,n) class_addmethod(clss, (t_method)meth,gensym(const_cast<char *>("ft" #n)),A_FLOAT,A_NULL)
+#define add_method(clss,meth,text) class_addmethod(clss, (t_method)meth, gensym(const_cast<char *>(text)), A_NULL)
+#define add_methodG(clss,meth,text) class_addmethod(clss, (t_method)meth, gensym(const_cast<char *>(text)), A_GIMME,A_NULL)
+#define add_method1(clss,meth,text,a1) class_addmethod(clss, (t_method)meth, gensym(const_cast<char *>(text)), a1,A_NULL)
+#define add_method2(clss,meth,text,a1,a2) class_addmethod(clss, (t_method)meth, gensym(const_cast<char *>(text)), a1,a2,A_NULL)
+#define add_method3(clss,meth,text,a1,a2,a3) class_addmethod(clss, (t_method)meth, gensym(const_cast<char *>(text)), a1,a2,a3,A_NULL)
+#define add_method4(clss,meth,text,a1,a2,a3,a4) class_addmethod(clss, (t_method)meth, gensym(const_cast<char *>(text)), a1,a2,a3,a4,A_NULL)
+#define add_method5(clss,meth,text,a1,a2,a3,a5) class_addmethod(clss, (t_method)meth, gensym(const_cast<char *>(text)), a1,a2,a3,a4,a5,A_NULL)
+#define add_loadbang(clss,meth) class_addmethod(clss,(t_method)meth, gensym(const_cast<char *>("loadbang")), A_CANT, A_NULL)
 #define add_anything(clss,meth) class_addanything(clss,meth)
 
 

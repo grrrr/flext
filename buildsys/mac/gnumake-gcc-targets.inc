@@ -81,7 +81,7 @@ $(foreach arch,$(ARCH),$(eval $(call ARCH_COMPILE,$(arch))))
 ##############################################
 
 _clean_:
-	-rm -r $(TARGETPATH)
-	-rm -r $(OBJPATH)
+	-rm -rf $(TARGETPATH)
+	-rm -rf $(OBJPATH)
 
 ##############################################

@@ -3,7 +3,7 @@
 OBJPATH=$(OUTPATH)/$(OUTSUB)
 TARGETPATH=$(OBJPATH)
 TARGET=$(TARGETPATH)/$(OUTNAME).$(EXT)
-INCPATH += /usr/include
+INCPATH += -I/usr/include
 
 ##############################################
 

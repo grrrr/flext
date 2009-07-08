@@ -47,7 +47,7 @@ flext provides a universal build system which supports
 	Microsoft nmake (nmake)
 	Borland make (bmake)
 - various compilers
-	Microsoft Visual C/C++ 6.0 or .NET 2002/2003 (msvc)
+	Microsoft Visual C/C++ 6.0, .NET 2002/2003/2005/2008 (msvc)
 	GNU gcc 2.95 and above (gcc,cygwin,mingw)
 	Borland bcc32 (bcc)
 
@@ -100,7 +100,7 @@ OSX:
 - The developer package must be installed which contains all necessary parts.
 
 Windows:
-- Microsoft Visual Studio 6, .NET 2002, .NET 2003 or .NET 2005
+- Microsoft Visual Studio 6, .NET 2002/2003/2005/2008
   Be sure to use the VCVARS32.BAT (or probably SDKVARS.BAT) command on the prompt to set up the environment variables
   Also be sure NOT to put flext or other externals into a path containing spaces!!
 or

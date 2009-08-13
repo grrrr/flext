@@ -477,7 +477,14 @@ static void Trigger()
             qtickactive = true;
         }
 #   elif FLEXT_QMODE == 0
+#   ifdef FLEXT_THREADS
+        bool sys = flext::IsThread(flext::GetSysThreadId());
+#   else
+        bool sys = true;
+#   endif
+        if(!sys) flext::Lock();
         clock_delay(qclk,0);
+        if(!sys) flext::Unlock();
 #   endif
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 #   if FLEXT_QMODE == 0

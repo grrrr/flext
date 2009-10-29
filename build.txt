@@ -45,11 +45,9 @@ flext provides a universal build system which supports
 - various make programs
 	GNU make (gnumake)
 	Microsoft nmake (nmake)
-	Borland make (bmake)
 - various compilers
 	Microsoft Visual C/C++ 6.0, .NET 2002/2003/2005/2008 (msvc)
 	GNU gcc 2.95 and above (gcc,cygwin,mingw)
-	Borland bcc32 (bcc)
 
 Useful combinations of the above are
 
@@ -106,6 +104,8 @@ Windows:
 or
 - cygwin with binutils, gcc and make packages
 
+Max:
+- The Max/MSP SDK must be installed. On OSX, the frameworks therein must be copied to /Library/Frameworks
 
 
 1.2) Building and installing flext

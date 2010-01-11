@@ -1,7 +1,7 @@
 /* 
 flext tutorial - buffer 1 
 
-Copyright (c) 2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2003-2010 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -215,8 +215,9 @@ void buffer1::m_poke(int argc,const t_atom *argv)
 		ok = false;
 		
 	if(ok) {
-		// correct syntax, set sample
-		buf->Data()[ix] = val;
+		// correct syntax, set sample and trigger display
+		(*buf)[ix] = val;
+		buf->Dirty(true);
 	}
 	else
 		post("%s (%s) - syntax error - use \"poke index value [channel]\"",thisName(),GetString(thisTag()));
@@ -246,8 +247,8 @@ void buffer1::m_peek(int argc,const t_atom *argv)
 		ok = false;
 		
 	if(ok)
-		// correct syntax, output value
-		ToOutFloat(0,buf->Data()[ix]);
+		// correct syntax, output value 
+		ToOutFloat(0,(*buf)[ix]);
 	else
 		post("%s (%s) - syntax error - use \"peek index [channel]\"",thisName(),GetString(thisTag()));
 }

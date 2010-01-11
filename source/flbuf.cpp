@@ -110,7 +110,7 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
 //            sym = NULL;
             if(valid) ret = -1;
         }
-        else if(!FLEXT_ARRAYGRAB(arr, &frames1, &data1))
+        else if(!FLEXT_PD_ARRAYGRAB(arr, &frames1, &data1))
         {
             error("buffer: bad template '%s'",GetString(sym)); 
             data = NULL;
@@ -166,7 +166,7 @@ bool flext::buffer::Update()
 
     int frames1;
     FLEXT_ARRAYTYPE *data1;
-    if(!FLEXT_ARRAYGRAB(arr, &frames1, &data1)) {
+    if(!FLEXT_PD_ARRAYGRAB(arr, &frames1, &data1)) {
         data = NULL;
         chns = 0;
         frames = 0;

@@ -2,10 +2,13 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-20010 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
+$LastChangedRevision$
+$LastChangedDate$
+$LastChangedBy$
 */
 
 #include "flext.h"
@@ -95,6 +98,7 @@ void flext_stk::CbSignal()
 
 StkFloat *flext_stk::Input::tick(StkFloat *vector,unsigned int vectorSize)
 {
+    FLEXT_ASSERT(vectorSize == vecsz);
     for(unsigned int i = 0; i < vectorSize; i++) vector[i] = tick();
     return vector;
 }
@@ -104,6 +108,7 @@ StkFloat *flext_stk::Input::tick(StkFloat *vector,unsigned int vectorSize)
 
 void flext_stk::Output::tick(const StkFloat *vector,unsigned int vectorSize)
 {
+    FLEXT_ASSERT(vectorSize == vecsz);
     for(unsigned int i = 0; i < vectorSize; i++) tick(vector[i]);
 }
 

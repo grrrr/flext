@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2010 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -27,6 +27,7 @@ $LastChangedBy$
 
 using stk::Stk;
 using stk::StkFloat;
+using stk::StkFrames;
     
 class FLEXT_SHARE flext_stk:
     public flext_dsp
@@ -65,6 +66,13 @@ protected:
 
         StkFloat *tick(StkFloat *vector,unsigned int vectorSize);
 
+        inline StkFrames &tick(StkFrames &vector)
+        {
+            FLEXT_ASSERT(vector.channels() == 1);
+            tick(&vector[0],vector.frames());
+            return vector;
+        }
+
         inline void SetBuf(const t_sample *b) { buf = b; }
 
     private:
@@ -89,6 +97,13 @@ protected:
         }
 
         void tick(const StkFloat *vector,unsigned int vectorSize);
+
+        inline void tick(const StkFrames &vector)
+        {
+            FLEXT_ASSERT(vector.channels() == 1);
+            // dirty casting due to bug in STK api... operator[] _should_ return const StkFloat &
+            tick(&const_cast<StkFrames &>(vector)[0],vector.frames());
+        }
 
         inline void SetBuf(t_sample *b) { buf = b; }
 

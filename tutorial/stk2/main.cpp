@@ -46,7 +46,7 @@ public:
 	virtual void ProcessObjs(int n);  // do DSP processing
 
 	PitShift *inst[2];
-    StkFloat *vec;
+    StkFrames vec;
 
 private:
 	static void Setup(t_classid c);
@@ -84,7 +84,7 @@ bool stk2::NewObjs()
 			inst[i] = new PitShift;
 
         // reserve one signal vector too
-        vec = new StkFloat[Blocksize()];
+        vec.resize(Blocksize());
 	}
 	catch (StkError &) {
 		post("%s - Creation failed!",thisName());
@@ -99,16 +99,15 @@ void stk2::FreeObjs()
 {
 	for(int i = 0; i < 2; ++i)
 		if(inst[i]) delete inst[i];
-    if(vec) delete[] vec;
 }
 
 // this is called on every DSP block
 void stk2::ProcessObjs(int n)
 {
 	for(int i = 0; i < 2; ++i) {
-        Inlet(0).tick(vec,n);
-        inst[i]->tick(vec,n);
-        Outlet(i).tick(vec,n);
+        Inlet(0).tick(vec);
+        inst[i]->tick(vec);
+        Outlet(i).tick(vec);
     }
 }
 

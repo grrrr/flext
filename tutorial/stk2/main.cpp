@@ -1,7 +1,7 @@
 /* 
 flext tutorial - stk 2
 
-Copyright (c) 2002-2006 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2002-2010 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -27,6 +27,7 @@ the respective platform (e.g. __OS_WINDOWS__ and __LITTLE_ENDIAN__ for Windows)
 
 #include "PitShift.h"
 
+using namespace stk;
 
 class stk2:
 	public flext_stk
@@ -45,7 +46,7 @@ public:
 	virtual void ProcessObjs(int n);  // do DSP processing
 
 	PitShift *inst[2];
-    MY_FLOAT *vec;
+    StkFloat *vec;
 
 private:
 	static void Setup(t_classid c);
@@ -83,7 +84,7 @@ bool stk2::NewObjs()
 			inst[i] = new PitShift;
 
         // reserve one signal vector too
-        vec = new MY_FLOAT[Blocksize()];
+        vec = new StkFloat[Blocksize()];
 	}
 	catch (StkError &) {
 		post("%s - Creation failed!",thisName());
@@ -104,12 +105,11 @@ void stk2::FreeObjs()
 // this is called on every DSP block
 void stk2::ProcessObjs(int n)
 {
-	for(int i = 0; i < 2; ++i)
-		Outlet(i).tick(
-            inst[i]->tick(
-                Inlet(0).tick(vec,n)
-            ,n)
-        ,n);
+	for(int i = 0; i < 2; ++i) {
+        Inlet(0).tick(vec,n);
+        inst[i]->tick(vec,n);
+        Outlet(i).tick(vec,n);
+    }
 }
 
 

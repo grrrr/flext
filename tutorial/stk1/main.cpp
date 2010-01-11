@@ -1,7 +1,7 @@
 /* 
 flext tutorial - stk 1
 
-Copyright (c) 2002-2006 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2002-2010 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -27,6 +27,7 @@ the respective platform (e.g. __OS_WINDOWS__ and __LITTLE_ENDIAN__ for Windows)
 
 #include "Noise.h"
 
+using namespace stk;
 
 class stk1:
 	public flext_stk

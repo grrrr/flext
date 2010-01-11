@@ -25,6 +25,9 @@ $LastChangedBy$
 
 #include "flpushns.h"
 
+using stk::Stk;
+using stk::StkFloat;
+    
 class FLEXT_SHARE flext_stk:
     public flext_dsp
 { 

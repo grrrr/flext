@@ -43,8 +43,12 @@
 
 #ifdef __APPLE__
     #include <libkern/OSAtomic.h>
-    #if  defined(__GLIBCPP__) || defined(__GLIBCXX__)
-        #include <bits/atomicity.h>
+    #if defined(__GLIBCPP__) || defined(__GLIBCXX__)
+		#if (__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 2))
+			#include <ext/atomicity.h>
+		#else
+			#include <bits/atomicity.h>
+		#endif
     #endif
 #endif
 

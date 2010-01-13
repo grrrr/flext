@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2010 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -99,10 +99,7 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
         if(valid) ret = -1;
     }   
     else if(!nameonly) {
-#if FLEXT_SYS == FLEXT_SYS_PD
-        int frames1;
-        FLEXT_ARRAYTYPE *data1;
-    
+#if FLEXT_SYS == FLEXT_SYS_PD   
         arr = (t_garray *)pd_findbyclass(const_cast<t_symbol *>(sym), garray_class);
         if(!arr)
         {
@@ -110,20 +107,25 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
 //            sym = NULL;
             if(valid) ret = -1;
         }
-        else if(!FLEXT_PD_ARRAYGRAB(arr, &frames1, &data1))
-        {
-            error("buffer: bad template '%s'",GetString(sym)); 
-            data = NULL;
-            frames = 0;
-            if(valid) ret = -1;
-        }
         else {
-            ret = 0;
-            garray_usedindsp(arr);
-            if(frames != frames1) { frames = frames1; if(!ret) ret = 1; }
-            if(data != data1) { data = data1; if(!ret) ret = 1; }
-            chns = 1;
-        }
+	        int frames1;
+			FLEXT_ARRAYTYPE *data1;
+	        if(!FLEXT_PD_ARRAYGRAB(arr, &frames1, &data1))
+	        {
+	            error("buffer: bad template '%s'",GetString(sym)); 
+	            data = NULL;
+	            frames = 0;
+	            if(valid) ret = -1;
+	        }
+	        else {
+	            ret = 0;
+	            garray_usedindsp(arr);
+	            if(frames != frames1) { frames = frames1; if(!ret) ret = 1; }
+				Element *data2 = reinterpret_cast<Element *>(data1);
+	            if(data != data2) { data = data2; if(!ret) ret = 1; }
+	            chns = 1;
+	        }
+		}
 #elif FLEXT_SYS == FLEXT_SYS_MAX
         if(sym->s_thing) {
             const t_buffer *p = (const t_buffer *)sym->s_thing;
@@ -138,7 +140,8 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
 #ifdef FLEXT_DEBUG
 //              post("flext: buffer object '%s' - valid:%i samples:%i channels:%i frames:%i",GetString(sym),p->b_valid,p->b_frames,p->b_nchans,p->b_frames);
 #endif
-                if(data != p->b_samples) { data = p->b_samples; if(!ret) ret = 1; }
+				Element *data1 = static_cast<Element *>(p->b_samples);
+                if(data != data1) { data = data1; if(!ret) ret = 1; }
                 if(chns != p->b_nchans) { chns = p->b_nchans; if(!ret) ret = 1; }
                 if(frames != p->b_frames) { frames = p->b_frames; if(!ret) ret = 1; }
             }
@@ -172,18 +175,22 @@ bool flext::buffer::Update()
         frames = 0;
         upd = true;
     }
-    else if(data != data1 || frames != frames1) {
-        data = data1;
-        frames = frames1;
-        upd = true;
-    }
+    else {
+		Element *data2 = reinterpret_cast<Element *>(data1);
+		if(data != data2 || frames != frames1) {
+	        data = data2;
+	        frames = frames1;
+	        upd = true;
+	    }
+	}
 #elif FLEXT_SYS == FLEXT_SYS_MAX
     const t_buffer *p = (const t_buffer *)sym->s_thing;
     if(p) {
         FLEXT_ASSERT(!NOGOOD(p) && ob_sym(p) == sym_buffer);
     
-        if(data != p->b_samples || chns != p->b_nchans || frames != p->b_frames) {
-            data = p->b_samples;
+		Element *data1 = static_cast<Element *>(p->b_samples);
+        if(data != data1 || chns != p->b_nchans || frames != p->b_frames) {
+            data = data1;
             chns = p->b_nchans;
             frames = p->b_frames;
             upd = true;

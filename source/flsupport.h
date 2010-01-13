@@ -211,18 +211,28 @@ public:
                 /* use new garray support that is 64-bit safe */
 #               define FLEXT_PD_ARRAYGRAB garray_getfloatwords
 #               define FLEXT_ARRAYTYPE t_word
-#               define FLEXT_GETELEMENT(arr,x) (arr)[x].w_float
+#               define FLEXT_GETSAMPLE(x) (x).w_float
 
 #       else
                 /* use old garray support, not 64-bit safe */
 #               define FLEXT_PD_ARRAYGRAB garray_getfloatarray
 #               define FLEXT_ARRAYTYPE t_sample
-#               define FLEXT_GETELEMENT(arr,x) (arr)[x]
+#               define FLEXT_GETSAMPLE(x) (x)
 #       endif
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 #       define FLEXT_ARRAYTYPE t_sample
-#       define FLEXT_GETELEMENT(arr,x) (arr)[x]
+#       define FLEXT_GETSAMPLE(x) (x)
 #endif
+
+		class Element {
+		public:
+			Element() {}
+			Element(t_sample s) { FLEXT_GETSAMPLE(el) = s; }
+			operator t_sample &() { return FLEXT_GETSAMPLE(el); }
+			operator t_sample () const { return FLEXT_GETSAMPLE(el); }
+		protected:
+			FLEXT_ARRAYTYPE el;
+		};
 
         /*! \brief Construct buffer.
             \param s: symbol name, can be NULL
@@ -307,7 +317,9 @@ public:
         /*! \brief Get pointer to buffer, channel and frame count.
             \remark Channels are interleaved
         */
-        FLEXT_ARRAYTYPE *Data() { return data; }
+        Element *Data() { return data; }
+
+    	const Element *Data() const { return data; }
 
         //! Get channel count
         int Channels() const { return chns; }
@@ -317,10 +329,10 @@ public:
         void Frames(int fr,bool keep = false,bool zero = true);
 
         //! Get data value in a platform-independent way
-        inline t_sample operator [](int index) const { return FLEXT_GETELEMENT(data,index); }
+        inline t_sample operator [](int index) const { return data[index]; }
 
         //! Reference data value in a platform-independent way
-        inline t_sample &operator [](int index) { return FLEXT_GETELEMENT(data,index); }
+        inline t_sample &operator [](int index) { return data[index]; }
         
         //! Graphic auto refresh interval
         void SetRefrIntv(float intv);
@@ -340,7 +352,7 @@ public:
         //! buffer name
         const t_symbol *sym;
         //! array holding audio data
-        FLEXT_ARRAYTYPE *data;
+        Element *data;
         //! number of audio channels
         int chns;
         //! number of frames (multiplied by chns for the number of samples)

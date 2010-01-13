@@ -1,12 +1,16 @@
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2008 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2010 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
 ----------------------------------------------------------------------------
 
 Version history:
+
+0.5.2:
+- 64-bit arch fixes (Pd 0.42)
+- STK API adaptations
 
 0.5.1:
 - optimizations for message handling and memory footprint

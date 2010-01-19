@@ -1,6 +1,6 @@
 # where is the PD installation including source code?
 # (this should point to the main folder, which has a "src" subfolder)
-PDPATH=/Applications/Pd-0.40-2.app/Contents/Resources
+PDPATH=/Applications/Pd-0.42-5.app/Contents/Resources
 
 # where is the PD executable?
 PDBIN=$(PDPATH)/bin/pd
@@ -58,7 +58,7 @@ UFLAGS += -ffast-math -mmacosx-version-min=10.4
 LDFLAGS += -mmacosx-version-min=10.4
 
 # user defined optimization flags
-OFLAGS += -Os # -ftree-vectorize
+OFLAGS += -O2 # -ftree-vectorize
 
 # user defined debugging flags
 DFLAGS +=

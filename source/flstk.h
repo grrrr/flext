@@ -65,7 +65,7 @@ protected:
         }
 
         StkFloat *tick(StkFloat *vector,unsigned int vectorSize);
-
+        
         inline StkFrames &tick(StkFrames &vector)
         {
             FLEXT_ASSERT(vector.channels() == 1);
@@ -97,7 +97,7 @@ protected:
         }
 
         void tick(const StkFloat *vector,unsigned int vectorSize);
-
+        
         inline void tick(const StkFrames &vector)
         {
             FLEXT_ASSERT(vector.channels() == 1);

@@ -219,10 +219,6 @@ public:
 #               define FLEXT_ARRAYTYPE t_sample
 #               define FLEXT_GETSAMPLE(x) (x)
 #       endif
-#elif FLEXT_SYS == FLEXT_SYS_MAX
-#       define FLEXT_ARRAYTYPE t_sample
-#       define FLEXT_GETSAMPLE(x) (x)
-#endif
 
 		class Element {
 		public:
@@ -233,6 +229,13 @@ public:
 		protected:
 			FLEXT_ARRAYTYPE el;
 		};
+
+#elif FLEXT_SYS == FLEXT_SYS_MAX
+#       define FLEXT_ARRAYTYPE t_sample
+#       define FLEXT_GETSAMPLE(x) (x)
+
+        typedef FLEXT_ARRAYTYPE Element;
+#endif
 
         /*! \brief Construct buffer.
             \param s: symbol name, can be NULL

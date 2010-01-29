@@ -110,5 +110,3 @@ void stk2::ProcessObjs(int n)
         Outlet(i).tick(vec);
     }
 }
-
-

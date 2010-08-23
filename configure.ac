@@ -23,15 +23,19 @@ AC_ARG_ENABLE(system,
 AC_ARG_WITH(sdkdir,
 	AC_HELP_STRING(--with-sdkdir,[path to pd or max headers]),
     [sdkdir=$withval],
-	AC_MSG_ERROR(path to system headers required $withval)
+	AC_MSG_ERROR(path to system SDK headers required $withval)
 )
 
 AC_ARG_WITH(pdbindir,
 	AC_HELP_STRING(--with-pdbindir,[path to pd bin dir]),
 	[
-		AC_CHECK_FILE([$withval/pd.dll],,AC_MSG_ERROR([Cannot find $withval/pd.dll]))	
+		if test $win; then
+# LATER: shouldn't we use AC_CHECK_LIB([pd]) ?
+		 AC_CHECK_FILE([$withval/pd.dll],,AC_MSG_ERROR([Cannot find $withval/pd.dll]))	
+		fi
 		LIBDIRS="$LIBDIRS $withval"
 	],
+# LATER: the pd bin dir is actually not _required_ on platforms other than w32
 	AC_MSG_ERROR(path to pd bin dir required)
 )
 
@@ -50,9 +54,9 @@ elif test $SYSTEM == pd; then
 # check for g_canvas.h in pd folder
 	AC_CHECK_FILE([$sdkdir/g_canvas.h],,AC_MSG_ERROR([Cannot find $sdkdir/g_canvas.h]))
 	INCLUDEDIRS="$INCLUDEDIRS $sdkdir"
-	libs="$libs pd"
 
 	if test $win; then
+		libs="$libs pd"
 		AC_DEFINE(NT)
 	fi
 else

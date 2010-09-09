@@ -140,7 +140,7 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
 #ifdef FLEXT_DEBUG
 //              post("flext: buffer object '%s' - valid:%i samples:%i channels:%i frames:%i",GetString(sym),p->b_valid,p->b_frames,p->b_nchans,p->b_frames);
 #endif
-				Element *data1 = static_cast<Element *>(p->b_samples);
+				Element *data1 = reinterpret_cast<Element *>(p->b_samples);
                 if(data != data1) { data = data1; if(!ret) ret = 1; }
                 if(chns != p->b_nchans) { chns = p->b_nchans; if(!ret) ret = 1; }
                 if(frames != p->b_frames) { frames = p->b_frames; if(!ret) ret = 1; }
@@ -188,7 +188,7 @@ bool flext::buffer::Update()
     if(p) {
         FLEXT_ASSERT(!NOGOOD(p) && ob_sym(p) == sym_buffer);
     
-		Element *data1 = static_cast<Element *>(p->b_samples);
+		Element *data1 = reinterpret_cast<Element *>(p->b_samples);
         if(data != data1 || chns != p->b_nchans || frames != p->b_frames) {
             data = data1;
             chns = p->b_nchans;
@@ -268,13 +268,13 @@ void flext::buffer::Frames(int fr,bool keep,bool zero)
     ::garray_resize(arr,(float)fr);
     Update();
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-    t_sample *tmp = NULL;
+    Element *tmp = NULL;
     int sz = frames;  
     if(fr < sz) sz = fr;
 
     if(keep) {
         // copy buffer data to tmp storage
-        tmp = (t_sample *)NewAligned(sz*sizeof(t_sample));
+        tmp = (Element *)NewAligned(sz*sizeof(Element));
         FLEXT_ASSERT(tmp);
         CopySamples(tmp,data,sz);
     }

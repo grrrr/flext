@@ -75,7 +75,7 @@ typedef t_perfroutine t_dspmethod;
 typedef void t_outlet;
 
 
-#define object_new(clss) newobject(clss)
+//#define object_new(clss) newobject(clss)
 #define object_free(obj) freeobject((object *)(obj))
 
 #define add_dsp(clss,meth) addmess((method)meth,"dsp",A_CANT,A_NOTHING)

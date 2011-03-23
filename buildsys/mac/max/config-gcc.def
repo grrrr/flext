@@ -61,7 +61,7 @@ UFLAGS += -ffast-math -mmacosx-version-min=10.4
 LDFLAGS += -mmacosx-version-min=10.4
 
 # user defined optimization flags
-OFLAGS += -O2 # -ftree-vectorize
+OFLAGS += -Os # -ftree-vectorize
 
 # user defined debugging flags
 DFLAGS +=

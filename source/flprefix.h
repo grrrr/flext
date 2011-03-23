@@ -433,7 +433,7 @@ $LastChangedBy$
 #endif
 
 // branching hints
-#ifdef __GNUC__
+#if __GNUC__ >= 3
 #	ifndef LIKELY
 #		define LIKELY(expression) (__builtin_expect(!!(expression), 1))
 #	endif

@@ -5,9 +5,9 @@
 #
 
 # static libraries
-lib_LIBRARIES = libflext-@SYSTEM@_s.a libflext-@SYSTEM@_sd.a libflext-@SYSTEM@_t.a libflext-@SYSTEM@_td.a 
+#lib_LIBRARIES = 
 # shared libraries
-lib_LTLIBRARIES = libflext-@SYSTEM@.la libflext-@SYSTEM@_d.la 
+lib_LTLIBRARIES = libflext-@SYSTEM@_s.la libflext-@SYSTEM@_sd.la libflext-@SYSTEM@_t.la libflext-@SYSTEM@_td.la libflext-@SYSTEM@.la libflext-@SYSTEM@_d.la 
 
 SRCS_FLEXT = \
 	flbase.cpp \
@@ -89,22 +89,22 @@ nobase_pkginclude_HEADERS += $(HDRS_STK)
 LIB_STK            =  stk
 endif
 
-libflext_@SYSTEM@_s_a_SOURCES    = $(SRCS_FLEXT)
-libflext_@SYSTEM@_sd_a_SOURCES  = $(SRCS_FLEXT)
-libflext_@SYSTEM@_t_a_SOURCES  = $(SRCS_FLEXT)
-libflext_@SYSTEM@_td_a_SOURCES = $(SRCS_FLEXT)
+libflext_@SYSTEM@_s_la_SOURCES    = $(SRCS_FLEXT)
+libflext_@SYSTEM@_sd_la_SOURCES  = $(SRCS_FLEXT)
+libflext_@SYSTEM@_t_la_SOURCES  = $(SRCS_FLEXT)
+libflext_@SYSTEM@_td_la_SOURCES = $(SRCS_FLEXT)
 libflext_@SYSTEM@_la_SOURCES = $(SRCS_FLEXT)
 libflext_@SYSTEM@_d_la_SOURCES = $(SRCS_FLEXT)
 
-libflext_@SYSTEM@_s_a_CXXFLAGS    = @OPT_FLAGS@ $(patsubst %,-I%,@INCLUDEDIRS@)
-libflext_@SYSTEM@_sd_a_CXXFLAGS  = @DBG_FLAGS@ $(patsubst %,-I%,@INCLUDEDIRS@)
-libflext_@SYSTEM@_t_a_CXXFLAGS  = @OPT_FLAGS@ $(patsubst %,-I%,@INCLUDEDIRS@) -DFLEXT_THREADS 
-libflext_@SYSTEM@_td_a_CXXFLAGS = @DBG_FLAGS@ $(patsubst %,-I%,@INCLUDEDIRS@) -DFLEXT_THREADS 
+libflext_@SYSTEM@_s_la_CXXFLAGS    = @OPT_FLAGS@ -static $(patsubst %,-I%,@INCLUDEDIRS@)
+libflext_@SYSTEM@_sd_la_CXXFLAGS  = @DBG_FLAGS@ -static $(patsubst %,-I%,@INCLUDEDIRS@)
+libflext_@SYSTEM@_t_la_CXXFLAGS  = @OPT_FLAGS@ -static $(patsubst %,-I%,@INCLUDEDIRS@) -DFLEXT_THREADS 
+libflext_@SYSTEM@_td_la_CXXFLAGS = @DBG_FLAGS@ -static $(patsubst %,-I%,@INCLUDEDIRS@) -DFLEXT_THREADS 
 libflext_@SYSTEM@_la_CXXFLAGS    = @OPT_FLAGS@ $(patsubst %,-I%,@INCLUDEDIRS@) -DFLEXT_SHARED
 libflext_@SYSTEM@_d_la_CXXFLAGS  = @DBG_FLAGS@ $(patsubst %,-I%,@INCLUDEDIRS@) -DFLEXT_SHARED
 
-libflext_@SYSTEM@_la_LDFLAGS  = @LD_FLAGS@ -no-undefined $(patsubst %,-L%,@LIBDIRS@) $(patsubst %,-l%,@libs@ $(LIB_SNDOBJ) $(LIB_STK)) $(patsubst %,-framework %,@FRAMEWORKS@)
-libflext_@SYSTEM@_d_la_LDFLAGS  = @LD_FLAGS@ -no-undefined $(patsubst %,-L%,@LIBDIRS@) $(patsubst %,-l%,@libs@ $(LIB_SNDOBJ) $(LIB_STK)) $(patsubst %,-framework %,@FRAMEWORKS@) 
+libflext_@SYSTEM@_la_LDFLAGS  = @LD_FLAGS@ $(patsubst %,-L%,@LIBDIRS@) $(patsubst %,-l%,@libs@ $(LIB_SNDOBJ) $(LIB_STK)) $(patsubst %,-framework %,@FRAMEWORKS@)
+libflext_@SYSTEM@_d_la_LDFLAGS  = @LD_FLAGS@ $(patsubst %,-L%,@LIBDIRS@) $(patsubst %,-l%,@libs@ $(LIB_SNDOBJ) $(LIB_STK)) $(patsubst %,-framework %,@FRAMEWORKS@) 
 
 #libflext_@SYSTEM@_la_LIBADD = @libs@ 
 #libflext_@SYSTEM@_d_la_LIBADD = @libs@ 

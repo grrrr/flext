@@ -35,8 +35,11 @@ AC_ARG_WITH(pdbindir,
 		fi
 		LIBDIRS="$LIBDIRS $withval"
 	],
-# LATER: the pd bin dir is actually not _required_ on platforms other than w32
-	AC_MSG_ERROR(path to pd bin dir required)
+	[
+		if test $win; then
+			AC_MSG_ERROR(path to pd bin dir required)
+		fi
+	]
 )
 
 if test $SYSTEM == max; then
@@ -131,6 +134,7 @@ if test $(uname -s) == Linux; then
 	true
 elif test $(uname -s) == Darwin; then
 	FRAMEWORKS="$FRAMEWORKS ApplicationServices vecLib"
+	LD_FLAGS="$LD_FLAGS -flat_namespace -undefined suppress"
 elif test $win; then
 	C_FLAGS="$C_FLAGS -mms-bitfields -mno-cygwin"
 	LD_FLAGS="$LD_FLAGS -mno-cygwin"

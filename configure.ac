@@ -134,7 +134,7 @@ if test $(uname -s) == Linux; then
 	true
 elif test $(uname -s) == Darwin; then
 	FRAMEWORKS="$FRAMEWORKS ApplicationServices vecLib"
-	LD_FLAGS="$LD_FLAGS -flat_namespace -undefined suppress"
+	LD_FLAGS="$LD_FLAGS -flat_namespace -undefined dynamic_lookup"
 elif test $win; then
 	C_FLAGS="$C_FLAGS -mms-bitfields -mno-cygwin"
 	LD_FLAGS="$LD_FLAGS -mno-cygwin"

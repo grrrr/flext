@@ -211,7 +211,7 @@ public:
                 /* use new garray support that is 64-bit safe */
 #               define FLEXT_PD_ARRAYGRAB garray_getfloatwords
 #               define FLEXT_ARRAYTYPE t_word
-#               define FLEXT_GETSAMPLE(x) (x).w_float
+#               define FLEXT_GETSAMPLE(x) ((x).w_float)
 
 #       else
                 /* use old garray support, not 64-bit safe */

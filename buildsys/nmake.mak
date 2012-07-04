@@ -72,9 +72,9 @@ MAKE_OPTIONS=$(MAKE_OPTIONS) $(MFLAGS) USRCONFIG=$(USRCONFIG) USRMAKE=$(USRMAKE)
 ###############################################
 # include file describing default target dependencies
 
-!include $(BUILDPATH)targets.inc
+!include $(BUILDPATH)\targets.inc
 
-!include $(BUILDPATH)targets-$(BUILDCLASS).inc
+!include $(BUILDPATH)\targets-$(BUILDCLASS).inc
 
 ###############################################
 

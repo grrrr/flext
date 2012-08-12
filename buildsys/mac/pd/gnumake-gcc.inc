@@ -1,6 +1,6 @@
 DEFS += -DFLEXT_SYS=2 -DPD
 
-INCPATH += -I$(PDPATH)/src
+INCPATH += -I$(PDPATH)/src -I$(PDPATH)/include -I$(PDPATH)/include/pd
 LIBPATH += -L$(PDPATH)/bin
 
 ##############################################

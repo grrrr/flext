@@ -27,7 +27,7 @@ endif
 
 ##############################################
 
-INCPATH += -I$(PDPATH)/src
+INCPATH += -I$(PDPATH)/src -I$(PDPATH)/include -I$(PDPATH)/include/pd
 
 ##############################################
 

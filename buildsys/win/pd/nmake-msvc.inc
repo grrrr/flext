@@ -20,7 +20,8 @@ LIBS=$(LIBS) pthreadVC.lib
 
 ##############################################
 
-INCPATH=$(INCPATH) /I$(PDPATH)\src
+INCPATH=$(INCPATH) /I$(PDPATH)\src /I$(PDPATH)\include /I$(PDPATH)\include\pd
+
 LIBPATH=$(LIBPATH) /LIBPATH:$(PDPATH)\bin
 
 LIBS=$(LIBS) pd.lib

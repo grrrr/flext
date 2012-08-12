@@ -1,5 +1,5 @@
 # where is the PD installation?
-# (this should point to the main folder, which has a "src" subfolder)
+# (this should point to the main folder, which has a "src" (PD Vanilla) or "include" (PD extended) subfolder)
 PDPATH="%ProgramFiles%\pd"
 
 ###############################################################

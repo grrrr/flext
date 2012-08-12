@@ -141,10 +141,14 @@ bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbo
 #if FLEXT_SYS == FLEXT_SYS_PD
         pd_bind(&px->obj.ob_pd,const_cast<t_symbol *>(sym)); 
 #elif FLEXT_SYS == FLEXT_SYS_MAX
+        #if 1 // old code
         if(!sym->s_thing) 
             const_cast<t_symbol *>(sym)->s_thing = (t_object *)px;
         else
             error("%s - Symbol is already bound",thisName());
+        #else
+        void *binding = object_register(gensym("flext"),const_cast<t_symbol *>(sym),(t_object *)px);
+        #endif
 #else
 #       pragma warning("Not implemented")
 #endif

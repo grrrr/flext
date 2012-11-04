@@ -46,7 +46,7 @@ $LastChangedBy$
 //! Extract space-delimited words from a string
 static const char *extract(const char *name,int ix = 0)
 {
-	char tmp[1024];
+	static char tmp[1024];
 	const char *n = name;
 	
 	const char *del = strchr(name,ALIASDEL);
@@ -460,11 +460,12 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 				}	
 			}
 
-			if(!ok)
+			if(!ok) {
 				if(misnum)
 					error("%s: %s creation arguments",GetString(s),misnum < 0?"Not enough":"Too many");
 				else
 					error("%s: Creation arguments do not match",GetString(s));
+			}
 		}
 
 

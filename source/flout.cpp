@@ -308,11 +308,12 @@ bool flext_base::InitOutlets()
             case xlet_any:
                 outlets[ix] = (outlet *)newout_anything(&x_obj->obj);
                 break;
-#ifdef FLEXT_DEBUG
             default:
+                ;
+#ifdef FLEXT_DEBUG
                 ERRINTERNAL();
-                ok = false;
 #endif
+                ok = false;
         } 
     }
 #else

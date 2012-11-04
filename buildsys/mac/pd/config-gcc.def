@@ -52,13 +52,13 @@ INSTPATH=$(PDPATH)/extra
 MFLAGS=-j 2
 
 # user defined compiler flags
-UFLAGS += -ffast-math -mmacosx-version-min=10.4
+UFLAGS += -ffast-math -mmacosx-version-min=10.6
 
 # user defined linker flags
-LDFLAGS += -mmacosx-version-min=10.4
+LDFLAGS += -mmacosx-version-min=10.6
 
 # user defined optimization flags
-OFLAGS += -O2 # -ftree-vectorize
+OFLAGS += -O3 -ftree-vectorize
 
 # user defined debugging flags
 DFLAGS +=
@@ -72,8 +72,12 @@ UFLAGS_i386 += -mmmx -msse -msse2 -msse3 -mtune=nocona
 OFLAGS_i386 += 
 DFLAGS_i386 +=
 
-# cross-compilation (optional)
-ARCH=ppc i386 #x86_64 ppc64
+UFLAGS_x86_64 += -mmmx -msse -msse2 -msse3 -mtune=core2
+OFLAGS_x86_64 += 
+DFLAGS_x86_64 +=
 
-# SDK for 10.4
-#OSXSDK=/Developer/SDKs/MacOSX10.4u.sdk
+# cross-compilation (optional)
+ARCH=i386 x86_64 # ppc ppc64
+
+# SDK for 10.6
+#OSXSDK=/Developer/SDKs/MacOSX10.6u.sdk

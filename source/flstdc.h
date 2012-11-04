@@ -287,8 +287,8 @@ typedef t_symbol *t_symptr;
 #define FLEXT_ERROR(str) error("Error: in " __FILE__ " line %i",(int)__LINE__)
 #endif
 #else
-#define FLEXT_ASSERT(b) (1)
-#define FLEXT_WARN(str) (1)
+#define FLEXT_ASSERT(b) assert(1)
+#define FLEXT_WARN(str) assert(1)
 #define FLEXT_ERROR(str) error("Error: in " __FILE__ " line %i",(int)__LINE__)
 #endif
 

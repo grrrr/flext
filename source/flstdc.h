@@ -31,9 +31,8 @@ $LastChangedBy$
 
 #ifdef _MSC_VER
 #include <crtdbg.h>
-#else
-#include <cassert>
 #endif
+#include <cassert>
 
 // PD stuff
 

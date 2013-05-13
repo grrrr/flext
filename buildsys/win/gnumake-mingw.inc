@@ -6,8 +6,8 @@ TARGET=$(TARGETPATH)\$(OUTNAME).$(EXT)
 
 ##############################################
 
-CFLAGS += -mms-bitfields -mno-cygwin
-LDFLAGS += -shared -mno-cygwin 
+CFLAGS += -mms-bitfields
+LDFLAGS += -shared 
 
 # default Windows flags as defined from VC IDE
 CFLAGS += -DWIN32 -D_WINDOWS

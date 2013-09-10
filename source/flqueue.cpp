@@ -44,8 +44,6 @@ static bool qustarted = false;
 static void Trigger();
 
 
-class flext::MsgBundle;
-
 class QueueFifo
     : public PooledFifo<flext::MsgBundle>
 {

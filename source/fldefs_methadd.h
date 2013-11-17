@@ -138,6 +138,7 @@ AddMethod(IX,"bang",FLEXT_CALL_PRE(M_FUN))
 
 //! Add a handler for a method with either no, list or anything arguments
 #define FLEXT_ADDMETHOD(IX,M_FUN) \
+\
 AddMethod(IX,FLEXT_CALL_PRE(M_FUN)) 
 
 /*! \brief Add a handler for a method with a (variable argument) list

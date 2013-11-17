@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2013 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -290,7 +290,12 @@ void flext_root::post(const char *fmt, ...)
 	char buf[1024];
     vsnprintf(buf,sizeof buf,fmt, ap);
 	buf[sizeof buf-1] = 0; // in case of full buffer
+	
+#if FLEXT_SYS == FLEXT_SYS_MAX && C74_MAX_SDK_VERSION >= 0x0500
+    ::object_post(NULL,buf);
+#else
 	::post(buf);
+#endif
 
     va_end(ap);
 }
@@ -304,7 +309,16 @@ void flext_root::error(const char *fmt,...)
     STD::strcpy(buf,"error: ");
     vsnprintf(buf+7,sizeof buf-7,fmt, ap);
 	buf[sizeof buf-1] = 0; // in case of full buffer
+
+#if FLEXT_SYS == FLEXT_SYS_MAX
+    #if C74_MAX_SDK_VERSION >= 0x0500
+        ::object_error(NULL,buf);
+    #else
+    	::error(buf);
+    #endif
+#else
 	::post(buf);
+#endif
 
     va_end(ap);
 }

@@ -1,5 +1,7 @@
 # where are the Max/MSP SDK header files?
-# you should have the latest version!
+# for now, please use MaxSDK-5.?.?, avoid MaxSDK-6.?.?
+# you can run your externals with Max 6 nevertheless
+
 MAXSDKPATH=/Applications/MaxMSP\ 4.6/MaxMSP-SDK/c74support
 
 ###############################################################
@@ -61,6 +63,7 @@ UFLAGS += -ffast-math -mmacosx-version-min=10.4
 LDFLAGS += -mmacosx-version-min=10.4
 
 # user defined optimization flags
+# for now, don't use -O3 !(Max will hang)
 OFLAGS += -Os # -ftree-vectorize
 
 # user defined debugging flags
@@ -75,8 +78,8 @@ UFLAGS_i386 += -mmmx -msse -msse2 -msse3 -mtune=nocona
 OFLAGS_i386 += 
 DFLAGS_i386 +=
 
-# cross-compilation (optional)
-ARCH=ppc i386 #x86_64 ppc64
+# list of architectures to build
+ARCH=i386 #ppc x86_64 ppc64
 
 # SDK for 10.4
 #OSXSDK=/Developer/SDKs/MacOSX10.4u.sdk

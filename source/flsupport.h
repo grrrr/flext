@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2010 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2013 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -24,6 +24,12 @@ $LastChangedBy$
 
 
 #include "flpushns.h"
+
+#if C74_MAX_SDK_VERSION >= 0x0610
+// really bad: post and error are #defines in Max SDK >= 610
+#undef post
+#undef error
+#endif
 
 /*! \defgroup FLEXT_SUPPORT Flext support classes
     @{

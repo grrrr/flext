@@ -1,5 +1,10 @@
 ##############################################
 
+CFLAGS += -I/usr/include/pd
+LDFLAGS += -L/usr/lib
+
+##############################################
+
 ifndef FLEXTINC
 FLEXTINC=$(FLEXTPREFIX)/include/flext
 endif

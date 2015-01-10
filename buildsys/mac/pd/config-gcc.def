@@ -52,27 +52,27 @@ INSTPATH=$(PDPATH)/extra
 MFLAGS=-j 2
 
 # user defined compiler flags
-UFLAGS += -ffast-math -mmacosx-version-min=10.6
+UFLAGS += -ffast-math -mmacosx-version-min=10.6 -march=native
 
 # user defined linker flags
 LDFLAGS += -mmacosx-version-min=10.6
 
 # user defined optimization flags
-OFLAGS += -O3 -ftree-vectorize
+OFLAGS += -O3 -mtune=native
 
 # user defined debugging flags
 DFLAGS +=
 
 # architecture-specific flags (optional)
-UFLAGS_ppc += -mcpu=G4 -faltivec 
-OFLAGS_ppc += 
+UFLAGS_ppc += -faltivec
+OFLAGS_ppc +=
 DFLAGS_ppc +=
 
-UFLAGS_i386 += -mmmx -msse -msse2 -msse3 -mtune=nocona
-OFLAGS_i386 += 
+UFLAGS_i386 +=
+OFLAGS_i386 +=
 DFLAGS_i386 +=
 
-UFLAGS_x86_64 += -mmmx -msse -msse2 -msse3 -mtune=core2
+UFLAGS_x86_64 +=
 OFLAGS_x86_64 += 
 DFLAGS_x86_64 +=
 

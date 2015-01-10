@@ -57,26 +57,30 @@ HELPPATH=/Applications/MaxMSP\ 4.6/max-help/flext
 MFLAGS=-j 2
 
 # user defined compiler flags
-UFLAGS += -ffast-math -mmacosx-version-min=10.4
+UFLAGS += -ffast-math -mmacosx-version-min=10.6 -march=native
 
 # user defined linker flags
-LDFLAGS += -mmacosx-version-min=10.4
+LDFLAGS += -mmacosx-version-min=10.6
 
 # user defined optimization flags
 # for now, don't use -O3 !(Max will hang)
-OFLAGS += -Os # -ftree-vectorize
+OFLAGS += -Os -mtune=native # -ftree-vectorize
 
 # user defined debugging flags
 DFLAGS +=
 
 # architecture-specific flags (optional)
-UFLAGS_ppc += -mcpu=G4 -faltivec 
+UFLAGS_ppc += -faltivec 
 OFLAGS_ppc += 
 DFLAGS_ppc +=
 
-UFLAGS_i386 += -mmmx -msse -msse2 -msse3 -mtune=nocona
+UFLAGS_i386 +=
 OFLAGS_i386 += 
 DFLAGS_i386 +=
+
+UFLAGS_x86_64 +=
+OFLAGS_x86_64 += 
+DFLAGS_x86_64 +=
 
 # list of architectures to build
 ARCH=i386 #ppc x86_64 ppc64

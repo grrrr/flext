@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -20,7 +20,7 @@ $LastChangedBy$
 
 #include "flpushns.h"
 
-t_class *flext_base::pxbnd_class = NULL;
+FLEXT_TEMPIMPL(t_class *FLEXT_CLASSDEF(flext_base))::pxbnd_class = NULL;
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
 t_object *px_freelist = NULL;
@@ -29,7 +29,7 @@ t_messlist px_messlist[3];
 
 /*! \brief Set up the proxy class for symbol-bound methods
 */
-void flext_base::SetupBindProxy()
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::SetupBindProxy()
 {
     // already initialized?
     if(!pxbnd_class) {
@@ -60,11 +60,11 @@ void flext_base::SetupBindProxy()
 }
 
 
-flext_base::BindItem::BindItem(bool (*f)(flext_base *,t_symbol *s,int,t_atom *,void *data),pxbnd_object *p):
+FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext_base))::BindItem::BindItem(bool (*f)(flext_base *,t_symbol *s,int,t_atom *,void *data),pxbnd_object *p):
     Item(NULL),fun(f),px(p)
 {}
 
-flext_base::BindItem::~BindItem()
+FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext_base))::BindItem::~BindItem()
 {
     if(px) {
         FLEXT_ASSERT(!fun); // check if already unbound
@@ -72,7 +72,7 @@ flext_base::BindItem::~BindItem()
     }
 }
 
-void flext_base::BindItem::Unbind(const t_symbol *tag)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::BindItem::Unbind(const t_symbol *tag)
 {
     if(px) {
         FLEXT_ASSERT(fun);
@@ -94,17 +94,17 @@ void flext_base::BindItem::Unbind(const t_symbol *tag)
 
 #if FLEXT_SYS == FLEXT_SYS_PD
     //! Bind object to a symbol
-    bool flext_base::Bind(const t_symbol *sym) { pd_bind(&thisHdr()->ob_pd,const_cast<t_symbol *>(sym)); return true; }
+    FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::Bind(const t_symbol *sym) { pd_bind(&thisHdr()->ob_pd,const_cast<t_symbol *>(sym)); return true; }
     //! Unbind object from a symbol
-    bool flext_base::Unbind(const t_symbol *sym) { pd_unbind(&thisHdr()->ob_pd,const_cast<t_symbol *>(sym)); return true; }
+    FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::Unbind(const t_symbol *sym) { pd_unbind(&thisHdr()->ob_pd,const_cast<t_symbol *>(sym)); return true; }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
     //! Bind object to a symbol
-    bool flext_base::Bind(const t_symbol *sym) { if(sym->s_thing) return false; else { const_cast<t_symbol *>(sym)->s_thing = (t_object *)thisHdr(); return true; } }
+    FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::Bind(const t_symbol *sym) { if(sym->s_thing) return false; else { const_cast<t_symbol *>(sym)->s_thing = (t_object *)thisHdr(); return true; } }
     //! Unbind object from a symbol
-    bool flext_base::Unbind(const t_symbol *sym) { if(sym->s_thing != (t_object *)thisHdr()) return false; else { const_cast<t_symbol *>(sym)->s_thing = NULL; return true; } }
+    FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::Unbind(const t_symbol *sym) { if(sym->s_thing != (t_object *)thisHdr()) return false; else { const_cast<t_symbol *>(sym)->s_thing = NULL; return true; } }
 #endif
 
-bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbol *s,int argc,t_atom *argv,void *data),void *data)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbol *s,int argc,t_atom *argv,void *data),void *data)
 {
     if(!bindhead) 
         bindhead = new ItemCont;
@@ -159,7 +159,7 @@ bool flext_base::BindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbo
     return true;
 }
 
-bool flext_base::UnbindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbol *s,int argc,t_atom *argv,void *data),void **data)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::UnbindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbol *s,int argc,t_atom *argv,void *data),void **data)
 {
     bool ok = false;
     
@@ -202,7 +202,7 @@ bool flext_base::UnbindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_sym
         }
         else {
             // take any entry that matches
-            for(ItemSet::iterator si(set); si && !item; ++si) {
+            for(typename ItemSet::iterator si(set); si && !item; ++si) {
                 for(Item *i = si.data(); i; i = i->nxt) {
                     BindItem *bit = (BindItem *)i;
                     if(!fun || bit->fun == fun) { 
@@ -226,7 +226,7 @@ bool flext_base::UnbindMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_sym
     return ok;
 }
 
-bool flext_base::GetBoundMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbol *s,int argc,t_atom *argv,void *data),void *&data)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::GetBoundMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_symbol *s,int argc,t_atom *argv,void *data),void *&data)
 {
     if(bindhead) {
         // Search for symbol
@@ -243,12 +243,12 @@ bool flext_base::GetBoundMethod(const t_symbol *sym,bool (*fun)(flext_base *,t_s
     return false;
 }
 
-bool flext_base::UnbindAll()
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::UnbindAll()
 {
     if(bindhead && bindhead->Contained(0)) {
         ItemSet &set = bindhead->GetInlet();
 //        for(ItemSet::iterator si = set.begin(); si != set.end(); ++si) {
-        for(ItemSet::iterator si(set); si; ++si) {
+        for(typename ItemSet::iterator si(set); si; ++si) {
             Item *lst = si.data();
             while(lst) {
                 Item *nxt = lst->nxt;
@@ -263,7 +263,7 @@ bool flext_base::UnbindAll()
     return true;
 }
 
-void flext_base::pxbnd_object::px_method(pxbnd_object *c,const t_symbol *s,int argc,t_atom *argv)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::pxbnd_object::px_method(pxbnd_object *c,const t_symbol *s,int argc,t_atom *argv)
 {
     c->item->fun(c->base,(t_symbol *)s,argc,(t_atom *)argv,c->data);
 }

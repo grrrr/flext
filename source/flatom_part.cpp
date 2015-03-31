@@ -19,7 +19,7 @@ $LastChangedBy$
 
 #include "flpushns.h"
 
-int flext::AtomList::Get(t_atom *argv,int mxsz) const
+FLEXT_TEMPIMPL(int FLEXT_CLASSDEF(flext))::AtomList::Get(t_atom *argv,int mxsz) const
 {
     int argc = Count();
     if(mxsz >= 0 && argc > mxsz) argc = mxsz;
@@ -30,7 +30,7 @@ int flext::AtomList::Get(t_atom *argv,int mxsz) const
 }
 
 
-void flext::AtomList::GetPart(int offs,int len,AtomList &ret) const
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::AtomList::GetPart(int offs,int len,AtomList &ret) const
 {
     if(offs+len > Count()) {
         len = Count()-offs;

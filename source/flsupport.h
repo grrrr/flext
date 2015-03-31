@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2013 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -35,14 +35,16 @@ $LastChangedBy$
     @{
 */
 
-class FLEXT_SHARE FLEXT_CLASSDEF(flext_root);
-typedef class FLEXT_CLASSDEF(flext_root) flext_root;
+FLEXT_TEMPLATE class FLEXT_SHARE FLEXT_CLASSDEF(flext_root);
+
+typedef FLEXT_TEMPINST(FLEXT_CLASSDEF(flext_root)) flext_root;
 
 /*! \brief Flext root support class
 
     Moved memory functions and console output here so that all the classes
     contained in flext can use them
 */
+FLEXT_TEMPLATE
 class FLEXT_SHARE FLEXT_CLASSDEF(flext_root) {
 public:
 // --- console output -----------------------------------------------   
@@ -130,21 +132,22 @@ public:
 #endif
 
 // define global new/delete operators
-inline void *operator new(size_t bytes) NEWTHROW { return flext_root::operator new(bytes); }
-inline void operator delete(void *blk) DELTHROW { flext_root::operator delete(blk); }
+void *operator new(size_t bytes) NEWTHROW { return flext_root::operator new(bytes); }
+void operator delete(void *blk) DELTHROW { flext_root::operator delete(blk); }
 #ifndef __MRC__ // doesn't allow new[] overloading?!
-inline void *operator new[](size_t bytes) NEWTHROW { return flext_root::operator new[](bytes); }
-inline void operator delete[](void *blk) DELTHROW { flext_root::operator delete[](blk); }
+void *operator new[](size_t bytes) NEWTHROW { return flext_root::operator new[](bytes); }
+void operator delete[](void *blk) DELTHROW { flext_root::operator delete[](blk); }
 #endif
 
 #endif // FLEXT_USE_CMEM
 
 /************************************************************************/
 
-class FLEXT_SHARE FLEXT_CLASSDEF(flext);
-typedef class FLEXT_CLASSDEF(flext) flext;
+FLEXT_TEMPLATE class FLEXT_SHARE FLEXT_CLASSDEF(flext);
 
-class FLEXT_SHARE FLEXT_CLASSDEF(flext_base);
+typedef FLEXT_TEMPINST(FLEXT_CLASSDEF(flext)) flext;
+
+FLEXT_TEMPLATE class FLEXT_SHARE FLEXT_CLASSDEF(flext_base);
 
 /*! \brief Flext support class
 
@@ -158,6 +161,7 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_base);
     and won't give any extra burden to it.
 */
 
+FLEXT_TEMPLATE
 class FLEXT_SHARE FLEXT_CLASSDEF(flext):
     public flext_root
 {
@@ -427,15 +431,15 @@ public:
     static void CopyMem(void *dst,const void *src,int bytes);
     //! Copy a sample array
     static void CopySamples(t_sample *dst,const t_sample *src,int cnt);
-    static void CopySamples(buffer::Element *dst,const buffer::Element *src,int cnt) { CopyMem(dst,src,sizeof(*src)*cnt); }
+    static void CopySamples(typename buffer::Element *dst,const typename buffer::Element *src,int cnt) { CopyMem(dst,src,sizeof(*src)*cnt); }
     //! Set a memory region
     static void ZeroMem(void *dst,int bytes);
     //! Set a sample array to a fixed value
     static void SetSamples(t_sample *dst,int cnt,t_sample s);
-    static void SetSamples(buffer::Element *dst,int cnt,t_sample s) { for(int i = 0; i < cnt; ++i) dst[i] = s; }
+    static void SetSamples(typename buffer::Element *dst,int cnt,t_sample s) { for(int i = 0; i < cnt; ++i) dst[i] = s; }
     //! Set a sample array to 0
     static void ZeroSamples(t_sample *dst,int cnt) { SetSamples(dst,cnt,0); }   
-    static void ZeroSamples(buffer::Element *dst,int cnt) { ZeroMem(dst,sizeof(*dst)*cnt); }   
+    static void ZeroSamples(typename buffer::Element *dst,int cnt) { ZeroMem(dst,sizeof(*dst)*cnt); }
 
 
     //! Get a 32 bit hash value from an atom
@@ -722,7 +726,7 @@ public:
         //! Construct list
         explicit AtomListStatic(): AtomListStaticBase(PRE,pre) {}
         //! Construct list
-        explicit AtomListStatic(int argc,const t_atom *argv = NULL): AtomListStaticBase(PRE,pre) { operator()(argc,argv); }
+        explicit AtomListStatic(int argc,const t_atom *argv = NULL): AtomListStaticBase(PRE,pre) { AtomList::operator()(argc,argv); }
         //! Construct list
         explicit AtomListStatic(const AtomList &a): AtomListStaticBase(PRE,pre) { operator =(a); }
 
@@ -1294,7 +1298,7 @@ public:
         //! Set timer callback function.
         void SetCallback(void (*cb)(void *data)) { clss = NULL,cback = cb; }
         //! Set timer callback function (with class pointer).
-        void SetCallback(FLEXT_CLASSDEF(flext_base) &th,bool (*cb)(FLEXT_CLASSDEF(flext_base) *th,void *data)) { clss = &th,cback = (void (*)(void *))cb; }
+        void SetCallback(FLEXT_TEMPINST(FLEXT_CLASSDEF(flext_base)) &th,bool (*cb)(FLEXT_TEMPINST(FLEXT_CLASSDEF(flext_base)) *th,void *data)) { clss = &th,cback = (void (*)(void *))cb; }
 
         //! Clear timer.
         bool Reset();
@@ -1325,7 +1329,7 @@ public:
 
         const bool queued;
         void (*cback)(void *data);
-        FLEXT_CLASSDEF(flext_base) *clss;
+        FLEXT_TEMPINST(FLEXT_CLASSDEF(flext_base)) *clss;
         void *userdata;
         double period;
     };
@@ -1392,12 +1396,17 @@ protected:
 
 
 // gcc doesn't like these to be included into the flext class (even if static)
-inline bool operator ==(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) == 0; }
-inline bool operator !=(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) != 0; }
-inline bool operator <(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) < 0; }
-inline bool operator <=(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) <= 0; }
-inline bool operator >(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) > 0; }
-inline bool operator >=(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) >= 0; }
+FLEXT_TEMPLATE inline bool operator ==(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) == 0; }
+FLEXT_TEMPLATE inline bool operator !=(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) != 0; }
+FLEXT_TEMPLATE inline bool operator <(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) < 0; }
+FLEXT_TEMPLATE inline bool operator <=(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) <= 0; }
+FLEXT_TEMPLATE inline bool operator >(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) > 0; }
+FLEXT_TEMPLATE inline bool operator >=(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) >= 0; }
+
+#ifdef FLEXT_INLINE
+#   include "flsupport.cpp"
+#   include "flutil.cpp"
+#endif
 
 //! @} // FLEXT_SUPPORT
 

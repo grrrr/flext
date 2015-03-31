@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -30,7 +30,7 @@ $LastChangedBy$
 
 #include "flpushns.h"
 
-void flext::CopyMem(void *dst,const void *src,int bytes) 
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::CopyMem(void *dst,const void *src,int bytes)
 {
 #if FLEXT_OS == FLEXT_OS_WIN
     MoveMemory(dst,src,bytes);
@@ -41,7 +41,7 @@ void flext::CopyMem(void *dst,const void *src,int bytes)
 #endif
 }
 
-void flext::ZeroMem(void *dst,int bytes) 
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::ZeroMem(void *dst,int bytes)
 {
 #if FLEXT_OS == FLEXT_OS_WIN
     ZeroMemory(dst,bytes);

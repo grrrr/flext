@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -14,8 +14,11 @@ $LastChangedBy$
 /*! \file flatom_pr.cpp
     \brief Definitions for printing and scanning the t_atom type.
 */
- 
-#include "flext.h"
+
+#ifndef FLEXT_INLINE
+#   include "flext.h"
+#endif
+
 #include <cctype>
 #include <cstdlib>
 #include <cstring>
@@ -27,7 +30,7 @@ $LastChangedBy$
 #define snprintf _snprintf
 #endif
 
-bool flext::PrintAtom(const t_atom &a,char *buf,size_t bufsz)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::PrintAtom(const t_atom &a,char *buf,size_t bufsz)
 {
     bool ok = true;
     if(IsFloat(a)) {
@@ -72,7 +75,7 @@ bool flext::PrintAtom(const t_atom &a,char *buf,size_t bufsz)
     return ok;
 }
 
-bool flext::PrintList(int argc,const t_atom *argv,char *buf,size_t bufsz)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::PrintList(int argc,const t_atom *argv,char *buf,size_t bufsz)
 {
     bool ok = true;
     for(int i = 0; ok && i < argc && bufsz > 0; ++i) {
@@ -90,7 +93,7 @@ bool flext::PrintList(int argc,const t_atom *argv,char *buf,size_t bufsz)
 }
 
 
-const char *flext::ScanAtom(t_atom &a,const char *c)
+FLEXT_TEMPIMPL(const char *FLEXT_CLASSDEF(flext))::ScanAtom(t_atom &a,const char *c)
 {
 	// skip leading whitespace
 	while(*c && isspace(*c)) ++c;
@@ -122,7 +125,7 @@ const char *flext::ScanAtom(t_atom &a,const char *c)
 	return end;
 }
 
-int flext::ScanList(int argc,t_atom *argv,const char *buf)
+FLEXT_TEMPIMPL(int FLEXT_CLASSDEF(flext))::ScanList(int argc,t_atom *argv,const char *buf)
 {
     int read;    
     for(read = 0; read < argc; ++read)

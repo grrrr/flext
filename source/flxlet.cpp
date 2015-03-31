@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -24,12 +24,13 @@ $LastChangedBy$
 
 #define MAXLETS 256
 
-flext_base::xlet flext_base::inlist[MAXLETS],flext_base::outlist[MAXLETS];
+FLEXT_TEMPIMPL(FLEXT_TEMPSUB(FLEXT_CLASSDEF(flext_base))::xlet FLEXT_CLASSDEF(flext_base))::inlist[MAXLETS];
+FLEXT_TEMPIMPL(FLEXT_TEMPSUB(FLEXT_CLASSDEF(flext_base))::xlet FLEXT_CLASSDEF(flext_base))::outlist[MAXLETS];
 
-flext_base::xlet::xlet(): tp(xlet_none),desc(NULL) {}
-flext_base::xlet::~xlet() { if(desc) delete[] desc; }
+FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext_base))::xlet::xlet(): tp(xlet_none),desc(NULL) {}
+FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext_base))::xlet::~xlet() { if(desc) delete[] desc; }
 
-void flext_base::xlet::Desc(const char *c)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::xlet::Desc(const char *c)
 {
     if(desc) delete[] desc;
     if(c) {
@@ -41,7 +42,7 @@ void flext_base::xlet::Desc(const char *c)
         desc = NULL;
 }
 
-void flext_base::AddInlet(xlettype tp,int mult,const char *desc)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddInlet(xlettype tp,int mult,const char *desc)
 {
     if(UNLIKELY(incnt+mult >= MAXLETS))
         post("%s - too many inlets",thisName());
@@ -53,7 +54,7 @@ void flext_base::AddInlet(xlettype tp,int mult,const char *desc)
         }
 }
 
-void flext_base::AddOutlet(xlettype tp,int mult,const char *desc)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddOutlet(xlettype tp,int mult,const char *desc)
 {
     if(UNLIKELY(outcnt+mult >= MAXLETS))
         post("%s - too many outlets",thisName());
@@ -65,7 +66,7 @@ void flext_base::AddOutlet(xlettype tp,int mult,const char *desc)
         }
 }
 
-void flext_base::DescInlet(int ix,const char *d)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::DescInlet(int ix,const char *d)
 {
     if(UNLIKELY(ix >= incnt))
         post("%s - inlet %i not found",thisName(),ix);
@@ -73,7 +74,7 @@ void flext_base::DescInlet(int ix,const char *d)
         inlist[ix].Desc(d);
 }
 
-void flext_base::DescOutlet(int ix,const char *d)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::DescOutlet(int ix,const char *d)
 {
     if(UNLIKELY(ix >= incnt))
         post("%s - outlet %i not found",thisName(),ix);
@@ -81,7 +82,7 @@ void flext_base::DescOutlet(int ix,const char *d)
         outlist[ix].Desc(d);
 }
 
-unsigned long flext_base::XletCode(xlettype tp,...)
+FLEXT_TEMPIMPL(unsigned long FLEXT_CLASSDEF(flext_base))::XletCode(xlettype tp,...)
 {
     unsigned long code = 0;
 
@@ -105,12 +106,12 @@ unsigned long flext_base::XletCode(xlettype tp,...)
     return code;
 }
 
-void flext_base::AddInlets(unsigned long code) 
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddInlets(unsigned long code)
 { 
     for(; code; code /= 10) AddInlet((xlettype)(code%10));
 }
 
-void flext_base::AddOutlets(unsigned long code) 
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddOutlets(unsigned long code)
 { 
     for(; code; code /= 10) AddOutlet((xlettype)(code%10));
 }

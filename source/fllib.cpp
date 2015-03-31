@@ -97,7 +97,7 @@ static const char *extract(const char *name,int ix = 0)
 
 
 //! Check if object's name ends with a tilde
-bool flext::chktilde(const char *objname)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::chktilde(const char *objname)
 {
 //	int stplen = strlen(setupfun);
 	bool tilde = true; //!strncmp(setupfun,"_tilde",6);
@@ -255,7 +255,7 @@ void flext_obj::obj_add(bool lib,bool dsp,bool noi,bool attr,const char *idname,
 		buf_class = ::class_new(gensym(const_cast<char *>(" flext buffer helper ")),NULL,NULL,sizeof(t_object),CLASS_PD|CLASS_NOINLET,A_NULL);
 		add_dsp(buf_class,cb_buffer_dsp);
 		// make an instance
-		void *c = ::pd_new(buf_class);
+		::pd_new(buf_class);
 	}
 #endif
 
@@ -615,10 +615,10 @@ void flext_obj::obj_free(flext_hdr *h)
 
 t_class *flext_obj::thisClass() const { FLEXT_ASSERT(x_obj); return thisClassId()->clss; }
 
-void flext_base::SetDist(t_classid c,bool d) { c->dist = d; }
-bool flext_base::DoDist() const { return thisClassId()->dist; }
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::SetDist(t_classid c,bool d) { c->dist = d; }
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::DoDist() const { return thisClassId()->dist; }
 
-flext_base::ItemCont *flext_base::ClMeths(t_classid c) { return &c->meths; }
-flext_base::ItemCont *flext_base::ClAttrs(t_classid c) { return &c->attrs; }
+FLEXT_TEMPIMPL(FLEXT_TEMPSUB(FLEXT_CLASSDEF(flext_base))::ItemCont *FLEXT_CLASSDEF(flext_base))::ClMeths(t_classid c) { return &c->meths; }
+FLEXT_TEMPIMPL(FLEXT_TEMPSUB(FLEXT_CLASSDEF(flext_base))::ItemCont *FLEXT_CLASSDEF(flext_base))::ClAttrs(t_classid c) { return &c->attrs; }
 
 #include "flpopns.h"

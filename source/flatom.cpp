@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -15,13 +15,16 @@ $LastChangedBy$
     \brief Definitions for handling the t_atom type and lists thereof.
 */
  
-#include "flext.h"
+#ifndef FLEXT_INLINE
+#   include "flext.h"
+#endif
+
 #include <cstring> // for memcpy
 
 #include "flpushns.h"
 
 #if FLEXT_SYS != FLEXT_SYS_JMAX
-int flext::CmpAtom(const t_atom &a,const t_atom &b)
+FLEXT_TEMPIMPL(int FLEXT_CLASSDEF(flext))::CmpAtom(const t_atom &a,const t_atom &b)
 {
 	if(GetType(a) == GetType(b)) {
 		switch(GetType(a)) {
@@ -46,14 +49,14 @@ int flext::CmpAtom(const t_atom &a,const t_atom &b)
 #error Not implemented
 #endif
 
-t_atom *flext::CopyList(int argc,const t_atom *argv)
+FLEXT_TEMPIMPL(t_atom *FLEXT_CLASSDEF(flext))::CopyList(int argc,const t_atom *argv)
 {
 	t_atom *dst = new t_atom[argc];
     memcpy(dst,argv,argc*sizeof(t_atom));
 	return dst;
 }
 
-void flext::CopyAtoms(int cnt,t_atom *dst,const t_atom *src)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::CopyAtoms(int cnt,t_atom *dst,const t_atom *src)
 {
     if(dst < src)
         // forward
@@ -63,7 +66,7 @@ void flext::CopyAtoms(int cnt,t_atom *dst,const t_atom *src)
         while(cnt--) dst[cnt] = src[cnt];
 }
 
-void flext::AtomList::Alloc(int sz,int keepix,int keeplen,int keepto)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::AtomList::Alloc(int sz,int keepix,int keeplen,int keepto)
 {
     if(lst) {
         if(cnt == sz) {
@@ -100,9 +103,9 @@ void flext::AtomList::Alloc(int sz,int keepix,int keeplen,int keepto)
     }
 }
 
-flext::AtomList::~AtomList() { Free(); }
+FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext))::AtomList::~AtomList() { Free(); }
 
-void flext::AtomList::Free()
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::AtomList::Free()
 {
     if(lst) { 
         delete[] lst; lst = NULL; 
@@ -112,7 +115,7 @@ void flext::AtomList::Free()
         FLEXT_ASSERT(cnt == 0);
 }
 
-flext::AtomList &flext::AtomList::Set(int argc,const t_atom *argv,int offs,bool resize)
+FLEXT_TEMPIMPL(FLEXT_TEMPSUB(FLEXT_CLASSDEF(flext))::AtomList &FLEXT_CLASSDEF(flext))::AtomList::Set(int argc,const t_atom *argv,int offs,bool resize)
 {
 	int ncnt = argc+offs;
 	if(resize) Alloc(ncnt);
@@ -123,7 +126,7 @@ flext::AtomList &flext::AtomList::Set(int argc,const t_atom *argv,int offs,bool 
 	return *this;
 }
 
-int flext::AtomList::Compare(const AtomList &a) const
+FLEXT_TEMPIMPL(int FLEXT_CLASSDEF(flext))::AtomList::Compare(const AtomList &a) const
 {
 	if(Count() == a.Count()) {
 		for(int i = 0; i < Count(); ++i) {
@@ -136,37 +139,42 @@ int flext::AtomList::Compare(const AtomList &a) const
 		return Count() < a.Count()?-1:1;
 }
 
-flext::AtomListStaticBase::~AtomListStaticBase() { Free(); }
+FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext))::AtomListStaticBase::~AtomListStaticBase() { Free(); }
 
-void flext::AtomListStaticBase::Alloc(int sz,int keepix,int keeplen,int keepto)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::AtomListStaticBase::Alloc(int sz,int keepix,int keeplen,int keepto)
 { 
     if(sz <= precnt) {
         // small enough for pre-allocated space
 
-        if(lst != predata && lst) {
+        if(AtomList::lst != predata && AtomList::lst) {
             // currently allocated memory is larger than what we need
 
             if(keepix >= 0) {
                 // keep contents
-                int c = keeplen >= 0?keeplen:(cnt > sz?sz:cnt);
+                int c = keeplen >= 0?keeplen:(AtomList::cnt > sz?sz:AtomList::cnt);
                 FLEXT_ASSERT(c+keepto <= precnt);
-                FLEXT_ASSERT(c+keepix <= cnt);
-                CopyAtoms(c,predata+keepto,lst+keepix);
+                FLEXT_ASSERT(c+keepix <= AtomList::cnt);
+                CopyAtoms(c,predata+keepto,AtomList::lst+keepix);
             }
 
             // free allocated memory
             AtomList::Free();
         }
-        lst = predata,cnt = sz;
+        AtomList::lst = predata;
+        AtomList::cnt = sz;
     }
     else 
         AtomList::Alloc(sz,keepix,keeplen,keepto);
 }
 
-void flext::AtomListStaticBase::Free() 
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::AtomListStaticBase::Free()
 {
-    if(lst != predata) AtomList::Free();
-    else lst = NULL,cnt = 0;
+    if(AtomList::lst != predata)
+        AtomList::Free();
+    else {
+        AtomList::lst = NULL;
+        AtomList::cnt = 0;
+    }
 }
 
 #include "flpopns.h"

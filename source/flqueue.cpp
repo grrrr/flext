@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -41,7 +41,7 @@ static bool qustarted = false;
 #define PERMANENTIDLE
 #endif
 
-static void Trigger();
+template<typename=void> void Trigger();
 
 
 class QueueFifo
@@ -66,7 +66,7 @@ static Queue queue;
 
 #define STATSIZE 8
 
-class flext::MsgBundle:
+FLEXT_TEMPIMPL(class FLEXT_CLASSDEF(flext))::MsgBundle:
     public flext,
     public FifoCell
 {
@@ -457,13 +457,14 @@ static t_int QTick(t_int *)
 It would be sufficient to only flush messages belonging to object th
 But then the order of sent messages is not as intended
 */
-void flext_base::QFlush(flext_base *th)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::QFlush(flext_base *th)
 {
     FLEXT_ASSERT(!IsThreadRegistered());
     while(!queue.Empty()) QWork(false,th);
 }
 
-static void Trigger()
+template<typename>
+void Trigger()
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
 #   if FLEXT_QMODE == 2
@@ -495,7 +496,7 @@ static void Trigger()
 }
 
 #if FLEXT_QMODE == 2
-void flext_base::QWorker(thr_params *)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::QWorker(thr_params *)
 {
     thrmsgid = GetThreadId();
     qustarted = true;
@@ -507,7 +508,7 @@ void flext_base::QWorker(thr_params *)
 }
 #endif
 
-void flext_base::StartQueue()
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::StartQueue()
 {
     if(qustarted) return;
 #if FLEXT_QMODE == 1
@@ -528,72 +529,72 @@ void flext_base::StartQueue()
 #endif
 }
 
-flext::MsgBundle *flext::MsgNew() 
+FLEXT_TEMPIMPL(FLEXT_TEMPSUB(FLEXT_CLASSDEF(flext))::MsgBundle *FLEXT_CLASSDEF(flext))::MsgNew()
 { 
     return MsgBundle::New(); 
 }
 
-void flext::MsgFree(MsgBundle *m) 
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::MsgFree(MsgBundle *m)
 { 
     MsgBundle::Free(m); 
 }
 
-void flext::ToSysMsg(MsgBundle *m)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::ToSysMsg(MsgBundle *m)
 {
     m->Send();
     queue.Free(m);
 }
 
-void flext::ToQueueMsg(MsgBundle *m)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::ToQueueMsg(MsgBundle *m)
 {
     queue.Push(m);
 }
 
 
 
-void flext_base::ToQueueBang(int o) const 
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToQueueBang(int o) const
 {
     MsgBundle *m = MsgBundle::New();
     m->Add(const_cast<flext_base *>(this),o);
     queue.Push(m);
 }
 
-void flext_base::ToQueueFloat(int o,float f) const
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToQueueFloat(int o,float f) const
 {
     MsgBundle *m = MsgBundle::New();
     m->Add(const_cast<flext_base *>(this),o,f);
     queue.Push(m);
 }
 
-void flext_base::ToQueueInt(int o,int f) const
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToQueueInt(int o,int f) const
 {
     MsgBundle *m = MsgBundle::New();
     m->Add(const_cast<flext_base *>(this),o,f);
     queue.Push(m);
 }
 
-void flext_base::ToQueueSymbol(int o,const t_symbol *s) const
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToQueueSymbol(int o,const t_symbol *s) const
 {
     MsgBundle *m = MsgBundle::New();
     m->Add(const_cast<flext_base *>(this),o,s);
     queue.Push(m);
 }
 
-void flext_base::ToQueueAtom(int o,const t_atom &at) const
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToQueueAtom(int o,const t_atom &at) const
 {
     MsgBundle *m = MsgBundle::New();
     m->Add(const_cast<flext_base *>(this),o,at);
     queue.Push(m);
 }
 
-void flext_base::ToQueueList(int o,int argc,const t_atom *argv) const
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToQueueList(int o,int argc,const t_atom *argv) const
 {
     MsgBundle *m = MsgBundle::New();
     m->Add(const_cast<flext_base *>(this),o,argc,argv);
     queue.Push(m);
 }
 
-void flext_base::ToQueueAnything(int o,const t_symbol *s,int argc,const t_atom *argv) const
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToQueueAnything(int o,const t_symbol *s,int argc,const t_atom *argv) const
 {
     MsgBundle *m = MsgBundle::New();
     m->Add(const_cast<flext_base *>(this),o,s,argc,argv);
@@ -601,37 +602,37 @@ void flext_base::ToQueueAnything(int o,const t_symbol *s,int argc,const t_atom *
 }
 
 
-void flext_base::MsgAddBang(MsgBundle *m,int n) const 
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::MsgAddBang(MsgBundle *m,int n) const
 { 
     m->Add(const_cast<flext_base *>(this),n);
 }
 
-void flext_base::MsgAddFloat(MsgBundle *m,int n,float f) const
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::MsgAddFloat(MsgBundle *m,int n,float f) const
 {
     m->Add(const_cast<flext_base *>(this),n,f);
 }
 
-void flext_base::MsgAddInt(MsgBundle *m,int n,int f) const
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::MsgAddInt(MsgBundle *m,int n,int f) const
 {
     m->Add(const_cast<flext_base *>(this),n,f);
 }
 
-void flext_base::MsgAddSymbol(MsgBundle *m,int n,const t_symbol *s) const
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::MsgAddSymbol(MsgBundle *m,int n,const t_symbol *s) const
 {
     m->Add(const_cast<flext_base *>(this),n,s);
 }
 
-void flext_base::MsgAddAtom(MsgBundle *m,int n,const t_atom &at) const
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::MsgAddAtom(MsgBundle *m,int n,const t_atom &at) const
 {
     m->Add(const_cast<flext_base *>(this),n,at);
 }
 
-void flext_base::MsgAddList(MsgBundle *m,int n,int argc,const t_atom *argv) const
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::MsgAddList(MsgBundle *m,int n,int argc,const t_atom *argv) const
 {
     m->Add(const_cast<flext_base *>(this),n,argc,argv);
 }
 
-void flext_base::MsgAddAnything(MsgBundle *m,int n,const t_symbol *s,int argc,const t_atom *argv) const
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::MsgAddAnything(MsgBundle *m,int n,const t_symbol *s,int argc,const t_atom *argv) const
 {
     m->Add(const_cast<flext_base *>(this),n,s,argc,argv);
 }
@@ -639,7 +640,7 @@ void flext_base::MsgAddAnything(MsgBundle *m,int n,const t_symbol *s,int argc,co
 
 
 
-bool flext::SysForward(const t_symbol *recv,const t_symbol *s,int argc,const t_atom *argv)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::SysForward(const t_symbol *recv,const t_symbol *s,int argc,const t_atom *argv)
 {
     void *cl = recv->s_thing;
     if(UNLIKELY(!cl)) return false;
@@ -654,7 +655,7 @@ bool flext::SysForward(const t_symbol *recv,const t_symbol *s,int argc,const t_a
     return true;
 }
 
-bool flext::QueueForward(const t_symbol *recv,const t_symbol *s,int argc,const t_atom *argv)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::QueueForward(const t_symbol *recv,const t_symbol *s,int argc,const t_atom *argv)
 {
     MsgBundle *m = MsgBundle::New();
     m->Add(recv,s,argc,argv);
@@ -663,13 +664,13 @@ bool flext::QueueForward(const t_symbol *recv,const t_symbol *s,int argc,const t
     return true;
 }
 
-bool flext::MsgForward(MsgBundle *m,const t_symbol *recv,const t_symbol *s,int argc,const t_atom *argv)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::MsgForward(MsgBundle *m,const t_symbol *recv,const t_symbol *s,int argc,const t_atom *argv)
 {
     m->Add(recv,s,argc,argv);
     return true;
 }
 
-void flext_base::AddIdle()
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddIdle()
 {
     MsgBundle *m = MsgBundle::New();
     m->Idle(const_cast<flext_base *>(this));
@@ -677,7 +678,7 @@ void flext_base::AddIdle()
     queue.Push(m);
 }
 
-void flext_base::AddIdle(bool (*idlefun)(int argc,const t_atom *argv),int argc,const t_atom *argv)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddIdle(bool (*idlefun)(int argc,const t_atom *argv),int argc,const t_atom *argv)
 {
     MsgBundle *m = MsgBundle::New();
     m->Idle(idlefun,argc,argv);

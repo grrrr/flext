@@ -16,8 +16,11 @@ $LastChangedBy$
 
     \remark This is all derived from GEM by Mark Danks
 */
- 
-#include "flext.h"
+
+#ifndef FLEXT_INLINE
+#   include "flext.h"
+#endif
+
 #include "flinternal.h"
 #include <cstring>
 #include <cctype>

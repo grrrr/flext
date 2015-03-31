@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -24,9 +24,9 @@ $LastChangedBy$
 
 // === flext_base ============================================
 
-const t_symbol *flext_base::curtag = NULL;
+FLEXT_TEMPIMPL(const t_symbol *FLEXT_CLASSDEF(flext_base))::curtag = NULL;
 
-flext_base::FLEXT_CLASSDEF(flext_base)()
+FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext_base))::FLEXT_CLASSDEF(flext_base)()
     : incnt(0),outcnt(0)
     , insigs(0),outsigs(0)
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
@@ -61,7 +61,7 @@ flext_base::FLEXT_CLASSDEF(flext_base)()
     \remark Creation of inlets/outlets can't be done upon declaration, as Max/MSP needs creation
     \remark in reverse.
 */
-bool flext_base::Init()
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::Init()
 {
     bool ok = flext_obj::Init();
 
@@ -87,7 +87,7 @@ bool flext_base::Init()
 /*! This virtual function is called before the destructor.
     We do this because here we can still call virtual methods.
 */
-void flext_base::Exit()
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::Exit()
 {
 #if FLEXT_SYS == FLEXT_SYS_MAX
     // according to David Z. one should do that first...
@@ -145,7 +145,7 @@ void flext_base::Exit()
 }
 
 
-void flext_base::AddMessageMethods(t_class *c,bool dsp,bool dspin)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddMessageMethods(t_class *c,bool dsp,bool dspin)
 {
     add_loadbang(c,cb_loadbang);
 
@@ -177,7 +177,7 @@ void flext_base::AddMessageMethods(t_class *c,bool dsp,bool dspin)
 /*! Set up proxy classes and basic methods at class creation time
     This ensures that they are processed before the registered flext messages
 */
-void flext_base::Setup(t_classid id)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::Setup(t_classid id)
 {
     t_class *c = getClass(id);
 
@@ -200,19 +200,19 @@ void flext_base::Setup(t_classid id)
 #endif
 }
 
-void flext_base::cb_loadbang(flext_hdr *c) 
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_loadbang(flext_hdr *c)
 { 
     Locker lock(c);
     thisObject(c)->CbLoadbang(); 
 }   
 
-void flext_base::m_loadbang() {}
-void flext_base::CbLoadbang() { m_loadbang(); }
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::m_loadbang() {}
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::CbLoadbang() { m_loadbang(); }
 
-void flext_base::CbClick() {}
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::CbClick() {}
 
 #if FLEXT_SYS == FLEXT_SYS_PD
-void flext_base::cb_click(flext_hdr *c,t_floatarg xpos,t_floatarg ypos,t_floatarg shift,t_floatarg ctrl,t_floatarg alt)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_click(flext_hdr *c,t_floatarg xpos,t_floatarg ypos,t_floatarg shift,t_floatarg ctrl,t_floatarg alt)
 {
     if(shift) {
         Locker lock(c);
@@ -222,13 +222,13 @@ void flext_base::cb_click(flext_hdr *c,t_floatarg xpos,t_floatarg ypos,t_floatar
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
-void flext_base::cb_click(flext_hdr *c, Point pt, short mods)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_click(flext_hdr *c, Point pt, short mods)
 {
     Locker lock(c);
     thisObject(c)->CbClick();
 }
 
-void flext_base::cb_assist(flext_hdr *c,void * /*b*/,long msg,long arg,char *s) 
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_assist(flext_hdr *c,void * /*b*/,long msg,long arg,char *s)
 { 
     Locker lock(c);
     flext_base *th = thisObject(c); 
@@ -249,9 +249,9 @@ void flext_base::cb_assist(flext_hdr *c,void * /*b*/,long msg,long arg,char *s)
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
-void flext_base::cb_dsp(flext_hdr *c,t_signal **sp,short *count) 
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_dsp(flext_hdr *c,t_signal **sp,short *count)
 #else
-void flext_base::cb_dsp(flext_hdr *c,t_signal **sp) 
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_dsp(flext_hdr *c,t_signal **sp)
 #endif
 { 
     Locker lock(c);
@@ -274,6 +274,6 @@ void flext_base::cb_dsp(flext_hdr *c,t_signal **sp)
 	obj->SetupDsp(sp);
 }
 
-bool flext_base::CbIdle() { return 0; }
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::CbIdle() { return 0; }
 
 #include "flpopns.h"

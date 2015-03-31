@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -17,9 +17,7 @@ $LastChangedBy$
     \remark This is all derived from GEM by Mark Danks
 */
 
-#ifndef FLEXT_INLINE
-#   include "flext.h"
-#endif
+#include "flext.h"
 
 #include "flinternal.h"
 #include <cstring>
@@ -46,28 +44,28 @@ $LastChangedBy$
 //
 /////////////////////////////////////////////////////////
 
-flext_hdr *flext_obj::m_holder = NULL;
-const t_symbol *flext_obj::m_holdname = NULL;
-flext_class *flext_obj::m_holdclass = NULL;
-int flext_obj::m_holdaargc = 0;
-const t_atom *flext_obj::m_holdaargv = NULL;
-//bool flext_obj::process_attributes = false;
+FLEXT_TEMPIMPL(flext_hdr *FLEXT_CLASSDEF(flext_obj))::m_holder = NULL;
+FLEXT_TEMPIMPL(const t_symbol *FLEXT_CLASSDEF(flext_obj))::m_holdname = NULL;
+FLEXT_TEMPIMPL(FLEXT_TEMPINST(flext_class) *FLEXT_CLASSDEF(flext_obj))::m_holdclass = NULL;
+FLEXT_TEMPIMPL(int FLEXT_CLASSDEF(flext_obj))::m_holdaargc = 0;
+FLEXT_TEMPIMPL(const t_atom *FLEXT_CLASSDEF(flext_obj))::m_holdaargv = NULL;
+//FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_obj))::process_attributes = false;
 
-bool flext_obj::initing = false;
-bool flext_obj::exiting = false;
-bool flext_obj::init_ok;
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_obj))::initing = false;
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_obj))::exiting = false;
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_obj))::init_ok;
 
-//void flext_obj::ProcessAttributes(bool attr) { process_attributes = attr; }
+//FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::ProcessAttributes(bool attr) { process_attributes = attr; }
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
-static const t_symbol *sym__shP = NULL;
+FLEXT_TEMPIMPL(const t_symbol *FLEXT_CLASSDEF(flext_obj))::sym__shP = NULL;
 #endif
 
 /////////////////////////////////////////////////////////
 // Constructor
 //
 /////////////////////////////////////////////////////////
-flext_obj :: FLEXT_CLASSDEF(flext_obj)()
+FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext_obj))::FLEXT_CLASSDEF(flext_obj)()
     : x_obj(m_holder)
     , clss(m_holdclass)
     , m_name(m_holdname)
@@ -84,12 +82,12 @@ flext_obj :: FLEXT_CLASSDEF(flext_obj)()
 // Destructor
 //
 /////////////////////////////////////////////////////////
-flext_obj :: ~FLEXT_CLASSDEF(flext_obj)() 
+FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext_obj))::~FLEXT_CLASSDEF(flext_obj)()
 {
     x_obj = NULL;
 }
 
-void flext_obj::__setup__(t_classid) 
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::__setup__(t_classid)
 { 
 #if FLEXT_SYS == FLEXT_SYS_MAX
     sym__shP = MakeSymbol("#P");
@@ -97,11 +95,11 @@ void flext_obj::__setup__(t_classid)
     flext::Setup(); 
 }	
 
-bool flext_obj::Init() { return true; }
-bool flext_obj::Finalize() { return true; }
-void flext_obj::Exit() {}
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_obj))::Init() { return true; }
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_obj))::Finalize() { return true; }
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::Exit() {}
 
-void flext_obj::DefineHelp(t_classid c,const char *ref,const char *dir,bool addtilde)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::DefineHelp(t_classid c,const char *ref,const char *dir,bool addtilde)
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
     char tmp[256];
@@ -121,7 +119,7 @@ void flext_obj::DefineHelp(t_classid c,const char *ref,const char *dir,bool addt
 #endif
 }
 
-bool flext_obj::GetParamSym(t_atom &dst,const t_symbol *sym,t_canvas *c)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_obj))::GetParamSym(t_atom &dst,const t_symbol *sym,t_canvas *c)
 {
 #if FLEXT_SYS == FLEXT_SYS_PD && defined(PD_MINOR_VERSION) && PD_MINOR_VERSION >= 37
     if(!c) c = canvas_getcurrent();
@@ -169,7 +167,7 @@ void canvas_getargs(int *argcp, t_atom **argvp);
 #endif
 
 
-void flext_obj::GetCanvasArgs(AtomList &args) const
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::GetCanvasArgs(AtomList &args) const
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
     int argc;
@@ -184,7 +182,7 @@ void flext_obj::GetCanvasArgs(AtomList &args) const
 
 
 #if FLEXT_SYS == FLEXT_SYS_MAX 
-static short patcher_myvol(t_patcher *x)
+template<typename=void> short patcher_myvol(t_patcher *x)
 {
 #ifndef	MM_UNIFIED // Max5 check... we don't know what to do yet
     t_box *w;
@@ -198,7 +196,7 @@ static short patcher_myvol(t_patcher *x)
 }
 #endif
 
-void flext_obj::GetCanvasDir(char *buf,size_t bufsz) const
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::GetCanvasDir(char *buf,size_t bufsz) const
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
 	const char *c = GetString(canvas_getdir(thisCanvas()));

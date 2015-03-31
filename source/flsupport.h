@@ -132,11 +132,11 @@ public:
 #endif
 
 // define global new/delete operators
-void *operator new(size_t bytes) NEWTHROW { return flext_root::operator new(bytes); }
-void operator delete(void *blk) DELTHROW { flext_root::operator delete(blk); }
+inline void *operator new(size_t bytes) NEWTHROW { return flext_root::operator new(bytes); }
+inline void operator delete(void *blk) DELTHROW { flext_root::operator delete(blk); }
 #ifndef __MRC__ // doesn't allow new[] overloading?!
-void *operator new[](size_t bytes) NEWTHROW { return flext_root::operator new[](bytes); }
-void operator delete[](void *blk) DELTHROW { flext_root::operator delete[](blk); }
+inline void *operator new[](size_t bytes) NEWTHROW { return flext_root::operator new[](bytes); }
+inline void operator delete[](void *blk) DELTHROW { flext_root::operator delete[](blk); }
 #endif
 
 #endif // FLEXT_USE_CMEM
@@ -478,6 +478,11 @@ public:
 
     //! Symbol constant for "signal"
     static const t_symbol *sym_signal;
+
+#if FLEXT_SYS == FLEXT_SYS_MAX
+    static const t_symbol *sym_buffer;
+    static const t_symbol *sym_size;
+#endif
 
     //! \note This is used in macros where the type of the arg is not clear
     static const t_symbol *MakeSymbol(const t_symbol *s) { return s; }
@@ -1402,11 +1407,6 @@ FLEXT_TEMPLATE inline bool operator <(const t_atom &a,const t_atom &b) { return 
 FLEXT_TEMPLATE inline bool operator <=(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) <= 0; }
 FLEXT_TEMPLATE inline bool operator >(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) > 0; }
 FLEXT_TEMPLATE inline bool operator >=(const t_atom &a,const t_atom &b) { return flext::CmpAtom(a,b) >= 0; }
-
-#ifdef FLEXT_INLINE
-#   include "flsupport.cpp"
-#   include "flutil.cpp"
-#endif
 
 //! @} // FLEXT_SUPPORT
 

@@ -15,9 +15,7 @@ $LastChangedBy$
     \brief Attribute handling for the flext base class
 */
  
-#ifndef FLEXT_INLINE
-#   include "flext.h"
-#endif
+#include "flext.h"
 
 #include <cstring>
 #include <cctype>

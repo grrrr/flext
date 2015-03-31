@@ -15,9 +15,7 @@ $LastChangedBy$
     \brief Definitions for handling the t_atom type and lists thereof.
 */
  
-#ifndef FLEXT_INLINE
-#   include "flext.h"
-#endif
+#include "flext.h"
 
 #include <cstring> // for memcpy
 

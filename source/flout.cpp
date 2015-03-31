@@ -58,15 +58,47 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToSysAtom(int n,const t_atom &a
     #define CHKTHR() (LIKELY(!InDSP()))
 #endif
 
-FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToOutBang(int n) const { if(CHKTHR()) ToSysBang(n); else ToQueueBang(n); }
-FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToOutFloat(int n,float f) const { if(CHKTHR()) ToSysFloat(n,f); else ToQueueFloat(n,f); }
-FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToOutInt(int n,int f) const { if(CHKTHR()) ToSysInt(n,f); else ToQueueInt(n,f); }
-FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToOutSymbol(int n,const t_symbol *s) const { if(CHKTHR()) ToSysSymbol(n,s); else ToQueueSymbol(n,s); }
-FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToOutAtom(int n,const t_atom &at) const { if(CHKTHR()) ToSysAtom(n,at); else ToQueueAtom(n,at); }
-FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToOutList(int n,int argc,const t_atom *argv) const { if(CHKTHR()) ToSysList(n,argc,argv); else ToQueueList(n,argc,argv); }
-FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { if(CHKTHR()) ToSysAnything(n,s,argc,argv); else ToQueueAnything(n,s,argc,argv); }
 
-FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::ToOutMsg(MsgBundle *mb) { if(CHKTHR()) ToSysMsg(mb); else ToQueueMsg(mb); }
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToOutBang(int n) const
+{
+    if(CHKTHR()) ToSysBang(n); else ToQueueBang(n);
+}
+
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToOutFloat(int n,float f) const
+{
+    if(CHKTHR()) ToSysFloat(n,f); else ToQueueFloat(n,f);
+}
+
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToOutInt(int n,int f) const
+{
+    if(CHKTHR()) ToSysInt(n,f); else ToQueueInt(n,f);
+}
+
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToOutSymbol(int n,const t_symbol *s) const
+{
+    if(CHKTHR()) ToSysSymbol(n,s); else ToQueueSymbol(n,s);
+}
+
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToOutAtom(int n,const t_atom &at) const
+{
+    if(CHKTHR()) ToSysAtom(n,at); else ToQueueAtom(n,at);
+}
+
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToOutList(int n,int argc,const t_atom *argv) const
+{
+    if(CHKTHR()) ToSysList(n,argc,argv); else ToQueueList(n,argc,argv);
+}
+
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const
+{
+    if(CHKTHR()) ToSysAnything(n,s,argc,argv); else ToQueueAnything(n,s,argc,argv);
+}
+
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::ToOutMsg(MsgBundle *mb)
+{
+    if(CHKTHR()) ToSysMsg(mb); else ToQueueMsg(mb);
+}
+
 
 FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::Forward(const t_symbol *recv,const t_symbol *s,int argc,const t_atom *argv)
 {

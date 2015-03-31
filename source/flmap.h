@@ -256,10 +256,6 @@ private:
     explicit TablePtrMap(const TableAnyMap &p) {}
 };
             
-#ifdef FLEXT_INLINE
-#   include "flmap.cpp"
-#endif
-
 #include "flpopns.h"
 
 //! @} // FLEXT_SUPPORT

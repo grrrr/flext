@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -44,7 +44,7 @@ $LastChangedBy$
 #endif
 
 //! Extract space-delimited words from a string
-static const char *extract(const char *name,int ix = 0)
+template<typename=void> const char *extract(const char *name,int ix = 0)
 {
 	static char tmp[1024];
 	const char *n = name;
@@ -135,11 +135,12 @@ public:
 // this class stands for one registered object
 // it holds the class, type flags, constructor and destructor of the object and the creation arg types
 // it will never be destroyed
+FLEXT_TEMPLATE
 class flext_class:
     public flext_root
 {
 public:
-	flext_class(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(flext_hdr *)); 
+    flext_class(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(flext_hdr *));
 	
 	t_class *const &clss;
 
@@ -155,19 +156,17 @@ public:
     flext_base::ItemCont meths,attrs;
 };
 
-flext_class::flext_class(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(flext_hdr *)): 
+FLEXT_TEMPIMPL(flext_class)::flext_class(t_class *&cl,flext_obj *(*newf)(int,t_atom *),void (*freef)(flext_hdr *)):
 	clss(cl),
 	newfun(newf),freefun(freef),
 	argc(0),argv(NULL) 
     , dist(false)
 {}
 
-typedef std::map<const t_symbol *,flext_class *> LibMap;
-// static initialization (with constructor) doesn't work for Codewarrior
-static LibMap *libnames = NULL;
+FLEXT_TEMPIMPL(LibMap *FLEXT_CLASSDEF(flext_obj))::libnames = NULL;
 
 //! Store or retrieve registered classes
-static flext_class *FindName(const t_symbol *s,flext_class *o = NULL) 
+FLEXT_TEMPIMPL(FLEXT_TEMPINST(flext_class) *FLEXT_CLASSDEF(flext_obj))::FindName(const t_symbol *s,FLEXT_TEMPINST(flext_class) *o)
 {
 	if(!libnames) libnames = new LibMap;
 	LibMap::iterator it = libnames->find(s);
@@ -182,27 +181,28 @@ static flext_class *FindName(const t_symbol *s,flext_class *o = NULL)
 }
 
 
-t_class *flext_obj::getClass(t_classid cl) { return cl->clss; }
-bool flext_obj::HasAttributes(t_classid cl) { return cl->attr; }
-bool flext_obj::IsDSP(t_classid cl) { return cl->dsp; }
-bool flext_obj::HasDSPIn(t_classid cl) { return !cl->noi; }
-bool flext_obj::IsLib(t_classid cl) { return cl->lib != NULL; }
+FLEXT_TEMPIMPL(t_class *FLEXT_CLASSDEF(flext_obj))::getClass(t_classid cl) { return cl->clss; }
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_obj))::HasAttributes(t_classid cl) { return cl->attr; }
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_obj))::IsDSP(t_classid cl) { return cl->dsp; }
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_obj))::HasDSPIn(t_classid cl) { return !cl->noi; }
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_obj))::IsLib(t_classid cl) { return cl->lib != NULL; }
 
-bool flext_obj::HasAttributes() const { return clss->attr; }
-bool flext_obj::IsDSP() const { return clss->dsp; }
-bool flext_obj::HasDSPIn() const { return !clss->noi; }
-bool flext_obj::IsLib() const { return clss->lib != NULL; }
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_obj))::HasAttributes() const { return clss->attr; }
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_obj))::IsDSP() const { return clss->dsp; }
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_obj))::HasDSPIn() const { return !clss->noi; }
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_obj))::IsLib() const { return clss->lib != NULL; }
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
-bool flext_obj::NeedDSP() const { return clss->dsp || (clss->lib && clss->lib->dsp); }
+bool FLEXT_CLASSDEF(flext_obj)::NeedDSP() const { return clss->dsp || (clss->lib && clss->lib->dsp); }
 #endif
 
-static flext_library *curlib = NULL;
 
-void flext_obj::lib_init(const char *name,void setupfun())
+FLEXT_TEMPIMPL(flext_library *FLEXT_CLASSDEF(flext_obj))::curlib = NULL;
+
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::lib_init(const char *name,void setupfun())
 {
 	// make new library instance
-	curlib = new flext_library(MakeSymbol(name));
+    curlib = new flext_library(MakeSymbol(name));
 
     flext::Setup();
 
@@ -237,15 +237,14 @@ void flext_obj::lib_init(const char *name,void setupfun())
 	flext_base::AddMessageMethods(curlib->clss,curlib->dsp,true);
 #endif
 
-	curlib = NULL;
+    curlib = NULL;
 }
 
 #if FLEXT_SYS == FLEXT_SYS_PD
-t_class *buf_class = NULL;
-extern void cb_buffer_dsp(void *c,t_signal **sp);
+FLEXT_TEMPIMPL(t_class *FLEXT_CLASSDEF(flext_obj))::buf_class = NULL;
 #endif
 
-void flext_obj::obj_add(bool lib,bool dsp,bool noi,bool attr,const char *idname,const char *names,void setupfun(t_classid),flext_obj *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::obj_add(bool lib,bool dsp,bool noi,bool attr,const char *idname,const char *names,void setupfun(t_classid),FLEXT_CLASSDEF(flext_obj) *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...)
 {
     Locker lock;
 
@@ -267,13 +266,13 @@ void flext_obj::obj_add(bool lib,bool dsp,bool noi,bool attr,const char *idname,
 #endif
 
 	if(lib) {
-		FLEXT_ASSERT(curlib);
+        FLEXT_ASSERT(curlib);
 #if FLEXT_SYS == FLEXT_SYS_MAX
 		curlib->dsp |= dsp;
 #endif
 	}
 	else {
-		FLEXT_ASSERT(!curlib);
+        FLEXT_ASSERT(!curlib);
 //		process_attributes = attr;
 	}
 
@@ -304,8 +303,8 @@ void flext_obj::obj_add(bool lib,bool dsp,bool noi,bool attr,const char *idname,
 #endif
 
 	// make new dynamic object
-	flext_class *lo = new flext_class(*cl,newfun,freefun);
-	lo->lib = curlib;
+	FLEXT_TEMPINST(flext_class) *lo = new FLEXT_TEMPINST(flext_class)(*cl,newfun,freefun);
+    lo->lib = curlib;
 	lo->dsp = dsp;
 	lo->noi = noi;
 	lo->attr = attr;
@@ -392,18 +391,18 @@ void flext_obj::obj_add(bool lib,bool dsp,bool noi,bool attr,const char *idname,
 
 #define NEWARGS 256 // must be larger than FLEXT_NEWARGS = 5
 
-typedef flext_obj *(*libfun)(int,t_atom *);
+typedef FLEXT_TEMPINST(FLEXT_CLASSDEF(flext_obj)) *(*libfun)(int,t_atom *);
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
-flext_hdr *flext_obj::obj_new(const t_symbol *s,short _argc_,t_atom *argv)
+FLEXT_TEMPIMPL(flext_hdr *FLEXT_CLASSDEF(flext_obj))::obj_new(const t_symbol *s,short _argc_,t_atom *argv)
 #else
-flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
+FLEXT_TEMPIMPL(flext_hdr *FLEXT_CLASSDEF(flext_obj))::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 #endif
 {
     Locker lock;
 
 	flext_hdr *obj = NULL;
-	flext_class *lo = FindName(s);
+	FLEXT_TEMPINST(flext_class) *lo = FindName(s);
 
 	if(lo) {
 //		post("NEWOBJ %s = %p -> %p",GetString(s),lo,lo->clss);
@@ -567,13 +566,13 @@ flext_hdr *flext_obj::obj_new(const t_symbol *s,int _argc_,t_atom *argv)
 	return obj;
 }
 
-void flext_obj::obj_free(flext_hdr *h)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::obj_free(flext_hdr *h)
 {
     Locker lock;
 
 	flext_hdr *hdr = (flext_hdr *)h;
 	const t_symbol *name = hdr->data->thisNameSym();
-	flext_class *lcl = FindName(name);
+	FLEXT_TEMPINST(flext_class) *lcl = FindName(name);
 
 	if(lcl) {
         flext_obj::exiting = true;
@@ -613,7 +612,11 @@ void flext_obj::obj_free(flext_hdr *h)
 }
 
 
-t_class *flext_obj::thisClass() const { FLEXT_ASSERT(x_obj); return thisClassId()->clss; }
+FLEXT_TEMPIMPL(t_class *FLEXT_CLASSDEF(flext_obj))::thisClass() const
+{
+    FLEXT_ASSERT(x_obj);
+    return thisClassId()->clss;
+}
 
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::SetDist(t_classid c,bool d) { c->dist = d; }
 FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::DoDist() const { return thisClassId()->dist; }

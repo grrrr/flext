@@ -26,18 +26,19 @@ $LastChangedBy$
 
 // === flext_dsp ==================================================
 
-class FLEXT_SHARE FLEXT_CLASSDEF(flext_dsp);
-typedef class FLEXT_SHARE FLEXT_CLASSDEF(flext_dsp) flext_dsp;
+FLEXT_TEMPLATE class FLEXT_SHARE FLEXT_CLASSDEF(flext_dsp);
+typedef FLEXT_SHARE FLEXT_TEMPINST(FLEXT_CLASSDEF(flext_dsp)) flext_dsp;
 
 
 /*! \brief Flext dsp enabled base object
 */
+FLEXT_TEMPLATE
 class FLEXT_SHARE FLEXT_CLASSDEF(flext_dsp):
 	public flext_base
 {
 	FLEXT_HEADER_S(FLEXT_CLASSDEF(flext_dsp),flext_base,Setup)
 	
-	friend class FLEXT_SHARE FLEXT_CLASSDEF(flext_base);
+	friend class FLEXT_SHARE FLEXT_TEMPINST(FLEXT_CLASSDEF(flext_base));
 
 public:
 

@@ -25,20 +25,21 @@ $LastChangedBy$
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 #define DIRTY_INTERVAL 0   // buffer dirty check in msec
-#endif
 
-#if FLEXT_SYS == FLEXT_SYS_MAX
-// defined in flsupport.cpp
-extern const t_symbol *sym_buffer,*sym_size;
-#endif
-
-#if FLEXT_SYS == FLEXT_SYS_PD
-typedef std::set<flext::buffer *> Buffers;
-static Buffers buffers;
-
-void cb_buffer_dsp(void *c,t_signal **sp) 
+FLEXT_TEMPLATE
+class Buffers:
+    public std::set<flext::buffer *>
 {
-	for(Buffers::iterator it = buffers.begin(); it != buffers.end(); ++it)
+public:
+    static FLEXT_TEMPINST(Buffers) buffers;
+};
+
+FLEXT_TEMPIMPL(FLEXT_TEMPINST(Buffers) Buffers)::buffers;
+
+
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::cb_buffer_dsp(void *c,t_signal **sp)
+{
+    for(FLEXT_TEMPINST(Buffers)::iterator it = FLEXT_TEMPINST(Buffers)::buffers.begin(); it != FLEXT_TEMPINST(Buffers)::buffers.end(); ++it)
 		(*it)->Set();
 } 
 #endif
@@ -63,8 +64,8 @@ FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext))::buffer::buffer(const t_symbol *bn,bool de
 	
 #if FLEXT_SYS == FLEXT_SYS_PD
 	// register buffer
-	FLEXT_ASSERT(buffers.find(this) == buffers.end());
-	buffers.insert(this);
+    FLEXT_ASSERT(FLEXT_TEMPINST(Buffers)::buffers.find(this) == FLEXT_TEMPINST(Buffers)::buffers.end());
+	FLEXT_TEMPINST(Buffers)::buffers.insert(this);
 #endif
 }
 
@@ -76,8 +77,8 @@ FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext))::buffer::~buffer()
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 	// unregister buffer
-	FLEXT_ASSERT(buffers.find(this) != buffers.end());
-	buffers.erase(this);
+    FLEXT_ASSERT(FLEXT_TEMPINST(Buffers)::buffers.find(this) != FLEXT_TEMPINST(Buffers)::buffers.end());
+    FLEXT_TEMPINST(Buffers)::buffers.erase(this);
 #endif
 }
 

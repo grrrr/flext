@@ -104,7 +104,7 @@ typedef struct _processor_info {
 #define _3DNOW_FEATURE_BIT      0x80000000
 
 #ifdef _MSC_VER
-template<typename=void> int IsCPUID()
+inline int IsCPUID()
 {
     __try {
         _asm {
@@ -118,7 +118,7 @@ template<typename=void> int IsCPUID()
     return 1;
 }
 
-template<typename=void> int _os_support(int feature)
+inline int _os_support(int feature)
 {
     __try {
         switch (feature) {
@@ -155,7 +155,7 @@ template<typename=void> int _os_support(int feature)
     return 1;
 }
 
-template<typename=void> int _cpuid (_p_info *pinfo)
+inline int _cpuid (_p_info *pinfo)
 {
     DWORD dwStandard = 0;
     DWORD dwFeature = 0;
@@ -285,7 +285,7 @@ inline bool VectorsAligned(const void *v1,const void *v2,const void *v3,const vo
 
 #else
 // not MSVC
-template<typename=void> int _cpuid (_p_info *pinfo)
+inline int _cpuid (_p_info *pinfo)
 {
     if(pinfo) memset(pinfo,0,sizeof *pinfo);
     return 0;
@@ -298,7 +298,7 @@ template<typename=void> int _cpuid (_p_info *pinfo)
 /*! \brief Determine SIMD capabilities
     \internal
 */
-template<typename> unsigned long setsimdcaps()
+inline unsigned long setsimdcaps()
 {
     unsigned long simdflags = flext::simd_none;
 #if FLEXT_CPU == FLEXT_CPU_IA32 || FLEXT_CPU == FLEXT_CPU_X86_64
@@ -420,7 +420,7 @@ inline vector float LoadValue(const float &f)
 
 
 #else // FLEXT_USE_SIMD
-template<typename=void> unsigned long setsimdcaps() { return 0; }
+inline unsigned long setsimdcaps() { return 0; }
 #endif // FLEXT_USE_SIMD
 
 

@@ -15,9 +15,7 @@ $LastChangedBy$
     \brief Definitions for printing and scanning the t_atom type.
 */
 
-#ifndef FLEXT_INLINE
-#   include "flext.h"
-#endif
+#include "flext.h"
 
 #include <cctype>
 #include <cstdlib>

@@ -15,10 +15,8 @@ $LastChangedBy$
     \brief flext container classes.
 */
 
-#ifndef FLEXT_INLINE
-#   include "flext.h"
-#   include "flmap.h"
-#endif
+#include "flext.h"
+#include "flmap.h"
 
 #include "flpushns.h"
 

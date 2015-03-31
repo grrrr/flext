@@ -15,9 +15,7 @@ $LastChangedBy$
     \brief flext support functions and classes.
 */
 
-#ifndef FLEXT_INLINE
-#   include "flext.h"
-#endif
+#include "flext.h"
 
 #include <cstdio>
 #include <cstdarg>
@@ -183,7 +181,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_root))::operator delete(void *blk)
 }
 
 #ifdef FLEXT_DEBUGMEM
-FLEXT_TEMPLATE bool flext_root::MemCheck(void *blk)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_root))::MemCheck(void *blk)
 {
 	char *ori = (char *)blk-sizeof(size_t)-sizeof(memtest);
 	size_t bytes = *(size_t *)ori;
@@ -196,7 +194,7 @@ FLEXT_TEMPLATE bool flext_root::MemCheck(void *blk)
 
 #endif
 
-FLEXT_TEMPDEF void *flext_root::NewAligned(size_t bytes,int bitalign)
+FLEXT_TEMPIMPL(void *FLEXT_CLASSDEF(flext_root))::NewAligned(size_t bytes,int bitalign)
 {
 	const size_t ovh = sizeof(size_t)+sizeof(char *);
 	const size_t alignovh = bitalign/8-1;
@@ -230,7 +228,7 @@ FLEXT_TEMPDEF void *flext_root::NewAligned(size_t bytes,int bitalign)
 	return ablk;
 }
 
-FLEXT_TEMPDEF void flext_root::FreeAligned(void *blk)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_root))::FreeAligned(void *blk)
 {
 	FLEXT_ASSERT(blk);
 
@@ -284,7 +282,7 @@ FLEXT_TEMPDEF unsigned long flext::AtomHash(const t_atom &a)
 #endif
 }
 
-FLEXT_TEMPDEF void flext_root::post(const char *fmt, ...)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_root))::post(const char *fmt, ...)
 {
 	va_list ap;
     va_start(ap, fmt);
@@ -302,7 +300,7 @@ FLEXT_TEMPDEF void flext_root::post(const char *fmt, ...)
     va_end(ap);
 }
 
-FLEXT_TEMPDEF void flext_root::error(const char *fmt,...)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_root))::error(const char *fmt,...)
 {
 	va_list ap;
     va_start(ap, fmt);

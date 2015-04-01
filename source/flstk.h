@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2010 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -11,8 +11,8 @@ $LastChangedDate$
 $LastChangedBy$
 */
 
-#ifndef __FLSTK_H
-#define __FLSTK_H
+#ifndef __FLEXT_STK_H
+#define __FLEXT_STK_H
 
 #include "flext.h"
 
@@ -130,5 +130,9 @@ private:
 };
 
 #include "flpopns.h"
+
+#ifdef FLEXT_INLINE
+#   include "flstk.cpp"
+#endif
 
 #endif

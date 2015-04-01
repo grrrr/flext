@@ -26,10 +26,10 @@ $LastChangedBy$
 */
 
 //! \brief flext version number
-#define FLEXT_VERSION 502
+#define FLEXT_VERSION 600
 
 //! \brief flext version string
-#define FLEXT_VERSTR "0.5.2 beta"
+#define FLEXT_VERSTR "0.6.0 alpha"
 
 //! @}
 
@@ -67,8 +67,8 @@ $LastChangedBy$
 // include the flext dsp class
 #include "fldsp.h"
 
-// include all source code files
 #ifdef FLEXT_INLINE
+// include all source code files
 #   include "flatom.cpp"
 #   include "flatom_part.cpp"
 #   include "flatom_pr.cpp"

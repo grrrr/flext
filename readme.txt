@@ -1,6 +1,6 @@
 flext - C++ layer for Max/MSP and Pd (Pure Data) externals
 
-Copyright (c) 2001-2013 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -16,7 +16,7 @@ Abstract:
 
 flext seeks to represent a uniform programming interface for extending the most common
 modular real-time audio systems Max/MSP and Pure Data (PD) with external modules, or
-short externals. These modules provide a way to tailor such a system for oneís 
+short externals. These modules provide a way to tailor such a system for one√≠s 
 special needs and supply additional functionality. 
 
 Source code based on flext is able to exploit most common features of the 

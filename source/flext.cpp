@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief Implementation of the flext base class.
 */
  
+#ifndef __FLEXT_CPP
+#define __FLEXT_CPP
+
 #include "flext.h"
 #include "flinternal.h"
 #include "fldsp.h"
@@ -277,3 +280,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_dsp(flext_hdr *c,t_signal **
 FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::CbIdle() { return 0; }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_CPP
+
+

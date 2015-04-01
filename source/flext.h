@@ -67,4 +67,32 @@ $LastChangedBy$
 // include the flext dsp class
 #include "fldsp.h"
 
+// include all source code files
+#ifdef FLEXT_INLINE
+#   include "flatom.cpp"
+#   include "flatom_part.cpp"
+#   include "flatom_pr.cpp"
+#   include "flattr.cpp"
+#   include "flattr_ed.cpp"
+#   include "flbase.cpp"
+#   include "flbind.cpp"
+#   include "flbuf.cpp"
+#   include "fldsp.cpp"
+#   include "flext.cpp"
+#   include "flitem.cpp"
+#   include "fllib.cpp"
+#   include "flmap.cpp"
+#   include "flmeth.cpp"
+#   include "flmsg.cpp"
+#   include "flout.cpp"
+#   include "flproxy.cpp"
+#   include "flqueue.cpp"
+#   include "flsimd.cpp"
+#   include "flsupport.cpp"
+#   include "flthr.cpp"
+#   include "fltimer.cpp"
+#   include "flutil.cpp"
+#   include "flxlet.cpp"
+#endif
+
 #endif // FLEXT_H

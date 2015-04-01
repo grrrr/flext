@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief Attribute editor (property dialog) for PD
 */
 
+#ifndef __FLEXT_ATTR_ED_CPP
+#define __FLEXT_ATTR_ED_CPP
+
 #include "flext.h"
 
 #include "flpushns.h"
@@ -880,4 +883,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_GfxSave(flext_hdr *c, t_binb
 #endif // FLEXT_SYS_PD
 
 #include "flpopns.h"
+
+#endif // __FLEXT_ATTR_ED_CPP
+
 

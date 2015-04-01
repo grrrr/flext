@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief Implementation of the various utility functions.
 */
  
+#ifndef __FLEXT_UTIL_CPP
+#define __FLEXT_UTIL_CPP
+
 #include "flext.h"
 #include <cstring>
 
@@ -57,5 +60,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::ZeroMem(void *dst,int bytes)
 }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_UTIL_CPP
 
 

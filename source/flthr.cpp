@@ -14,6 +14,9 @@ $LastChangedBy$
     \brief Implementation of the flext thread functionality.
 */
  
+#ifndef __FLEXT_THR_CPP
+#define __FLEXT_THR_CPP
+
 #include "flext.h"
 
 #ifdef FLEXT_THREADS
@@ -765,4 +768,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::ThrCond::TimedWait(double ftm)
 #include "flpopns.h"
 
 #endif // FLEXT_THREADS
+
+#endif // __FLEXT_THR_CPP
+
 

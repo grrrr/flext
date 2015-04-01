@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief Method processing of flext base class.
 */
  
+#ifndef __FLEXT_METH_CPP
+#define __FLEXT_METH_CPP
+
 #include "flext.h"
 #include "flinternal.h"
 #include <cstring>
@@ -137,3 +140,5 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::cb_ListMethods(flext_base *c,in
 }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_METH_CPP

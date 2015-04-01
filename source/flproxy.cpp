@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief Proxy classes for the flext base class.
 */
  
+#ifndef __FLEXT_PROXY_CPP
+#define __FLEXT_PROXY_CPP
+
 #include "flext.h"
 #include "flinternal.h"
 
@@ -241,3 +244,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::SetProxies(t_class *c,bool dsp)
 #endif
 
 #include "flpopns.h"
+
+#endif // __FLEXT_PROXY_CPP
+
+

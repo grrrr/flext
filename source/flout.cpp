@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief Implementation of the flext outlet functionality.
 */
 
+#ifndef __FLEXT_OUT_CPP
+#define __FLEXT_OUT_CPP
+
 #include "flext.h"
 #include "flinternal.h"
 #include <cstring>
@@ -370,4 +373,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::InitOutlets()
 }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_OUT_CPP
+
 

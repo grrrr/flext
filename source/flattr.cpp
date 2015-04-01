@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief Attribute handling for the flext base class
 */
  
+#ifndef __FLEXT_ATTR_CPP
+#define __FLEXT_ATTR_CPP
+
 #include "flext.h"
 
 #include <cstring>
@@ -449,3 +452,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::ShowAttrib(const t_symbol *attr
 }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_ATTR_CPP
+
+

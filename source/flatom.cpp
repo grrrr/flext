@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief Definitions for handling the t_atom type and lists thereof.
 */
  
+#ifndef __FLEXT_ATOM_CPP
+#define __FLEXT_ATOM_CPP
+
 #include "flext.h"
 
 #include <cstring> // for memcpy
@@ -176,3 +179,6 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::AtomListStaticBase::Free()
 }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_ATOM_CPP
+

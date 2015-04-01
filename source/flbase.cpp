@@ -17,6 +17,9 @@ $LastChangedBy$
     \remark This is all derived from GEM by Mark Danks
 */
 
+#ifndef __FLEXT_BASE_CPP
+#define __FLEXT_BASE_CPP
+
 #include "flext.h"
 
 #include "flinternal.h"
@@ -211,4 +214,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::GetCanvasDir(char *buf,size_t bu
 }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_BASE_CPP
+
 

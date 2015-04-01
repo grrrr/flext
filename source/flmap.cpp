@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief flext container classes.
 */
 
+#ifndef __FLEXT_MAP_CPP
+#define __FLEXT_MAP_CPP
+
 #include "flext.h"
 #include "flmap.h"
 
@@ -254,3 +257,4 @@ FLEXT_TEMPIMPL(void TableAnyMap)::iterator::forward()
 
 #include "flpopns.h"
 
+#endif // __FLEXT_MAP_CPP

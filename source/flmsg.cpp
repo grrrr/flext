@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief Message processing of flext base class.
 */
  
+#ifndef __FLEXT_MSG_CPP
+#define __FLEXT_MSG_CPP
+
 #include "flext.h"
 
 #include "flpushns.h"
@@ -304,4 +307,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::CbMethodResort(int inlet,const 
 }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_MSG_CPP
+
 

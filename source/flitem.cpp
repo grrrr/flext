@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief Processing of method and attribute lists.
 */
  
+#ifndef __FLEXT_ITEM_CPP
+#define __FLEXT_ITEM_CPP
+
 #include "flext.h"
 #include <cstring>
 
@@ -132,4 +135,7 @@ FLEXT_TEMPIMPL(FLEXT_TEMPSUB(FLEXT_CLASSDEF(flext_base))::ItemCont *FLEXT_CLASSD
 */
 
 #include "flpopns.h"
+
+#endif // __FLEXT_ITEM_CPP
+
 

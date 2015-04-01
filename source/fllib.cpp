@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief Code for handling of object (and library) creation functions.
 */
 
+#ifndef __FLEXT_LIB_CPP
+#define __FLEXT_LIB_CPP
+
 #include "flext.h"
 #include "flinternal.h"
 
@@ -625,3 +628,6 @@ FLEXT_TEMPIMPL(FLEXT_TEMPSUB(FLEXT_CLASSDEF(flext_base))::ItemCont *FLEXT_CLASSD
 FLEXT_TEMPIMPL(FLEXT_TEMPSUB(FLEXT_CLASSDEF(flext_base))::ItemCont *FLEXT_CLASSDEF(flext_base))::ClAttrs(t_classid c) { return &c->attrs; }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_LIB_CPP
+

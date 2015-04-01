@@ -20,6 +20,9 @@ $LastChangedBy$
     If FLEXT_USE_IPP is defined the Intel Performance Package is used.
 */
 
+#ifndef __FLEXT_SIMD_CPP
+#define __FLEXT_SIMD_CPP
+
 #include "flext.h"
 #include <cstring>
 
@@ -2009,4 +2012,7 @@ zero:
 }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_SIMD_CPP
+
 

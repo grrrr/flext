@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief Definitions for printing and scanning the t_atom type.
 */
 
+#ifndef __FLEXT_ATOM_PR_CPP
+#define __FLEXT_ATOM_PR_CPP
+
 #include "flext.h"
 
 #include <cctype>
@@ -135,3 +138,7 @@ FLEXT_TEMPIMPL(int FLEXT_CLASSDEF(flext))::ScanList(int argc,t_atom *argv,const 
 }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_ATOM_PR_CPP
+
+

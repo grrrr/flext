@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -10,6 +10,9 @@ $LastChangedRevision$
 $LastChangedDate$
 $LastChangedBy$
 */
+
+#ifndef __FLEXT_SNDOBJ_CPP
+#define __FLEXT_SNDOBJ_CPP
 
 #include "flext.h"
 #include "flsndobj.h"
@@ -134,4 +137,7 @@ short flext_sndobj::Outlet::Write()
 }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_SNDOBJ_CPP
+
 

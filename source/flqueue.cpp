@@ -19,6 +19,9 @@ $LastChangedBy$
     if FLEXT_PDLOCK is defined, the new PD thread lock functions are used
 */
 
+#ifndef __FLEXT_QUEUE_CPP
+#define __FLEXT_QUEUE_CPP
+
 #include "flext.h"
 #include "flinternal.h"
 #include "flcontainers.h"
@@ -349,7 +352,7 @@ static t_clock *qclk = NULL;
 #define CHUNK 10
 
 #if FLEXT_QMODE == 1
-static bool QWork(bool syslock,flext_base *flushobj = NULL)
+template<typename=void> bool QWork(bool syslock,flext_base *flushobj = NULL)
 {
     // Since qcnt can only be increased from any other function than QWork
     // qc will be a minimum guaranteed number of present queue elements.
@@ -371,7 +374,7 @@ static bool QWork(bool syslock,flext_base *flushobj = NULL)
     }
 }
 #else
-static bool QWork(bool syslock,flext_base *flushobj = NULL)
+template<typename=void> bool QWork(bool syslock,flext_base *flushobj = NULL)
 {
     Queue newmsgs;
     flext::MsgBundle *q;
@@ -418,10 +421,10 @@ static bool QWork(bool syslock,flext_base *flushobj = NULL)
 
 #if FLEXT_QMODE == 0
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-static void QTick(fts_object_t *c,int winlet, fts_symbol_t s, int ac, const fts_atom_t *at)
+template<typename=void> void QTick(fts_object_t *c,int winlet, fts_symbol_t s, int ac, const fts_atom_t *at)
 {
 #else
-static void QTick(flext_base *c)
+template<typename=void> void QTick(flext_base *c)
 {
 #endif
     QWork(false);
@@ -431,7 +434,7 @@ static void QTick(flext_base *c)
 #   ifndef PERMANENTIDLE
         static bool qtickactive = false;
 #   endif
-static t_int QTick(t_int *)
+template<typename=void> t_int QTick(t_int *)
 {
 #ifndef PERMANENTIDLE
     qtickactive = false;
@@ -472,7 +475,7 @@ void Trigger()
         qthrcond.Signal();
 #   elif FLEXT_QMODE == 1 && !defined(PERMANENTIDLE)
         if(!qtickactive) {
-            sys_callback(QTick,NULL,0);
+            sys_callback(QTick<>,NULL,0);
             qtickactive = true;
         }
 #   elif FLEXT_QMODE == 0
@@ -513,7 +516,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::StartQueue()
     if(qustarted) return;
 #if FLEXT_QMODE == 1
 #   ifdef PERMANENTIDLE
-        sys_callback(QTick,NULL,0);
+        sys_callback(QTick<>,NULL,0);
         qustarted = true;
 #   endif
 #elif FLEXT_QMODE == 2
@@ -521,8 +524,8 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::StartQueue()
     // very unelegant... but waiting should be ok, since happens only on loading
     while(!qustarted) Sleep(0.001);
 #elif FLEXT_QMODE == 0 && (FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX)
-//    qclk = (t_qelem *)(qelem_new(NULL,(t_method)QTick));
-    qclk = (t_clock *)(clock_new(NULL,(t_method)QTick));
+//    qclk = (t_qelem *)(qelem_new(NULL,(t_method)QTick<>));
+    qclk = (t_clock *)(clock_new(NULL,(t_method)QTick<>));
     qustarted = true;
 #else
 #   error Not implemented!
@@ -687,4 +690,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddIdle(bool (*idlefun)(int arg
 }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_QUEUE_CPP
+    
 

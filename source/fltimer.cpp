@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief flext timer functions and classes   
 */
 
+#ifndef __FLEXT_TIMER_CPP
+#define __FLEXT_TIMER_CPP
+
 #include "flext.h"
 
 #if FLEXT_OS == FLEXT_OS_WIN
@@ -278,3 +281,6 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::Timer::Work()
 }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_TIMER_CPP
+

@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief flext support functions and classes.
 */
 
+#ifndef __FLEXT_SUPPORT_CPP
+#define __FLEXT_SUPPORT_CPP
+
 #include "flext.h"
 
 #include <cstdio>
@@ -324,4 +327,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_root))::error(const char *fmt,...)
 }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_SUPPORT_CPP
+
 

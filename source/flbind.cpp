@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief Functionality for symbol-bound methods.
 */
  
+#ifndef __FLEXT_BIND_CPP
+#define __FLEXT_BIND_CPP
+
 #include "flext.h"
 #include "flinternal.h"
 
@@ -269,3 +272,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::pxbnd_object::px_method(pxbnd_o
 }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_BIND_CPP
+
+

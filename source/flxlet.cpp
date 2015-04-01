@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief Implementation of the variable inlet/outlet functionality.
 */
  
+#ifndef __FLEXT_XLET_CPP
+#define __FLEXT_XLET_CPP
+
 #include "flext.h"
 #include "flinternal.h"
 #include <cstring>
@@ -117,3 +120,6 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddOutlets(unsigned long code)
 }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_XLET_CPP
+

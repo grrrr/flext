@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief Implementation of the buffer abstraction class.
 */
  
+#ifndef __FLEXT_BUF_CPP
+#define __FLEXT_BUF_CPP
+
 #include "flext.h"
 #include "flfeatures.h"
 #include <set>
@@ -394,4 +397,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::buffer::IsDirty() const
 #endif // Jmax
 
 #include "flpopns.h"
+
+#endif // __FLEXT_BUF_CPP
+
 

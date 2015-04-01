@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief Implementation of the flext dsp base class.
 */
  
+#ifndef __FLEXT_DSP_CPP
+#define __FLEXT_DSP_CPP
+
 #include "flext.h"
 #include "flinternal.h"
 #include <cstring>
@@ -128,4 +131,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_dsp))::cb_enable(flext_base *b,float &o
 #endif
 
 #include "flpopns.h"
+
+#endif // __FLEXT_DSP_CPP
+
 

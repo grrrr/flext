@@ -107,9 +107,8 @@ public:
 };
 
 template<typename=void>
-class ThrRegistry
+struct ThrRegistry
 {
-public:
     static ThrFinder< PooledLifo<thr_entry,1,10> > pending;
     static ThrFinder< TypedLifo<thr_entry> > active,stopped;
 };
@@ -135,35 +134,26 @@ public:
 	}
 };
 
-#if 0
-class ThrIdCell
-	: public LifoCell
-	, public ThrId
-{
-public:
-	ThrIdCell(const thrid_t &_id): ThrId(_id) {}
+template<typename=void>
+struct ThrVars {
+    // this should _definitely_ be a hashmap....
+    // \TODO above all it should be populated immediately, otherwise it could easily happen 
+    // that the passing on to the set happens too late! We need that lockfree set!
+    static std::set<ThrId> regthreads;
+
+    //! Registry lock
+    static flext::ThrMutex *thrregmtx;
+
+    //! Helper thread conditional
+    static flext::ThrCond *thrhelpcond;
+
+    static bool initialized;
 };
 
-class RegQueue
-    : public TypedLifo<ThrIdCell>
-{
-public:
-    ~RegQueue() { ThrIdCell *pid; while((pid = Pop()) != NULL) delete pid; }
-};
-
-static RegQueue regqueue,unregqueue;
-#endif
-
-// this should _definitely_ be a hashmap....
-// \TODO above all it should be populated immediately, otherwise it could easily happen 
-// that the passing on to the set happens too late! We need that lockfree set!
-static std::set<ThrId> regthreads;
-
-//! Registry lock
-static flext::ThrMutex *thrregmtx = NULL;
-
-//! Helper thread conditional
-static flext::ThrCond *thrhelpcond = NULL;
+template<> std::set<ThrId> ThrVars<>::regthreads;
+template<> flext::ThrMutex *ThrVars<>::thrregmtx = NULL;
+template<> flext::ThrCond *ThrVars<>::thrhelpcond = NULL;
+template<> bool ThrVars<>::initialized = false;
 
 static void LaunchHelper(thr_entry *e)
 {
@@ -173,13 +163,11 @@ static void LaunchHelper(thr_entry *e)
     flext::UnregisterThread(e->thrid);
 }
 
-bool initialized = false;
-
 //! Start helper thread
 FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::StartHelper()
 {
 	bool ok = false;
-    initialized = false;
+    ThrVars<>::initialized = false;
 
     thrregmtx = new ThrMutex;
 
@@ -207,7 +195,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::StartHelper()
 		error("flext - Could not launch helper thread!"); 
     else {
         // now we have to wait for thread helper to initialize
-        while(!initialized) Sleep(0.001);
+        while(!ThrVars<>::initialized) Sleep(0.001);
 
         // we are ready for threading now!
     }
@@ -236,7 +224,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::ThrHelper(void *)
 
 	thrhelpcond = new ThrCond;
 
-    initialized = true;
+    ThrVars<>::initialized = true;
 
 	// helper loop
 	for(;;) {

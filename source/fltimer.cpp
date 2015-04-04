@@ -32,21 +32,30 @@ $LastChangedBy$
 
 #include "flpushns.h"
 
+template<typename=void> double getstarttime();
+
+template<typename=void>
+struct TimerVars
+{
 #if FLEXT_OS == FLEXT_OS_WIN
-static double perffrq = 0;
+    static double perffrq;
 #endif
+    static double starttime;
+};
 
-static double getstarttime();
-static double starttime = getstarttime();
+#if FLEXT_OS == FLEXT_OS_WIN
+template<> double TimerVars<>::perffrq = 0;
+#endif
+template<> double TimerVars<>::starttime = getstarttime();
 
-static double getstarttime()
+template<typename> double getstarttime()
 {
 #if FLEXT_OS == FLEXT_OS_WIN
     LARGE_INTEGER frq;
-    if(QueryPerformanceFrequency(&frq)) perffrq = (double)frq.QuadPart;
+    if(QueryPerformanceFrequency(&frq)) TimerVars<>::perffrq = (double)frq.QuadPart;
 #endif
 
-    starttime = 0;
+    TimerVars<>::starttime = 0;
     return flext::GetOSTime();
 }
 
@@ -57,7 +66,7 @@ FLEXT_TEMPIMPL(double FLEXT_CLASSDEF(flext))::GetOSTime()
 #if FLEXT_OS == FLEXT_OS_WIN
     LARGE_INTEGER cnt;
     if(perffrq && QueryPerformanceCounter(&cnt))
-        tm = cnt.QuadPart/perffrq;
+        tm = cnt.QuadPart/TimerVars<>::perffrq;
     else {
         SYSTEMTIME systm;
         FILETIME fltm;
@@ -76,7 +85,7 @@ FLEXT_TEMPIMPL(double FLEXT_CLASSDEF(flext))::GetOSTime()
 #else
     #error Not implemented
 #endif
-    return tm-starttime;
+    return tm-TimerVars<>::starttime;
 }
 
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::Sleep(double s)

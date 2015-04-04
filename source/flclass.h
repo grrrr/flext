@@ -997,6 +997,8 @@ private:
 	//! Flush messages in the queue
 	static void QFlush(flext_base *th = NULL);
 
+    static bool qustarted;
+    
 #if FLEXT_SYS == FLEXT_SYS_PD
 
 	static void SetGfx(t_classid c);

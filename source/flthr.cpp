@@ -46,10 +46,10 @@ $LastChangedBy$
 #include "flpushns.h"
 
 //! Thread id of system thread - will be initialized in flext::Setup
-FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext)::thrid_t FLEXT_CLASSDEF(flext))::thrid;
+FLEXT_TEMPIMPL(FLEXT_TEMPINST(FLEXT_CLASSDEF(flext))::thrid_t FLEXT_CLASSDEF(flext))::thrid;
 
 //! Thread id of helper thread - will be initialized in flext::Setup
-FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext)::thrid_t FLEXT_CLASSDEF(flext))::thrhelpid;
+FLEXT_TEMPIMPL(FLEXT_TEMPINST(FLEXT_CLASSDEF(flext))::thrid_t FLEXT_CLASSDEF(flext))::thrhelpid;
 
 
 //! \brief This represents an entry to the list of active method threads
@@ -71,10 +71,10 @@ public:
 	//! \brief Check if this class represents the current thread
 	bool Is(thrid_t id = GetThreadId()) const { return IsThread(thrid,id); }
 
-	FLEXT_CLASSDEF(flext_base) *This() const { return th; }
+	FLEXT_TEMPINST(FLEXT_CLASSDEF(flext_base)) *This() const { return th; }
 	thrid_t Id() const { return thrid; }
 
-	FLEXT_CLASSDEF(flext_base) *th;
+	FLEXT_TEMPINST(FLEXT_CLASSDEF(flext_base)) *th;
 	void (*meth)(thr_params *);
 	thr_params *params;
 	thrid_t thrid;
@@ -106,16 +106,16 @@ public:
     }
 };
 
-template<typename=void>
+template<typename T=void>
 struct ThrRegistry
 {
     static ThrFinder< PooledLifo<thr_entry,1,10> > pending;
     static ThrFinder< TypedLifo<thr_entry> > active,stopped;
 };
 
-template<> ThrFinder< PooledLifo<thr_entry,1,10> > ThrRegistry<>::pending;
-template<> ThrFinder< TypedLifo<thr_entry> > ThrRegistry<>::active;
-template<> ThrFinder< TypedLifo<thr_entry> > ThrRegistry<>::stopped;
+template<typename T> ThrFinder< PooledLifo<thr_entry,1,10> > ThrRegistry<T>::pending;
+template<typename T> ThrFinder< TypedLifo<thr_entry> > ThrRegistry<T>::active;
+template<typename T> ThrFinder< TypedLifo<thr_entry> > ThrRegistry<T>::stopped;
 
 
 class ThrId
@@ -134,7 +134,7 @@ public:
 	}
 };
 
-template<typename=void>
+template<typename T=void>
 struct ThrVars {
     // this should _definitely_ be a hashmap....
     // \TODO above all it should be populated immediately, otherwise it could easily happen 
@@ -150,10 +150,10 @@ struct ThrVars {
     static bool initialized;
 };
 
-template<> std::set<ThrId> ThrVars<>::regthreads;
-template<> flext::ThrMutex *ThrVars<>::thrregmtx = NULL;
-template<> flext::ThrCond *ThrVars<>::thrhelpcond = NULL;
-template<> bool ThrVars<>::initialized = false;
+template<typename T> std::set<ThrId> ThrVars<T>::regthreads;
+template<typename T> flext::ThrMutex *ThrVars<T>::thrregmtx = NULL;
+template<typename T> flext::ThrCond *ThrVars<T>::thrhelpcond = NULL;
+template<typename T> bool ThrVars<T>::initialized = false;
 
 static void LaunchHelper(thr_entry *e)
 {
@@ -169,7 +169,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::StartHelper()
 	bool ok = false;
     ThrVars<>::initialized = false;
 
-    thrregmtx = new ThrMutex;
+    ThrVars<>::thrregmtx = new ThrMutex;
 
 #if FLEXT_THREADS == FLEXT_THR_POSIX
 	pthread_attr_t attr;
@@ -222,13 +222,13 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::ThrHelper(void *)
 	// so thread construction won't disturb real-time audio
 	RelPriority(-1);
 
-	thrhelpcond = new ThrCond;
+	ThrVars<>::thrhelpcond = new ThrCond;
 
     ThrVars<>::initialized = true;
 
 	// helper loop
 	for(;;) {
-		thrhelpcond->Wait();
+		ThrVars<>::thrhelpcond->Wait();
 
    		// start all inactive threads
         thr_entry *ti;
@@ -272,14 +272,14 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::ThrHelper(void *)
 
 FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::LaunchThread(void (*meth)(thr_params *p),thr_params *p)
 {
-	FLEXT_ASSERT(thrhelpcond);
+	FLEXT_ASSERT(ThrVars<>::thrhelpcond);
 
 	// make an entry into thread list
     thr_entry *e = ThrRegistry<>::pending.New();
     e->Set(meth,p);
 	ThrRegistry<>::pending.Push(e);
 	// signal thread helper
-	thrhelpcond->Signal();
+	ThrVars<>::thrhelpcond->Signal();
 
 	return true;
 }
@@ -317,7 +317,7 @@ template<typename=void> bool waitforstopped(TypedLifo<thr_entry> &qufnd,float wa
 
 FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::StopThread(void (*meth)(thr_params *p),thr_params *p,bool wait)
 {
-	FLEXT_ASSERT(thrhelpcond);
+	FLEXT_ASSERT(ThrVars<>::thrhelpcond);
 
     TypedLifo<thr_entry> qutmp;
     thr_entry *ti;
@@ -350,7 +350,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::StopThread(void (*meth)(thr_params *
     while((ti = ThrRegistry<>::active.Pop()) != NULL)
         if(ti->meth == meth && ti->params == p) {
             ThrRegistry<>::stopped.Push(ti);
-            thrhelpcond->Signal();
+            ThrVars<>::thrhelpcond->Signal();
             qufnd.Push(ti);
         }
         else
@@ -360,7 +360,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::StopThread(void (*meth)(thr_params *
     while((ti = qutmp.Pop()) != NULL) ThrRegistry<>::active.Push(ti);
 
     // wakeup helper thread
-    thrhelpcond->Signal();
+    ThrVars<>::thrhelpcond->Signal();
 
     // now wait for entries in qufnd to have vanished from ThrRegistry::stopped
     if(wait) 
@@ -400,10 +400,10 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::PopThread()
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::RegisterThread(thrid_t id)
 {
 #if 1
-    FLEXT_ASSERT(thrregmtx);
-    thrregmtx->Lock();
-    regthreads.insert(id);
-    thrregmtx->Unlock();
+    FLEXT_ASSERT(ThrVars<>::thrregmtx);
+    ThrVars<>::thrregmtx->Lock();
+    ThrVars<>::regthreads.insert(id);
+    ThrVars<>::thrregmtx->Unlock();
 #else
 	regqueue.Push(new ThrIdCell(id));
 #endif
@@ -412,10 +412,10 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::RegisterThread(thrid_t id)
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::UnregisterThread(thrid_t id)
 {
 #if 1
-    FLEXT_ASSERT(thrregmtx);
-    thrregmtx->Lock();
-    regthreads.erase(id);
-    thrregmtx->Unlock();
+    FLEXT_ASSERT(ThrVars<>::thrregmtx);
+    ThrVars<>::thrregmtx->Lock();
+    ThrVars<>::regthreads.erase(id);
+    ThrVars<>::thrregmtx->Unlock();
 #else
 	unregqueue.Push(new ThrIdCell(id));
 #endif
@@ -432,17 +432,17 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::ThreadRegistryWorker()
 
 FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::IsThreadRegistered()
 {
-    FLEXT_ASSERT(thrregmtx);
-    thrregmtx->Lock();
-	bool fnd = regthreads.find(GetThreadId()) != regthreads.end();
-    thrregmtx->Unlock();
+    FLEXT_ASSERT(ThrVars<>::thrregmtx);
+    ThrVars<>::thrregmtx->Lock();
+	bool fnd = ThrVars<>::regthreads.find(GetThreadId()) != ThrVars<>::regthreads.end();
+    ThrVars<>::thrregmtx->Unlock();
     return fnd;
 }
 
 //! Terminate all object threads
 FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::StopThreads()
 {
-	FLEXT_ASSERT(thrhelpcond);
+	FLEXT_ASSERT(ThrVars<>::thrhelpcond);
 
     TypedLifo<thr_entry> qutmp;
     thr_entry *ti;
@@ -468,7 +468,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::StopThreads()
     while((ti = ThrRegistry<>::active.Pop()) != NULL)
         if(ti->This() == this) {
             ThrRegistry<>::stopped.Push(ti);
-            thrhelpcond->Signal();
+            ThrVars<>::thrhelpcond->Signal();
             qufnd.Push(ti);
         }
         else
@@ -478,7 +478,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::StopThreads()
     while((ti = qutmp.Pop()) != NULL) ThrRegistry<>::active.Push(ti);
 
     // wakeup helper thread
-    thrhelpcond->Signal();
+    ThrVars<>::thrhelpcond->Signal();
 
     // now wait for entries in qufnd to have vanished from ThrRegistry::stopped
     if(!waitforstopped(qufnd,MAXIMUMWAIT*0.001f)) {
@@ -690,30 +690,10 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::SetPriority(int p,thrid_t id)
 }
 
 
-FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext_base))::thr_params::thr_params(int n)
-    : cl(NULL),var(new _data[n])
-{}
-
-FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext_base))::thr_params::~thr_params()
-{
-    if(var) delete[] var;
-}
-
-FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::thr_params::set_any(const t_symbol *s,int argc,const t_atom *argv)
-{
-    var[0]._any = new AtomAnything(s,argc,argv);
-}
-
-FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::thr_params::set_list(int argc,const t_atom *argv)
-{
-    var[0]._list = new AtomList(argc,argv);
-}
-
-
 #if FLEXT_THREADS == FLEXT_THR_POSIX
 FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::ThrCond::Wait() {
 	Lock();
-	bool ret = pthread_cond_wait(&cond,&mutex) == 0; 
+    bool ret = pthread_cond_wait(&cond,&this->mutex) == 0;
 	Unlock();
 	return ret;
 }
@@ -748,7 +728,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::ThrCond::TimedWait(double ftm)
 	tm.tv_nsec = nns;
 
 	Lock();
-	bool ret = pthread_cond_timedwait(&cond,&mutex,&tm) == 0; 
+    bool ret = pthread_cond_timedwait(&cond,&this->mutex,&tm) == 0;
 	Unlock();
 	return ret;
 }

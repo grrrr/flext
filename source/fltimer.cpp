@@ -44,9 +44,9 @@ struct TimerVars
 };
 
 #if FLEXT_OS == FLEXT_OS_WIN
-template<> double TimerVars<>::perffrq = 0;
+template<typename T> double TimerVars<T>::perffrq = 0;
 #endif
-template<> double TimerVars<>::starttime = getstarttime();
+template<typename T> double TimerVars<T>::starttime = getstarttime<>();
 
 template<typename> double getstarttime()
 {

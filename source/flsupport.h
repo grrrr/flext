@@ -37,7 +37,7 @@ $LastChangedBy$
 
 FLEXT_TEMPLATE class FLEXT_SHARE FLEXT_CLASSDEF(flext_root);
 
-typedef FLEXT_TEMPINST(FLEXT_CLASSDEF(flext_root)) flext_root;
+typedef FLEXT_TEMPINST(FLEXT_SHARE FLEXT_CLASSDEF(flext_root)) flext_root;
 
 /*! \brief Flext root support class
 
@@ -178,7 +178,7 @@ public:
         For statically linked flext this is identical to the header definition FLEXT_VERSION,
         otherwise it reflects the version number of the shared flext library.
     */
-    static int Version();    
+    static int Version();
 
     //! Flext version string
     static const char *VersionStr();
@@ -967,13 +967,13 @@ public:
         public flext_root
     {
     public:
-        thr_params(int n = 1);
-        ~thr_params();
+        thr_params(int n = 1): cl(NULL),var(new _data[n]) {}
+        ~thr_params() { delete[] var; }
 
-        void set_any(const t_symbol *s,int argc,const t_atom *argv);
-        void set_list(int argc,const t_atom *argv);
+        void set_any(const t_symbol *s,int argc,const t_atom *argv) { var[0]._any = new AtomAnything(s,argc,argv); }
+        void set_list(int argc,const t_atom *argv) { var[0]._list = new AtomList(argc,argv); }
 
-        FLEXT_CLASSDEF(flext_base) *cl;
+        FLEXT_TEMPINST(FLEXT_CLASSDEF(flext_base)) *cl;
         union _data {
             bool _bool;
             float _float;

@@ -33,33 +33,33 @@ $LastChangedBy$
 #define snprintf _snprintf
 #endif
 
-FLEXT_TEMPDEF const t_symbol *flext::sym__ = NULL;
-FLEXT_TEMPDEF const t_symbol *flext::sym_float = NULL;
-FLEXT_TEMPDEF const t_symbol *flext::sym_symbol = NULL;
-FLEXT_TEMPDEF const t_symbol *flext::sym_bang = NULL;
-FLEXT_TEMPDEF const t_symbol *flext::sym_list = NULL;
-FLEXT_TEMPDEF const t_symbol *flext::sym_pointer = NULL;
-FLEXT_TEMPDEF const t_symbol *flext::sym_int = NULL;
-FLEXT_TEMPDEF const t_symbol *flext::sym_signal = NULL;
+FLEXT_TEMPIMPL(const t_symbol *FLEXT_CLASSDEF(flext))::sym__ = NULL;
+FLEXT_TEMPIMPL(const t_symbol *FLEXT_CLASSDEF(flext))::sym_float = NULL;
+FLEXT_TEMPIMPL(const t_symbol *FLEXT_CLASSDEF(flext))::sym_symbol = NULL;
+FLEXT_TEMPIMPL(const t_symbol *FLEXT_CLASSDEF(flext))::sym_bang = NULL;
+FLEXT_TEMPIMPL(const t_symbol *FLEXT_CLASSDEF(flext))::sym_list = NULL;
+FLEXT_TEMPIMPL(const t_symbol *FLEXT_CLASSDEF(flext))::sym_pointer = NULL;
+FLEXT_TEMPIMPL(const t_symbol *FLEXT_CLASSDEF(flext))::sym_int = NULL;
+FLEXT_TEMPIMPL(const t_symbol *FLEXT_CLASSDEF(flext))::sym_signal = NULL;
 
-FLEXT_TEMPDEF const t_symbol *flext::sym_anything = NULL;
+FLEXT_TEMPIMPL(const t_symbol *FLEXT_CLASSDEF(flext))::sym_anything = NULL;
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
-FLEXT_TEMPDEF const t_symbol *flext::sym_buffer = NULL;
-FLEXT_TEMPDEF const t_symbol *flext::sym_size = NULL;
-FLEXT_TEMPDEF const t_symbol *flext::sym_dirty = NULL;
+FLEXT_TEMPIMPL(const t_symbol *FLEXT_CLASSDEF(flext))::sym_buffer = NULL;
+FLEXT_TEMPIMPL(const t_symbol *FLEXT_CLASSDEF(flext))::sym_size = NULL;
+FLEXT_TEMPIMPL(const t_symbol *FLEXT_CLASSDEF(flext))::sym_dirty = NULL;
 #endif
 
-FLEXT_TEMPDEF const t_symbol *flext::sym_attributes = NULL;
-FLEXT_TEMPDEF const t_symbol *flext::sym_methods = NULL;
+FLEXT_TEMPIMPL(const t_symbol *FLEXT_CLASSDEF(flext))::sym_attributes = NULL;
+FLEXT_TEMPIMPL(const t_symbol *FLEXT_CLASSDEF(flext))::sym_methods = NULL;
 
-FLEXT_TEMPDEF bool flext::indsp = false;
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::indsp = false;
 
 
-FLEXT_TEMPDEF int flext::Version() { return FLEXT_VERSION; }
-FLEXT_TEMPDEF const char *flext::VersionStr() { return FLEXT_VERSTR; }
+FLEXT_TEMPIMPL(int FLEXT_CLASSDEF(flext))::Version() { return FLEXT_VERSION; }
+FLEXT_TEMPIMPL(const char *FLEXT_CLASSDEF(flext))::VersionStr() { return FLEXT_VERSTR; }
 
-FLEXT_TEMPDEF void flext::Setup()
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::Setup()
 {
 	if(sym__) return;
 
@@ -264,7 +264,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_root))::FreeAligned(void *blk)
 /*! \todo there is probably also a shortcut for Max and jMax
     \todo size checking
 */
-FLEXT_TEMPDEF void flext::GetAString(const t_atom &a,char *buf,size_t szbuf)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::GetAString(const t_atom &a,char *buf,size_t szbuf)
 { 
 #if FLEXT_SYS == FLEXT_SYS_PD
 	atom_string(const_cast<t_atom *>(&a),buf,(int)szbuf);
@@ -276,7 +276,7 @@ FLEXT_TEMPDEF void flext::GetAString(const t_atom &a,char *buf,size_t szbuf)
 #endif
 }  
 
-FLEXT_TEMPDEF unsigned long flext::AtomHash(const t_atom &a)
+FLEXT_TEMPIMPL(unsigned long FLEXT_CLASSDEF(flext))::AtomHash(const t_atom &a)
 {
 #if FLEXT_SYS == FLEXT_SYS_MAX || FLEXT_SYS == FLEXT_SYS_PD
 	return ((unsigned long)a.a_type<<28)^*(unsigned long *)&a.a_w;

@@ -449,17 +449,16 @@ $LastChangedBy$
 #	endif
 #endif
 
+// macro definitions for inline flext usage
 #ifdef FLEXT_INLINE
-#   define FLEXT_TEMPLATE template<typename>
-#   define FLEXT_TEMPIMPL(fun) template<typename T> fun<T>
+#   define FLEXT_TEMPLATE template<typename flext_T>
+#   define FLEXT_TEMPIMPL(fun) template<typename flext_T> fun<flext_T>
 #   define FLEXT_TEMPINST(fun) fun<void>
-#   define FLEXT_TEMPDEF template<>
-#   define FLEXT_TEMPSUB(fun) typename fun<T>
+#   define FLEXT_TEMPSUB(fun) typename fun<flext_T>
 #else
 #   define FLEXT_TEMPLATE
 #   define FLEXT_TEMPIMPL(fun) fun
 #   define FLEXT_TEMPINST(fun) fun
-#   define FLEXT_TEMPDEF
 #   define FLEXT_TEMPSUB(fun) fun
 #endif
 

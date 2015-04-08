@@ -197,7 +197,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_obj))::HasDSPIn() const { return !clss-
 FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_obj))::IsLib() const { return clss->lib != NULL; }
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
-bool FLEXT_CLASSDEF(flext_obj)::NeedDSP() const { return clss->dsp || (clss->lib && clss->lib->dsp); }
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_obj))::NeedDSP() const { return clss->dsp || (clss->lib && clss->lib->dsp); }
 #endif
 
 

@@ -152,9 +152,9 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_obj))::GetParamSym(t_atom &dst,const t_
     }
     else
 #else
-    #pragma message("Not implemented")
+//    #pragma message("Not implemented")
 #endif
-    SetSymbol(dst,sym);
+        SetSymbol(dst,sym);
     return true;
 }
 
@@ -178,21 +178,21 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::GetCanvasArgs(AtomList &args) co
     canvas_getargs(&argc,&argv);
     args(argc,argv);
 #else
-    #pragma message("Not implemented")
+//    #pragma message("Not implemented")
     args(0);
 #endif
 }
 
 
 #if FLEXT_SYS == FLEXT_SYS_MAX 
-template<typename=void> short patcher_myvol(t_patcher *x)
+FLEXT_TEMPLATE short patcher_myvol(t_patcher *x)
 {
 #ifndef	MM_UNIFIED // Max5 check... we don't know what to do yet
     t_box *w;
     if(x->p_vol)
         return x->p_vol;
     else if((w = (t_box *)x->p_vnewobj) != NULL)
-        return patcher_myvol(w->b_patcher);
+        return FLEXT_TEMPINST(patcher_myvol)(w->b_patcher);
     else
 #endif
         return 0;
@@ -205,7 +205,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::GetCanvasDir(char *buf,size_t bu
 	const char *c = GetString(canvas_getdir(thisCanvas()));
     strncpy(buf,c,bufsz);
 #elif FLEXT_SYS == FLEXT_SYS_MAX 
-	short path = patcher_myvol(thisCanvas());
+	short path = FLEXT_TEMPINST(patcher_myvol)(thisCanvas());
     // \TODO dangerous!! no check for path length (got to be long enough... like 1024 chars)
 	path_topathname(path,NULL,buf);
 #else 

@@ -224,8 +224,8 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::SetProxies(t_class *c,bool dsp)
     addbang((method)cb_bang);
     addint((method)cb_int);  
     addfloat((method)cb_float);  
-    addmess((method)cb_anything,"list",A_GIMME,A_NOTHING); // must be explicitly given, otherwise list elements are distributed over inlets
-    addmess((method)cb_anything,"anything",A_GIMME,A_NOTHING);
+    addmess((method)cb_anything,const_cast<char *>("list"),A_GIMME,A_NOTHING); // must be explicitly given, otherwise list elements are distributed over inlets
+    addmess((method)cb_anything,const_cast<char *>("anything"),A_GIMME,A_NOTHING);
 #else
 #error Not implemented!
 #endif  

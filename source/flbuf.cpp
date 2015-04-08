@@ -318,7 +318,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::buffer::SetRefrIntv(float intv)
     }
 }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-FLEXT_TEMIMPL(void flext)::buffer::SetRefrIntv(float) {}
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::buffer::SetRefrIntv(float) {}
 #else
 #error
 #endif

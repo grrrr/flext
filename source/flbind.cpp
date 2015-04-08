@@ -26,8 +26,14 @@ $LastChangedBy$
 FLEXT_TEMPIMPL(t_class *FLEXT_CLASSDEF(flext_base))::pxbnd_class = NULL;
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
-t_object *px_freelist = NULL;
-t_messlist px_messlist[3];
+FLEXT_TEMPLATE
+struct ProxyVars {
+    static t_object *px_freelist;
+    static t_messlist px_messlist[3];
+};
+
+FLEXT_TEMPIMPL(t_object *ProxyVars)::px_freelist = NULL;
+FLEXT_TEMPIMPL(t_messlist ProxyVars)::px_messlist[3];
 #endif
 
 /*! \brief Set up the proxy class for symbol-bound methods
@@ -43,19 +49,19 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::SetupBindProxy()
         pxbnd_class = new t_class;
 
         pxbnd_class->c_sym = const_cast<t_symbol *>(sym__);
-        pxbnd_class->c_freelist = &px_freelist;
+        pxbnd_class->c_freelist = &FLEXT_TEMPINST(ProxyVars)::px_freelist;
         pxbnd_class->c_freefun = NULL;
         pxbnd_class->c_size = sizeof(pxbnd_object);
         pxbnd_class->c_tiny = 0;
         pxbnd_class->c_noinlet = 1;
-        px_messlist[0].m_sym = (t_symbol *)pxbnd_class;
+        FLEXT_TEMPINST(ProxyVars)::px_messlist[0].m_sym = (t_symbol *)pxbnd_class;
 
-        px_messlist[1].m_sym = const_cast<t_symbol *>(sym_anything);
-        px_messlist[1].m_fun = (method)pxbnd_object::px_method;
-        px_messlist[1].m_type[0] = A_GIMME;
-        px_messlist[1].m_type[1] = 0;
+        FLEXT_TEMPINST(ProxyVars)::px_messlist[1].m_sym = const_cast<t_symbol *>(sym_anything);
+        FLEXT_TEMPINST(ProxyVars)::px_messlist[1].m_fun = (method)pxbnd_object::px_method;
+        FLEXT_TEMPINST(ProxyVars)::px_messlist[1].m_type[0] = A_GIMME;
+        FLEXT_TEMPINST(ProxyVars)::px_messlist[1].m_type[1] = 0;
 
-        px_messlist[2].m_sym = 0;
+        FLEXT_TEMPINST(ProxyVars)::px_messlist[2].m_sym = 0;
 #else
 #pragma warning("Not implemented!")
 #endif
@@ -130,7 +136,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::BindMethod(const t_symbol *sym,
 #if FLEXT_SYS == FLEXT_SYS_PD
     pxbnd_object *px = (pxbnd_object *)object_new(pxbnd_class);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-    pxbnd_object *px = (pxbnd_object *)newobject(px_messlist);
+    pxbnd_object *px = (pxbnd_object *)newobject(FLEXT_TEMPINST(ProxyVars)::px_messlist);
 #else
 #pragma warning("Not implemented!")
 #endif

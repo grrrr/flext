@@ -76,7 +76,7 @@ static t_selectfn ori_select = NULL;
 #ifndef FLEXT_NOATTREDIT
 
 //! generate the script for the property dialog
-template<typename=void>
+FLEXT_TEMPLATE
 void tclscript()
 {
     static bool havecode = false;
@@ -503,7 +503,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::SetGfx(t_classid c)
     widgetbehavior.w_propertiesfn = (t_propertiesfn)cb_GfxProperties;
 #endif
 
-    tclscript();
+    FLEXT_TEMPINST(tclscript)();
 #endif // FLEXT_NOATTREDIT
 
 #ifdef __FLEXT_WIDGETBEHAVIOR
@@ -514,7 +514,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::SetGfx(t_classid c)
 
 #ifndef FLEXT_NOATTREDIT
 
-template<typename=void>
+FLEXT_TEMPLATE
 size_t escapeit(char *dst,size_t maxlen,const char *src)
 {
     char *d;
@@ -605,7 +605,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_GfxProperties(flext_hdr *c, 
             for(int i = 0; i < lv.Count(); ++i) {
                 char tmp[100];
                 PrintAtom(lv[i],tmp,sizeof tmp);
-                b += escapeit(b,sizeof(buf)+buf-b,tmp);
+                b += FLEXT_TEMPINST(escapeit)(b,sizeof(buf)+buf-b,tmp);
                 if(i < lv.Count()-1) { *(b++) = ' '; *b = 0; }
             }
             sys_vgui(const_cast<char *>("%s"),buf);
@@ -623,7 +623,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_GfxProperties(flext_hdr *c, 
             for(int i = 0; i < lp.Count(); ++i) {
                 char tmp[256];
                 PrintAtom(lp[i],tmp,sizeof(tmp)); 
-                b += escapeit(b,sizeof(buf)+buf-b,tmp);
+                b += FLEXT_TEMPINST(escapeit)(b,sizeof(buf)+buf-b,tmp);
                 if(i < lp.Count()-1) { *(b++) = ' '; *b = 0; }
             }
             sys_vgui(const_cast<char *>("%s"),buf);

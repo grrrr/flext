@@ -47,7 +47,8 @@ $LastChangedBy$
 #endif
 
 //! Extract space-delimited words from a string
-template<typename=void> const char *extract(const char *name,int ix = 0)
+FLEXT_TEMPLATE
+const char *extract(const char *name,int ix = 0)
 {
 	static char tmp[1024];
 	const char *n = name;
@@ -262,7 +263,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::obj_add(bool lib,bool dsp,bool n
 #endif
 
 	// get first possible object name
-	const t_symbol *nsym = MakeSymbol(extract(names));
+	const t_symbol *nsym = MakeSymbol(FLEXT_TEMPINST(extract)(names));
 	
 #ifdef FLEXT_DEBUG
 	if(dsp) chktilde(GetString(nsym));
@@ -341,7 +342,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::obj_add(bool lib,bool dsp,bool n
 	t_classid clid = lo;
 
 	// make help reference
-	const char *helptxt = extract(names,-1);
+	const char *helptxt = FLEXT_TEMPINST(extract)(names,-1);
 	if(helptxt) {
 		const char *sl = strchr(helptxt,'/');
 		if(sl && !sl[1])
@@ -355,7 +356,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::obj_add(bool lib,bool dsp,bool n
 	for(int ix = 0; ; ++ix) {
 		// in this loop register all the possible aliases of the object
 	
-		const char *c = ix?extract(names,ix):GetString(nsym);
+		const char *c = ix?FLEXT_TEMPINST(extract)(names,ix):GetString(nsym);
 		if(!c || !*c) break;
 
 		// add to name list

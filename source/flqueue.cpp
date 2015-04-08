@@ -44,9 +44,9 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::qustarted = false;
 #define PERMANENTIDLE
 #endif
 
-template<typename=void> void Trigger();
+FLEXT_TEMPLATE void Trigger();
 
-template<typename=void>
+FLEXT_TEMPLATE
 class QueueFifo
     : public PooledFifo<flext::MsgBundle>
 {
@@ -54,10 +54,10 @@ public:
     ~QueueFifo();
 };
 
-template<typename=void>
+FLEXT_TEMPLATE
 class Queue:
     public flext,
-    public QueueFifo<>
+    public FLEXT_TEMPINST(QueueFifo)
 {
 public:
     Queue(void *dummy=NULL) {} // strange... constructor is needed to auto-instantiate static data of this kind
@@ -67,22 +67,22 @@ public:
     void Push(MsgBundle *m); // defined after MsgBundle (gcc 3.3. won't take it otherwise...)
 };
 
-template<typename T=void>
+FLEXT_TEMPLATE
 struct QVars {
 #if FLEXT_QMODE == 2
     static flext::ThrCond qthrcond;
 #elif FLEXT_QMODE == 0
     static t_clock *qclk;
 #endif
-    static Queue<T> queue;
+    static FLEXT_TEMPINST(Queue) queue;
 };
 
 #if FLEXT_QMODE == 2
-template<typename T> flext::ThrCond QVars<T>::qthrcond;
+FLEXT_TEMPIMPL(flext::ThrCond QVars)::qthrcond;
 #elif FLEXT_QMODE == 0
-template<typename T> t_clock *QVars<T>::qclk = NULL;
+FLEXT_TEMPIMPL(t_clock *QVars)::qclk = NULL;
 #endif
-template<typename T> Queue<T> QVars<T>::queue(NULL);
+FLEXT_TEMPIMPL(FLEXT_TEMPINST(Queue) QVars)::queue(NULL);
 
 
 
@@ -95,7 +95,7 @@ FLEXT_TEMPIMPL(class FLEXT_CLASSDEF(flext))::MsgBundle:
 public:
     static MsgBundle *New()
     {
-        MsgBundle *m = QVars<>::queue.New();
+        MsgBundle *m = FLEXT_TEMPINST(QVars)::queue.New();
         m->msg.Init();
         return m;
     }
@@ -109,7 +109,7 @@ public:
             mi = mn;
         }
         m->msg.Free();
-        QVars<>::queue.Free(m);
+        FLEXT_TEMPINST(QVars)::queue.Free(m);
     }
 
     bool BelongsTo(flext_base *t) const
@@ -346,24 +346,24 @@ private:
     }
 };
 
-template<typename T> QueueFifo<T>::~QueueFifo()
+FLEXT_TEMPIMPL(QueueFifo)::~QueueFifo()
 { 
     flext::MsgBundle *n; 
     while((n = Get()) != NULL) delete n; 
 }
 
-template<typename T> void Queue<T>::Push(MsgBundle *m)
+FLEXT_TEMPIMPL(void Queue)::Push(MsgBundle *m)
 {
     if(LIKELY(m)) {
         Put(m);
-        Trigger();
+        FLEXT_TEMPINST(Trigger)();
     }
 }
 
 #define CHUNK 10
 
 #if FLEXT_QMODE == 1
-template<typename=void> bool QWork(bool syslock,flext_base *flushobj = NULL)
+FLEXT_TEMPLATE bool QWork(bool syslock,flext_base *flushobj = NULL)
 {
     // Since qcnt can only be increased from any other function than QWork
     // qc will be a minimum guaranteed number of present queue elements.
@@ -385,9 +385,9 @@ template<typename=void> bool QWork(bool syslock,flext_base *flushobj = NULL)
     }
 }
 #else
-template<typename=void> bool QWork(bool syslock,flext_base *flushobj = NULL)
+FLEXT_TEMPLATE bool QWork(bool syslock,flext_base *flushobj = NULL)
 {
-    Queue<> newmsgs;
+    FLEXT_TEMPINST(Queue) newmsgs;
     flext::MsgBundle *q;
 
 #if 0
@@ -400,13 +400,13 @@ template<typename=void> bool QWork(bool syslock,flext_base *flushobj = NULL)
         // qc will be a minimum guaranteed number of present queue elements.
         // On the other hand, if new queue elements are added by the methods called
         // in the loop, these will be sent in the next tick to avoid recursion overflow.
-        if(!QVars<>::queue.Avail()) break;
+        if(!FLEXT_TEMPINST(QVars)::queue.Avail()) break;
 
     #if FLEXT_QMODE == 2
         if(syslock) flext::Lock();
     #endif
 
-        while((q = QVars<>::queue.Get()) != NULL) {
+        while((q = FLEXT_TEMPINST(QVars)::queue.Get()) != NULL) {
             if(q->Send())
                 newmsgs.Push(q);  // remember messages to be processed again
             else
@@ -422,30 +422,30 @@ template<typename=void> bool QWork(bool syslock,flext_base *flushobj = NULL)
     // enqueue messages that have to be processed again
     while((q = newmsgs.Get()) != NULL)
         if(!flushobj || !q->BelongsTo(flushobj))
-            QVars<>::queue.Push(q);
+            FLEXT_TEMPINST(QVars)::queue.Push(q);
         else
             flext::MsgBundle::Free(q);
 
-    return QVars<>::queue.Avail();
+    return FLEXT_TEMPINST(QVars)::queue.Avail();
 }
 #endif
 
 #if FLEXT_QMODE == 0
 #if FLEXT_SYS == FLEXT_SYS_JMAX
-template<typename=void> void QTick(fts_object_t *c,int winlet, fts_symbol_t s, int ac, const fts_atom_t *at)
+FLEXT_TEMPLATE void QTick(fts_object_t *c,int winlet, fts_symbol_t s, int ac, const fts_atom_t *at)
 {
 #else
-template<typename=void> void QTick(flext_base *c)
+FLEXT_TEMPLATE void QTick(flext_base *c)
 {
 #endif
-    QWork(false);
+    FLEXT_TEMPINST(QWork)(false);
 }
 
 #elif FLEXT_QMODE == 1
 #   ifndef PERMANENTIDLE
         static bool qtickactive = false;
 #   endif
-template<typename=void> t_int QTick(t_int *)
+FLEXT_TEMPLATE t_int QTick(t_int *)
 {
 #ifndef PERMANENTIDLE
     qtickactive = false;
@@ -474,7 +474,7 @@ But then the order of sent messages is not as intended
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::QFlush(flext_base *th)
 {
     FLEXT_ASSERT(!IsThreadRegistered());
-    while(!QVars<>::queue.Empty()) QWork(false,th);
+    while(!FLEXT_TEMPINST(QVars)::queue.Empty()) FLEXT_TEMPINST(QWork)(false,th);
 }
 
 template<typename>
@@ -483,10 +483,10 @@ void Trigger()
 #if FLEXT_SYS == FLEXT_SYS_PD
 #   if FLEXT_QMODE == 2
         // wake up worker thread
-        QVars<>::qthrcond.Signal();
+        FLEXT_TEMPINST(QVars)::qthrcond.Signal();
 #   elif FLEXT_QMODE == 1 && !defined(PERMANENTIDLE)
         if(!qtickactive) {
-            sys_callback(QTick<>,NULL,0);
+            sys_callback(FLEXT_TEMPINST(QTick),NULL,0);
             qtickactive = true;
         }
 #   elif FLEXT_QMODE == 0
@@ -496,13 +496,13 @@ void Trigger()
         bool sys = true;
 #   endif
         if(!sys) flext::Lock();
-        clock_delay(QVars<>::qclk,0);
+        clock_delay(FLEXT_TEMPINST(QVars)::qclk,0);
         if(!sys) flext::Unlock();
 #   endif
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 #   if FLEXT_QMODE == 0
-//        qelem_front(QVars<>::qclk);
-        clock_delay(QVars<>::qclk,0);
+//        qelem_front(FLEXT_TEMPINST(QVars)::qclk);
+        clock_delay(FLEXT_TEMPINST(QVars)::qclk,0);
 #   endif
 #else
 #   error Not implemented
@@ -516,8 +516,8 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::QWorker(thr_params *)
     qustarted = true;
     for(;;) {
         // we need a timed wait so that idle processing can take place
-        QVars<>::qthrcond.TimedWait(0.001);
-        QWork(true);
+        FLEXT_TEMPINST(QVars)::qthrcond.TimedWait(0.001);
+        FLEXT_TEMPINST(QWork)(true);
     }
 }
 #endif
@@ -527,7 +527,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::StartQueue()
     if(qustarted) return;
 #if FLEXT_QMODE == 1
 #   ifdef PERMANENTIDLE
-        sys_callback(QTick<>,NULL,0);
+        sys_callback(FLEXT_TEMPINST(QTick),NULL,0);
         qustarted = true;
 #   endif
 #elif FLEXT_QMODE == 2
@@ -535,8 +535,8 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::StartQueue()
     // very unelegant... but waiting should be ok, since happens only on loading
     while(!qustarted) Sleep(0.001);
 #elif FLEXT_QMODE == 0 && (FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX)
-//    qclk = (t_qelem *)(qelem_new(NULL,(t_method)QTick<>));
-    QVars<>::qclk = (t_clock *)(clock_new(NULL,(t_method)QTick<>));
+//    qclk = (t_qelem *)(qelem_new(NULL,(t_method)FLEXT_TEMPINST(QTick)));
+    FLEXT_TEMPINST(QVars)::qclk = (t_clock *)(clock_new(NULL,(t_method)FLEXT_TEMPINST(QTick)));
     qustarted = true;
 #else
 #   error Not implemented!
@@ -556,12 +556,12 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::MsgFree(MsgBundle *m)
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::ToSysMsg(MsgBundle *m)
 {
     m->Send();
-    QVars<>::queue.Free(m);
+    FLEXT_TEMPINST(QVars)::queue.Free(m);
 }
 
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::ToQueueMsg(MsgBundle *m)
 {
-    QVars<>::queue.Push(m);
+    FLEXT_TEMPINST(QVars)::queue.Push(m);
 }
 
 
@@ -570,49 +570,49 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToQueueBang(int o) const
 {
     MsgBundle *m = MsgBundle::New();
     m->Add(const_cast<flext_base *>(this),o);
-    QVars<>::queue.Push(m);
+    FLEXT_TEMPINST(QVars)::queue.Push(m);
 }
 
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToQueueFloat(int o,float f) const
 {
     MsgBundle *m = MsgBundle::New();
     m->Add(const_cast<flext_base *>(this),o,f);
-    QVars<>::queue.Push(m);
+    FLEXT_TEMPINST(QVars)::queue.Push(m);
 }
 
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToQueueInt(int o,int f) const
 {
     MsgBundle *m = MsgBundle::New();
     m->Add(const_cast<flext_base *>(this),o,f);
-    QVars<>::queue.Push(m);
+    FLEXT_TEMPINST(QVars)::queue.Push(m);
 }
 
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToQueueSymbol(int o,const t_symbol *s) const
 {
     MsgBundle *m = MsgBundle::New();
     m->Add(const_cast<flext_base *>(this),o,s);
-    QVars<>::queue.Push(m);
+    FLEXT_TEMPINST(QVars)::queue.Push(m);
 }
 
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToQueueAtom(int o,const t_atom &at) const
 {
     MsgBundle *m = MsgBundle::New();
     m->Add(const_cast<flext_base *>(this),o,at);
-    QVars<>::queue.Push(m);
+    FLEXT_TEMPINST(QVars)::queue.Push(m);
 }
 
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToQueueList(int o,int argc,const t_atom *argv) const
 {
     MsgBundle *m = MsgBundle::New();
     m->Add(const_cast<flext_base *>(this),o,argc,argv);
-    QVars<>::queue.Push(m);
+    FLEXT_TEMPINST(QVars)::queue.Push(m);
 }
 
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToQueueAnything(int o,const t_symbol *s,int argc,const t_atom *argv) const
 {
     MsgBundle *m = MsgBundle::New();
     m->Add(const_cast<flext_base *>(this),o,s,argc,argv);
-    QVars<>::queue.Push(m);
+    FLEXT_TEMPINST(QVars)::queue.Push(m);
 }
 
 
@@ -674,7 +674,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::QueueForward(const t_symbol *recv,co
     MsgBundle *m = MsgBundle::New();
     m->Add(recv,s,argc,argv);
     // send over queue
-    QVars<>::queue.Push(m);
+    FLEXT_TEMPINST(QVars)::queue.Push(m);
     return true;
 }
 
@@ -689,7 +689,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddIdle()
     MsgBundle *m = MsgBundle::New();
     m->Idle(const_cast<flext_base *>(this));
     // send over queue
-    QVars<>::queue.Push(m);
+    FLEXT_TEMPINST(QVars)::queue.Push(m);
 }
 
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddIdle(bool (*idlefun)(int argc,const t_atom *argv),int argc,const t_atom *argv)
@@ -697,7 +697,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddIdle(bool (*idlefun)(int arg
     MsgBundle *m = MsgBundle::New();
     m->Idle(idlefun,argc,argv);
     // send over queue
-    QVars<>::queue.Push(m);
+    FLEXT_TEMPINST(QVars)::queue.Push(m);
 }
 
 #include "flpopns.h"

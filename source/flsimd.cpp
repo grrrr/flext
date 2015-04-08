@@ -64,12 +64,12 @@ $LastChangedBy$
 
 #include "flpushns.h"
 
-template<typename=void> unsigned long setsimdcaps();
+FLEXT_TEMPLATE unsigned long setsimdcaps();
 
 /*! \brief Holds SIMD capability flags
     \internal
 */
-FLEXT_TEMPIMPL(unsigned long FLEXT_CLASSDEF(flext))::simdcaps = setsimdcaps();
+FLEXT_TEMPIMPL(unsigned long FLEXT_CLASSDEF(flext))::simdcaps = FLEXT_TEMPINST(setsimdcaps)();
 
 FLEXT_TEMPIMPL(unsigned long FLEXT_CLASSDEF(flext))::GetSIMDCapabilities() { return simdcaps; }
 
@@ -580,9 +580,9 @@ zero:
 #if defined(FLEXT_USE_SIMD) && (FLEXT_CPU == FLEXT_CPU_PPC || FLEXT_CPU == FLEXT_CPU_PPC64) && defined(__VEC__)
 // because of some frame code Altivec stuff should be in seperate functions....
 
-template<typename=void> const vector float zero = (vector float)(0);
+FLEXT_TEMPLATE const vector float zero = (vector float)(0);
 
-template<typename=void> void SetAltivec(t_sample *dst,int cnt,t_sample s)
+FLEXT_TEMPLATE void SetAltivec(t_sample *dst,int cnt,t_sample s)
 {
     vector float svec = LoadValue(s);
     int n = cnt>>4;
@@ -599,7 +599,7 @@ template<typename=void> void SetAltivec(t_sample *dst,int cnt,t_sample s)
     while(cnt--) *(dst++) = s; 
 }
 
-template<typename=void> void MulAltivec(t_sample *dst,const t_sample *src,t_sample op,int cnt)
+FLEXT_TEMPLATE void MulAltivec(t_sample *dst,const t_sample *src,t_sample op,int cnt)
 {
     const vector float arg = LoadValue(op);
     int n = cnt>>4;
@@ -625,7 +625,7 @@ template<typename=void> void MulAltivec(t_sample *dst,const t_sample *src,t_samp
     while(cnt--) *(dst++) = *(src++)*op; 
 }
 
-template<typename=void> void MulAltivec(t_sample *dst,const t_sample *src,const t_sample *op,int cnt)
+FLEXT_TEMPLATE void MulAltivec(t_sample *dst,const t_sample *src,const t_sample *op,int cnt)
 {
     int n = cnt>>4;
     cnt -= n<<4;
@@ -649,7 +649,7 @@ template<typename=void> void MulAltivec(t_sample *dst,const t_sample *src,const 
     while(cnt--) *(dst++) = *(src++) * *(op++); 
 }
 
-template<typename=void> void AddAltivec(t_sample *dst,const t_sample *src,t_sample op,int cnt)
+FLEXT_TEMPLATE void AddAltivec(t_sample *dst,const t_sample *src,t_sample op,int cnt)
 {
     const vector float arg = LoadValue(op);
     int n = cnt>>4;
@@ -675,7 +675,7 @@ template<typename=void> void AddAltivec(t_sample *dst,const t_sample *src,t_samp
     while(cnt--) *(dst++) = *(src++)+op; 
 }
 
-template<typename=void> void AddAltivec(t_sample *dst,const t_sample *src,const t_sample *op,int cnt)
+FLEXT_TEMPLATE void AddAltivec(t_sample *dst,const t_sample *src,const t_sample *op,int cnt)
 {
     int n = cnt>>4;
     cnt -= n<<4;
@@ -699,7 +699,7 @@ template<typename=void> void AddAltivec(t_sample *dst,const t_sample *src,const 
     while(cnt--) *(dst++) = *(src++) + *(op++); 
 }
 
-template<typename=void> void ScaleAltivec(t_sample *dst,const t_sample *src,t_sample opmul,t_sample opadd,int cnt)
+FLEXT_TEMPLATE void ScaleAltivec(t_sample *dst,const t_sample *src,t_sample opmul,t_sample opadd,int cnt)
 {
     const vector float argmul = LoadValue(opmul);
     const vector float argadd = LoadValue(opadd);
@@ -716,7 +716,7 @@ template<typename=void> void ScaleAltivec(t_sample *dst,const t_sample *src,t_sa
     while(cnt--) *(dst++) = *(src++)*opmul+opadd; 
 }
 
-template<typename=void> void ScaleAltivec(t_sample *dst,const t_sample *src,t_sample opmul,const t_sample *add,int cnt)
+FLEXT_TEMPLATE void ScaleAltivec(t_sample *dst,const t_sample *src,t_sample opmul,const t_sample *add,int cnt)
 {
     const vector float argmul = LoadValue(opmul);
     int n = cnt>>4;
@@ -732,7 +732,7 @@ template<typename=void> void ScaleAltivec(t_sample *dst,const t_sample *src,t_sa
     while(cnt--) *(dst++) = *(src++) * opmul + *(add++); 
 }
 
-template<typename=void> void ScaleAltivec(t_sample *dst,const t_sample *src,const t_sample *mul,const t_sample *add,int cnt)
+FLEXT_TEMPLATE void ScaleAltivec(t_sample *dst,const t_sample *src,const t_sample *mul,const t_sample *add,int cnt)
 {
     int n = cnt>>4;
     cnt -= n<<4;

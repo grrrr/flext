@@ -32,9 +32,9 @@ $LastChangedBy$
 
 #include "flpushns.h"
 
-template<typename=void> double getstarttime();
+FLEXT_TEMPLATE double getstarttime();
 
-template<typename=void>
+FLEXT_TEMPLATE
 struct TimerVars
 {
 #if FLEXT_OS == FLEXT_OS_WIN
@@ -44,18 +44,19 @@ struct TimerVars
 };
 
 #if FLEXT_OS == FLEXT_OS_WIN
-template<typename T> double TimerVars<T>::perffrq = 0;
+FLEXT_TEMPIMPL(double TimerVars)::perffrq = 0;
 #endif
-template<typename T> double TimerVars<T>::starttime = getstarttime<>();
+FLEXT_TEMPIMPL(double TimerVars)::starttime = FLEXT_TEMPINST(getstarttime)();
 
-template<typename> double getstarttime()
+FLEXT_TEMPLATE
+double getstarttime()
 {
 #if FLEXT_OS == FLEXT_OS_WIN
     LARGE_INTEGER frq;
     if(QueryPerformanceFrequency(&frq)) TimerVars<>::perffrq = (double)frq.QuadPart;
 #endif
 
-    TimerVars<>::starttime = 0;
+    FLEXT_TEMPINST(TimerVars)::starttime = 0;
     return flext::GetOSTime();
 }
 
@@ -85,7 +86,7 @@ FLEXT_TEMPIMPL(double FLEXT_CLASSDEF(flext))::GetOSTime()
 #else
     #error Not implemented
 #endif
-    return tm-TimerVars<>::starttime;
+    return tm-FLEXT_TEMPINST(TimerVars)::starttime;
 }
 
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::Sleep(double s)

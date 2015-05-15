@@ -501,7 +501,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::StopThreads()
             HANDLE hnd = OpenThread(THREAD_ALL_ACCESS,TRUE,ti->thrid);
             TerminateThread(hnd,0);
 #else
-#error Not implemented
+# error Not implemented
 #endif
             FLEXT_TEMPINST(ThrRegistry)::pending.Free(ti);
         }
@@ -517,9 +517,9 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::RelPriority(int dp,thrid_t ref,thrid
 	sched_param parm;
 	int policy;
 	if(pthread_getschedparam(ref,&policy,&parm) < 0) {
-#ifdef FLEXT_DEBUG
+# ifdef FLEXT_DEBUG
 		post("flext - failed to get thread priority");
-#endif
+# endif
 		return false;
 	}
 	else {
@@ -530,22 +530,22 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::RelPriority(int dp,thrid_t ref,thrid
 //		int schmax = sched_get_priority_max(policy);
 
 		if(parm.sched_priority < sched_get_priority_min(policy)) {
-#ifdef FLEXT_DEBUG		
+# ifdef FLEXT_DEBUG
 			post("flext - minimum thread priority reached");
-#endif
+# endif
 			parm.sched_priority = sched_get_priority_min(policy);
 		}
 		else if(parm.sched_priority > sched_get_priority_max(policy)) {
-#ifdef FLEXT_DEBUG		
+# ifdef FLEXT_DEBUG
 			post("flext - maximum thread priority reached");
-#endif
+# endif
 			parm.sched_priority = sched_get_priority_max(policy);
 		}
 		
 		if(pthread_setschedparam(id,policy,&parm) < 0) {
-#ifdef FLEXT_DEBUG		
+# ifdef FLEXT_DEBUG
 			post("flext - failed to change thread priority");
-#endif
+# endif
 			return false;
 		}
 	}
@@ -557,30 +557,30 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::RelPriority(int dp,thrid_t ref,thrid
     int pr = GetThreadPriority(href);
 
     if(pr == THREAD_PRIORITY_ERROR_RETURN) {
-#ifdef FLEXT_DEBUG
+# ifdef FLEXT_DEBUG
 		post("flext - failed to get thread priority");
-#endif
+# endif
 		return false;
 	}
 
     pr += dp;
 	if(pr < THREAD_PRIORITY_IDLE) {
-#ifdef FLEXT_DEBUG		
+# ifdef FLEXT_DEBUG
 		post("flext - minimum thread priority reached");
-#endif
+# endif
 		pr = THREAD_PRIORITY_IDLE;
 	}
 	else if(pr > THREAD_PRIORITY_TIME_CRITICAL) {
-#ifdef FLEXT_DEBUG		
+# ifdef FLEXT_DEBUG
 		post("flext - maximum thread priority reached");
-#endif
+# endif
 		pr = THREAD_PRIORITY_TIME_CRITICAL;
 	}
 	
 	if(SetThreadPriority(hid,pr) == 0) {
-#ifdef FLEXT_DEBUG		
+# ifdef FLEXT_DEBUG
 		post("flext - failed to change thread priority");
-#endif
+# endif
 		return false;
 	}
     return true;
@@ -594,15 +594,15 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::RelPriority(int dp,thrid_t ref,thrid
 		if(dp < 0) w /= 1<<(-dp);
 		else w *= 1<<dp;
 		if(w < 1) {
-	#ifdef FLEXT_DEBUG		
+# ifdef FLEXT_DEBUG
 			post("flext - minimum thread priority reached");
-	#endif
+# endif
 			w = 1;
 		}
 		else if(w > 10000) {
-	#ifdef FLEXT_DEBUG		
+# ifdef FLEXT_DEBUG
 			post("flext - maximum thread priority reached");
-	#endif
+# endif
 			w = 10000;
 		}
 		ti->weight = w;
@@ -610,7 +610,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::RelPriority(int dp,thrid_t ref,thrid
 	}
 	else return false;
 #else
-#error
+# error
 #endif
 }
 
@@ -621,9 +621,9 @@ FLEXT_TEMPIMPL(int FLEXT_CLASSDEF(flext))::GetPriority(thrid_t id)
 	sched_param parm;
 	int policy;
 	if(pthread_getschedparam(id,&policy,&parm) < 0) {
-#ifdef FLEXT_DEBUG
+# ifdef FLEXT_DEBUG
 		post("flext - failed to get parms");
-#endif
+# endif
 		return -1;
 	}
 	return parm.sched_priority;
@@ -633,9 +633,9 @@ FLEXT_TEMPIMPL(int FLEXT_CLASSDEF(flext))::GetPriority(thrid_t id)
     int pr = GetThreadPriority(hid);
 
     if(pr == THREAD_PRIORITY_ERROR_RETURN) {
-#ifdef FLEXT_DEBUG
+# ifdef FLEXT_DEBUG
 		post("flext - failed to get thread priority");
-#endif
+# endif
 		return -1;
 	}
     return pr;
@@ -645,7 +645,7 @@ FLEXT_TEMPIMPL(int FLEXT_CLASSDEF(flext))::GetPriority(thrid_t id)
     if(!ti) ti = FLEXT_TEMPINST(ThrRegistry)::active.Find(id);
     return ti?ti->weight:-1;
 #else
-#error
+# error
 #endif
 }
 
@@ -656,17 +656,17 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::SetPriority(int p,thrid_t id)
 	sched_param parm;
 	int policy;
 	if(pthread_getschedparam(id,&policy,&parm) < 0) {
-#ifdef FLEXT_DEBUG
+# ifdef FLEXT_DEBUG
 		post("flext - failed to get parms");
-#endif
+# endif
 		return false;
 	}
 	else {
 		parm.sched_priority = p;
 		if(pthread_setschedparam(id,policy,&parm) < 0) {
-#ifdef FLEXT_DEBUG		
+# ifdef FLEXT_DEBUG
 			post("flext - failed to change priority");
-#endif
+# endif
 			return false;
 		}
 	}
@@ -675,9 +675,9 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::SetPriority(int p,thrid_t id)
 #elif FLEXT_THREADS == FLEXT_THR_WIN32
     HANDLE hid = OpenThread(THREAD_ALL_ACCESS,TRUE,id);
 	if(SetThreadPriority(hid,p) == 0) {
-#ifdef FLEXT_DEBUG		
+# ifdef FLEXT_DEBUG
 		post("flext - failed to change thread priority");
-#endif
+# endif
 		return false;
 	}
     return true;
@@ -687,16 +687,16 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::SetPriority(int p,thrid_t id)
     if(!ti) ti = FLEXT_TEMPINST(ThrRegistry)::active.Find(id);
     return ti && MPSetTaskWeight(id,ti->weight = p) == noErr;
 #else
-#error
+# error
 #endif
 }
 
 
 #if FLEXT_THREADS == FLEXT_THR_POSIX
 FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::ThrCond::Wait() {
-	Lock();
+	this->Lock(); // use this-> to avoid wrong function invocation (global Unlock)
     bool ret = pthread_cond_wait(&cond,&this->mutex) == 0;
-	Unlock();
+	this->Unlock(); // use this-> to avoid wrong function invocation (global Unlock)
 	return ret;
 }
 
@@ -704,24 +704,24 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::ThrCond::TimedWait(double ftm)
 { 
 	timespec tm; 
 #if FLEXT_OS == FLEXT_OS_WIN && FLEXT_OSAPI == FLEXT_OSAPI_WIN_NATIVE
-#ifdef _MSC_VER
+# ifdef _MSC_VER
 	_timeb tmb;
 	_ftime(&tmb);
-#else
+# else
 	timeb tmb;
 	ftime(&tmb);
-#endif
+# endif
 	tm.tv_nsec = tmb.millitm*1000000;
 	tm.tv_sec = (long)tmb.time; 
 #else // POSIX
-#if 0 // find out when the following is defined
-	clock_gettime(CLOCK_REALTIME,tm);
-#else
+# if defined(_POSIX_TIMERS) && (_POSIX_TIMERS > 0)
+	clock_gettime(CLOCK_REALTIME,&tm);
+# else
 	struct timeval tp;
 	gettimeofday(&tp, NULL);
 	tm.tv_nsec = tp.tv_usec*1000;
 	tm.tv_sec = tp.tv_sec;
-#endif
+# endif
 #endif
 
 	tm.tv_nsec += (long)((ftm-(long)ftm)*1.e9);
@@ -729,9 +729,9 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::ThrCond::TimedWait(double ftm)
 	tm.tv_sec += (long)ftm+(tm.tv_nsec-nns)/1000000000; 
 	tm.tv_nsec = nns;
 
-	Lock();
+	this->Lock(); // use this-> to avoid wrong function invocation (global Unlock)
     bool ret = pthread_cond_timedwait(&cond,&this->mutex,&tm) == 0;
-	Unlock();
+	this->Unlock(); // use this-> to avoid wrong function invocation (global Unlock)
 	return ret;
 }
 #endif

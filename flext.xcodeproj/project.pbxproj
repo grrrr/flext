@@ -1897,6 +1897,7 @@
 					FLEXT_USE_SIMD,
 				);
 				GCC_VERSION = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = "$(PROJECT_NAME)";
 				WARNING_CFLAGS = (
 					"-Wmost",
@@ -1918,6 +1919,7 @@
 					FLEXT_USE_SIMD,
 				);
 				GCC_VERSION = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = "$(PROJECT_NAME)";
 				WARNING_CFLAGS = (
 					"-Wmost",

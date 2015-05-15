@@ -431,15 +431,15 @@ public:
     static void CopyMem(void *dst,const void *src,int bytes);
     //! Copy a sample array
     static void CopySamples(t_sample *dst,const t_sample *src,int cnt);
-    static void CopySamples(typename buffer::Element *dst,const typename buffer::Element *src,int cnt) { CopyMem(dst,src,sizeof(*src)*cnt); }
+    template<typename T> static void CopySamples(T *dst,const T *src,int cnt) { CopyMem(dst,src,sizeof(*src)*cnt); }
     //! Set a memory region
     static void ZeroMem(void *dst,int bytes);
     //! Set a sample array to a fixed value
     static void SetSamples(t_sample *dst,int cnt,t_sample s);
-    static void SetSamples(typename buffer::Element *dst,int cnt,t_sample s) { for(int i = 0; i < cnt; ++i) dst[i] = s; }
+    template<typename T> static void SetSamples(T *dst,int cnt,t_sample s) { for(int i = 0; i < cnt; ++i) dst[i] = s; }
     //! Set a sample array to 0
     static void ZeroSamples(t_sample *dst,int cnt) { SetSamples(dst,cnt,0); }   
-    static void ZeroSamples(typename buffer::Element *dst,int cnt) { ZeroMem(dst,sizeof(*dst)*cnt); }
+    template<typename T> static void ZeroSamples(T *dst,int cnt) { ZeroMem(dst,sizeof(*dst)*cnt); }
 
 
     //! Get a 32 bit hash value from an atom

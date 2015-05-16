@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -22,11 +22,13 @@ $LastChangedBy$
 
 #include "flstdc.h"
 #include "flsupport.h"
+#include <map>
 
 #include "flpushns.h"
 
-class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj);
-typedef class FLEXT_CLASSDEF(flext_obj) flext_obj;
+FLEXT_TEMPLATE class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj);
+
+typedef FLEXT_TEMPINST(FLEXT_CLASSDEF(flext_obj)) flext_obj;
 
 // ----------------------------------------------------------------------------
 /*! \brief The obligatory PD or Max/MSP object header
@@ -62,13 +64,17 @@ struct FLEXT_SHARE flext_hdr
 
     	/*! \brief This points to the actual polymorphic C++ class
 		*/
-        FLEXT_CLASSDEF(flext_obj) *data;
+        FLEXT_TEMPINST(FLEXT_CLASSDEF(flext_obj)) *data;
 
 	//!	@}  FLEXT_OBJHEADER
 };
 
 
-class flext_class;
+FLEXT_TEMPLATE class flext_class;
+
+typedef std::map<const t_symbol *,FLEXT_TEMPINST(flext_class) *> LibMap;
+
+class flext_library;
 
 // ----------------------------------------------------------------------------
 /*! \brief The mother of base classes for all flext external objects
@@ -93,6 +99,7 @@ class flext_class;
 */
 // ----------------------------------------------------------------------------
 
+FLEXT_TEMPLATE
 class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 	public flext
 {
@@ -152,7 +159,7 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 		t_class *thisClass() const;
 
 		//! Typedef for unique class identifier
-		typedef flext_class *t_classid;
+		typedef FLEXT_TEMPINST(flext_class) *t_classid;
 
 		//! Get unique id for object class
 		t_classid thisClassId() const { return clss; }
@@ -209,7 +216,7 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
         mutable flext_hdr *x_obj;        	
 
         //! pointer to flext class definition
-        flext_class *clss;
+        FLEXT_TEMPINST(flext_class) *clss;
 
 //        static bool	process_attributes;
 
@@ -260,7 +267,7 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 		*/
         static flext_hdr     *m_holder;
 		//! Hold object's class during construction
-		static flext_class *m_holdclass;
+		static FLEXT_TEMPINST(flext_class) *m_holdclass;
 		//! Hold object's name during construction
         static const t_symbol *m_holdname;  
 
@@ -284,6 +291,7 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 		// Definitions for library objects
 		static void lib_init(const char *name,void setupfun());
 		static void obj_add(bool lib,bool dsp,bool noi,bool attr,const char *idname,const char *names,void setupfun(t_classid),FLEXT_CLASSDEF(flext_obj) *(*newfun)(int,t_atom *),void (*freefun)(flext_hdr *),int argtp1,...);
+    
 #if FLEXT_SYS == FLEXT_SYS_MAX
 		static flext_hdr *obj_new(const t_symbol *s,short argc,t_atom *argv);
 #else
@@ -300,6 +308,25 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 		//! Get the canvas/patcher directory
         void GetCanvasDir(char *buf,size_t bufsz) const;
 
+    protected:
+        
+        // Current library class
+        static flext_library *curlib;
+        
+        // static initialization (with constructor) doesn't work for Codewarrior
+        static LibMap *libnames;
+
+        static FLEXT_TEMPINST(flext_class) *FindName(const t_symbol *s,FLEXT_TEMPINST(flext_class) *o = NULL);
+
+#if FLEXT_SYS == FLEXT_SYS_PD
+        static t_class *buf_class;
+        static void cb_buffer_dsp(void *c,t_signal **sp);
+#endif
+    
+#if FLEXT_SYS == FLEXT_SYS_MAX
+        static const t_symbol *sym__shP;
+#endif
+    
 	//!	@} FLEXT_OBJ_INTERNAL
 };
 

@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -15,7 +15,11 @@ $LastChangedBy$
     \brief Attribute handling for the flext base class
 */
  
+#ifndef __FLEXT_ATTR_CPP
+#define __FLEXT_ATTR_CPP
+
 #include "flext.h"
+
 #include <cstring>
 #include <cctype>
 #include <set>
@@ -28,7 +32,7 @@ $LastChangedBy$
 #define STD
 #endif
 
-flext_base::AttrItem::AttrItem(const t_symbol *t,metharg tp,methfun f,int fl):
+FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext_base))::AttrItem::AttrItem(const t_symbol *t,metharg tp,methfun f,int fl):
 	Item(NULL),index(0),
 	flags(fl|afl_shown),
 	argtp(tp),fun(f),
@@ -37,25 +41,25 @@ flext_base::AttrItem::AttrItem(const t_symbol *t,metharg tp,methfun f,int fl):
 
 
 /*
-flext_base::AttrDataCont::AttrDataCont() {}
+FLEXT_CLASSDEF(flext_base)::AttrDataCont::AttrDataCont() {}
 
-flext_base::AttrDataCont::~AttrDataCont()
+FLEXT_CLASSDEF(flext_base)::AttrDataCont::~AttrDataCont()
 {
 	for(iterator it = begin(); it != end(); ++it)
 		if(it.data()) delete it.data();
 }
 */
 
-flext_base::AttrDataCont::~AttrDataCont() { clear(); }
+FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext_base))::AttrDataCont::~AttrDataCont() { clear(); }
 
-void flext_base::AttrDataCont::clear()
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AttrDataCont::clear()
 {
-    for(iterator it(*this); it; ++it) delete it.data();
+    for(typename AttrDataCont::iterator it(*this); it; ++it) delete it.data();
     TablePtrMap<const t_symbol *,AttrData *,8>::clear();
 }
 
 //! Add get and set attributes
-void flext_base::AddAttrib(ItemCont *aa,ItemCont *ma,const t_symbol *asym,metharg tp,methfun gfun,methfun sfun)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddAttrib(ItemCont *aa,ItemCont *ma,const t_symbol *asym,metharg tp,methfun gfun,methfun sfun)
 {
 	AttrItem *a,*b;
 
@@ -98,7 +102,7 @@ void flext_base::AddAttrib(ItemCont *aa,ItemCont *ma,const t_symbol *asym,methar
 	}
 }
 
-void flext_base::AddAttrib(const t_symbol *attr,metharg tp,methfun gfun,methfun sfun)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddAttrib(const t_symbol *attr,metharg tp,methfun gfun,methfun sfun)
 {
 	if(HasAttributes())
 		AddAttrib(ThAttrs(),ThMeths(),attr,tp,gfun,sfun);
@@ -106,12 +110,12 @@ void flext_base::AddAttrib(const t_symbol *attr,metharg tp,methfun gfun,methfun 
 		error("%s - attribute procession is not enabled!",thisName());
 }
 
-void flext_base::AddAttrib(t_classid c,const t_symbol *attr,metharg tp,methfun gfun,methfun sfun)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddAttrib(t_classid c,const t_symbol *attr,metharg tp,methfun gfun,methfun sfun)
 {
 	AddAttrib(ClAttrs(c),ClMeths(c),attr,tp,gfun,sfun);
 }
 
-void flext_base::ListAttrib(AtomList &la) const
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ListAttrib(AtomList &la) const
 {
 	typedef TablePtrMap<int,const t_symbol *,32> AttrList;
 	AttrList list[2];
@@ -122,7 +126,7 @@ void flext_base::ListAttrib(AtomList &la) const
         ItemCont *a = i?attrhead:clattrhead;
 		if(a && a->Contained(0)) {
             ItemSet &ai = a->GetInlet();
-            for(ItemSet::iterator as(ai); as; ++as) {
+            for(typename ItemSet::iterator as(ai); as; ++as) {
                 for(Item *al = as.data(); al; al = al->nxt) {
 					AttrItem *aa = (AttrItem *)al;
 					list[i].insert(aa->index,as.key());
@@ -139,7 +143,7 @@ void flext_base::ListAttrib(AtomList &la) const
 			SetSymbol(la[ix++],it.data());
 }
 
-int flext_base::CheckAttrib(int argc,const t_atom *argv)
+FLEXT_TEMPIMPL(int FLEXT_CLASSDEF(flext_base))::CheckAttrib(int argc,const t_atom *argv)
 {
 	int offs = 0;
 	for(; offs < argc; ++offs)
@@ -147,7 +151,7 @@ int flext_base::CheckAttrib(int argc,const t_atom *argv)
 	return offs;
 }
 
-bool flext_base::InitAttrib(int argc,const t_atom *argv)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::InitAttrib(int argc,const t_atom *argv)
 {
 	int cur,nxt;
 	for(cur = 0; cur < argc; cur = nxt) {
@@ -193,7 +197,7 @@ bool flext_base::InitAttrib(int argc,const t_atom *argv)
 	return true;
 }
 
-bool flext_base::ListAttrib() const
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::ListAttrib() const
 {
     if(HasAttributes()) {
         // defined in flsupport.cpp
@@ -206,7 +210,7 @@ bool flext_base::ListAttrib() const
 		return false;
 }
 
-flext_base::AttrItem *flext_base::FindAttrib(const t_symbol *tag,bool get,bool msg) const
+FLEXT_TEMPIMPL(FLEXT_TEMPSUB(FLEXT_CLASSDEF(flext_base))::AttrItem *FLEXT_CLASSDEF(flext_base))::FindAttrib(const t_symbol *tag,bool get,bool msg) const
 {
     ItemCont *clattrhead = ClAttrs(thisClassId());
 
@@ -234,14 +238,14 @@ flext_base::AttrItem *flext_base::FindAttrib(const t_symbol *tag,bool get,bool m
 	return a;
 }
 
-bool flext_base::SetAttrib(const t_symbol *tag,int argc,const t_atom *argv)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::SetAttrib(const t_symbol *tag,int argc,const t_atom *argv)
 {
 	// search for matching attribute
 	AttrItem *a = FindAttrib(tag,false,true);
 	return a && SetAttrib(tag,a,argc,argv);
 }
 
-bool flext_base::SetAttrib(const t_symbol *tag,AttrItem *a,int argc,const t_atom *argv)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::SetAttrib(const t_symbol *tag,AttrItem *a,int argc,const t_atom *argv)
 {
 	if(a->fun) {
 		bool ok = true;
@@ -303,7 +307,7 @@ bool flext_base::SetAttrib(const t_symbol *tag,AttrItem *a,int argc,const t_atom
 }
 
 
-bool flext_base::GetAttrib(const t_symbol *tag,AttrItem *a,AtomList &la) const
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::GetAttrib(const t_symbol *tag,AttrItem *a,AtomList &la) const
 {
 	bool ok = true;
 	// main attribute tag
@@ -357,14 +361,14 @@ bool flext_base::GetAttrib(const t_symbol *tag,AttrItem *a,AtomList &la) const
 	return ok;
 }
 
-bool flext_base::GetAttrib(const t_symbol *s,AtomList &a) const
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::GetAttrib(const t_symbol *s,AtomList &a) const
 {
 	AttrItem *attr = FindAttrib(s,true);
 	return attr && GetAttrib(s,attr,a);
 }
 
 //! \param tag symbol "get[attribute]"
-bool flext_base::DumpAttrib(const t_symbol *tag,AttrItem *a) const
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::DumpAttrib(const t_symbol *tag,AttrItem *a) const
 {
 	AtomListStatic<16> la;
 	bool ret = GetAttrib(tag,a,la);
@@ -374,13 +378,13 @@ bool flext_base::DumpAttrib(const t_symbol *tag,AttrItem *a) const
 	return ret;
 }
 
-bool flext_base::DumpAttrib(const t_symbol *attr) const
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::DumpAttrib(const t_symbol *attr) const
 {
 	AttrItem *item = FindAttrib(attr,true);
 	return item && DumpAttrib(attr,item);
 }
 
-bool flext_base::BangAttrib(const t_symbol *attr,AttrItem *item)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::BangAttrib(const t_symbol *attr,AttrItem *item)
 {
 	AtomListStatic<16> val;
 	AttrItem *item2;
@@ -394,13 +398,13 @@ bool flext_base::BangAttrib(const t_symbol *attr,AttrItem *item)
 		return false;
 }
 
-bool flext_base::BangAttrib(const t_symbol *attr)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::BangAttrib(const t_symbol *attr)
 {
 	AttrItem *item = FindAttrib(attr,true);
 	return item && BangAttrib(attr,item);
 }
 
-bool flext_base::BangAttribAll()
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::BangAttribAll()
 {
     ItemCont *clattrhead = ClAttrs(thisClassId());
 
@@ -416,7 +420,7 @@ bool flext_base::BangAttribAll()
                 }
 			}
 */
-            for(ItemSet::iterator as(ai); as; ++as) {
+            for(typename ItemSet::iterator as(ai); as; ++as) {
                 for(Item *al = as.data(); al; al = al->nxt) {
 					AttrItem *a = (AttrItem *)al;
 	        		if(a->IsGet() && a->BothExist()) BangAttrib(as.key(),a);
@@ -427,7 +431,7 @@ bool flext_base::BangAttribAll()
 	return true;
 }
 
-bool flext_base::ShowAttrib(AttrItem *a,bool show) const
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::ShowAttrib(AttrItem *a,bool show) const
 {
 	if(show) a->flags |= AttrItem::afl_shown;
 	else a->flags &= ~AttrItem::afl_shown;
@@ -441,10 +445,14 @@ bool flext_base::ShowAttrib(AttrItem *a,bool show) const
 	return true;
 }
 
-bool flext_base::ShowAttrib(const t_symbol *attr,bool show) const
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::ShowAttrib(const t_symbol *attr,bool show) const
 {
 	AttrItem *item = FindAttrib(attr,true);
 	return item && ShowAttrib(item,show);
 }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_ATTR_CPP
+
+

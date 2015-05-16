@@ -1,4 +1,11 @@
-# Compiled Object files
+.DS_Store
+config.txt
+pd-darwin/
+buildsys/config-*.txt
+flext.xcodeproj/project.xcworkspace/
+flext.xcodeproj/xcuserdata/
+
+ CompiledObject files
 *.slo
 *.lo
 *.o

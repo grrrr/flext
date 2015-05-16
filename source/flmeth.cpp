@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief Method processing of flext base class.
 */
  
+#ifndef __FLEXT_METH_CPP
+#define __FLEXT_METH_CPP
+
 #include "flext.h"
 #include "flinternal.h"
 #include <cstring>
@@ -22,18 +25,18 @@ $LastChangedBy$
 
 #include "flpushns.h"
 
-flext_base::MethItem::MethItem(AttrItem *conn): 
+FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext_base))::MethItem::MethItem(AttrItem *conn):
     Item(conn),index(0),
     argc(0),args(NULL)
     ,fun(NULL)
 {}
 
-flext_base::MethItem::~MethItem() 
+FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext_base))::MethItem::~MethItem()
 { 
     if(args) delete[] args; 
 }
 
-void flext_base::MethItem::SetArgs(methfun _fun,int _argc,metharg *_args)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::MethItem::SetArgs(methfun _fun,int _argc,metharg *_args)
 {
     fun = _fun;
     if(args) delete[] args;
@@ -42,7 +45,7 @@ void flext_base::MethItem::SetArgs(methfun _fun,int _argc,metharg *_args)
 
 /*! \brief Add a method to the queue
 */
-void flext_base::AddMethod(ItemCont *ma,int inlet,const t_symbol *tag,methfun fun,metharg tp,...)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddMethod(ItemCont *ma,int inlet,const t_symbol *tag,methfun fun,metharg tp,...)
 {
 #ifdef FLEXT_LOG_MSGS
 	post("addmethod %i:%s",inlet,GetString(tag));
@@ -90,7 +93,7 @@ void flext_base::AddMethod(ItemCont *ma,int inlet,const t_symbol *tag,methfun fu
     ma->Add(mi,tag,inlet);
 }
 
-void flext_base::ListMethods(AtomList &la,int inlet) const
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ListMethods(AtomList &la,int inlet) const
 {
 	typedef TablePtrMap<int,const t_symbol *,32> MethList;
     MethList list[2];
@@ -101,7 +104,7 @@ void flext_base::ListMethods(AtomList &la,int inlet) const
         ItemCont *a = i?methhead:clmethhead;
         if(a && a->Contained(inlet)) {
             ItemSet &ai = a->GetInlet(inlet);
-            for(ItemSet::iterator as(ai); as; ++as) {
+            for(typename ItemSet::iterator as(ai); as; ++as) {
                 for(Item *al = as.data(); al; al = al->nxt) {
                     MethItem *aa = (MethItem *)al;
                     // check it's not related to an attribute
@@ -121,7 +124,7 @@ void flext_base::ListMethods(AtomList &la,int inlet) const
             SetSymbol(la[ix++],it.data());
 }
 
-bool flext_base::cb_ListMethods(flext_base *c,int argc,const t_atom *argv) 
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::cb_ListMethods(flext_base *c,int argc,const t_atom *argv)
 { 
     Locker lock(c);
     if(c->HasAttributes() && (argc == 0 || (argc == 1 && CanbeInt(argv[0])))) {
@@ -137,3 +140,5 @@ bool flext_base::cb_ListMethods(flext_base *c,int argc,const t_atom *argv)
 }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_METH_CPP

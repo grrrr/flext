@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -15,11 +15,14 @@ $LastChangedBy$
     \brief Message processing of flext base class.
 */
  
+#ifndef __FLEXT_MSG_CPP
+#define __FLEXT_MSG_CPP
+
 #include "flext.h"
 
 #include "flpushns.h"
 
-bool flext_base::TryMethTag(Item *lst,const t_symbol *tag,int argc,const t_atom *argv)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::TryMethTag(Item *lst,const t_symbol *tag,int argc,const t_atom *argv)
 {
     for(; lst; lst = lst->nxt) {
         MethItem *m = (MethItem *)lst;
@@ -108,7 +111,7 @@ bool flext_base::TryMethTag(Item *lst,const t_symbol *tag,int argc,const t_atom 
 }
 
 
-bool flext_base::TryMethAny(Item *lst,const t_symbol *s,int argc,const t_atom *argv)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::TryMethAny(Item *lst,const t_symbol *s,int argc,const t_atom *argv)
 {
     for(; lst; lst = lst->nxt) {
         MethItem *m = (MethItem *)lst;
@@ -125,7 +128,7 @@ bool flext_base::TryMethAny(Item *lst,const t_symbol *s,int argc,const t_atom *a
 /*! \brief Find a method item for a specific tag and arguments
     \remark All attributes are also stored in the method list and retrieved by a member of the method item
 */
-bool flext_base::FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *argv)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *argv)
 {
     Item *lst;
     ItemCont *clmethhead = ClMeths(thisClassId());
@@ -141,7 +144,7 @@ bool flext_base::FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *arg
     return false;
 }
 
-bool flext_base::FindMethAny(int inlet,const t_symbol *s,int argc,const t_atom *argv)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::FindMethAny(int inlet,const t_symbol *s,int argc,const t_atom *argv)
 {
     Item *lst;
     ItemCont *clmethhead = ClMeths(thisClassId());
@@ -159,7 +162,7 @@ bool flext_base::FindMethAny(int inlet,const t_symbol *s,int argc,const t_atom *
 /*! \brief All the message processing
     The messages of all the inlets go here and are promoted to the registered callback functions
 */
-bool flext_base::CbMethodHandler(int inlet,const t_symbol *s,int argc,const t_atom *argv)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::CbMethodHandler(int inlet,const t_symbol *s,int argc,const t_atom *argv)
 {
     static bool trap = false;
     bool ret;
@@ -291,17 +294,20 @@ end:
     return ret; // true if appropriate handler was found and called
 }
 
-bool flext_base::m_method_(int inlet,const t_symbol *s,int argc,const t_atom *argv) 
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::m_method_(int inlet,const t_symbol *s,int argc,const t_atom *argv)
 {
     post("%s: message unhandled - inlet:%i args:%i symbol:%s",thisName(),inlet,argc,s?GetString(s):"");
     return false;
 }
 
-bool flext_base::CbMethodResort(int inlet,const t_symbol *s,int argc,const t_atom *argv) 
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::CbMethodResort(int inlet,const t_symbol *s,int argc,const t_atom *argv)
 {
     // call deprecated version
     return m_method_(inlet,s,argc,argv);
 }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_MSG_CPP
+
 

@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -14,6 +14,9 @@ $LastChangedBy$
 /*! \file fltimer.cpp
     \brief flext timer functions and classes   
 */
+
+#ifndef __FLEXT_TIMER_CPP
+#define __FLEXT_TIMER_CPP
 
 #include "flext.h"
 
@@ -29,32 +32,42 @@ $LastChangedBy$
 
 #include "flpushns.h"
 
+FLEXT_TEMPLATE double getstarttime();
+
+FLEXT_TEMPLATE
+struct TimerVars
+{
 #if FLEXT_OS == FLEXT_OS_WIN
-static double perffrq = 0;
+    static double perffrq;
 #endif
+    static double starttime;
+};
 
-static double getstarttime();
-static double starttime = getstarttime();
+#if FLEXT_OS == FLEXT_OS_WIN
+FLEXT_TEMPIMPL(double TimerVars)::perffrq = 0;
+#endif
+FLEXT_TEMPIMPL(double TimerVars)::starttime = FLEXT_TEMPINST(getstarttime)();
 
-static double getstarttime()
+FLEXT_TEMPLATE
+double getstarttime()
 {
 #if FLEXT_OS == FLEXT_OS_WIN
     LARGE_INTEGER frq;
-    if(QueryPerformanceFrequency(&frq)) perffrq = (double)frq.QuadPart;
+    if(QueryPerformanceFrequency(&frq)) TimerVars<>::perffrq = (double)frq.QuadPart;
 #endif
 
-    starttime = 0;
+    FLEXT_TEMPINST(TimerVars)::starttime = 0;
     return flext::GetOSTime();
 }
 
-double flext::GetOSTime()
+FLEXT_TEMPIMPL(double FLEXT_CLASSDEF(flext))::GetOSTime()
 {
     double tm;
 
 #if FLEXT_OS == FLEXT_OS_WIN
     LARGE_INTEGER cnt;
     if(perffrq && QueryPerformanceCounter(&cnt))
-        tm = cnt.QuadPart/perffrq;
+        tm = cnt.QuadPart/TimerVars<>::perffrq;
     else {
         SYSTEMTIME systm;
         FILETIME fltm;
@@ -73,10 +86,10 @@ double flext::GetOSTime()
 #else
     #error Not implemented
 #endif
-    return tm-starttime;
+    return tm-FLEXT_TEMPINST(TimerVars)::starttime;
 }
 
-void flext::Sleep(double s)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::Sleep(double s)
 {
     if(s <= 0) return;
 #if FLEXT_OS == FLEXT_OS_WIN
@@ -130,7 +143,7 @@ void flext::Sleep(double s)
 
 /* \param qu determines whether timed messages should be queued (low priority - only when supported by the system).
 */
-flext::Timer::Timer(bool qu):
+FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext))::Timer::Timer(bool qu):
     queued(qu),
     clss(NULL),userdata(NULL),
     period(0)
@@ -145,7 +158,7 @@ flext::Timer::Timer(bool qu):
 #endif
 }
 
-flext::Timer::~Timer()
+FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext))::Timer::~Timer()
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
     clock_free(clk);
@@ -157,7 +170,7 @@ flext::Timer::~Timer()
 #endif
 }
 
-bool flext::Timer::Reset()
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::Timer::Reset()
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
     clock_unset(clk);
@@ -175,7 +188,7 @@ bool flext::Timer::Reset()
     \param dopast if set events with times lying in the past will be triggered immediately, if not set they are ignored
     \return true on success
 */
-bool flext::Timer::At(double tm,void *data,bool dopast)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::Timer::At(double tm,void *data,bool dopast)
 {
     userdata = data;
     period = 0;
@@ -203,7 +216,7 @@ bool flext::Timer::At(double tm,void *data,bool dopast)
     \param data user data
     \return true on success
 */
-bool flext::Timer::Delay(double tm,void *data)
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::Timer::Delay(double tm,void *data)
 {
     userdata = data;
     period = 0;
@@ -222,7 +235,7 @@ bool flext::Timer::Delay(double tm,void *data)
     \return true on success
     \note the first event will be delayed by tm
 */
-bool flext::Timer::Periodic(double tm,void *data) 
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::Timer::Periodic(double tm,void *data)
 {
     userdata = data;
 	period = tm;
@@ -237,7 +250,7 @@ bool flext::Timer::Periodic(double tm,void *data)
 }
 
 //! \brief Callback function for system clock.
-void flext::Timer::callback(Timer *tmr)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::Timer::callback(Timer *tmr)
 {
 #if FLEXT_SYS == FLEXT_SYS_MAX
     if(tmr->queued) 
@@ -261,13 +274,13 @@ void flext::Timer::callback(Timer *tmr)
 #if FLEXT_SYS == FLEXT_SYS_MAX
 /*! \brief Callback function for low priority clock (for queued messages).
 */
-void flext::Timer::queuefun(Timer *tmr) { tmr->Work(); }
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::Timer::queuefun(Timer *tmr) { tmr->Work(); }
 #endif
 
 /*! \brief Virtual worker function - by default it calls the user callback function.
     \remark The respective callback parameter format is chosen depending on whether clss is defined or not.
 */
-void flext::Timer::Work()
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::Timer::Work()
 {
     if(cback) {
         if(clss) 
@@ -278,3 +291,6 @@ void flext::Timer::Work()
 }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_TIMER_CPP
+

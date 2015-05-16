@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2010 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -26,10 +26,10 @@ $LastChangedBy$
 */
 
 //! \brief flext version number
-#define FLEXT_VERSION 502
+#define FLEXT_VERSION 600
 
 //! \brief flext version string
-#define FLEXT_VERSTR "0.5.2 beta"
+#define FLEXT_VERSTR "0.6.0 alpha"
 
 //! @}
 
@@ -66,5 +66,33 @@ $LastChangedBy$
 
 // include the flext dsp class
 #include "fldsp.h"
+
+#ifdef FLEXT_INLINE
+// include all source code files
+#   include "flatom.cpp"
+#   include "flatom_part.cpp"
+#   include "flatom_pr.cpp"
+#   include "flattr.cpp"
+#   include "flattr_ed.cpp"
+#   include "flbase.cpp"
+#   include "flbind.cpp"
+#   include "flbuf.cpp"
+#   include "fldsp.cpp"
+#   include "flext.cpp"
+#   include "flitem.cpp"
+#   include "fllib.cpp"
+#   include "flmap.cpp"
+#   include "flmeth.cpp"
+#   include "flmsg.cpp"
+#   include "flout.cpp"
+#   include "flproxy.cpp"
+#   include "flqueue.cpp"
+#   include "flsimd.cpp"
+#   include "flsupport.cpp"
+#   include "flthr.cpp"
+#   include "fltimer.cpp"
+#   include "flutil.cpp"
+#   include "flxlet.cpp"
+#endif
 
 #endif // FLEXT_H

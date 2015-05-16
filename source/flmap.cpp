@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -14,23 +14,25 @@ $LastChangedBy$
 /*! \file flmap.cpp
     \brief flext container classes.
 */
- 
+
+#ifndef __FLEXT_MAP_CPP
+#define __FLEXT_MAP_CPP
+
 #include "flext.h"
 #include "flmap.h"
 
 #include "flpushns.h"
 
-TableAnyMap::~TableAnyMap() { clear(); }
+FLEXT_TEMPIMPL(TableAnyMap)::~TableAnyMap() { clear(); }
 
-void TableAnyMap::clear() 
+FLEXT_TEMPIMPL(void TableAnyMap)::clear()
 {
     if(left) { _delmap(left); left = NULL; }
     if(right) { _delmap(right); right = NULL; }
     n = 0;
 }
 
-
-void *TableAnyMap::_set(int tsize,size_t k,void *t)
+FLEXT_TEMPIMPL(void *TableAnyMap)::_set(int tsize,size_t k,void *t)
 {
     FLEXT_ASSERT(n);
 
@@ -75,7 +77,7 @@ void *TableAnyMap::_set(int tsize,size_t k,void *t)
     }
 }
 
-void *TableAnyMap::_find(int tsize,size_t k) const
+FLEXT_TEMPIMPL(void *TableAnyMap)::_find(int tsize,size_t k) const
 {
     FLEXT_ASSERT(n);
     if(n < tsize) {
@@ -91,7 +93,7 @@ void *TableAnyMap::_find(int tsize,size_t k) const
 }
 
 #ifdef FLEXT_DEBUG
-void TableAnyMap::_check(int tsize)
+FLEXT_TEMPIMPL(void TableAnyMap)::_check(int tsize)
 {
     FLEXT_ASSERT(n);
 
@@ -115,7 +117,7 @@ void TableAnyMap::_check(int tsize)
 }
 #endif
 
-void *TableAnyMap::_remove(int tsize,size_t k)
+FLEXT_TEMPIMPL(void *TableAnyMap)::_remove(int tsize,size_t k)
 {
     FLEXT_ASSERT(n);
     if(n < tsize) {
@@ -179,7 +181,7 @@ void *TableAnyMap::_remove(int tsize,size_t k)
     }
 }
 
-void TableAnyMap::_getbig(Data &dt)
+FLEXT_TEMPIMPL(void TableAnyMap)::_getbig(Data &dt)
 {
     FLEXT_ASSERT(n);
 
@@ -199,7 +201,7 @@ void TableAnyMap::_getbig(Data &dt)
     }
 }
 
-void TableAnyMap::_getsmall(Data &dt)
+FLEXT_TEMPIMPL(void TableAnyMap)::_getsmall(Data &dt)
 {
     FLEXT_ASSERT(n);
 
@@ -219,7 +221,7 @@ void TableAnyMap::_getsmall(Data &dt)
     }
 }
 
-void TableAnyMap::iterator::forward() 
+FLEXT_TEMPIMPL(void TableAnyMap)::iterator::forward()
 { 
     FLEXT_ASSERT(map || ix >= map->n);
 	
@@ -255,3 +257,4 @@ void TableAnyMap::iterator::forward()
 
 #include "flpopns.h"
 
+#endif // __FLEXT_MAP_CPP

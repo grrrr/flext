@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -15,11 +15,14 @@ $LastChangedBy$
     \brief Definitions for handling the t_atom type and lists thereof.
 */
  
+#ifndef __FLEXT_ATOM_PART_CPP
+#define __FLEXT_ATOM_PART_CPP
+
 #include "flext.h"
 
 #include "flpushns.h"
 
-int flext::AtomList::Get(t_atom *argv,int mxsz) const
+FLEXT_TEMPIMPL(int FLEXT_CLASSDEF(flext))::AtomList::Get(t_atom *argv,int mxsz) const
 {
     int argc = Count();
     if(mxsz >= 0 && argc > mxsz) argc = mxsz;
@@ -30,7 +33,7 @@ int flext::AtomList::Get(t_atom *argv,int mxsz) const
 }
 
 
-void flext::AtomList::GetPart(int offs,int len,AtomList &ret) const
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::AtomList::GetPart(int offs,int len,AtomList &ret) const
 {
     if(offs+len > Count()) {
         len = Count()-offs;
@@ -41,3 +44,6 @@ void flext::AtomList::GetPart(int offs,int len,AtomList &ret) const
 }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_ATOM_PART_CPP
+

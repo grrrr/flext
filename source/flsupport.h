@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2013 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -35,14 +35,16 @@ $LastChangedBy$
     @{
 */
 
-class FLEXT_SHARE FLEXT_CLASSDEF(flext_root);
-typedef class FLEXT_CLASSDEF(flext_root) flext_root;
+FLEXT_TEMPLATE class FLEXT_SHARE FLEXT_CLASSDEF(flext_root);
+
+typedef FLEXT_TEMPINST(FLEXT_SHARE FLEXT_CLASSDEF(flext_root)) flext_root;
 
 /*! \brief Flext root support class
 
     Moved memory functions and console output here so that all the classes
     contained in flext can use them
 */
+FLEXT_TEMPLATE
 class FLEXT_SHARE FLEXT_CLASSDEF(flext_root) {
 public:
 // --- console output -----------------------------------------------   
@@ -141,10 +143,11 @@ inline void operator delete[](void *blk) DELTHROW { flext_root::operator delete[
 
 /************************************************************************/
 
-class FLEXT_SHARE FLEXT_CLASSDEF(flext);
-typedef class FLEXT_CLASSDEF(flext) flext;
+FLEXT_TEMPLATE class FLEXT_SHARE FLEXT_CLASSDEF(flext);
 
-class FLEXT_SHARE FLEXT_CLASSDEF(flext_base);
+typedef FLEXT_TEMPINST(FLEXT_CLASSDEF(flext)) flext;
+
+FLEXT_TEMPLATE class FLEXT_SHARE FLEXT_CLASSDEF(flext_base);
 
 /*! \brief Flext support class
 
@@ -158,6 +161,7 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_base);
     and won't give any extra burden to it.
 */
 
+FLEXT_TEMPLATE
 class FLEXT_SHARE FLEXT_CLASSDEF(flext):
     public flext_root
 {
@@ -174,7 +178,7 @@ public:
         For statically linked flext this is identical to the header definition FLEXT_VERSION,
         otherwise it reflects the version number of the shared flext library.
     */
-    static int Version();    
+    static int Version();
 
     //! Flext version string
     static const char *VersionStr();
@@ -427,15 +431,15 @@ public:
     static void CopyMem(void *dst,const void *src,int bytes);
     //! Copy a sample array
     static void CopySamples(t_sample *dst,const t_sample *src,int cnt);
-    static void CopySamples(buffer::Element *dst,const buffer::Element *src,int cnt) { CopyMem(dst,src,sizeof(*src)*cnt); }
+    template<typename T> static void CopySamples(T *dst,const T *src,int cnt) { CopyMem(dst,src,sizeof(*src)*cnt); }
     //! Set a memory region
     static void ZeroMem(void *dst,int bytes);
     //! Set a sample array to a fixed value
     static void SetSamples(t_sample *dst,int cnt,t_sample s);
-    static void SetSamples(buffer::Element *dst,int cnt,t_sample s) { for(int i = 0; i < cnt; ++i) dst[i] = s; }
+    template<typename T> static void SetSamples(T *dst,int cnt,t_sample s) { for(int i = 0; i < cnt; ++i) dst[i] = s; }
     //! Set a sample array to 0
     static void ZeroSamples(t_sample *dst,int cnt) { SetSamples(dst,cnt,0); }   
-    static void ZeroSamples(buffer::Element *dst,int cnt) { ZeroMem(dst,sizeof(*dst)*cnt); }   
+    template<typename T> static void ZeroSamples(T *dst,int cnt) { ZeroMem(dst,sizeof(*dst)*cnt); }
 
 
     //! Get a 32 bit hash value from an atom
@@ -722,7 +726,7 @@ public:
         //! Construct list
         explicit AtomListStatic(): AtomListStaticBase(PRE,pre) {}
         //! Construct list
-        explicit AtomListStatic(int argc,const t_atom *argv = NULL): AtomListStaticBase(PRE,pre) { operator()(argc,argv); }
+        explicit AtomListStatic(int argc,const t_atom *argv = NULL): AtomListStaticBase(PRE,pre) { AtomList::operator()(argc,argv); }
         //! Construct list
         explicit AtomListStatic(const AtomList &a): AtomListStaticBase(PRE,pre) { operator =(a); }
 
@@ -958,13 +962,13 @@ public:
         public flext_root
     {
     public:
-        thr_params(int n = 1);
-        ~thr_params();
+        thr_params(int n = 1): cl(NULL),var(new _data[n]) {}
+        ~thr_params() { delete[] var; }
 
-        void set_any(const t_symbol *s,int argc,const t_atom *argv);
-        void set_list(int argc,const t_atom *argv);
+        void set_any(const t_symbol *s,int argc,const t_atom *argv) { var[0]._any = new AtomAnything(s,argc,argv); }
+        void set_list(int argc,const t_atom *argv) { var[0]._list = new AtomList(argc,argv); }
 
-        FLEXT_CLASSDEF(flext_base) *cl;
+        FLEXT_TEMPINST(FLEXT_CLASSDEF(flext_base)) *cl;
         union _data {
             bool _bool;
             float _float;
@@ -1294,7 +1298,7 @@ public:
         //! Set timer callback function.
         void SetCallback(void (*cb)(void *data)) { clss = NULL,cback = cb; }
         //! Set timer callback function (with class pointer).
-        void SetCallback(FLEXT_CLASSDEF(flext_base) &th,bool (*cb)(FLEXT_CLASSDEF(flext_base) *th,void *data)) { clss = &th,cback = (void (*)(void *))cb; }
+        void SetCallback(FLEXT_TEMPINST(FLEXT_CLASSDEF(flext_base)) &th,bool (*cb)(FLEXT_TEMPINST(FLEXT_CLASSDEF(flext_base)) *th,void *data)) { clss = &th,cback = (void (*)(void *))cb; }
 
         //! Clear timer.
         bool Reset();
@@ -1325,7 +1329,7 @@ public:
 
         const bool queued;
         void (*cback)(void *data);
-        FLEXT_CLASSDEF(flext_base) *clss;
+        FLEXT_TEMPINST(FLEXT_CLASSDEF(flext_base)) *clss;
         void *userdata;
         double period;
     };

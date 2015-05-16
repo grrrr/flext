@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief Implementation of the flext dsp base class.
 */
  
+#ifndef __FLEXT_DSP_CPP
+#define __FLEXT_DSP_CPP
+
 #include "flext.h"
 #include "flinternal.h"
 #include <cstring>
@@ -23,7 +26,7 @@ $LastChangedBy$
 
 // === flext_dsp ==============================================
 
-void flext_dsp::Setup(t_classid id)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_dsp))::Setup(t_classid id)
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
 //    add_method1(c,cb_enable,"enable",A_FLOAT);
@@ -31,7 +34,7 @@ void flext_dsp::Setup(t_classid id)
 #endif
 }
 
-flext_dsp::FLEXT_CLASSDEF(flext_dsp)()
+FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext_dsp))::FLEXT_CLASSDEF(flext_dsp)()
     : srate(sys_getsr()),blksz(sys_getblksize())
     , vecs(NULL)
 #if FLEXT_SYS != FLEXT_SYS_MAX
@@ -39,7 +42,7 @@ flext_dsp::FLEXT_CLASSDEF(flext_dsp)()
 #endif
 {}
 
-void flext_dsp::Exit()
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_dsp))::Exit()
 {
     flext_base::Exit();
     
@@ -47,7 +50,7 @@ void flext_dsp::Exit()
 }
 
 
-t_int *flext_dsp::dspmeth(t_int *w) 
+FLEXT_TEMPIMPL(t_int *FLEXT_CLASSDEF(flext_dsp))::dspmeth(t_int *w)
 { 
     flext_dsp *obj = (flext_dsp *)(size_t)w[1];
 
@@ -64,7 +67,7 @@ t_int *flext_dsp::dspmeth(t_int *w)
     return w+2;
 }
 
-void flext_dsp::SetupDsp(t_signal **sp) 
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_dsp))::SetupDsp(t_signal **sp)
 { 
     int i;
     int in = CntInSig();
@@ -96,9 +99,9 @@ void flext_dsp::SetupDsp(t_signal **sp)
     }
 }
 
-void flext_dsp::m_dsp(int /*n*/,t_signalvec const * /*insigs*/,t_signalvec const * /*outsigs*/) {}
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_dsp))::m_dsp(int /*n*/,t_signalvec const * /*insigs*/,t_signalvec const * /*outsigs*/) {}
 
-bool flext_dsp::CbDsp() 
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_dsp))::CbDsp()
 { 
 	// invoke legacy method
     m_dsp(Blocksize(),InSig(),OutSig()); 
@@ -106,12 +109,12 @@ bool flext_dsp::CbDsp()
 }
 
 // this function will be overridden anyway - the probably useless default is clearing all outputs
-void flext_dsp::m_signal(int n,t_sample *const * /*insigs*/,t_sample *const *outs) 
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_dsp))::m_signal(int n,t_sample *const * /*insigs*/,t_sample *const *outs)
 {
     for(int i = 0; i < CntOutSig(); ++i) ZeroSamples(outs[i],n);
 }
 
-void flext_dsp::CbSignal() 
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_dsp))::CbSignal()
 { 
 	// invoke legacy method
 	m_signal(Blocksize(),InSig(),OutSig()); 
@@ -120,8 +123,15 @@ void flext_dsp::CbSignal()
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 //void flext_dsp::cb_enable(flext_hdr *c,t_float on) { thisObject(c)->dspon = on != 0; }
-bool flext_dsp::cb_enable(flext_base *b,float &on) { static_cast<flext_dsp *>(b)->dspon = on != 0; return true; }
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_dsp))::cb_enable(flext_base *b,float &on)
+{
+    static_cast<flext_dsp *>(b)->dspon = on != 0;
+    return true;
+}
 #endif
 
 #include "flpopns.h"
+
+#endif // __FLEXT_DSP_CPP
+
 

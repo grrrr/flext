@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief Implementation of the flext outlet functionality.
 */
 
+#ifndef __FLEXT_OUT_CPP
+#define __FLEXT_OUT_CPP
+
 #include "flext.h"
 #include "flinternal.h"
 #include <cstring>
@@ -22,7 +25,7 @@ $LastChangedBy$
 #include "flpushns.h"
 
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX
-void flext_base::ToSysAtom(int n,const t_atom &at) const 
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToSysAtom(int n,const t_atom &at) const
 { 
     outlet *o = GetOut(n); 
     if(LIKELY(o)) { 
@@ -58,23 +61,55 @@ void flext_base::ToSysAtom(int n,const t_atom &at) const
     #define CHKTHR() (LIKELY(!InDSP()))
 #endif
 
-void flext_base::ToOutBang(int n) const { if(CHKTHR()) ToSysBang(n); else ToQueueBang(n); }
-void flext_base::ToOutFloat(int n,float f) const { if(CHKTHR()) ToSysFloat(n,f); else ToQueueFloat(n,f); }
-void flext_base::ToOutInt(int n,int f) const { if(CHKTHR()) ToSysInt(n,f); else ToQueueInt(n,f); }
-void flext_base::ToOutSymbol(int n,const t_symbol *s) const { if(CHKTHR()) ToSysSymbol(n,s); else ToQueueSymbol(n,s); }
-void flext_base::ToOutAtom(int n,const t_atom &at) const { if(CHKTHR()) ToSysAtom(n,at); else ToQueueAtom(n,at); }
-void flext_base::ToOutList(int n,int argc,const t_atom *argv) const { if(CHKTHR()) ToSysList(n,argc,argv); else ToQueueList(n,argc,argv); }
-void flext_base::ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const { if(CHKTHR()) ToSysAnything(n,s,argc,argv); else ToQueueAnything(n,s,argc,argv); }
 
-void flext::ToOutMsg(MsgBundle *mb) { if(CHKTHR()) ToSysMsg(mb); else ToQueueMsg(mb); }
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToOutBang(int n) const
+{
+    if(CHKTHR()) ToSysBang(n); else ToQueueBang(n);
+}
 
-bool flext::Forward(const t_symbol *recv,const t_symbol *s,int argc,const t_atom *argv)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToOutFloat(int n,float f) const
+{
+    if(CHKTHR()) ToSysFloat(n,f); else ToQueueFloat(n,f);
+}
+
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToOutInt(int n,int f) const
+{
+    if(CHKTHR()) ToSysInt(n,f); else ToQueueInt(n,f);
+}
+
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToOutSymbol(int n,const t_symbol *s) const
+{
+    if(CHKTHR()) ToSysSymbol(n,s); else ToQueueSymbol(n,s);
+}
+
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToOutAtom(int n,const t_atom &at) const
+{
+    if(CHKTHR()) ToSysAtom(n,at); else ToQueueAtom(n,at);
+}
+
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToOutList(int n,int argc,const t_atom *argv) const
+{
+    if(CHKTHR()) ToSysList(n,argc,argv); else ToQueueList(n,argc,argv);
+}
+
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ToOutAnything(int n,const t_symbol *s,int argc,const t_atom *argv) const
+{
+    if(CHKTHR()) ToSysAnything(n,s,argc,argv); else ToQueueAnything(n,s,argc,argv);
+}
+
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::ToOutMsg(MsgBundle *mb)
+{
+    if(CHKTHR()) ToSysMsg(mb); else ToQueueMsg(mb);
+}
+
+
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::Forward(const t_symbol *recv,const t_symbol *s,int argc,const t_atom *argv)
 {
     return CHKTHR()?SysForward(recv,s,argc,argv):QueueForward(recv,s,argc,argv); 
 }
 
 
-bool flext_base::InitInlets()
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::InitInlets()
 {
     bool ok = true;
 
@@ -242,7 +277,7 @@ bool flext_base::InitInlets()
     return ok;  
 }
 
-bool flext_base::InitOutlets()
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::InitOutlets()
 {
     bool ok = true;
     int procattr = HasAttributes()?1:0;
@@ -338,4 +373,7 @@ bool flext_base::InitOutlets()
 }
 
 #include "flpopns.h"
+
+#endif // __FLEXT_OUT_CPP
+
 

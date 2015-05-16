@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2010 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief Implementation of the buffer abstraction class.
 */
  
+#ifndef __FLEXT_BUF_CPP
+#define __FLEXT_BUF_CPP
+
 #include "flext.h"
 #include "flfeatures.h"
 #include <set>
@@ -25,25 +28,26 @@ $LastChangedBy$
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 #define DIRTY_INTERVAL 0   // buffer dirty check in msec
-#endif
 
-#if FLEXT_SYS == FLEXT_SYS_MAX
-// defined in flsupport.cpp
-extern const t_symbol *sym_buffer,*sym_size;
-#endif
-
-#if FLEXT_SYS == FLEXT_SYS_PD
-typedef std::set<flext::buffer *> Buffers;
-static Buffers buffers;
-
-void cb_buffer_dsp(void *c,t_signal **sp) 
+FLEXT_TEMPLATE
+class Buffers:
+    public std::set<flext::buffer *>
 {
-	for(Buffers::iterator it = buffers.begin(); it != buffers.end(); ++it)
+public:
+    static FLEXT_TEMPINST(Buffers) buffers;
+};
+
+FLEXT_TEMPIMPL(FLEXT_TEMPINST(Buffers) Buffers)::buffers;
+
+
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::cb_buffer_dsp(void *c,t_signal **sp)
+{
+    for(FLEXT_TEMPINST(Buffers)::iterator it = FLEXT_TEMPINST(Buffers)::buffers.begin(); it != FLEXT_TEMPINST(Buffers)::buffers.end(); ++it)
 		(*it)->Set();
 } 
 #endif
 
-flext::buffer::buffer(const t_symbol *bn,bool delayed):
+FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext))::buffer::buffer(const t_symbol *bn,bool delayed):
     sym(NULL),data(NULL),
     chns(0),frames(0)
 {
@@ -63,12 +67,12 @@ flext::buffer::buffer(const t_symbol *bn,bool delayed):
 	
 #if FLEXT_SYS == FLEXT_SYS_PD
 	// register buffer
-	FLEXT_ASSERT(buffers.find(this) == buffers.end());
-	buffers.insert(this);
+    FLEXT_ASSERT(FLEXT_TEMPINST(Buffers)::buffers.find(this) == FLEXT_TEMPINST(Buffers)::buffers.end());
+	FLEXT_TEMPINST(Buffers)::buffers.insert(this);
 #endif
 }
 
-flext::buffer::~buffer()
+FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext))::buffer::~buffer()
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
     if(tick) clock_free(tick);
@@ -76,12 +80,12 @@ flext::buffer::~buffer()
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 	// unregister buffer
-	FLEXT_ASSERT(buffers.find(this) != buffers.end());
-	buffers.erase(this);
+    FLEXT_ASSERT(FLEXT_TEMPINST(Buffers)::buffers.find(this) != FLEXT_TEMPINST(Buffers)::buffers.end());
+    FLEXT_TEMPINST(Buffers)::buffers.erase(this);
 #endif
 }
 
-int flext::buffer::Set(const t_symbol *s,bool nameonly)
+FLEXT_TEMPIMPL(int FLEXT_CLASSDEF(flext))::buffer::Set(const t_symbol *s,bool nameonly)
 {
     int ret = 0;
     bool valid = data != NULL; // valid now? (before change)
@@ -158,7 +162,7 @@ int flext::buffer::Set(const t_symbol *s,bool nameonly)
     return ret;
 }
 
-bool flext::buffer::Update()
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::buffer::Update()
 {
     FLEXT_ASSERT(sym);
 
@@ -209,7 +213,7 @@ bool flext::buffer::Update()
     return upd;
 }
 
-flext::buffer::lock_t flext::buffer::Lock()
+FLEXT_TEMPIMPL(FLEXT_TEMPSUB(FLEXT_CLASSDEF(flext))::buffer::lock_t FLEXT_CLASSDEF(flext))::buffer::Lock()
 {
     FLEXT_ASSERT(sym);
 #if FLEXT_SYS == FLEXT_SYS_PD
@@ -237,7 +241,7 @@ flext::buffer::lock_t flext::buffer::Lock()
 #endif
 }
 
-void flext::buffer::Unlock(flext::buffer::lock_t prv)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::buffer::Unlock(flext::buffer::lock_t prv)
 {
     FLEXT_ASSERT(sym);
 #if FLEXT_SYS == FLEXT_SYS_PD
@@ -260,7 +264,7 @@ void flext::buffer::Unlock(flext::buffer::lock_t prv)
 #endif
 }
 
-void flext::buffer::Frames(int fr,bool keep,bool zero)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::buffer::Frames(int fr,bool keep,bool zero)
 {
     FLEXT_ASSERT(sym);
 #if FLEXT_SYS == FLEXT_SYS_PD
@@ -305,7 +309,7 @@ void flext::buffer::Frames(int fr,bool keep,bool zero)
 
 
 #if FLEXT_SYS == FLEXT_SYS_PD
-void flext::buffer::SetRefrIntv(float intv) 
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::buffer::SetRefrIntv(float intv)
 { 
     interval = intv; 
     if(interval == 0 && ticking) {
@@ -314,13 +318,13 @@ void flext::buffer::SetRefrIntv(float intv)
     }
 }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-void flext::buffer::SetRefrIntv(float) {}
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::buffer::SetRefrIntv(float) {}
 #else
 #error
 #endif
 
 
-void flext::buffer::Dirty(bool force)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::buffer::Dirty(bool force)
 {
     FLEXT_ASSERT(sym);
 #if FLEXT_SYS == FLEXT_SYS_PD
@@ -343,7 +347,7 @@ void flext::buffer::Dirty(bool force)
 }
 
 #if FLEXT_SYS == FLEXT_SYS_PD
-void flext::buffer::cb_tick(buffer *b)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::buffer::cb_tick(buffer *b)
 {
     if(b->arr) garray_redraw(b->arr);
 #ifdef FLEXT_DEBUG
@@ -360,7 +364,7 @@ void flext::buffer::cb_tick(buffer *b)
 }
 #endif
 
-void flext::buffer::ClearDirty()
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::buffer::ClearDirty()
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
     cleantime = clock_getlogicaltime();
@@ -371,7 +375,7 @@ void flext::buffer::ClearDirty()
 #endif
 }
 
-bool flext::buffer::IsDirty() const
+FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::buffer::IsDirty() const
 {
     if(!sym) return false;
 #if FLEXT_SYS == FLEXT_SYS_PD
@@ -393,4 +397,7 @@ bool flext::buffer::IsDirty() const
 #endif // Jmax
 
 #include "flpopns.h"
+
+#endif // __FLEXT_BUF_CPP
+
 

@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2009 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -15,6 +15,9 @@ $LastChangedBy$
     \brief Proxy classes for the flext base class.
 */
  
+#ifndef __FLEXT_PROXY_CPP
+#define __FLEXT_PROXY_CPP
+
 #include "flext.h"
 #include "flinternal.h"
 
@@ -24,22 +27,22 @@ $LastChangedBy$
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 
-t_class *flext_base::px_class = NULL;
+FLEXT_TEMPIMPL(t_class *FLEXT_CLASSDEF(flext_base))::px_class = NULL;
 
-void flext_base::px_object::px_bang(px_object *obj)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::px_object::px_bang(px_object *obj)
 {
     Locker lock(obj->base);
     obj->base->CbMethodHandler(obj->index,sym_bang,0,NULL);
 }
 
-void flext_base::px_object::px_float(px_object *obj,t_float f)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::px_object::px_float(px_object *obj,t_float f)
 {
     t_atom a; SetFloat(a,f);
     Locker lock(obj->base);
     obj->base->CbMethodHandler(obj->index,sym_float,1,&a);
 }
 
-void flext_base::px_object::px_symbol(px_object *obj,const t_symbol *s)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::px_object::px_symbol(px_object *obj,const t_symbol *s)
 {
     t_atom a; SetSymbol(a,s);
     Locker lock(obj->base);
@@ -47,7 +50,7 @@ void flext_base::px_object::px_symbol(px_object *obj,const t_symbol *s)
 }
 
 /*
-void flext_base::px_object::px_pointer(px_object *obj,const t_gpointer *p)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::px_object::px_pointer(px_object *obj,const t_gpointer *p)
 {
     t_atom a; SetPointer(a,p);
     Locker lock(obj->base);
@@ -55,26 +58,26 @@ void flext_base::px_object::px_pointer(px_object *obj,const t_gpointer *p)
 }
 */
 
-void flext_base::px_object::px_anything(px_object *obj,const t_symbol *s,int argc,t_atom *argv)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::px_object::px_anything(px_object *obj,const t_symbol *s,int argc,t_atom *argv)
 {
     Locker lock(obj->base);
     obj->base->CbMethodHandler(obj->index,s,argc,argv);
 }
 
-void flext_base::cb_bang(flext_hdr *c)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_bang(flext_hdr *c)
 {
     Locker lock(c);
     thisObject(c)->CbMethodHandler(0,sym_bang,0,NULL);
 }
 
-void flext_base::cb_float(flext_hdr *c,t_float f)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_float(flext_hdr *c,t_float f)
 {
     t_atom a; SetFloat(a,f);
     Locker lock(c);
     thisObject(c)->CbMethodHandler(0,sym_float,1,&a);
 }
 
-void flext_base::cb_symbol(flext_hdr *c,const t_symbol *s)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_symbol(flext_hdr *c,const t_symbol *s)
 {
     t_atom a; SetSymbol(a,s);
     Locker lock(c);
@@ -82,7 +85,7 @@ void flext_base::cb_symbol(flext_hdr *c,const t_symbol *s)
 }
 
 /*
-void flext_base::cb_pointer(flext_hdr *c,const t_gpointer *p)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_pointer(flext_hdr *c,const t_gpointer *p)
 {
     t_atom a; SetPointer(a,p);
     Locker lock(c);
@@ -90,7 +93,7 @@ void flext_base::cb_pointer(flext_hdr *c,const t_gpointer *p)
 }
 */
 
-void flext_base::cb_anything(flext_hdr *c,const t_symbol *s,int argc,t_atom *argv)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_anything(flext_hdr *c,const t_symbol *s,int argc,t_atom *argv)
 {
     Locker lock(c);
     if(UNLIKELY(!s)) {
@@ -117,7 +120,7 @@ void flext_base::cb_anything(flext_hdr *c,const t_symbol *s,int argc,t_atom *arg
 }
 
 #define DEF_PROXYMSG(IX) \
-void flext_base::cb_px_ft ## IX(flext_hdr *c,t_float v) { t_atom atom; SetFloat(atom,v); Locker lock(c); thisObject(c)->CbMethodHandler(IX,sym_float,1,&atom); }
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_px_ft ## IX(flext_hdr *c,t_float v) { t_atom atom; SetFloat(atom,v); Locker lock(c); thisObject(c)->CbMethodHandler(IX,sym_float,1,&atom); }
 
 #define ADD_PROXYMSG(c,IX) \
 add_method1(c,cb_px_ft ## IX," ft " #IX,A_FLOAT)
@@ -127,7 +130,7 @@ add_method1(c,cb_px_ft ## IX," ft " #IX,A_FLOAT)
 
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 
-void flext_base::cb_anything(flext_hdr *c,const t_symbol *s,short argc,t_atom *argv)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_anything(flext_hdr *c,const t_symbol *s,short argc,t_atom *argv)
 {
     Locker lock(c);
     int const ci = proxy_getinlet((t_object *)&c->obj);
@@ -135,7 +138,7 @@ void flext_base::cb_anything(flext_hdr *c,const t_symbol *s,short argc,t_atom *a
     thisObject(c)->CbMethodHandler(ci,s,argc,argv);
 }
 
-void flext_base::cb_int(flext_hdr *c,long v)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_int(flext_hdr *c,long v)
 {
     t_atom atom; SetInt(atom,v);
     Locker lock(c);
@@ -143,7 +146,7 @@ void flext_base::cb_int(flext_hdr *c,long v)
     thisObject(c)->CbMethodHandler(ci,sym_int,1,&atom);
 }
 
-void flext_base::cb_float(flext_hdr *c,double v)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_float(flext_hdr *c,double v)
 {
     t_atom atom; SetFloat(atom,v);
     Locker lock(c);
@@ -151,7 +154,7 @@ void flext_base::cb_float(flext_hdr *c,double v)
     thisObject(c)->CbMethodHandler(ci,sym_float,1,&atom);
 }
 
-void flext_base::cb_bang(flext_hdr *c)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_bang(flext_hdr *c)
 {
     Locker lock(c);
     int const ci = proxy_getinlet((t_object *)&c->obj);
@@ -160,12 +163,12 @@ void flext_base::cb_bang(flext_hdr *c)
 
 
 #define DEF_PROXYMSG(IX) \
-void flext_base::cb_px_in ## IX(flext_hdr *c,long v) { t_atom atom; SetInt(atom,v); Locker lock(c); thisObject(c)->CbMethodHandler(IX,sym_int,1,&atom); } \
-void flext_base::cb_px_ft ## IX(flext_hdr *c,double v) { t_atom atom; SetFloat(atom,v); Locker lock(c); thisObject(c)->CbMethodHandler(IX,sym_float,1,&atom); }
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_px_in ## IX(flext_hdr *c,long v) { t_atom atom; SetInt(atom,v); Locker lock(c); thisObject(c)->CbMethodHandler(IX,sym_int,1,&atom); } \
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_px_ft ## IX(flext_hdr *c,double v) { t_atom atom; SetFloat(atom,v); Locker lock(c); thisObject(c)->CbMethodHandler(IX,sym_float,1,&atom); }
 
 /*
-void flext_base::cb_px_in ## IX(flext_hdr *c,long v) { t_atom atom; SetInt(atom,v); Locker lock(c); thisObject(c)->CbMethodHandler(IX,sym_int,1,&atom); } \
-void flext_base::cb_px_ft ## IX(flext_hdr *c,double v) { t_atom atom; SetFloat(atom,v); Locker lock(c); thisObject(c)->CbMethodHandler(IX,sym_float,1,&atom); }
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_px_in ## IX(flext_hdr *c,long v) { t_atom atom; SetInt(atom,v); Locker lock(c); thisObject(c)->CbMethodHandler(IX,sym_int,1,&atom); } \
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_px_ft ## IX(flext_hdr *c,double v) { t_atom atom; SetFloat(atom,v); Locker lock(c); thisObject(c)->CbMethodHandler(IX,sym_float,1,&atom); }
 */
 
 #define ADD_PROXYMSG(c,IX) \
@@ -195,7 +198,7 @@ DEF_PROXYMSG(8)
 DEF_PROXYMSG(9)
 
 
-void flext_base::SetProxies(t_class *c,bool dsp)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::SetProxies(t_class *c,bool dsp)
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
     // for leftmost inlet
@@ -221,8 +224,8 @@ void flext_base::SetProxies(t_class *c,bool dsp)
     addbang((method)cb_bang);
     addint((method)cb_int);  
     addfloat((method)cb_float);  
-    addmess((method)cb_anything,"list",A_GIMME,A_NOTHING); // must be explicitly given, otherwise list elements are distributed over inlets
-    addmess((method)cb_anything,"anything",A_GIMME,A_NOTHING);
+    addmess((method)cb_anything,const_cast<char *>("list"),A_GIMME,A_NOTHING); // must be explicitly given, otherwise list elements are distributed over inlets
+    addmess((method)cb_anything,const_cast<char *>("anything"),A_GIMME,A_NOTHING);
 #else
 #error Not implemented!
 #endif  
@@ -241,3 +244,7 @@ void flext_base::SetProxies(t_class *c,bool dsp)
 #endif
 
 #include "flpopns.h"
+
+#endif // __FLEXT_PROXY_CPP
+
+

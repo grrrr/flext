@@ -134,11 +134,15 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::FindMeth(int inlet,const t_symb
     ItemCont *clmethhead = ClMeths(thisClassId());
 
     // search for exactly matching tag
+#ifdef FLEXT_USE_INSTANCE_METHODS
     if(UNLIKELY(methhead) && (lst = methhead->FindList(s,inlet)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
+#endif
     if((lst = clmethhead->FindList(s,inlet)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
 
     // if nothing found try any inlet
+#ifdef FLEXT_USE_INSTANCE_METHODS
     if(UNLIKELY(methhead) && (lst = methhead->FindList(s,-1)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
+#endif
     if((lst = clmethhead->FindList(s,-1)) != NULL && TryMethTag(lst,s,argc,argv)) return true;
 
     return false;
@@ -149,11 +153,15 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::FindMethAny(int inlet,const t_s
     Item *lst;
     ItemCont *clmethhead = ClMeths(thisClassId());
 
+#ifdef FLEXT_USE_INSTANCE_METHODS
     if(UNLIKELY(methhead) && (lst = methhead->FindList(sym_anything,inlet)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
+#endif
     if((lst = clmethhead->FindList(sym_anything,inlet)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
 
     // if nothing found try any inlet
+#ifdef FLEXT_USE_INSTANCE_METHODS
     if(UNLIKELY(methhead) && (lst = methhead->FindList(sym_anything,-1)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
+#endif
     if((lst = clmethhead->FindList(sym_anything,-1)) != NULL && TryMethAny(lst,s,argc,argv)) return true;
 
     return false;

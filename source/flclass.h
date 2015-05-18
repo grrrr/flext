@@ -413,6 +413,7 @@ public:
 
 	typedef bool (*methfun)(flext_base *c);
 
+#ifdef FLEXT_USE_INSTANCE_METHODS
 	/*!	\defgroup FLEXT_C_ADDMETHOD Method handling (object scope)
 		\internal
 		@{ 
@@ -456,7 +457,8 @@ public:
 	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,const t_symbol *&)) { AddMethod(inlet,MakeSymbol(tag),m); }
 	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,float &)) { AddMethod(inlet,MakeSymbol(tag),m); }
 	void AddMethod(int inlet,const char *tag,bool (*m)(flext_base *,int &)) { AddMethod(inlet,MakeSymbol(tag),m); }
-
+#endif
+    
 	// ¥schedule call of the CbIdle method during the next idle cycle
 	void AddIdle();
 
@@ -608,6 +610,7 @@ protected:
 	virtual void Exit();
 	
 
+#ifdef FLEXT_USE_INSTANCE_METHODS
 	/*!	\defgroup FLEXT_C_ATTR Attribute handling methods (object scope)
 		@{ 
 	*/
@@ -626,6 +629,7 @@ protected:
 	void AddAttrib(const char *attr,bool (*get)(flext_base *,t_symptr &),bool (*set)(flext_base *,t_symptr &)) { AddAttrib(MakeSymbol(attr),get,set); }
 	void AddAttrib(const char *attr,bool (*get)(flext_base *,AtomList *&),bool (*set)(flext_base *,AtomList *&)) { AddAttrib(MakeSymbol(attr),get,set); }
 	void AddAttrib(const char *attr,bool (*get)(flext_base *,AtomAnything *&),bool (*set)(flext_base *,AtomAnything *&)) { AddAttrib(MakeSymbol(attr),get,set); }
+#endif
 
 //!		@} FLEXT_C_ATTR
 
@@ -896,18 +900,24 @@ public:
 		bool (*fun)(flext_base *,t_symbol *s,int,t_atom *,void *);
         pxbnd_object *px;
 	};
-	
+
+#ifdef FLEXT_USE_INSTANCE_METHODS
 	ItemCont *ThMeths() { if(!methhead) methhead = new ItemCont; return methhead; }
+#endif
 	static ItemCont *ClMeths(t_classid c);
 
 	//! \brief This is the central function to add message handlers. It is used by all other AddMethod incarnations.
 	static void AddMethod(ItemCont *ma,int inlet,const t_symbol *tag,methfun fun,metharg tp,...); 
 
+#ifdef FLEXT_USE_INSTANCE_METHODS
 	ItemCont *ThAttrs() { return attrhead; }
+#endif
 	static ItemCont *ClAttrs(t_classid c);
 
     static void AddAttrib(ItemCont *aa,ItemCont *ma,const t_symbol *attr,metharg tp,methfun gfun,methfun sfun);
+#ifdef FLEXT_USE_INSTANCE_METHODS
     void AddAttrib(const t_symbol *attr,metharg tp,methfun gfun,methfun sfun);
+#endif
 	static void AddAttrib(t_classid c,const t_symbol *attr,metharg tp,methfun gfun,methfun sfun);
 
 private:
@@ -958,7 +968,9 @@ private:
 	typedef bool (*methfun_4)(flext_base *c,t_any &,t_any &,t_any &,t_any &);
 	typedef bool (*methfun_5)(flext_base *c,t_any &,t_any &,t_any &,t_any &,t_any &);
 
+#ifdef FLEXT_USE_INSTANCE_METHODS
 	mutable ItemCont *methhead;
+#endif
 	mutable ItemCont *bindhead;
 	
 	bool FindMeth(int inlet,const t_symbol *s,int argc,const t_atom *argv);
@@ -967,7 +979,9 @@ private:
 	bool TryMethSym(Item *lst,const t_symbol *s);
 	bool TryMethAny(Item *lst,const t_symbol *s,int argc,const t_atom *argv);
 
+#ifdef FLEXT_USE_INSTANCE_METHODS
 	mutable ItemCont *attrhead;
+#endif
 	mutable AttrDataCont *attrdata;
 
 	AttrItem *FindAttrib(const t_symbol *tag,bool get,bool msg = false) const;

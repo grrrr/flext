@@ -41,16 +41,22 @@ FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext_base))::FLEXT_CLASSDEF(flext_base)()
 {
     FLEXT_LOG1("%s - flext logging is on",thisName());
 
+#ifdef FLEXT_USE_INSTANCE_METHODS
     methhead = NULL;
+#endif
     bindhead = NULL;
 
     if(HasAttributes()) {
         // initialize when attribute processing is enabled
+#ifdef FLEXT_USE_INSTANCE_METHODS
         attrhead = new ItemCont;
+#endif
         attrdata = new AttrDataCont;
     }
     else {
+#ifdef FLEXT_USE_INSTANCE_METHODS
         attrhead = NULL;
+#endif
         attrdata = NULL;
     }
 }
@@ -111,8 +117,10 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::Exit()
 
     // delete message lists
     if(bindhead) delete bindhead;  // ATTENTION: the object must free all memory associated to bindings itself
+#ifdef FLEXT_USE_INSTANCE_METHODS
     if(methhead) delete methhead;
     if(attrhead) delete attrhead;
+#endif
     if(attrdata) delete attrdata;
     
 #if FLEXT_SYS == FLEXT_SYS_PD || FLEXT_SYS == FLEXT_SYS_MAX

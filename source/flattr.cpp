@@ -102,6 +102,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddAttrib(ItemCont *aa,ItemCont
 	}
 }
 
+#ifdef FLEXT_USE_INSTANCE_METHODS
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddAttrib(const t_symbol *attr,metharg tp,methfun gfun,methfun sfun)
 {
 	if(HasAttributes())
@@ -109,6 +110,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddAttrib(const t_symbol *attr,
 	else
 		error("%s - attribute procession is not enabled!",thisName());
 }
+#endif
 
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddAttrib(t_classid c,const t_symbol *attr,metharg tp,methfun gfun,methfun sfun)
 {
@@ -118,12 +120,18 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddAttrib(t_classid c,const t_s
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ListAttrib(AtomList &la) const
 {
 	typedef TablePtrMap<int,const t_symbol *,32> AttrList;
-	AttrList list[2];
     ItemCont *clattrhead = ClAttrs(thisClassId());
 
-	int i;
-	for(i = 0; i <= 1; ++i) {
+    int i = 0;
+#ifdef FLEXT_USE_INSTANCE_METHODS
+    AttrList list[2];
+	for(; i <= 1; ++i) {
         ItemCont *a = i?attrhead:clattrhead;
+#else
+    AttrList list[1];
+    {
+        ItemCont *a = clattrhead;
+#endif
 		if(a && a->Contained(0)) {
             ItemSet &ai = a->GetInlet();
             for(typename ItemSet::iterator as(ai); as; ++as) {
@@ -136,11 +144,17 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ListAttrib(AtomList &la) const
 		}
 	}
 
-	la((int)(list[0].size()+list[1].size()));
 	int ix = 0;
-	for(i = 0; i <= 1; ++i)
+#ifdef FLEXT_USE_INSTANCE_METHODS
+    la((int)(list[0].size()+list[1].size()));
+    for(i = 0; i <= 1; ++i) {
+#else
+    la((int)(list[0].size()));
+    {
+#endif
 		for(AttrList::iterator it(list[i]); it; ++it) 
 			SetSymbol(la[ix++],it.data());
+    }
 }
 
 FLEXT_TEMPIMPL(int FLEXT_CLASSDEF(flext_base))::CheckAttrib(int argc,const t_atom *argv)
@@ -214,17 +228,20 @@ FLEXT_TEMPIMPL(FLEXT_TEMPSUB(FLEXT_CLASSDEF(flext_base))::AttrItem *FLEXT_CLASSD
 {
     ItemCont *clattrhead = ClAttrs(thisClassId());
 
+    AttrItem *a = NULL;
+#ifdef FLEXT_USE_INSTANCE_METHODS
     // first search within object scope
-	AttrItem *a = NULL;
     {
         for(Item *lst = attrhead->FindList(tag); lst; lst = lst->nxt) {
             AttrItem *b = (AttrItem *)lst;
             if(get?b->IsGet():b->IsSet()) { a = b; break; }
         }
     }
-
+#endif
+    
     // then (if nothing found) search within class scope
-	if(!a) {
+	if(!a)
+    {
         for(Item *lst = clattrhead->FindList(tag); lst; lst = lst->nxt) {
             AttrItem *b = (AttrItem *)lst;
             if(get?b->IsGet():b->IsSet()) { a = b; break; }
@@ -408,18 +425,15 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::BangAttribAll()
 {
     ItemCont *clattrhead = ClAttrs(thisClassId());
 
+#ifdef FLEXT_USE_INSTANCE_METHODS
 	for(int i = 0; i <= 1; ++i) {
         ItemCont *a = i?attrhead:clattrhead;
+#else
+    {
+        ItemCont *a = clattrhead;
+#endif
 		if(a) {
             ItemSet &ai = a->GetInlet(); // \todo need to check for presence of inlet 0?
-/*
-            for(ItemSet::iterator as = ai.begin(); as != ai.end(); ++as) {
-                for(Item *al = as.data(); al; al = al->nxt) {
-					AttrItem *a = (AttrItem *)al;
-	        		if(a->IsGet() && a->BothExist()) BangAttrib(as.key(),a);
-                }
-			}
-*/
             for(typename ItemSet::iterator as(ai); as; ++as) {
                 for(Item *al = as.data(); al; al = al->nxt) {
 					AttrItem *a = (AttrItem *)al;

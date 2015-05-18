@@ -96,12 +96,18 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddMethod(ItemCont *ma,int inle
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ListMethods(AtomList &la,int inlet) const
 {
 	typedef TablePtrMap<int,const t_symbol *,32> MethList;
-    MethList list[2];
     ItemCont *clmethhead = ClMeths(thisClassId());
 
-    int i;
-    for(i = 0; i <= 1; ++i) {
+    int i = 0;
+#ifdef FLEXT_USE_INSTANCE_METHODS
+    MethList list[2];
+    for(; i <= 1; ++i) {
         ItemCont *a = i?methhead:clmethhead;
+#else
+    MethList list[1];
+    {
+        ItemCont *a = clmethhead;
+#endif
         if(a && a->Contained(inlet)) {
             ItemSet &ai = a->GetInlet(inlet);
             for(typename ItemSet::iterator as(ai); as; ++as) {
@@ -117,11 +123,17 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ListMethods(AtomList &la,int in
         }
     }
 
-    la((int)list[0].size()+(int)list[1].size());
     int ix = 0;
-    for(i = 0; i <= 1; ++i)
+#ifdef FLEXT_USE_INSTANCE_METHODS
+    la((int)list[0].size()+(int)list[1].size());
+    for(i = 0; i <= 1; ++i) {
+#else
+    la((int)list[0].size());
+    {
+#endif
         for(MethList::iterator it(list[i]); it; ++it) 
             SetSymbol(la[ix++],it.data());
+    }
 }
 
 FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::cb_ListMethods(flext_base *c,int argc,const t_atom *argv)

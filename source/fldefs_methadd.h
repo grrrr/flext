@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -113,18 +113,18 @@ FLEXT_CADDMETHOD_3(CL,IX,flext::MakeSymbol(M_TAG),M_FUN,int,int,int)
 
 //! @} FLEXT_D_CADDMETHOD
 
+//! Set timer callback
+#define FLEXT_ADDTIMER(TMR,M_FUN) \
+\
+TMR.SetCallback(*this,FLEXT_CALL_PRE(M_FUN))
 
+#ifdef FLEXT_USE_INSTANCE_METHODS
 /*! \defgroup FLEXT_D_ADDMETHOD Add flext methods
     \ingroup FLEXT_D_METHOD
     \note These can only be used at object construction time 
     \note (in constructor or in Init() function before call to parent's Init())
     @{ 
 */
-
-//! Set timer callback
-#define FLEXT_ADDTIMER(TMR,M_FUN) \
-\
-TMR.SetCallback(*this,FLEXT_CALL_PRE(M_FUN))
 
 //! Enable list element distribution over inlets (if no better handler found)
 #define FLEXT_ADDDIST() \
@@ -232,5 +232,6 @@ FLEXT_ADDMETHOD_3(IX,flext::MakeSymbol(M_TAG),M_FUN,int,int,int)
 
 
 //! @} FLEXT_D_ADDMETHOD
+#endif
 
 #endif

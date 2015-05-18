@@ -2,7 +2,7 @@
 
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -70,7 +70,8 @@ AddAttrib(CL,flext::MakeSymbol(NAME),(bool (*)(flext_base *,int &))(FLEXT_GET_PR
 //! @} FLEXT_D_CADDATTR
 
 
-/*! \defgroup FLEXT_D_ADDATTR Announce object attributes 
+#ifdef FLEXT_USE_INSTANCE_METHODS
+/*! \defgroup FLEXT_D_ADDATTR Announce object attributes
     \ingroup FLEXT_D_ATTRIB
     \note These can only be used at object construction time
     \note (in constructor or in Init() function before call to parent's Init())
@@ -119,6 +120,7 @@ AddAttrib(flext::MakeSymbol(NAME),(bool (*)(flext_base *,int &))(FLEXT_GET_PRE(G
 AddAttrib(flext::MakeSymbol(NAME),(bool (*)(flext_base *,int &))(FLEXT_GET_PRE(FUN)),(bool (*)(flext_base *,int &))(FLEXT_SET_PRE(FUN)))
 
 //! @} FLEXT_D_ADDATTR
+#endif
 
 
 #endif

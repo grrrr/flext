@@ -73,7 +73,7 @@ static bool FLEXT_SET_PRE(FUN)(flext_base *c,const t_symbol *&arg) \
 
 //! Declare a set function for a variable list attribute
 #define FLEXT_CALLSET_V(FUN) \
-static bool FLEXT_SET_PRE(FUN)(flext_base *c,AtomList *&arg) \
+static bool FLEXT_SET_PRE(FUN)(flext_base *c,flext::AtomList *&arg) \
 { FLEXT_CAST<thisType *>(c)->FUN(*arg); return true; }
 
 //! @} FLEXT_DA_CALLSET
@@ -114,7 +114,7 @@ static bool FLEXT_GET_PRE(FUN)(flext_base *c,const t_symbol *&arg) \
 
 //! Declare a get function for a variable list attribute
 #define FLEXT_CALLGET_V(FUN) \
-static bool FLEXT_GET_PRE(FUN)(flext_base *c,AtomList *&arg) \
+static bool FLEXT_GET_PRE(FUN)(flext_base *c,flext::AtomList *&arg) \
 { FLEXT_CAST<thisType *>(c)->FUN(*arg); return true; }
 
 //! @} FLEXT_DA_CALLGET

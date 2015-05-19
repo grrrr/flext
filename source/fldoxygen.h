@@ -14,7 +14,7 @@
 
 Currently there exist two widely used modular systems for real-time audio that can be
 extended by self-written objects (so called "externals"):<br>
-Max/MSP (http://www.cycling74.com) and Pure Data (http://www.pure-data.org) .
+Max (http://www.cycling74.com) and Pure Data (http://www.pure-data.org) .
 
 Both come with APIs that are not very different (as they share their origin), but as well not quite the same.
 Flext seeks to provide a unifying interface for the APIs of those real-time systems while also

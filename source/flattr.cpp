@@ -1,14 +1,9 @@
-/* 
-
-flext - C++ layer for Max/MSP and pd (pure data) externals
+/*
+flext - C++ layer for Max and Pure Data externals
 
 Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
-WARRANTIES, see the file, "license.txt," in this distribution.  
-
-$LastChangedRevision$
-$LastChangedDate$
-$LastChangedBy$
+WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 /*! \file flattr.cpp
@@ -54,7 +49,7 @@ FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext_base))::AttrDataCont::~AttrDataCont() { clea
 
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AttrDataCont::clear()
 {
-    for(typename AttrDataCont::iterator it(*this); it; ++it) delete it.data();
+    for(FLEXT_TEMP_TYPENAME AttrDataCont::iterator it(*this); it; ++it) delete it.data();
     TablePtrMap<const t_symbol *,AttrData *,8>::clear();
 }
 
@@ -126,7 +121,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ListAttrib(AtomList &la) const
         ItemCont *a = i?attrhead:clattrhead;
 		if(a && a->Contained(0)) {
             ItemSet &ai = a->GetInlet();
-            for(typename ItemSet::iterator as(ai); as; ++as) {
+            for(FLEXT_TEMP_TYPENAME ItemSet::iterator as(ai); as; ++as) {
                 for(Item *al = as.data(); al; al = al->nxt) {
 					AttrItem *aa = (AttrItem *)al;
 					list[i].insert(aa->index,as.key());
@@ -420,7 +415,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::BangAttribAll()
                 }
 			}
 */
-            for(typename ItemSet::iterator as(ai); as; ++as) {
+            for(FLEXT_TEMP_TYPENAME ItemSet::iterator as(ai); as; ++as) {
                 for(Item *al = as.data(); al; al = al->nxt) {
 					AttrItem *a = (AttrItem *)al;
 	        		if(a->IsGet() && a->BothExist()) BangAttrib(as.key(),a);

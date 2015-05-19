@@ -1,14 +1,9 @@
-/* 
-
-flext - C++ layer for Max/MSP and pd (pure data) externals
+/*
+flext - C++ layer for Max and Pure Data externals
 
 Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
-WARRANTIES, see the file, "license.txt," in this distribution.  
-
-$LastChangedRevision$
-$LastChangedDate$
-$LastChangedBy$
+WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 /*! \file flitem.cpp
@@ -27,7 +22,7 @@ FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext_base))::ItemSet::~ItemSet() { clear(); }
 
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ItemSet::clear()
 {
-    for(typename TablePtrMapDef::iterator it(*this); it; ++it) delete it.data();
+    for(FLEXT_TEMP_TYPENAME TablePtrMapDef::iterator it(*this); it; ++it) delete it.data();
     TablePtrMap<const t_symbol *,Item *,8>::clear();
 }
 

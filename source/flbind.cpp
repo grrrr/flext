@@ -1,14 +1,9 @@
-/* 
-
-flext - C++ layer for Max/MSP and pd (pure data) externals
+/*
+flext - C++ layer for Max and Pure Data externals
 
 Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
-WARRANTIES, see the file, "license.txt," in this distribution.  
-
-$LastChangedRevision$
-$LastChangedDate$
-$LastChangedBy$
+WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 /*! \file flbind.cpp
@@ -211,7 +206,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::UnbindMethod(const t_symbol *sy
         }
         else {
             // take any entry that matches
-            for(typename ItemSet::iterator si(set); si && !item; ++si) {
+            for(FLEXT_TEMP_TYPENAME ItemSet::iterator si(set); si && !item; ++si) {
                 for(Item *i = si.data(); i; i = i->nxt) {
                     BindItem *bit = (BindItem *)i;
                     if(!fun || bit->fun == fun) { 
@@ -257,7 +252,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::UnbindAll()
     if(bindhead && bindhead->Contained(0)) {
         ItemSet &set = bindhead->GetInlet();
 //        for(ItemSet::iterator si = set.begin(); si != set.end(); ++si) {
-        for(typename ItemSet::iterator si(set); si; ++si) {
+        for(FLEXT_TEMP_TYPENAME ItemSet::iterator si(set); si; ++si) {
             Item *lst = si.data();
             while(lst) {
                 Item *nxt = lst->nxt;

@@ -1,14 +1,9 @@
-/* 
-
-flext - C++ layer for Max/MSP and pd (pure data) externals
+/*
+flext - C++ layer for Max and Pure Data externals
 
 Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
-WARRANTIES, see the file, "license.txt," in this distribution.  
-
-$LastChangedRevision$
-$LastChangedDate$
-$LastChangedBy$
+WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 /*! \file flmeth.cpp
@@ -104,7 +99,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::ListMethods(AtomList &la,int in
         ItemCont *a = i?methhead:clmethhead;
         if(a && a->Contained(inlet)) {
             ItemSet &ai = a->GetInlet(inlet);
-            for(typename ItemSet::iterator as(ai); as; ++as) {
+            for(FLEXT_TEMP_TYPENAME ItemSet::iterator as(ai); as; ++as) {
                 for(Item *al = as.data(); al; al = al->nxt) {
                     MethItem *aa = (MethItem *)al;
                     // check it's not related to an attribute

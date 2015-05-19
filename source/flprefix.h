@@ -1,14 +1,9 @@
-/* 
-
-flext - C++ layer for Max/MSP and pd (pure data) externals
+/*
+flext - C++ layer for Max and Pure Data externals
 
 Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
-WARRANTIES, see the file, "license.txt," in this distribution.  
-
-$LastChangedRevision$
-$LastChangedDate$
-$LastChangedBy$
+WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 /*! \file flprefix.h
@@ -455,11 +450,13 @@ $LastChangedBy$
 #   define FLEXT_TEMPIMPL(fun) template<typename flext_T> fun<flext_T>
 #   define FLEXT_TEMPINST(fun) fun<void>
 #   define FLEXT_TEMPSUB(fun) typename fun<flext_T>
+#   define FLEXT_TEMP_TYPENAME typename
 #else
 #   define FLEXT_TEMPLATE
 #   define FLEXT_TEMPIMPL(fun) fun
 #   define FLEXT_TEMPINST(fun) fun
 #   define FLEXT_TEMPSUB(fun) fun
+#   define FLEXT_TEMP_TYPENAME
 #endif
 
 #endif // __FLEXT_PREFIX_H

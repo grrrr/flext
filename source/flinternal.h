@@ -73,6 +73,7 @@ typedef void t_outlet;
 //#define object_new(clss) newobject(clss)
 #define object_free(obj) freeobject((object *)(obj))
 
+#define add_dsp64(clss,meth) addmess((method)meth,const_cast<char *>("dsp64"),A_CANT,A_NOTHING)
 #define add_dsp(clss,meth) addmess((method)meth,const_cast<char *>("dsp"),A_CANT,A_NOTHING)
 #define add_bang(clss,meth) addbang((method)meth)
 #define add_float(clss,meth) addfloat((method)meth)
@@ -102,8 +103,12 @@ typedef void t_outlet;
 #define outlet_flint(o,v) outlet_int(o,(int)(v))
 #define outlet_symbol(o,s) outlet_anything(o,s,0,NULL)
 
-typedef t_perfroutine t_dspmethod;
 
+#if MSP64
+typedef t_perfroutine64 t_dspmethod;
+#else
+typedef t_perfroutine t_dspmethod;
+#endif
 #define CRITON() short state = lockout_set(1)
 #define CRITOFF() lockout_set(state) 
 

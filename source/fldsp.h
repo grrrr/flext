@@ -54,7 +54,14 @@ public:
 	int Blocksize() const { return blksz; }
     
 	//! returns array of input vectors (CntInSig() vectors)
-    t_sample *const *InSig() const { return vecs; }
+    t_sample *const *InSig() const {
+#if MSP64
+        return inVec;
+#else
+        
+        return vecs;
+#endif
+    }
 
 	//! returns input vector
     t_sample *InSig(int i) const { return InSig()[i]; }
@@ -63,7 +70,10 @@ public:
     // \todo cache that returned pointer
     t_sample *const *OutSig() const 
     { 
-        int i = CntInSig(); 
+        int i = CntInSig();
+#if MSP64
+        return outVec;
+#else
         // in PD we have at least one actual dsp in vector
 #if FLEXT_SYS == FLEXT_SYS_PD
         return vecs+(i?i:1); 
@@ -71,6 +81,7 @@ public:
         return vecs+i; 
 #else
 #error
+#endif
 #endif
     }
 
@@ -95,11 +106,13 @@ public:
         \return true (default)... use DSP, false, don't use DSP
     */
 	virtual bool CbDsp();
+    virtual bool CbDsp64();
 
 	/*! \brief Called with every signal vector - here you do the dsp calculation
         flext_dsp::CbSignal fills all output vectors with silence
     */
-	virtual void CbSignal();
+	virtual void CbSignal();    
+    virtual void CbSignal64();
 
 
     /*! \brief Deprecated method for CbSignal
@@ -163,7 +176,14 @@ private:
 	// not static, could be different in different patchers..
 	float srate; 
 	int blksz;
-	t_signalvec *vecs;
+	
+    
+#if MSP64
+    t_signalvec * inVec;
+    t_signalvec * outVec;
+#else
+    t_signalvec *vecs;
+#endif
 
 	// setup function
 	static void Setup(t_classid c);
@@ -175,10 +195,18 @@ private:
 
 	static inline flext_dsp *thisObject(flext_hdr *c) { return FLEXT_CAST<flext_dsp *>(c->data); } 
 
-	void SetupDsp(t_signal **sp);
+	
+    
 
 	// dsp stuff
-	static t_int *dspmeth(t_int *w); 
+	
+#if MSP64
+    static void dspmeth64(flext_hdr *x, t_object *dsp64, double **ins, long numins, double **outs, long numouts, long sampleframes, long flags, void *userparam);
+    void SetupDsp64(flext_hdr *x, t_object *dsp64, short *count, double samplerate, long maxvectorsize, long flags);
+#else
+    void SetupDsp(t_signal **sp);
+    static t_int *dspmeth(t_int *w);
+#endif
 };
 
 #include "flpopns.h"

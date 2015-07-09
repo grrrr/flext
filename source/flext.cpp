@@ -159,7 +159,11 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddMessageMethods(t_class *c,bo
     
     if(dsp) {
 #if FLEXT_SYS == FLEXT_SYS_MAX
+#if MSP64
+        add_dsp64(c,cb_dsp64);
+#else
         add_dsp(c,cb_dsp);
+#endif
         dsp_initclass();
 #elif FLEXT_SYS == FLEXT_SYS_PD
         if(dspin)
@@ -246,6 +250,33 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_assist(flext_hdr *c,void * /
 }
 #endif
 
+
+#if MSP64
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_dsp64(flext_hdr *c, t_object *dsp64, short *count, double samplerate, long maxvectorsize, long flags)
+{
+    Locker lock(c);
+    flext_base *bobj = thisObject(c);
+	
+#if FLEXT_SYS == FLEXT_SYS_MAX
+	// we must extra-check here if it is really a DSP object
+	// obviously, for objects that are part of a library, one dsp_initclass enables DSP for all
+	if(!bobj->IsDSP()) return;
+#endif
+    
+	flext_dsp *obj;
+#ifdef FLEXT_DEBUG
+    obj = dynamic_cast<flext_dsp *>(bobj);
+#else
+    obj = static_cast<flext_dsp *>(bobj);
+#endif
+    
+    FLEXT_ASSERT(obj);
+	obj->SetupDsp64(c,dsp64,count,samplerate,maxvectorsize,flags);
+    
+}
+
+#else
+
 #if FLEXT_SYS == FLEXT_SYS_MAX
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_dsp(flext_hdr *c,t_signal **sp,short *count)
 #else
@@ -271,6 +302,11 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_dsp(flext_hdr *c,t_signal **
     FLEXT_ASSERT(obj);
 	obj->SetupDsp(sp);
 }
+#endif
+
+
+
+
 
 FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::CbIdle() { return 0; }
 

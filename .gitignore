@@ -1,6 +1,7 @@
 .DS_Store
 config.txt
 pd-darwin/
+max-darwin/
 buildsys/config-*.txt
 flext.xcodeproj/project.xcworkspace/
 flext.xcodeproj/xcuserdata/

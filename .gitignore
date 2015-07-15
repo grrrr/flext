@@ -33,3 +33,23 @@ flext.xcodeproj/xcuserdata/
 *.exe
 *.out
 *.app
+
+# autoconf temporary files
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache
+compile
+config.guess
+config.log
+config.status
+config.sub
+configure
+depcomp
+install-sh
+libtool
+ltmain.sh
+missing
+source/.deps
+source/Makefile
+source/Makefile.in

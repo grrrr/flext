@@ -66,7 +66,8 @@ nobase_pkginclude_HEADERS = \
 	lockfree/atomic_int.hpp \
 	lockfree/atomic_ptr.hpp \
 	lockfree/fifo.hpp \
-	lockfree/stack.hpp
+	lockfree/stack.hpp \
+	$(SRCS_FLEXT)
 
 
 

@@ -6,7 +6,7 @@ includedir=@includedir@/flext
 Name: pd-flext
 Description: C++ glue layer for Pure Data and Max
 Version: @VERSION@
-Cflags: -I${includedir} -DPD -DFLEXT_SHARED
+Cflags: -I${includedir} -DPD -DFLEXT_SYS=2 -DFLEXT_SHARED
 Libs: -L${libdir} -lflext-pd
 
 ## sections below ought to be factored out into standalone .pc files

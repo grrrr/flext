@@ -148,7 +148,7 @@ into the default location.
 =======================
 
 The flext build system can be used to compile flext-based externals or also
-native PD and Max/MSP externals, provided there is a package.txt file in the project folder.
+native Pd and Max/MSP externals, provided there is a package.txt file in the project folder.
 
 In the shell, change to the project folder.
 Then, simply run the flext build script, 
@@ -204,7 +204,7 @@ then you can run
 ./configure --help 
 to get a page of options.
 
-You need to pass the path to the PD source files or the Max SDK to the ./configure script, 
+You need to pass the path to the Pd source files or the Max SDK to the ./configure script,
 e.g. on OS X with something like
 ./configure --enable-system=pd --with-sysdir=/Applications/Pd-0.40-2/Contents/Resources/src
 
@@ -234,7 +234,7 @@ Flext can be compiled straightforward as a static or shared library, in release 
 Some preprocessor symbols must be defined depending on the build mode and the realtime system it is targetted for.
 
 for Max/MSP: FLEXT_SYS = 1
-for PD: FLEXT_SYS = 2
+for Pd: FLEXT_SYS = 2
 
 for a debug build: FLEXT_DEBUG
 
@@ -254,7 +254,7 @@ for a shared library (always multi-threaded): FLEXT_SHARED
 
     Xcode projects often use some Source Trees (definable in the Xcode Preferences).
     - Flext - the flext main folder
-    - PD - the PD installation
+    - PD - the Pd installation
     - Max SDK - the Max SDK (path ending with "c74support")
     - Max Common - Max common files (normally /Library/Application\ Support/Cycling\ \'74 )
 

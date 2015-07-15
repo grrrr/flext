@@ -35,7 +35,7 @@ Version history:
 - fixed dangerous spot (also memory leak) with message queuing
 - fixed buggy freeing of memory for AtomListStatic
 - optimizations around method registration
-- preprocessor symbol FLEXT_COMPATIBLE - if defined don't implement specialities of either PD or Max/MSP
+- preprocessor symbol FLEXT_COMPATIBLE - if defined don't implement specialities of either Pd or Max/MSP
 - Max: fixed reported bug (#67), where list elements are distributed over inlets
 - added thisParent type, which refers to the class from which the current flext class is derived (as given in FLEXT_HEADER)
 - bang method can also by added with FLEXT_(C)ADDMETHOD (FLEXT_(C)ADDBANG is still an alias)
@@ -46,7 +46,7 @@ Version history:
 - more ToOut/Sys* methods
 - fixed help name definition at class setup
 - added gcc branch hinting
-- PD: possibility to create DSP classes without main DSP inlet (use e.g. FLEXT_DSP0_NEW)
+- Pd: possibility to create DSP classes without main DSP inlet (use e.g. FLEXT_DSP0_NEW)
 - fixed atom sorting (symbols were sorted by pointer, not by content)
 - updated build system to handle UB on OSX (including architecture-specific compiler flags)
 - new idle callback/method functionality
@@ -69,11 +69,11 @@ Version history:
 - reconsidered flext::buffer::Update
 - enhanced buffer handling
 - support for buffer locking (flext::buffer::Lock() and Unlock()) - it's a must for Max/MSP at least
-- use new PD idle callback for queues messages (currently in devel_0_38)
+- use new Pd idle callback for queues messages (currently in devel_0_38)
 - fixed bug with unregistering for bound symbols
 - removed virtual m_assist function (which was only useful for Max)... stick to static assist strings
 - removed virtual flext_dsp::m_enable function (which wasn't present for Max/MSP)
-- added m_click method which gets called on alt-click (PD) resp. double clicks (Max) onto the object box
+- added m_click method which gets called on alt-click (Pd) resp. double clicks (Max) onto the object box
 - in ToOut check if we are inside dsp (and use ToQueue then...)
 - some restructuring and use symbols (rather than char *) natively for AddMethod* and AddAttrib* functions
 - added some more SIMD functionality
@@ -99,7 +99,7 @@ Version history:
 - fixes for Max 4.5 headers
 - removed Mach-O/CFM glue stuff again and added makefiles for Max/MachO
 - in flext::StopThread don't wait for thread to have stopped!
-- support PD tooltips (only in devel branch at the moment)
+- support Pd tooltips (only in devel branch at the moment)
 - attribute editor: added individual apply buttons
 - attribute editor: added escaping for , and ; 
 - attribute editor: zoomed editor accepts , as newline separator
@@ -120,14 +120,14 @@ Version history:
 - fixed small problem with buffer->Valid() on startup
 - fixed buffer overrun problems with flext::post, flext::error... (but still to improve)
 - improved handling of patcher arguments
-- also initialize flext::sym_int as MakeSymbol("int") for PD (since the variable is there anyhow)
+- also initialize flext::sym_int as MakeSymbol("int") for Pd (since the variable is there anyhow)
 - fixed bug with attribute dumping
 - default arguments for object construction (types float0,int0,t_symtype0 for FLEXT_NEW*)
 - added flext::sym__ for empty symbol ""
 
 0.4.5:
 - added some more SIMD functions
-- PD attributes: added a TCL/TK editor dialog ("properties") and save attributes to patcher
+- Pd attributes: added a TCL/TK editor dialog ("properties") and save attributes to patcher
 - fixed wrong returned result of flext::buffer::set function
 - fix for linux static exported function name-clash (individual linker namings for exported flext base classes)
 - made message queue stuff global (static) for all flext objects
@@ -136,7 +136,7 @@ Version history:
 - "getattributes" or "getmethods" output lists are now alphabethically sorted
 - flext::StopThread function to terminate running threads (started with LaunchThread)
 - added flext::CmpAtom and AtomList::operator < methods ... useful for using lists as keys for STL
-- make use of new PD thread locking (PD functions sys_lock() and sys_unlock()), queue messages only if necessary
+- make use of new Pd thread locking (Pd functions sys_lock() and sys_unlock()), queue messages only if necessary
 - better FLEXT_OSAPI resolution
 - ListAttributes (or the getattributes message) now lists attributes in the order they were created (first class, then object scope)
 - enforcing usage of STL
@@ -155,7 +155,7 @@ Version history:
 - added flext_base::ToSelf* methods for queued (deferred) self messaging
 - deleted flext::buffer console outputs for undefined arrays/buffer~s: should be done by externals
 - a few changes for the flext shared library
-- tiny update for PD 0.37 header file usage
+- tiny update for Pd 0.37 header file usage
 - fixed a bug associated to attribute argument lists
 - added functions for version number and string (flext::Version and flext::VerStr, mainly for usage of a shared flext library)
 - flext_base::UnbindMethod returns user data
@@ -170,7 +170,7 @@ Version history:
 - added flext::Forward function to send messages to bound symbols
 - added "zero" flag to flext::buffer resize operation
 - fixed bug for Max/MSP buffer resize with preservation of contents
-- fixed bug with thread initialization (caused PD@OSX to crash on startup)
+- fixed bug with thread initialization (caused Pd@OSX to crash on startup)
 - flext::setup is only run once now
 - fixed creation bug with objects that have attributes but no outlets
 - added FLEXT_BINDMETHOD,FLEXT_UNBINDMETHOD to bind a method to a symbol 
@@ -185,7 +185,7 @@ Version history:
 - MaxMSP: added assist string for attribute outlets
 - added new POSIX for ThrCond::TimedWait (but still have to find out when to enable it....)
 - added CopySamples and ZeroSamples
-- fixed bug for DSP object with zero signal inlets in PD
+- fixed bug for DSP object with zero signal inlets in Pd
 - added validity check for sample buffers
 
 0.4.1:
@@ -202,7 +202,7 @@ Version history:
 	(this is possibly only a problem for the signal2 tutorial example)
 - added flext::GetType(t_atom &), flext::ZeroMem
 - put the clock_delay for the message queue inside the thread-locked area
-	Ok for the actual object, but PD has to be thread-safe here as well
+	Ok for the actual object, but Pd has to be thread-safe here as well
 - BACKWARDS-INCOMPATIBLE CHANGE: flext_base::m_methodmain and flext_base::m_method_ have got 
 	const modifiers.... these virtual methods are used rarely (except for example in py/pyext)
 - now MUCH cleaner platform identification... FLEXT_SYS,FLEXT_OS,FLEXT_CPU definitions
@@ -229,7 +229,7 @@ Version history:
 - introduced Max/Jitter-like attribute functionality ("@value" command line, "getvalue" get and "value" set functions)
 - introduced a flext static class for general flext functions (to clean up the flext_base class)
 - creation argument handling is now done by flext
-	no more weird PD re-ordering of arguments 
+	no more weird Pd re-ordering of arguments
 - no more support for the Apple MPW compiler - MacOS9 is dying anyway...
 - calling SetupInOut() has become obsolete 
 	- flext creates all inlets/outlets by itself after the constructor has finished
@@ -237,7 +237,7 @@ Version history:
 	- there is a virtual bool Init() function that may be used for such initialization
 - completely redesigned FLEXT_NEW macros, usage of dynamic classes (in fllib.cpp)
 - added ToQueue* functions - like ToOut* but messages or not directly sent (well suited for deadlock situations)
-- introduced additional per-class methods and attributes (just like it ever was in Max and PD)
+- introduced additional per-class methods and attributes (just like it ever was in Max and Pd)
 - fixed potentially dangerous typo in flext.cpp - (was: FLEXT_THREAD instead of FLEXT_THREADS)
 - added OSX/darwin support (originally done by Adam T. Lindsay)
 - SndObj interface now also available for cygwin and BCC 
@@ -249,7 +249,7 @@ Version history:
 - fixed anything outlets for Max/MSP... for some strange reason this severe bug has not had severe consequences....
 
 0.3.3:
-- PD: fixed bug for DSP objects having no signal inlets
+- Pd: fixed bug for DSP objects having no signal inlets
 	this also enables floats into a non-signal leftmost inlet
 - revisited priority stuff for detached threads
 - Bind/unbind functions for flext classes (in MaxMSP only one object can be bound)
@@ -290,10 +290,10 @@ Version history:
 - Alias object names (simply specify with FLEXT_NEW*, separated by whitespace)
 - float messages - int method is called if there is no float method
 - MaxMSP: int messages - float method is called if there is no int method
-- fixed type warning for class constructors with int arguments in PD
+- fixed type warning for class constructors with int arguments in Pd
 - fixed severe bug concerning symbol methods
 - MaxMSP: use critical sections for message output (for more safety in overdrive mode)
-- PD: default/manual definition of help file by flext_base::DefineHelp
+- Pd: default/manual definition of help file by flext_base::DefineHelp
 - added GetThing/SetThing to access t_symbol's s_thing data member
 
 - introduced FLEXT_NEW_DSP* and FLEXT_LIB_DSP* for FLEXT_NEW_TILDE* and FLEXT_LIB_TILDE* (the latter become deprecated)
@@ -333,9 +333,9 @@ Version history:
 - distribute list (into inlet 0) elements over inlets (right to left)
 - added outlets for anythings
 - defines for callback-to-method functions and method setup (FLEXT_CALLBACK*, FLEXT_ADD*)
-- uses PD's or Max's memory allocation functions (for safety in Max's overdrive)
+- uses Pd's or Max's memory allocation functions (for safety in Max's overdrive)
 - no support for default arguments (A_DEFFLOAT and A_DEFSYMBOL).. use GIMME instead!
-- better graphics update behavior for PD
+- better graphics update behavior for Pd
 - improved behavior for invalid/undefined buffers/arrays
 - use MaxMSP internal z_disabled flag with flext_dsp for pausing/resuming dsp processing 
 - included CHECK_TILDE, a test whether a tilde object (defined as FLEXT_TILDE_*) has a trailing ~. (debug mode only)
@@ -352,7 +352,7 @@ Version history:
 - makefile for BCC
 - manual call of extern_setup or main unnecessary for single objects - only in pd libraries
 - delayed buffer init (only name is set beforehand)
-- loadbang also in PD
+- loadbang also in Pd
 - introduced "compatibility mode" which denies platform-specific features 
 - fixed severe dsp bug (symptom: "float method overwritten" warning in pd)
 - fixed bug: wrong return code from buffer::Set

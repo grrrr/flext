@@ -6,9 +6,11 @@
 # flext API version (current:release:age)
 # API_VERSION=0:0:0
 
-AC_INIT([flext],[0.5.1],[gr@grrrr.org])
+AC_INIT([flext],[0.6.0],[gr@grrrr.org])
 AM_INIT_AUTOMAKE
+AC_CONFIG_MACRO_DIRS([m4])
 
+# TODO: this should definitely be changed to work with any version of CYGWIN_NT or MINGW32_NT
 if ( test $(uname -s) == CYGWIN_NT-5.0 ) || ( test $(uname -s) == CYGWIN_NT-5.1 ) || ( test $(uname -s) == MINGW32_NT-5.1 ); then
 	set win = 1
 fi

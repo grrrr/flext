@@ -4,6 +4,8 @@
 # modified by Thomas Grill
 #
 
+ACLOCAL_AMFLAGS = -I m4
+
 SUBDIRS = source   # tutorial 
 
 # EXTRA_DIST = flext.doxy

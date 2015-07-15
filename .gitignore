@@ -38,7 +38,6 @@ flext.xcodeproj/xcuserdata/
 # autoconf temporary files
 Makefile
 Makefile.in
-aclocal.m4
 autom4te.cache
 compile
 config.guess
@@ -54,3 +53,5 @@ missing
 source/.deps
 source/Makefile
 source/Makefile.in
+aclocal.m4
+m4/

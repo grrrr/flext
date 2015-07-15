@@ -186,6 +186,7 @@ AC_SUBST(FRAMEWORKS)
 AC_OUTPUT([
 			Makefile
 			source/Makefile
+			$SYSTEM-flext.pc
 ])
 
 #			tutorial/Makefile

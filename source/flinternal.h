@@ -40,7 +40,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define add_method3(clss,meth,text,a1,a2,a3) class_addmethod(clss, (t_method)meth, gensym(const_cast<char *>(text)), a1,a2,a3,A_NULL)
 #define add_method4(clss,meth,text,a1,a2,a3,a4) class_addmethod(clss, (t_method)meth, gensym(const_cast<char *>(text)), a1,a2,a3,a4,A_NULL)
 #define add_method5(clss,meth,text,a1,a2,a3,a5) class_addmethod(clss, (t_method)meth, gensym(const_cast<char *>(text)), a1,a2,a3,a4,a5,A_NULL)
-#define add_loadbang(clss,meth) class_addmethod(clss,(t_method)meth, gensym(const_cast<char *>("loadbang")), A_CANT, A_NULL)
+#define add_loadbang(clss,meth) class_addmethod(clss,(t_method)meth, gensym(const_cast<char *>("loadbang")), A_NULL)
 #define add_anything(clss,meth) class_addanything(clss,meth)
 
 

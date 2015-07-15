@@ -79,6 +79,6 @@ _install_:
 	copy $(TARGET:.dll=.lib) $(FLEXTLIB) > nul	
 !endif
 # copy headers
-	for %%i in ($(HDRS)) do @copy $(SRCDIR)\%%i $(FLEXTINC) > nul	
+	for %%i in ($(HDRS) $(SRCS)) do @copy $(SRCDIR)\%%i $(FLEXTINC) > nul	
 # copy import libraries
 	for %%i in ($(PDTARGETS)) do @copy %%i $(FLEXTLIB) > nul	

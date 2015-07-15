@@ -49,4 +49,4 @@ _install_::
 	@if not exist $(subst /,\,$(FLEXTLIBINST)) -mkdir $(subst /,\,$(FLEXTLIBINST))
 
 	copy $(subst /,\,$(TARGET) $(FLEXTLIBINST))
-	-for %%i in ($(HDRS)) do @copy $(SRCDIR)\%%i $(subst /,\,$(FLEXTINC)) > nul
+	-for %%i in ($(HDRS) $(SRCS)) do @copy $(SRCDIR)\%%i $(subst /,\,$(FLEXTINC)) > nul

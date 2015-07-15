@@ -49,4 +49,4 @@ $(FLEXTLIBINST):
 
 _install_: $(FLEXTINC) $(FLEXTLIBINST)
 	install $(TARGET) $(FLEXTLIBINST)
-	install $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTINC)
+	install $(patsubst %,$(SRCDIR)/%,$(HDRS) $(SRCS)) $(FLEXTINC)

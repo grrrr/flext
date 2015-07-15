@@ -61,7 +61,7 @@ ifdef SHARED
 else
 	-ln -sf $(VERNAME) $(FLEXTLIB)/$(TARGETNAME)
 endif
-	install $(patsubst %,$(SRCDIR)/%,$(HDRS)) $(FLEXTINC)
+	install $(patsubst %,$(SRCDIR)/%,$(HDRS) $(SRCS)) $(FLEXTINC)
 # transfer build system
 #	cp -rf buildsys $(FLEXTSYS)
 #	install build.sh $(FLEXTSYS)

@@ -49,7 +49,7 @@ Prerequisites:
 
 --- Pd ---
     You need the pd source code which is most likely part of the distribution.
-    Otherwise download from: http://www-crca.ucsd.edu/~msp/software.html
+    Otherwise download from: http://msp.ucsd.edu/software.html
 
 --- Max/MSP ---
     You will need the latest Max/MSP SDK

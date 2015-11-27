@@ -67,7 +67,7 @@ Prerequisites:
 --- STK ---
     If you choose to compile with STK support you will need the respective package
     and build a library.
-    download from: http://ccrma-www.stanford.edu/software/stk/
+    download from: https://ccrma.stanford.edu/software/stk/
     For linking it may preferable to use a library of all the STK objects.
 
     Under linux you can create one from the STK directory with something like

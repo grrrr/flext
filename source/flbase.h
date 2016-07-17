@@ -364,7 +364,7 @@ typedef NEW_CLASS thisType;  \
 typedef PARENT_CLASS thisParent;  \
 static FLEXT_CLASSDEF(flext_obj) *__init__(int argc,t_atom *argv);  \
 static void __free__(flext_hdr *hdr) { delete hdr->data; }   	    	\
-static void __setup__(t_classid classid) { thisParent::__setup__(classid); }
+static void __setup__(flext_obj::t_classid classid) { thisParent::__setup__(classid); }
 
 
 #define FLEXT_REALHDR_S(NEW_CLASS, PARENT_CLASS,SETUPFUN)    	    	\
@@ -373,7 +373,7 @@ typedef NEW_CLASS thisType;  \
 typedef PARENT_CLASS thisParent;  \
 static FLEXT_CLASSDEF(flext_obj) *__init__(int argc,t_atom *argv);  \
 static void __free__(flext_hdr *hdr) { delete hdr->data; }   	    	\
-static void __setup__(t_classid classid) { 	    	\
+static void __setup__(flext_obj::t_classid classid) { 	    	\
 	thisParent::__setup__(classid);    	    	\
 	thisType::SETUPFUN(classid); \
 }
@@ -385,7 +385,7 @@ typedef PARENT_CLASS thisParent;  \
 typedef typename thisParent::t_classid t_classid;  \
 static FLEXT_CLASSDEF(flext_obj) *__init__(int argc,t_atom *argv);  \
 static void __free__(flext_hdr *hdr) { delete hdr->data; }   	    	\
-static void __setup__(t_classid classid) { thisParent::__setup__(classid); }
+static void __setup__(flext_obj::t_classid classid) { thisParent::__setup__(classid); }
 
 
 #define FLEXT_REALHDR_TS(NEW_CLASS, PARENT_CLASS,SETUPFUN)    	    	\
@@ -395,7 +395,7 @@ typedef PARENT_CLASS thisParent;  \
 typedef typename thisParent::t_classid t_classid;  \
 static FLEXT_CLASSDEF(flext_obj) *__init__(int argc,t_atom *argv);  \
 static void __free__(flext_hdr *hdr) { delete hdr->data; }   	    	\
-static void __setup__(t_classid classid) { 	    	\
+static void __setup__(flext_obj::t_classid classid) { 	    	\
 	thisParent::__setup__(classid);    	    	\
 	thisType::SETUPFUN(classid); \
 }

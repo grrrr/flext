@@ -67,7 +67,7 @@ FLEXT_ATTRSET_(VAR,TP)
 
 //! Declare an implicit set function for a variable list attribute
 #define FLEXT_ATTRSET_V(VAR) \
-static bool FLEXT_SET_PRE(VAR)(flext_base *c,AtomList *&arg) \
+static bool FLEXT_SET_PRE(VAR)(flext_base *c,flext::AtomList *&arg) \
 { FLEXT_CAST<thisType *>(c)->VAR = *arg; return true; }
 
 //! @} FLEXT_DA_ATTRSET

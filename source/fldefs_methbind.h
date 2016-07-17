@@ -23,21 +23,21 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 #define FLEXT_BINDMETHOD(SYM,M_FUN,DATA) \
 \
-BindMethod(SYM,FLEXT_CALL_PRE(M_FUN),DATA)	
+flext_base::BindMethod(SYM,FLEXT_CALL_PRE(M_FUN),DATA)	
 
 /*! \brief Unbind any handler for a method from a symbol 
     \note Memory associated to the DATA parameter of FLEXT_BINDMETHOD will *not* be freed here.
 */
 #define FLEXT_UNBINDMETHOD(SYM) \
 \
-UnbindMethod(SYM)
+flext_base::UnbindMethod(SYM)
 
 /*! \brief Unbind any handler for a method from a symbol and return user data pointer by DATA
     \note Memory associated to the DATA parameter of FLEXT_BINDMETHOD will *not* be freed here.
 */
 #define FLEXT_UNBINDMETHOD_X(SYM,DATA) \
 \
-UnbindMethod(SYM,&DATA)
+flext_base::UnbindMethod(SYM,&DATA)
 
 
 //! @} FLEXT_D_BINDMETHOD

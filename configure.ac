@@ -78,7 +78,7 @@ AC_ARG_WITH(atomic_ops,
 )
 
 AC_ARG_WITH(stkdir,
-	AC_HELP_STRING(--with-stk,[path to STK headers]),
+	AC_HELP_STRING(--with-stkdir,[path to STK headers]),
 	[
 	    AC_CHECK_FILE([$withval/Stk.h],,AC_MSG_ERROR([Cannot find $withval/Stk.h]))	
 		stkdir=$withval
@@ -89,7 +89,7 @@ AC_ARG_WITH(stkdir,
 AM_CONDITIONAL([STK],[test "$stkdir"])
 
 AC_ARG_WITH(sndobjdir,
-	AC_HELP_STRING(--with-sndobj,[path to SndObj headers]),
+	AC_HELP_STRING(--with-sndobjdir,[path to SndObj headers]),
 	[
 		AC_CHECK_FILE([$withval/SndObj.h],,AC_MSG_ERROR([Cannot find $withval/SndObj.h]))
 		sndobjdir=$withval

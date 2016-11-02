@@ -7,7 +7,7 @@
 # API_VERSION=0:0:0
 
 AC_INIT([flext],[0.6.0],[gr@grrrr.org])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_MACRO_DIRS([m4])
 
 # TODO: this should definitely be changed to work with any version of CYGWIN_NT or MINGW32_NT

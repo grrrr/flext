@@ -176,7 +176,7 @@ AC_ARG_ENABLE([cmem],
 	AC_HELP_STRING(--enable-cmem,[enables C-style memory allocation (as opposed to overloading 'new' and 'delete')]),
         AS_CASE([$enableval], [yes], [
 		AC_DEFINE(FLEXT_USE_CMEM)
-		FLEXT_EXT_CFLAGS="$(FLEXT_EXT_CFLAGS) -DFLEXT_USE_CMEM"]))
+		FLEXT_EXT_CFLAGS="$FLEXT_EXT_CFLAGS -DFLEXT_USE_CMEM"]))
 
 
 AC_SUBST(SYSTEM)

@@ -171,6 +171,9 @@ AC_ARG_ENABLE(optimize,
 		esac
 	]
 )
+AC_ARG_ENABLE([cmem],
+	AC_HELP_STRING(--enable-cmem,[enables C-style memory allocation (as opposed to overloading 'new' and 'delete')]),
+        AS_CASE([$enableval], [yes], [AC_DEFINE(FLEXT_USE_CMEM)]))
 
 
 AC_SUBST(SYSTEM)

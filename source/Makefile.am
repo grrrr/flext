@@ -73,10 +73,10 @@ nobase_pkginclude_HEADERS = \
 
 # handling for stk / sndobj
 SRCS_STK = flstk.cpp
-HDRS_STK = flstk.cpp
+HDRS_STK = flstk.h
 
 SRCS_SNDOBJ = flsndobj.cpp
-HDRS_SNDOBJ = flsndobj.cpp
+HDRS_SNDOBJ = flsndobj.h
 
 if SNDOBJ
 SRCS_FLEXT         += $(SRCS_SNDOBJ)

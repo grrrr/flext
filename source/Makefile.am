@@ -73,10 +73,10 @@ nobase_pkginclude_HEADERS = \
 
 # handling for stk / sndobj
 SRCS_STK = flstk.cpp
-HDRS_STK = flstk.cpp
+HDRS_STK = flstk.h
 
 SRCS_SNDOBJ = flsndobj.cpp
-HDRS_SNDOBJ = flsndobj.cpp
+HDRS_SNDOBJ = flsndobj.h
 
 if SNDOBJ
 SRCS_FLEXT         += $(SRCS_SNDOBJ)
@@ -101,8 +101,8 @@ libflext_@SYSTEM@_s_la_CXXFLAGS    = @OPT_FLAGS@ -static $(patsubst %,-I%,@INCLU
 libflext_@SYSTEM@_sd_la_CXXFLAGS  = @DBG_FLAGS@ -static $(patsubst %,-I%,@INCLUDEDIRS@)
 libflext_@SYSTEM@_t_la_CXXFLAGS  = @OPT_FLAGS@ -static $(patsubst %,-I%,@INCLUDEDIRS@) -DFLEXT_THREADS 
 libflext_@SYSTEM@_td_la_CXXFLAGS = @DBG_FLAGS@ -static $(patsubst %,-I%,@INCLUDEDIRS@) -DFLEXT_THREADS 
-libflext_@SYSTEM@_la_CXXFLAGS    = @OPT_FLAGS@ $(patsubst %,-I%,@INCLUDEDIRS@) -DFLEXT_SHARED
-libflext_@SYSTEM@_d_la_CXXFLAGS  = @DBG_FLAGS@ $(patsubst %,-I%,@INCLUDEDIRS@) -DFLEXT_SHARED
+libflext_@SYSTEM@_la_CXXFLAGS    = @OPT_FLAGS@ $(patsubst %,-I%,@INCLUDEDIRS@) -DFLEXT_SHARED -DFLEXT_EXPORTS
+libflext_@SYSTEM@_d_la_CXXFLAGS  = @DBG_FLAGS@ $(patsubst %,-I%,@INCLUDEDIRS@) -DFLEXT_SHARED -DFLEXT_EXPORTS
 
 libflext_@SYSTEM@_la_LDFLAGS  = @LD_FLAGS@ $(patsubst %,-L%,@LIBDIRS@) $(patsubst %,-l%,@libs@ $(LIB_SNDOBJ) $(LIB_STK)) $(patsubst %,-framework %,@FRAMEWORKS@)
 libflext_@SYSTEM@_d_la_LDFLAGS  = @LD_FLAGS@ $(patsubst %,-L%,@LIBDIRS@) $(patsubst %,-l%,@libs@ $(LIB_SNDOBJ) $(LIB_STK)) $(patsubst %,-framework %,@FRAMEWORKS@) 

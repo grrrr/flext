@@ -7,7 +7,7 @@
 # API_VERSION=0:0:0
 
 AC_INIT([flext],[0.6.0],[gr@grrrr.org])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_MACRO_DIRS([m4])
 
 # TODO: this should definitely be changed to work with any version of CYGWIN_NT or MINGW32_NT
@@ -93,7 +93,7 @@ AC_ARG_WITH(sndobjdir,
 	[
 		AC_CHECK_FILE([$withval/SndObj.h],,AC_MSG_ERROR([Cannot find $withval/SndObj.h]))
 		sndobjdir=$withval
-		INCLUDEDIRS="$INCLDUEDIRS $withval"
+		INCLUDEDIRS="$INCLUDEDIRS $withval"
 	]
 )
 
@@ -147,6 +147,7 @@ fi
 
 OPT_FLAGS="$C_FLAGS -O2"
 DBG_FLAGS="$C_FLAGS -DFLEXT_DEBUG -g"
+FLEXT_EXT_CFLAGS=""
 
 AC_ARG_ENABLE(optimize, 
 	AC_HELP_STRING(--enable-optimize,[enables optimized architecture specific builds for pentium4, pentium3, G4, G5, etc.]),
@@ -171,6 +172,11 @@ AC_ARG_ENABLE(optimize,
 		esac
 	]
 )
+AC_ARG_ENABLE([cmem],
+	AC_HELP_STRING(--enable-cmem,[enables C-style memory allocation (as opposed to overloading 'new' and 'delete')]),
+        AS_CASE([$enableval], [yes], [
+		AC_DEFINE(FLEXT_USE_CMEM)
+		FLEXT_EXT_CFLAGS="$FLEXT_EXT_CFLAGS -DFLEXT_USE_CMEM"]))
 
 
 AC_SUBST(SYSTEM)
@@ -184,10 +190,12 @@ AC_SUBST(libs)
 AC_SUBST(stkdir)
 AC_SUBST(sndobjdir)
 AC_SUBST(FRAMEWORKS)
+AC_SUBST(FLEXT_EXT_CFLAGS)
 
 AC_OUTPUT([
 			Makefile
 			source/Makefile
+			tutorial/simple1/Makefile
 			$SYSTEM-flext.pc
 ])
 

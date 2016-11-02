@@ -93,7 +93,7 @@ AC_ARG_WITH(sndobjdir,
 	[
 		AC_CHECK_FILE([$withval/SndObj.h],,AC_MSG_ERROR([Cannot find $withval/SndObj.h]))
 		sndobjdir=$withval
-		INCLUDEDIRS="$INCLDUEDIRS $withval"
+		INCLUDEDIRS="$INCLUDEDIRS $withval"
 	]
 )
 

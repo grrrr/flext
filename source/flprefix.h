@@ -250,7 +250,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     #endif
 
     #ifndef FLEXT_OS
-        #if defined(linux) || defined(__linux__)
+        #if defined(linux) || defined(__linux__) || defined(__FreeBSD_kernel__) || defined(__GNU__)
             #define FLEXT_OS FLEXT_OS_LINUX
         #elif defined(__CYGWIN__) || defined(__CYGWIN32__) || defined(__MINGW32__)
             #define FLEXT_OS FLEXT_OS_WIN

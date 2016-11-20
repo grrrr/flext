@@ -349,6 +349,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #if FLEXT_SYS == FLEXT_SYS_MAX
 //  #pragma message("Compiling for Max/MSP")
+    #ifndef MSP64
+        #if FLEXT_CPU == FLEXT_CPU_X86_64
+            #define C74_X64 1
+            #define MSP64 1
+        #else
+            #define MSP64 0
+        #endif
+    #endif
 #elif FLEXT_SYS == FLEXT_SYS_PD
 //  #pragma message("Compiling for PD")
 #endif

@@ -334,7 +334,10 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::buffer::Dirty(bool force)
 #elif FLEXT_SYS == FLEXT_SYS_MAX
     t_buffer *p = (t_buffer *)sym->s_thing;
     FLEXT_ASSERT(p && !NOGOOD(p));
-    ::object_method((t_object *)p,(t_symbol *)sym_dirty);
+    // object_method function is redirected to object_method_imp on 64-bit Max 
+    // which in turn doesn't exist. Use object_method_typed instead.
+    t_atom rv;
+    object_method_typed((t_object *)p,(t_symbol *)sym_dirty,0,NULL,&rv);
 //    p->b_modtime = gettime();
 #else
 #error Not implemented

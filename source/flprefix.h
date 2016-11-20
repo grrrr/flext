@@ -351,8 +351,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 //  #pragma message("Compiling for Max/MSP")
     #ifndef MSP64
         #if FLEXT_CPU == FLEXT_CPU_X86_64
-            #define C74_X64 1
-            #define MSP64 1
+            #define MSP64 0 // Note: 64-bit DSP not supported yet
         #else
             #define MSP64 0
         #endif

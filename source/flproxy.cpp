@@ -167,7 +167,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_px_ft ## IX(flext_hdr *c,dou
 */
 
 #define ADD_PROXYMSG(c ,IX) \
-add_flintn(c, (method)(cb_px_in ## IX), IX); \
+add_intn(c, (method)(cb_px_in ## IX), IX); \
 add_floatn(c, (method)(cb_px_ft ## IX), IX)
 
 /*
@@ -197,29 +197,29 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::SetProxies(t_class *c,bool dsp)
 {
 #if FLEXT_SYS == FLEXT_SYS_PD
     // for leftmost inlet
-    class_addbang(c,cb_bang);
-    if(!dsp) class_addfloat(c,cb_float);
-    class_addsymbol(c,cb_symbol);
+    add_bang(c,cb_bang);
+    if(!dsp) add_float(c,cb_float);
+    add_symbol(c,cb_symbol);
 //    class_addpointer(c,cb_pointer);
-    class_addlist(c,cb_anything);
-    class_addanything(c,cb_anything);
+    add_list(c,cb_anything);
+    add_anything(c,cb_anything);
 
     // proxy for extra inlets
     if(UNLIKELY(!px_class)) {
         // only once
         px_class = class_new(gensym(const_cast<char *>(" flext_base proxy ")),NULL,NULL,sizeof(px_object),CLASS_PD|CLASS_NOINLET, A_NULL);
-        class_addbang(px_class,px_object::px_bang); // for other inlets
-        class_addfloat(px_class,px_object::px_float); // for other inlets
-        class_addsymbol(px_class,px_object::px_symbol); // for other inlets
+        add_bang(px_class,px_object::px_bang); // for other inlets
+        add_float(px_class,px_object::px_float); // for other inlets
+        add_symbol(px_class,px_object::px_symbol); // for other inlets
 //        class_addpointer(px_class,px_object::px_pointer); // for other inlets
-        class_addlist(px_class,px_object::px_anything); // for other inlets
-        class_addanything(px_class,px_object::px_anything); // for other inlets
+        add_list(px_class,px_object::px_anything); // for other inlets
+        add_anything(px_class,px_object::px_anything); // for other inlets
     }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
     add_bang(c, cb_bang);
-    add_flint(c, cb_int);
+    add_int(c, cb_int);
     add_float(c, cb_float);
-    add_methodG(c, cb_anything, "list"); // must be explicitly given, otherwise list elements are distributed over inlets
+    add_list(c, cb_anything); // must be explicitly given, otherwise list elements are distributed over inlets
     add_anything(c, cb_anything);
 #else
 #error Not implemented!

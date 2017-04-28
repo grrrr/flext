@@ -26,17 +26,17 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 #define FLEXT_CADDBANG(CL,IX,M_FUN) \
 \
-flext_base::AddMethod(CL,IX,FLEXT_CALL_PRE(M_FUN))   
+flext_base::AddMethod(CL,IX,FLEXT_CALL_PRE(M_FUN))
 
 //! Add a handler for a method with either no, list or anything arguments
 #define FLEXT_CADDMETHOD(CL,IX,M_FUN) \
 \
-flext_base::AddMethod(CL,IX,FLEXT_CALL_PRE(M_FUN))  
+flext_base::AddMethod(CL,IX,FLEXT_CALL_PRE(M_FUN))
 
 //! Add a a handler for a method with implicit arguments
 #define FLEXT_CADDMETHOD_(CL,IX,M_TAG,M_FUN) \
 \
-flext_base::AddMethod(CL,IX,flext::MakeSymbol(M_TAG),FLEXT_CALL_PRE(M_FUN))    
+flext_base::AddMethod(CL,IX,flext::MakeSymbol(M_TAG),FLEXT_CALL_PRE(M_FUN))
 
 //! Add a handler for a method with 1 enum type argument
 #define FLEXT_CADDMETHOD_E(CL,IX,M_TAG,M_FUN) \
@@ -46,7 +46,7 @@ flext_base::AddMethod(ClMeths(CL),IX,flext::MakeSymbol(M_TAG),(methfun)(FLEXT_CA
 //! Add a handler for a method with 1 argument
 #define FLEXT_CADDMETHOD_1(CL,IX,M_TAG,M_FUN,TP1) \
 \
-flext_base::AddMethod(ClMeths(CL),IX,flext::MakeSymbol(M_TAG),(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),a_null)   
+flext_base::AddMethod(ClMeths(CL),IX,flext::MakeSymbol(M_TAG),(methfun)(FLEXT_CALL_PRE(M_FUN)),FLEXTARG(TP1),a_null)
 
 //! Add a handler for a method with 2 arguments
 #define FLEXT_CADDMETHOD_2(CL,IX,M_TAG,M_FUN,TP1,TP2) \
@@ -129,12 +129,12 @@ flext_base::SetDist(true)
 //! Add a method handler for bang 
 #define FLEXT_ADDBANG(IX,M_FUN) \
 \
-flext_base::AddMethod(IX,"bang",FLEXT_CALL_PRE(M_FUN))  
+flext_base::AddMethod(IX,"bang",FLEXT_CALL_PRE(M_FUN))
 
 //! Add a handler for a method with either no, list or anything arguments
 #define FLEXT_ADDMETHOD(IX,M_FUN) \
 \
-flext_base::AddMethod(IX,FLEXT_CALL_PRE(M_FUN)) 
+flext_base::AddMethod(IX,FLEXT_CALL_PRE(M_FUN))
 
 /*! \brief Add a handler for a method with a (variable argument) list
     \deprecated This definition obscures that _ indicates the usage of a message tag - use FLEXT_ADDMETHOD instead
@@ -142,7 +142,7 @@ flext_base::AddMethod(IX,FLEXT_CALL_PRE(M_FUN))
 */
 #define FLEXT_ADDMETHOD_V(IX,M_FUN) \
 \
-flext_base::AddMethod(IX,FLEXT_CALL_PRE(M_FUN)) 
+flext_base::AddMethod(IX,FLEXT_CALL_PRE(M_FUN))
 
 /*! \brief Add a handler for a method with an anything argument
     \deprecated This definition obscures that _ indicates the usage of a message tag - use FLEXT_ADDMETHOD instead
@@ -150,12 +150,12 @@ flext_base::AddMethod(IX,FLEXT_CALL_PRE(M_FUN))
 */
 #define FLEXT_ADDMETHOD_A(IX,M_FUN) \
 \
-flext_base::AddMethod(IX,FLEXT_CALL_PRE(M_FUN)) 
+flext_base::AddMethod(IX,FLEXT_CALL_PRE(M_FUN))
 
 //! Add a a handler for a tagged method with implicit arguments
 #define FLEXT_ADDMETHOD_(IX,M_TAG,M_FUN) \
 \
-flext_base::AddMethod(IX,flext::MakeSymbol(M_TAG),FLEXT_CALL_PRE(M_FUN))   
+flext_base::AddMethod(IX,flext::MakeSymbol(M_TAG),FLEXT_CALL_PRE(M_FUN))
 
 //! Add a handler for a method with 1 enum type argument
 #define FLEXT_ADDMETHOD_E(IX,M_TAG,M_FUN) \

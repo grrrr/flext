@@ -41,6 +41,10 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::SetupBindProxy()
         pxbnd_class = class_new(gensym(const_cast<char *>("flext_base bind proxy")),NULL,NULL,sizeof(pxbnd_object),CLASS_PD|CLASS_NOINLET, A_NULL);
         add_anything(pxbnd_class,pxbnd_object::px_method); // for symbol-bound methods
 #elif FLEXT_SYS == FLEXT_SYS_MAX
+#   if C74_MAX_SDK_VERSION >= 0x0500
+        pxbnd_class = ::class_new("flext_base bind proxy",NULL,NULL,sizeof(pxbnd_object),0, A_NULL);
+        add_anything(pxbnd_class,pxbnd_object::px_method); // for symbol-bound methods
+#   else
         pxbnd_class = new t_class;
 
         pxbnd_class->c_sym = const_cast<t_symbol *>(sym__);
@@ -57,6 +61,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::SetupBindProxy()
         FLEXT_TEMPINST(ProxyVars)::px_messlist[1].m_type[1] = 0;
 
         FLEXT_TEMPINST(ProxyVars)::px_messlist[2].m_sym = 0;
+#   endif
 #else
 #pragma warning("Not implemented!")
 #endif
@@ -131,7 +136,11 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::BindMethod(const t_symbol *sym,
 #if FLEXT_SYS == FLEXT_SYS_PD
     pxbnd_object *px = (pxbnd_object *)object_new(pxbnd_class);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
+#   if C74_MAX_SDK_VERSION >= 0x0500
+    pxbnd_object *px = (pxbnd_object *)::object_alloc(pxbnd_class);
+#   else
     pxbnd_object *px = (pxbnd_object *)newobject(FLEXT_TEMPINST(ProxyVars)::px_messlist);
+#   endif
 #else
 #pragma warning("Not implemented!")
 #endif

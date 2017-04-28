@@ -227,11 +227,15 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::lib_init(const char *name,void s
 
 	// for Max/MSP, the library is represented by a special object (class) registered at startup
 	// all objects in the library are clones of that library object - they share the same class
+#   if C74_MAX_SDK_VERSION >= 0x0500
+    curlib->clss = ::class_new(name, (method)obj_new, (method)obj_free, sizeof(flext_hdr), 0, A_GIMME, 0);
+#   else
 	::setup(
 		(t_messlist **)&curlib->clss,
 		(t_newmethod)obj_new,(t_method)obj_free,
 		sizeof(flext_hdr),NULL,A_GIMME,A_NULL);
-	
+#   endif
+
 	// for all classes in library add methods
 	flext_base::AddMessageMethods(curlib->clss,curlib->dsp,true);
 #endif
@@ -290,14 +294,14 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::obj_add(bool lib,bool dsp,bool n
         sizeof(flext_hdr),CLASS_DEFAULT,A_GIMME,A_NULL);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
     if(!lib) {
-    #if 1
-            *cl = class_new(GetString(nsym), (t_newmethod)obj_new, (t_method)obj_free, sizeof(flext_hdr), NULL, A_GIMME, A_NULL);
-    #else
+#   if C74_MAX_SDK_VERSION >= 0x0500
+        *cl = class_new(GetString(nsym), (t_newmethod)obj_new, (t_method)obj_free, sizeof(flext_hdr), NULL, A_GIMME, A_NULL);
+#   else
 		::setup(
 			(t_messlist **)cl,
     		(t_newmethod)obj_new,(t_method)obj_free,
      		sizeof(flext_hdr),NULL,A_GIMME,A_NULL);
-    #endif
+#   endif
      	// attention: in Max/MSP the *cl variable is not initialized after that call.
      	// just the address is stored, the initialization then occurs with the first object instance!
 	}
@@ -370,7 +374,11 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::obj_add(bool lib,bool dsp,bool n
 		if(ix > 0 || lib) 
 			// in Max/MSP the first alias gets its name from the name of the object file,
 			// unless it is a library (then the name can be different)
-			::alias(const_cast<char *>(c));  
+#   if C74_MAX_SDK_VERSION >= 0x0500
+			::alias(const_cast<char *>(c));
+#   else
+			::alias(const_cast<char *>(c));
+#   endif
 #else
 #error
 #endif	
@@ -478,7 +486,11 @@ FLEXT_TEMPIMPL(flext_hdr *FLEXT_CLASSDEF(flext_obj))::obj_new(const t_symbol *s,
 #if FLEXT_SYS == FLEXT_SYS_PD
 			    obj = (flext_hdr *)::pd_new(lo->clss);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-			    obj = (flext_hdr *)object_alloc(lo->clss);
+    #if C74_MAX_SDK_VERSION >= 0x0500
+                obj = (flext_hdr *)object_alloc(lo->clss);
+    #else
+                obj = (flext_hdr *)::newobject(lo->clss);
+    #endif
 #else
 #error
 #endif

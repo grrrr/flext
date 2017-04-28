@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2017 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -1117,8 +1117,12 @@ private:
 
 	static void cb_assist(flext_hdr *c,void *b,long msg,long arg,char *s);
     static void cb_click (flext_hdr *c, Point pt, short mods);
-
+#if MSP64
+    static void cb_dsp64(flext_hdr *x, t_object *dsp64, short *count, double samplerate, long maxvectorsize, long flags);
+#else
 	static void cb_dsp(flext_hdr *c,t_signal **s,short *count);
+#endif
+    
 #elif FLEXT_SYS == FLEXT_SYS_PD
 	static void cb_click(flext_hdr *z,t_floatarg xpos,t_floatarg ypos,t_floatarg shift,t_floatarg ctrl,t_floatarg alt);
 

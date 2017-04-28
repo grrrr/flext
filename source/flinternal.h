@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2017 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -24,8 +24,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #define object_new(clss) pd_new(clss)
 #define object_free(obj) pd_free(&(obj)->ob_pd)
-                
-
 
 #define add_dsp(clss,meth) class_addmethod(clss, (t_method)meth,gensym(const_cast<char *>("dsp")),A_NULL)
 #define add_bang(clss,meth) class_addbang(clss, (t_method)meth)
@@ -73,6 +71,7 @@ typedef void t_outlet;
 //#define object_new(clss) newobject(clss)
 #define object_free(obj) freeobject((object *)(obj))
 
+#define add_dsp64(clss,meth) addmess((method)meth,const_cast<char *>("dsp64"),A_CANT,A_NOTHING)
 #define add_dsp(clss,meth) addmess((method)meth,const_cast<char *>("dsp"),A_CANT,A_NOTHING)
 #define add_bang(clss,meth) addbang((method)meth)
 #define add_float(clss,meth) addfloat((method)meth)
@@ -102,8 +101,12 @@ typedef void t_outlet;
 #define outlet_flint(o,v) outlet_int(o,(int)(v))
 #define outlet_symbol(o,s) outlet_anything(o,s,0,NULL)
 
-typedef t_perfroutine t_dspmethod;
 
+#if MSP64
+typedef t_perfroutine64 t_dspmethod;
+#else
+typedef t_perfroutine t_dspmethod;
+#endif
 #define CRITON() short state = lockout_set(1)
 #define CRITOFF() lockout_set(state) 
 

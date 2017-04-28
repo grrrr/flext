@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2017 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -24,8 +24,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #define object_new(clss) pd_new(clss)
 #define object_free(obj) pd_free(&(obj)->ob_pd)
-                
-
 
 #define add_dsp(clss,meth) class_addmethod(clss, (t_method)meth,gensym(const_cast<char *>("dsp")),A_NULL)
 #define add_bang(clss,meth) class_addbang(clss, (t_method)meth)

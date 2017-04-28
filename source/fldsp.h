@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2017 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -106,13 +106,11 @@ public:
         \return true (default)... use DSP, false, don't use DSP
     */
 	virtual bool CbDsp();
-    virtual bool CbDsp64();
 
 	/*! \brief Called with every signal vector - here you do the dsp calculation
         flext_dsp::CbSignal fills all output vectors with silence
     */
 	virtual void CbSignal();    
-    virtual void CbSignal64();
 
 
     /*! \brief Deprecated method for CbSignal
@@ -179,8 +177,8 @@ private:
 	
     
 #if MSP64
-    t_signalvec * inVec;
-    t_signalvec * outVec;
+    t_signalvec *inVec;
+    t_signalvec *outVec;
 #else
     t_signalvec *vecs;
 #endif
@@ -195,15 +193,11 @@ private:
 
 	static inline flext_dsp *thisObject(flext_hdr *c) { return FLEXT_CAST<flext_dsp *>(c->data); } 
 
-	
-    
-
 	// dsp stuff
-	
 #if MSP64
-    static void dspmeth64(flext_hdr *x, t_object *dsp64, double **ins, long numins, double **outs, long numouts, long sampleframes, long flags, void *userparam);
     void SetupDsp64(flext_hdr *x, t_object *dsp64, short *count, double samplerate, long maxvectorsize, long flags);
-#else
+    static void dspmeth64(flext_hdr *x, t_object *dsp64, double **ins, long numins, double **outs, long numouts, long sampleframes, long flags, void *userparam);
+#else // Max 32-bits or Pd
     void SetupDsp(t_signal **sp);
     static t_int *dspmeth(t_int *w);
 #endif

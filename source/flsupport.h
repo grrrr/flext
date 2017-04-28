@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2017 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -226,16 +226,16 @@ public:
 #       endif
 
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-#       define FLEXT_ARRAYTYPE t_sample
+#       define FLEXT_ARRAYTYPE float
 #       define FLEXT_GETSAMPLE(x) (x)
 #endif
 
 		class Element {
 		public:
 			Element() {}
-			Element(t_sample s) { FLEXT_GETSAMPLE(el) = s; }
-			operator t_sample &() { return FLEXT_GETSAMPLE(el); }
-			operator t_sample () const { return FLEXT_GETSAMPLE(el); }
+			Element(FLEXT_ARRAYTYPE s) { FLEXT_GETSAMPLE(el) = s; }
+			operator FLEXT_ARRAYTYPE &() { return FLEXT_GETSAMPLE(el); }
+			operator FLEXT_ARRAYTYPE () const { return FLEXT_GETSAMPLE(el); }
 		protected:
 			FLEXT_ARRAYTYPE el;
 		};
@@ -335,10 +335,10 @@ public:
         void Frames(int fr,bool keep = false,bool zero = true);
 
         //! Get data value in a platform-independent way
-        inline t_sample operator [](int index) const { return data[index]; }
+        inline FLEXT_ARRAYTYPE operator [](int index) const { return data[index]; }
 
         //! Reference data value in a platform-independent way
-        inline t_sample &operator [](int index) { return data[index]; }
+        inline FLEXT_ARRAYTYPE &operator [](int index) { return data[index]; }
         
         //! Graphic auto refresh interval
         void SetRefrIntv(float intv);

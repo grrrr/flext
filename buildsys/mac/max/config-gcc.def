@@ -1,6 +1,4 @@
 # where are the Max/MSP SDK header files?
-# for now, please use MaxSDK-5.?.?, avoid MaxSDK-6.?.?
-# you can run your externals with Max 6 nevertheless
 
 MAXSDKPATH=/Applications/MaxMSP\ 4.6/MaxMSP-SDK/c74support
 
@@ -57,7 +55,7 @@ HELPPATH=/Applications/MaxMSP\ 4.6/max-help/flext
 MFLAGS=-j 2
 
 # user defined compiler flags
-UFLAGS += -ffast-math -mmacosx-version-min=10.6 -march=native
+UFLAGS += -ffast-math -mmacosx-version-min=10.6 # -march=native
 
 # user defined linker flags
 LDFLAGS += -mmacosx-version-min=10.6
@@ -83,7 +81,7 @@ OFLAGS_x86_64 +=
 DFLAGS_x86_64 +=
 
 # list of architectures to build
-ARCH=i386 #ppc x86_64 ppc64
+ARCH=i386 x86_64 # ppc ppc64
 
 # SDK for 10.4
 #OSXSDK=/Developer/SDKs/MacOSX10.4u.sdk

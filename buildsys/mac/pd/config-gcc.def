@@ -52,7 +52,7 @@ INSTPATH=$(PDPATH)/extra
 MFLAGS=-j 2
 
 # user defined compiler flags
-UFLAGS += -ffast-math -mmacosx-version-min=10.6 -march=native
+UFLAGS += -ffast-math -mmacosx-version-min=10.6 # -march=native
 
 # user defined linker flags
 LDFLAGS += -mmacosx-version-min=10.6

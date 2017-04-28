@@ -166,9 +166,9 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_px_in ## IX(flext_hdr *c,lon
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_px_ft ## IX(flext_hdr *c,double v) { t_atom atom; SetFloat(atom,v); Locker lock(c); thisObject(c)->CbMethodHandler(IX,sym_float,1,&atom); }
 */
 
-#define ADD_PROXYMSG(c,IX) \
-addinx((method)(cb_px_in ## IX),IX); \
-addftx((method)(cb_px_ft ## IX),IX)
+#define ADD_PROXYMSG(c ,IX) \
+add_flintn(c, (method)(cb_px_in ## IX), IX); \
+add_floatn(c, (method)(cb_px_ft ## IX), IX)
 
 /*
 add_method1(c,cb_px_in ## IX,"in" #IX,A_INT); \
@@ -216,11 +216,11 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::SetProxies(t_class *c,bool dsp)
         class_addanything(px_class,px_object::px_anything); // for other inlets
     }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-    addbang((method)cb_bang);
-    addint((method)cb_int);  
-    addfloat((method)cb_float);  
-    addmess((method)cb_anything,const_cast<char *>("list"),A_GIMME,A_NOTHING); // must be explicitly given, otherwise list elements are distributed over inlets
-    addmess((method)cb_anything,const_cast<char *>("anything"),A_GIMME,A_NOTHING);
+    add_bang(c, cb_bang);
+    add_flint(c, cb_int);
+    add_float(c, cb_float);
+    add_methodG(c, cb_anything, "list"); // must be explicitly given, otherwise list elements are distributed over inlets
+    add_anything(c, cb_anything);
 #else
 #error Not implemented!
 #endif  

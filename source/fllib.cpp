@@ -287,13 +287,17 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::obj_add(bool lib,bool dsp,bool n
     *cl = ::class_new(
 		(t_symbol *)nsym,
     	(t_newmethod)obj_new,(t_method)obj_free,
-     	sizeof(flext_hdr),CLASS_DEFAULT,A_GIMME,A_NULL);
+        sizeof(flext_hdr),CLASS_DEFAULT,A_GIMME,A_NULL);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	if(!lib) {
+    if(!lib) {
+    #if 1
+            *cl = class_new(GetString(nsym), (t_newmethod)obj_new, (t_method)obj_free, sizeof(flext_hdr), NULL, A_GIMME, A_NULL);
+    #else
 		::setup(
 			(t_messlist **)cl,
     		(t_newmethod)obj_new,(t_method)obj_free,
      		sizeof(flext_hdr),NULL,A_GIMME,A_NULL);
+    #endif
      	// attention: in Max/MSP the *cl variable is not initialized after that call.
      	// just the address is stored, the initialization then occurs with the first object instance!
 	}
@@ -474,7 +478,7 @@ FLEXT_TEMPIMPL(flext_hdr *FLEXT_CLASSDEF(flext_obj))::obj_new(const t_symbol *s,
 #if FLEXT_SYS == FLEXT_SYS_PD
 			    obj = (flext_hdr *)::pd_new(lo->clss);
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-			    obj = (flext_hdr *)::newobject(lo->clss);
+			    obj = (flext_hdr *)object_alloc(lo->clss);
 #else
 #error
 #endif

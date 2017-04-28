@@ -44,11 +44,7 @@ FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext_dsp))::FLEXT_CLASSDEF(flext_dsp)()
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_dsp))::Exit()
 {
     flext_base::Exit();
-#if MSP64
-    // TODO not sure why but SIG raised if we deleting inlets in 64bits
-//    if(outVec) delete[] outVec;
-//    if( inVec) delete[] inVec;
-#else
+#if !MSP64
     if(vecs) delete[] vecs;
 #endif
 }

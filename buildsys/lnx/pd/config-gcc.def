@@ -58,4 +58,4 @@ UFLAGS+=-DFLEXT_USE_CMEM
 # (check if they match your system!)
 OFLAGS=-O3
 # optimizations for build system
-OFLAGS+=-march=native 
+OFLAGS+=-mtune=native 

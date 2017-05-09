@@ -217,28 +217,36 @@ public:
 #               define FLEXT_PD_ARRAYGRAB garray_getfloatwords
 #               define FLEXT_ARRAYTYPE t_word
 #               define FLEXT_GETSAMPLE(x) ((x).w_float)
+#               define _FLEXT_NEED_SAMPLE_CONV 1
 
 #       else
                 /* use old garray support, not 64-bit safe */
 #               define FLEXT_PD_ARRAYGRAB garray_getfloatarray
 #               define FLEXT_ARRAYTYPE t_sample
 #               define FLEXT_GETSAMPLE(x) (x)
+#               define _FLEXT_NEED_SAMPLE_CONV 0
 #       endif
 
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 #       define FLEXT_ARRAYTYPE t_sample
 #       define FLEXT_GETSAMPLE(x) (x)
+#       define _FLEXT_NEED_SAMPLE_CONV 0
 #endif
 
-		class Element {
-		public:
-			Element() {}
-			Element(t_sample s) { FLEXT_GETSAMPLE(el) = s; }
-			operator t_sample &() { return FLEXT_GETSAMPLE(el); }
-			operator t_sample () const { return FLEXT_GETSAMPLE(el); }
-		protected:
-			FLEXT_ARRAYTYPE el;
-		};
+        class Element {
+        public:
+            Element() {}
+            Element(FLEXT_ARRAYTYPE s): el(s) {}
+            operator FLEXT_ARRAYTYPE &() { return el; }
+            operator FLEXT_ARRAYTYPE () const { return el; }
+#if _FLEXT_NEED_SAMPLE_CONV
+            Element(t_sample s) { FLEXT_GETSAMPLE(el) = s; }
+            operator t_sample &() { return FLEXT_GETSAMPLE(el); }
+            operator t_sample () const { return FLEXT_GETSAMPLE(el); }
+#endif
+        protected:
+            FLEXT_ARRAYTYPE el;
+        };
 
         /*! \brief Construct buffer.
             \param s: symbol name, can be NULL

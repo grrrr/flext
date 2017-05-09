@@ -52,13 +52,7 @@ Prerequisites:
     Otherwise download from: http://msp.ucsd.edu/software.html
 
 --- Max/MSP ---
-    You will need the latest Max/MSP SDK
-    for Windows (http://synthesisters.com/pluggo3/downloadMaxWinSDK.php)
-    for OSX (http://www.synthesisters.com/sdk/max.php)
-    or for OS9 (ask Cycling'74 where to find that)
-
-    For OS9 threading support you'll also need the Multiprocessing library
-    (download at http://developer.apple.com/sdk/)
+    You will need the latest Max/MSP SDK: https://cycling74.com/downloads/sdk
 
 --- SndObj ---
     If you choose to compile with SndObj support you will need the respective library

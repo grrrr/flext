@@ -1,5 +1,6 @@
 .DS_Store
 config.txt
+pd-linux/
 pd-darwin/
 max-darwin/
 buildsys/config-*.txt

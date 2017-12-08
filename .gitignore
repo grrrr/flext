@@ -11,6 +11,7 @@ flext.xcodeproj/xcuserdata/
 *.lo
 *.o
 *.obj
+*.opp
 
 # Precompiled Headers
 *.gch

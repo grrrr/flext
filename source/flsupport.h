@@ -343,10 +343,10 @@ public:
         void Frames(int fr,bool keep = false,bool zero = true);
 
         //! Get data value in a platform-independent way
-        inline FLEXT_ARRAYTYPE operator [](int index) const { return data[index]; }
+        inline Element operator [](int index) const { return data[index]; }
 
         //! Reference data value in a platform-independent way
-        inline FLEXT_ARRAYTYPE &operator [](int index) { return data[index]; }
+        inline Element &operator [](int index) { return data[index]; }
         
         //! Graphic auto refresh interval
         void SetRefrIntv(float intv);

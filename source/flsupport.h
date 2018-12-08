@@ -127,11 +127,11 @@ public:
 #endif
 
 // define global new/delete operators
-inline void *operator new(size_t bytes) NEWTHROW { return flext_root::operator new(bytes); }
-inline void operator delete(void *blk) DELTHROW { flext_root::operator delete(blk); }
+void *operator new(size_t bytes) NEWTHROW;
+void operator delete(void *blk) DELTHROW;
 #ifndef __MRC__ // doesn't allow new[] overloading?!
-inline void *operator new[](size_t bytes) NEWTHROW { return flext_root::operator new[](bytes); }
-inline void operator delete[](void *blk) DELTHROW { flext_root::operator delete[](blk); }
+void *operator new[](size_t bytes) NEWTHROW;
+void operator delete[](void *blk) DELTHROW;
 #endif
 
 #endif // FLEXT_USE_CMEM

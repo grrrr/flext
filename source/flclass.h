@@ -1116,6 +1116,7 @@ private:
 	char **indesc,**outdesc;
 
 	static void cb_assist(flext_hdr *c,void *b,long msg,long arg,char *s);
+    typedef void *Point;
     static void cb_click (flext_hdr *c, Point pt, short mods);
 #if MSP64
     static void cb_dsp64(flext_hdr *x, t_object *dsp64, short *count, double samplerate, long maxvectorsize, long flags);

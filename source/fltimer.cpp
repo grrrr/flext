@@ -48,7 +48,7 @@ double getstarttime()
 {
 #if FLEXT_OS == FLEXT_OS_WIN
     LARGE_INTEGER frq;
-    if(QueryPerformanceFrequency(&frq)) TimerVars::perffrq = (double)frq.QuadPart;
+    if(QueryPerformanceFrequency(&frq)) FLEXT_TEMPINST(TimerVars)::perffrq = (double)frq.QuadPart;
 #endif
 
     FLEXT_TEMPINST(TimerVars)::starttime = 0;
@@ -61,8 +61,8 @@ FLEXT_TEMPIMPL(double FLEXT_CLASSDEF(flext))::GetOSTime()
 
 #if FLEXT_OS == FLEXT_OS_WIN
     LARGE_INTEGER cnt;
-    if(TimerVars::perffrq && QueryPerformanceCounter(&cnt))
-        tm = cnt.QuadPart/TimerVars::perffrq;
+    if(FLEXT_TEMPINST(TimerVars)::perffrq && QueryPerformanceCounter(&cnt))
+        tm = cnt.QuadPart/FLEXT_TEMPINST(TimerVars)::perffrq;
     else {
         SYSTEMTIME systm;
         FILETIME fltm;
@@ -106,8 +106,8 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::Sleep(double s)
     else
 #else
     LARGE_INTEGER cnt;
-    if(TimerVars::perffrq && QueryPerformanceCounter(&cnt)) {
-        LONGLONG dst = (LONGLONG)(cnt.QuadPart+TimerVars::perffrq*s);
+    if(FLEXT_TEMPINST(TimerVars)::perffrq && QueryPerformanceCounter(&cnt)) {
+        LONGLONG dst = (LONGLONG)(cnt.QuadPart+FLEXT_TEMPINST(TimerVars)::perffrq*s);
         for(;;) {
             SwitchToThread(); // while waiting switch to another thread
             QueryPerformanceCounter(&cnt);

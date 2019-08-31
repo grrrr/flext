@@ -21,7 +21,10 @@ ifdef DEBUG
 else
 ifdef PROFILE
 else
-	strip -x $@
+    ifndef STRIP
+        STRIP=strip
+    endif
+	$(STRIP) -x $@
 endif
 endif
 	chmod 755 $@
@@ -61,7 +64,10 @@ else
 	install $(TARGET) $(FLEXTLIB)
 ifndef SHARED
 # have to rerun ranlib at install dir ?!
-	ranlib $(FLEXTLIB)/$(VERNAME)  
+    ifndef RANLIB
+        RANLIB=ranlib
+    endif
+	$(RANLIB) $(FLEXTLIB)/$(VERNAME)  
 endif
 ifdef VERNAME
 	ln -sf $(VERNAME) $(FLEXTLIB)/$(TARGETNAME)

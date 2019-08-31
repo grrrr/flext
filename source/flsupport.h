@@ -113,7 +113,11 @@ public:
     //! @}  FLEXT_S_MEMORY      
 };
 
-#ifndef FLEXT_USE_CMEM
+#ifdef FLEXT_USE_CMEM
+#define NEWTHROW
+#define DELTHROW
+#else
+
 /************************************************************************/
 // MFC doesn't like global overloading of allocators
 // anyway, who likes MFC

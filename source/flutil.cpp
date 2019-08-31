@@ -18,12 +18,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #if FLEXT_OS == FLEXT_OS_WIN
 #include <windows.h>
-#elif FLEXT_OS == FLEXT_OS_MAC
-    #if FLEXT_OSAPI != FLEXT_OSAPI_MAC_MACH
-        #include <MacMemory.h>
-    #else
-        #include <Carbon/Carbon.h>
-    #endif
 #endif
 
 #include "flpushns.h"
@@ -32,8 +26,6 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::CopyMem(void *dst,const void *src,in
 {
 #if FLEXT_OS == FLEXT_OS_WIN
     MoveMemory(dst,src,bytes);
-#elif FLEXT_OS == FLEXT_OS_MAC && !defined(__LP64__)
-    BlockMoveData(src,dst,bytes);   // not available for 64 bits
 #else
     memmove(dst,src,bytes);
 #endif
@@ -43,12 +35,6 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::ZeroMem(void *dst,int bytes)
 {
 #if FLEXT_OS == FLEXT_OS_WIN
     ZeroMemory(dst,bytes);
-#elif FLEXT_OS == FLEXT_OS_MAC
-#   ifdef __LP64__  // 64 bits compilation
-    bzero(dst,bytes);
-#   else
-    BlockZero(dst,bytes);
-#   endif
 #else
     memset(dst,0,bytes);
 #endif

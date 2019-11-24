@@ -21,9 +21,9 @@ ifdef DEBUG
 else
 ifdef PROFILE
 else
-    ifndef STRIP
-        STRIP=strip
-    endif
+	ifndef STRIP
+		STRIP=strip
+	endif
 	$(STRIP) -x $@
 endif
 endif
@@ -64,10 +64,10 @@ else
 	install $(TARGET) $(FLEXTLIB)
 ifndef SHARED
 # have to rerun ranlib at install dir ?!
-    ifndef RANLIB
-        RANLIB=ranlib
-    endif
-	$(RANLIB) $(FLEXTLIB)/$(VERNAME)  
+#	ifndef RANLIB
+#	RANLIB=ranlib
+#	endif
+#	ranlib $(FLEXTLIB)/$(VERNAME)  
 endif
 ifdef VERNAME
 	ln -sf $(VERNAME) $(FLEXTLIB)/$(TARGETNAME)

@@ -24,7 +24,7 @@ else
 	ifndef STRIP
 		STRIP=strip
 	endif
-	$(STRIP) -x $@
+	$(STRIP) -x $@ || true
 endif
 endif
 	chmod 755 $@

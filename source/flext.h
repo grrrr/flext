@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -21,10 +21,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 //! \brief flext version number
-#define FLEXT_VERSION 600
+#define FLEXT_VERSION 601
 
 //! \brief flext version string
-#define FLEXT_VERSTR "0.6.0 alpha"
+#define FLEXT_VERSTR "0.6.1 alpha"
 
 //! @}
 

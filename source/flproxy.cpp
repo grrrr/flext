@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -208,12 +208,17 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::SetProxies(t_class *c,bool dsp)
     if(UNLIKELY(!px_class)) {
         // only once
         px_class = class_new(gensym(const_cast<char *>(" flext_base proxy ")),NULL,NULL,sizeof(px_object),CLASS_PD|CLASS_NOINLET, A_NULL);
-        class_addbang(px_class,px_object::px_bang); // for other inlets
-        class_addfloat(px_class,px_object::px_float); // for other inlets
-        class_addsymbol(px_class,px_object::px_symbol); // for other inlets
-//        class_addpointer(px_class,px_object::px_pointer); // for other inlets
-        class_addlist(px_class,px_object::px_anything); // for other inlets
-        class_addanything(px_class,px_object::px_anything); // for other inlets
+        if(px_class) {
+            class_addbang(px_class,px_object::px_bang); // for other inlets
+            class_addfloat(px_class,px_object::px_float); // for other inlets
+            class_addsymbol(px_class,px_object::px_symbol); // for other inlets
+    //        class_addpointer(px_class,px_object::px_pointer); // for other inlets
+            class_addlist(px_class,px_object::px_anything); // for other inlets
+            class_addanything(px_class,px_object::px_anything); // for other inlets
+        }
+        else { 
+            // NULL case not handled (dsp precision mismatch 32<>64 bits)
+        }
     }
 #elif FLEXT_SYS == FLEXT_SYS_MAX
     addbang((method)cb_bang);

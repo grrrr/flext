@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -249,11 +249,17 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::obj_add(bool lib,bool dsp,bool n
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 	// register buffer helper class (if not present already)
-	if(!buf_class) {
-		buf_class = ::class_new(gensym(const_cast<char *>(" flext buffer helper ")),NULL,NULL,sizeof(t_object),CLASS_PD|CLASS_NOINLET,A_NULL);
-		add_dsp(buf_class,cb_buffer_dsp);
-		// make an instance
-		::pd_new(buf_class);
+	if(UNLIKELY(!buf_class)) {
+		buf_class = class_new(gensym(const_cast<char *>(" flext buffer helper ")),NULL,NULL,sizeof(t_object),CLASS_PD|CLASS_NOINLET,A_NULL);
+        if(buf_class) {
+            // this can happen with double precision pure data
+            add_dsp(buf_class,cb_buffer_dsp);
+		    // make an instance
+		    ::pd_new(buf_class);
+        }
+        else { 
+            // NULL case not handled (dsp precision mismatch 32<>64 bits)
+        }
 	}
 #endif
 
@@ -284,7 +290,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::obj_add(bool lib,bool dsp,bool n
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 	// register object class
-    *cl = ::class_new(
+    *cl = class_new(
 		(t_symbol *)nsym,
     	(t_newmethod)obj_new,(t_method)obj_free,
      	sizeof(flext_hdr),CLASS_DEFAULT,A_GIMME,A_NULL);

@@ -362,7 +362,7 @@ class FLEXT_SHARE FLEXT_CLASSDEF(flext_obj):
 public:     	    	    \
 typedef NEW_CLASS thisType;  \
 typedef PARENT_CLASS thisParent;  \
-static FLEXT_CLASSDEF(flext_obj) *__init__(int argc,t_atom *argv);  \
+static FLEXT_TEMPINST(FLEXT_CLASSDEF(flext_obj)) *__init__(int argc,t_atom *argv);  \
 static void __free__(flext_hdr *hdr) { delete hdr->data; }   	    	\
 static void __setup__(flext_obj::t_classid classid) { thisParent::__setup__(classid); }
 
@@ -371,7 +371,7 @@ static void __setup__(flext_obj::t_classid classid) { thisParent::__setup__(clas
 public:     	    	    \
 typedef NEW_CLASS thisType;  \
 typedef PARENT_CLASS thisParent;  \
-static FLEXT_CLASSDEF(flext_obj) *__init__(int argc,t_atom *argv);  \
+static FLEXT_TEMPINST(FLEXT_CLASSDEF(flext_obj)) *__init__(int argc,t_atom *argv);  \
 static void __free__(flext_hdr *hdr) { delete hdr->data; }   	    	\
 static void __setup__(flext_obj::t_classid classid) { 	    	\
 	thisParent::__setup__(classid);    	    	\
@@ -383,7 +383,7 @@ public:    	    \
 typedef NEW_CLASS thisType;  \
 typedef PARENT_CLASS thisParent;  \
 typedef typename thisParent::t_classid t_classid;  \
-static FLEXT_CLASSDEF(flext_obj) *__init__(int argc,t_atom *argv);  \
+static FLEXT_TEMPINST(FLEXT_CLASSDEF(flext_obj)) *__init__(int argc,t_atom *argv);  \
 static void __free__(flext_hdr *hdr) { delete hdr->data; }   	    	\
 static void __setup__(flext_obj::t_classid classid) { thisParent::__setup__(classid); }
 
@@ -393,7 +393,7 @@ public:     	    	    \
 typedef NEW_CLASS thisType;  \
 typedef PARENT_CLASS thisParent;  \
 typedef typename thisParent::t_classid t_classid;  \
-static FLEXT_CLASSDEF(flext_obj) *__init__(int argc,t_atom *argv);  \
+static FLEXT_TEMPINST(FLEXT_CLASSDEF(flext_obj)) *__init__(int argc,t_atom *argv);  \
 static void __free__(flext_hdr *hdr) { delete hdr->data; }   	    	\
 static void __setup__(flext_obj::t_classid classid) { 	    	\
 	thisParent::__setup__(classid);    	    	\

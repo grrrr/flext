@@ -27,7 +27,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define STD
 #endif
 
-FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext_base))::AttrItem::AttrItem(const t_symbol *t,metharg tp,methfun f,int fl):
+FLEXT_TEMPIMPL(FLEXT_CLASSDEF(flext_base))::AttrItem::AttrItem(const t_symbol *t,int tp,methfun f,int fl):
 	Item(NULL),index(0),
 	flags(fl|afl_shown),
 	argtp(tp),fun(f),
@@ -54,7 +54,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AttrDataCont::clear()
 }
 
 //! Add get and set attributes
-FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddAttrib(ItemCont *aa,ItemCont *ma,const t_symbol *asym,metharg tp,methfun gfun,methfun sfun)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddAttrib(ItemCont *aa,ItemCont *ma,const t_symbol *asym,int tp,methfun gfun,methfun sfun)
 {
 	AttrItem *a,*b;
 
@@ -68,7 +68,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddAttrib(ItemCont *aa,ItemCont
 
 		// bind attribute to a method
 		MethItem *mi = new MethItem(a);
-		mi->SetArgs(sfun,1,new metharg(tp));
+		mi->SetArgs(sfun,1,new int(tp));
 		ma->Add(mi,asym);
 	}
 	else
@@ -97,7 +97,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddAttrib(ItemCont *aa,ItemCont
 	}
 }
 
-FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddAttrib(const t_symbol *attr,metharg tp,methfun gfun,methfun sfun)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddAttrib(const t_symbol *attr,int tp,methfun gfun,methfun sfun)
 {
 	if(HasAttributes())
 		AddAttrib(ThAttrs(),ThMeths(),attr,tp,gfun,sfun);
@@ -105,7 +105,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddAttrib(const t_symbol *attr,
 		error("%s - attribute procession is not enabled!",thisName());
 }
 
-FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddAttrib(t_classid c,const t_symbol *attr,metharg tp,methfun gfun,methfun sfun)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddAttrib(t_classid c,const t_symbol *attr,int tp,methfun gfun,methfun sfun)
 {
 	AddAttrib(ClAttrs(c),ClMeths(c),attr,tp,gfun,sfun);
 }

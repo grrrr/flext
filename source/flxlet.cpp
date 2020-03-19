@@ -40,7 +40,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::xlet::Desc(const char *c)
         desc = NULL;
 }
 
-FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddInlet(xlettype tp,int mult,const char *desc)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddInlet(int tp,int mult,const char *desc)
 {
     if(UNLIKELY(incnt+mult >= MAXLETS))
         post("%s - too many inlets",thisName());
@@ -52,7 +52,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddInlet(xlettype tp,int mult,c
         }
 }
 
-FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddOutlet(xlettype tp,int mult,const char *desc)
+FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddOutlet(int tp,int mult,const char *desc)
 {
     if(UNLIKELY(outcnt+mult >= MAXLETS))
         post("%s - too many outlets",thisName());
@@ -80,14 +80,14 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::DescOutlet(int ix,const char *d
         outlist[ix].Desc(d);
 }
 
-FLEXT_TEMPIMPL(unsigned long FLEXT_CLASSDEF(flext_base))::XletCode(xlettype tp,...)
+FLEXT_TEMPIMPL(unsigned long FLEXT_CLASSDEF(flext_base))::XletCode(int tp,...)
 {
     unsigned long code = 0;
 
     va_list marker;
     va_start(marker,tp);
     int cnt = 0;
-    xlettype arg = tp;
+    int arg = tp;
     for(; arg; ++cnt) {
 #ifdef FLEXT_DEBUG
         if(cnt > 9) {
@@ -97,7 +97,7 @@ FLEXT_TEMPIMPL(unsigned long FLEXT_CLASSDEF(flext_base))::XletCode(xlettype tp,.
 #endif          
 
         code = code*10+(int)arg;
-        arg = (xlettype)va_arg(marker,int);
+        arg = va_arg(marker,int);
     }
     va_end(marker);
 
@@ -106,12 +106,12 @@ FLEXT_TEMPIMPL(unsigned long FLEXT_CLASSDEF(flext_base))::XletCode(xlettype tp,.
 
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddInlets(unsigned long code)
 { 
-    for(; code; code /= 10) AddInlet((xlettype)(code%10));
+    for(; code; code /= 10) AddInlet(code%10);
 }
 
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::AddOutlets(unsigned long code)
 { 
-    for(; code; code /= 10) AddOutlet((xlettype)(code%10));
+    for(; code; code /= 10) AddOutlet(code%10);
 }
 
 #include "flpopns.h"

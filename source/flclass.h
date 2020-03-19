@@ -398,7 +398,7 @@ public:
 
 // --- message handling -------------------------------------------
 
-	enum metharg {
+	enum {
 		a_null = 0,
 		a_float,a_int,a_bool,
 		a_symbol,a_pointer,
@@ -583,7 +583,7 @@ public:
 
 public: // needed by VC++ 6
 
-    enum xlettype {
+    enum {
 	    xlet_none = 0,
 	    xlet_float,xlet_int,xlet_sym,xlet_list,xlet_any,
 	    xlet_LIST,xlet_ANY, // use AtomList and AtomAnything
@@ -685,7 +685,7 @@ protected:
 */
 
 	//! \brief get a code for a list of inlets or outlets
-	unsigned long XletCode(xlettype tp = xlet_none,...); // end list with 0 (= tp_none) !!
+	unsigned long XletCode(int tp = xlet_none,...); // end list with 0 (= tp_none) !!
 
 	/*! \brief Add some inlets by a special code representing the types
 		\remark use XletCode function to get code value
@@ -693,7 +693,7 @@ protected:
 	void AddInlets(unsigned long code); 
 
 	//! \brief Add one or more inlet(s)
-	void AddInlet(xlettype tp,int mult = 1,const char *desc = NULL);
+	void AddInlet(int tp,int mult = 1,const char *desc = NULL);
 
 	/*! \brief Add some inlets by a special code representing the types
 		\remark use XletCode function to get code value
@@ -701,7 +701,7 @@ protected:
 	void AddOutlets(unsigned long code); 
 
 	//! \brief Add one or more outlet(s)
-	void AddOutlet(xlettype tp,int mult = 1,const char *desc = NULL);
+	void AddOutlet(int tp,int mult = 1,const char *desc = NULL);
 
 	//! \brief Set the description of an indexed inlet
 	void DescInlet(int ix,const char *desc);
@@ -788,11 +788,11 @@ protected:
 		MethItem(AttrItem *conn = NULL);
 		virtual ~MethItem();
 		
-		void SetArgs(methfun fun,int argc,metharg *args);
+		void SetArgs(methfun fun,int argc,int *args);
 
 		int index;
 		int argc;
-		metharg *args;
+		int *args;
 		methfun fun;
 	};
 	
@@ -801,7 +801,7 @@ protected:
 		public Item 
     { 
 	public:
-		AttrItem(const t_symbol *tag,metharg tp,methfun fun,int flags);
+		AttrItem(const t_symbol *tag,int tp,methfun fun,int flags);
 
 		enum { 
 			afl_get = 0x01, afl_set = 0x02, 
@@ -817,7 +817,7 @@ protected:
 
 		int index;
 		int flags;
-		metharg argtp;
+		int argtp;
 		methfun fun;
 		AttrItem *counter;
 		const t_symbol *tag;
@@ -896,14 +896,14 @@ public:
 	static ItemCont *ClMeths(t_classid c);
 
 	//! \brief This is the central function to add message handlers. It is used by all other AddMethod incarnations.
-	static void AddMethod(ItemCont *ma,int inlet,const t_symbol *tag,methfun fun,metharg tp,...); 
+	static void AddMethod(ItemCont *ma,int inlet,const t_symbol *tag,methfun fun,int tp,...); 
 
 	ItemCont *ThAttrs() { return attrhead; }
 	static ItemCont *ClAttrs(t_classid c);
 
-    static void AddAttrib(ItemCont *aa,ItemCont *ma,const t_symbol *attr,metharg tp,methfun gfun,methfun sfun);
-    void AddAttrib(const t_symbol *attr,metharg tp,methfun gfun,methfun sfun);
-	static void AddAttrib(t_classid c,const t_symbol *attr,metharg tp,methfun gfun,methfun sfun);
+    static void AddAttrib(ItemCont *aa,ItemCont *ma,const t_symbol *attr,int tp,methfun gfun,methfun sfun);
+    void AddAttrib(const t_symbol *attr,int tp,methfun gfun,methfun sfun);
+	static void AddAttrib(t_classid c,const t_symbol *attr,int tp,methfun gfun,methfun sfun);
 
 private:
 
@@ -917,7 +917,7 @@ private:
         xlet();
         ~xlet();
 
-        xlettype tp;
+        int tp;
 		char *desc;
 
         void Desc(const char *c);

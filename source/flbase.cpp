@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -136,10 +136,10 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_obj))::GetParamSym(t_atom &dst,const t_
             res = canvas_realizedollar(c,const_cast<t_symbol *>(sym));
 
         // check for number
-        const char *c = GetString(res);
-        while(*c && (isdigit(*c) || *c == '.')) ++c;
+        const char *cn = GetString(res);
+        while(*cn && (isdigit(*cn) || *cn == '.')) ++cn;
 
-        if(!*c) 
+        if(!*cn) 
             SetFloat(dst,(float)atof(GetString(res)));
         else
             SetSymbol(dst,res);

@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -597,11 +597,11 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_GfxProperties(flext_hdr *c, 
             th->GetAttrib(sym,gattr,lv);
 
             char *b = buf; *b = 0;
-            for(int i = 0; i < lv.Count(); ++i) {
+            for(int j = 0; j < lv.Count(); ++j) {
                 char tmp[100];
-                PrintAtom(lv[i],tmp,sizeof tmp);
+                PrintAtom(lv[j],tmp,sizeof tmp);
                 b += FLEXT_TEMPINST(escapeit)(b,sizeof(buf)+buf-b,tmp);
-                if(i < lv.Count()-1) { *(b++) = ' '; *b = 0; }
+                if(j < lv.Count()-1) { *(b++) = ' '; *b = 0; }
             }
             sys_vgui(const_cast<char *>("%s"),buf);
         }
@@ -615,11 +615,11 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_GfxProperties(flext_hdr *c, 
             const AtomList &lp = initdata?*initdata:static_cast<const AtomList &>(lv);
 
             char *b = buf; *b = 0;
-            for(int i = 0; i < lp.Count(); ++i) {
+            for(int j = 0; j < lp.Count(); ++j) {
                 char tmp[256];
-                PrintAtom(lp[i],tmp,sizeof(tmp)); 
+                PrintAtom(lp[j],tmp,sizeof(tmp)); 
                 b += FLEXT_TEMPINST(escapeit)(b,sizeof(buf)+buf-b,tmp);
-                if(i < lp.Count()-1) { *(b++) = ' '; *b = 0; }
+                if(j < lp.Count()-1) { *(b++) = ' '; *b = 0; }
             }
             sys_vgui(const_cast<char *>("%s"),buf);
         }

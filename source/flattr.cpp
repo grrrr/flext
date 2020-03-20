@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -407,18 +407,10 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::BangAttribAll()
         ItemCont *a = i?attrhead:clattrhead;
 		if(a) {
             ItemSet &ai = a->GetInlet(); // \todo need to check for presence of inlet 0?
-/*
-            for(ItemSet::iterator as = ai.begin(); as != ai.end(); ++as) {
-                for(Item *al = as.data(); al; al = al->nxt) {
-					AttrItem *a = (AttrItem *)al;
-	        		if(a->IsGet() && a->BothExist()) BangAttrib(as.key(),a);
-                }
-			}
-*/
             for(FLEXT_TEMP_TYPENAME ItemSet::iterator as(ai); as; ++as) {
                 for(Item *al = as.data(); al; al = al->nxt) {
-					AttrItem *a = (AttrItem *)al;
-	        		if(a->IsGet() && a->BothExist()) BangAttrib(as.key(),a);
+					AttrItem *ai = (AttrItem *)al;
+	        		if(ai->IsGet() && ai->BothExist()) BangAttrib(as.key(),ai);
                 }
 			}
 		}

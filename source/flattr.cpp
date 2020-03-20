@@ -409,8 +409,8 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::BangAttribAll()
             ItemSet &ai = a->GetInlet(); // \todo need to check for presence of inlet 0?
             for(FLEXT_TEMP_TYPENAME ItemSet::iterator as(ai); as; ++as) {
                 for(Item *al = as.data(); al; al = al->nxt) {
-					AttrItem *ai = (AttrItem *)al;
-	        		if(ai->IsGet() && ai->BothExist()) BangAttrib(as.key(),ai);
+					AttrItem *aj = (AttrItem *)al;
+	        		if(aj->IsGet() && aj->BothExist()) BangAttrib(as.key(),aj);
                 }
 			}
 		}

@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -188,9 +188,9 @@ public:
         return Add(th,o,sym,1,&a);
     }
 
-    inline MsgBundle &Add(flext_base *th,int o,int argc,const t_atom *argv) 
+    inline MsgBundle &Add(flext_base *th,int o,int ac,const t_atom *av) 
     {
-        return Add(th,o,sym_list,argc,argv);
+        return Add(th,o,sym_list,ac,av);
     }
 
     // \note PD sys lock must already be held by caller
@@ -262,12 +262,12 @@ private:
             SetMsg(NULL,0,NULL);
         }
 
-        void Idle(bool (*idlefun)(int argc,const t_atom *argv),int argc,const t_atom *argv)
+        void Idle(bool (*idlefun)(int,const t_atom *),int ac,const t_atom *av)
         {
             FLEXT_ASSERT(idlefun);
             th = NULL;
             fun = idlefun;
-            SetMsg(NULL,argc,argv);
+            SetMsg(NULL,ac,av);
         }
 
         bool Send() const

@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2017 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -216,6 +216,10 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::CbClick() {}
 #if FLEXT_SYS == FLEXT_SYS_PD
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_click(flext_hdr *c,t_floatarg xpos,t_floatarg ypos,t_floatarg shift,t_floatarg ctrl,t_floatarg alt)
 {
+    FLEXT_UNUSED(xpos); // keep compiler quiet
+    FLEXT_UNUSED(ypos); // keep compiler quiet
+    FLEXT_UNUSED(ctrl); // keep compiler quiet
+    FLEXT_UNUSED(alt); // keep compiler quiet
     if(shift) {
         Locker lock(c);
         thisObject(c)->CbClick();

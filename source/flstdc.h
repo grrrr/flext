@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -269,6 +269,8 @@ typedef t_symbol *t_symptr;
 
 #endif
 
+#define FLEXT_UNUSED(x) (void)(x)
+
 #ifdef FLEXT_DEBUG
 #ifdef _MSC_VER
 #define FLEXT_ASSERT(b) do { if(!(b)) _CrtDbgReport(_CRT_ASSERT,__FILE__,__LINE__,"flext",#b); } while(false)
@@ -281,13 +283,12 @@ typedef t_symbol *t_symptr;
 #define FLEXT_ERROR(str) error("Error: in " __FILE__ " line %i",(int)__LINE__)
 #endif
 #else
-#define FLEXT_ASSERT(b) assert(1)
-#define FLEXT_WARN(str) assert(1)
+#define FLEXT_ASSERT(b) FLEXT_UNUSED(b)
+#define FLEXT_WARN(str) FLEXT_UNUSED(str)
 #define FLEXT_ERROR(str) error("Error: in " __FILE__ " line %i",(int)__LINE__)
 #endif
 
 #define ERRINTERNAL() error("flext: Internal error in file " __FILE__ ", line %i - please report",(int)__LINE__)
-
 
 // ----- disable attribute editor for PD version < devel_0_36 or 0.37
 #ifndef PD_MAJOR_VERSION

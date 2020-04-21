@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -37,6 +37,8 @@ FLEXT_TEMPIMPL(FLEXT_TEMPINST(Buffers) Buffers)::buffers;
 
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::cb_buffer_dsp(void *c,t_signal **sp)
 {
+    FLEXT_UNUSED(c);
+    FLEXT_UNUSED(sp);
     for(FLEXT_TEMPINST(Buffers)::iterator it = FLEXT_TEMPINST(Buffers)::buffers.begin(); it != FLEXT_TEMPINST(Buffers)::buffers.end(); ++it)
 		(*it)->Set();
 } 
@@ -238,6 +240,7 @@ FLEXT_TEMPIMPL(FLEXT_TEMPSUB(FLEXT_CLASSDEF(flext))::buffer::lock_t FLEXT_CLASSD
 
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::buffer::Unlock(flext::buffer::lock_t prv)
 {
+    FLEXT_UNUSED(prv); // keep compiler quiet
     FLEXT_ASSERT(sym);
 #if FLEXT_SYS == FLEXT_SYS_PD
     FLEXT_ASSERT(arr);
@@ -261,6 +264,8 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::buffer::Unlock(flext::buffer::lock_t
 
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::buffer::Frames(int fr,bool keep,bool zero)
 {
+    FLEXT_UNUSED(keep); // keep compiler quiet
+    FLEXT_UNUSED(zero); // keep compiler quiet
     FLEXT_ASSERT(sym);
 #if FLEXT_SYS == FLEXT_SYS_PD
     // is this function guaranteed to keep memory and set rest to zero?

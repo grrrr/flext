@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2020 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -291,6 +291,7 @@ end:
 
 FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::m_method_(int inlet,const t_symbol *s,int argc,const t_atom *argv)
 {
+    FLEXT_UNUSED(argv); // keep compiler quiet
     post("%s: message unhandled - inlet:%i args:%i symbol:%s",thisName(),inlet,argc,s?GetString(s):"");
     return false;
 }

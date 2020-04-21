@@ -123,8 +123,8 @@ public:
 // anyway, who likes MFC
 
 #if !defined(_MSC_VER) && !defined(__BORLANDC__)
-#define NEWTHROW /*throw(std::bad_alloc)*/
-#define DELTHROW /*throw()*/
+#define NEWTHROW throw(std::bad_alloc)
+#define DELTHROW throw()
 #else
 #define NEWTHROW
 #define DELTHROW

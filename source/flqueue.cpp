@@ -380,6 +380,7 @@ FLEXT_TEMPLATE bool QWork(bool syslock,flext_base *flushobj = NULL)
 #else
 FLEXT_TEMPLATE bool QWork(bool syslock,flext_base *flushobj = NULL)
 {
+    FLEXT_UNUSED(syslock); // keep compiler quiet
     FLEXT_TEMPINST(Queue) newmsgs;
     flext::MsgBundle *q;
 
@@ -431,6 +432,7 @@ FLEXT_TEMPLATE void QTick(fts_object_t *c,int winlet, fts_symbol_t s, int ac, co
 FLEXT_TEMPLATE void QTick(flext_base *c)
 {
 #endif
+    FLEXT_UNUSED(c); // keep compiler quiet
     FLEXT_TEMPINST(QWork)(false);
 }
 

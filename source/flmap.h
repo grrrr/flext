@@ -248,7 +248,7 @@ protected:
     Data slots[N];
 
 private:
-    explicit TablePtrMap(const TableAnyMap &p) {}
+    explicit TablePtrMap(const TableAnyMap &p) { FLEXT_UNUSED(p); }
 };
             
 #include "flpopns.h"

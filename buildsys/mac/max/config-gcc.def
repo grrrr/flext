@@ -55,10 +55,10 @@ HELPPATH=/Applications/MaxMSP\ 4.6/max-help/flext
 MFLAGS=-j 2
 
 # user defined compiler flags
-UFLAGS += -ffast-math -mmacosx-version-min=10.6 # -march=native
+UFLAGS += -ffast-math -mmacosx-version-min=10.9 # -march=native
 
 # user defined linker flags
-LDFLAGS += -mmacosx-version-min=10.6
+LDFLAGS += -mmacosx-version-min=10.9
 
 # user defined optimization flags
 # for now, don't use -O3 !(Max will hang)

@@ -1,6 +1,6 @@
 # where is the PD installation including source code?
 # (this should point to the main folder, which has a "src" (PD Vanilla) or "include" (PD extended) subfolder)
-PDPATH=/Applications/Pd-0.42-5.app/Contents/Resources
+PDPATH=/Applications/Pd-0.50-2.app/Contents/Resources
 
 # where is the PD executable?
 PDBIN=$(PDPATH)/bin/pd
@@ -52,10 +52,10 @@ INSTPATH=$(PDPATH)/extra
 MFLAGS=-j 2
 
 # user defined compiler flags
-UFLAGS += -ffast-math -mmacosx-version-min=10.6 # -march=native
+UFLAGS += -ffast-math -mmacosx-version-min=10.9 # -march=native
 
 # user defined linker flags
-LDFLAGS += -mmacosx-version-min=10.6
+LDFLAGS += -mmacosx-version-min=10.9
 
 # user defined optimization flags
 OFLAGS += -O3 -mtune=native

@@ -1047,7 +1047,7 @@ private:
 	static void cb_px_ft9(flext_hdr *c,t_float f);
 	
 #elif FLEXT_SYS == FLEXT_SYS_MAX
-	typedef object px_object;
+	typedef t_object px_object;
 	static void cb_bang(flext_hdr *c);
 	static void cb_float(flext_hdr *c,double f);
 	static void cb_int(flext_hdr *c,long v);

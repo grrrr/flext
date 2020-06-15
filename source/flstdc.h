@@ -125,29 +125,51 @@ typedef t_clock t_qelem;
 	#define WIN_EXT_VERSION 1
 #endif
 
-// necessary for the old OS9 SDK
-extern "C" {
 
-#include "ext.h"
-#include "ext_user.h"
-#if FLEXT_OS != FLEXT_OS_MAC || defined(MAC_VERSION)
-// doesn't exist for OS9
-#include "ext_critical.h"
-#include "buffer.h"
-#else
-// for OS9 include "inofficial" header file
-#include "flmspbuffer.h"
-#endif
-#include "z_dsp.h"
-#include "ext_obex.h"
+#ifdef FLEXT_USE_MAXAPI
+// using https://github.com/Cycling74/max-api (usually as part of the Max Devkit package)
 
-// check for Max5 SDK
-#include "commonsyms.h"
+    #include <c74_msp.h>
+    using namespace c74::max;
+
+    #if MSP64
+    typedef double t_sample; 
+    #else
+    typedef float t_sample;
+    #endif
+
+    #define _FLEXT_MAX5SDK
+
+#else // FLEXT_USE_MAXAPI
+
+    // necessary for the old OS9 SDK
+    extern "C" {
+
+    #include "ext.h"
+    #include "ext_user.h"
+
+    #if FLEXT_OS != FLEXT_OS_MAC || defined(MAC_VERSION)
+        // doesn't exist for OS9
+        #include "ext_critical.h"
+        #include "buffer.h"
+    #else
+        // for OS9 include "inofficial" header file
+        #include "flmspbuffer.h"
+    #endif
+
+    #include "z_dsp.h"
+    #include "ext_obex.h"
+
+    // check for Max5 SDK
+    #include "commonsyms.h"
+
 #if C74_MAX_SDK_VERSION >= 0x0500 || COMMON_SYMBOLS_VERSION >= 500 
     #define _FLEXT_MAX5SDK
 #endif
 
 } // extern "C"
+
+#endif // FLEXT_USE_MAXAPI
 
 #include "flpushns.h"
 
@@ -167,6 +189,10 @@ typedef t_object *t_thing;
     #else
     typedef void *t_qelem;
     #endif
+#endif
+
+#ifndef FLEXT_USE_MAXAPI
+    typedef void t_outlet;
 #endif
 
 typedef method t_method;

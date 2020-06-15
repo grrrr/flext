@@ -65,9 +65,6 @@ typedef t_perfroutine t_dspmethod;
 
 #elif FLEXT_SYS == FLEXT_SYS_MAX
 
-typedef void t_outlet;
-
-
 //#define object_new(clss) newobject(clss)
 #define object_free(obj) freeobject((object *)(obj))
 

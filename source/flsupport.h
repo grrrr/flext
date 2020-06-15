@@ -113,21 +113,27 @@ public:
     //! @}  FLEXT_S_MEMORY      
 };
 
+
 #ifdef FLEXT_USE_CMEM
-#define NEWTHROW
-#define DELTHROW
+#   define NEWTHROW
+#   define DELTHROW
+
 #else
 
-/************************************************************************/
 // MFC doesn't like global overloading of allocators
 // anyway, who likes MFC
 
 #if !defined(_MSC_VER) && !defined(__BORLANDC__)
-#define NEWTHROW throw(std::bad_alloc)
-#define DELTHROW throw()
+#if __cpp_noexcept_function_type
+#   define NEWTHROW noexcept(false) 
+#   define DELTHROW noexcept(true)
 #else
-#define NEWTHROW
-#define DELTHROW
+#   define NEWTHROW throw(std::bad_alloc)
+#   define DELTHROW throw()
+#endif
+#else
+#   define NEWTHROW
+#   define DELTHROW
 #endif
 
 // define global new/delete operators

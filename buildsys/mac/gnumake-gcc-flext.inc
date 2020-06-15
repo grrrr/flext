@@ -21,9 +21,9 @@ ifdef DEBUG
 else
 ifdef PROFILE
 else
-	ifndef STRIP
-		STRIP=strip
-	endif
+ifndef STRIP
+	STRIP=strip
+endif
 	$(STRIP) -x $@ || true
 endif
 endif

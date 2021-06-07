@@ -41,6 +41,7 @@ nobase_pkginclude_HEADERS = \
 	flbase.h \
 	flclass.h \
 	flext.h \
+	flfeatures.h \
 	flsupport.h \
 	flmap.h \
 	fldsp.h \

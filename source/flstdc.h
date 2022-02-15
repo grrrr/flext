@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2020 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2022 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -77,6 +77,8 @@ extern "C" {
 #ifdef cabs
 #undef cabs // this is defined in m_pd.h (clashes with math.h in MacOSX)
 #endif
+
+#define internal_error(fmt, ...) pd_error(NULL, fmt, __VA_ARGS__)
 
 typedef t_object t_sigobj;
 typedef t_gpointer *t_ptrtype;
@@ -233,6 +235,8 @@ typedef void t_binbuf;
 #define critical_exit(N)
 #endif
 
+#define internal_error error
+
 #ifdef _MSC_VER
 #pragma pack(pop,flext_maxsdk)
 #endif
@@ -305,16 +309,16 @@ typedef t_symbol *t_symptr;
 #else
 #define FLEXT_ASSERT(b) assert(b)
 //#define FLEXT_ASSERT(b) do { if(!(b)) error("Assertion failed: " #b " - in " __FILE__ " line %i",(int)__LINE__); } while(false)
-#define FLEXT_WARN(str) error("Warning: in " __FILE__ " line %i",(int)__LINE__)
-#define FLEXT_ERROR(str) error("Error: in " __FILE__ " line %i",(int)__LINE__)
+#define FLEXT_WARN(str) internal_error("Warning: in " __FILE__ " line %i",(int)__LINE__)
+#define FLEXT_ERROR(str) internal_error("Error: in " __FILE__ " line %i",(int)__LINE__)
 #endif
 #else
 #define FLEXT_ASSERT(b) FLEXT_UNUSED(b)
 #define FLEXT_WARN(str) FLEXT_UNUSED(str)
-#define FLEXT_ERROR(str) error("Error: in " __FILE__ " line %i",(int)__LINE__)
+#define FLEXT_ERROR(str) internal_error("Error: in " __FILE__ " line %i",(int)__LINE__)
 #endif
 
-#define ERRINTERNAL() error("flext: Internal error in file " __FILE__ ", line %i - please report",(int)__LINE__)
+#define ERRINTERNAL() internal_error("flext: Internal error in file " __FILE__ ", line %i - please report",(int)__LINE__)
 
 // ----- disable attribute editor for PD version < devel_0_36 or 0.37
 #ifndef PD_MAJOR_VERSION

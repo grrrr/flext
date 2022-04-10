@@ -17,7 +17,7 @@ FLEXTPREFIX=/usr/local
 ###############################################################
 
 # where should the external be built?
-OUTPATH=pd-darwin
+OUTPATH=pd-gcc
 
 # where should the external be installed?
 INSTPATH=$(PDPATH)/extra

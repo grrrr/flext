@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2020 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2022 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -514,8 +514,10 @@ size_t escapeit(char *dst,size_t maxlen,const char *src)
 {
     char *d;
     for(d = dst; *src && (d-dst) < (int)maxlen; ++src) {
-        if(*src == '%')
-            *(d++) = '%',*(d++) = '%';
+        if(*src == '%') {
+            *(d++) = '%';
+            *(d++) = '%';
+        }
         else
             *(d++) = *src;
     }
@@ -561,8 +563,10 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_GfxProperties(flext_hdr *c, 
         const AttrData *a = th->attrdata->find(sym);
 //        AttrDataCont::iterator it = th->attrdata->find(sym);
 //        if(it == th->attrdata->end())
-        if(!a)
-            sv = 0,initdata = NULL;
+        if(!a) {
+            sv = 0;
+            initdata = NULL;
+        }
         else {
 //            const AttrData &a = *it.data();
             if(a->IsSaved())

@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2020 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2022 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -435,7 +435,7 @@ FLEXT_TEMPIMPL(flext_hdr *FLEXT_CLASSDEF(flext_obj))::obj_new(const t_symbol *s,
 				case FLEXTTPN_DEFINT:
 					if(i >= argc)
 						if(lo->argv[i] == FLEXTTPN_DEFINT) SetInt(args[i],0);
-						else { misnum = -1,ok = false; break; }
+						else { misnum = -1; ok = false; break; }
 					else if(IsInt(argv[i])) args[i] = argv[i];
 					else if(IsFloat(argv[i])) SetInt(args[i],(int)GetFloat(argv[i]));
 					else ok = false;
@@ -445,7 +445,7 @@ FLEXT_TEMPIMPL(flext_hdr *FLEXT_CLASSDEF(flext_obj))::obj_new(const t_symbol *s,
 				case FLEXTTPN_DEFFLOAT:
 					if(i >= argc)
 						if(lo->argv[i] == FLEXTTPN_DEFFLOAT) SetFloat(args[i],0);
-						else { misnum = -1,ok = false; break; }
+						else { misnum = -1; ok = false; break; }
 					else if(IsInt(argv[i])) SetFloat(args[i],(float)GetInt(argv[i]));
 					else if(IsFloat(argv[i])) args[i] = argv[i];
 					else ok = false;
@@ -455,7 +455,7 @@ FLEXT_TEMPIMPL(flext_hdr *FLEXT_CLASSDEF(flext_obj))::obj_new(const t_symbol *s,
 					// \todo shall we analyze the patcher args????... should already be done!
 					if(i >= argc)
 						if(lo->argv[i] == FLEXTTPN_DEFSYM) SetSymbol(args[i],sym__);
-						else { misnum = -1,ok = false; break; }
+						else { misnum = -1; ok = false; break; }
 					else if(IsSymbol(argv[i]))
 //							SetSymbol(args[i],GetParamSym(GetSymbol(argv[i]),NULL));
 						args[i] = argv[i];

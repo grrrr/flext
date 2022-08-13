@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2022 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -144,7 +144,7 @@ FLEXT_TEMPIMPL(void *TableAnyMap)::_remove(int tsize,size_t k)
                 // try to get biggest element from left branch
                 left->_getbig(dt);
                 _eraseempty(left);
-                fnd = true,ins = true;
+                fnd = true; ins = true;
             }
             else if(right) {
                 // try to get smallest element from right branch

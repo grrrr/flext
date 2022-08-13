@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2022 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -79,7 +79,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::PrintList(int argc,const t_atom *arg
 
         if(PrintAtom(argv[i],buf,bufsz)) {
             size_t len = strlen(buf);
-            buf += len,bufsz -= len;
+            buf += len; bufsz -= len;
         }
         else
             ok = false;

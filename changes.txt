@@ -1,6 +1,6 @@
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2020 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2022 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -8,8 +8,12 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 Version history:
 
+0.6.2:
+- Got rid of unmaintained compilers and IDEs (Borland C, icc, Metrowerks) and platforms (OS 9, IRIS)
+
 0.6.1:
 - flext supports 64-bit DSP in Pure Data (and presumable also Max)
+
 0.6.0:
 - FLEXT_INLINE allows use of <flext.h> without further libraries
 

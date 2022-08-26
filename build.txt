@@ -1,6 +1,6 @@
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2012 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2022 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -44,7 +44,6 @@ flext provides a universal build system which supports
 	Max/MSP (max)
 - various make programs
 	GNU make (gnumake)
-	Microsoft nmake (nmake)
 - various compilers
 	Microsoft Visual C/C++ 6.0, .NET 2002/2003/2005/2008 (msvc)
 	GNU gcc 2.95 and above (gcc,cygwin,mingw)
@@ -58,7 +57,6 @@ pd mingw, using GNU make (from the CMD prompt, not msys!)
 max msvc, using nmake
 max cygwin, using GNU make
 max mingw, using GNU make (from the CMD prompt, not msys!)
-pd bcc, using Borland make
 
 under Linux or MacOSX:
 pd gcc, using GNU make
@@ -176,13 +174,11 @@ following combination of platform-system-compiler, build type.
 A missing combination does not necessarily mean that it won't work.
 
 win-pd-msvc, single/multi/shared
-win-pd-bcc, single/multi/shared
 win-pd-mingw, single/multi/shared (from CMD prompt, not MSYS)
 win-pd-cygwin, single/multi/shared
 win-max-msvc, single/multi/shared
 win-max-cygwin, single/multi/shared
 win-max-mingw, single/multi/shared
-
 
 mac-pd-gcc, single/multi/shared
 mac-max-gcc, single/multi/shared
@@ -248,32 +244,12 @@ for a shared library (always multi-threaded): FLEXT_SHARED
 
     Please have a look at the projects delivered with flext and flext-based externals.
 
-- MacOSX - Apple Xcode projects (.xcode bundles)
+- MacOSX - Apple Xcode projects (.xcodeproj bundles)
 
     Please have a look at the projects delivered with flext and flext-based externals.
 
-    Xcode projects often use some Source Trees (definable in the Xcode Preferences).
+    Xcode projects often use some Location definitions (definable in the Xcode Preferences).
     - Flext - the flext main folder
     - PD - the Pd installation
     - Max SDK - the Max SDK (path ending with "c74support")
     - Max Common - Max common files (normally /Library/Application\ Support/Cycling\ \'74 )
-
-- MacOSX - Metrowerks Codewarrior (.mcp files)
-
-    You should have the following "Source Trees" (CW preferences, not project specific!) defined:
-    "OS X Volume" - Pointing to your OSX boot drive
-    "flext" - Pointing to the flext main directory
-    "Cycling74 OSX" - Pointing to the SDK for Max/MSP - the path should end with /c74support
-
-    With your project using flext use the prefix file "flcwmax-x.h" or, 
-    alternatively "flcwmax-x-thr.h" for threading support.
-
-- MacOS9 - Metrowerks Codewarrior (.mcp files)
-
-    You should have the following "Source Trees" (CW preferences, not project specific!) defined:
-    "flext" - Pointing to the flext main directory
-    "Cycling74" - Pointing to the Cycling 74 SDK
-    "MP SDK" - Pointing to the Multiprocessing SDK (for threading support)
-
-    With your project using flext use the prefix file "flcwmax.h" or, 
-    alternatively "flcwmax-thr.h" for threading support.

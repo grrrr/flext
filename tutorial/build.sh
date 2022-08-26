@@ -19,7 +19,7 @@ else
 	echo 
 	echo SYNTAX: build.sh [platform] [system] [compiler]
 	echo system ..... pd / max
-	echo compiler ... msvc / gcc / mingw / cygwin / bcc / icc
+	echo compiler ... msvc / gcc / mingw / cygwin
 	echo 
 	echo Please make sure that your make program and compiler can be accessed with the
 	echo system path and that all relevant environment variables are properly set.

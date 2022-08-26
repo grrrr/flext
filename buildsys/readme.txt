@@ -1,6 +1,6 @@
 flext - C++ layer for Max/MSP and pd (pure data) externals
 
-Copyright (c) 2001-2005 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2022 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -24,7 +24,7 @@ Arguments: PLATFORM SYSTEM COMPILER {TARGET} {definitions}
 
 PLATFORM: win / lnx / mac
 SYSTEM:   pd / max
-COMPILER: msvc / gcc / mingw / cygwin / bcc / icc
+COMPILER: msvc / gcc / mingw / cygwin
 
 TARGET: (default is all)
 	all, build - build package in default style
@@ -57,7 +57,6 @@ a MAKE program has been chosen, normally the one that comes with the compiler.
 
 For gcc it is GNU make (gnumake)
 For msvc it is Microsoft make (nmake)
-For bcc it is Borland make (bmake)
 
 
 

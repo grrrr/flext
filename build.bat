@@ -21,7 +21,7 @@ set flext=%~dp0
 
 rem Arguments:
 rem %1 - system (pd/max)
-rem %2 - compiler (msvc/gcc/mingw/cygwin/bcc/icc)
+rem %2 - compiler (msvc/gcc/mingw/cygwin)
 rem %3 - target (build/clean/install)
 
 set platform=win
@@ -48,7 +48,7 @@ rem -----------------------------------------
 echo .
 echo SYNTAX: build [system] [compiler] {target}
 echo system   ... pd / max
-echo compiler ... msvc / gcc / mingw / cygwin / bcc / icc
+echo compiler ... msvc / gcc / mingw / cygwin
 echo target   ... all (default) / clean / install
 echo .
 echo Please make sure that your make program and compiler can be accessed with the

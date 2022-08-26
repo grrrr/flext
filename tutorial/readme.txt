@@ -25,35 +25,7 @@ The recommended order to go through the tutorial examples is the following:
 and, if needed
 8) sndobj* and/or stk*
 
-if you choose to compile with SndObj support you will need the respective library
-download from: http://www.may.ie/academic/music/musictec/SndObj/main.html
-
-if you choose to compile with STK support you will need the respective package and build a library
-download from: http://ccrma-www.stanford.edu/software/stk/
-Under linux you can create such a library from the STK directory with:
-"g++ -c -pipe -I include -D __LINUX_OSS__ src/*.cpp && ar r libstk.a *.o && rm -f *.o"
-
-
-----------------------------------------------------------------------------
-
-The package should at least compile (and is tested) with the following compilers:
-
-pd - Windows:
--------------
-o Microsoft Visual C++ 6: edit "config-pd-msvc.txt" & run "build-pd-msvc.bat" 
-
-o Cygwin: edit "config-pd-cygwin.txt" & run "sh build-pd-cygwin.sh" 
-	(no threading support for that compiler!)
-
-pd - linux:
------------
-o GCC: edit "config-pd-linux.txt" & run "sh build-pd-linux.sh" 
-
-pd - MacOSX:
------------
-o GCC: edit "config-pd-darwin.txt" & run "sh build-pd-darwin.sh" 
-
-
-Max/MSP - MacOSX:
-------------------
-o GCC: edit "config-max-darwin.txt" & run "sh build-max-darwin.sh" 
+if you choose to compile with SndObj support, the respective library can be found here:
+http://sndobj.sourceforge.net/sndobj.html
+or here:
+https://github.com/johnglover/sndobj

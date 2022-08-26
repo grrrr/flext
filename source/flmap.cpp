@@ -144,7 +144,7 @@ FLEXT_TEMPIMPL(void *TableAnyMap)::_remove(int tsize,size_t k)
                 // try to get biggest element from left branch
                 left->_getbig(dt);
                 _eraseempty(left);
-                fnd = true,ins = true;
+                fnd = true; ins = true;
             }
             else if(right) {
                 // try to get smallest element from right branch

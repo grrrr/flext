@@ -565,7 +565,7 @@ zero:
         while(n--) {
             dst[0] = src[0]; dst[1] = src[1]; dst[2] = src[2]; dst[3] = src[3];
             dst[4] = src[4]; dst[5] = src[5]; dst[6] = src[6]; dst[7] = src[7];
-            src += 8,dst += 8;
+            src += 8; dst += 8;
         }
         while(cnt--) *(dst++) = *(src++); 
     }
@@ -951,7 +951,7 @@ zero:
                 dst[2] = src[2]*op; dst[3] = src[3]*op; 
                 dst[4] = src[4]*op; dst[5] = src[5]*op; 
                 dst[6] = src[6]*op; dst[7] = src[7]*op; 
-                src += 8,dst += 8;
+                src += 8; dst += 8;
             }
             while(cnt--) *(dst++) = *(src++)*op; 
         }
@@ -1172,7 +1172,7 @@ zero:
                 dst[2] *= op[2]; dst[3] *= op[3]; 
                 dst[4] *= op[4]; dst[5] *= op[5]; 
                 dst[6] *= op[6]; dst[7] *= op[7]; 
-                dst += 8,op += 8;
+                dst += 8; op += 8;
             }
             while(cnt--) *(dst++) *= *(op++); 
         }
@@ -1182,7 +1182,7 @@ zero:
                 dst[2] = src[2]*op[2]; dst[3] = src[3]*op[3]; 
                 dst[4] = src[4]*op[4]; dst[5] = src[5]*op[5]; 
                 dst[6] = src[6]*op[6]; dst[7] = src[7]*op[7]; 
-                src += 8,dst += 8,op += 8;
+                src += 8; dst += 8; op += 8;
             }
             while(cnt--) *(dst++) = *(src++) * *(op++); 
         }
@@ -1311,7 +1311,7 @@ zero:
                 dst[2] = src[2]+op; dst[3] = src[3]+op; 
                 dst[4] = src[4]+op; dst[5] = src[5]+op; 
                 dst[6] = src[6]+op; dst[7] = src[7]+op; 
-                src += 8,dst += 8;
+                src += 8; dst += 8;
             }
             while(cnt--) *(dst++) = *(src++)+op; 
         }
@@ -1533,7 +1533,7 @@ zero:
                 dst[2] += op[2]; dst[3] += op[3]; 
                 dst[4] += op[4]; dst[5] += op[5]; 
                 dst[6] += op[6]; dst[7] += op[7]; 
-                dst += 8,op += 8;
+                dst += 8; op += 8;
             }
             while(cnt--) *(dst++) += *(op++); 
         }
@@ -1543,7 +1543,7 @@ zero:
                 dst[2] = src[2]+op[2]; dst[3] = src[3]+op[3]; 
                 dst[4] = src[4]+op[4]; dst[5] = src[5]+op[5]; 
                 dst[6] = src[6]+op[6]; dst[7] = src[7]+op[7]; 
-                src += 8,dst += 8,op += 8;
+                src += 8; dst += 8; op += 8;
             }
             while(cnt--) *(dst++) = *(src++) + *(op++); 
         }
@@ -1675,7 +1675,7 @@ zero:
             dst[2] = src[2]*opmul+opadd; dst[3] = src[3]*opmul+opadd; 
             dst[4] = src[4]*opmul+opadd; dst[5] = src[5]*opmul+opadd; 
             dst[6] = src[6]*opmul+opadd; dst[7] = src[7]*opmul+opadd; 
-            src += 8,dst += 8;
+            src += 8; dst += 8;
         }
         while(cnt--) *(dst++) = *(src++)*opmul+opadd; 
     }
@@ -1820,7 +1820,7 @@ zero:
                 dst[2] += src[2]*opmul; dst[3] += src[3]*opmul; 
                 dst[4] += src[4]*opmul; dst[5] += src[5]*opmul; 
                 dst[6] += src[6]*opmul; dst[7] += src[7]*opmul; 
-                src += 8,dst += 8;
+                src += 8; dst += 8;
             }
             while(cnt--) *(dst++) += *(src++)*opmul; 
         }
@@ -1830,7 +1830,7 @@ zero:
                 dst[2] = src[2]*opmul+opadd[2]; dst[3] = src[3]*opmul+opadd[3]; 
                 dst[4] = src[4]*opmul+opadd[4]; dst[5] = src[5]*opmul+opadd[5]; 
                 dst[6] = src[6]*opmul+opadd[6]; dst[7] = src[7]*opmul+opadd[7]; 
-                src += 8,dst += 8,opadd += 8;
+                src += 8; dst += 8; opadd += 8;
             }
             while(cnt--) *(dst++) = *(src++)*opmul+*(opadd++); 
         }
@@ -1988,7 +1988,7 @@ zero:
                 dst[2] += src[2]*opmul[2]; dst[3] += src[3]*opmul[3]; 
                 dst[4] += src[4]*opmul[4]; dst[5] += src[5]*opmul[5]; 
                 dst[6] += src[6]*opmul[6]; dst[7] += src[7]*opmul[7]; 
-                src += 8,dst += 8,opmul += 8;
+                src += 8; dst += 8; opmul += 8;
             }
             while(cnt--) *(dst++) += *(src++) * *(opmul++); 
         }
@@ -1998,7 +1998,7 @@ zero:
                 dst[2] = src[2]*opmul[2]+opadd[2]; dst[3] = src[3]*opmul[3]+opadd[3]; 
                 dst[4] = src[4]*opmul[4]+opadd[4]; dst[5] = src[5]*opmul[5]+opadd[5]; 
                 dst[6] = src[6]*opmul[6]+opadd[6]; dst[7] = src[7]*opmul[7]+opadd[7]; 
-                src += 8,dst += 8,opmul += 8,opadd += 8;
+                src += 8; dst += 8; opmul += 8; opadd += 8;
             }
             while(cnt--) *(dst++) = *(src++)* *(opmul++) + *(opadd++); 
         }

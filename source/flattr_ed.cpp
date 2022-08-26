@@ -514,8 +514,9 @@ size_t escapeit(char *dst,size_t maxlen,const char *src)
 {
     char *d;
     for(d = dst; *src && (d-dst) < (int)maxlen; ++src) {
-        if(*src == '%')
-            *(d++) = '%',*(d++) = '%';
+        if(*src == '%') {
+            *(d++) = '%'; *(d++) = '%';
+        }
         else
             *(d++) = *src;
     }
@@ -561,8 +562,9 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_GfxProperties(flext_hdr *c, 
         const AttrData *a = th->attrdata->find(sym);
 //        AttrDataCont::iterator it = th->attrdata->find(sym);
 //        if(it == th->attrdata->end())
-        if(!a)
-            sv = 0,initdata = NULL;
+        if(!a) {
+            sv = 0; initdata = NULL;
+        }
         else {
 //            const AttrData &a = *it.data();
             if(a->IsSaved())

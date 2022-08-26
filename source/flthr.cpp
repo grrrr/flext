@@ -57,7 +57,7 @@ public:
     void Set(void (*m)(thr_params *),thr_params *p,thrid_t id = GetThreadId())
     {
         th = p?p->cl:NULL;
-        meth = m,params = p,thrid = id;
+        meth = m; params = p; thrid = id;
         shouldexit = false;
 #if FLEXT_THREADS == FLEXT_THR_MP
 	    weight = 100; // MP default weight

@@ -79,7 +79,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::PrintList(int argc,const t_atom *arg
 
         if(PrintAtom(argv[i],buf,bufsz)) {
             size_t len = strlen(buf);
-            buf += len,bufsz -= len;
+            buf += len; bufsz -= len;
         }
         else
             ok = false;

@@ -447,7 +447,7 @@ static t_widgetbehavior widgetbehavior;
 
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::SetGfx(t_classid c)
 {
-	t_class *cl = getClass(c);
+    t_class *cl = getClass(c);
     // widgetbehavior struct MUST be resident... (static is just ok here)
 
 #ifdef __FLEXT_WIDGETBEHAVIOR

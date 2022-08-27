@@ -425,13 +425,8 @@ FLEXT_TEMPLATE bool QWork(bool syslock,flext_base *flushobj = NULL)
 #endif
 
 #if FLEXT_QMODE == 0
-#if FLEXT_SYS == FLEXT_SYS_JMAX
-FLEXT_TEMPLATE void QTick(fts_object_t *c,int winlet, fts_symbol_t s, int ac, const fts_atom_t *at)
-{
-#else
 FLEXT_TEMPLATE void QTick(flext_base *c)
 {
-#endif
     FLEXT_UNUSED(c); // keep compiler quiet
     FLEXT_TEMPINST(QWork)(false);
 }

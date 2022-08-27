@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2022 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -19,7 +19,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "flpushns.h"
 
-#if FLEXT_SYS != FLEXT_SYS_JMAX
 FLEXT_TEMPIMPL(int FLEXT_CLASSDEF(flext))::CmpAtom(const t_atom &a,const t_atom &b)
 {
 	if(GetType(a) == GetType(b)) {
@@ -41,9 +40,6 @@ FLEXT_TEMPIMPL(int FLEXT_CLASSDEF(flext))::CmpAtom(const t_atom &a,const t_atom 
 	else
 		return GetType(a) < GetType(b)?-1:1;
 }
-#else
-#error Not implemented
-#endif
 
 FLEXT_TEMPIMPL(t_atom *FLEXT_CLASSDEF(flext))::CopyList(int argc,const t_atom *argv)
 {

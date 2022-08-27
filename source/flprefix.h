@@ -34,15 +34,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
     #define FLEXT_SYS FLEXT_SYS_PD
 #endif
 
-#ifndef FLEXT_SYS_JMAX
-    #define FLEXT_SYS_JMAX  3
-#else
-    // already defined
-    #undef FLEXT_SYS_JMAX
-    #define FLEXT_SYS_JMAX  3
-    #define FLEXT_SYS FLEXT_SYS_JMAX
-#endif
-
 // --- definitions for FLEXT_OS ----------------------
 #define FLEXT_OS_UNKNOWN    0
 #define FLEXT_OS_WIN    1

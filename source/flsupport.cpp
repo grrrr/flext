@@ -281,7 +281,7 @@ void operator delete[](void *blk) DELTHROW
 #endif // FLEXT_USE_CMEM
 // ------------------------------------------
 
-/*! \todo there is probably also a shortcut for Max and jMax
+/*! \todo there is probably also a shortcut for Max
     \todo size checking
 */
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::GetAString(const t_atom &a,char *buf,size_t szbuf)

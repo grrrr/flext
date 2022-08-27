@@ -19,8 +19,6 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "flpushns.h"
 
-#if FLEXT_SYS != FLEXT_SYS_JMAX
-
 #if FLEXT_SYS == FLEXT_SYS_PD
 #define DIRTY_INTERVAL 0   // buffer dirty check in msec
 
@@ -396,8 +394,6 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext))::buffer::IsDirty() const
 #error Not implemented
 #endif
 }
-
-#endif // Jmax
 
 #include "flpopns.h"
 

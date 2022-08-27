@@ -1,7 +1,7 @@
 /* 
 flext tutorial - threads 2 
 
-Copyright (c) 2002,2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002-2022 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -99,7 +99,7 @@ void thread2::m_stop()
 //	cond.Lock(); // lock conditional
 	stopit = true; // set termination flag
 
-	while(*(&running) || *(&blipping)) // workaround for CodeWarrior (doesn't honor volatile modifier!)
+	while(running || blipping)
 	{
 		cond.Wait(); // wait for signal by running threads
 	}

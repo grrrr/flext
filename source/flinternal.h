@@ -107,5 +107,6 @@ typedef t_perfroutine t_dspmethod;
 #define CRITON() short state = lockout_set(1)
 #define CRITOFF() lockout_set(state) 
 
+#endif
 
 #endif

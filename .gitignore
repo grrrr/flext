@@ -6,7 +6,7 @@ buildsys/config-*.txt
 flext.xcodeproj/project.xcworkspace/
 flext.xcodeproj/xcuserdata/
 
- CompiledObject files
+# CompiledObject files
 *.slo
 *.lo
 *.o
@@ -56,3 +56,5 @@ source/Makefile
 source/Makefile.in
 aclocal.m4
 m4/
+*.pc
+

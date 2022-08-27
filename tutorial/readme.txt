@@ -14,16 +14,16 @@ Contribution of examples to the package is higly appreciated!
 
 The recommended order to go through the tutorial examples is the following:
 
-1) simple*
-2) adv*
-3) attr*
-4) timer*
-5) signal*
-6) lib*
-7) thread*
+1) 1_simple*
+2) 2_adv*
+3) 3_attr*
+4) 4_timer*, 4_bind*, 4_buffer*
+5) 5_signal*
+6) 6_lib*
+7) 7_thread*
 
 and, if needed
-8) sndobj* and/or stk*
+8) 8_sndobj* and/or 8_stk*
 
 if you choose to compile with SndObj support, the respective library can be found here:
 http://sndobj.sourceforge.net/sndobj.html

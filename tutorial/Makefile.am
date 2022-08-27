@@ -20,12 +20,14 @@ SUBDIRS = \
 	5_signal2 \
 	6_lib1 \
 	7_thread1 \
-	7_thread2
-    
+	7_thread2 \
+	pd \
+	maxmsp
+
 #	8_sndobj1 \
 #	8_stk1 \
-#	8_stk2
-
+#	8_stk2 \
+#
 
 EXTRA_DIST = \
 	readme.txt \
@@ -49,8 +51,11 @@ DIST_SUBDIRS = pd \
 	5_signal2 \
 	6_lib1 \
 	7_thread1 \
-	7_thread2
-    
+	7_thread2 \
+	pd \
+	maxmsp
+
 #	8_sndobj1 \
 #	8_stk1 \
-#   8_stk2
+#	8_stk2 \
+#

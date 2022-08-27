@@ -1,2 +1,2 @@
-NAME = simple1
+NAME = attr3
 include ../common.mk

@@ -203,34 +203,31 @@ AC_SUBST(FLEXT_EXT_CFLAGS)
 AC_SUBST(EXTENSION)
 
 AC_CONFIG_FILES([
+			$SYSTEM-flext.pc
 			Makefile
 			source/Makefile
 			tutorial/Makefile
 			tutorial/1_simple1/Makefile
-			$SYSTEM-flext.pc
+			tutorial/1_simple2/Makefile
+			tutorial/1_simple3/Makefile
+			tutorial/2_adv1/Makefile
+			tutorial/2_adv2/Makefile
+			tutorial/2_adv3/Makefile
+			tutorial/3_attr1/Makefile
+			tutorial/3_attr2/Makefile
+			tutorial/3_attr3/Makefile
+			tutorial/4_bind1/Makefile
+			tutorial/4_buffer1/Makefile
+			tutorial/4_timer1/Makefile
+			tutorial/5_signal1/Makefile
+			tutorial/5_signal2/Makefile
+			tutorial/6_lib1/Makefile
+			tutorial/7_thread1/Makefile
+			tutorial/7_thread2/Makefile
+			tutorial/8_sndobj1/Makefile
+			tutorial/8_stk1/Makefile
+			tutorial/8_stk2/Makefile
+			tutorial/pd/Makefile
+			tutorial/maxmsp/Makefile
 ])
 AC_OUTPUT
-
-#			tutorial/simple1/Makefile
-#			tutorial/adv1/Makefile
-#			tutorial/adv2/Makefile
-#			tutorial/adv3/Makefile
-#			tutorial/attr1/Makefile
-#			tutorial/attr2/Makefile
-#			tutorial/attr3/Makefile
-#			tutorial/bind1/Makefile
-#			tutorial/buffer1/Makefile
-#			tutorial/lib1/Makefile
-#			tutorial/signal1/Makefile
-#			tutorial/signal2/Makefile
-#			tutorial/simple1/Makefile
-#			tutorial/simple2/Makefile
-#			tutorial/simple3/Makefile
-#			tutorial/sndobj1/Makefile
-#			tutorial/stk1/Makefile
-#			tutorial/stk2/Makefile
-#			tutorial/thread1/Makefile
-#			tutorial/thread2/Makefile
-#			tutorial/timer1/Makefile
-#			tutorial/pd/Makefile
-#			tutorial/maxmsp/Makefile

@@ -1,2 +1,2 @@
-NAME = simple1
+NAME = signal1
 include ../common.mk

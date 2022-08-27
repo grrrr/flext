@@ -1,2 +1,2 @@
-NAME = simple1
+NAME = thread1
 include ../common.mk

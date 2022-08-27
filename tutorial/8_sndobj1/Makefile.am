@@ -1,2 +1,2 @@
-NAME = simple1
+NAME = sndobj1
 include ../common.mk

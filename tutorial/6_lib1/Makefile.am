@@ -1,2 +1,2 @@
-NAME = simple1
+NAME = lib1
 include ../common.mk

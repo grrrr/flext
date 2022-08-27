@@ -1,2 +1,2 @@
-NAME = simple1
+NAME = stk1
 include ../common.mk

@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2020 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2022 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -16,15 +16,15 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #define __FLEXT_H
 
 
-/*!	\defgroup FLEXT_GLOBAL Flext global definitions
-	@{
+/*! \defgroup FLEXT_GLOBAL Flext global definitions
+    @{
 */
 
 //! \brief flext version number
-#define FLEXT_VERSION 601
+#define FLEXT_VERSION 602
 
 //! \brief flext version string
-#define FLEXT_VERSTR "0.6.1 alpha"
+#define FLEXT_VERSTR "0.6.2"
 
 //! @}
 
@@ -33,23 +33,23 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // include headers necessary for multi-threading
 #ifdef FLEXT_THREADS
-	#if FLEXT_THREADS == FLEXT_THR_POSIX
-		extern "C" {
-			#include <pthread.h>
-			#include <sched.h>
-		}
-	#elif FLEXT_THREADS == FLEXT_THR_MP
-		#include <multiprocessing.h>
-	#elif FLEXT_THREADS == FLEXT_THR_WIN32
+    #if FLEXT_THREADS == FLEXT_THR_POSIX
+        extern "C" {
+            #include <pthread.h>
+            #include <sched.h>
+        }
+    #elif FLEXT_THREADS == FLEXT_THR_MP
+        #include <multiprocessing.h>
+    #elif FLEXT_THREADS == FLEXT_THR_WIN32
         #if defined(_WIN32_WINNT) && _WIN32_WINNT >= 0x500
-    		#include <windows.h>
+            #include <windows.h>
             #include <process.h>
         #else
             #error "Win32 threading model only supported for Win2000/XP or newer"
         #endif
-	#else
-		#error "Thread model not supported"
-	#endif
+    #else
+        #error "Thread model not supported"
+    #endif
 #endif
 
 

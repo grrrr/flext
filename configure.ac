@@ -33,7 +33,7 @@ AC_ARG_WITH(pdbindir,
 	[
 		if test $win; then
 # LATER: shouldn't we use AC_CHECK_LIB([pd]) ?
-		 AC_CHECK_FILE([$withval/pd.dll],,AC_MSG_ERROR([Cannot find $withval/pd.dll]))	
+		 AC_CHECK_FILE([$withval/pd.dll],,AC_MSG_ERROR([Cannot find $withval/pd.dll]))
 		fi
 		LIBDIRS="$LIBDIRS $withval"
 	],
@@ -71,7 +71,7 @@ fi
 AC_ARG_WITH(atomic_ops,
 	AS_HELP_STRING([--with-atomic_ops],[path to atomic_ops library (needed for gcc version < 4.1 on non-i386 cpus)]),
 	[
-	    AC_CHECK_FILE([$withval/atomic_ops.h],,AC_MSG_ERROR([Cannot find $withval/atomic_ops.h]))	
+	    AC_CHECK_FILE([$withval/atomic_ops.h],,AC_MSG_ERROR([Cannot find $withval/atomic_ops.h]))
 		INCLUDEDIRS="$INCLUDEDIRS $withval"
         AC_DEFINE(USE_ATOMIC_OPS)
 	]
@@ -80,7 +80,7 @@ AC_ARG_WITH(atomic_ops,
 AC_ARG_WITH(stkdir,
 	AS_HELP_STRING([--with-stkdir],[path to STK headers]),
 	[
-	    AC_CHECK_FILE([$withval/Stk.h],,AC_MSG_ERROR([Cannot find $withval/Stk.h]))	
+	    AC_CHECK_FILE([$withval/Stk.h],,AC_MSG_ERROR([Cannot find $withval/Stk.h]))
 		stkdir=$withval
 		INCLUDEDIRS="$INCLUDEDIRS $withval"
 	]
@@ -139,6 +139,8 @@ AC_STRUCT_TM
 
 # system specific
 if test $(uname -s) == Linux; then
+	C_FLAGS="$C_FLAGS -fPIC"
+	LD_FLAGS="$LD_FLAGS -shared"
 	EXTENSION=pd_linux
 elif test $(uname -s) == Darwin; then
 	FRAMEWORKS="$FRAMEWORKS ApplicationServices Accelerate"
@@ -165,7 +167,7 @@ AC_ARG_ENABLE(optimize,
 		case $enableval in
 			pentium | pentium2 | athlon | pentium-mmx)
 				OPT_FLAGS="$OPT_FLAGS -march=$enableval";;
-			pentium3 | pentium3m | pentium4 | pentium4m | pentium-m | prescott | nocona | athlon-xp | athlon-mp | athlon64 | opteron) 
+			pentium3 | pentium3m | pentium4 | pentium4m | pentium-m | prescott | nocona | athlon-xp | athlon-mp | athlon64 | opteron)
 				OPT_FLAGS="$OPT_FLAGS -march=$enableval -mfpmath=sse";
 				AC_DEFINE(FLEXT_USE_SIMD);;
 			G3)

@@ -1,6 +1,13 @@
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
+build_flext:
+  stage: test
+  script:
+    - ./bootstrap.sh
+    - ./configure --with-sdkdir=$HOME/pure-data/src --enable-cmem
+    - make
+
 push_github:
     stage: deploy
     script:

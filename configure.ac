@@ -6,7 +6,7 @@
 # flext API version (current:release:age)
 # API_VERSION=0:0:0
 
-AC_INIT([flext],[0.6.0],[gr@grrrr.org])
+AC_INIT([flext],[0.6.2],[gr@grrrr.org])
 AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_MACRO_DIRS([m4])
 
@@ -17,19 +17,19 @@ fi
 
 # configure options
 AC_ARG_ENABLE(system,
-	AC_HELP_STRING(--enable-system,[realtime system [default=pd]]),
+	AS_HELP_STRING([--enable-system],[realtime system [default=pd]]),
     [SYSTEM=$enableval],
     [SYSTEM=pd]
 )
 
 AC_ARG_WITH(sdkdir,
-	AC_HELP_STRING(--with-sdkdir,[path to pd or max headers]),
+	AS_HELP_STRING([--with-sdkdir],[path to pd or max headers]),
     [sdkdir=$withval],
 	AC_MSG_ERROR(path to system SDK headers required $withval)
 )
 
 AC_ARG_WITH(pdbindir,
-	AC_HELP_STRING(--with-pdbindir,[path to pd bin dir]),
+	AS_HELP_STRING([--with-pdbindir],[path to pd bin dir]),
 	[
 		if test $win; then
 # LATER: shouldn't we use AC_CHECK_LIB([pd]) ?
@@ -69,7 +69,7 @@ else
 fi
 
 AC_ARG_WITH(atomic_ops,
-	AC_HELP_STRING(--with-atomic_ops,[path to atomic_ops library (needed for gcc version < 4.1 on non-i386 cpus)]),
+	AS_HELP_STRING([--with-atomic_ops],[path to atomic_ops library (needed for gcc version < 4.1 on non-i386 cpus)]),
 	[
 	    AC_CHECK_FILE([$withval/atomic_ops.h],,AC_MSG_ERROR([Cannot find $withval/atomic_ops.h]))	
 		INCLUDEDIRS="$INCLUDEDIRS $withval"
@@ -78,7 +78,7 @@ AC_ARG_WITH(atomic_ops,
 )
 
 AC_ARG_WITH(stkdir,
-	AC_HELP_STRING(--with-stkdir,[path to STK headers]),
+	AS_HELP_STRING([--with-stkdir],[path to STK headers]),
 	[
 	    AC_CHECK_FILE([$withval/Stk.h],,AC_MSG_ERROR([Cannot find $withval/Stk.h]))	
 		stkdir=$withval
@@ -89,7 +89,7 @@ AC_ARG_WITH(stkdir,
 AM_CONDITIONAL([STK],[test "$stkdir"])
 
 AC_ARG_WITH(sndobjdir,
-	AC_HELP_STRING(--with-sndobjdir,[path to SndObj headers]),
+	AS_HELP_STRING([--with-sndobjdir],[path to SndObj headers]),
 	[
 		AC_CHECK_FILE([$withval/SndObj.h],,AC_MSG_ERROR([Cannot find $withval/SndObj.h]))
 		sndobjdir=$withval
@@ -104,16 +104,22 @@ AM_CONDITIONAL([SNDOBJ],[test "$sndobjdir"])
 test ".$CFLAGS" = "." && CFLAGS=" "
 test ".$CXXFLAGS" = "." && CXXFLAGS=" "
 
-# needed for libtool to build win32 dlls
-AC_LIBTOOL_WIN32_DLL
+AU_DEFUN([AC_LIBTOOL_WIN32_DLL],
+[AC_REQUIRE([AC_CANONICAL_HOST])dnl
+_LT_SET_OPTION([LT_INIT], [win32-dll])
+AC_DIAGNOSE([obsolete],
+[$0: Remove this warning and the call to _LT_SET_OPTION when you
+put the `win32-dll' option into LT_INIT's first parameter.])
+])
 
-AM_ENABLE_STATIC
-AM_ENABLE_SHARED
+
+AC_ENABLE_STATIC([])
+AC_ENABLE_SHARED([])
 
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_CXX
-AC_PROG_LIBTOOL
+LT_INIT
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
@@ -133,24 +139,26 @@ AC_STRUCT_TM
 
 # system specific
 if test $(uname -s) == Linux; then
-	true
+	EXTENSION=pd_linux
 elif test $(uname -s) == Darwin; then
 	FRAMEWORKS="$FRAMEWORKS ApplicationServices Accelerate"
 	LD_FLAGS="$LD_FLAGS -flat_namespace -undefined dynamic_lookup"
+	EXTENSION=pd_darwin
 elif test $win; then
 	C_FLAGS="$C_FLAGS -mms-bitfields -mno-cygwin"
 	LD_FLAGS="$LD_FLAGS -mno-cygwin"
+	EXTENSION=dll
 fi
 
 
 # set compilation flags
 
-OPT_FLAGS="$C_FLAGS -O2"
+OPT_FLAGS="$C_FLAGS -O3"
 DBG_FLAGS="$C_FLAGS -DFLEXT_DEBUG -g"
 FLEXT_EXT_CFLAGS=""
 
 AC_ARG_ENABLE(optimize, 
-	AC_HELP_STRING(--enable-optimize,[enables optimized architecture specific builds for pentium4, pentium3, G4, G5, etc.]),
+	AS_HELP_STRING([--enable-optimize],[enables optimized architecture specific builds for pentium4, pentium3, G4, G5, etc.]),
     [
         # tune to a specific CPU
 		OPT_FLAGS="$OPT_FLAGS -mtune=$enableval"
@@ -173,7 +181,7 @@ AC_ARG_ENABLE(optimize,
 	]
 )
 AC_ARG_ENABLE([cmem],
-	AC_HELP_STRING(--enable-cmem,[enables C-style memory allocation (as opposed to overloading 'new' and 'delete')]),
+	AS_HELP_STRING([--enable-cmem],[enables C-style memory allocation (as opposed to overloading 'new' and 'delete')]),
         AS_CASE([$enableval], [yes], [
 		AC_DEFINE(FLEXT_USE_CMEM)
 		FLEXT_EXT_CFLAGS="$FLEXT_EXT_CFLAGS -DFLEXT_USE_CMEM"]))
@@ -192,14 +200,18 @@ AC_SUBST(sndobjdir)
 AC_SUBST(FRAMEWORKS)
 AC_SUBST(FLEXT_EXT_CFLAGS)
 
-AC_OUTPUT([
+AC_SUBST(EXTENSION)
+
+AC_CONFIG_FILES([
 			Makefile
 			source/Makefile
-			tutorial/simple1/Makefile
+			tutorial/Makefile
+			tutorial/1_simple1/Makefile
 			$SYSTEM-flext.pc
 ])
+AC_OUTPUT
 
-#			tutorial/Makefile
+#			tutorial/simple1/Makefile
 #			tutorial/adv1/Makefile
 #			tutorial/adv2/Makefile
 #			tutorial/adv3/Makefile

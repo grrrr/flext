@@ -21,6 +21,8 @@ flext.xcodeproj/xcuserdata/
 *.so
 *.dylib
 *.dll
+*.pd_linux
+*.pd_darwin
 
 # Fortran module files
 *.mod
@@ -46,6 +48,7 @@ config.log
 config.status
 config.sub
 configure
+configure*~
 depcomp
 install-sh
 libtool

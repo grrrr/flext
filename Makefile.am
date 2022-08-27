@@ -6,7 +6,7 @@
 
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = source   # tutorial 
+SUBDIRS = source tutorial
 
 # EXTRA_DIST = flext.doxy
 pkgconfigdir = $(libdir)/pkgconfig

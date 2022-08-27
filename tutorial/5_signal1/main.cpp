@@ -58,7 +58,7 @@ class signal1:
 	
 	protected:
 		// here we declare the virtual DSP function
-		virtual void m_signal(int n, float *const *in, float *const *out);
+		virtual void m_signal(int n, t_sample *const *in, t_sample *const *out);
 	private:	
 		float f_pan;  // holds our panning factor
 		
@@ -101,17 +101,17 @@ FLEXT_NEW_DSP("signal1~ pan~", signal1)
 //          These are arrays of the signals in the objects signal inlets rsp.
 //          oulets. We come to that later inside the function.
 
-void signal1::m_signal(int n, float *const *in, float *const *out)
+void signal1::m_signal(int n, t_sample *const *in, t_sample *const *out)
 {
 	
-	const float *ins1    =  in[0];
-	const float *ins2    =  in[1];
+	const t_sample *ins1    =  in[0];
+	const t_sample *ins2    =  in[1];
 	// As said above "in" holds a list of the signal vectors in all inlets.
 	// After these two lines, ins1 holds the signal vector ofthe first
 	// inlet, index 0, and ins2 holds the signal vector of the second
 	// inlet, with index 1.
 	
-	float *outs          = out[0];
+	t_sample *outs          = out[0];
 	// Now outs holds the signal vector at the one signal outlet we have.
 	
 	// We are now ready for the main signal loop

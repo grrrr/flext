@@ -7,17 +7,19 @@
 #X text 261 150 tag without argument;
 #X text 297 190 tag and argument;
 #X text 72 97 print a help message;
-#X obj 16 7 cnv 15 550 40 empty empty adv2 10 22 0 24 -260818 -1 0
-;
-#X text 146 27 http://grrrr.org;
-#X obj 148 293 adv2;
+#X obj 16 7 cnv 15 550 40 empty empty adv2 10 22 0 24 #fcac44 #000000
+0;
 #X text 21 49 this is identical to the simple3 example;
-#X text 145 9 flext tutorial \, (C)2002-2006 Thomas Grill;
-#X text 345 231 symbol message;
-#X msg 228 230 symbol yeah;
-#X connect 0 0 10 0;
-#X connect 1 0 10 0;
-#X connect 2 0 10 0;
-#X connect 3 0 10 0;
-#X connect 4 0 10 0;
-#X connect 14 0 10 0;
+#X text 345 223 symbol message;
+#X msg 228 222 symbol yeah;
+#X obj 123 294 adv2;
+#X text 150 18 flext tutorial \, (C)2002-2022 grrrr.org;
+#X msg 228 253 other;
+#X text 283 254 other message (unhandled);
+#X connect 0 0 12 0;
+#X connect 1 0 12 0;
+#X connect 2 0 12 0;
+#X connect 3 0 12 0;
+#X connect 4 0 12 0;
+#X connect 11 0 12 0;
+#X connect 14 0 12 0;

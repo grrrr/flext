@@ -1,62 +1,71 @@
-#N canvas 110 259 825 368 12;
-#X obj 16 8 cnv 15 550 40 empty empty timer1 10 22 0 24 -260818 -1
+#N canvas 76 97 740 366 12;
+#X obj 16 8 cnv 15 700 40 empty empty timer1 10 22 0 24 #fcac44 #000000
 0;
-#X text 167 30 http://grrrr.org;
-#X text 167 10 flext tutorial \, (C)2003-2006 Thomas Grill;
-#X obj 241 241 timer1;
-#X obj 241 267 print;
-#X msg 105 104 resetA;
-#X msg 176 104 resetB;
-#X msg 260 147 oneshotA \$1;
-#X obj 259 124 f 100;
-#X obj 303 107 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 10
--262144 -1 -1 0 256;
-#X obj 260 105 bng 15 250 50 0 empty empty empty 0 -6 0 8 -24198 -1
--1;
-#X obj 382 124 f 100;
-#X obj 426 107 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 10
--262144 -1 -1 0 256;
-#X obj 383 105 bng 15 250 50 0 empty empty empty 0 -6 0 8 -24198 -1
--1;
-#X obj 515 124 f 100;
-#X obj 559 107 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 10
--262144 -1 -1 0 256;
-#X obj 516 105 bng 15 250 50 0 empty empty empty 0 -6 0 8 -24198 -1
--1;
-#X obj 652 123 f 100;
-#X obj 696 106 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 10
--262144 -1 -1 0 256;
-#X obj 653 104 bng 15 250 50 0 empty empty empty 0 -6 0 8 -24198 -1
--1;
-#X msg 383 147 oneshotB \$1;
-#X msg 516 147 periodicA \$1;
-#X msg 653 146 periodicB \$1;
-#X text 119 82 reset timer;
-#X text 275 81 trigger single event;
-#X text 523 80 trigger periodic event;
-#X msg 30 161 gettime;
-#X msg 30 191 getostime;
-#X text 106 162 get time;
-#X text 127 191 get OS time;
-#X connect 3 0 4 0;
-#X connect 3 1 4 0;
-#X connect 5 0 3 0;
-#X connect 6 0 3 0;
-#X connect 7 0 3 0;
-#X connect 8 0 7 0;
-#X connect 9 0 8 1;
-#X connect 10 0 8 0;
-#X connect 11 0 20 0;
-#X connect 12 0 11 1;
-#X connect 13 0 11 0;
-#X connect 14 0 21 0;
-#X connect 15 0 14 1;
-#X connect 16 0 14 0;
-#X connect 17 0 22 0;
-#X connect 18 0 17 1;
-#X connect 19 0 17 0;
-#X connect 20 0 3 0;
-#X connect 21 0 3 0;
-#X connect 22 0 3 0;
-#X connect 26 0 3 0;
-#X connect 27 0 3 0;
+#X obj 97 299 print;
+#X msg 51 101 resetA;
+#X msg 122 101 resetB;
+#X msg 206 144 oneshotA \$1;
+#X obj 244 101 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 10
+#fcfcfc #000000 #000000 0 256;
+#X obj 206 102 bng 15 250 50 0 empty empty empty 0 -6 0 8 #14e814 #000000
+#000000;
+#X obj 368 103 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 10
+#fcfcfc #000000 #000000 0 256;
+#X obj 329 102 bng 15 250 50 0 empty empty empty 0 -6 0 8 #14e814 #000000
+#000000;
+#X obj 493 103 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 10
+#fcfcfc #000000 #000000 0 256;
+#X obj 462 102 bng 15 250 50 0 empty empty empty 0 -6 0 8 #14e814 #000000
+#000000;
+#X obj 620 101 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -6 0 10
+#fcfcfc #000000 #000000 0 256;
+#X obj 599 101 bng 15 250 50 0 empty empty empty 0 -6 0 8 #14e814 #000000
+#000000;
+#X msg 329 144 oneshotB \$1;
+#X msg 462 144 periodicA \$1;
+#X msg 599 143 periodicB \$1;
+#X text 65 79 reset timer;
+#X text 221 78 trigger single event;
+#X text 469 77 trigger periodic event;
+#X msg 404 215 gettime;
+#X msg 404 245 getostime;
+#X text 480 216 get time;
+#X text 501 245 get OS time;
+#X obj 97 244 timer1;
+#X obj 76 302 bng 15 250 50 0 empty empty empty 17 7 0 10 #c6ffc7 #000000
+#000000;
+#X obj 153 268 list prepend set;
+#X obj 153 291 list trim;
+#X text 168 18 flext tutorial \, (C)2002-2022 grrrr.org;
+#X obj 205 121 f 1000;
+#X obj 328 121 f 2000;
+#X obj 461 121 f 500;
+#X obj 598 120 600;
+#X msg 153 313;
+#X connect 2 0 23 0;
+#X connect 3 0 23 0;
+#X connect 4 0 23 0;
+#X connect 5 0 28 1;
+#X connect 6 0 28 0;
+#X connect 7 0 29 1;
+#X connect 8 0 29 0;
+#X connect 9 0 30 1;
+#X connect 10 0 30 0;
+#X connect 11 0 31 1;
+#X connect 12 0 31 0;
+#X connect 13 0 23 0;
+#X connect 14 0 23 0;
+#X connect 15 0 23 0;
+#X connect 19 0 23 0;
+#X connect 20 0 23 0;
+#X connect 23 0 1 0;
+#X connect 23 0 24 0;
+#X connect 23 0 25 0;
+#X connect 23 1 1 0;
+#X connect 23 1 25 0;
+#X connect 25 0 26 0;
+#X connect 26 0 32 0;
+#X connect 28 0 4 0;
+#X connect 29 0 13 0;
+#X connect 30 0 14 0;
+#X connect 31 0 15 0;

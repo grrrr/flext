@@ -1,7 +1,7 @@
 /* 
 flext tutorial - signal 2 
 
-Copyright (c) 2002,2003 Thomas Grill (xovo@gmx.net)
+Copyright (c) 2002-2022 Thomas Grill (xovo@gmx.net)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.  
 
@@ -50,9 +50,9 @@ signal2::signal2()
 	// first inlet must always by of type anything (or signal for dsp objects)
 	AddInAnything();  // add one inlet for any message
 	
-	// add outlets for sample rate, block size, audio in and out channel count
+	// add outlets for sample rate and block size
 	AddOutFloat(1);
-	AddOutInt(3); // although PD knows no int type, flext does!
+	AddOutInt(1);
 	
 	// register methods
 	FLEXT_ADDBANG(0,m_bang);  // register method "m_bang" for bang message into inlet 0
@@ -60,10 +60,7 @@ signal2::signal2()
 
 void signal2::m_bang()
 {
-	// output various parameters of the pd audio system
+	// output various parameters of the audio system
 	ToOutFloat(0,Samplerate()); 
-	ToOutInt(1,Blocksize()); 
-	ToOutInt(2,CntInSig()); 
-	ToOutInt(3,CntOutSig()); 
+	ToOutInt(1,Blocksize());
 }
-

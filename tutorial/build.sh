@@ -30,11 +30,11 @@ then
         if [ $success -ne 0 ]; then
             ok=0
         else
-            echo Compilation failed >/dev/stderr
+            echo Compilation failed
             ok=-3
         fi
     else
-        echo Config failed >/dev/stderr
+        echo Config failed
         ok=-2
     fi
 else

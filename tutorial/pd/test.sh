@@ -8,7 +8,7 @@ patches="${root}/tutorial/pd"
 testpatch="${patches}/test.pd"
 logfile="${patches}/test.log"
 
-for f in "$root"/tutorial/?_*/*.pd_*; do
+for f in ${root}/tutorial/?_*/*.pd_*; do
   p="${f%/*}"
   pp="${p##*_}"
   ext="${f##*/}"

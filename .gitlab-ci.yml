@@ -9,7 +9,8 @@ build_linux:
     - make
   artifacts:
     paths:
-      - $CI_PROJECT_DIR/tutorial/*.pd_linux
+      - tutorial/*/*.pd_linux
+    expire_in: 1h
 
 test_linux:
   stage: test

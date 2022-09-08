@@ -13,10 +13,9 @@ test_flext:
   dependencies:
     - build_flext
   script:
-    - echo '\#N canvas 52 68 381 178 12; \#X obj 16 12 loadbang; \#X msg 16 108 \\; pd quit; \#X msg 111 108 \\; pd dsp 1; \#N canvas 658 95 450 300 test 0; \#X restore 197 120 pd test; \#X obj 16 83 delay 1000; \#X obj 234 11 r r; \#X msg 195 66 \; pd-test obj 10 10 \\$1; \#X obj 195 40 list; \#X obj 152 11 delay 100; \#X connect 0 0 2 0; \#X connect 0 0 4 0; \#X connect 0 0 8 0; \#X connect 4 0 1 0; \#X connect 5 0 7 1; \#X connect 7 0 6 0; \#X connect 8 0 7 0;' > $CI_PROJECT_DIR/test.pd
     - ( for f in $CI_PROJECT_DIR/tutorial/{1_simple1,2_adv2,3_*,4_*,5_*,7_*}/*.pd_*; do 
         p="${f%/*}"; ex="${f##*/}"; n="${ex%%.*}";
-        if ! pd -noprefs -open $CI_PROJECT_DIR/test.pd -nort -noprefs -noaudio -nomidi -nogui -path "$p" -send "r $n" 2>&1 > $CI_PROJECT_DIR/output.txt || grep error "$CI_PROJECT_DIR/output.txt"; then
+        if ! pd -noprefs -open $CI_PROJECT_DIR/tutorial/pd/test.pd -nort -noprefs -noaudio -nomidi -nogui -path "$p" -send "r obj $n" -send "r del 100" -send "r quit 1000" &> $CI_PROJECT_DIR/output.txt || grep error "$CI_PROJECT_DIR/output.txt"; then
           false
           exit # exit (subshell)
         fi

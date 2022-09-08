@@ -2,7 +2,7 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
 build_flext:
-  stage: test
+  stage: build
   script:
     - ./bootstrap.sh
     - ./configure --with-sdkdir=$HOME/pure-data/src --enable-cmem
@@ -10,8 +10,6 @@ build_flext:
 
 test_flext:
   stage: test
-  dependencies:
-    - build_flext
   script:
     - $CI_PROJECT_DIR/tutorial/pd/test.sh $CI_PROJECT_DIR
 

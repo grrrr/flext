@@ -1,14 +1,17 @@
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
-build_flext:
+build_linux:
   stage: build
   script:
     - ./bootstrap.sh
     - ./configure --with-sdkdir=$HOME/pure-data/src --enable-cmem
     - make
+  artifacts:
+    paths:
+      - $CI_PROJECT_DIR/tutorial/*.pd_linux
 
-test_flext:
+test_linux:
   stage: test
   script:
     - $CI_PROJECT_DIR/tutorial/pd/test.sh $CI_PROJECT_DIR

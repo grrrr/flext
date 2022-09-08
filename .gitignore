@@ -61,3 +61,5 @@ aclocal.m4
 m4/
 *.pc
 
+*.log
+

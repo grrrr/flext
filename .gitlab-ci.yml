@@ -13,13 +13,7 @@ test_flext:
   dependencies:
     - build_flext
   script:
-    - ( for f in $CI_PROJECT_DIR/tutorial/{1_simple1,2_adv2,3_*,4_*,5_*,7_*}/*.pd_*; do 
-        p="${f%/*}"; ex="${f##*/}"; n="${ex%%.*}";
-        if ! pd -noprefs -open $CI_PROJECT_DIR/tutorial/pd/test.pd -nort -noprefs -noaudio -nomidi -nogui -path "$p" -send "r obj $n" -send "r del 100" -send "r quit 1000" &> $CI_PROJECT_DIR/output.txt || grep error "$CI_PROJECT_DIR/output.txt"; then
-          false
-          exit # exit (subshell)
-        fi
-      done )
+    - $CI_PROJECT_DIR/tutorial/pd/test.sh $CI_PROJECT_DIR
 
 push_github:
     stage: deploy

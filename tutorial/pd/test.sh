@@ -8,11 +8,6 @@ patches="${root}/tutorial/pd"
 testpatch="${patches}/test.pd"
 logfile="${patches}/test.log"
 
-if ! [ -x "$pd" ]; then
-  echo Pure data not found
-  exit -1
-fi
-
 for f in "$root"/tutorial/?_*/*.pd_*; do
   p="${f%/*}"
   pp="${p##*_}"

@@ -54,7 +54,7 @@ namespace lockfree
     template <class C, class D>
     inline bool CAS(volatile C * addr,D old,D nw)
     {
-#if defined(__GNUC__) && ( (__GNUC__ > 4) || ((__GNUC__ >= 4) && (__GNUC_MINOR__ >= 1)) )
+#if defined(__GNUC__) && ( (__GNUC__ > 4) || ((__GNUC__ >= 4) && (__GNUC_MINOR__ >= 1)) ) && (!defined USE_BLOCKING_CAS)
         return __sync_bool_compare_and_swap(addr, old, nw);
 #elif defined(_MSC_VER)
         assert((size_t(addr)&3) == 0);  // a runtime check only for debug mode is somehow insufficient....
@@ -69,7 +69,7 @@ namespace lockfree
             return OSAtomicCompareAndSwap64(old,nw,addr);
         else
             assert(false);
-#elif defined(AO_HAVE_compare_and_swap_full)
+#elif defined(AO_HAVE_compare_and_swap_full) && (!defined USE_BLOCKING_CAS)
         return AO_compare_and_swap_full(reinterpret_cast<volatile AO_t*>(addr),
             reinterpret_cast<AO_t>(old),
             reinterpret_cast<AO_t>(nw));
@@ -105,7 +105,7 @@ namespace lockfree
     template <class C, class D, class E>
     inline bool CAS2(C * addr,D old1,E old2,D new1,E new2)
     {
-#if defined(__GNUC__) && ((__GNUC__ > 4) || ( (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 2) ) ) && (defined(__i686__) || defined(__pentiumpro__) || defined(__nocona__) || defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8))
+#if defined(__GNUC__) && ((__GNUC__ > 4) || ( (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 2) ) ) && (defined(__i686__) || defined(__pentiumpro__) || defined(__nocona__) || defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8)) && (!defined USE_BLOCKING_CAS2)
         struct packed_c
         {
             D d;
@@ -129,7 +129,7 @@ namespace lockfree
         return __sync_bool_compare_and_swap_8(reinterpret_cast<volatile long long*>(addr),
             old.l,
             nw.l);
-#elif defined(__GNUC__) && ((__GNUC__ >  4) || ( (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 2) ) ) && (defined(__x86_64__) || defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_16))
+#elif defined(__GNUC__) && ((__GNUC__ >  4) || ( (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 2) ) ) && (defined(__x86_64__) || defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_16)) && (!defined USE_BLOCKING_CAS2)
         struct packed_c
         {
             D d;
@@ -174,7 +174,7 @@ namespace lockfree
             setz [ok]
         }
         return ok;
-#elif defined(__GNUC__) && (defined(__i386__) || defined(__i686__) || defined(__x86_64__))
+#elif defined(__GNUC__) && (defined(__i386__) || defined(__i686__) || defined(__x86_64__)) && (!defined USE_BLOCKING_CAS2)
         char result;
         if(sizeof(D) == 4 && sizeof(E) == 4) {
             #ifndef __PIC__
@@ -198,7 +198,7 @@ namespace lockfree
         else
             assert(false);
         return result != 0;
-#elif defined(AO_HAVE_double_compare_and_swap_full)
+#elif defined(AO_HAVE_double_compare_and_swap_full) && (!defined USE_BLOCKING_CAS2)
         if (sizeof(D) != sizeof(AO_t) || sizeof(E) != sizeof(AO_t)) {
             assert(false);
             return false;

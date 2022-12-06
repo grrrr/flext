@@ -9,6 +9,10 @@
 # shared libraries
 lib_LTLIBRARIES = libflext-@SYSTEM@_s.la libflext-@SYSTEM@_sd.la libflext-@SYSTEM@_t.la libflext-@SYSTEM@_td.la libflext-@SYSTEM@.la libflext-@SYSTEM@_d.la 
 
+# x:y:z -> .so.(x-z).z.y
+# .so.A.B.C -> (A+B):C:B
+VERSION_INFO = -version-info 6:2:6
+
 SRCS_FLEXT = \
 	flbase.cpp \
 	flext.cpp \
@@ -104,8 +108,8 @@ libflext_@SYSTEM@_td_la_CXXFLAGS = @DBG_FLAGS@ -static $(patsubst %,-I%,@INCLUDE
 libflext_@SYSTEM@_la_CXXFLAGS    = @OPT_FLAGS@ $(patsubst %,-I%,@INCLUDEDIRS@) -DFLEXT_SHARED -DFLEXT_EXPORTS
 libflext_@SYSTEM@_d_la_CXXFLAGS  = @DBG_FLAGS@ $(patsubst %,-I%,@INCLUDEDIRS@) -DFLEXT_SHARED -DFLEXT_EXPORTS
 
-libflext_@SYSTEM@_la_LDFLAGS  = @LD_FLAGS@ $(patsubst %,-L%,@LIBDIRS@) $(patsubst %,-l%,@libs@ $(LIB_SNDOBJ) $(LIB_STK)) $(patsubst %,-framework %,@FRAMEWORKS@)
-libflext_@SYSTEM@_d_la_LDFLAGS  = @LD_FLAGS@ $(patsubst %,-L%,@LIBDIRS@) $(patsubst %,-l%,@libs@ $(LIB_SNDOBJ) $(LIB_STK)) $(patsubst %,-framework %,@FRAMEWORKS@) 
+libflext_@SYSTEM@_la_LDFLAGS  = @LD_FLAGS@ $(patsubst %,-L%,@LIBDIRS@) $(patsubst %,-l%,@libs@ $(LIB_SNDOBJ) $(LIB_STK)) $(patsubst %,-framework %,@FRAMEWORKS@) $(VERSION_INFO)
+libflext_@SYSTEM@_d_la_LDFLAGS  = @LD_FLAGS@ $(patsubst %,-L%,@LIBDIRS@) $(patsubst %,-l%,@libs@ $(LIB_SNDOBJ) $(LIB_STK)) $(patsubst %,-framework %,@FRAMEWORKS@)  $(VERSION_INFO)
 
 #libflext_@SYSTEM@_la_LIBADD = @libs@ 
 #libflext_@SYSTEM@_d_la_LIBADD = @libs@ 

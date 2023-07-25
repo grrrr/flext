@@ -28,6 +28,10 @@ AC_ARG_WITH(sdkdir,
 	AC_MSG_ERROR(path to system SDK headers required $withval)
 )
 
+AC_ARG_WITH(externalsdir,
+  AS_HELP_STRING([--with-externalsdir],[path to install externals to]),
+  [EXTDIR="${withval}"])
+
 AC_ARG_WITH(pdbindir,
 	AS_HELP_STRING([--with-pdbindir],[path to pd bin dir]),
 	[
@@ -36,6 +40,7 @@ AC_ARG_WITH(pdbindir,
 		 AC_CHECK_FILE([$withval/pd.dll],,AC_MSG_ERROR([Cannot find $withval/pd.dll]))
 		fi
 		LIBDIRS="$LIBDIRS $withval"
+                AS_IF([test -z "${EXTDIR}"], EXTDIR="${withval}/../extra")
 	],
 	[
 		if test $win; then
@@ -152,6 +157,8 @@ elif test $win; then
 	EXTENSION=dll
 fi
 
+AS_IF([test -z "${EXTDIR}"], EXTDIR="/usr/local/lib/pd-externals")
+
 
 # set compilation flags
 
@@ -203,6 +210,7 @@ AC_SUBST(FRAMEWORKS)
 AC_SUBST(FLEXT_EXT_CFLAGS)
 
 AC_SUBST(EXTENSION)
+AC_SUBST(EXTDIR)
 
 AC_CONFIG_FILES([
 			$SYSTEM-flext.pc

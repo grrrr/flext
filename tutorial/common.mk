@@ -24,7 +24,7 @@ TARGET = $(NAME).@EXTENSION@
 
 OBJECTS = $(patsubst %.cpp,./%.@OBJEXT@,$(BUILT_SOURCES))
 
-SYSDIR = @SYSDIR@
+EXTDIR = @EXTDIR@
 
 
 # ----------------------------- targets --------------------------------
@@ -40,5 +40,5 @@ clean-local:
 	rm -f ./$(OBJECTS)
 
 install-exec-local:
-	$(MKDIR_P) "$(DESTDIR)$(SYSDIR)/extra"
-	$(INSTALL_STRIP_PROGRAM) -m 644 ./$(TARGET) $(DESTDIR)$(SYSDIR)/extra
+	$(MKDIR_P) "$(DESTDIR)$(EXTDIR)"
+	$(INSTALL_STRIP_PROGRAM) -m 644 ./$(TARGET) $(DESTDIR)$(EXTDIR)

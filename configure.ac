@@ -156,8 +156,19 @@ AS_CASE([$host],
 	C_FLAGS="$C_FLAGS -mms-bitfields -mno-cygwin"
 	LD_FLAGS="$LD_FLAGS -mno-cygwin"
 	EXTENSION=dll
+ ], [ # default: like linux (but require extension via the --with-extension flag)
+	C_FLAGS="$C_FLAGS -fPIC"
+	LD_FLAGS="$LD_FLAGS -shared"
+	#EXTENSION=
 ])
 
+AC_ARG_WITH([extension],
+ AS_HELP_STRING([--with-extension=dll],[use the given extension instead of the platform-specific default]),
+ AS_CASE([$withval], [yes|no|""], [], [EXTENSION=$withval]))
+
+AC_MSG_CHECKING([extension])
+AS_IF([test -z "${EXTENSION}"], AC_MSG_ERROR([Unable to autodetect extension and none given...]))
+AC_MSG_RESULT([${EXTENSION}])
 
 AS_IF([test -z "${EXTDIR}"], EXTDIR="/usr/local/lib/pd-externals")
 

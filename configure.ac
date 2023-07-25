@@ -10,6 +10,14 @@ AC_INIT([flext],[0.6.2],[gr@grrrr.org])
 AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_MACRO_DIRS([m4])
 
+AU_DEFUN([AC_LIBTOOL_WIN32_DLL],
+[AC_REQUIRE([AC_CANONICAL_HOST])dnl
+_LT_SET_OPTION([LT_INIT], [win32-dll])
+AC_DIAGNOSE([obsolete],
+[$0: Remove this warning and the call to _LT_SET_OPTION when you
+put the `win32-dll' option into LT_INIT's first parameter.])
+])
+
 # TODO: this should definitely be changed to work with any version of CYGWIN_NT or MINGW32_NT
 if ( test $(uname -s) == CYGWIN_NT-5.0 ) || ( test $(uname -s) == CYGWIN_NT-5.1 ) || ( test $(uname -s) == MINGW32_NT-5.1 ); then
 	set win = 1
@@ -108,14 +116,6 @@ AM_CONDITIONAL([SNDOBJ],[test "$sndobjdir"])
 # otherwise AC_PROG_CC sets them to "-O2 -g" 
 test ".$CFLAGS" = "." && CFLAGS=" "
 test ".$CXXFLAGS" = "." && CXXFLAGS=" "
-
-AU_DEFUN([AC_LIBTOOL_WIN32_DLL],
-[AC_REQUIRE([AC_CANONICAL_HOST])dnl
-_LT_SET_OPTION([LT_INIT], [win32-dll])
-AC_DIAGNOSE([obsolete],
-[$0: Remove this warning and the call to _LT_SET_OPTION when you
-put the `win32-dll' option into LT_INIT's first parameter.])
-])
 
 
 AC_ENABLE_STATIC([])

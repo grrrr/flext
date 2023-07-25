@@ -19,6 +19,8 @@ put the `win32-dll' option into LT_INIT's first parameter.])
 ])
 
 
+FLEXT_EXT_CFLAGS=""
+
 AS_CASE([$host],
  [*mingw*|*cygwin*], [win=1],
  [win=""])
@@ -66,6 +68,19 @@ AS_CASE([$SYSTEM],
             AC_CHECK_FILE(["${pdbindir}/pd.dll"],,AC_MSG_ERROR([Cannot find $pdbindir/pd.dll]))
             libs="$libs pd"
             AC_DEFINE([NT])
+        )
+  ], [pd64], [
+	AC_DEFINE(FLEXT_SYS,2)
+# check for g_canvas.h in pd folder
+	AC_CHECK_FILE([$sdkdir/g_canvas.h],,AC_MSG_ERROR([Cannot find $sdkdir/g_canvas.h]))
+	INCLUDEDIRS="$INCLUDEDIRS $sdkdir"
+        AC_DEFINE([PD_FLOATSIZE], 64, [size of Pd floats (in bits)])
+	FLEXT_EXT_CFLAGS="$FLEXT_EXT_CFLAGS -DPD_FLOATSIZE=64"
+
+        AS_IF([test -n "${win}"],
+          AC_CHECK_FILE(["${pdbindir}/pd64.dll"],,AC_MSG_ERROR([Cannot find $pdbindir/pd64.dll]))
+          libs="$libs pd64"
+          AC_DEFINE([NT])
         )
    ],[
 	AC_MSG_ERROR([system must be pd or max])
@@ -167,7 +182,6 @@ AS_IF([test -z "${EXTDIR}"], EXTDIR="/usr/local/lib/pd-externals")
 
 OPT_FLAGS="$C_FLAGS -O3"
 DBG_FLAGS="$C_FLAGS -DFLEXT_DEBUG -g"
-FLEXT_EXT_CFLAGS=""
 
 AC_ARG_ENABLE(optimize, 
 	AS_HELP_STRING([--enable-optimize],[enables optimized architecture specific builds for pentium4, pentium3, G4, G5, etc.]),

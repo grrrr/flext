@@ -11,7 +11,7 @@ BUILT_SOURCES = main.cpp
 CXXFLAGS  = @CXXFLAGS@ \
 	@OPT_FLAGS@ \
 	$(patsubst %,-I%,@INCLUDEDIRS@) \
-	-I../../source \
+	-I@top_srcdir@/source \
     -D FLEXT_INLINE=1 \
 	$(DEFS) \
 	-DFLEXT_SHARED
@@ -31,7 +31,6 @@ SYSDIR = @SYSDIR@
 
 all-local: $(OBJECTS)
 	$(CXX) $(LDFLAGS) ./*.@OBJEXT@ $(LIBS) -o ./$(TARGET)
-	strip -x ./$(TARGET)
 
 ./%.@OBJEXT@ : %.cpp 
 	$(CXX) -c $(CXXFLAGS) $< -o $@
@@ -41,4 +40,5 @@ clean-local:
 	rm -f ./$(OBJECTS)
 
 install-exec-local:
-	install ./$(TARGET) $(SYSDIR)/extra
+	$(MKDIR_P) "$(DESTDIR)$(SYSDIR)/extra"
+	$(INSTALL_STRIP_PROGRAM) -m 644 ./$(TARGET) $(DESTDIR)$(SYSDIR)/extra

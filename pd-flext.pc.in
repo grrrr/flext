@@ -3,19 +3,19 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@/flext
 
-Name: pd-flext
+Name: @SYSTEM@-flext
 Description: C++ glue layer for Pure Data and Max
 Version: @VERSION@
 Requires: pd
 Cflags: -I${includedir} -DFLEXT_SYS=2 -DFLEXT_SHARED @FLEXT_EXT_CFLAGS@ -pthread
-Libs: -L${libdir} -lflext-pd -pthread
+Libs: -L${libdir} -lflext-@SYSTEM@ -pthread
 
 ## sections below ought to be factored out into standalone .pc files
 #Name: pd-flext-static
 #Description: C++ glue layer for Pure Data and Max (static)
 #Version: @VERSION@
 #Cflags: -I${includedir} -DPD
-#Libs: -L${libdir} -lflext-pd_s
+#Libs: -L${libdir} -lflext-@SYSTEM@_s
 #
 #Name: pd-flext-inline
 #Description: C++ glue layer for Pure Data and Max (inline)

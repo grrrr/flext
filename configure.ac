@@ -18,10 +18,10 @@ AC_DIAGNOSE([obsolete],
 put the `win32-dll' option into LT_INIT's first parameter.])
 ])
 
-# TODO: this should definitely be changed to work with any version of CYGWIN_NT or MINGW32_NT
-if ( test $(uname -s) == CYGWIN_NT-5.0 ) || ( test $(uname -s) == CYGWIN_NT-5.1 ) || ( test $(uname -s) == MINGW32_NT-5.1 ); then
-	set win = 1
-fi
+
+AS_CASE([$host],
+ [*mingw*|*cygwin*], [win=1],
+ [win=""])
 
 # configure options
 AC_ARG_ENABLE(system,
@@ -143,19 +143,21 @@ AC_STRUCT_TM
 # Checks for library functions.
 
 # system specific
-if test $(uname -s) == Linux; then
+AS_CASE([$host],
+ [*linux*|*kfreebsd*gnu*],[
 	C_FLAGS="$C_FLAGS -fPIC"
 	LD_FLAGS="$LD_FLAGS -shared"
 	EXTENSION=pd_linux
-elif test $(uname -s) == Darwin; then
+ ], [*darwin*],[
 	FRAMEWORKS="$FRAMEWORKS ApplicationServices Accelerate"
 	LD_FLAGS="$LD_FLAGS -flat_namespace -undefined dynamic_lookup"
 	EXTENSION=pd_darwin
-elif test $win; then
+ ], [*mingw*|*cygwin*], [
 	C_FLAGS="$C_FLAGS -mms-bitfields -mno-cygwin"
 	LD_FLAGS="$LD_FLAGS -mno-cygwin"
 	EXTENSION=dll
-fi
+])
+
 
 AS_IF([test -z "${EXTDIR}"], EXTDIR="/usr/local/lib/pd-externals")
 

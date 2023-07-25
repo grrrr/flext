@@ -41,45 +41,35 @@ AC_ARG_WITH(externalsdir,
   [EXTDIR="${withval}"])
 
 AC_ARG_WITH(pdbindir,
-	AS_HELP_STRING([--with-pdbindir],[path to pd bin dir]),
-	[
-		if test $win; then
-# LATER: shouldn't we use AC_CHECK_LIB([pd]) ?
-		 AC_CHECK_FILE([$withval/pd.dll],,AC_MSG_ERROR([Cannot find $withval/pd.dll]))
-		fi
-		LIBDIRS="$LIBDIRS $withval"
-                AS_IF([test -z "${EXTDIR}"], EXTDIR="${withval}/../extra")
-	],
-	[
-		if test $win; then
-			AC_MSG_ERROR(path to pd bin dir required)
-		fi
-	]
-)
+  AS_HELP_STRING([--with-pdbindir],[path to pd bin dir]), [
+  pdbindir="${withval}"
+  LIBDIRS="$LIBDIRS $withval"
+  AS_IF([test -z "${EXTDIR}"], EXTDIR="${withval}/../extra")
+],[
+  AS_IF([test -n "${win}"], AC_MSG_ERROR(path to pd bin dir required))
+])
 
-if test $SYSTEM == max; then
+AS_CASE([$SYSTEM],
+ [max], [
 	AC_DEFINE(FLEXT_SYS,1)
 # check for MaxAPI.h in pd folder
 	AC_CHECK_FILE([$sdkdir/max-includes/MaxAPI.h],,AC_MSG_ERROR([Cannot find $sdkdir/max-includes/MaxAPI.h]))
 	AC_CHECK_FILE([$sdkdir/max-includes/MaxAudioAPI.h],,AC_MSG_ERROR([Cannot find $sdkdir/max-includes/MaxAudioAPI.h]))
 	INCLUDEDIRS="$INCLUDEDIRS $sdkdir/max-includes $sdkdir/msp-includes"
-
-elif test $SYSTEM == pd; then
-#	if test $win; then
-#	fi
-
+  ], [pd], [
 	AC_DEFINE(FLEXT_SYS,2)
 # check for g_canvas.h in pd folder
 	AC_CHECK_FILE([$sdkdir/g_canvas.h],,AC_MSG_ERROR([Cannot find $sdkdir/g_canvas.h]))
 	INCLUDEDIRS="$INCLUDEDIRS $sdkdir"
 
-	if test $win; then
-		libs="$libs pd"
-		AC_DEFINE(NT)
-	fi
-else
+        AS_IF([test -n "${win}"],
+            AC_CHECK_FILE(["${pdbindir}/pd.dll"],,AC_MSG_ERROR([Cannot find $pdbindir/pd.dll]))
+            libs="$libs pd"
+            AC_DEFINE([NT])
+        )
+   ],[
 	AC_MSG_ERROR([system must be pd or max])
-fi
+   ])
 
 AC_ARG_WITH(atomic_ops,
 	AS_HELP_STRING([--with-atomic_ops],[path to atomic_ops library (needed for gcc version < 4.1 on non-i386 cpus)]),

@@ -24,6 +24,8 @@ dnl '
 FLEXT_EXT_CFLAGS=""
 
 AC_CANONICAL_HOST
+AC_LANG(C++)
+
 AS_CASE([$host],
  [*mingw*|*cygwin*], [win=1],
  [win=""])
@@ -54,71 +56,95 @@ AC_ARG_WITH(pdbindir,
   AS_IF([test -n "${win}"], AC_MSG_ERROR(path to pd bin dir required))
 ])
 
+# RTE
+CPPFLAGS_tmp="${CPPFLAGS}"
+CPPFLAGS="${CPPFLAGS} -I${sdkdir}"
 AS_CASE([$SYSTEM],
  [max], [
     AC_DEFINE(FLEXT_SYS,1)
 # check for MaxAPI.h in pd folder
-    AC_CHECK_FILE([$sdkdir/max-includes/MaxAPI.h],,AC_MSG_ERROR([Cannot find $sdkdir/max-includes/MaxAPI.h]))
-    AC_CHECK_FILE([$sdkdir/max-includes/MaxAudioAPI.h],,AC_MSG_ERROR([Cannot find $sdkdir/max-includes/MaxAudioAPI.h]))
+    AC_CHECK_HEADER([max-includes/MaxAPI.h],,AC_MSG_ERROR([Cannot find $sdkdir/max-includes/MaxAPI.h]))
+    AC_CHECK_HEADER([max-includes/MaxAudioAPI.h],,AC_MSG_ERROR([Cannot find $sdkdir/max-includes/MaxAudioAPI.h]))
     INCLUDEDIRS="$INCLUDEDIRS $sdkdir/max-includes $sdkdir/msp-includes"
- ], [pd], [
+    pddll=""
+    ],
+ [pd], [
     AC_DEFINE(FLEXT_SYS,2)
 # check for g_canvas.h in pd folder
-    AC_CHECK_FILE([$sdkdir/g_canvas.h],,AC_MSG_ERROR([Cannot find $sdkdir/g_canvas.h]))
+    AC_CHECK_HEADER([g_canvas.h],,AC_MSG_ERROR([Cannot find $sdkdir/g_canvas.h]),[
+      #include "m_pd.h"
+    ])
     INCLUDEDIRS="$INCLUDEDIRS $sdkdir"
+    pddll=pd
+    pdfun=class_new
+    ],
+ [pd64], [
+    AC_DEFINE(FLEXT_SYS,2)
+# check for g_canvas.h in pd folder
+    AC_CHECK_HEADER([g_canvas.h],,AC_MSG_ERROR([Cannot find $sdkdir/g_canvas.h]),[
+      #include "m_pd.h"
+    ])
+    INCLUDEDIRS="$INCLUDEDIRS $sdkdir"
+    pddll=pd64
+    pdfun=class_new64
 
-    AS_IF([test -n "${win}"],
-        AC_CHECK_FILE(["${pdbindir}/pd.dll"],,AC_MSG_ERROR([Cannot find $pdbindir/pd.dll]))
-        libs="$libs pd"
-        AC_DEFINE([NT])
-    )
- ], [pd64], [
-    AC_DEFINE(FLEXT_SYS,2)
-# check for g_canvas.h in pd folder
-    AC_CHECK_FILE([$sdkdir/g_canvas.h],,AC_MSG_ERROR([Cannot find $sdkdir/g_canvas.h]))
-    INCLUDEDIRS="$INCLUDEDIRS $sdkdir"
     AC_DEFINE([PD_FLOATSIZE], 64, [size of Pd floats (in bits)])
-    FLEXT_EXT_CFLAGS="$FLEXT_EXT_CFLAGS -DPD_FLOATSIZE=64"
-
-    AS_IF([test -n "${win}"],
-      AC_CHECK_FILE(["${pdbindir}/pd64.dll"],,AC_MSG_ERROR([Cannot find $pdbindir/pd64.dll]))
-      libs="$libs pd64"
-      AC_DEFINE([NT])
-    )
- ],[
+    FLEXT_EXT_CFLAGS="$FLEXT_EXT_CFLAGS -DPD_FLOATSIZE=64"],
+ [
     AC_MSG_ERROR([system must be pd or max])
 ])
 
+LIBS_tmp="${LIBS}"
+AS_IF([test -n "${pddll}" && test -n "${win}"],
+  LIBS="${LIBS} -L${pdbindir}"
+  AC_CHECK_LIB([:${pddll}.dll], [$pdfun], [], [AC_MSG_ERROR([Cannot find/use $pdbindir/$pddll.dll])])
+  libs="$libs pddll"
+  AC_DEFINE([NT])
+)
+CPPFLAGS="${CPPFLAGS_tmp}"
+LIBS="${LIBS_tmp}"
+
+
+## atomic_ops
+CPPFLAGS_tmp="${CPPFLAGS}"
 AC_ARG_WITH(atomic_ops,
   AS_HELP_STRING([--with-atomic_ops],[path to atomic_ops library (needed for gcc version < 4.1 on non-i386 cpus)]),
   [
-    AC_CHECK_FILE([$withval/atomic_ops.h],,AC_MSG_ERROR([Cannot find $withval/atomic_ops.h]))
+    CPPFLAGS="${CPPFLAGS} -I${withval}"
+    AC_CHECK_HEADER([atomic_ops.h],,AC_MSG_ERROR([Cannot find $withval/atomic_ops.h]))
     INCLUDEDIRS="$INCLUDEDIRS $withval"
     AC_DEFINE(USE_ATOMIC_OPS)
   ]
 )
+CPPFLAGS="${CPPFLAGS_tmp}"
 
+## STK
+CPPFLAGS_tmp="${CPPFLAGS}"
 AC_ARG_WITH(stkdir,
   AS_HELP_STRING([--with-stkdir],[path to STK headers]),
   [
-    AC_CHECK_FILE([$withval/Stk.h],,AC_MSG_ERROR([Cannot find $withval/Stk.h]))
+    CPPFLAGS="${CPPFLAGS} -I${withval}"
+    AC_CHECK_HEADER([Stk.h],,AC_MSG_ERROR([Cannot find $withval/Stk.h]))
     stkdir=$withval
     INCLUDEDIRS="$INCLUDEDIRS $withval"
   ]
 )
-
 AM_CONDITIONAL([STK],[test "$stkdir"])
+CPPFLAGS="${CPPFLAGS_tmp}"
 
+## SndObj
+CPPFLAGS_tmp="${CPPFLAGS}"
 AC_ARG_WITH(sndobjdir,
   AS_HELP_STRING([--with-sndobjdir],[path to SndObj headers]),
   [
-    AC_CHECK_FILE([$withval/SndObj.h],,AC_MSG_ERROR([Cannot find $withval/SndObj.h]))
+    CPPFLAGS="${CPPFLAGS} -I${withval}"
+    AC_CHECK_HEADER([SndObj.h],,AC_MSG_ERROR([Cannot find $withval/SndObj.h]))
     sndobjdir=$withval
     INCLUDEDIRS="$INCLUDEDIRS $withval"
   ]
 )
-
 AM_CONDITIONAL([SNDOBJ],[test "$sndobjdir"])
+CPPFLAGS="${CPPFLAGS_tmp}"
 
 # if CFLAGS aren't set by the user, set them to an empty string
 # otherwise AC_PROG_CC sets them to "-O2 -g"
@@ -135,8 +161,6 @@ AC_PROG_CXX
 LT_INIT
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
-
-AC_LANG(C++)
 
 # Checks for libraries.
 

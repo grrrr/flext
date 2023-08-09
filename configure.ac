@@ -194,12 +194,17 @@ AS_CASE([$host],
     #EXTENSION=
 ])
 
+# In case of pd64, forget default extension definitions
+AS_IF([test "${SYSTEM}" == pd64], [EXTENSION=])
+# A new extension format .${os}_${arch}_${floatsize}.${sysext} is needed,
+# which (for now) must be explicitly given through the --with-extension option
+
 AC_ARG_WITH([extension],
  AS_HELP_STRING([--with-extension=dll],[use the given extension instead of the platform-specific default]),
  AS_CASE([$withval], [yes|no|""], [], [EXTENSION=$withval]))
 
 AC_MSG_CHECKING([extension])
-AS_IF([test -z "${EXTENSION}"], AC_MSG_ERROR([Unable to autodetect extension and none given...]))
+AS_IF([test -z "${EXTENSION}"], AC_MSG_ERROR([Unable to autodetect extension and none given... (pd64 system currently requires --with-extension)]))
 AC_MSG_RESULT([${EXTENSION}])
 
 AS_IF([test -z "${EXTDIR}"], EXTDIR="/usr/local/lib/pd-externals")

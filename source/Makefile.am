@@ -11,7 +11,7 @@ lib_LTLIBRARIES = libflext-@SYSTEM@_s.la libflext-@SYSTEM@_sd.la libflext-@SYSTE
 
 # x:y:z -> .so.(x-z).z.y
 # .so.A.B.C -> (A+B):C:B
-VERSION_INFO = -version-info 6:2:6
+# VERSION_INFO = -version-info 6:2:6
 
 SRCS_FLEXT = \
 	flbase.cpp \

@@ -6,7 +6,7 @@
 # flext API version (current:release:age)
 # API_VERSION=0:0:0
 
-AC_INIT([flext],[0.6.2],[gr@grrrr.org])
+AC_INIT([flext],[0.6.3],[gr@grrrr.org])
 AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_MACRO_DIRS([m4])
 

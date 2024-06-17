@@ -1,7 +1,7 @@
 /*
 flext - C++ layer for Max and Pure Data externals
 
-Copyright (c) 2001-2015 Thomas Grill (gr@grrrr.org)
+Copyright (c) 2001-2024 Thomas Grill (gr@grrrr.org)
 For information on usage and redistribution, and for a DISCLAIMER OF ALL
 WARRANTIES, see the file, "license.txt," in this distribution.
 */
@@ -45,11 +45,11 @@ struct FLEXT_SHARE flext_hdr
     	/*! \brief The obligatory object header
 			\note MUST reside at memory offset 0 (no virtual table possible)
 		*/
-    	t_sigobj    	    obj;  
+		t_sigobj    	    obj;
 
 #if FLEXT_SYS == FLEXT_SYS_PD
 		//! PD only: float signal holder for pd
-		float defsig;			
+		t_float defsig;
 #endif
 
 #if FLEXT_SYS == FLEXT_SYS_MAX

@@ -1,7 +1,7 @@
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
-build_linux:
+build_linux_float32:
   stage: build
   script:
     - ./bootstrap.sh
@@ -12,14 +12,28 @@ build_linux:
       - tutorial/*/*.pd_linux
     expire_in: 1h
 
+build_linux_float64:
+  # only test-compile 64-bit build for now, don't test 
+  stage: build
+  script:
+    - ./bootstrap.sh
+    - ./configure --enable-system=pd64 --with-sdkdir=$HOME/pure-data/src --enable-cmem
+    - make
+  artifacts:
+    paths:
+      - tutorial/*/*.linux-*-64.so
+    expire_in: 1h
+
 test_linux:
   stage: test
   script:
     - $CI_PROJECT_DIR/tutorial/pd/test.sh $CI_PROJECT_DIR
 
 push_github:
-    stage: deploy
-    script:
-        - git remote add github https://$GITHUB_ACCESS_TOKEN@github.com/$GITHUB_USERNAME/$CI_PROJECT_NAME.git || true
-        # we need some extra treatment because the gitlab-runner doesn't check out the full history
-        - git push github HEAD:master --tags
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+  script:
+    - git remote add github https://$GITHUB_ACCESS_TOKEN@github.com/$GITHUB_USERNAME/$CI_PROJECT_NAME.git || true
+    # we need some extra treatment because the gitlab-runner doesn't check out the full history
+    - git push github HEAD:master --tags

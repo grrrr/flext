@@ -1,4 +1,4 @@
-#
+        #
 # autoconf template
 # modified by Thomas Grill
 #
@@ -91,7 +91,7 @@ AS_CASE([$SYSTEM],
     AC_DEFINE([PD_FLOATSIZE], 64, [size of Pd floats (in bits)])
     FLEXT_EXT_CFLAGS="$FLEXT_EXT_CFLAGS -DPD_FLOATSIZE=64"],
  [
-    AC_MSG_ERROR([system must be pd or max])
+    AC_MSG_ERROR([system must be pd, pd64 or max])
 ])
 
 LIBS_tmp="${LIBS}"
@@ -174,33 +174,59 @@ AC_STRUCT_TM
 
 # Checks for library functions.
 
+EXT_OS=
+EXT_CPU=
+EXT_EXT=so
+
 # system specific
 AS_CASE([$host],
  [*linux*|*kfreebsd*gnu*],[
     C_FLAGS="$C_FLAGS -fPIC"
     LD_FLAGS="$LD_FLAGS -shared"
     EXTENSION=pd_linux
+    EXT_OS=linux
  ], [*darwin*],[
     FRAMEWORKS="$FRAMEWORKS ApplicationServices Accelerate"
     LD_FLAGS="$LD_FLAGS -flat_namespace -undefined dynamic_lookup"
     EXTENSION=pd_darwin
+    EXT_OS=darwin
  ], [*mingw*|*cygwin*], [
     C_FLAGS="$C_FLAGS -mms-bitfields -mno-cygwin"
     LD_FLAGS="$LD_FLAGS -mno-cygwin"
     EXTENSION=dll
+    EXT_OS=windows
+    EXT_EXT=dll
  ], [ # default: like linux (but require extension via the --with-extension flag)
     C_FLAGS="$C_FLAGS -fPIC"
     LD_FLAGS="$LD_FLAGS -shared"
-    #EXTENSION=
+    EXTENSION=
 ])
 
-# In case of pd64, forget default extension definitions
-AS_IF([test "${SYSTEM}" == pd64], [EXTENSION=])
+AS_IF([test "x${EXT_OS}" = "xwindows"],[EXT_EXT=dll])
+
+AS_CASE([$host_cpu],
+  [x86_64|amd64],[EXT_CPU=amd64],
+  [i386|i486|i586|i686],[EXT_CPU=i386],
+  [aarch64],[EXT_CPU=arm64],
+  [armv*l],[EXT_CPU=${host_cpu%l}],
+  [armv*b],[EXT_CPU=${host_cpu}],
+  [powerpc64],[EXT_CPU=ppc64],
+  [powerpc],[EXT_CPU=ppc],
+  [])
+
+# In case of pd64, forget default extension definition
+AS_IF([test "x${SYSTEM}" == "xpd64"], [EXTENSION=])
 # A new extension format .${os}_${arch}_${floatsize}.${sysext} is needed,
 # which (for now) must be explicitly given through the --with-extension option
 
+AS_IF([test "x${SYSTEM}" = "xpd64" && test "x${EXT_CPU}" != "x" && test "x${EXT_OS}" != "x" && test "x${EXT_EXT}" != "x"],[
+  EXTENSION="${EXT_OS}-${EXT_CPU}-64.${EXT_EXT}"
+  AC_MSG_NOTICE([default external extension...${EXTENSION}])
+])
+
+# Explicit extension definition
 AC_ARG_WITH([extension],
- AS_HELP_STRING([--with-extension=dll],[use the given extension instead of the platform-specific default]),
+ AS_HELP_STRING([--with-extension],[use the extension given instead of the platform-specific default]),
  AS_CASE([$withval], [yes|no|""], [], [EXTENSION=$withval]))
 
 AC_MSG_CHECKING([extension])
@@ -215,27 +241,6 @@ AS_IF([test -z "${EXTDIR}"], EXTDIR="/usr/local/lib/pd-externals")
 OPT_FLAGS="$C_FLAGS -O3"
 DBG_FLAGS="$C_FLAGS -DFLEXT_DEBUG -g"
 
-AC_ARG_ENABLE(optimize,
-  AS_HELP_STRING([--enable-optimize],[enables optimized architecture specific builds for pentium4, pentium3, G4, G5, etc.]),
-  [
-    # tune to a specific CPU
-    OPT_FLAGS="$OPT_FLAGS -mtune=$enableval"
-    AS_CASE([$enableval],
-      [pentium|pentium2|athlon|pentium-mmx],[
-        OPT_FLAGS="$OPT_FLAGS -march=$enableval"
-      ],[pentium3|pentium3m|pentium4|pentium4m|pentium-m|prescott|nocona|athlon-xp|athlon-mp|athlon64|opteron],[
-        OPT_FLAGS="$OPT_FLAGS -march=$enableval -mfpmath=sse"
-        AC_DEFINE(FLEXT_USE_SIMD)
-      ],[G3],[
-        # set specific architecture (like march)
-        OPT_FLAGS="$OPT_FLAGS -mcpu=$enableval"
-      ],[G5|G4],[
-        # set specific architecture (like march)
-        OPT_FLAGS="$OPT_FLAGS -mcpu=$enableval -faltivec"
-        AC_DEFINE(FLEXT_USE_SIMD)
-      ])
-   ]
-)
 AC_ARG_ENABLE([cmem],
   AS_HELP_STRING([--enable-cmem],[enables C-style memory allocation (as opposed to overloading 'new' and 'delete')]),
   AS_CASE([$enableval], [yes], [

@@ -1,7 +1,7 @@
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
-build_linux:
+build_linux_float32:
   stage: build
   script:
     - ./bootstrap.sh
@@ -10,6 +10,18 @@ build_linux:
   artifacts:
     paths:
       - tutorial/*/*.pd_linux
+    expire_in: 1h
+
+build_linux_float64:
+  # only test-compile 64-bit build for now, don't test 
+  stage: build
+  script:
+    - ./bootstrap.sh
+    - ./configure --enable-system=pd64 --with-sdkdir=$HOME/pure-data/src --enable-cmem
+    - make
+  artifacts:
+    paths:
+      - tutorial/*/*.linux-*-64.so
     expire_in: 1h
 
 test_linux:

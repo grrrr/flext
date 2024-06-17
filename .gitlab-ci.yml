@@ -30,8 +30,10 @@ test_linux:
     - $CI_PROJECT_DIR/tutorial/pd/test.sh $CI_PROJECT_DIR
 
 push_github:
-    stage: deploy
-    script:
-        - git remote add github https://$GITHUB_ACCESS_TOKEN@github.com/$GITHUB_USERNAME/$CI_PROJECT_NAME.git || true
-        # we need some extra treatment because the gitlab-runner doesn't check out the full history
-        - git push github HEAD:master --tags
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+  script:
+    - git remote add github https://$GITHUB_ACCESS_TOKEN@github.com/$GITHUB_USERNAME/$CI_PROJECT_NAME.git || true
+    # we need some extra treatment because the gitlab-runner doesn't check out the full history
+    - git push github HEAD:master --tags

@@ -1,8 +1,29 @@
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
-build_linux_float32:
+.build:
   stage: build
+  tags:
+    - docker
+    - default
+  image: $CI_REGISTRY/docker/pd_max
+  variables:
+    PDINCLUDEDIR: "/usr/include/pd"
+
+.buildwin:
+  extends: .build
+  variables:
+    PDDIR: "/Pd"
+    PDINCLUDEDIR: "$PDDIR/src"
+    PDWIN: "https://msp.ucsd.edu/Software/pd-0.55-2.msw.zip"
+  before_script:
+    - curl -k -O "$PDWIN"
+    - fn="${PDWIN##*/}"; unzip "$fn"; mv "${fn%%.msw*}" $PDDIR
+    - ls $PDDIR/
+
+
+build_linux_float32:
+  extends: .build
   script:
     - ./bootstrap.sh
     - ./configure --with-sdkdir=$HOME/pure-data/src --enable-cmem
@@ -14,7 +35,7 @@ build_linux_float32:
 
 build_linux_float64:
   # only test-compile 64-bit build for now, don't test 
-  stage: build
+  extends: .build
   script:
     - ./bootstrap.sh
     - ./configure --enable-system=pd64 --with-sdkdir=$HOME/pure-data/src --enable-cmem
@@ -33,7 +54,9 @@ push_github:
   stage: deploy
   rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+  image: $CI_REGISTRY/docker/push_github
+  tags:
+    - docker
+    - default
   script:
-    - git remote add github https://$GITHUB_ACCESS_TOKEN@github.com/$GITHUB_USERNAME/$CI_PROJECT_NAME.git || true
-    # we need some extra treatment because the gitlab-runner doesn't check out the full history
-    - git push github HEAD:master --tags
+    - echo "Pushing to github"

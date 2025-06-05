@@ -26,7 +26,7 @@ build_linux_float32:
   extends: .build
   script:
     - ./bootstrap.sh
-    - ./configure --with-sdkdir=$HOME/pure-data/src --enable-cmem
+    - ./configure --with-sdkdir=$PDINCLUDEDIR --enable-cmem
     - make
   artifacts:
     paths:
@@ -38,7 +38,7 @@ build_linux_float64:
   extends: .build
   script:
     - ./bootstrap.sh
-    - ./configure --enable-system=pd64 --with-sdkdir=$HOME/pure-data/src --enable-cmem
+    - ./configure --enable-system=pd64 --with-sdkdir=$PDINCLUDEDIR --enable-cmem
     - make
   artifacts:
     paths:

@@ -56,28 +56,18 @@ FLEXT_TEMPIMPL(const char *FLEXT_CLASSDEF(flext))::VersionStr() { return FLEXT_V
 
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::Setup()
 {
-	if(sym__) return;
+    if(sym__) return;
 
-#if FLEXT_SYS == FLEXT_SYS_PD
-	sym__ = &s_;
-	sym_anything = &s_anything;
-	sym_pointer = &s_pointer;
-	sym_float = &s_float;
-	sym_symbol = &s_symbol;
-	sym_bang = &s_bang;
-	sym_list = &s_list;
-	sym_signal = &s_signal;
-	sym_int = flext::MakeSymbol("int");
-#elif FLEXT_SYS == FLEXT_SYS_MAX
-	sym__ = flext::MakeSymbol("");
-	sym_int = flext::MakeSymbol("int");
-	sym_float = flext::MakeSymbol("float");
-	sym_symbol = flext::MakeSymbol("symbol");
-	sym_bang = flext::MakeSymbol("bang");
-	sym_list = flext::MakeSymbol("list");
-	sym_anything = flext::MakeSymbol("anything");
-	sym_signal = flext::MakeSymbol("signal");
+    sym__ = flext::MakeSymbol("");
+    sym_int = flext::MakeSymbol("int");
+    sym_float = flext::MakeSymbol("float");
+    sym_symbol = flext::MakeSymbol("symbol");
+    sym_bang = flext::MakeSymbol("bang");
+    sym_list = flext::MakeSymbol("list");
+    sym_anything = flext::MakeSymbol("anything");
+    sym_signal = flext::MakeSymbol("signal");
 
+#if FLEXT_SYS == FLEXT_SYS_MAX
     sym_buffer = flext::MakeSymbol("buffer~");
     sym_size = flext::MakeSymbol("size");
     sym_dirty = flext::MakeSymbol("dirty");

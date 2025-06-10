@@ -244,32 +244,6 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_root))::FreeAligned(void *blk)
     }
 }
 
-// ------------------------------------------
-
-#if defined(FLEXT_USE_CMEM)
-// define global new/delete operators
-void *operator new(size_t bytes) NEWTHROW
-{
-  return flext_root::operator new(bytes);
-}
-void operator delete(void *blk) DELTHROW
-{
-  flext_root::operator delete(blk);
-}
-
-#ifndef __MRC__ // doesn't allow new[] overloading?!
-void *operator new[](size_t bytes) NEWTHROW
-{
-  return flext_root::operator new[](bytes);
-}
-void operator delete[](void *blk) DELTHROW
-{
-  flext_root::operator delete[](blk);
-}
-#endif
-
-#endif // FLEXT_USE_CMEM
-// ------------------------------------------
 
 /*! \todo there is probably also a shortcut for Max
     \todo size checking

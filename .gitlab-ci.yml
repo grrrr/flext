@@ -45,10 +45,15 @@ build_linux_float64:
       - tutorial/*/*.linux-*-64.so
     expire_in: 1h
 
-test_linux:
+test_linux_float32:
   stage: test
   script:
-    - $CI_PROJECT_DIR/tutorial/pd/test.sh $CI_PROJECT_DIR
+    - $CI_PROJECT_DIR/tutorial/pd/test.sh $CI_PROJECT_DIR pd
+
+test_linux_float64:
+  stage: test
+  script:
+    - $CI_PROJECT_DIR/tutorial/pd/test.sh $CI_PROJECT_DIR pd64
 
 push_github:
   stage: deploy

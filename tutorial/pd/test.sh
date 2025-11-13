@@ -8,13 +8,19 @@ patches="${root}/tutorial/pd"
 testpatch="${patches}/test.pd"
 logfile="${patches}/test.log"
 
-for f in ${root}/tutorial/?_*/*.pd_*; do
+if [ "${pd##*/}" == "pd64" ]; then
+  srch='*.*-*-64.so'
+else
+  srch='*.pd_*'
+fi
+
+for f in `find ${root}/tutorial -name $srch`; do
   p="${f%/*}"
   pp="${p##*_}"
   ext="${f##*/}"
   n="${ext%%.*}"
   ex="${patches}/ex-${pp}"
-  echo Testing object $n with example patch $ex
+  echo Testing object $n with binary $pp.$ext and example patch $ex
   if ! [ -f ${ex}.pd ]; then
     echo Example patch $ex not found, testing mere object $n
     ex=$n

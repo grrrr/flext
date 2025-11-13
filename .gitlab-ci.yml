@@ -34,7 +34,6 @@ build_linux_float32:
     expire_in: 1h
 
 build_linux_float64:
-  # only test-compile 64-bit build for now, don't test 
   extends: .build
   script:
     - ./bootstrap.sh
@@ -47,11 +46,15 @@ build_linux_float64:
 
 test_linux_float32:
   stage: test
+  dependencies:
+    - build_linux_float32
   script:
     - $CI_PROJECT_DIR/tutorial/pd/test.sh $CI_PROJECT_DIR pd
 
 test_linux_float64:
   stage: test
+  dependencies:
+    - build_linux_float64
   script:
     - $CI_PROJECT_DIR/tutorial/pd/test.sh $CI_PROJECT_DIR pd64
 

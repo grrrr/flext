@@ -20,7 +20,7 @@ for f in `find ${root}/tutorial -name $srch`; do
   ext="${f##*/}"
   n="${ext%%.*}"
   ex="${patches}/ex-${pp}"
-  echo Testing object $n with binary $pp.$ext and example patch $ex
+  echo Testing object $n with binary $ext and example patch $ex
   if ! [ -f ${ex}.pd ]; then
     echo Example patch $ex not found, testing mere object $n
     ex=$n

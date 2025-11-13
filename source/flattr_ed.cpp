@@ -24,7 +24,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #endif
 
 
-#if defined(FLEXT_ATTRHIDE) || PD_MINOR_VERSION < 37
+#if defined(FLEXT_ATTRHIDE) || (PD_MAJOR_VERSION == 0 && PD_MINOR_VERSION < 37)
 #define __FLEXT_WIDGETBEHAVIOR
 #endif
 
@@ -67,6 +67,16 @@ static t_selectfn ori_select = NULL;
 #define ST_DISABLED " -state disabled"
 #endif
 
+#if 0 && (PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 55)
+#define PDGUI_NEW(owner, key, cmd) pdgui_stub_vnew(owner, NULL, key, cmd)
+#define PDGUI_MESS(cmd) pdgui_vmess(NULL, "s", cmd)
+#define PDGUI_DELETEKEY(key) pdgui_stub_deleteforkey(key)
+#else
+#define PDGUI_NEW(owner, key, cmd) gfxstub_new(owner, key, cmd)
+#define PDGUI_MESS(cmd) sys_gui(cmd)
+#define PDGUI_DELETEKEY(cmd) gfxstub_deleteforkey(key)
+#endif
+
 
 #ifndef FLEXT_NOATTREDIT
 
@@ -78,7 +88,7 @@ void tclscript()
     if(havecode) return;
     else havecode = true;
 
-    sys_vgui(const_cast<char *>(
+    PDGUI_MESS(
         "proc flext_escatoms {lst} {\n"
             "set tmp {}\n"
             "foreach a $lst {\n"
@@ -92,9 +102,8 @@ void tclscript()
                 "lappend tmp $a\n"
             "}\n"
             "return $tmp\n"
-        "}\n")
-    );
-    sys_vgui(const_cast<char *>(
+        "}\n"
+
         "proc flext_makevalue {id ix} {\n"
             // strip "." from the TK id to make a variable name suffix
             "set vid [string trimleft $id .]\n"
@@ -127,13 +136,12 @@ void tclscript()
 
             // return list
             "return $lst\n" 
-        "}\n")
-    );
-    sys_vgui(const_cast<char *>(
+        "}\n"
+
         "proc flext_apply {id ix} {\n"
             "set lst [flext_makevalue $id $ix]\n"
             "set lst [eval concat $lst]\n" // remove curly braces from character escaping
-            "pd [concat $id attributedialog $lst \\;]\n"
+            "pdsend [concat $id attributedialog $lst \\;]\n"
         "}\n"
 
         "proc flext_applyall {id alen} {\n"
@@ -145,19 +153,18 @@ void tclscript()
             "}\n"
             "set lst [eval concat $lst]\n" // remove curly braces from character escaping
 
-            "pd [concat $id attributedialog $lst \\;]\n"
+            "pdsend [concat $id attributedialog $lst \\;]\n"
         "}\n"
 
         "proc flext_cancel {id} {\n"
-            "pd [concat $id cancel \\;]\n"
+            "pdsend [concat $id cancel \\;]\n"
         "}\n"
 
         "proc flext_ok {id alen} {\n"
             "flext_applyall $id $alen\n"
             "flext_cancel $id\n"
-        "}\n")
-    );
-    sys_vgui(const_cast<char *>(
+        "}\n"
+
         "proc flext_help {id} {\n"
             "toplevel $id.hw\n"
             "wm title $id.hw \"Flext attribute editor help\"\n"
@@ -183,9 +190,8 @@ void tclscript()
                 "Ctrl-Button on a text field will open an editor window where text can be entered more comfortably.\n"
             "\"\n"
             "$id.hw.text configure -state disabled\n"
-        "}\n")
-    );
-    sys_vgui(const_cast<char *>(
+        "}\n"
+
         "proc flext_copyval {dst src} {\n"
             "global $src $dst\n"
             "set $dst [expr $$src]\n"
@@ -199,9 +205,8 @@ void tclscript()
             "foreach t $txt { lappend tmp [string trim $t] }\n"
             "set $var $tmp\n"
             "destroy $id\n"
-        "}\n")
-    );
-    sys_vgui(const_cast<char *>(
+        "}\n"
+
         "proc flext_textzoom {id var title attr edit} {\n"
             "global $var\n"
             "toplevel $id.w\n"
@@ -238,9 +243,8 @@ void tclscript()
             "button $id.w.buttons.cancel -text Cancel -command \"destroy $id.w\"\n"
             "pack $id.w.buttons.cancel -side left -expand 1\n"
             "bind $id.w {<KeyPress-Escape>} \"destroy $id.w\"\n"
-        "}\n")
-    );
-    sys_vgui(const_cast<char *>(
+        "}\n"
+
         "proc pdtk_flext_dialog {id title attrlist} {\n"
                 "set vid [string trimleft $id .]\n"
                 "set alen [expr [llength $attrlist] / 6 ]\n"
@@ -282,9 +286,8 @@ void tclscript()
                 // Separator
                 "frame $id.frame.sep -relief ridge -bd 1 -height 2\n"
                 "grid config $id.frame.sep -column 0 -columnspan 9 -row $row -pady 2 -sticky {snew}\n"
-                "incr row\n")
-    );
-    sys_vgui(const_cast<char *>(
+                "incr row\n"
+
                 "set ix 1\n"
                 "foreach {an av ai atp asv afl} $attrlist {\n"
                     "grid rowconfigure $id.frame $row -weight 1\n"
@@ -318,9 +321,8 @@ void tclscript()
 
                     // attribute label
                     "label $id.frame.label-$ix -text \"$an :\" -font {Helvetica 8 bold}\n"
-                    "grid config $id.frame.label-$ix -column 0 -row $row -padx 5 -sticky {e}\n")
-    );
-    sys_vgui(const_cast<char *>(
+                    "grid config $id.frame.label-$ix -column 0 -row $row -padx 5 -sticky {e}\n"
+
                     "if { $afl != 0 } {\n"
                         // attribute is puttable
 
@@ -366,9 +368,8 @@ void tclscript()
                         "foreach {i c} {0 black 1 blue 2 red} {\n"
                             "radiobutton $id.frame.b$i-$ix -value $i -foreground $c -variable $var_attr_save" ST_DISABLED "\n"
                             "grid config $id.frame.b$i-$ix -column [expr $i + 6] -row $row\n"
-                        "}\n")
-    );
-    sys_vgui(const_cast<char *>(
+                        "}\n"
+
                     "} else {\n"
                         // attribute is gettable only
 
@@ -407,9 +408,8 @@ void tclscript()
                 "grid rowconfigure $id.frame $row -weight 1\n"
                 "frame $id.frame.dummy\n"
                 "grid config $id.frame.dummy -column 0 -columnspan 9 -row $row\n"
-                "incr row\n")
-    );
-    sys_vgui(const_cast<char *>(
+                "incr row\n"
+
                 // Separator
                 "frame $id.sep2 -relief ridge -bd 1 -height 2\n"
 
@@ -434,7 +434,7 @@ void tclscript()
                 "bind $id {<KeyPress-Escape>} \" flext_cancel $id \"\n"
                 "bind $id {<KeyPress-Return>} \" flext_ok $id $alen \"\n"
                 "bind $id {<Shift-KeyPress-Return>} \" flext_applyall $id $alen \"\n"
-        "}\n")
+        "}\n"
     );
 }
 
@@ -481,7 +481,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::SetGfx(t_classid c)
     widgetbehavior.w_visfn =        (t_visfn)cb_GfxVis;
     widgetbehavior.w_selectfn =     (t_selectfn)cb_GfxSelect; 
 
-#if PD_MINOR_VERSION >= 37
+#if PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 37
     class_setsavefn(cl,(t_savefn)cb_GfxSave);
 #else
     widgetbehavior.w_savefn =       (t_savefn)cb_GfxSave;
@@ -492,7 +492,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::SetGfx(t_classid c)
 
 #ifndef FLEXT_NOATTREDIT
 
-#if PD_MINOR_VERSION >= 37
+#if PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 37
     class_setpropertiesfn(cl,(t_propertiesfn)cb_GfxProperties);
 #else
     widgetbehavior.w_propertiesfn = (t_propertiesfn)cb_GfxProperties;
@@ -528,12 +528,8 @@ size_t escapeit(char *dst,size_t maxlen,const char *src)
 FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_GfxProperties(flext_hdr *c, t_glist *)
 {
     flext_base *th = thisObject(c);
-    char buf[1000];
-
-     // beginning of proc
-    sys_vgui(const_cast<char *>("proc pdtk_flext_dialog_%p {title} {\n"),th);
-
-    sys_vgui(const_cast<char *>("pdtk_flext_dialog $title {\n"));
+    char guibuf[1000];
+    char buf[100];
 
     // add title
     t_text *x = (t_text *)c;
@@ -541,9 +537,14 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_GfxProperties(flext_hdr *c, 
 
     int argc = binbuf_getnatom(x->te_binbuf);
     t_atom *argv = binbuf_getvec(x->te_binbuf);
+    PrintList(argc, argv, buf, sizeof(buf));
 
-    PrintList(argc,argv,buf,sizeof(buf));
-    sys_vgui(const_cast<char *>("%s } {\n"),buf);
+     // beginning of proc
+    STD::snprintf(guibuf, sizeof(guibuf), const_cast<char *>(
+        "proc pdtk_flext_dialog_%p {title} {\n"
+            "pdtk_flext_dialog $title {%s} {\n"
+        ), th, buf
+    );
 
     AtomListStatic<32> la;
     th->ListAttrib(la);
@@ -551,6 +552,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_GfxProperties(flext_hdr *c, 
 
     for(int i = 0; i < cnt; ++i) {
         const t_symbol *sym = GetSymbol(la[i]); 
+        char itembuf[100];
 
         // get attribute
         AttrItem *gattr = th->FindAttrib(sym,true);
@@ -593,7 +595,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_GfxProperties(flext_hdr *c, 
                 FLEXT_ASSERT(false);
         }
 
-        sys_vgui(const_cast<char *>(list?"%s {":"%s "),GetString(sym));
+        STD::snprintf(itembuf, sizeof(itembuf), list?"%s {":"%s ", GetString(sym));
 
         AtomListStatic<32> lv;
         if(gattr) { // gettable attribute is present
@@ -607,12 +609,14 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_GfxProperties(flext_hdr *c, 
                 b += FLEXT_TEMPINST(escapeit)(b,sizeof(buf)+buf-b,tmp);
                 if(j < lv.Count()-1) { *(b++) = ' '; *b = 0; }
             }
-            sys_vgui(const_cast<char *>("%s"),buf);
+
+            STD::strncat(itembuf, buf, sizeof(itembuf)-strlen(itembuf)-1);
         }
         else
-            sys_vgui(const_cast<char *>("{}"));
+            STD::strncat(itembuf, "{}", sizeof(itembuf)-strlen(itembuf)-1);
 
-        sys_vgui(const_cast<char *>(list?"} {":" "));
+        STD::strncat(itembuf, list?"} {":" ", sizeof(itembuf)-strlen(itembuf)-1);
+
 
         if(pattr) {
             // if there is initialization data take this, otherwise take the current data
@@ -625,19 +629,24 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::cb_GfxProperties(flext_hdr *c, 
                 b += FLEXT_TEMPINST(escapeit)(b,sizeof(buf)+buf-b,tmp);
                 if(j < lp.Count()-1) { *(b++) = ' '; *b = 0; }
             }
-            sys_vgui(const_cast<char *>("%s"),buf);
+            STD::strncat(itembuf, buf, sizeof(itembuf)-strlen(itembuf)-1);
         }
         else
-            sys_vgui(const_cast<char *>("{}"));
+            STD::strncat(itembuf, "{}", sizeof(itembuf)-strlen(itembuf)-1);
 
+        STD::snprintf(buf, sizeof(buf)-1, list?"} %i %i %i \n":" %i %i %i \n", (int)tp, (int)sv, (int)(pattr?(pattr->BothExist()?2:1):0));
+        STD::strncat(itembuf, buf, sizeof(itembuf)-strlen(itembuf)-1);
 
-        sys_vgui(const_cast<char *>(list?"} %i %i %i \n":" %i %i %i \n"),tp,sv,pattr?(pattr->BothExist()?2:1):0);
+        // now add the item to the overall gui buffer
+        STD::strncat(guibuf, itembuf, sizeof(guibuf)-strlen(guibuf)-1);
     }
 
-    sys_vgui(const_cast<char *>(" } }\n")); // end of proc
+     // end of proc
+    STD::strncat(guibuf, " } }\n", sizeof(guibuf)-strlen(guibuf)-1);
+    PDGUI_MESS(guibuf);
 
-    STD::sprintf(buf,"pdtk_flext_dialog_%p %%s\n",th);
-    gfxstub_new((t_pd *)th->thisHdr(), th->thisHdr(),buf);
+    STD::snprintf(buf, sizeof(buf)-1, "pdtk_flext_dialog_%p %%s\n", th);
+    PDGUI_NEW((t_pd *)th->thisHdr(), th->thisHdr(), buf);
 
     //! \todo delete proc in TCL space
 }
@@ -714,12 +723,12 @@ void BinbufAdd(t_binbuf *b,const t_atom &at,bool transdoll)
 {
     if(transdoll && at.a_type == A_DOLLAR) {
         char tbuf[MAXPDSTRING];
-        sprintf(tbuf, "$%d", at.a_w.w_index);
+        snprintf(tbuf, sizeof(tbuf)-1, "$%d", at.a_w.w_index);
         binbuf_addv(b,"s",flext::MakeSymbol(tbuf));
     }
     else if(transdoll && at.a_type == A_DOLLSYM) {
         char tbuf[MAXPDSTRING];
-        sprintf(tbuf, "$%s", at.a_w.w_symbol->s_name);
+        snprintf(tbuf, sizeof(tbuf)-1, "$%s", at.a_w.w_symbol->s_name);
         binbuf_addv(b,"s",flext::MakeSymbol(tbuf));
     }
     else

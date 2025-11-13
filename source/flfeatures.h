@@ -15,11 +15,11 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 // check if PD API supports buffer dirty time
 #if defined(PD_DEVEL_VERSION) && defined(PD_MAJOR_VERSION) && defined(PD_MINOR_VERSION)
-#if PD_MINOR_VERSION >= 36 && PD_MINOR_VERSION <= 38
+#if PD_MAJOR_VERSION == 0 || (PD_MINOR_VERSION >= 36 && PD_MINOR_VERSION <= 38)
 // array locks have been removed in devel_0_39
 	#define _FLEXT_HAVE_PD_GARRAYLOCKS
 #endif
-#if PD_MINOR_VERSION >= 36
+#if PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 36
     #define _FLEXT_HAVE_PD_GARRAYUPDATETIME
 #endif
 #endif

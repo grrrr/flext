@@ -20,6 +20,13 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "flpushns.h"
 
+
+#if PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 55
+#define PDGUI_DELETEKEY(key) pdgui_stub_deleteforkey(key)
+#else
+#define PDGUI_DELETEKEY(cmd) gfxstub_deleteforkey(key)
+#endif
+
 // === flext_base ============================================
 
 FLEXT_TEMPIMPL(const t_symbol *FLEXT_CLASSDEF(flext_base))::curtag = NULL;
@@ -94,7 +101,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_base))::Exit()
 
 #if FLEXT_SYS == FLEXT_SYS_PD && !defined(FLEXT_NOATTREDIT)
     // attribute editor window may still be open -> close it
-    gfxstub_deleteforkey(thisHdr());
+    PDGUI_DELETEKEY(thisHdr());
 #endif
 
 #ifdef FLEXT_THREADS

@@ -442,6 +442,9 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #	endif
 #endif
 
+// macro for avoiding unused variable warnings
+#define MAYBE_UNUSED(x) (void)(x)
+
 // macro definitions for inline flext usage
 #ifdef FLEXT_INLINE
 #   define FLEXT_TEMPLATE template<typename flext_T>

@@ -86,7 +86,7 @@ FLEXT_TEMPIMPL(unsigned long FLEXT_CLASSDEF(flext_base))::XletCode(int tp,...)
 
     va_list marker;
     va_start(marker,tp);
-    int cnt = 0;
+    int cnt = 0; MAYBE_UNUSED(cnt);
     int arg = tp;
     for(; arg; ++cnt) {
 #ifdef FLEXT_DEBUG

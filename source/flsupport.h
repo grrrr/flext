@@ -222,7 +222,7 @@ public:
 
 // PD 64-bit buffer handling macros
 #if FLEXT_SYS == FLEXT_SYS_PD
-#       if PD_MINOR_VERSION >= 41
+#       if PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 41
                 /* use new garray support that is 64-bit safe */
 #               define FLEXT_PD_ARRAYGRAB garray_getfloatwords
 #               define FLEXT_ARRAYTYPE t_word
@@ -895,7 +895,7 @@ public:
     */
 
 #if FLEXT_SYS == FLEXT_SYS_PD
-    #if PD_MINOR_VERSION >= 38 || (PD_MINOR_VERSION >= 37 && defined(PD_DEVEL_VERSION))
+    #if PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 38 || (PD_MINOR_VERSION >= 37 && defined(PD_DEVEL_VERSION))
         static void Lock() { sys_lock(); }
         static void Unlock() { sys_unlock(); }
     #else

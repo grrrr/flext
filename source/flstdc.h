@@ -328,14 +328,14 @@ typedef t_symbol *t_symptr;
 
 
 // ----- set message queue mode -----
-#if FLEXT_SYS == FLEXT_SYS_PD && PD_MINOR_VERSION >= 37
+#if FLEXT_SYS == FLEXT_SYS_PD && (PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 37)
 //	for PD version >= 0.37test10 FLEXT_PDLOCK is standard
 #	undef FLEXT_PDLOCK
 #	define FLEXT_PDLOCK
 #endif
 
 #ifndef FLEXT_QMODE
-#	if FLEXT_SYS == FLEXT_SYS_PD && PD_MINOR_VERSION >= 38 && defined(PD_DEVEL_VERSION)
+#	if FLEXT_SYS == FLEXT_SYS_PD && (PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 38) && defined(PD_DEVEL_VERSION)
 //		use idle callback
 #		define FLEXT_QMODE 1
 #	elif defined(FLEXT_PDLOCK)

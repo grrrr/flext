@@ -119,7 +119,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext_obj))::DefineHelp(t_classid c,const cha
 
 FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_obj))::GetParamSym(t_atom &dst,const t_symbol *sym,t_canvas *c)
 {
-#if FLEXT_SYS == FLEXT_SYS_PD && defined(PD_MINOR_VERSION) && PD_MINOR_VERSION >= 37
+#if FLEXT_SYS == FLEXT_SYS_PD && defined(PD_MINOR_VERSION) && (PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 37)
     if(!c) c = canvas_getcurrent();
 
     const char *s = GetString(sym);

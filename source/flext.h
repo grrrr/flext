@@ -21,10 +21,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 */
 
 //! \brief flext version number
-#define FLEXT_VERSION 603
+#define FLEXT_VERSION 604
 
 //! \brief flext version string
-#define FLEXT_VERSTR "0.6.3"
+#define FLEXT_VERSTR "0.6.4"
 
 //! @}
 

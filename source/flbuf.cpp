@@ -22,6 +22,14 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #if FLEXT_SYS == FLEXT_SYS_PD
 #define DIRTY_INTERVAL 0   // buffer dirty check in msec
 
+
+#if PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 55
+#define GARRAY_RESIZE(arr, len) ::garray_resize_long(arr, len)
+#else
+#define GARRAY_RESIZE(arr, len) ::garray_resize(arr, (float)len)
+#endif
+
+
 FLEXT_TEMPLATE
 class Buffers:
     public std::set<flext::buffer *>
@@ -267,7 +275,7 @@ FLEXT_TEMPIMPL(void FLEXT_CLASSDEF(flext))::buffer::Frames(int fr,bool keep,bool
     FLEXT_ASSERT(sym);
 #if FLEXT_SYS == FLEXT_SYS_PD
     // is this function guaranteed to keep memory and set rest to zero?
-    ::garray_resize(arr,(float)fr);
+    GARRAY_RESIZE(arr, fr);
     Update();
 #elif FLEXT_SYS == FLEXT_SYS_MAX
     Element *tmp = NULL;

@@ -141,7 +141,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::InitInlets()
             // else leftmost inlet is already there...
             ++cnt;
 
-#if PD_MINOR_VERSION >= 37 && defined(PD_DEVEL_VERSION)
+#if (PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 37) && defined(PD_DEVEL_VERSION)
             // set tooltip
 // this is on a per-class basis... we cannot really use it here
 //            if(xi.desc && *xi.desc) class_settip(thisClass(),gensym(xi.desc));
@@ -150,7 +150,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::InitInlets()
 
         for(int ix = 1; ix < incnt; ++ix,++cnt) {
             xlet &xi = inlist[ix]; // points to first inlet
-            t_inlet *in = NULL;
+            t_inlet *in = NULL; MAYBE_UNUSED(in);
             switch(xi.tp) {
                 case xlet_float:
                 case xlet_int: {
@@ -200,7 +200,7 @@ FLEXT_TEMPIMPL(bool FLEXT_CLASSDEF(flext_base))::InitInlets()
                     ok = false;
             } 
 
-#if PD_MINOR_VERSION >= 37 && defined(PD_DEVEL_VERSION)
+#if (PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 37) && defined(PD_DEVEL_VERSION)
             // set tooltip
             if(in && xi.desc && *xi.desc) inlet_settip(in,gensym(xi.desc));
 #endif

@@ -26,7 +26,7 @@ for f in `find ${root}/tutorial -name $srch`; do
     ex=$n
   fi
   if
-    ! "$pd" -nort -noprefs -noaudio -nomidi -nogui -path "$p" -path "$patches" -open "$testpatch" -send "r obj $ex" -send "r del 100" -send "r quit 1000" &> "$logfile" || grep error "$logfile" 
+    ! "$pd" -verbose -nort -noprefs -noaudio -nomidi -nogui -path "$p" -path "$patches" -open "$testpatch" -send "r obj $ex" -send "r del 100" -send "r quit 1000" &> "$logfile"  # || grep error "$logfile" 
   then
     exit -1
   fi

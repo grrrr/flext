@@ -17,10 +17,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 
 #include "flpushns.h"
 
-#if FLEXT_SYS == FLEXT_SYS_PD 
+#if FLEXT_SYS == FLEXT_SYS_PD
 
 #ifdef _MSC_VER
-#pragma warning( disable : 4091 ) 
+#pragma warning( disable : 4091 )
 #endif
 
 

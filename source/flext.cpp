@@ -9,7 +9,7 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 /*! \file flext.cpp
     \brief Implementation of the flext base class.
 */
- 
+
 #ifndef __FLEXT_CPP
 #define __FLEXT_CPP
 
@@ -21,10 +21,10 @@ WARRANTIES, see the file, "license.txt," in this distribution.
 #include "flpushns.h"
 
 
-#if PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 55
+#if 0 && (PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 55)
 #define PDGUI_DELETEKEY(key) pdgui_stub_deleteforkey(key)
 #else
-#define PDGUI_DELETEKEY(cmd) gfxstub_deleteforkey(key)
+#define PDGUI_DELETEKEY(key) gfxstub_deleteforkey(key)
 #endif
 
 // === flext_base ============================================

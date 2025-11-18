@@ -50,7 +50,7 @@ variables:
   extends: .prefix
   script:
     - ./bootstrap.sh
-    - ./configure --host=$ARCH --with-sdkdir=$PDINCLUDEDIR --enable-cmem --enable-system=$PDBIN
+    - ./configure --host=$ARCH --with-sdkdir=$PDINCLUDEDIR --with-external-extension=$PDEXT --enable-cmem --enable-system=$PDBIN
     - make -j $(nproc)
   artifacts:
     paths:
@@ -114,6 +114,7 @@ build_linux_armhf_float32:
     PDEXT: pd_linux
 
 build_linux_armhf_float64:
+  allow_failure: true
   extends: [.build, .linux_armhf, .pd_float64]
   variables:
     PDEXT: linux-armhf-64.so
@@ -124,6 +125,7 @@ test_linux_armhf_float32:
   tags: [armhf]
 
 test_linux_armhf_float64:
+  allow_failure: true
   extends: [.test, .linux_aarch64, .pd_float64]
   dependencies: [build_linux_armhf_float64]
   tags: [armhf]

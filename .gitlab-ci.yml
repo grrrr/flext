@@ -1,7 +1,7 @@
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
-.build:
+.prefix:
   stage: build
   tags:
     - docker
@@ -10,8 +10,8 @@ variables:
   variables:
     PDINCLUDEDIR: "/usr/include/pd"
 
-.buildwin:
-  extends: .build
+.prefix_win:
+  extends: .prefix
   variables:
     PDDIR: "/Pd"
     PDINCLUDEDIR: "$PDDIR/src"
@@ -21,42 +21,72 @@ variables:
     - fn="${PDWIN##*/}"; unzip "$fn"; mv "${fn%%.msw*}" $PDDIR
     - ls $PDDIR/
 
+.linux_x86_64:
+  variables:
+    ARCH: x86_64-linux-gnu
 
-build_linux_float32:
-  extends: .build
+.linux_aarch64:
+  variables:
+    ARCH: aarch64-linux-gnu
+
+.pd_float32:
+  variables:
+    PDBIN: pd
+
+.pd_float64:
+  variables:
+    PDBIN: pd64
+
+.build:
+  extends: .prefix
   script:
     - ./bootstrap.sh
-    - ./configure --with-sdkdir=$PDINCLUDEDIR --enable-cmem
+    - ./configure --host=$ARCH --with-sdkdir=$PDINCLUDEDIR --enable-cmem --enable-system=$PDBIN
     - make
   artifacts:
     paths:
-      - tutorial/*/*.pd_linux
+      - tutorial/*/*.$PDEXT
     expire_in: 1h
 
-build_linux_float64:
-  extends: .build
-  script:
-    - ./bootstrap.sh
-    - ./configure --enable-system=pd64 --with-sdkdir=$PDINCLUDEDIR --enable-cmem
-    - make
-  artifacts:
-    paths:
-      - tutorial/*/*.linux-*-64.so
-    expire_in: 1h
-
-test_linux_float32:
+.test:
   stage: test
-  dependencies:
-    - build_linux_float32
   script:
-    - $CI_PROJECT_DIR/tutorial/pd/test.sh $CI_PROJECT_DIR pd
+    - $CI_PROJECT_DIR/tutorial/pd/test.sh $CI_PROJECT_DIR $PDBIN
 
-test_linux_float64:
-  stage: test
-  dependencies:
-    - build_linux_float64
-  script:
-    - $CI_PROJECT_DIR/tutorial/pd/test.sh $CI_PROJECT_DIR pd64
+
+build_linux_x86_64_float32:
+  extends: [.build, .linux_x86_64, .pd_float32]
+  variables:
+    PDEXT: pd_linux
+
+build_linux_x86_64_float64:
+  extends: [.build, .linux_x86_64, .pd_float64]
+  variables:
+    PDEXT: linux-amd64-64.so
+
+test_linux_x86_64_float32:
+  extends: [.test, .linux_x86_64, .pd_float32]
+
+test_linux_x86_64_float64:
+  extends: [.test, .linux_x86_64, .pd_float64]
+
+
+build_linux_aarch64_float32:
+  extends: [.build, .linux_aarch64, .pd_float32]
+  variables:
+    PDEXT: pd_linux
+
+build_linux_aarch64_float64:
+  extends: [.build, .linux_aarch64, .pd_float64]
+  variables:
+    PDEXT: linux-arm64-64.so
+
+test_linux_aarch64_float32:
+  extends: [.test, .linux_aarch64, .pd_float32]
+
+test_linux_aarch64_float64:
+  extends: [.test, .linux_aarch64, .pd_float64]
+
 
 push_github:
   stage: deploy

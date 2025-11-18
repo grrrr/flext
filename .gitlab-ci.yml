@@ -54,7 +54,7 @@ variables:
   extends: .prefix
   script:
     - ./bootstrap.sh
-    - ./configure --host=$ARCH --with-sdkdir=$PDINCLUDEDIR --with-external-extension=$PDEXT --enable-cmem --enable-system=$PDBIN
+    - ./configure --host=$ARCH --with-sdkdir=$PDINCLUDEDIR --with-extension=$PDEXT --enable-cmem --enable-system=$PDBIN
     - make -j $(nproc)
   artifacts:
     paths:

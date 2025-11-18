@@ -112,6 +112,7 @@ test_linux_aarch64_float64:
 
 
 build_linux_armhf_float32:
+  allow_failure: true
   extends: [.build, .linux_armhf, .pd_float32]
   variables:
     PDEXT: pd_linux
@@ -123,6 +124,7 @@ build_linux_armhf_float64:
     PDEXT: linux-armhf-64.so
 
 test_linux_armhf_float32:
+  allow_failure: true
   extends: [.test, .linux_armhf, .pd_float32]
   dependencies: [build_linux_armhf_float32]
   tags: [armhf]

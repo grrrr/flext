@@ -32,24 +32,29 @@ variables:
 .pd_float32:
   variables:
     PDBIN: pd
+    PDDEB: puredata
 
 .pd_float64:
   variables:
     PDBIN: pd64
+    PDDEB: puredata64
 
 .build:
   extends: .prefix
   script:
     - ./bootstrap.sh
     - ./configure --host=$ARCH --with-sdkdir=$PDINCLUDEDIR --enable-cmem --enable-system=$PDBIN
-    - make
+    - make -j $(nproc)
   artifacts:
     paths:
       - tutorial/*/*.$PDEXT
     expire_in: 1h
 
 .test:
+  image: debian:testing-slim
   stage: test
+  before_script:
+    - apt update && apt install -yy $PDDEB
   script:
     - $CI_PROJECT_DIR/tutorial/pd/test.sh $CI_PROJECT_DIR $PDBIN
 
@@ -67,10 +72,12 @@ build_linux_x86_64_float64:
 test_linux_x86_64_float32:
   extends: [.test, .linux_x86_64, .pd_float32]
   dependencies: [build_linux_x86_64_float32]
+  tags: [x86_64]
 
 test_linux_x86_64_float64:
   extends: [.test, .linux_x86_64, .pd_float64]
   dependencies: [build_linux_x86_64_float64]
+  tags: [x86_64]
 
 
 build_linux_aarch64_float32:
@@ -86,10 +93,12 @@ build_linux_aarch64_float64:
 test_linux_aarch64_float32:
   extends: [.test, .linux_aarch64, .pd_float32]
   dependencies: [build_linux_aarch64_float32]
+  tags: [arm64]
 
 test_linux_aarch64_float64:
   extends: [.test, .linux_aarch64, .pd_float64]
   dependencies: [build_linux_aarch64_float64]
+  tags: [arm64]
 
 
 push_github:

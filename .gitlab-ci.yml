@@ -21,6 +21,7 @@ variables:
     - fn="${PDWIN##*/}"; unzip "$fn"; mv "${fn%%.msw*}" $PDDIR
     - ls $PDDIR/
 
+
 .linux_x86_64:
   variables:
     ARCH: x86_64-linux-gnu
@@ -28,6 +29,11 @@ variables:
 .linux_aarch64:
   variables:
     ARCH: aarch64-linux-gnu
+
+.linux_armhf:
+  variables:
+    ARCH: arm-linux-gnueabihf
+
 
 .pd_float32:
   variables:
@@ -38,6 +44,7 @@ variables:
   variables:
     PDBIN: pd64
     PDDEB: puredata64
+
 
 .build:
   extends: .prefix
@@ -99,6 +106,27 @@ test_linux_aarch64_float64:
   extends: [.test, .linux_aarch64, .pd_float64]
   dependencies: [build_linux_aarch64_float64]
   tags: [arm64]
+
+
+build_linux_armhf_float32:
+  extends: [.build, .linux_armhf, .pd_float32]
+  variables:
+    PDEXT: pd_linux
+
+build_linux_armhf_float64:
+  extends: [.build, .linux_armhf, .pd_float64]
+  variables:
+    PDEXT: linux-armhf-64.so
+
+test_linux_armhf_float32:
+  extends: [.test, .linux_aarch64, .pd_float32]
+  dependencies: [build_linux_armhf_float32]
+  tags: [armhf]
+
+test_linux_armhf_float64:
+  extends: [.test, .linux_aarch64, .pd_float64]
+  dependencies: [build_linux_armhf_float64]
+  tags: [armhf]
 
 
 push_github:

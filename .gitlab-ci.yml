@@ -8,14 +8,15 @@ variables:
     - default
   image: $CI_REGISTRY/docker/pd_max
   variables:
-    PDINCLUDEDIR: "/usr/include/pd"
+    # pd is a local installation in the build docker
+    PDINCLUDEDIR: "/usr/local/include/pd"
 
 .prefix_win:
   extends: .prefix
   variables:
     PDDIR: "/Pd"
     PDINCLUDEDIR: "$PDDIR/src"
-    PDWIN: "https://msp.ucsd.edu/Software/pd-0.55-2.msw.zip"
+    PDWIN: "https://msp.ucsd.edu/Software/pd-0.56-2.msw.zip"
   before_script:
     - curl -k -O "$PDWIN"
     - fn="${PDWIN##*/}"; unzip "$fn"; mv "${fn%%.msw*}" $PDDIR
